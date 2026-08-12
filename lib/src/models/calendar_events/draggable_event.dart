@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/checked_copy.dart';
 
 /// A class used by the [DragTargetUtilities] to determine that a [CalendarEvent] is being rescheduled.
 class Reschedule {
@@ -32,7 +31,7 @@ class Resize {
   Resize updateDateTimeRange(
     DateTimeRange dateTimeRange,
   ) {
-    final updatedEvent = event.checkedCopyWith(dateTimeRange: dateTimeRange);
+    final updatedEvent = event.withDateTimeRange(dateTimeRange);
     return Resize(event: updatedEvent, direction: direction);
   }
 }

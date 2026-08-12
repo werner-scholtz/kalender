@@ -25,23 +25,29 @@ class Event extends CalendarEvent {
   /// The color of the [Event].
   final Color? color;
 
+  /// Rebuilds the fields this class adds, for a drag or a resize.
+  ///
+  /// The id, the interaction config and the rule are restored by [CalendarEvent]
+  /// afterwards, so they are deliberately not listed here.
   @override
-  Event copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-    String? title,
-    String? description,
-    Color? color,
-  }) =>
+  Event copyWithData({required DateTimeRange dateTimeRange}) {
+    return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
+  }
+
+  /// A copy with the given fields replaced.
+  ///
+  /// This is the demo's own method rather than an override, so it takes whatever
+  /// parameters are useful here. [carryOver] keeps the copy's identity.
+  Event copyWith({DateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+    return carryOver(
       Event(
-        id: id,
         dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-        interaction: interaction ?? this.interaction,
-        multiDayRule: multiDayRule,
         title: title ?? this.title,
         description: description ?? this.description,
         color: color ?? this.color,
-      );
+      ),
+    );
+  }
 
   @override
   operator ==(Object other) {

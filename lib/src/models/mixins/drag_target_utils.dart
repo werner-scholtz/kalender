@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/checked_copy.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
@@ -312,6 +311,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     );
 
     final range = InternalDateTimeRange(start: newStart, end: newStart.add(event.duration));
-    return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(range));
+    return event.withDateTimeRange(toLocationDateTimeRange(range));
   }
 }

@@ -225,8 +225,8 @@ void main() {
       final initialWidth = tester.getSize(find.byKey(const ValueKey('drop-target'))).width;
 
       controller.selectEvent(
-        storedEvent.copyWith(
-          dateTimeRange: DateTimeRange(
+        storedEvent.withDateTimeRange(
+          DateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),

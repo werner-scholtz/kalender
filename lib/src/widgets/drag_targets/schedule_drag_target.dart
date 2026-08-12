@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/checked_copy.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart' show CursorNavigationTrigger;
@@ -202,7 +201,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
       final duration = rangeAsUtc.duration;
       final endTime = cursorDateTime.add(duration);
       final newRange = InternalDateTimeRange(start: cursorDateTime, end: endTime);
-      return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(newRange));
+      return event.withDateTimeRange(toLocationDateTimeRange(newRange));
     } else {
       // Calculate the new dateTimeRange for the event.
       final newStartTime = cursorDateTime;
@@ -210,7 +209,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
       final endTime = newStartTime.add(duration);
       final newRange = InternalDateTimeRange(start: newStartTime, end: endTime);
 
-      return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(newRange));
+      return event.withDateTimeRange(toLocationDateTimeRange(newRange));
     }
   }
 

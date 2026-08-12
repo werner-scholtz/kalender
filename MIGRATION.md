@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. |
+| [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
 | [v0.22.x → v0.23.0](#v022x--v0230) | String builders move off the style classes. Nothing stops compiling, but an unchanged calendar renders differently. |
@@ -80,6 +80,61 @@ Nothing to change unless you set `KalenderThemeData.weekNumberStyle.alignment`. 
 The theme field feeds both the month gutter and the multi-day header, so the two can no longer be given different alignments. `MonthBodyComponentStyles` was the only way to set them apart and it is gone.
 
 Set it above the `CalendarView` rather than on a `KalenderTheme` scoped to the header or the body. `weekNumberStyle` sizes the month gutter, which the header reserves space for, so it is resolved once above both.
+
+### `CalendarEvent.copyWith` becomes `copyWithData`
+
+Every subclass changes. `copyWith` is gone from `CalendarEvent`, so an override of it no longer compiles.
+
+Rebuild only the fields your subclass adds:
+
+```dart
+- @override
+- Event copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, String? title}) {
+-   return Event(
+-     id: id,
+-     dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+-     interaction: interaction ?? this.interaction,
+-     multiDayRule: multiDayRule,
+-     title: title ?? this.title,
+-   );
+- }
+
++ @override
++ Event copyWithData({required DateTimeRange dateTimeRange}) {
++   return Event(dateTimeRange: dateTimeRange, title: title);
++ }
+```
+
+`id`, `interaction` and `multiDayRule` are restored afterwards by `carryOver`, so do not pass them. That is the point of the change: a field added to `CalendarEvent` later reaches every subclass without any of them changing.
+
+The calendar calls `withDateTimeRange`, which is not overridable. It applies your hook, asserts in debug that it returned your own type, then restores the base state.
+
+**If you called `copyWith` yourself,** keep a method of your own. It is no longer an override, so it can take whatever parameters you like. Wrap the result in `carryOver` to keep the copy's identity:
+
+```dart
+Event copyWith({DateTimeRange? dateTimeRange, String? title}) {
+  return carryOver(
+    Event(dateTimeRange: dateTimeRange ?? this.dateTimeRange, title: title ?? this.title),
+  );
+}
+```
+
+**If you only moved an event,** call `withDateTimeRange` instead:
+
+```dart
+- final moved = event.copyWith(dateTimeRange: newRange);
++ final moved = event.withDateTimeRange(newRange) as Event;
+```
+
+**A subclass that writes no hook is reported twice.** `@mustBeOverridden` flags it in your own project's analysis, and a debug assert names the type on the first drag if the warning is ignored:
+
+```
+Event.copyWithData returned a CalendarEvent. Override copyWithData to return your own type,
+otherwise every drag and resize replaces the event with a plain CalendarEvent and the data
+your subclass adds is lost.
+```
+
+`CalendarEvent.interaction` and `CalendarEvent.multiDayRule` are getters rather than fields now, so that `carryOver` can restore them. Reading either is unchanged, and neither was assignable before.
 
 ### The three strategy fields become classes
 

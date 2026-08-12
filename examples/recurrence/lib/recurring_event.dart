@@ -13,19 +13,11 @@ class RecurringCalendarEvent extends CalendarEvent {
     super.multiDayRule,
   });
 
-  /// Copy the [CalendarEvent] with the new values.
+  /// Rebuilds the group this occurrence belongs to. The rest is restored by
+  /// [CalendarEvent].
   @override
-  RecurringCalendarEvent copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-  }) {
-    return RecurringCalendarEvent(
-      id: id,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-      groupId: groupId,
-      interaction: interaction ?? this.interaction,
-      multiDayRule: multiDayRule,
-    );
+  RecurringCalendarEvent copyWithData({required DateTimeRange dateTimeRange}) {
+    return RecurringCalendarEvent(dateTimeRange: dateTimeRange, groupId: groupId);
   }
 
   @override

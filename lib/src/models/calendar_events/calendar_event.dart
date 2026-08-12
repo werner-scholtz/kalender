@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
+import 'package:meta/meta.dart';
 
 /// Base class for events displayed in the calendar.
 ///
@@ -22,15 +23,9 @@ import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 ///   final String title;
 ///
 ///   @override
-///   Event copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, String? title}) =>
-///       Event(
-///         id: id,
-///         dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-///         interaction: interaction ?? this.interaction,
-///         // copyWith takes no multiDayRule parameter. Forward it so copies keep the rule.
-///         multiDayRule: multiDayRule,
-///         title: title ?? this.title,
-///       );
+///   Event copyWithData({required DateTimeRange dateTimeRange}) {
+///     return Event(dateTimeRange: dateTimeRange, title: title);
+///   }
 ///
 ///   @override
 ///   bool operator ==(Object other) =>
@@ -40,6 +35,10 @@ import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 ///   int get hashCode => Object.hash(super.hashCode, title);
 /// }
 /// ```
+///
+/// [copyWithData] rebuilds only what the subclass adds. [id], [interaction] and
+/// [multiDayRule] are reapplied by [carryOver] afterwards, so a field added to
+/// this class later reaches every subclass without any of them changing.
 class CalendarEvent {
   /// The start of the event in UTC.
   final DateTime start;
@@ -48,7 +47,8 @@ class CalendarEvent {
   final DateTime end;
 
   /// Controls whether the event can be moved, resized, etc.
-  final EventInteraction interaction;
+  EventInteraction get interaction => _interaction;
+  EventInteraction _interaction;
 
   /// Unique identifier. Auto-generated if not provided.
   late String id;
@@ -58,7 +58,8 @@ class CalendarEvent {
   /// Null, the default, uses [ViewConfiguration.multiDayRule]. Set it only for
   /// an event that should be classified differently from the rest, such as one
   /// that is all-day by nature rather than by duration.
-  final MultiDayRule? multiDayRule;
+  MultiDayRule? get multiDayRule => _multiDayRule;
+  MultiDayRule? _multiDayRule;
 
   /// Creates a [CalendarEvent].
   ///
@@ -68,11 +69,12 @@ class CalendarEvent {
     String? id,
     required DateTimeRange dateTimeRange,
     EventInteraction? interaction,
-    this.multiDayRule,
+    MultiDayRule? multiDayRule,
   })  : id = id ?? _createUniqueId(),
         start = dateTimeRange.start.toUtc(),
         end = dateTimeRange.end.toUtc(),
-        interaction = interaction ?? EventInteraction.fromCanModify(true);
+        _multiDayRule = multiDayRule,
+        _interaction = interaction ?? EventInteraction.fromCanModify(true);
 
   // TODO: consider using a UUID package for more robust ID generation.
   static String _createUniqueId() {
@@ -117,22 +119,55 @@ class CalendarEvent {
   /// All dates this event spans, adjusted for [location].
   List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
 
-  /// Returns a copy with the given fields replaced.
+  /// A copy of this event covering [dateTimeRange].
   ///
-  /// The [id] is preserved so that selection and layout lookups continue to
-  /// reference the same logical event. [multiDayRule] is carried over too, and
-  /// is deliberately not a parameter: adding one here would invalidate every
-  /// subclass's override of this method.
-  CalendarEvent copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-  }) {
-    return CalendarEvent(
-      id: id,
-      dateTimeRange: dateTimeRange ?? DateTimeRange(start: start, end: end),
-      interaction: interaction ?? this.interaction,
-      multiDayRule: multiDayRule,
+  /// The calendar calls this on every drag and resize. Override [copyWithData]
+  /// rather than this: this calls it and then restores the state
+  /// [CalendarEvent] holds, so a copy keeps its identity, its interaction
+  /// config and its rule whatever the subclass returns.
+  @nonVirtual
+  CalendarEvent withDateTimeRange(DateTimeRange dateTimeRange) {
+    final copy = copyWithData(dateTimeRange: dateTimeRange);
+
+    assert(
+      copy.runtimeType == runtimeType,
+      '$runtimeType.copyWithData returned a ${copy.runtimeType}. Override copyWithData to return your own '
+      'type, otherwise every drag and resize replaces the event with a plain CalendarEvent and the data '
+      'your subclass adds is lost.',
     );
+
+    return carryOver(copy);
+  }
+
+  /// Rebuilds this event covering [dateTimeRange], keeping the data this
+  /// subclass adds.
+  ///
+  /// Override this and return a new instance of your own type. Do not forward
+  /// [id], [interaction] or [multiDayRule]: [withDateTimeRange] restores them
+  /// through [carryOver] once this returns, which is what keeps a field added
+  /// to [CalendarEvent] later from silently going missing.
+  @protected
+  @mustBeOverridden
+  CalendarEvent copyWithData({required DateTimeRange dateTimeRange}) {
+    return CalendarEvent(dateTimeRange: dateTimeRange);
+  }
+
+  /// Reapplies the state [CalendarEvent] holds to [copy], and returns it.
+  ///
+  /// [withDateTimeRange] calls this on whatever [copyWithData] returned. Call it
+  /// from a `copyWith` of your own so that copy keeps its identity too:
+  ///
+  /// ```dart
+  /// Event copyWith({String? title}) {
+  ///   return carryOver(Event(dateTimeRange: dateTimeRange, title: title ?? this.title));
+  /// }
+  /// ```
+  @protected
+  T carryOver<T extends CalendarEvent>(T copy) {
+    copy.id = id;
+    copy._interaction = _interaction;
+    copy._multiDayRule = _multiDayRule;
+    return copy;
   }
 
   @override
