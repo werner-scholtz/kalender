@@ -28,9 +28,17 @@ class GutterStyles extends InheritedWidget {
 
   /// Gets the [GutterStyles] from the context.
   static GutterStyles of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<GutterStyles>();
+    final result = maybeOf(context);
     assert(result != null, 'No GutterStyles found.');
     return result!;
+  }
+
+  /// The [GutterStyles] above [context], or null when there is none.
+  ///
+  /// Null where a component widget is built outside a [CalendarView], which the
+  /// tests and the doc snippets do.
+  static GutterStyles? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<GutterStyles>();
   }
 
   @override
@@ -59,7 +67,7 @@ bool debugCheckGutterStyleReaches({
   required Object? scoped,
 }) {
   if (shared == scoped) return true;
-  if (!_reported.add('$field:$shared:$scoped')) return true;
+  if (!_reported.add(field)) return true;
 
   debugPrint(
     'kalender: a KalenderTheme below the CalendarView sets $field, which is ignored.\n'

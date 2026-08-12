@@ -361,38 +361,50 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         ),
         if (frame.totalNumberOfRows > maxNumberOfRows)
           Row(
-            children: frame.columnRowMap.entries.map((entry) {
-              final column = entry.key;
-              final row = entry.value;
-              final date = frame.dateFromColumn(column);
-              final eventsForColumn = frame.eventsForColumn(column);
-              late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
+            children: (() {
+              final overlayBuilders = widget.multiDayOverlayBuilders;
+              // The built-in overlay widgets resolve their own style. A custom
+              // builder for either takes no BuildContext, so it is handed the
+              // resolved pair, and only then is resolving it worth doing.
+              final needsStyles = overlayBuilders?.multiDayOverlayBuilder != null ||
+                  overlayBuilders?.multiDayPortalOverlayButtonBuilder != null;
+              return frame.columnRowMap.entries.map((entry) {
+                final column = entry.key;
+                final row = entry.value;
+                final date = frame.dateFromColumn(column);
+                final eventsForColumn = frame.eventsForColumn(column);
+                late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
 
-              late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
-                    date: date,
-                    events: eventsForColumn,
-                    numberOfHiddenRows: numberOfHiddenRows,
-                    tileHeight: widget.configuration.tileHeight,
-                    getMultiDayEventLayoutRenderBox: getRenderBox,
-                    overlayTileBuilder: _overlayEventTileBuilder,
-                    overlayBuilders: widget.multiDayOverlayBuilders,
-                    overlayStyles: OverlayStyles.fromContext(context),
-                  ) ??
-                  MultiDayOverlayPortal(
-                    key: MultiDayOverlayPortal.getKey(date),
-                    date: date,
-                    events: eventsForColumn,
-                    numberOfHiddenRows: numberOfHiddenRows,
-                    tileHeight: widget.configuration.tileHeight,
-                    getMultiDayEventLayoutRenderBox: getRenderBox,
-                    overlayBuilders: widget.multiDayOverlayBuilders,
-                    overlayTileBuilder: _overlayEventTileBuilder,
-                  );
+                late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
+                      date: date,
+                      events: eventsForColumn,
+                      numberOfHiddenRows: numberOfHiddenRows,
+                      tileHeight: widget.configuration.tileHeight,
+                      getMultiDayEventLayoutRenderBox: getRenderBox,
+                      overlayTileBuilder: _overlayEventTileBuilder,
+                      overlayBuilders: widget.multiDayOverlayBuilders,
+                      overlayStyles: OverlayStyles.fromContext(context),
+                    ) ??
+                    MultiDayOverlayPortal(
+                      key: MultiDayOverlayPortal.getKey(date),
+                      date: date,
+                      events: eventsForColumn,
+                      numberOfHiddenRows: numberOfHiddenRows,
+                      tileHeight: widget.configuration.tileHeight,
+                      getMultiDayEventLayoutRenderBox: getRenderBox,
+                      overlayBuilders: widget.multiDayOverlayBuilders,
+                      overlayTileBuilder: _overlayEventTileBuilder,
+                      // MultiDayOverlay and MultiDayPortalOverlayButton resolve
+                      // their own, but a custom builder for either takes no
+                      // BuildContext and is handed these instead.
+                      overlayStyles: needsStyles ? OverlayStyles.fromContext(context) : null,
+                    );
 
-              return Expanded(
-                child: row >= maxNumberOfRows ? overlayPortal : const SizedBox.shrink(),
-              );
-            }).toList(),
+                return Expanded(
+                  child: row >= maxNumberOfRows ? overlayPortal : const SizedBox.shrink(),
+                );
+              }).toList();
+            })(),
           ),
       ],
     );

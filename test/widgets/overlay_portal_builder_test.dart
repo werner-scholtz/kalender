@@ -15,7 +15,8 @@ void main() {
   /// standing in for the built-in portal.
   Future<void> pumpOverflowingMonth(
     WidgetTester tester, {
-    required MultiDayOverlayPortalBuilder portalBuilder,
+    MultiDayOverlayPortalBuilder? portalBuilder,
+    OverlayBuilders? overlayBuilders,
     KalenderThemeData? scoped,
   }) async {
     final dpi = tester.view.devicePixelRatio;
@@ -41,7 +42,7 @@ void main() {
         initialDateTime: DateTime(2025, 1, 15),
       ),
       components: CalendarComponents(
-        overlayBuilders: OverlayBuilders(multiDayOverlayPortalBuilder: portalBuilder),
+        overlayBuilders: overlayBuilders ?? OverlayBuilders(multiDayOverlayPortalBuilder: portalBuilder),
       ),
       body: const CalendarBody(),
     );
@@ -102,6 +103,58 @@ void main() {
     );
 
     expect(received?.multiDayOverlayStyle?.width, equals(321));
+  });
+
+  // The built-in portal resolves nothing for itself, but it hands these two
+  // builders a style, and neither typedef takes a BuildContext. Passing nothing
+  // to the portal left both permanently null.
+  testWidgets('a custom overflow button builder receives the resolved style', (tester) async {
+    MultiDayPortalOverlayButtonStyle? received;
+
+    await pumpOverflowingMonth(
+      tester,
+      scoped: const KalenderThemeData(
+        multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(textStyle: TextStyle(fontSize: 21)),
+      ),
+      overlayBuilders: OverlayBuilders(
+        multiDayPortalOverlayButtonBuilder: (controller, numberOfHiddenRows, style) {
+          received = style;
+          return const SizedBox();
+        },
+      ),
+    );
+
+    expect(received, isNotNull, reason: 'the builder cannot resolve the theme itself');
+    expect(received!.textStyle?.fontSize, equals(21));
+  });
+
+  testWidgets('a custom overlay builder receives the resolved style', (tester) async {
+    MultiDayOverlayStyle? received;
+
+    await pumpOverflowingMonth(
+      tester,
+      scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
+      overlayBuilders: OverlayBuilders(
+        multiDayOverlayBuilder: ({
+          required date,
+          required events,
+          required tileHeight,
+          required portalController,
+          required overlayTileBuilder,
+          required getMultiDayEventLayoutRenderBox,
+          required getOverlayPortalRenderBox,
+          required style,
+        }) {
+          received = style;
+          return const SizedBox();
+        },
+      ),
+    );
+
+    await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(day)));
+    await tester.pumpAndSettle();
+
+    expect(received?.width, equals(321));
   });
 
   testWidgets('the built-in overlay still follows a scoped theme with nothing passed to it', (tester) async {

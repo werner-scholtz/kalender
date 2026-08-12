@@ -64,7 +64,7 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is DurationMultiDayLayoutStrategy;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (DurationMultiDayLayoutStrategy).hashCode;

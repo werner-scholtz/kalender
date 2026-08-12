@@ -25,6 +25,14 @@ void main() {
       expect(const EventLayoutStrategy.sideBySide(), equals(const SideBySideLayoutStrategy()));
     });
 
+    test('a subclass of a built-in is not equal to it', () {
+      // A bare `other is OverlapLayoutStrategy` check would call these equal, so
+      // a configuration holding one would report no change when the strategy did.
+      expect(const OverlapLayoutStrategy(), isNot(equals(const _TintedOverlap(Color(0xFFFF0000)))));
+      expect(const _TintedOverlap(Color(0xFFFF0000)), isNot(equals(const OverlapLayoutStrategy())));
+      expect(const _TintedOverlap(Color(0xFFFF0000)), isNot(equals(const _TintedOverlap(Color(0xFF0000FF)))));
+    });
+
     test('overlap is the default', () {
       expect(defaultEventLayoutStrategy, equals(const EventLayoutStrategy.overlap()));
     });
@@ -136,8 +144,22 @@ class _ReverseStrategy extends MultiDayLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is _ReverseStrategy;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (_ReverseStrategy).hashCode;
+}
+
+/// Extends a built-in to reuse its delegate, which is the case a bare
+/// `other is X` check gets wrong.
+class _TintedOverlap extends OverlapLayoutStrategy {
+  const _TintedOverlap(this.tint);
+
+  final Color tint;
+
+  @override
+  bool operator ==(Object other) => other is _TintedOverlap && other.tint == tint;
+
+  @override
+  int get hashCode => tint.hashCode;
 }
