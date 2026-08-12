@@ -156,14 +156,7 @@ The detailed guides live in [`doc/`](doc/README.md):
 - **[Timezones & Locales](doc/timezones-and-locales.md).** Events stored as UTC and displayed in any IANA location, across daylight saving changes and midnight. Day and month names from intl in the calendar's locale, right-to-left layouts, and replacing any string.
 
 > [!NOTE]
-> `weekNumberStyle` and `timelineStyle` decide how wide the calendar's gutters
-> are. Those gutters are drawn in the body and reserved again in the header, so
-> the calendar measures them once above both and a `KalenderTheme` placed inside
-> only the header or only the body cannot change them. Set either one above the
-> `CalendarView`, or on the `KalenderThemeData` registered on
-> `ThemeData.extensions`. A scoped value the calendar has to ignore is reported
-> in debug builds.
-
+> `weekNumberStyle` and `timelineStyle` decide how wide the calendar's gutters are. Those gutters are drawn in the body and reserved again in the header, so the calendar measures them once above both, and a `KalenderTheme` placed inside only the header or only the body cannot change them. Set either one above the `CalendarView`, or on the `KalenderThemeData` registered on `ThemeData.extensions`. A scoped value the calendar has to ignore is reported in debug builds.
 
 ---
 

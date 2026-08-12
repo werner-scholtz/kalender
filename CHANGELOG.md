@@ -9,12 +9,19 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 - `HorizontalConfiguration.generateMultiDayLayoutFrame` is renamed to `multiDayLayoutStrategy` and is no longer nullable. It defaults to `MultiDayLayoutStrategy.byDuration()`, which is what `null` selected before.
 - `CalendarEvent.copyWith` is removed. A subclass overrode it and had to forward by hand every field the base class carries but takes no parameter for, which was `id` and, since 0.24.0, `multiDayRule`. Forgetting one produced a copy the calendar read as a different event, or one that lost its rule, and adding a field to the base class broke every subclass at once without a compile error. Override `copyWithData` instead and rebuild only what your subclass adds. The calendar calls `withDateTimeRange`, which applies the hook and then restores the base state through `carryOver`. A missing hook is reported by the analyzer through `@mustBeOverridden`, and by a debug assert on the first drag for anyone who ignores the warning. Your own `copyWith` is no longer an override, so it can take whatever parameters suit you. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
 - `CalendarEvent.interaction` and `CalendarEvent.multiDayRule` are getters rather than fields, so `carryOver` can restore them. Reading either is unchanged. Neither was assignable before.
-- `meta` is a direct dependency at `^1.9.0`, the version that introduced `@mustBeOverridden`.
 - The seven style container classes reached through those fields are removed with them: `MonthComponentStyles`, `MonthBodyComponentStyles`, `MonthHeaderComponentStyles`, `MultiDayComponentStyles`, `MultiDayBodyComponentStyles`, `MultiDayHeaderComponentStyles` and `ScheduleComponentStyles`. Nothing public reached them once the fields were gone, so they carry no deprecation of their own. `OverlayStyles` is not one of them and stays, since `MultiDayOverlayPortalBuilder` names it.
+
+### Behavior Changes
+
+- A custom component builder is handed the theme-resolved style rather than an empty one. A builder previously received whatever the deprecated container carried, which was an empty style unless the app had set one, so `style?.textStyle ?? myFallback` reached `myFallback`. The same argument now arrives populated from the theme, so a builder written that way renders with the theme value instead of its own fallback. Read the fields you want to override rather than falling back on null. This affects `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
+- `MultiDayOverlayPortalBuilder` receives a populated `OverlayStyles` for the same reason, built by the new `OverlayStyles.fromContext`. That typedef takes no `BuildContext`, so it cannot resolve the theme itself.
+- `KalenderThemeData.weekNumberStyle.alignment` now reaches the month week number. It had no effect there, because the month body passed its own top alignment to the widget and a passed style wins over the theme, so the only way to change it was the deprecated `CalendarComponents` style path. The month still sits at the top when nothing asks otherwise. A calendar that set this on the theme and relied on the month ignoring it will see the month week number move. [#423](https://github.com/werner-scholtz/kalender/pull/423)
+- A custom `weekNumberBuilder` receives the same fully resolved style in the month header as in the month body. The header's spacer passed the style through unresolved, so the two disagreed. [#423](https://github.com/werner-scholtz/kalender/pull/423)
 
 ### Features
 
 - `EventSnapStrategy.none()` leaves a dragged event where the cursor is, without needing a hand-written strategy.
+- `meta` is a direct dependency at `^1.9.0`, the version that introduced `@mustBeOverridden`. The floor is that version rather than the resolved one, so it does not narrow what a consumer can resolve.
 - `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in, through the `eventComparator` the strategy itself does not expose.
 
 ### Fixes
@@ -35,13 +42,6 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 - Added coverage for `multiDayOverlayPortalBuilder`, which had none: a custom portal builder is handed styles resolved from the theme, a scoped theme reaches it, and the built-in overlay still follows a scoped theme with nothing passed to it, across the `Overlay` boundary it is built into.
 - Added coverage that a `KalenderTheme` scoped to the body cannot move the month week number gutter or the multi-day timeline away from what the header reserves, that a theme above the calendar still reaches both, and that an ignored scoped value is reported once rather than on every frame.
 - Added equality coverage for the three strategy classes: two of a kind compare equal with matching hash codes, the built-ins differ from each other, a configuration built twice in a row is equal, and changing only the strategy still breaks equality.
-
-### Behavior Changes
-
-- A custom component builder is handed the theme-resolved style rather than an empty one. A builder previously received whatever the deprecated container carried, which was an empty style unless the app had set one, so `style?.textStyle ?? myFallback` reached `myFallback`. The same argument now arrives populated from the theme, so a builder written that way renders with the theme value instead of its own fallback. Read the fields you want to override rather than falling back on null. This affects `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
-- `MultiDayOverlayPortalBuilder` receives a populated `OverlayStyles` for the same reason, built by the new `OverlayStyles.fromContext`. That typedef takes no `BuildContext`, so it cannot resolve the theme itself.
-- `KalenderThemeData.weekNumberStyle.alignment` now reaches the month week number. It had no effect there, because the month body passed its own top alignment to the widget and a passed style wins over the theme, so the only way to change it was the deprecated `CalendarComponents` style path. The month still sits at the top when nothing asks otherwise. A calendar that set this on the theme and relied on the month ignoring it will see the month week number move. [#423](https://github.com/werner-scholtz/kalender/pull/423)
-- A custom `weekNumberBuilder` receives the same fully resolved style in the month header as in the month body. The header's spacer passed the style through unresolved, so the two disagreed. [#423](https://github.com/werner-scholtz/kalender/pull/423)
 
 ## 0.25.0
 
