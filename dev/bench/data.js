@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1786514354598,
+  "lastUpdate": 1786521760784,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -9871,6 +9871,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3381.688155922039,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner.scholtz.mail@gmail.com",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3fb4b375298c51aa479319d64ae5f25745d1dd47",
+          "message": "Merge pull request #435 from werner-scholtz/fix/release-review-followups\n\nfix: finish the gutter conversion and the overlay style handoff",
+          "timestamp": "2026-08-12T09:44:39+02:00",
+          "tree_id": "60dfeabf7c4dbdb56fa1bf481bdeac7787c98b91",
+          "url": "https://github.com/werner-scholtz/kalender/commit/3fb4b375298c51aa479319d64ae5f25745d1dd47"
+        },
+        "date": 1786521756302,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 168.40623420387533,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 687.00375,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2031.389,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7864.662921348315,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 806.407,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2484.166,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2770.15,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 13808.530201342282,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 239.97072822465492,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 127.93085655314758,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 890.142,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3785.737762237762,
             "unit": "us"
           }
         ]
