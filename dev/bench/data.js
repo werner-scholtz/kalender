@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1786513213249,
+  "lastUpdate": 1786514351473,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -9787,6 +9787,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3346.527736131934,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c43aacc5c45d5a1689a63c9b935a75e58ee4b549",
+          "message": "Merge pull request #433 from werner-scholtz/feat/copy-contract\n\nrefactor!: base class state stops routing through your copyWith",
+          "timestamp": "2026-08-12T07:40:00+02:00",
+          "tree_id": "fcd97b25388167663818e641a7d364f207a7f1c3",
+          "url": "https://github.com/werner-scholtz/kalender/commit/c43aacc5c45d5a1689a63c9b935a75e58ee4b549"
+        },
+        "date": 1786514346376,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 170.064003399915,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 701.075,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2061.038,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8129.412,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 734.27375,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2267.316,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2465.426,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12633.43125,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 242.03914802475012,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 112.00123369756786,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 787.8455,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3381.688155922039,
             "unit": "us"
           }
         ]
