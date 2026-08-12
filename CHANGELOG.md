@@ -22,7 +22,6 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 ### Features
 
 - `EventSnapStrategy.none()` leaves a dragged event where the cursor is, without needing a hand-written strategy.
-- The guides cover the release's new API: the copy contract and `withDateTimeRange` in the Events guide, the snap strategies and how to write one in the Interaction guide, and both layout strategies in the Layout guide.
 - `meta` is a direct dependency at `^1.9.0`, the version that introduced `@mustBeOverridden`. The floor is that version rather than the resolved one, so it does not narrow what a consumer can resolve.
 - `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in, through the `eventComparator` the strategy itself does not expose.
 
