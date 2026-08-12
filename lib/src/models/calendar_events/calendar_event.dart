@@ -36,9 +36,10 @@ import 'package:meta/meta.dart';
 /// }
 /// ```
 ///
-/// [copyWithData] rebuilds only what the subclass adds. [id], [interaction] and
-/// [multiDayRule] are reapplied by [carryOver] afterwards, so a field added to
-/// this class later reaches every subclass without any of them changing.
+/// [copyWithData] rebuilds only what the subclass adds. [id], [interaction],
+/// [multiDayRule] and [isAllDay] are reapplied by [carryOver] afterwards, so a
+/// field added to this class later reaches every subclass without any of them
+/// changing.
 class CalendarEvent {
   /// The start of the event in UTC.
   final DateTime start;
@@ -56,10 +57,22 @@ class CalendarEvent {
   /// Overrides the calendar's rule for this event alone.
   ///
   /// Null, the default, uses [ViewConfiguration.multiDayRule]. Set it only for
-  /// an event that should be classified differently from the rest, such as one
-  /// that is all-day by nature rather than by duration.
+  /// an event that should be classified differently from the rest. For an event
+  /// that is all-day by nature rather than by duration, set [isAllDay] instead.
   MultiDayRule? get multiDayRule => _multiDayRule;
   MultiDayRule? _multiDayRule;
+
+  /// Whether this event occupies whole days rather than a span of time.
+  ///
+  /// True places the event in the multi-day header lane whatever its duration,
+  /// and no [MultiDayRule] is consulted. False, the default, leaves the
+  /// decision to [multiDayRule] or to the calendar's rule, so an event spanning
+  /// several days still reaches the header without this being set.
+  ///
+  /// The date range is untouched. An all-day event keeps whatever start and end
+  /// it was given, so an app that wants midnight to midnight supplies it.
+  bool get isAllDay => _isAllDay;
+  bool _isAllDay;
 
   /// Creates a [CalendarEvent].
   ///
@@ -70,10 +83,12 @@ class CalendarEvent {
     required DateTimeRange dateTimeRange,
     EventInteraction? interaction,
     MultiDayRule? multiDayRule,
+    bool isAllDay = false,
   })  : id = id ?? _createUniqueId(),
         start = dateTimeRange.start.toUtc(),
         end = dateTimeRange.end.toUtc(),
         _multiDayRule = multiDayRule,
+        _isAllDay = isAllDay,
         _interaction = interaction ?? EventInteraction.fromCanModify(true);
 
   // TODO: consider using a UUID package for more robust ID generation.
@@ -108,11 +123,14 @@ class CalendarEvent {
   /// Whether this event belongs in the multi-day header lane rather than the
   /// day timeline, with calendar days measured in [location].
   ///
-  /// Applies [multiDayRule] when set, otherwise [defaultRule], which the
-  /// calendar supplies from [ViewConfiguration.multiDayRule].
+  /// True whenever [isAllDay] is set. Otherwise applies [multiDayRule] when set,
+  /// and [defaultRule] when not, which the calendar supplies from
+  /// [ViewConfiguration.multiDayRule].
   ///
-  /// Override for a rule no [MultiDayRule] expresses.
+  /// Override for a rule no [MultiDayRule] expresses. An override decides on its
+  /// own, so honour [isAllDay] or call `super` for it.
   bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) {
+    if (isAllDay) return true;
     return (multiDayRule ?? defaultRule).isMultiDay(this, location: location);
   }
 
@@ -143,9 +161,9 @@ class CalendarEvent {
   /// subclass adds.
   ///
   /// Override this and return a new instance of your own type. Do not forward
-  /// [id], [interaction] or [multiDayRule]: [withDateTimeRange] restores them
-  /// through [carryOver] once this returns, which is what keeps a field added
-  /// to [CalendarEvent] later from silently going missing.
+  /// [id], [interaction], [multiDayRule] or [isAllDay]: [withDateTimeRange]
+  /// restores them through [carryOver] once this returns, which is what keeps a
+  /// field added to [CalendarEvent] later from silently going missing.
   @protected
   @mustBeOverridden
   CalendarEvent copyWithData({required DateTimeRange dateTimeRange}) {
@@ -167,6 +185,7 @@ class CalendarEvent {
     copy.id = id;
     copy._interaction = _interaction;
     copy._multiDayRule = _multiDayRule;
+    copy._isAllDay = _isAllDay;
     return copy;
   }
 
@@ -182,12 +201,12 @@ class CalendarEvent {
   bool operator ==(Object other) => other is CalendarEvent && layoutEquals(other);
 
   @override
-  int get hashCode => Object.hash(id, start, end, interaction, multiDayRule);
+  int get hashCode => Object.hash(id, start, end, interaction, multiDayRule, isAllDay);
 
   /// Compares layout-affecting properties ([id], [start], [end], [interaction],
-  /// [multiDayRule]).
+  /// [multiDayRule], [isAllDay]).
   ///
-  /// [multiDayRule] counts because it decides whether the event renders in the
+  /// The last two count because they decide whether the event renders in the
   /// header or the day timeline.
   ///
   /// Override in subclasses that add properties affecting rendering.
@@ -196,6 +215,7 @@ class CalendarEvent {
         start == other.start &&
         end == other.end &&
         interaction == other.interaction &&
-        multiDayRule == other.multiDayRule;
+        multiDayRule == other.multiDayRule &&
+        isAllDay == other.isAllDay;
   }
 }
