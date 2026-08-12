@@ -4,10 +4,13 @@ import 'package:kalender/kalender.dart';
 
 /// The calendar's visual theme, following the same layering as Flutter's own component themes.
 ///
-/// Styling is resolved in three layers, most specific first:
-/// 1. A style passed directly to a widget or through the component style containers.
-/// 2. A [KalenderThemeData] registered as a [ThemeExtension] on the app's [ThemeData].
-/// 3. Material 3 defaults derived from the ambient [Theme], see [KalenderThemeData.defaults].
+/// Styling is resolved in four layers, most specific first. Each fills in the
+/// fields the layer above it leaves null:
+/// 1. A style passed directly to a widget, which is how a custom builder styles
+///    the widget it returns.
+/// 2. The nearest [KalenderTheme] above the calendar.
+/// 3. A [KalenderThemeData] registered as a [ThemeExtension] on the app's [ThemeData].
+/// 4. Material 3 defaults derived from the ambient [Theme], see [KalenderThemeData.defaults].
 ///
 /// To theme every calendar in the app:
 ///

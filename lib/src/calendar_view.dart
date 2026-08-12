@@ -23,10 +23,8 @@ class CalendarView extends StatefulWidget {
   /// - [MonthComponents]
   /// - [ScheduleComponents]
   ///
-  /// Styles:
-  /// - [MultiDayComponentStyles]
-  /// - [MonthComponentStyles],
-  /// - [ScheduleComponentStyles]
+  /// Styles live on [KalenderThemeData] rather than here. Register one on
+  /// [ThemeData.extensions], or wrap a calendar in a [KalenderTheme] to scope it.
   final CalendarComponents? components;
 
   /// The header widget that will be displayed above the body.

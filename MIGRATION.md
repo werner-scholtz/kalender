@@ -48,6 +48,29 @@ CalendarView(
 )
 ```
 
+### Custom component builders receive a resolved style
+
+Nothing to change unless a builder falls back on the style argument being null.
+
+A builder used to be handed whatever the deprecated container carried, which was an empty style unless the app had set one. It is now handed the style resolved from the theme, so the fallback below never runs:
+
+```dart
+- weekNumberBuilder: (range, style) => MyWeekNumber(textStyle: style?.textStyle ?? myBoldStyle)
++ weekNumberBuilder: (range, style) => MyWeekNumber(textStyle: myBoldStyle)
+```
+
+Override the fields you want rather than falling back on null, or merge your own over what you are given:
+
+```dart
+weekNumberBuilder: (range, style) => MyWeekNumber(
+  textStyle: myBoldStyle.merge(style?.textStyle),
+)
+```
+
+This applies to `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`, and to the `OverlayStyles` a `MultiDayOverlayPortalBuilder` receives.
+
+`HourLines.fromContext` loses its `style` argument in the same pass. It resolved the style from the theme and discarded whatever was passed, so it silently did nothing. Delete the argument.
+
 ### The month week number's alignment moves to the theme
 
 Nothing to change unless you set `KalenderThemeData.weekNumberStyle.alignment`. That had no effect in the month view before and now applies, so the month week number may move. It still sits at the top when the theme sets no alignment.

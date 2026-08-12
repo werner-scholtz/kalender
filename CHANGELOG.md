@@ -13,10 +13,11 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 
 - `EventSnapStrategy.none()` leaves a dragged event where the cursor is, without needing a hand-written strategy.
 - `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in, through the `eventComparator` the strategy itself does not expose.
-- A custom builder receives the theme-resolved style rather than an empty one. Previously a builder was handed whatever the deprecated container carried, which was an empty style unless the app had set one, so a custom builder had no way to see the theme. `OverlayStyles.fromContext` resolves the overlay pair for `MultiDayOverlayPortalBuilder`, which takes no `BuildContext` of its own.
 
 ### Fixes
 
+- The week number label is centred when the visible range crosses a week boundary. The gutter is sized by the timeline rather than by the label, so `32 - 33` wraps, and the short second line sat against the leading edge. [#427](https://github.com/werner-scholtz/kalender/pull/427)
+- `HourLines.fromContext` no longer takes a `style` argument. It resolved the style from the theme and discarded whatever was passed, so the argument silently did nothing. `timelineStyle` is unaffected.
 - `MultiDayBodyConfiguration.keepPagesAlive` takes part in `==` and `hashCode`. It is declared on that class rather than the `VerticalConfiguration` base, and the inherited equality did not reach it, so changing only that value did not reach the calendar.
 - `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` no longer compare equal to each other. Both extend `HorizontalConfiguration` and add no equality of their own, and its `==` tested only `other is HorizontalConfiguration` with no runtime type check. The same applied to `VerticalConfiguration`.
 - `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it already took part in `==`. Unequal objects may share a hash, so nothing was broken, but the other two configurations include it.
@@ -27,6 +28,8 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 
 ### Behavior Changes
 
+- A custom component builder is handed the theme-resolved style rather than an empty one. A builder previously received whatever the deprecated container carried, which was an empty style unless the app had set one, so `style?.textStyle ?? myFallback` reached `myFallback`. The same argument now arrives populated from the theme, so a builder written that way renders with the theme value instead of its own fallback. Read the fields you want to override rather than falling back on null. This affects `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
+- `MultiDayOverlayPortalBuilder` receives a populated `OverlayStyles` for the same reason, built by the new `OverlayStyles.fromContext`. That typedef takes no `BuildContext`, so it cannot resolve the theme itself.
 - `KalenderThemeData.weekNumberStyle.alignment` now reaches the month week number. It had no effect there, because the month body passed its own top alignment to the widget and a passed style wins over the theme, so the only way to change it was the deprecated `CalendarComponents` style path. The month still sits at the top when nothing asks otherwise. A calendar that set this on the theme and relied on the month ignoring it will see the month week number move. [#423](https://github.com/werner-scholtz/kalender/pull/423)
 - A custom `weekNumberBuilder` receives the same fully resolved style in the month header as in the month body. The header's spacer passed the style through unresolved, so the two disagreed. [#423](https://github.com/werner-scholtz/kalender/pull/423)
 
