@@ -68,6 +68,24 @@ class Event extends CalendarEvent {
 > [!NOTE]
 > If you don't override `==` and `hashCode`, the calendar cannot detect changes to your custom fields and tiles will not update when those values change (e.g. via `eventsController.updateEvent(...)`). Always override both whenever you add fields to your `CalendarEvent` subclass.
 
+### The copy contract
+
+The calendar copies an event whenever it is dragged or resized. It calls `withDateTimeRange`, which you do not override:
+
+<!-- snippet: statements -->
+```dart
+final event = eventsController.byId(someId)! as Event;
+final moved = event.withDateTimeRange(
+  DateTimeRange(start: DateTime.utc(2025, 8, 12, 9), end: DateTime.utc(2025, 8, 12, 10)),
+) as Event;
+```
+
+`withDateTimeRange` calls `copyWithData`, your hook, and then puts back the state `CalendarEvent` itself holds: the `id`, the `interaction` config and the `multiDayRule`. That is why `copyWithData` lists only the fields your subclass adds. A field added to `CalendarEvent` in a later release reaches your subclass without you changing anything.
+
+Two things report a missing hook. `copyWithData` is annotated `@mustBeOverridden`, so the analyzer flags a subclass without one before you run anything, and a debug assert names the type on the first drag if the warning is ignored.
+
+`carryOver` is the part that restores the base state. Call it from a copy method of your own so those copies keep their identity too, as the example above does.
+
 ### Updating events
 
 Use `eventsController.updateEvent()` to replace an existing event with an updated copy:
