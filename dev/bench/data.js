@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1786464149585,
+  "lastUpdate": 1786511762110,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -9619,6 +9619,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 1674.6784107946028,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner.scholtz.mail@gmail.com",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "40aa99a8085909f5a9590a1ca6773b759b3a7569",
+          "message": "Merge pull request #430 from werner-scholtz/fix/review-followups\n\nfix: the review findings on the style removal",
+          "timestamp": "2026-08-12T06:59:13+02:00",
+          "tree_id": "48fe9b7a145d662b7ef618e5da2803bfccf7b0f7",
+          "url": "https://github.com/werner-scholtz/kalender/commit/40aa99a8085909f5a9590a1ca6773b759b3a7569"
+        },
+        "date": 1786511756696,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 124.19577043383653,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 517,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 1411.825,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 5559.31043956044,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 279.1869158878505,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 864.195,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 1004.6565,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 5027.8025,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 151.99146580555876,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 32.82340794148015,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 226.2894095812551,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 981.10275,
             "unit": "us"
           }
         ]
