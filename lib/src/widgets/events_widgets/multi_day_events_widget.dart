@@ -39,7 +39,6 @@ class MultiDayEventWidget extends StatefulWidget {
   final OverlayBuilders? overlayBuilders;
 
   /// The styles used for overlay widgets for multi-day events.
-  final OverlayStyles? overlayStyles;
 
   /// Creates a new [MultiDayEventWidget].
   const MultiDayEventWidget({
@@ -50,7 +49,6 @@ class MultiDayEventWidget extends StatefulWidget {
     required this.maxNumberOfVerticalEvents,
     required this.multiDayCache,
     required this.overlayBuilders,
-    required this.overlayStyles,
   });
 
   @override
@@ -135,7 +133,6 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
       maxNumberOfVerticalEvents: widget.maxNumberOfVerticalEvents,
       multiDayCache: widget.multiDayCache,
       multiDayOverlayBuilders: widget.overlayBuilders,
-      multiDayOverlayStyles: widget.overlayStyles,
       location: context.location,
     );
   }
@@ -174,7 +171,6 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
   final OverlayBuilders? multiDayOverlayBuilders;
 
   /// The styles used for overlay widgets for multi-day events.
-  final OverlayStyles? multiDayOverlayStyles;
 
   final Location? location;
 
@@ -186,7 +182,6 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
     required this.maxNumberOfVerticalEvents,
     required this.multiDayCache,
     required this.multiDayOverlayBuilders,
-    required this.multiDayOverlayStyles,
     required this.location,
     super.key,
   });
@@ -381,7 +376,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
                     getMultiDayEventLayoutRenderBox: getRenderBox,
                     overlayTileBuilder: _overlayEventTileBuilder,
                     overlayBuilders: widget.multiDayOverlayBuilders,
-                    overlayStyles: widget.multiDayOverlayStyles,
+                    overlayStyles: OverlayStyles.fromContext(context),
                   ) ??
                   MultiDayOverlayPortal(
                     key: MultiDayOverlayPortal.getKey(date),
@@ -391,7 +386,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
                     tileHeight: widget.configuration.tileHeight,
                     getMultiDayEventLayoutRenderBox: getRenderBox,
                     overlayBuilders: widget.multiDayOverlayBuilders,
-                    overlayStyles: widget.multiDayOverlayStyles,
                     overlayTileBuilder: _overlayEventTileBuilder,
                   );
 
