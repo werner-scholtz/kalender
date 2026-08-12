@@ -18,6 +18,7 @@ class Event extends CalendarEvent {
     this.color,
     super.interaction,
     super.multiDayRule,
+    super.isAllDay,
   });
 
   final String title;
