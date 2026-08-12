@@ -25,21 +25,18 @@ class Event extends CalendarEvent {
   final Color? color;
 
   @override
-  Event copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-    String? title,
-    String? description,
-    Color? color,
-  }) {
-    return Event(
-      id: id,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-      interaction: interaction ?? this.interaction,
-      multiDayRule: multiDayRule,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      color: color ?? this.color,
+  Event copyWithData({required DateTimeRange dateTimeRange}) {
+    return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
+  }
+
+  Event copyWith({DateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+    return carryOver(
+      Event(
+        dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        color: color ?? this.color,
+      ),
     );
   }
 

@@ -38,20 +38,8 @@ class Event extends CalendarEvent {
   }
 
   @override
-  Event copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-    Person? person,
-    String? title,
-  }) {
-    return Event(
-      id: id,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-      interaction: interaction ?? this.interaction,
-      multiDayRule: multiDayRule,
-      title: title ?? this.title,
-      person: person ?? this.person,
-    );
+  Event copyWithData({required DateTimeRange dateTimeRange}) {
+    return Event(dateTimeRange: dateTimeRange, title: title, person: person);
   }
 
   @override

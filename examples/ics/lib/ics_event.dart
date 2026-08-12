@@ -22,23 +22,13 @@ class IcsEvent extends CalendarEvent {
   final Color color;
 
   @override
-  IcsEvent copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-    String? uid,
-    String? title,
-    String? description,
-    Color? color,
-  }) {
+  IcsEvent copyWithData({required DateTimeRange dateTimeRange}) {
     return IcsEvent(
-      id: id,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-      interaction: interaction ?? this.interaction,
-      multiDayRule: multiDayRule,
-      uid: uid ?? this.uid,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      color: color ?? this.color,
+      dateTimeRange: dateTimeRange,
+      uid: uid,
+      title: title,
+      description: description,
+      color: color,
     );
   }
 

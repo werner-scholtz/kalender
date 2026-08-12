@@ -27,23 +27,24 @@ class Event extends CalendarEvent {
     super.multiDayRule,
   });
 
+  // Rebuilds the fields this class adds. The calendar calls this on every drag
+  // and resize, then restores id, interaction and multiDayRule itself, so none
+  // of those are listed here.
   @override
-  Event copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-    String? title,
-    String? description,
-    Color? color,
-  }) {
-    return Event(
-      id: id,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-      interaction: interaction ?? this.interaction,
-      // copyWith has no multiDayRule parameter. Forward it so copies keep the rule.
-      multiDayRule: multiDayRule,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      color: color ?? this.color,
+  Event copyWithData({required DateTimeRange dateTimeRange}) {
+    return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
+  }
+
+  // A copy method of your own. It is not an override, so it takes whatever
+  // parameters suit you. carryOver keeps the copy's identity and rule.
+  Event copyWith({DateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+    return carryOver(
+      Event(
+        dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        color: color ?? this.color,
+      ),
     );
   }
 
@@ -135,7 +136,7 @@ CalendarEvent(
 )
 ```
 
-`CalendarEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. `copyWith` has no `multiDayRule` parameter. A subclass forwards the rule instead: accept `super.multiDayRule` in the constructor and pass `multiDayRule: multiDayRule` when `copyWith` rebuilds, as the [Custom Events](#custom-events) example does. Without that, every drag or resize produces a copy without the rule.
+`CalendarEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. You never forward it by hand: `copyWithData` rebuilds only the fields your subclass adds, and `CalendarEvent` reapplies the rule, the id and the interaction config afterwards. Accept `super.multiDayRule` in the constructor so an event can be given one.
 
 `spansMultipleDays` returns whether an event counts as multi-day, applying the same rules the calendar does:
 

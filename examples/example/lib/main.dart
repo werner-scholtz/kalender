@@ -49,21 +49,11 @@ class Event extends CalendarEvent {
   final String title;
   final Color? color;
 
+  // Rebuilds only what this class adds. The id, the interaction config and the
+  // rule are restored by CalendarEvent afterwards.
   @override
-  Event copyWith({
-    DateTimeRange? dateTimeRange,
-    EventInteraction? interaction,
-    String? title,
-    Color? color,
-  }) {
-    return Event(
-      id: id,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-      interaction: interaction ?? this.interaction,
-      multiDayRule: multiDayRule,
-      title: title ?? this.title,
-      color: color ?? this.color,
-    );
+  Event copyWithData({required DateTimeRange dateTimeRange}) {
+    return Event(dateTimeRange: dateTimeRange, title: title, color: color);
   }
 
   @override

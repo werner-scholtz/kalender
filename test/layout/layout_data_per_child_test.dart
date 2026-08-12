@@ -86,6 +86,11 @@ class _ConstantHashEvent extends CalendarEvent {
         );
 
   @override
+  _ConstantHashEvent copyWithData({required DateTimeRange dateTimeRange}) {
+    return _ConstantHashEvent(hour: dateTimeRange.start.toUtc().hour);
+  }
+
+  @override
   int get hashCode => 0;
 
   @override

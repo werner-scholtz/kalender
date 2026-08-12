@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/checked_copy.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
@@ -210,7 +209,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
       _ => null
     };
     if (range == null) return null;
-    return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(range));
+    return event.withDateTimeRange(toLocationDateTimeRange(range));
   }
 
   @override
@@ -227,6 +226,6 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
       range = InternalDateTimeRange(start: cursor, end: range.start.endOfDay);
     }
 
-    return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(range));
+    return event.withDateTimeRange(toLocationDateTimeRange(range));
   }
 }

@@ -75,35 +75,35 @@ void main() {
     });
   });
 
-  // ─── copyWith ──────────────────────────────────────────────────────────────
+  // ─── withDateTimeRange ─────────────────────────────────────────────────────
 
-  group('copyWith', () {
+  group('withDateTimeRange', () {
     final original = eventUtc(DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 15, 10), id: 'original');
 
     test('preserves the id so selection/layout lookups stay stable', () {
-      final copy = original.copyWith(
-        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 2, 1, 8), end: DateTime.utc(2024, 2, 1, 9)),
+      final copy = original.withDateTimeRange(
+        DateTimeRange(start: DateTime.utc(2024, 2, 1, 8), end: DateTime.utc(2024, 2, 1, 9)),
       );
       expect(copy.id, equals('original'));
     });
 
-    test('replaces the dateTimeRange when provided', () {
+    test('replaces the dateTimeRange', () {
       final newRange = DateTimeRange(start: DateTime.utc(2024, 2, 1, 8), end: DateTime.utc(2024, 2, 1, 9));
-      final copy = original.copyWith(dateTimeRange: newRange);
+      final copy = original.withDateTimeRange(newRange);
       expect(copy.start, equals(newRange.start));
       expect(copy.end, equals(newRange.end));
     });
 
-    test('replaces the interaction when provided', () {
-      final copy = original.copyWith(interaction: EventInteraction.fromCanModify(false));
+    test('keeps the interaction, which it takes no parameter for', () {
+      final locked = eventUtc(
+        DateTime.utc(2024, 1, 15, 9),
+        DateTime.utc(2024, 1, 15, 10),
+        interaction: EventInteraction.fromCanModify(false),
+      );
+      final copy = locked.withDateTimeRange(
+        DateTimeRange(start: DateTime.utc(2024, 2, 1, 8), end: DateTime.utc(2024, 2, 1, 9)),
+      );
       expect(copy.interaction, equals(EventInteraction.fromCanModify(false)));
-    });
-
-    test('keeps the original range and interaction when no args are given', () {
-      final copy = original.copyWith();
-      expect(copy.start, equals(original.start));
-      expect(copy.end, equals(original.end));
-      expect(copy.interaction, equals(original.interaction));
     });
   });
 
@@ -347,31 +347,29 @@ void main() {
     });
 
     test('copyWith carries the rule, and takes no parameter for it', () {
-      // A parameter here would invalidate every subclass override of copyWith,
-      // which is the documented way to attach data to an event.
+      // carryOver reapplies it, so a subclass never forwards it by hand.
       final event = CalendarEvent(
         dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
         multiDayRule: const MultiDayRule.calendarDays(),
       );
-      expect(event.copyWith().multiDayRule, const MultiDayRule.calendarDays());
       expect(
-        event.copyWith(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2))),
+        event.withDateTimeRange(DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2))),
         isA<CalendarEvent>().having((e) => e.multiDayRule, 'multiDayRule', const MultiDayRule.calendarDays()),
       );
     });
 
-    test('a subclass keeps the rule when its copyWith forwards it', () {
-      // The pattern the Custom Events guide documents. Dropping `multiDayRule`
-      // from the rebuild loses the rule on the first drag or resize.
+    test('a subclass keeps the rule without mentioning it', () {
+      // The pattern the Custom Events guide documents. copyWithData rebuilds
+      // only the title, and carryOver puts the rule back.
       final event = _DataEvent(
         dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
         title: 'Night shift',
         multiDayRule: const MultiDayRule.calendarDays(),
       );
 
-      final moved = event.copyWith(
-        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2)),
-      );
+      final moved = event.withDateTimeRange(
+        DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2)),
+      ) as _DataEvent;
       expect(moved.multiDayRule, const MultiDayRule.calendarDays());
       expect(moved.title, 'Night shift');
     });
@@ -407,12 +405,16 @@ void main() {
 /// Fixes the rule for a whole app in one place, the way a real subclass would.
 class _CalendarDayEvent extends CalendarEvent {
   _CalendarDayEvent({required super.dateTimeRange}) : super(multiDayRule: const MultiDayRule.calendarDays());
+
+  @override
+  _CalendarDayEvent copyWithData({required DateTimeRange dateTimeRange}) {
+    return _CalendarDayEvent(dateTimeRange: dateTimeRange);
+  }
 }
 
 /// Attaches data the way the Custom Events guide shows, forwarding the rule.
 class _DataEvent extends CalendarEvent {
   _DataEvent({
-    super.id,
     required super.dateTimeRange,
     required this.title,
     super.multiDayRule,
@@ -421,19 +423,19 @@ class _DataEvent extends CalendarEvent {
   final String title;
 
   @override
-  _DataEvent copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, String? title}) {
-    return _DataEvent(
-      id: id,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-      multiDayRule: multiDayRule,
-      title: title ?? this.title,
-    );
+  _DataEvent copyWithData({required DateTimeRange dateTimeRange}) {
+    return _DataEvent(dateTimeRange: dateTimeRange, title: title);
   }
 }
 
 /// Replaces the rule entirely with a strict "more than one calendar day".
 class _StrictMultiDayEvent extends CalendarEvent {
   _StrictMultiDayEvent({required super.dateTimeRange});
+
+  @override
+  _StrictMultiDayEvent copyWithData({required DateTimeRange dateTimeRange}) {
+    return _StrictMultiDayEvent(dateTimeRange: dateTimeRange);
+  }
 
   @override
   bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) {
