@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/gutter_styles.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
@@ -64,7 +65,10 @@ class MultiDayBody extends StatelessWidget {
     // The single source of truth for the timeline gutter width, shared with the
     // header and drag overlay so their day columns stay aligned.
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    final timelineStyle = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
+    final sharedStyle = GutterStyles.of(context).timelineStyle;
+    final scopedStyle = KalenderTheme.of(context).timelineStyle;
+    assert(debugCheckGutterStyleReaches(field: 'timelineStyle', shared: sharedStyle, scoped: scopedStyle));
+    final timelineStyle = sharedStyle ?? const TimelineStyle();
     final timelineWidth = bodyComponents.timelineWidth(context, timeOfDayRange, timelineStyle);
 
     return Stack(

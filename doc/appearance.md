@@ -290,6 +290,14 @@ it leaves null.
 3. The `KalenderThemeData` registered on `ThemeData.extensions`.
 4. The Material 3 defaults.
 
+> [!NOTE]
+> `weekNumberStyle` and `timelineStyle` are the exception to layer 2. They decide
+> how wide the calendar's gutters are, and each gutter is drawn in the body and
+> reserved again in the header so their day columns line up. The calendar
+> measures them once above both, so a `KalenderTheme` inside only the header or
+> only the body cannot change them. Set them above the `CalendarView` instead. A
+> scoped value the calendar has to ignore is reported in debug builds.
+
 Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `lerp`, switching themes transitions the calendar's colors along with the rest of the app. A `KalenderTheme` scope does not animate on its own, since it is a plain widget rather than part of `ThemeData`.
 
 ### The overflow overlay

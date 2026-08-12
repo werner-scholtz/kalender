@@ -2,6 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
+/// The Material defaults for a [ThemeData], built once.
+///
+/// [KalenderThemeData.defaults] constructs thirteen style objects, and the
+/// calendar resolves the theme on nearly every widget build. An [Expando] holds
+/// its keys weakly, so an entry is collected with the theme it belongs to.
+final _defaultsCache = Expando<KalenderThemeData>('kalender defaults');
+
+/// The defaults merged with the [ThemeExtension] registered on the same
+/// [ThemeData]. Both inputs come from the theme, so one entry serves every
+/// lookup that finds no scoped [KalenderTheme].
+final _extendedCache = Expando<KalenderThemeData>('kalender defaults + extension');
+
 /// The calendar's visual theme, following the same layering as Flutter's own component themes.
 ///
 /// Styling is resolved in four layers, most specific first. Each fills in the
@@ -91,8 +103,15 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   /// - text styles that intentionally inherit from [DefaultTextStyle].
   /// - [WeekNumberStyle.alignment], so a widget can tell an alignment nobody
   ///   set from one set to centre. Each week number falls back on its own.
-  static KalenderThemeData defaults(BuildContext context) {
-    final theme = Theme.of(context);
+  static KalenderThemeData defaults(BuildContext context) => _defaultsFor(Theme.of(context));
+
+  static KalenderThemeData _defaultsFor(ThemeData theme) {
+    final cached = _defaultsCache[theme];
+    if (cached != null) return cached;
+    return _defaultsCache[theme] = _buildDefaults(theme);
+  }
+
+  static KalenderThemeData _buildDefaults(ThemeData theme) {
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
 
@@ -364,10 +383,14 @@ class KalenderTheme extends InheritedTheme {
   ///
   /// A style passed directly to a widget still takes precedence over all three.
   static KalenderThemeData of(BuildContext context) {
-    final defaults = KalenderThemeData.defaults(context);
-    final extension = Theme.of(context).extension<KalenderThemeData>();
+    final theme = Theme.of(context);
+    var base = _extendedCache[theme];
+    if (base == null) {
+      base = KalenderThemeData._defaultsFor(theme).merge(theme.extension<KalenderThemeData>());
+      _extendedCache[theme] = base;
+    }
     final inherited = context.dependOnInheritedWidgetOfExactType<KalenderTheme>()?.data;
-    return defaults.merge(extension).merge(inherited);
+    return base.merge(inherited);
   }
 
   @override

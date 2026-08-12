@@ -380,7 +380,9 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             final leadingWidth = widget.configuration.leadingWidth;
             Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
 
-            final theme = KalenderTheme.of(context);
+            // A MonthItem row reads neither of the two below, so resolve the
+            // theme only once a row that needs it asks.
+            late final theme = KalenderTheme.of(context);
             late final leading =
                 components.leadingDateBuilder.call(InternalDateTime.fromDateTime(date), theme.scheduleDateStyle);
             late final highlightStyle = theme.scheduleTileHighlightStyle;
