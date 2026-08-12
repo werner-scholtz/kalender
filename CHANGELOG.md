@@ -1,3 +1,9 @@
+## 0.27.0
+
+### Deprecations
+
+- `TimeOfDayRange.isAllDay` is renamed to `coversWholeDay` and will be removed in 0.28.0. It reports whether the range runs from 00:00 to 23:59, which is about the hours the body lays out rather than about an event, and the old name is wanted for `CalendarEvent.isAllDay`. `TimeOfDayRange.allDay()` is unchanged.
+
 ## 0.26.0
 
 See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.

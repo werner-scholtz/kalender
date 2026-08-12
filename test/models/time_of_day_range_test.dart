@@ -17,6 +17,16 @@ void main() {
       test('duration', () {
         expect(timeOfDayRange.duration, const Duration(hours: 2, minutes: 11));
       });
+
+      test('coversWholeDay', () {
+        expect(timeOfDayRange.coversWholeDay, isFalse);
+        expect(TimeOfDayRange.allDay().coversWholeDay, isTrue);
+        expect(
+          TimeOfDayRange(start: const TimeOfDay(hour: 0, minute: 0), end: const TimeOfDay(hour: 23, minute: 0))
+              .coversWholeDay,
+          isFalse,
+        );
+      });
     });
 
     group('Constructors', () {
