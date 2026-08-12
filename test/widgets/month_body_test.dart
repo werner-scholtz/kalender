@@ -404,41 +404,21 @@ void main() {
     });
 
     // ---------------------------------------------------------------------------
-    // #235: a custom generateMultiDayLayoutFrame supplied to MonthBodyConfiguration
+    // #235: a custom multi-day layout strategy supplied to MonthBodyConfiguration
     // ---------------------------------------------------------------------------
-    // Supplying a custom generateMultiDayLayoutFrame to MonthBodyConfiguration used
-    // to throw a `_TypeError` at build time because the generator carried a `<T>`
-    // type parameter that no longer matched the (now non-generic) typedef:
+    // Supplying a custom frame generator to MonthBodyConfiguration used to throw a
+    // `_TypeError` at build time because the generator carried a `<T>` type
+    // parameter that no longer matched the (now non-generic) frame type:
     //
     //   type '(... => MultiDayLayoutFrame<Todo>)' is not a subtype of type
     //   '(... => MultiDayLayoutFrame<Object?>)?'
     //
     // The generics were removed in 0.16.0, so the crash is structurally impossible.
-    // These tests lock that in at the exact layer the reporter hit — a custom
-    // generator wired through MonthBodyConfiguration in a full CalendarView month
-    // view. The explicit closure signature (matching the current typedef) is itself
-    // the regression guard: a return to a generic typedef would fail to compile.
-    group('custom generateMultiDayLayoutFrame (#235)', () {
-      late bool invoked;
-
-      // A generator with the exact signature of the current typedef, delegating to
-      // the real default implementation.
-      MultiDayLayoutFrame customFrame({
-        required InternalDateTimeRange visibleDateTimeRange,
-        required List<CalendarEvent> events,
-        required TextDirection textDirection,
-        required Location? location,
-        MultiDayLayoutFrameCache? cache,
-      }) {
-        invoked = true;
-        return defaultMultiDayFrameGenerator(
-          visibleDateTimeRange: visibleDateTimeRange,
-          events: events,
-          textDirection: textDirection,
-          location: location,
-          cache: cache,
-        );
-      }
+    // These tests lock that in at the exact layer the reporter hit: a custom
+    // strategy wired through MonthBodyConfiguration in a full CalendarView month
+    // view.
+    group('custom multiDayLayoutStrategy (#235)', () {
+      late _RecordingStrategy strategy;
 
       Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
             tester,
@@ -450,12 +430,12 @@ void main() {
                 initialDateTime: initialDateTime,
               ),
               body: CalendarBody(
-                monthBodyConfiguration: MonthBodyConfiguration(generateMultiDayLayoutFrame: customFrame),
+                monthBodyConfiguration: MonthBodyConfiguration(multiDayLayoutStrategy: strategy),
               ),
             ),
           );
 
-      setUp(() => invoked = false);
+      setUp(() => strategy = _RecordingStrategy());
 
       testWidgets('renders month view without error and is invoked', (tester) async {
         final event = CalendarEvent(
@@ -472,7 +452,7 @@ void main() {
         expect(tester.takeException(), isNull);
         // The custom generator was actually used, and its frame was consumed to
         // render the event tile.
-        expect(invoked, isTrue, reason: 'custom generateMultiDayLayoutFrame should be called');
+        expect(strategy.invoked, isTrue, reason: 'the custom strategy should be called');
         expect(find.byType(MonthBody), findsOneWidget);
         // Month events render as MultiDayEventTile (keyed 'MultiDayEventTile-<id>').
         expect(find.byKey(Key('MultiDayEventTile-${event.id}')), findsOneWidget);
@@ -484,9 +464,32 @@ void main() {
         await pumpWithCustomFrame(tester, DateTime(2025, 1));
 
         expect(tester.takeException(), isNull);
-        expect(invoked, isTrue, reason: 'custom generateMultiDayLayoutFrame should be called');
+        expect(strategy.invoked, isTrue, reason: 'the custom strategy should be called');
         expect(find.byType(MonthBody), findsOneWidget);
       });
     });
   });
+}
+
+/// Delegates to the built-in row assignment and records that it ran.
+class _RecordingStrategy extends MultiDayLayoutStrategy {
+  bool invoked = false;
+
+  @override
+  MultiDayLayoutFrame generateFrame({
+    required InternalDateTimeRange visibleDateTimeRange,
+    required List<CalendarEvent> events,
+    required TextDirection textDirection,
+    required Location? location,
+    required MultiDayLayoutFrameCache? cache,
+  }) {
+    invoked = true;
+    return defaultMultiDayFrameGenerator(
+      visibleDateTimeRange: visibleDateTimeRange,
+      events: events,
+      textDirection: textDirection,
+      location: location,
+      cache: cache,
+    );
+  }
 }

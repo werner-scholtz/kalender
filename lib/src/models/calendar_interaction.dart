@@ -1,27 +1,85 @@
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/platform.dart';
 
-/// The [EventSnapStrategy] typedef defines a function that snaps events to specific intervals.
-///
-/// This function takes a [cursorDate] and a [startOfDay] date, and returns a new date that is snapped
-/// based on the defined strategy.
-typedef EventSnapStrategy = InternalDateTime Function(
-  InternalDateTime cursorDate,
-  InternalDateTime startOfDay,
-  int snapIntervalMinutes,
-);
+/// The strategy a calendar uses when nothing overrides it.
+const defaultSnapStrategy = EventSnapStrategy.interval();
 
-/// The default snap strategy used to snap events to a the [snapIntervalMinutes].
-InternalDateTime defaultSnapStrategy(
-  InternalDateTime cursorDate,
-  InternalDateTime startOfDay,
-  int snapIntervalMinutes,
-) {
-  final minutes = cursorDate.difference(startOfDay).inMinutes;
-  final numberOfIntervals = (minutes / snapIntervalMinutes).round();
-  final snappedMinutes = numberOfIntervals * snapIntervalMinutes;
-  final snappedDate = startOfDay.add(Duration(minutes: snappedMinutes));
-  return snappedDate;
+/// Decides where a dragged event lands, given the position of the cursor.
+///
+/// Set it on [CalendarSnapping.eventSnapStrategy]:
+///
+/// ```dart
+/// CalendarSnapping(
+///   eventSnapStrategy: const EventSnapStrategy.none(),
+/// )
+/// ```
+///
+/// This is a class rather than a function so that it has value equality.
+/// [CalendarSnapping] is compared with `==` to decide whether the calendar needs
+/// to rebuild, and a function field would defeat that.
+abstract class EventSnapStrategy {
+  const EventSnapStrategy();
+
+  /// Snaps to the nearest multiple of [CalendarSnapping.snapIntervalMinutes]
+  /// measured from the start of the day. The default.
+  const factory EventSnapStrategy.interval() = IntervalSnapStrategy;
+
+  /// Leaves the cursor position alone.
+  const factory EventSnapStrategy.none() = NoSnapStrategy;
+
+  /// The time the event snaps to.
+  ///
+  /// [cursorDate] is where the cursor sits, [startOfDay] is the start of the day
+  /// it sits in, and [snapIntervalMinutes] comes from
+  /// [CalendarSnapping.snapIntervalMinutes].
+  InternalDateTime snap({
+    required InternalDateTime cursorDate,
+    required InternalDateTime startOfDay,
+    required int snapIntervalMinutes,
+  });
+}
+
+/// Snaps to the nearest multiple of the snap interval.
+class IntervalSnapStrategy extends EventSnapStrategy {
+  const IntervalSnapStrategy();
+
+  @override
+  InternalDateTime snap({
+    required InternalDateTime cursorDate,
+    required InternalDateTime startOfDay,
+    required int snapIntervalMinutes,
+  }) {
+    final minutes = cursorDate.difference(startOfDay).inMinutes;
+    final numberOfIntervals = (minutes / snapIntervalMinutes).round();
+    final snappedMinutes = numberOfIntervals * snapIntervalMinutes;
+    return startOfDay.add(Duration(minutes: snappedMinutes));
+  }
+
+  @override
+  bool operator ==(Object other) => other is IntervalSnapStrategy;
+
+  @override
+  int get hashCode => (IntervalSnapStrategy).hashCode;
+}
+
+/// Returns the cursor position unchanged.
+class NoSnapStrategy extends EventSnapStrategy {
+  const NoSnapStrategy();
+
+  @override
+  InternalDateTime snap({
+    required InternalDateTime cursorDate,
+    required InternalDateTime startOfDay,
+    required int snapIntervalMinutes,
+  }) {
+    return cursorDate;
+  }
+
+  @override
+  bool operator ==(Object other) => other is NoSnapStrategy;
+
+  @override
+  int get hashCode => (NoSnapStrategy).hashCode;
 }
 
 /// The [InputMode] defines the type of input the calendar should optimize for.
@@ -311,11 +369,6 @@ class CalendarSnapping {
   /// The strategy used to snap events to specific intervals.
   ///
   /// This strategy is only used by the multi-day body.
-  ///
-  /// Takes part in `==`, so pass the same function on every build: a top-level
-  /// or static function, or a closure stored in a field. A closure written
-  /// inline is a new function every build, which makes each rebuild look like a
-  /// change.
   final EventSnapStrategy eventSnapStrategy;
 
   /// Creates a new [CalendarSnapping] instance with the specified settings.

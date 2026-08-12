@@ -400,21 +400,7 @@ void main() {
           configuration: MultiDayHeaderConfiguration(
             maximumNumberOfVerticalEvents: 3,
             tileHeight: 50.0,
-            generateMultiDayLayoutFrame: ({
-              required events,
-              required textDirection,
-              required visibleDateTimeRange,
-              required location,
-              cache,
-            }) =>
-                defaultMultiDayFrameGenerator(
-              visibleDateTimeRange: visibleDateTimeRange,
-              events: events,
-              textDirection: textDirection,
-              cache: cache,
-              location: location,
-              eventComparator: startTimeComparator,
-            ),
+            multiDayLayoutStrategy: _ComparatorStrategy(startTimeComparator),
             eventPadding: const EdgeInsets.all(0),
           ),
         ),
@@ -481,21 +467,7 @@ void main() {
           configuration: MultiDayHeaderConfiguration(
             tileHeight: 50.0,
             maximumNumberOfVerticalEvents: 3,
-            generateMultiDayLayoutFrame: ({
-              required events,
-              required textDirection,
-              required visibleDateTimeRange,
-              required location,
-              cache,
-            }) =>
-                defaultMultiDayFrameGenerator(
-              visibleDateTimeRange: visibleDateTimeRange,
-              events: events,
-              textDirection: textDirection,
-              eventComparator: endTimeComparator,
-              cache: cache,
-              location: location,
-            ),
+            multiDayLayoutStrategy: _ComparatorStrategy(endTimeComparator),
             eventPadding: const EdgeInsets.all(0),
           ),
         ),
@@ -529,4 +501,36 @@ void main() {
       ]);
     });
   });
+}
+
+/// Keeps the built-in row assignment but orders the events with [comparator],
+/// which [MultiDayLayoutStrategy] itself does not expose.
+class _ComparatorStrategy extends MultiDayLayoutStrategy {
+  const _ComparatorStrategy(this.comparator);
+
+  final int Function(CalendarEvent, CalendarEvent) comparator;
+
+  @override
+  MultiDayLayoutFrame generateFrame({
+    required InternalDateTimeRange visibleDateTimeRange,
+    required List<CalendarEvent> events,
+    required TextDirection textDirection,
+    required Location? location,
+    required MultiDayLayoutFrameCache? cache,
+  }) {
+    return defaultMultiDayFrameGenerator(
+      visibleDateTimeRange: visibleDateTimeRange,
+      events: events,
+      textDirection: textDirection,
+      cache: cache,
+      location: location,
+      eventComparator: comparator,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) => other is _ComparatorStrategy && other.comparator == comparator;
+
+  @override
+  int get hashCode => comparator.hashCode;
 }

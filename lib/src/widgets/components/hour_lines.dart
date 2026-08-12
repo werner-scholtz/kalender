@@ -140,7 +140,6 @@ class HourLines extends StatelessWidget with TimeLineUtils {
   static Widget fromContext(
     BuildContext context,
     TimeOfDayRange timeOfDayRange, {
-    HourLinesStyle? style,
     TimelineStyle? timelineStyle,
   }) {
     final hourLinesStyle = KalenderTheme.of(context).hourLinesStyle;

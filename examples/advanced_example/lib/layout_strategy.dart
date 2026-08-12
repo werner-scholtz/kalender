@@ -1,6 +1,47 @@
 import 'package:advanced_example/main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+
+/// Groups the events of a day by person.
+///
+/// Value equality keeps the body configuration comparable, so a rebuild with the
+/// same people does not read as a change.
+class PeopleLayoutStrategy extends EventLayoutStrategy {
+  /// The people to group the events by.
+  final List<Person> people;
+
+  const PeopleLayoutStrategy(this.people);
+
+  @override
+  EventLayoutDelegate createDelegate({
+    required Iterable<CalendarEvent> events,
+    required InternalDateTime date,
+    required TimeOfDayRange timeOfDayRange,
+    required double heightPerMinute,
+    required double? minimumTileHeight,
+    required EventLayoutDelegateCache? cache,
+    required Location? location,
+  }) {
+    return CustomSideBySideLayoutDelegate(
+      events: events,
+      heightPerMinute: heightPerMinute,
+      date: date,
+      timeOfDayRange: timeOfDayRange,
+      minimumTileHeight: minimumTileHeight,
+      layoutCache: cache ?? EventLayoutDelegateCache(),
+      people: people,
+      location: location,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is PeopleLayoutStrategy && listEquals(other.people, people);
+
+  @override
+  int get hashCode => Object.hashAll(people);
+}
 
 class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
   /// A List of people to group the events by.

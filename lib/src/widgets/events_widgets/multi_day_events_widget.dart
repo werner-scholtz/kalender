@@ -205,9 +205,8 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
 
-  /// The function that generates the layout frame for the events.
-  GenerateMultiDayLayoutFrame get generateMultiDayLayoutFrame =>
-      widget.configuration.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator;
+  /// The strategy that generates the layout frame for the events.
+  MultiDayLayoutStrategy get multiDayLayoutStrategy => widget.configuration.multiDayLayoutStrategy;
 
   /// Returns the maximum number of vertical events that can be displayed.
   int maxNumberOfRows(MultiDayLayoutFrame frame) {
@@ -218,7 +217,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   @override
   void initState() {
     super.initState();
-    _frame = generateMultiDayLayoutFrame(
+    _frame = multiDayLayoutStrategy.generateFrame(
       visibleDateTimeRange: _dateTimeRange,
       events: widget.events,
       textDirection: widget.textDirection,
@@ -251,7 +250,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       }
 
       setState(() {
-        _frame = generateMultiDayLayoutFrame(
+        _frame = multiDayLayoutStrategy.generateFrame(
           visibleDateTimeRange: _dateTimeRange,
           events: widget.events,
           textDirection: widget.textDirection,
@@ -320,7 +319,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           previewEvents.insert(0, event);
         }
 
-        final frame = generateMultiDayLayoutFrame(
+        final frame = multiDayLayoutStrategy.generateFrame(
           visibleDateTimeRange: widget.internalDateTimeRange,
           events: previewEvents,
           textDirection: widget.textDirection,

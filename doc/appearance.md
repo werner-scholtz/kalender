@@ -285,10 +285,18 @@ your calendar, so an ordinary inherited widget would not reach them.
 Four layers, most specific first. Each one fills in the fields the layer above
 it leaves null.
 
-1. A style passed to a single calendar through `CalendarComponents` (see [Appearance](#appearance--custom-components)).
+1. A style passed directly to a widget, which is how a custom builder styles the widget it returns (see [Appearance](#appearance--custom-components)).
 2. The nearest `KalenderTheme` above the calendar.
 3. The `KalenderThemeData` registered on `ThemeData.extensions`.
 4. The Material 3 defaults.
+
+> [!NOTE]
+> `weekNumberStyle` and `timelineStyle` are the exception to layer 2. They decide
+> how wide the calendar's gutters are, and each gutter is drawn in the body and
+> reserved again in the header so their day columns line up. The calendar
+> measures them once above both, so a `KalenderTheme` inside only the header or
+> only the body cannot change them. Set them above the `CalendarView` instead. A
+> scoped value the calendar has to ignore is reported in debug builds.
 
 Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `lerp`, switching themes transitions the calendar's colors along with the rest of the app. A `KalenderTheme` scope does not animate on its own, since it is a plain widget rather than part of `ThemeData`.
 
@@ -318,14 +326,13 @@ KalenderThemeData(
 
 Pass a `CalendarComponents` object to `CalendarView` to override the default widget builders.
 
-> [!WARNING]
-> The style fields on `CalendarComponents` are deprecated and are removed in
-> 0.26.0. Use `KalenderThemeData` for the whole app, or wrap a calendar in a
-> [`KalenderTheme`](#theming-part-of-the-app) to style one of them. That is the
-> same set of styles reached one way instead of four.
+> [!NOTE]
+> `CalendarComponents` carries builders only. Styles live on `KalenderThemeData`:
+> register one on `ThemeData.extensions` for the whole app, or wrap a calendar in
+> a [`KalenderTheme`](#theming-part-of-the-app) to style one of them.
 >
-> `CalendarComponents` keeps its builder fields. Styles move to the theme,
-> builders stay here.
+> A custom builder is handed the resolved style for the widget it replaces, so it
+> can pass that straight through or override the fields it cares about.
 
 <details>
   <summary>MultiDayComponents</summary>

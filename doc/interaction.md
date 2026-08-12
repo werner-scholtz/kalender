@@ -41,7 +41,7 @@ CalendarBody(
     snapToTimeIndicator: true,
     snapToOtherEvents: true,
     snapRange: const Duration(minutes: 15),
-    eventSnapStrategy: defaultSnapStrategy,
+    eventSnapStrategy: const EventSnapStrategy.interval(),
   ),
 )
 ```

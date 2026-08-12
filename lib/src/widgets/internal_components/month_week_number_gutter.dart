@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/gutter_styles.dart';
 
 /// The month grid puts the week number at the top of its row rather than
 /// centring it, which is where every other week number sits.
@@ -9,10 +10,16 @@ const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter)
 
 /// The style the month week number is drawn with.
 ///
-/// [KalenderThemeData.weekNumberStyle] wins over the top alignment. Applied in
-/// the gutter and the header's spacer alike, so the two measure the same width.
+/// [KalenderThemeData.weekNumberStyle] wins over the top alignment. It comes from
+/// [GutterStyles], resolved above both the header and the body, so the gutter and
+/// the header's spacer always measure the same width.
 WeekNumberStyle _resolveStyle(BuildContext context) {
-  return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle);
+  final shared = GutterStyles.of(context).weekNumberStyle;
+  // Read outside the assert so the widget depends on the theme in release builds
+  // too, then compared inside it so the warning costs nothing when shipped.
+  final scoped = KalenderTheme.of(context).weekNumberStyle;
+  assert(debugCheckGutterStyleReaches(field: 'weekNumberStyle', shared: shared, scoped: scoped));
+  return _monthWeekNumberDefaults.merge(shared);
 }
 
 class MonthWeekNumberGutter extends StatelessWidget {

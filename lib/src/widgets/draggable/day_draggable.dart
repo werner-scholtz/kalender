@@ -161,10 +161,10 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     final startOfEvent = startOfDay.add(durationFromTop);
 
     // Snap the datetime based on the snap strategy.
-    final snappedDateTime = context.snapping.eventSnapStrategy(
-      startOfEvent,
-      startOfDay,
-      context.snapping.snapIntervalMinutes,
+    final snappedDateTime = context.snapping.eventSnapStrategy.snap(
+      cursorDate: startOfEvent,
+      startOfDay: startOfDay,
+      snapIntervalMinutes: context.snapping.snapIntervalMinutes,
     );
 
     return snappedDateTime;

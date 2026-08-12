@@ -205,14 +205,14 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   /// delegate's geometry so culling lines up with what is actually drawn.
   List<(double, double)> _computeBands(List<CalendarEvent> events) {
     if (events.isEmpty) return const [];
-    final delegate = widget.configuration.eventLayoutStrategy(
-      const [],
-      widget.date,
-      widget.viewConfiguration.timeOfDayRange,
-      widget.heightPerMinute,
-      widget.configuration.minimumTileHeight,
-      widget.cache,
-      widget.location,
+    final delegate = widget.configuration.eventLayoutStrategy.createDelegate(
+      events: const [],
+      date: widget.date,
+      timeOfDayRange: widget.viewConfiguration.timeOfDayRange,
+      heightPerMinute: widget.heightPerMinute,
+      minimumTileHeight: widget.configuration.minimumTileHeight,
+      cache: widget.cache,
+      location: widget.location,
     );
     return [
       for (final event in events)
@@ -270,14 +270,14 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   /// Sorts the events based on the layout strategy defined in the configuration.
   List<CalendarEvent> _sort(Iterable<CalendarEvent> events) {
-    return widget.configuration.eventLayoutStrategy(
-      [],
-      widget.date,
-      TimeOfDayRange.allDay(),
-      0,
-      widget.configuration.minimumTileHeight,
-      widget.cache,
-      widget.location,
+    return widget.configuration.eventLayoutStrategy.createDelegate(
+      events: const [],
+      date: widget.date,
+      timeOfDayRange: TimeOfDayRange.allDay(),
+      heightPerMinute: 0,
+      minimumTileHeight: widget.configuration.minimumTileHeight,
+      cache: widget.cache,
+      location: widget.location,
     ).sortEvents(events);
   }
 
@@ -290,14 +290,14 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     // once instead of allocating a new range per event.
     final tileRange = InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange);
     final eventsWidget = CustomMultiChildLayout(
-      delegate: layoutStrategy.call(
-        _events,
-        widget.date,
-        widget.viewConfiguration.timeOfDayRange,
-        context.heightPerMinute,
-        widget.configuration.minimumTileHeight,
-        widget.cache,
-        context.location,
+      delegate: layoutStrategy.createDelegate(
+        events: _events,
+        date: widget.date,
+        timeOfDayRange: widget.viewConfiguration.timeOfDayRange,
+        heightPerMinute: context.heightPerMinute,
+        minimumTileHeight: widget.configuration.minimumTileHeight,
+        cache: widget.cache,
+        location: context.location,
       ),
       // Only build the tiles within the visible scroll window. The delegate
       // still receives every event (above) so overlap widths stay correct even
@@ -441,14 +441,14 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
     final dropTarget = context.tileComponents.dropTargetTile;
 
     return CustomMultiChildLayout(
-      delegate: layoutStrategy.call(
-        eventList,
-        widget.date,
-        widget.viewConfiguration.timeOfDayRange,
-        context.heightPerMinute,
-        widget.configuration.minimumTileHeight,
-        widget.cache,
-        context.location,
+      delegate: layoutStrategy.createDelegate(
+        events: eventList,
+        date: widget.date,
+        timeOfDayRange: widget.viewConfiguration.timeOfDayRange,
+        heightPerMinute: context.heightPerMinute,
+        minimumTileHeight: widget.configuration.minimumTileHeight,
+        cache: widget.cache,
+        location: context.location,
       ),
       children: eventList.indexed.map(
         (item) {

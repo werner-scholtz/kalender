@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. |
+| [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
 | [v0.22.x → v0.23.0](#v022x--v0230) | String builders move off the style classes. Nothing stops compiling, but an unchanged calendar renders differently. |
@@ -48,11 +48,105 @@ CalendarView(
 )
 ```
 
+`weekNumberStyle` and `timelineStyle` are the exception. They size the gutters that both halves have to agree on, so the calendar resolves them above the header and the body and a scope inside either one does not reach them. Set those two above the `CalendarView`. A scoped value the calendar ignores is reported in debug builds.
+
+### Custom component builders receive a resolved style
+
+Nothing to change unless a builder falls back on the style argument being null.
+
+A builder used to be handed whatever the deprecated container carried, which was an empty style unless the app had set one. It is now handed the style resolved from the theme, so the fallback below never runs:
+
+```dart
+- weekNumberBuilder: (range, style) => MyWeekNumber(textStyle: style?.textStyle ?? myBoldStyle)
++ weekNumberBuilder: (range, style) => MyWeekNumber(textStyle: myBoldStyle)
+```
+
+Override the fields you want rather than falling back on null, or merge your own over what you are given:
+
+```dart
+weekNumberBuilder: (range, style) => MyWeekNumber(
+  textStyle: myBoldStyle.merge(style?.textStyle),
+)
+```
+
+This applies to `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`, and to the `OverlayStyles` a `MultiDayOverlayPortalBuilder` receives.
+
+`HourLines.fromContext` loses its `style` argument in the same pass. It resolved the style from the theme and discarded whatever was passed, so it silently did nothing. Delete the argument.
+
 ### The month week number's alignment moves to the theme
 
 Nothing to change unless you set `KalenderThemeData.weekNumberStyle.alignment`. That had no effect in the month view before and now applies, so the month week number may move. It still sits at the top when the theme sets no alignment.
 
 The theme field feeds both the month gutter and the multi-day header, so the two can no longer be given different alignments. `MonthBodyComponentStyles` was the only way to set them apart and it is gone.
+
+Set it above the `CalendarView` rather than on a `KalenderTheme` scoped to the header or the body. `weekNumberStyle` sizes the month gutter, which the header reserves space for, so it is resolved once above both.
+
+### The three strategy fields become classes
+
+`eventLayoutStrategy`, `generateMultiDayLayoutFrame` and `eventSnapStrategy` were function typedefs. Each is now an abstract class with value equality and named factories for the built-ins. A function cannot be deprecated into a class, so there is no window for these.
+
+The layout strategy:
+
+```dart
+- MultiDayBodyConfiguration(eventLayoutStrategy: sideBySideLayoutStrategy)
++ MultiDayBodyConfiguration(eventLayoutStrategy: const EventLayoutStrategy.sideBySide())
+```
+
+`overlapLayoutStrategy` becomes `EventLayoutStrategy.overlap()`, the default either way.
+
+The snap strategy:
+
+```dart
+- CalendarSnapping(eventSnapStrategy: defaultSnapStrategy)
++ CalendarSnapping(eventSnapStrategy: const EventSnapStrategy.interval())
+```
+
+`EventSnapStrategy.none()` is new and leaves the cursor position alone.
+
+The multi-day frame generator also changes name, since the field now holds a strategy rather than a function:
+
+```dart
+- MonthBodyConfiguration(generateMultiDayLayoutFrame: myGenerator)
++ MonthBodyConfiguration(multiDayLayoutStrategy: const MyStrategy())
+```
+
+The field is no longer nullable. Passing `null` for the default becomes `const MultiDayLayoutStrategy.byDuration()`, or leave the argument out.
+
+**If you wrote a custom strategy,** extend the base class and give it `==` and `hashCode`. `defaultMultiDayFrameGenerator` stays public, so a custom multi-day strategy can reuse the built-in row assignment and change only the sort order:
+
+```dart
+class FrameSortedByEnd extends MultiDayLayoutStrategy {
+  const FrameSortedByEnd();
+
+  @override
+  MultiDayLayoutFrame generateFrame({
+    required InternalDateTimeRange visibleDateTimeRange,
+    required List<CalendarEvent> events,
+    required TextDirection textDirection,
+    required Location? location,
+    required MultiDayLayoutFrameCache? cache,
+  }) {
+    return defaultMultiDayFrameGenerator(
+      visibleDateTimeRange: visibleDateTimeRange,
+      events: events,
+      textDirection: textDirection,
+      location: location,
+      cache: cache,
+      eventComparator: (a, b) => a.end.compareTo(b.end),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) => other is FrameSortedByEnd;
+
+  @override
+  int get hashCode => (FrameSortedByEnd).hashCode;
+}
+```
+
+Without `==` the class compares by identity, which is what the function fields did. A strategy constructed inline in `build` then reads as a change on every build, so give it value equality or hold a single instance in a field.
+
+The methods take named parameters where the typedefs took positional ones. `EventLayoutStrategy.createDelegate` and `EventSnapStrategy.snap` both changed shape this way.
 
 ## v0.24.x → v0.25.0
 
