@@ -76,9 +76,9 @@ The all-day flag and the `spansMultipleDays` shortener moved to 0.27.0. They add
 
 ### 0.27.0, the event model
 
-Both of these were scoped for 0.26.0 and moved out to keep that release to one migration. Neither is blocked by anything except the copy contract above.
+Scoped for 0.26.0 and moved out to keep that release to one migration. Not blocked by anything except the copy contract above.
 
-**1. Whether an event is all-day becomes something you can state.** The calendar inferred it from duration through `MultiDayRule`, and the per-event rule override doubled as the way to force it, which that field's own documentation admitted when it described an event "all-day by nature rather than by duration". That never worked for the case it named: an event under 24 hours inside one calendar day satisfies neither built-in rule, so forcing it meant overriding `spansMultipleDays`.
+**Whether an event is all-day becomes something you can state.** The calendar inferred it from duration through `MultiDayRule`, and the per-event rule override doubled as the way to force it, which that field's own documentation admitted when it described an event "all-day by nature rather than by duration". That never worked for the case it named: an event under 24 hours inside one calendar day satisfies neither built-in rule, so forcing it meant overriding `spansMultipleDays`.
 
   `CalendarEvent.isAllDay` states it. A plain `bool` defaulting to false, so nothing changes for an event that does not set it. True means the multi-day header lane whatever the duration, with no rule consulted. A nullable tri-state was rejected: "not all-day" and "no opinion" want the same answer, since an event spanning several days has to stay in the header either way. The date range is untouched, and `carryOver` carries the flag across drags like `id` and `multiDayRule`, so it is not a third field to forward by hand.
 
@@ -86,7 +86,7 @@ Both of these were scoped for 0.26.0 and moved out to keep that release to one m
 
   The ICS example needed more than first recorded. RFC 5545 encodes all-day as a date-valued `DTSTART`, but the `isAllDayEvent` getter on `enough_icalendar` reads a proprietary Microsoft property instead, so the standard signal is read off the value type of the property. The example discarded it at parse time and exported an all-day event as a timed one. It now maps to `isAllDay` and writes `VALUE=DATE` back out, a date-valued `DTSTART` with no `DTEND` lasts one day rather than one hour, and `sample.ics` carries one.
 
-**2. A shorter way to call `spansMultipleDays`.** It takes two required named arguments that callers fill from the same two places every time. Additive and small. It waits on the all-day decision, since that may change what the method consults. Worth knowing how little it buys: no example app calls the method, and the only caller outside the package is a generated documentation snippet, so the verbosity is felt almost entirely inside the package.
+A second item, a shorter way to call `spansMultipleDays`, is dropped. Every verbose call site is inside the package, and the shortest form needs a `BuildContext` that two of the eight sites do not have. Making `defaultRule` optional is the only shape that reads shorter everywhere, and omitting it would silently substitute the package default for the calendar's own rule, which compiles and renders wrong. What is left is an internal tidy-up with no public API in it.
 
 ### 0.28.0, the builders take a context
 
