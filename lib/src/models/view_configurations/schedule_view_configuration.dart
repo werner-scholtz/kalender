@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 
 /// The type of the schedule view.
 enum ScheduleViewType {

@@ -169,6 +169,44 @@ void main() {
       });
     });
 
+    group('WeekIndexCalculator with six days for $location', () {
+      late WeekIndexCalculator calculator;
+      setUpAll(() {
+        calculator = WeekIndexCalculator(
+          dateTimeRange: range,
+          firstDayOfWeek: DateTime.monday,
+          daysToDisplay: 6,
+        );
+      });
+
+      test('a page ends after six days', () {
+        expect(
+          calculator.dateTimeRangeFromIndex(0, location),
+          InternalDateTimeRange(start: InternalDateTime(2019, 12, 30), end: InternalDateTime(2020, 1, 5)),
+        );
+        expect(
+          calculator.dateTimeRangeFromIndex(1, location),
+          InternalDateTimeRange(start: InternalDateTime(2020, 1, 6), end: InternalDateTime(2020, 1, 12)),
+        );
+      });
+
+      test('pagination is unchanged', () {
+        expect(calculator.indexFromDate(TZDateTime(location, 2020, 1, 6), location), 1);
+        expect(calculator.indexFromDate(TZDateTime(location, 2020, 3, 2), location), 9);
+        expect(calculator.numberOfPages(location), 53);
+        expect(
+          calculator.internalRange(location),
+          InternalDateTimeRange(start: InternalDateTime(2019, 12, 30), end: InternalDateTime(2021, 1, 4)),
+        );
+      });
+
+      test('the day the page drops is still reachable', () {
+        // Sunday 5 January 2020 is not displayed, but asking for it must land on
+        // the page that starts the week it belongs to.
+        expect(calculator.indexFromDate(TZDateTime(location, 2020, 1, 5), location), 0);
+      });
+    });
+
     group('CustomIndexCalculator for $location', () {
       late CustomIndexCalculator calculator;
       setUpAll(() {

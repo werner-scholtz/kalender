@@ -274,13 +274,11 @@ before tagging it:
   `MultiDayBodyConfiguration` in favour of `VerticalConfiguration`. Find them
   with `grep -rn "TODO" lib/`. They are `//` comments so they do not render as
   prose in the API reference, but each one is a decision still owed.
-- **Deprecations past their window.** The style fields on `CalendarComponents`
-  are removed in 0.26.0, which their shipped deprecation message names. The seven
-  style container classes those fields reached go in the same release, with no
-  deprecation of their own, since nothing public reaches them once the fields are
-  gone. `OverlayStyles` is not one of them and stays, since
-  `MultiDayOverlayPortalBuilder` names it. See
-  [Verifying a removal](#verifying-a-removal).
+- **Deprecations past their window.** `TimeOfDayRange.isAllDay` is removed in
+  0.27.0, which its 0.26.0 deprecation message names. `coversWholeDay` replaces
+  it, and it is the only `@Deprecated` left in `lib/`. The style fields on
+  `CalendarComponents` and the seven style container classes they reached were
+  removed in 0.26.0. See [Verifying a removal](#verifying-a-removal).
 - **Function fields compared with `==`.** `ViewConfiguration.nowCallback` is the
   one left. It takes part in equality, so a closure written inline is a new
   function every build and defeats the caching the comparison exists to enable.

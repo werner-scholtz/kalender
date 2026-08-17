@@ -1,59 +1,57 @@
-## 0.27.0
-
-### Features
-
-- `CalendarEvent.isAllDay` states that an event occupies whole days rather than a span of time. True places it in the multi-day header lane whatever its duration and consults no `MultiDayRule`, which is the case no rule could express: an hour-long event inside one calendar day needed an override of `spansMultipleDays` before. False, the default, leaves the decision where it was, so nothing changes for an event that does not set it. The date range is untouched, and the flag is carried across drags and resizes by `carryOver` like `id` and `multiDayRule`. It joins `layoutEquals` and `hashCode`, since it decides which lane the tile renders in.
-
-### Deprecations
-
-- `TimeOfDayRange.isAllDay` is renamed to `coversWholeDay` and will be removed in 0.28.0. It reports whether the range runs from 00:00 to 23:59, which is about the hours the body lays out rather than about an event, and the old name is wanted for `CalendarEvent.isAllDay`. `TimeOfDayRange.allDay()` is unchanged.
-
 ## 0.26.0
 
 See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 
 ### Breaking Changes
 
-- The style fields on `CalendarComponents` are removed, as their 0.25.0 deprecation message named. `monthComponentStyles`, `multiDayComponentStyles`, `scheduleComponentStyles` and `overlayStyles` are gone from the constructor, `copyWith`, `==` and `hashCode`. Use `KalenderThemeData` for the whole app, or wrap a calendar in `KalenderTheme` to scope it. `CalendarComponents` keeps its builder fields. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
-- `eventLayoutStrategy`, `generateMultiDayLayoutFrame` and `eventSnapStrategy` are classes rather than function typedefs. Each has value equality and named factories for the built-ins: `EventLayoutStrategy.overlap()` and `.sideBySide()`, `MultiDayLayoutStrategy.byDuration()`, and `EventSnapStrategy.interval()`. A configuration holding one of these written as an inline closure was a new value on every build, so the calendar read every rebuild as a change, and for the multi-day frame that cleared the layout frame cache and regenerated every row. A function cannot be deprecated into a class, so these change without a window. See [MIGRATION.md](MIGRATION.md#v025x--v0260). [#380](https://github.com/werner-scholtz/kalender/issues/380)
-- `HorizontalConfiguration.generateMultiDayLayoutFrame` is renamed to `multiDayLayoutStrategy` and is no longer nullable. It defaults to `MultiDayLayoutStrategy.byDuration()`, which is what `null` selected before.
-- `CalendarEvent.copyWith` is removed. A subclass overrode it and had to forward by hand every field the base class carries but takes no parameter for, which was `id` and, since 0.24.0, `multiDayRule`. Forgetting one produced a copy the calendar read as a different event, or one that lost its rule, and adding a field to the base class broke every subclass at once without a compile error. Override `copyWithData` instead and rebuild only what your subclass adds. The calendar calls `withDateTimeRange`, which applies the hook and then restores the base state through `carryOver`. A missing hook is reported by the analyzer through `@mustBeOverridden`, and by a debug assert on the first drag for anyone who ignores the warning. Your own `copyWith` is no longer an override, so it can take whatever parameters suit you. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
-- `CalendarEvent.interaction` and `CalendarEvent.multiDayRule` are getters rather than fields, so `carryOver` can restore them. Reading either is unchanged. Neither was assignable before.
-- `HourLines.fromContext` no longer takes a `style` argument. It resolved the style from the theme and discarded whatever was passed, so the argument silently did nothing, but removing it stops a call that named it from compiling. `timelineStyle` is unaffected. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
-- The seven style container classes reached through those fields are removed with them: `MonthComponentStyles`, `MonthBodyComponentStyles`, `MonthHeaderComponentStyles`, `MultiDayComponentStyles`, `MultiDayBodyComponentStyles`, `MultiDayHeaderComponentStyles` and `ScheduleComponentStyles`. Nothing public reached them once the fields were gone, so they carry no deprecation of their own. `OverlayStyles` is not one of them and stays, since `MultiDayOverlayPortalBuilder` names it.
+- The style fields on `CalendarComponents` are removed, as their 0.25.0 deprecation named: `monthComponentStyles`, `multiDayComponentStyles`, `scheduleComponentStyles` and `overlayStyles`, along with their constructor and `copyWith` parameters and their places in `==` and `hashCode`. Use `KalenderThemeData`, or `KalenderTheme` to scope it to one calendar. The builder fields stay.
+- The seven style container classes those fields reached go with them: `MonthComponentStyles`, `MonthBodyComponentStyles`, `MonthHeaderComponentStyles`, `MultiDayComponentStyles`, `MultiDayBodyComponentStyles`, `MultiDayHeaderComponentStyles` and `ScheduleComponentStyles`. `OverlayStyles` stays, since `MultiDayOverlayPortalBuilder` names it.
+- `eventLayoutStrategy`, `generateMultiDayLayoutFrame` and `eventSnapStrategy` are classes rather than function typedefs, each with value equality and named factories for the built-ins: `EventLayoutStrategy.overlap()` and `.sideBySide()`, `MultiDayLayoutStrategy.byDuration()`, and `EventSnapStrategy.interval()`. A function cannot be deprecated into a class, so there is no window. [#380](https://github.com/werner-scholtz/kalender/issues/380)
+- `HorizontalConfiguration.generateMultiDayLayoutFrame` is renamed to `multiDayLayoutStrategy` and is no longer nullable. It defaults to `MultiDayLayoutStrategy.byDuration()`, which `null` selected before.
+- `CalendarEvent.copyWith` is removed. Override `copyWithData` instead and rebuild only what your subclass adds. The calendar calls `withDateTimeRange`, which applies that hook and then restores `id`, `interaction`, `multiDayRule` and `isAllDay` through `carryOver`. A missing hook is reported by `@mustBeOverridden` at analysis time and by a debug assert on the first drag. Your own `copyWith` is no longer an override, so it can take whatever parameters suit you.
+- `CalendarEvent.interaction` and `CalendarEvent.multiDayRule` are getters rather than fields. Reading either is unchanged, and neither was assignable before.
+- `HourLines.fromContext` no longer takes a `style` argument. It resolved the style from the theme and discarded what was passed. `timelineStyle` is unaffected.
 
 ### Behavior Changes
 
-- A custom component builder is handed the theme-resolved style rather than an empty one. A builder previously received whatever the deprecated container carried, which was an empty style unless the app had set one, so `style?.textStyle ?? myFallback` reached `myFallback`. The same argument now arrives populated from the theme, so a builder written that way renders with the theme value instead of its own fallback. Read the fields you want to override rather than falling back on null. This affects `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
-- `MultiDayOverlayPortalBuilder` receives a populated `OverlayStyles` for the same reason, built by the new `OverlayStyles.fromContext`. That typedef takes no `BuildContext`, so it cannot resolve the theme itself.
-- `KalenderThemeData.weekNumberStyle.alignment` now reaches the month week number. It had no effect there, because the month body passed its own top alignment to the widget and a passed style wins over the theme, so the only way to change it was the deprecated `CalendarComponents` style path. The month still sits at the top when nothing asks otherwise. A calendar that set this on the theme and relied on the month ignoring it will see the month week number move. [#423](https://github.com/werner-scholtz/kalender/pull/423)
-- A custom `weekNumberBuilder` receives the same fully resolved style in the month header as in the month body. The header's spacer passed the style through unresolved, so the two disagreed. [#423](https://github.com/werner-scholtz/kalender/pull/423)
+- A custom component builder receives the theme-resolved style rather than an empty one, so `style?.textStyle ?? myFallback` reaches the theme value where it used to reach the fallback. Read the fields you want to override rather than falling back on null. This affects `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`.
+- `MultiDayOverlayPortalBuilder` receives a populated `OverlayStyles`, built by the new `OverlayStyles.fromContext`.
+- `KalenderThemeData.weekNumberStyle.alignment` reaches the month week number, which ignored it before. The month still sits at the top by default, so only a calendar that set a non-default alignment moves. [#423](https://github.com/werner-scholtz/kalender/pull/423)
+- A custom `weekNumberBuilder` receives the same resolved style in the month header as in the month body. [#423](https://github.com/werner-scholtz/kalender/pull/423)
 
 ### Features
 
-- `EventSnapStrategy.none()` leaves a dragged event where the cursor is, without needing a hand-written strategy.
-- `meta` is a direct dependency at `^1.9.0`, the version that introduced `@mustBeOverridden`. The floor is that version rather than the resolved one, so it does not narrow what a consumer can resolve.
-- `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in, through the `eventComparator` the strategy itself does not expose.
+- `CalendarEvent.isAllDay` places an event in the multi-day header lane whatever its duration, with no `MultiDayRule` consulted. It defaults to false, leaves the date range untouched, is carried across drags and resizes by `carryOver`, and takes part in `layoutEquals` and `hashCode`.
+- `PageIndexCalculator` and its subclasses are exported. `ViewConfiguration.pageIndexCalculator` returns the type, which an app had no way to name. [#444](https://github.com/werner-scholtz/kalender/issues/444)
+- `EventSnapStrategy.none()` leaves a dragged event where the cursor is.
+- `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in.
+- `meta` is a direct dependency at `^1.9.0`, the version that introduced `@mustBeOverridden`.
+
+### Deprecations
+
+- `TimeOfDayRange.isAllDay` is renamed to `coversWholeDay` and will be removed in 0.27.0. It reports whether the range runs from 00:00 to 23:59, and the old name is wanted for `CalendarEvent.isAllDay`. `TimeOfDayRange.allDay()` is unchanged.
 
 ### Fixes
 
-- The month week number gutter and the multi-day timeline are measured once above both the header and the body, so the two halves cannot be given different widths. This covers all six readers: the drawn gutter, the header's spacer, the drag target's spacer, and the labels inside the gutter, which are laid out with the style the box was measured from. Each is drawn in the body and reserved again in the header, and both used to resolve their style from their own position in the tree. A `KalenderTheme` scoped to only one half moved one and left the other behind, which shifted every day column out of line with its header. A scoped `weekNumberStyle` or `timelineStyle` that the calendar has to ignore is now reported in debug builds.
-- The week number label is centred when the visible range crosses a week boundary. The gutter is sized by the timeline rather than by the label, so `32 - 33` wraps, and the short second line sat against the leading edge. [#427](https://github.com/werner-scholtz/kalender/pull/427)
-- A custom `multiDayOverlayBuilder` or `multiDayPortalOverlayButtonBuilder` receives the style resolved from the theme. Neither typedef takes a `BuildContext`, so neither can resolve it itself.
-- The overlay styles are resolved once, where a custom overlay builder needs them, rather than at four call sites in the header and the month body. The pair used to be built eagerly on every header and month week build, carried through three widgets, and merged at the end with the identical value the built-in overlay widgets resolve for themselves. Nothing is passed to those now, and a custom builder is handed the pair only when a column actually overflows. `MultiDayOverlayPortal.overlayStyles` is optional, where null leaves each overlay widget to resolve its own.
-- The Material defaults are built once per `ThemeData` rather than on every theme lookup. `KalenderTheme.of` runs on nearly every widget build and rebuilt thirteen style objects each time, which the month view did twice per day cell and the schedule view once per row. The cache is keyed weakly on the theme, so an entry is collected with the theme it belongs to.
-- A schedule row resolves the theme only when it reads one of the two styles that need it. A month separator row reads neither and paid for a full resolution regardless.
-- `MultiDayBodyConfiguration.keepPagesAlive` takes part in `==` and `hashCode`. It is declared on that class rather than the `VerticalConfiguration` base, and the inherited equality did not reach it, so changing only that value did not reach the calendar.
-- `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` no longer compare equal to each other. Both extend `HorizontalConfiguration` and add no equality of their own, and its `==` tested only `other is HorizontalConfiguration` with no runtime type check. The same applied to `VerticalConfiguration`.
-- `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it already took part in `==`. Unequal objects may share a hash, so nothing was broken, but the other two configurations include it.
+- `MultiDayViewConfiguration.week` and `.workWeek` honour `numberOfDays`. Both built their page index calculator with a hardcoded 7 and 5, so the body laid out `numberOfDays` columns under a header showing a full week, and every column sat out of line with its header. Both take 1 through 7, which shortens the page and leaves the weekly pagination alone. `copyWith` carries the value, where it reset it to the default before. [#444](https://github.com/werner-scholtz/kalender/issues/444)
+- The month week number gutter and the multi-day timeline are measured once above both the header and the body, so the two halves cannot be given different widths. A `KalenderTheme` scoped to one half moved it and left the other behind, which put every day column out of line with its header. A scoped `weekNumberStyle` or `timelineStyle` the calendar has to ignore is now reported in debug builds.
+- The week number label is centred when the visible range crosses a week boundary. The gutter is sized by the timeline rather than by the label, so `32 - 33` wraps and the short second line sat against the leading edge. [#427](https://github.com/werner-scholtz/kalender/pull/427)
+- A custom `multiDayOverlayBuilder` or `multiDayPortalOverlayButtonBuilder` receives the style resolved from the theme.
+- The overlay styles are resolved once, where a custom overlay builder needs them, rather than at four call sites in the header and the month body. `MultiDayOverlayPortal.overlayStyles` is optional, where null leaves each overlay widget to resolve its own.
+- The Material defaults are built once per `ThemeData` rather than on every `KalenderTheme.of` call, which runs on nearly every widget build. The cache is keyed weakly on the theme.
+- A schedule row resolves the theme only when it reads one of the two styles that need it.
+- `MultiDayBodyConfiguration.keepPagesAlive` takes part in `==` and `hashCode`, so changing only that value reaches the calendar.
+- `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` no longer compare equal to each other, and the same for the two `VerticalConfiguration` subclasses. The base `==` tested only `other is HorizontalConfiguration` with no runtime type check.
+- `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it already took part in `==`.
 
 ### Tests
 
-- Added coverage for the copy contract: a moved event keeps the identity, interaction config and rule its subclass never mentions, the copy is the subclass's own type, a subclass with no hook is named by the assert, a `copyWith` of the subclass's own keeps the base state through `carryOver`, and the events controller still finds a dragged event by its id.
-- Added coverage for `multiDayOverlayPortalBuilder`, which had none: a custom portal builder is handed styles resolved from the theme, a scoped theme reaches it, and the built-in overlay still follows a scoped theme with nothing passed to it, across the `Overlay` boundary it is built into.
-- Added coverage that a `KalenderTheme` scoped to the body cannot move the month week number gutter or the multi-day timeline away from what the header reserves, that a theme above the calendar still reaches both, and that an ignored scoped value is reported once rather than on every frame.
-- Added coverage that the drag target's gutter spacer matches the drawn gutter and that the timeline labels fit the box measured for them, both under a body-scoped theme, and that a custom overlay builder and a custom overflow button builder each receive the resolved style.
-- Added equality coverage for the three strategy classes: two of a kind compare equal with matching hash codes, the built-ins differ from each other, a subclass of a built-in is not equal to it, a configuration built twice in a row is equal, and changing only the strategy still breaks equality.
+- Added coverage for the copy contract: a moved event keeps the identity, interaction and rule its subclass never mentions, the copy is the subclass's own type, a subclass with no hook is named by the assert, and the events controller still finds a dragged event by its id.
+- Added coverage for `multiDayOverlayPortalBuilder`, which had none, across the `Overlay` boundary it is built into.
+- Added coverage that a `KalenderTheme` scoped to the body cannot move the month week number gutter or the multi-day timeline away from what the header reserves, and that an ignored scoped value is reported once rather than on every frame.
+- Added coverage that the drag target's gutter spacer matches the drawn gutter and that the timeline labels fit the box measured for them.
+- Added equality coverage for the three strategy classes.
+- Added coverage for a shortened week: the page length, that the pagination stays weekly, that `copyWith` carries the value, and that the header renders that many day headers.
 
 ## 0.25.0
 

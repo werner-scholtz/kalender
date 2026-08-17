@@ -48,9 +48,9 @@ One unrelated removal rides along, because 0.24.0 promised it here. **`CalendarE
 
 ### 0.26.0, the styles and the copy contract
 
-Three items, all breaking. The first is contractual: the deprecation message shipped in 0.25.0 names this release by number, so it is the one item here that has a deadline rather than an argument.
+Three breaking items, plus the all-day flag and one fix that arrived while the release was still open. The first is contractual: the deprecation message shipped in 0.25.0 names this release by number, so it is the one item here that has a deadline rather than an argument.
 
-The all-day flag and the `spansMultipleDays` shortener moved to 0.27.0. They add public API and teach a new concept, which does not belong in the same migration guide as the two largest removals the package has done. 0.24.0 shipped ten breaking changes and the section above already calls that worth not repeating.
+The all-day flag was scoped out to 0.27.0, on the argument that new public API does not belong in the same migration guide as the two largest removals the package has done. It came back. Only `0.26.0-dev.1` ever reached pub.dev, so the release was still open when the flag merged, and nothing about it is breaking, so it costs the migration guide nothing.
 
 **1. The deprecated style fields on `CalendarComponents` are removed.** Four fields, along with their constructor and `copyWith` parameters and their places in `==` and `hashCode`. Larger than the deprecation implied: 25 read sites across 17 files, most of them the `fromContext` helpers on the component widgets. The seven container classes reached through those fields go with them, which empties `month_styles.dart`, `multi_day_styles.dart` and `schedule_styles.dart`. Only the fields carry a deprecation, so the classes are removed without a window of their own. Once the fields are gone nothing public reaches them, so a window would protect a type annotation and nothing else.
 
@@ -74,11 +74,7 @@ The all-day flag and the `spansMultipleDays` shortener moved to 0.27.0. They add
 
   Two equality gaps turned up while checking, both unrelated to function fields and neither breaking. `MultiDayBodyConfiguration.keepPagesAlive` is not covered by the equality it inherits, and the body and header configuration base classes test only `other is X` with no runtime type check, so two different configuration types with matching fields can compare equal.
 
-### 0.27.0, the event model
-
-Scoped for 0.26.0 and moved out to keep that release to one migration. Not blocked by anything except the copy contract above.
-
-**Whether an event is all-day becomes something you can state.** The calendar inferred it from duration through `MultiDayRule`, and the per-event rule override doubled as the way to force it, which that field's own documentation admitted when it described an event "all-day by nature rather than by duration". That never worked for the case it named: an event under 24 hours inside one calendar day satisfies neither built-in rule, so forcing it meant overriding `spansMultipleDays`.
+**4. Whether an event is all-day becomes something you can state.** The calendar inferred it from duration through `MultiDayRule`, and the per-event rule override doubled as the way to force it, which that field's own documentation admitted when it described an event "all-day by nature rather than by duration". That never worked for the case it named: an event under 24 hours inside one calendar day satisfies neither built-in rule, so forcing it meant overriding `spansMultipleDays`.
 
   `CalendarEvent.isAllDay` states it. A plain `bool` defaulting to false, so nothing changes for an event that does not set it. True means the multi-day header lane whatever the duration, with no rule consulted. A nullable tri-state was rejected: "not all-day" and "no opinion" want the same answer, since an event spanning several days has to stay in the header either way. The date range is untouched, and `carryOver` carries the flag across drags like `id` and `multiDayRule`, so it is not a third field to forward by hand.
 
@@ -86,11 +82,19 @@ Scoped for 0.26.0 and moved out to keep that release to one migration. Not block
 
   The ICS example needed more than first recorded. RFC 5545 encodes all-day as a date-valued `DTSTART`, but the `isAllDayEvent` getter on `enough_icalendar` reads a proprietary Microsoft property instead, so the standard signal is read off the value type of the property. The example discarded it at parse time and exported an all-day event as a timed one. It now maps to `isAllDay` and writes `VALUE=DATE` back out, a date-valued `DTSTART` with no `DTEND` lasts one day rather than one hour, and `sample.ics` carries one.
 
-A second item, a shorter way to call `spansMultipleDays`, is dropped. Every verbose call site is inside the package, and the shortest form needs a `BuildContext` that two of the eight sites do not have. Making `defaultRule` optional is the only shape that reads shorter everywhere, and omitting it would silently substitute the package default for the calendar's own rule, which compiles and renders wrong. What is left is an internal tidy-up with no public API in it.
+  A shorter way to call `spansMultipleDays` was scoped alongside the flag and is dropped. Every verbose call site is inside the package, and the shortest form needs a `BuildContext` that two of the eight sites do not have. Making `defaultRule` optional is the only shape that reads shorter everywhere, and omitting it would silently substitute the package default for the calendar's own rule, which compiles and renders wrong. What is left is an internal tidy-up with no public API in it.
 
-### 0.28.0, the builders take a context
+**5. A week view honours `numberOfDays`.** [#444](https://github.com/werner-scholtz/kalender/issues/444). `MultiDayViewConfiguration.week` and `.workWeek` both took the parameter and built their page index calculator with a hardcoded 7 and 5, so the body laid out `numberOfDays` columns under a header showing the hardcoded count, and every column sat out of line with its header. `WeekIndexCalculator` already carries `daysToDisplay`, which shortens the page and leaves the weekly pagination alone, so the fix is to pass the value in. `copyWith` dropped it too.
+
+  `PageIndexCalculator` is exported with it, the second half of the same issue. `ViewConfiguration.pageIndexCalculator` returns the type, so it was already public with no way for an app to name it.
+
+  What this does not do is let an app pick arbitrary visible days. See [#90](https://github.com/werner-scholtz/kalender/issues/90) below.
+
+### 0.27.0, the builders take a context
 
 One break, across the widest customisation surface the package has. It gets a release of its own rather than riding along with model changes, and it happens before 1.0.0 because a freeze would put it behind a 2.0.0.
+
+`TimeOfDayRange.isAllDay` is removed here, as its 0.26.0 deprecation message names. `coversWholeDay` replaces it.
 
 **Every builder typedef takes a `BuildContext`.** Fourteen of the fifteen builder typedefs that carry a style take none, so a custom builder cannot call `KalenderTheme.of` and resolve anything for itself. The package has to resolve on its behalf and pass the result in, which is the only reason a style parameter sits on those signatures at all.
 
@@ -151,10 +155,16 @@ Selection is the thread through the middle three. There is no `selectedDate` on 
 
 | Issue | Shape |
 |---|---|
-| [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A view configuration option. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. |
+| [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A set of visible weekdays on the view configuration. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. Scoped below. |
 | [#98](https://github.com/werner-scholtz/kalender/issues/98) named and uneditable time regions | A second thing the calendar draws besides events, that events sit on top of. The largest new model here. |
 | [#259](https://github.com/werner-scholtz/kalender/issues/259) drag to create over a locked event | A drag starting on an unmodifiable event should fall through to creation instead of doing nothing. Mostly behavior. |
 | [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `CalendarView`. |
+
+**Arbitrary visible weekdays, [#90](https://github.com/werner-scholtz/kalender/issues/90), needs the page to stop being one date range.** 0.26.0 covers the contiguous case with `numberOfDays` on `week` and `workWeek`, which is what the reporter of [#444](https://github.com/werner-scholtz/kalender/issues/444) asked for. Every contiguous span starting on `firstDayOfWeek` is expressible that way, so what a set of weekdays adds is the non-contiguous case, Monday, Wednesday and Friday, and a span that starts somewhere other than `firstDayOfWeek`.
+
+That is not a parameter. A page is a contiguous `DateTimeRange` throughout the package, and a day's index within that range is what maps to pixels. Six places do that arithmetic: `event_tile_utils.dart` turns a drag position into a date by dividing by the column count and indexing the range's dates, the multi-day event widget and both layout strategies place a header tile by its first and last day index, the day separator count and the time indicator both derive from the column count, and the free-scroll band is built on day index equalling pixel offset. Each needs a column-to-date mapping instead. `CalendarController.visibleDateTimeRange` and the `onPageChanged` callback are a single range, which a gapped page makes untrue, and both are public. The events controller fetches by range, so hidden-day events arrive and have to be dropped per column. An app asking for Monday to Saturday most likely wants the month grid at six columns too, which reaches the month body, the week number gutter and the row-count logic in `MonthIndexCalculator`.
+
+One design question comes first: does a hidden day vanish, leaving six columns, or is it skipped, leaving a page that still spans seven calendar days with six drawn? The two are the same for Monday to Saturday and differ for Monday, Wednesday and Friday, and the answer decides what `visibleDateTimeRange` reports. Adding the set later costs no deprecation, since `numberOfDays` can be derived from its length.
 
 Multi-column days, so several calendars can sit side by side within one day, is not filed yet and belongs in the first group.
 

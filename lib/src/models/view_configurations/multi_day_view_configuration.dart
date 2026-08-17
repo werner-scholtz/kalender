@@ -104,6 +104,12 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         pageIndexCalculator = PageIndexCalculator.singleDay(displayRange ?? kDefaultRange());
 
   /// Creates a [MultiDayViewConfiguration] for a week.
+  ///
+  /// [numberOfDays] shortens the page without changing the pagination, so 6 with
+  /// a [firstDayOfWeek] of [DateTime.monday] shows Monday to Saturday and still
+  /// turns the page a week at a time. It must be between 1 and 7. Use
+  /// [MultiDayViewConfiguration.custom] for a page of any other length, which
+  /// pages by [numberOfDays] rather than by the week.
   MultiDayViewConfiguration.week({
     super.name = 'Week',
     super.initialDateTime,
@@ -121,14 +127,23 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+  })  : assert(
+          numberOfDays >= 1 && numberOfDays <= DateTime.daysPerWeek,
+          'numberOfDays must be between 1 and 7 for a week view.\n'
+          'Use MultiDayViewConfiguration.custom for a page of any other length.',
+        ),
+        timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.week,
         pageIndexCalculator = PageIndexCalculator.week(
           displayRange ?? kDefaultRange(),
           firstDayOfWeek,
+          daysToDisplay: numberOfDays,
         );
 
   /// Creates a [MultiDayViewConfiguration] for a work week.
+  ///
+  /// [numberOfDays] shortens the page without changing the pagination, which
+  /// starts every page on a Monday. It must be between 1 and 7.
   MultiDayViewConfiguration.workWeek({
     super.name = 'Work Week',
     super.initialDateTime,
@@ -145,10 +160,18 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+  })  : assert(
+          numberOfDays >= 1 && numberOfDays <= DateTime.daysPerWeek,
+          'numberOfDays must be between 1 and 7 for a work week view.\n'
+          'Use MultiDayViewConfiguration.custom for a page of any other length.',
+        ),
+        timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.workWeek,
-        pageIndexCalculator = PageIndexCalculator.workWeek(displayRange ?? kDefaultRange());
+        pageIndexCalculator = PageIndexCalculator.workWeek(
+          displayRange ?? kDefaultRange(),
+          daysToDisplay: numberOfDays,
+        );
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
@@ -252,6 +275,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
+          numberOfDays: numberOfDays ?? this.numberOfDays,
           initialTimeOfDay: initialTimeOfDay0,
           scrollTransition: scrollTransition0,
           scrollResolver: scrollResolver0,
@@ -267,6 +291,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           nowCallback: nowCallback0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
+          numberOfDays: numberOfDays ?? this.numberOfDays,
           initialTimeOfDay: initialTimeOfDay0,
           scrollTransition: scrollTransition0,
           scrollResolver: scrollResolver0,

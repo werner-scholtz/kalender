@@ -38,13 +38,30 @@ abstract class PageIndexCalculator {
   }
 
   /// Creates a [PageIndexCalculator] for a week [MultiDayViewConfiguration.week].
-  factory PageIndexCalculator.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
-    return WeekIndexCalculator.week(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
+  ///
+  /// [daysToDisplay] shortens the page without changing the weekly pagination,
+  /// so 6 shows Monday to Saturday on a week that still turns every 7 days.
+  factory PageIndexCalculator.week(
+    DateTimeRange dateTimeRange,
+    int firstDayOfWeek, {
+    int daysToDisplay = DateTime.daysPerWeek,
+  }) {
+    return WeekIndexCalculator(
+      dateTimeRange: dateTimeRange,
+      firstDayOfWeek: firstDayOfWeek,
+      daysToDisplay: daysToDisplay,
+    );
   }
 
   /// Creates a [PageIndexCalculator] for a work week [MultiDayViewConfiguration.workWeek].
-  factory PageIndexCalculator.workWeek(DateTimeRange dateTimeRange) {
-    return WeekIndexCalculator.workWeek(dateTimeRange: dateTimeRange);
+  ///
+  /// [daysToDisplay] shortens the page without changing the weekly pagination.
+  factory PageIndexCalculator.workWeek(DateTimeRange dateTimeRange, {int daysToDisplay = 5}) {
+    return WeekIndexCalculator(
+      dateTimeRange: dateTimeRange,
+      firstDayOfWeek: DateTime.monday,
+      daysToDisplay: daysToDisplay,
+    );
   }
 
   /// Creates a [PageIndexCalculator] for a custom [MultiDayViewConfiguration.custom].
@@ -155,10 +172,19 @@ class WeekIndexCalculator extends PageIndexCalculator {
   final int firstDayOfWeek;
 
   /// The number of days to display in a week view. Usually 7.
+  ///
+  /// Fewer than 7 shortens the page and leaves the pagination alone, so the page
+  /// still turns every 7 days from [firstDayOfWeek]. More than 7 would make
+  /// consecutive pages overlap.
   final int daysToDisplay;
 
   /// Creates a [WeekIndexCalculator] with the given [dateTimeRange], [firstDayOfWeek], and [daysToDisplay].
-  WeekIndexCalculator({required super.dateTimeRange, required this.firstDayOfWeek, required this.daysToDisplay});
+  WeekIndexCalculator({required super.dateTimeRange, required this.firstDayOfWeek, required this.daysToDisplay})
+      : assert(
+          daysToDisplay >= 1 && daysToDisplay <= DateTime.daysPerWeek,
+          'daysToDisplay must be between 1 and 7, because a week view pages by whole weeks.\n'
+          'Use CustomIndexCalculator for a page that is longer than a week.',
+        );
 
   /// Creates a [WeekIndexCalculator] for a standard week view.
   WeekIndexCalculator.week({
