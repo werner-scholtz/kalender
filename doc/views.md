@@ -41,8 +41,8 @@ Displays one or more days with time on the vertical axis.
 | Constructor                                             | Description                                    |
 | -------------------------------------------------------- | ---------------------------------------------- |
 | `MultiDayViewConfiguration.singleDay()`                  | Single day                                     |
-| `MultiDayViewConfiguration.week()`                       | Full 7-day week                                |
-| `MultiDayViewConfiguration.workWeek()`                   | Monday to Friday                               |
+| `MultiDayViewConfiguration.week()`                       | A week, 7 days by default                      |
+| `MultiDayViewConfiguration.workWeek()`                   | Monday to Friday, 5 days by default            |
 | `MultiDayViewConfiguration.custom(numberOfDays: n)`      | Custom number of days                          |
 | `MultiDayViewConfiguration.freeScroll(numberOfDays: n)`  | Scrolls freely across days, without page snaps |
 
@@ -52,6 +52,7 @@ These views also control which hours exist, where the day opens vertically, and 
 - `initialTimeOfDay`: the time at the top of the viewport on first render. Defaults to midnight, so set it to the hour your users actually start at or the calendar opens on empty overnight hours. The offset is measured from `timeOfDayRange.start`, so keep this value inside the range.
 - `initialHeightPerMinute`: the starting zoom, in logical pixels per minute. Defaults to `0.7`, giving a 42 pixel hour. Change it later through the controller, see [Zoom](interaction.md#zoom).
 - `firstDayOfWeek`: which day a week starts on, as `DateTime.monday` through `DateTime.sunday`. Defaults to `DateTime.monday`. Applies to `week`, `singleDay` and `custom`. `workWeek` and `freeScroll` fix it themselves.
+- `numberOfDays`: how many days a page shows. `week` and `workWeek` take 1 through 7 and drop days off the end of the page without changing the pagination, so `week(numberOfDays: 6)` shows Monday to Saturday and still turns a week at a time. `custom` and `freeScroll` require it and page by it, so they take any number. `singleDay` fixes it at 1.
 
 <!-- snippet: expression -->
 ```dart

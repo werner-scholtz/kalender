@@ -44,7 +44,7 @@ class TimeOfDayRange {
   /// Whether this range runs from 00:00 to 23:59.
   bool get coversWholeDay => start.hour == 0 && end.hour == 23 && end.minute == 59;
 
-  @Deprecated('Use coversWholeDay. Will be removed in 0.28.0.')
+  @Deprecated('Use coversWholeDay. Will be removed in 0.27.0.')
   bool get isAllDay => coversWholeDay;
 
   /// Returns a [Duration] representing the time difference between the [start] and [end].
