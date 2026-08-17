@@ -25,11 +25,12 @@ class Event extends CalendarEvent {
     this.color,
     super.interaction,
     super.multiDayRule,
+    super.isAllDay,
   });
 
   // Rebuilds the fields this class adds. The calendar calls this on every drag
-  // and resize, then restores id, interaction and multiDayRule itself, so none
-  // of those are listed here.
+  // and resize, then restores id, interaction, multiDayRule and isAllDay
+  // itself, so none of those are listed here.
   @override
   Event copyWithData({required DateTimeRange dateTimeRange}) {
     return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
@@ -70,7 +71,7 @@ class Event extends CalendarEvent {
 
 ### The copy contract
 
-The calendar calls `withDateTimeRange` on every drag and resize. It calls your `copyWithData`, then restores the `id`, `interaction` and `multiDayRule` that `CalendarEvent` holds, which is why `copyWithData` lists only your own fields. Call `carryOver` from a copy method of your own to get the same. A subclass with no `copyWithData` is flagged by the analyzer, since it is `@mustBeOverridden`.
+The calendar calls `withDateTimeRange` on every drag and resize. It calls your `copyWithData`, then restores the `id`, `interaction`, `multiDayRule` and `isAllDay` that `CalendarEvent` holds, which is why `copyWithData` lists only your own fields. Call `carryOver` from a copy method of your own to get the same. A subclass with no `copyWithData` is flagged by the analyzer, since it is `@mustBeOverridden`.
 
 ### Updating events
 
@@ -87,7 +88,7 @@ Because `==` and `hashCode` include your custom fields, the calendar will detect
 
 ### `layoutEquals`
 
-Only override `layoutEquals` when a custom property changes the *size or position* of the tile, for example a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, `interaction`, and `multiDayRule`, which is sufficient for most cases.
+Only override `layoutEquals` when a custom property changes the *size or position* of the tile, for example a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, `interaction`, `multiDayRule` and `isAllDay`, which is sufficient for most cases.
 
 ### Accessing custom fields in tile builders
 
@@ -126,9 +127,18 @@ CalendarCallbacks(
 
 ---
 
-## Multi-day events
+## Multi-day and all-day events
 
 A `MultiDayRule` decides whether an event renders in the multi-day header lane or in the day timeline. The rule is set on the view configuration (see [Shared options](views.md#shared-options)) and defaults to counting events of 24 hours or longer as multi-day.
+
+An event that is all-day by nature rather than by duration says so directly, and no rule is consulted:
+
+<!-- snippet: expression -->
+```dart
+CalendarEvent(dateTimeRange: range, isAllDay: true)
+```
+
+This puts it in the header lane whatever its duration, which no `MultiDayRule` can express for an event lasting an hour. The date range is left alone, so an app wanting midnight to midnight supplies it. `isAllDay` defaults to false, where the rules below apply as before.
 
 A single event can override the calendar's rule:
 

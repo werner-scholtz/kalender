@@ -22,12 +22,25 @@ SUMMARY:Single
 DTSTART:20250110T120000
 DTEND:20250110T130000
 END:VEVENT
+BEGIN:VEVENT
+UID:a@example.com
+DTSTAMP:20250101T000000Z
+SUMMARY:All day
+DTSTART;VALUE=DATE:20250115
+DTEND;VALUE=DATE:20250116
+END:VEVENT
+BEGIN:VEVENT
+UID:b@example.com
+DTSTAMP:20250101T000000Z
+SUMMARY:All day, no end
+DTSTART;VALUE=DATE:20250117
+END:VEVENT
 END:VCALENDAR''';
 
 void main() {
   test('parses masters and expands recurrence over the window', () {
     final sources = parseIcs(_sample);
-    expect(sources.length, 2);
+    expect(sources.length, 4);
 
     // January 2025 has Mondays on the 6th, 13th, 20th and 27th.
     final window = DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 31));
@@ -35,13 +48,54 @@ void main() {
 
     final weekly = events.where((e) => e.uid == 'w@example.com');
     expect(weekly.length, 4, reason: 'four Mondays in January');
-    expect(events.length, 5, reason: 'four weekly instances plus one single event');
+    expect(events.length, 7, reason: 'four weekly instances, one single event and two all-day events');
   });
 
   test('exported .ics round-trips the recurrence rule', () {
     final ics = exportIcs(parseIcs(_sample));
     expect(ics, contains('RRULE:FREQ=WEEKLY;BYDAY=MO'));
     expect(ics, contains('SUMMARY:Weekly'));
+  });
+
+  group('all-day events', () {
+    late List<IcsSource> sources;
+    setUp(() => sources = parseIcs(_sample));
+
+    IcsSource sourceFor(String uid) => sources.firstWhere((s) => s.uid == uid);
+
+    test('a date-valued DTSTART is read as all-day', () {
+      expect(sourceFor('a@example.com').isAllDay, isTrue);
+      expect(sourceFor('s@example.com').isAllDay, isFalse, reason: 'DTSTART carries a time');
+    });
+
+    test('DTEND is exclusive, so one date-valued day ends at the next midnight', () {
+      final source = sourceFor('a@example.com');
+      expect(source.start, DateTime(2025, 1, 15));
+      expect(source.end, DateTime(2025, 1, 16));
+    });
+
+    test('a missing DTEND means one day, not one hour', () {
+      final source = sourceFor('b@example.com');
+      expect(source.isAllDay, isTrue);
+      expect(source.end.difference(source.start), const Duration(days: 1));
+    });
+
+    test('the flag reaches the CalendarEvent', () {
+      final window = DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 31));
+      final events = expandEvents(sources, window);
+      expect(events.firstWhere((e) => e.uid == 'a@example.com').isAllDay, isTrue);
+      expect(events.firstWhere((e) => e.uid == 's@example.com').isAllDay, isFalse);
+    });
+
+    test('export writes it back as VALUE=DATE, so it does not become a timed event', () {
+      final ics = exportIcs(sources);
+      expect(ics, contains('DTSTART;VALUE=DATE:20250115'));
+      expect(ics, contains('DTEND;VALUE=DATE:20250116'));
+      expect(ics, contains('DTSTART:20250110T120000'), reason: 'a timed event is unaffected');
+
+      // And it survives the round trip.
+      expect(parseIcs(ics).firstWhere((s) => s.uid == 'a@example.com').isAllDay, isTrue);
+    });
   });
 
   test('expansion is bounded to the window', () {

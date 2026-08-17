@@ -14,6 +14,7 @@ class IcsEvent extends CalendarEvent {
     this.description,
     super.interaction,
     super.multiDayRule,
+    super.isAllDay,
   });
 
   final String uid;

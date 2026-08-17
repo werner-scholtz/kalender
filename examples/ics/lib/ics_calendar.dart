@@ -11,6 +11,7 @@ class IcsSource {
     required this.summary,
     required this.start,
     required this.end,
+    required this.isAllDay,
     this.description,
     this.recurrence,
   });
@@ -20,6 +21,9 @@ class IcsSource {
   final String? description;
   final DateTime start;
   final DateTime end;
+
+  /// Whether `DTSTART` was date-valued, which is how RFC 5545 says all-day.
+  final bool isAllDay;
 
   /// The recurrence rule, kept as-is so it can be written back out on export.
   final Recurrence? recurrence;
@@ -32,16 +36,30 @@ List<IcsSource> parseIcs(String text) {
   for (final event in calendar.children.whereType<VEvent>()) {
     final start = event.start;
     if (start == null) continue;
+    final isAllDay = _isDateValued(event, DateTimeProperty.propertyNameStart);
     sources.add(IcsSource(
       uid: event.uid,
       summary: event.summary ?? 'Untitled',
       description: event.description,
       start: start,
-      end: event.end ?? start.add(const Duration(hours: 1)),
+      isAllDay: isAllDay,
+      // RFC 5545 makes DTEND exclusive, and an all-day event with none lasts a
+      // single day.
+      end: event.end ?? start.add(isAllDay ? const Duration(days: 1) : const Duration(hours: 1)),
       recurrence: event.recurrenceRule,
     ));
   }
   return sources;
+}
+
+/// Whether [name] carries `VALUE=DATE` rather than a date and time.
+///
+/// `VEvent.isAllDayEvent` reads `X-MICROSOFT-CDO-ALLDAYEVENT` instead, which
+/// most producers never write, so the standard signal has to be read off the
+/// property itself.
+bool _isDateValued(VEvent event, String name) {
+  final property = event.getProperty<DateTimeProperty>(name);
+  return (property?[ParameterType.value] as ValueParameter?)?.valueType == ValueType.date;
 }
 
 /// Expand [sources] into concrete events that fall within [window].
@@ -85,14 +103,31 @@ String exportIcs(List<IcsSource> sources) {
     final event = VEvent(parent: calendar)
       ..uid = source.uid
       ..timeStamp = DateTime.now()
-      ..start = source.start
-      ..end = source.end
       ..summary = source.summary
       ..description = source.description
       ..recurrenceRule = source.recurrence;
+
+    if (source.isAllDay) {
+      event
+        ..setProperty(_dateProperty(DateTimeProperty.propertyNameStart, source.start))
+        ..setProperty(_dateProperty(DateTimeProperty.propertyNameEnd, source.end));
+    } else {
+      event
+        ..start = source.start
+        ..end = source.end;
+    }
+
     calendar.children.add(event);
   }
   return calendar.toString();
+}
+
+/// A `DTSTART`/`DTEND` written as `VALUE=DATE`, so an all-day event survives a
+/// round trip as one.
+DateTimeProperty _dateProperty(String name, DateTime date) {
+  final month = date.month.toString().padLeft(2, '0');
+  final day = date.day.toString().padLeft(2, '0');
+  return DateTimeProperty('$name;VALUE=DATE:${date.year}$month$day');
 }
 
 IcsEvent _event(IcsSource source, DateTime start, DateTime end, Color color) {
@@ -102,6 +137,7 @@ IcsEvent _event(IcsSource source, DateTime start, DateTime end, Color color) {
     title: source.summary,
     description: source.description,
     color: color,
+    isAllDay: source.isAllDay,
   );
 }
 

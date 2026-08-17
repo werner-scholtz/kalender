@@ -64,7 +64,7 @@ class VerticalDragTarget extends StatefulWidget {
         if (isMultiDay) return true;
 
         // Check if the event will fit within the time of day range.
-        if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
+        if (!timeOfDayRange.coversWholeDay && event.duration > timeOfDayRange.duration) return false;
 
         return true;
       },
@@ -302,7 +302,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
     InternalDateTime start;
 
-    if (timeOfDayRange.isAllDay) {
+    if (timeOfDayRange.coversWholeDay) {
       start = cursorDateTime;
     } else {
       final startOfDate = timeOfDayRange.start.toInternalDateTime(cursorDateTime);

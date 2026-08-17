@@ -148,7 +148,7 @@ Runnable apps in [`examples/`](examples/README.md):
 The detailed guides live in [`doc/`](doc/README.md):
 
 - **[Views](doc/views.md).** Multi-day (day, week, work week, custom day counts, free scroll), month and schedule. What carries over on a view switch: the focused date, the scroll position, the zoom level.
-- **[Events](doc/events.md).** Subclassing `CalendarEvent` to attach your own data, updating events through the controller, and the `MultiDayRule` that puts an event in the multi-day header rather than the day timeline.
+- **[Events](doc/events.md).** Subclassing `CalendarEvent` to attach your own data, updating events through the controller, and what puts an event in the multi-day header rather than the day timeline: the `MultiDayRule`, or `isAllDay` on the event itself.
 - **[Interaction](doc/interaction.md).** Creating, rescheduling and resizing, set separately for the header and the body and lockable per event. Snapping to an interval, the time indicator, other events, or your own strategy. Zoom driven from the controller.
 - **[Controllers & Callbacks](doc/controllers-and-callbacks.md).** Jumping and animating to a date or an event, switching views, reacting to taps, creation, resizing and rescheduling, and building a navigation toolbar.
 - **[Appearance](doc/appearance.md).** A `ThemeExtension` with Material 3 defaults that follows your app's `ThemeData`, and replacing components outright: event tiles, day headers, the timeline gutter, the time indicator, the multi-day overflow overlay.

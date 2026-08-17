@@ -1,0 +1,107 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:kalender/kalender.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show MultiDayEventTile;
+
+import '../utilities.dart';
+
+/// `isAllDay` decides the lane on its own, so an event carrying it renders in
+/// the header whatever the view's rule says and whatever its duration is.
+void main() {
+  late DefaultEventsController eventsController;
+  late CalendarController calendarController;
+
+  final start = DateTime(2025, 1, 6); // A Monday.
+
+  // One hour, inside a single calendar day. Neither built-in rule calls this
+  // multi-day, so only the flag can put it in the header.
+  final shortRange = DateTimeRange(
+    start: start.add(const Duration(days: 1, hours: 9)),
+    end: start.add(const Duration(days: 1, hours: 10)),
+  );
+
+  final interaction = CalendarInteraction(
+    inputMode: InputMode.precise,
+    createEventGesture: CreateEventGesture.tap,
+    modifyEventGesture: CreateEventGesture.tap,
+  );
+
+  setUp(() {
+    eventsController = DefaultEventsController();
+    calendarController = CalendarController();
+  });
+
+  Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule, {CalendarCallbacks? callbacks}) {
+    return pumpAndSettleWithMaterialApp(
+      tester,
+      CalendarView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        callbacks: callbacks,
+        viewConfiguration: MultiDayViewConfiguration.week(
+          displayRange: year2025DisplayRange,
+          initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+          initialDateTime: start,
+          multiDayRule: rule,
+        ),
+        header: CalendarHeader(interaction: interaction),
+        body: CalendarBody(interaction: interaction),
+      ),
+    );
+  }
+
+  testWidgets('an hour-long all-day event renders in the header', (tester) async {
+    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange, isAllDay: true));
+
+    await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
+
+    expect(find.byKey(MultiDayEventTile.tileKey(id)), findsOneWidget);
+    expect(find.byKey(DayEventTile.tileKey(id)), findsNothing);
+  });
+
+  testWidgets('the same event without the flag stays in the body', (tester) async {
+    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange));
+
+    await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
+
+    expect(find.byKey(DayEventTile.tileKey(id)), findsWidgets);
+    expect(find.byKey(MultiDayEventTile.tileKey(id)), findsNothing);
+  });
+
+  testWidgets('the view rule cannot pull it back into the body', (tester) async {
+    // A rule nothing satisfies. The flag still decides.
+    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange, isAllDay: true));
+
+    await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(days: 365)));
+
+    expect(find.byKey(MultiDayEventTile.tileKey(id)), findsOneWidget);
+    expect(find.byKey(DayEventTile.tileKey(id)), findsNothing);
+  });
+
+  testWidgets('rescheduling it in the header keeps it all-day', (tester) async {
+    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange, isAllDay: true));
+
+    CalendarEvent? changed;
+    await pumpWeek(
+      tester,
+      const MultiDayRule.minimumDuration(Duration(hours: 24)),
+      callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated),
+    );
+
+    final original = eventsController.byId(id)!;
+    final dayWidth = tester.getSize(find.byType(CalendarView)).width / 7;
+
+    final gesture = await tester.startGesture(tester.getCenter(find.byKey(MultiDayEventTile.tileKey(id))));
+    await tester.pump(const Duration(milliseconds: 100));
+    await gesture.moveBy(Offset(dayWidth * 2, 0));
+    await tester.pumpAndSettle();
+    await gesture.up();
+    await tester.pumpAndSettle();
+
+    expect(changed, isNotNull, reason: 'a short all-day event has to be draggable in the header at all');
+    expect(changed!.start.day, isNot(equals(original.start.day)), reason: 'the drag has to have moved it');
+    expect(changed!.isAllDay, isTrue);
+    expect(changed!.duration, equals(original.duration), reason: 'the range is the app\'s, not the calendar\'s');
+  });
+}

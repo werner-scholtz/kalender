@@ -1,3 +1,13 @@
+## 0.27.0
+
+### Features
+
+- `CalendarEvent.isAllDay` states that an event occupies whole days rather than a span of time. True places it in the multi-day header lane whatever its duration and consults no `MultiDayRule`, which is the case no rule could express: an hour-long event inside one calendar day needed an override of `spansMultipleDays` before. False, the default, leaves the decision where it was, so nothing changes for an event that does not set it. The date range is untouched, and the flag is carried across drags and resizes by `carryOver` like `id` and `multiDayRule`. It joins `layoutEquals` and `hashCode`, since it decides which lane the tile renders in.
+
+### Deprecations
+
+- `TimeOfDayRange.isAllDay` is renamed to `coversWholeDay` and will be removed in 0.28.0. It reports whether the range runs from 00:00 to 23:59, which is about the hours the body lays out rather than about an event, and the old name is wanted for `CalendarEvent.isAllDay`. `TimeOfDayRange.allDay()` is unchanged.
+
 ## 0.26.0
 
 See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.

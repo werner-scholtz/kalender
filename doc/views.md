@@ -20,7 +20,7 @@ For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. 
 All configurations accept:
 - `displayRange`: the total date range the calendar can navigate within (e.g. Jan 2024 to Dec 2025). Defaults to 1 January two years back through 1 January two years ahead.
 - `initialDateTime`: the date to show on first render. Defaults to `DateTime.now()`.
-- `multiDayRule`: what counts as a multi-day event and so renders in the multi-day header rather than the day timeline. Defaults to events lasting 24 hours or more (`MultiDayRule.minimumDuration`). `MultiDayRule.calendarDays()` instead counts anything that crosses midnight. A single event can override the rule, see [Multi-day events](events.md#multi-day-events).
+- `multiDayRule`: what counts as a multi-day event and so renders in the multi-day header rather than the day timeline. Defaults to events lasting 24 hours or more (`MultiDayRule.minimumDuration`). `MultiDayRule.calendarDays()` instead counts anything that crosses midnight. A single event can override the rule, or state that it is all-day and skip the rule entirely, see [Multi-day and all-day events](events.md#multi-day-and-all-day-events).
 - `name`: identifies the view. Each constructor sets one already (`'Day'`, `'Week'`, `'Work Week'`, `'Custom'`, `'Free Scroll'`, `'Month'`, `'Schedule'`). It is what `DateTransition.restorePerView` matches on, so two configurations that should restore separately need different names. It is also a ready-made label for a view switcher, see [Building the surrounding UI](controllers-and-callbacks.md#building-the-surrounding-ui).
 - `nowCallback`: overrides how the calendar resolves "now", see [Now Callback](timezones-and-locales.md#now-callback).
 

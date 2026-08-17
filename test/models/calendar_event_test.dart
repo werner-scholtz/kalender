@@ -383,6 +383,87 @@ void main() {
     });
   });
 
+  group('isAllDay', () {
+    final shortRange = DateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10));
+
+    test('defaults to false and changes nothing', () {
+      final event = CalendarEvent(dateTimeRange: shortRange);
+      expect(event.isAllDay, isFalse);
+      expect(event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule), isFalse);
+    });
+
+    test('a one-hour event set all-day belongs in the header lane', () {
+      // No MultiDayRule can express this: the event is under 24 hours and sits
+      // inside one calendar day, so before the flag it needed an override of
+      // spansMultipleDays.
+      final event = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      expect(event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule), isTrue);
+      expect(event.spansMultipleDays(location: utcLocation, defaultRule: const MultiDayRule.calendarDays()), isTrue);
+    });
+
+    test('outranks a per-event rule that says otherwise', () {
+      final event = CalendarEvent(
+        dateTimeRange: shortRange,
+        isAllDay: true,
+        multiDayRule: const MultiDayRule.minimumDuration(Duration(days: 7)),
+      );
+      expect(event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule), isTrue);
+    });
+
+    test('leaves the date range alone', () {
+      final event = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      expect(event.dateTimeRange, equals(shortRange));
+    });
+
+    test('survives a drag', () {
+      final event = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      final moved = event.withDateTimeRange(
+        DateTimeRange(start: DateTime.utc(2024, 1, 16, 9), end: DateTime.utc(2024, 1, 16, 10)),
+      );
+      expect(moved.isAllDay, isTrue);
+    });
+
+    test('participates in layoutEquals, since it decides the lane', () {
+      final a = CalendarEvent(id: 'same', dateTimeRange: shortRange);
+      final b = CalendarEvent(id: 'same', dateTimeRange: shortRange, isAllDay: true);
+      expect(a.layoutEquals(b), isFalse);
+      expect(a, isNot(equals(b)));
+    });
+
+    test('the controller sorts it into the multi-day lane', () {
+      final controller = DefaultEventsController();
+      addTearDown(controller.dispose);
+
+      final timed = CalendarEvent(dateTimeRange: shortRange);
+      final allDay = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      controller.addEvents([timed, allDay]);
+
+      final day = InternalDateTimeRange(
+        start: InternalDateTime.fromExternal(DateTime.utc(2024, 1, 15), location: utcLocation),
+        end: InternalDateTime.fromExternal(DateTime.utc(2024, 1, 16), location: utcLocation),
+      );
+
+      expect(
+        controller.eventsFromDateTimeRange(
+          day,
+          multiDayRule: defaultMultiDayRule,
+          includeDayEvents: false,
+          location: utcLocation,
+        ),
+        equals([allDay]),
+      );
+      expect(
+        controller.eventsFromDateTimeRange(
+          day,
+          multiDayRule: defaultMultiDayRule,
+          includeMultiDayEvents: false,
+          location: utcLocation,
+        ),
+        equals([timed]),
+      );
+    });
+  });
+
   group('MultiDayRule equality', () {
     test('the same rule compares equal', () {
       expect(const MultiDayRule.calendarDays(), const MultiDayRule.calendarDays());
