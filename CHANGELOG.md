@@ -1,3 +1,11 @@
+## 0.27.0
+
+See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
+
+### Breaking Changes
+
+- `TimeOfDayRange.isAllDay` is removed, as its 0.26.0 deprecation message named. Use `coversWholeDay`. `TimeOfDayRange.allDay()` is unaffected.
+
 ## 0.26.0
 
 See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.

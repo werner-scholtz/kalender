@@ -4,6 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.26.x → v0.27.0](#v026x--v0270) | The deprecated `isAllDay` getter on `TimeOfDayRange` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
@@ -12,6 +13,24 @@ Each section covers one upgrade. Versions not listed below need no changes.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.26.x → v0.27.0
+
+### `TimeOfDayRange.isAllDay` is removed
+
+Deprecated in 0.26.0, which named this release. The getter reports whether the
+range runs from 00:00 to 23:59, and it was renamed so `isAllDay` could describe
+an event instead.
+
+```dart
+// Before
+if (timeOfDayRange.isAllDay) { ... }
+
+// After
+if (timeOfDayRange.coversWholeDay) { ... }
+```
+
+`TimeOfDayRange.allDay()` is a different member and is unaffected.
 
 ## v0.25.x → v0.26.0
 
