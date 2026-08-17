@@ -37,20 +37,17 @@ enum Views { week, month, schedule }
 /// running locally.
 final numberOfRuns = int.tryParse(Platform.environment['KALENDER_PERF_RUNS'] ?? '') ?? 5;
 
-/// Build-frame metrics we keep as the actionable signal (lower is better).
+/// The metrics tracked, all of them build-frame (lower is better).
 ///
-/// Rasterizer metrics are deliberately excluded from the primary signal: under
-/// Xvfb/llvmpipe (software rasterization, no GPU) the `missed_rasterizer_budget`
-/// counter is pure noise (~50% run-to-run) and `avg_rasterizer_time`, while
-/// stable, does not represent real-device GPU performance. The latter is kept
-/// only as a clearly-labelled diagnostic in the `extra` field below.
+/// Rasterizer metrics are not tracked. The job renders under Xvfb with llvmpipe,
+/// so there is no GPU and the numbers describe a software rasterizer rather than
+/// a real device. Each metric is read from its own [driver.TimelineSummary]
+/// method rather than from `summaryJson`, which computes the rasterizer average
+/// as well and throws when a window captured no rasterizer frames.
 const _buildMetric = 'average_frame_build_time_millis';
 const _p90Metric = '90th_percentile_frame_build_time_millis';
 const _p99Metric = '99th_percentile_frame_build_time_millis';
 const _missedBuildMetric = 'missed_frame_build_budget_count';
-const _rasterMetric = 'average_frame_rasterizer_time_millis';
-
-const _trackedMetrics = [_buildMetric, _p90Metric, _p99Metric, _missedBuildMetric, _rasterMetric];
 
 Future<void> main() {
   return integrationDriver(
@@ -75,16 +72,19 @@ Future<void> main() {
               final timeline = driver.Timeline.fromJson(raw as Map<String, dynamic>);
               final summary = driver.TimelineSummary.summarize(timeline);
 
-              // Keep the raw timeline + summary as a debugging artifact.
-              await summary.writeTimelineToFile(reportKey, pretty: true, includeSummary: true);
+              // Keep the raw timeline as a debugging artifact.
+              await summary.writeTimelineToFile(reportKey, pretty: true, includeSummary: false);
+
+              final values = _buildMetricsOf(summary);
+              if (values == null) {
+                print('⚠️  $reportKey captured no build frames, dropped from the median');
+                continue;
+              }
 
               final base = Scenario.baseKeyFromReportKey(reportKey);
               final metrics = byBaseKey.putIfAbsent(base, () => {});
-              for (final metric in _trackedMetrics) {
-                final value = summary.summaryJson[metric];
-                if (value is num) {
-                  metrics.putIfAbsent(metric, () => <num>[]).add(value);
-                }
+              for (final entry in values.entries) {
+                metrics.putIfAbsent(entry.key, () => <num>[]).add(entry.value);
               }
             }
           }
@@ -115,7 +115,6 @@ Future<void> main() {
         final extra = 'p90_build=${fmt(_p90Metric)} '
             'p99_build=${fmt(_p99Metric)} '
             'missed_build=${fmt(_missedBuildMetric, suffix: 'count')} '
-            'avg_raster_sw=${fmt(_rasterMetric)} '
             '(runs=${buildValues.length})';
 
         results.add({
@@ -135,6 +134,21 @@ Future<void> main() {
       print('\nWrote ${results.length} frame results to ${output.path}');
     },
   );
+}
+
+/// The tracked metrics for one profiled window, or null when it captured no
+/// build frames to compute them from.
+Map<String, num>? _buildMetricsOf(driver.TimelineSummary summary) {
+  try {
+    return {
+      _buildMetric: summary.computeAverageFrameBuildTimeMillis(),
+      _p90Metric: summary.computePercentileFrameBuildTimeMillis(90),
+      _p99Metric: summary.computePercentileFrameBuildTimeMillis(99),
+      _missedBuildMetric: summary.computeMissedFrameBuildBudgetCount(),
+    };
+  } on StateError {
+    return null;
+  }
 }
 
 /// Median of [values] (non-mutating).
