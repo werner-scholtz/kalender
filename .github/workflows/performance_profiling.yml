@@ -46,7 +46,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      # Pinned, unlike the analyze and test workflows. This job compares numbers
+      # against the history stored on gh-pages, so an SDK that moves underneath it
+      # shows up as a performance change that no commit here caused.
       - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
+          channel: stable
 
       - name: Install Linux dependencies
         run: |
@@ -93,6 +99,14 @@ jobs:
           name: timelines-${{ github.run_number }}
           path: examples/testing/build/*.timeline.json
           retention-days: 30
+
+      # `flutter pub get` rewrites analysis_options.yaml to exclude the build and
+      # platform directories, here and in examples/testing. The publish steps below
+      # switch to gh-pages, which carries neither file, and git refuses to switch
+      # while they are modified. Every result this job produces sits in an ignored
+      # build/ directory, so restoring the tracked files discards nothing.
+      - name: Restore files the SDK rewrote
+        run: git restore .
 
       # --- Publish to the dashboard at gh-pages/dev/bench ----------------------
       # Comment-only: fail-on-alert is false, so regressions are surfaced in a PR
