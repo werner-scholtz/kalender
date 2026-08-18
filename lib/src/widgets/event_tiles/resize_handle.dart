@@ -7,7 +7,6 @@ import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/components/resize_handles.dart';
 
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {
@@ -155,10 +154,10 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
     final visibility = Visibility(
       visible: _showHandles && _size != Size.zero,
       maintainState: false,
-      child: ResizeHandles.builder(
+      child: widget.tileComponents.buildResizeHandles(
+        context,
         widget.event,
         interaction,
-        widget.tileComponents,
         widget.dateTimeRange,
         _size,
         widget.axis,

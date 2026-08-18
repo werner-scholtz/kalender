@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart'
-    show CalendarEvent, MultiDayBody, MonthBody, ScheduleBody, ResizeHandlePositioner, ScheduleComponents;
+    show
+        CalendarEvent,
+        CalendarInteraction,
+        MultiDayBody,
+        MonthBody,
+        ScheduleBody,
+        ResizeHandlePositioner,
+        ResizeHandles,
+        ScheduleComponents;
 import 'package:kalender/src/widgets/components/default_tile_components.dart';
+import 'package:kalender/src/widgets/components/resize_handles.dart' show DefaultResizeHandles;
 
 /// The components used by the [MultiDayBody]/[MonthBody] to render the event tiles.
 ///
@@ -70,6 +79,28 @@ class TileComponents {
       feedbackTileBuilder: defaultFeedbackTileBuilder,
       dropTargetTile: defaultDropTargetBuilder,
     );
+  }
+
+  /// Positions the resize handles, with [resizeHandlePositioner] when set.
+  ResizeHandles buildResizeHandles(
+    BuildContext context,
+    CalendarEvent event,
+    CalendarInteraction interaction,
+    DateTimeRange dateTimeRange,
+    Size size,
+    Axis axis,
+    bool isImprecise,
+  ) {
+    return resizeHandlePositioner?.call(context, event, interaction, this, dateTimeRange, size, axis, isImprecise) ??
+        DefaultResizeHandles(
+          event: event,
+          interaction: interaction,
+          tileComponents: this,
+          dateTimeRange: dateTimeRange,
+          size: size,
+          axis: axis,
+          isImprecise: isImprecise,
+        );
   }
 
   /// Compares the builders, so components built with the same ones are equal.

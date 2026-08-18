@@ -17,6 +17,7 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 /// [axis] is the axis along which the resize handles are positioned.
 /// [isImprecise] indicates whether the current input is imprecise (e.g. touch/finger).
 typedef ResizeHandlePositioner = ResizeHandles Function(
+  BuildContext context,
   CalendarEvent event,
   CalendarInteraction interaction,
   TileComponents tileComponents,
@@ -62,36 +63,6 @@ abstract class ResizeHandles extends StatelessWidget {
     required this.isImprecise,
     super.key,
   });
-
-  /// Builds the ResizeHandles using the provided [tileComponents] or the default implementation.
-  static ResizeHandles builder(
-    CalendarEvent event,
-    CalendarInteraction interaction,
-    TileComponents tileComponents,
-    DateTimeRange dateTimeRange,
-    Size size,
-    Axis axis,
-    bool isImprecise,
-  ) {
-    return tileComponents.resizeHandlePositioner?.call(
-          event,
-          interaction,
-          tileComponents,
-          dateTimeRange,
-          size,
-          axis,
-          isImprecise,
-        ) ??
-        DefaultResizeHandles(
-          event: event,
-          interaction: interaction,
-          tileComponents: tileComponents,
-          dateTimeRange: dateTimeRange,
-          size: size,
-          axis: axis,
-          isImprecise: isImprecise,
-        );
-  }
 
   /// Whether the axis is vertical.
   bool get isVertical => axis == Axis.vertical;

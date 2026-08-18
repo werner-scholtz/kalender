@@ -145,6 +145,22 @@ static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRang
     EventTile(event: event);
 ```
 
+### `ResizeHandlePositioner` takes a `BuildContext`
+
+The context goes in front, and the lookup moves off the widget:
+
+```dart
+// Before
+ResizeHandles.builder(event, interaction, tileComponents, dateTimeRange, size, axis, isImprecise)
+
+// After
+tileComponents.buildResizeHandles(context, event, interaction, dateTimeRange, size, axis, isImprecise)
+```
+
+A custom positioner takes the context as its first parameter and is otherwise
+unchanged. It still receives the `TileComponents`, which the `ResizeHandles` base
+class requires.
+
 ### The `builder` and `fromContext` statics are removed
 
 `TimeLine`, `HourLines`, `DaySeparator`, `TimeIndicator`, `DayHeader`,
