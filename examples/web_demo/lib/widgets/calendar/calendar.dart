@@ -223,15 +223,15 @@ class _CalendarContentState extends State<CalendarContent> {
   }
 
   TileComponents _buildTileComponents({
-    required Widget Function(CalendarEvent, DateTimeRange) tileBuilder,
-    Widget Function(CalendarEvent, DateTimeRange)? overlayTileBuilder,
+    required TileBuilder tileBuilder,
+    TileBuilder? overlayTileBuilder,
   }) {
     return TileComponents(
       tileBuilder: tileBuilder,
       overlayTileBuilder: overlayTileBuilder,
-      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
-      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
+      dropTargetTile: (context, event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (context, event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (context, event) => TileWhenDragging.builder(event as Event),
       dragAnchorStrategy: _dragAnchorStrategy,
       verticalResizeHandle: const ResizeHandle.vertical(),
       horizontalResizeHandle: const ResizeHandle.horizontal(),
@@ -239,17 +239,17 @@ class _CalendarContentState extends State<CalendarContent> {
   }
 
   TileComponents get _tileComponents =>
-      _buildTileComponents(tileBuilder: (event, range) => EventTile.builder(event as Event, range));
+      _buildTileComponents(tileBuilder: (context, event, range) => EventTile.builder(event as Event, range));
 
   TileComponents get _multiDayTileComponents => _buildTileComponents(
-        tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
-        overlayTileBuilder: (event, range) => MultiDayEventTile.overlayBuilder(event as Event, range),
+        tileBuilder: (context, event, range) => MultiDayEventTile.builder(event as Event, range),
+        overlayTileBuilder: (context, event, range) => MultiDayEventTile.overlayBuilder(event as Event, range),
       );
 
   ScheduleTileComponents get _scheduleTileComponents => ScheduleTileComponents(
-        tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
-        feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
-        tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
+        tileBuilder: (context, event, range) => MultiDayEventTile.builder(event as Event, range),
+        feedbackTileBuilder: (context, event, size) => FeedbackTile.builder(event as Event, size),
+        tileWhenDraggingBuilder: (context, event) => TileWhenDragging.builder(event as Event),
         dragAnchorStrategy: _dragAnchorStrategy,
       );
 

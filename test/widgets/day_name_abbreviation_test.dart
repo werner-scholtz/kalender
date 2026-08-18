@@ -21,7 +21,7 @@ void main() {
       TestProvider(
         calendarController: CalendarController(),
         eventsController: DefaultEventsController(),
-        tileComponents: TileComponents(tileBuilder: (event, tileRange) => const SizedBox()),
+        tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
         locale: locale,
         child: ScheduleDate(date: wednesday),
       ),
@@ -56,7 +56,7 @@ void main() {
       TestProvider(
         calendarController: CalendarController(),
         eventsController: DefaultEventsController(),
-        tileComponents: TileComponents(tileBuilder: (event, tileRange) => const SizedBox()),
+        tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
         locale: 'de',
         child: Column(children: [ScheduleDate(date: wednesday), DayHeader(date: wednesday)]),
       ),

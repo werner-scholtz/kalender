@@ -57,7 +57,7 @@ abstract class BaseEventTile extends StatelessWidget {
 
 class EventTile extends BaseEventTile {
   const EventTile({super.key, required super.event, required super.tileRange});
-  static EventTile builder(CalendarEvent event, DateTimeRange tileRange) {
+  static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) {
     return EventTile(event: event as Event, tileRange: tileRange);
   }
 
@@ -82,6 +82,7 @@ class MultiDayEventTile extends BaseEventTile {
     required super.tileRange,
   });
   static MultiDayEventTile builder(
+    BuildContext context,
     CalendarEvent event,
     DateTimeRange tileRange,
   ) {
@@ -118,6 +119,7 @@ class OverlayEventTile extends BaseEventTile {
   });
 
   static OverlayEventTile builder(
+    BuildContext context,
     CalendarEvent event,
     DateTimeRange tileRange,
   ) {
@@ -171,7 +173,7 @@ class FeedbackTile extends StatelessWidget {
     required this.event,
     required this.dropTargetWidgetSize,
   });
-  static FeedbackTile builder(CalendarEvent event, Size dropTargetWidgetSize) {
+  static FeedbackTile builder(BuildContext context, CalendarEvent event, Size dropTargetWidgetSize) {
     return FeedbackTile(
       event: event as Event,
       dropTargetWidgetSize: dropTargetWidgetSize,
@@ -195,7 +197,7 @@ class FeedbackTile extends StatelessWidget {
 class DropTargetTile extends StatelessWidget {
   final Event event;
   const DropTargetTile({super.key, required this.event});
-  static DropTargetTile builder(CalendarEvent event) {
+  static DropTargetTile builder(BuildContext context, CalendarEvent event) {
     return DropTargetTile(event: event as Event);
   }
 
@@ -213,7 +215,7 @@ class DropTargetTile extends StatelessWidget {
 class TileWhenDragging extends StatelessWidget {
   final Event event;
   const TileWhenDragging({super.key, required this.event});
-  static TileWhenDragging builder(CalendarEvent event) {
+  static TileWhenDragging builder(BuildContext context, CalendarEvent event) {
     return TileWhenDragging(event: event as Event);
   }
 

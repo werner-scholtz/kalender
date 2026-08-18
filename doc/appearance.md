@@ -20,7 +20,7 @@ For most apps a plain `tileBuilder` is all you need:
 ```dart
 CalendarBody(
   multiDayTileComponents: TileComponents(
-    tileBuilder: (event, tileRange) {
+    tileBuilder: (context, event, tileRange) {
       final myEvent = event as Event;
       return Container(
         decoration: BoxDecoration(
@@ -48,19 +48,19 @@ the package's own behavior, so set only what you want to change.
   ```dart
   TileComponents(
     // Required: the stationary event tile.
-    tileBuilder: (event, tileRange) => Container(),
+    tileBuilder: (context, event, tileRange) => Container(),
 
     // Shown over the calendar in portal overlays instead of tileBuilder.
-    overlayTileBuilder: (event, tileRange) => Container(),
+    overlayTileBuilder: (context, event, tileRange) => Container(),
 
     // Shown in place of the tile while it is being dragged.
-    tileWhenDraggingBuilder: (event) => Container(),
+    tileWhenDraggingBuilder: (context, event) => Container(),
 
     // The tile that follows the cursor / finger during a drag.
-    feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
+    feedbackTileBuilder: (context, event, dropTargetWidgetSize) => Container(),
 
     // Rendered beneath the dragged tile to show where it will land.
-    dropTargetTile: (event) => Container(),
+    dropTargetTile: (context, event) => Container(),
 
     // The drag anchor strategy used by feedbackTileBuilder.
     dragAnchorStrategy: childDragAnchorStrategy,
@@ -94,13 +94,13 @@ Schedule view tiles have a different set of builders since they are laid out in 
   ```dart
   ScheduleTileComponents(
     // Required: the stationary event tile.
-    tileBuilder: (event, tileRange) => Container(),
+    tileBuilder: (context, event, tileRange) => Container(),
 
     // Shown in place of the tile while it is being dragged.
-    tileWhenDraggingBuilder: (event) => Container(),
+    tileWhenDraggingBuilder: (context, event) => Container(),
 
     // The tile that follows the cursor / finger during a drag.
-    feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
+    feedbackTileBuilder: (context, event, dropTargetWidgetSize) => Container(),
 
     // The drag anchor strategy used by feedbackTileBuilder.
     dragAnchorStrategy: childDragAnchorStrategy,
@@ -326,11 +326,11 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
 > register one on `ThemeData.extensions` for the whole app, or wrap a calendar in
 > a [`KalenderTheme`](#theming-part-of-the-app) to style one of them.
 >
-> A custom builder receives a `BuildContext` and resolves what it needs from it
-> with `KalenderTheme.of(context)`. The timeline and its gutter width resolve with
-> `GutterStyles.timelineStyleOf(context)`, the value the whole gutter is measured
-> from. Builders that still take a style parameter are handed the resolved value
-> directly.
+> Every builder receives a `BuildContext` as its first argument and resolves what
+> it needs from it with `KalenderTheme.of(context)`. The timeline and its gutter
+> width resolve with `GutterStyles.timelineStyleOf(context)`, the value the whole
+> gutter is measured from. `OverlayStyles.fromContext(context)` resolves both
+> overlay styles at once.
 
 <details>
   <summary>MultiDayComponents</summary>
@@ -342,8 +342,8 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
       headerComponents: MultiDayHeaderComponents(
         dayHeaderBuilder: (context, date) => CustomWidget(),
         weekNumberBuilder: (context, visibleDateTimeRange) => CustomWidget(),
-        leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-        rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+        leftTriggerBuilder: (context, pageWidth) => SizedBox(width: pageWidth / 20),
+        rightTriggerBuilder: (context, pageWidth) => SizedBox(width: pageWidth / 20),
         overlayBuilders: OverlayBuilders(
           multiDayPortalOverlayButtonBuilder:
               (context, portalController, numberOfHiddenRows) => SizedBox(),
@@ -357,10 +357,10 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
         timelineWidth: (context, timeOfDayRange) => 48,
         daySeparator: (context) => CustomWidget(),
         timeIndicator: (context, timeOfDayRange, heightPerMinute, location) => CustomWidget(),
-        leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-        rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-        topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
-        bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+        leftTriggerBuilder: (context, pageWidth) => SizedBox(width: pageWidth / 20),
+        rightTriggerBuilder: (context, pageWidth) => SizedBox(width: pageWidth / 20),
+        topTriggerBuilder: (context, viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+        bottomTriggerBuilder: (context, viewPortHeight) => SizedBox(height: viewPortHeight / 20),
       ),
     ),
   )
@@ -384,8 +384,8 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
         monthDayCellBuilder: (context, details) => SizedBox(),
         monthGridBuilder: (context, numberOfRows) => SizedBox(),
         weekNumberBuilder: (context, visibleDateTimeRange) => SizedBox(),
-        leftTriggerBuilder: (pageWidth) => SizedBox(),
-        rightTriggerBuilder: (pageWidth) => SizedBox(),
+        leftTriggerBuilder: (context, pageWidth) => SizedBox(),
+        rightTriggerBuilder: (context, pageWidth) => SizedBox(),
         overlayBuilders: OverlayBuilders(
           multiDayPortalOverlayButtonBuilder:
               (context, portalController, numberOfHiddenRows) => SizedBox(),

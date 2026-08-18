@@ -63,7 +63,7 @@ void main() {
         TestProvider(
           calendarController: calendarController,
           eventsController: eventsController,
-          tileComponents: TileComponents(tileBuilder: (event, range) => const SizedBox()),
+          tileComponents: TileComponents(tileBuilder: (context, event, range) => const SizedBox()),
           location: utcLocation,
           heightPerMinute: ValueNotifier(1.0),
           child: KeyedSubtree(key: key, child: harness),

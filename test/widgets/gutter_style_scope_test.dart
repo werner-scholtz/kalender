@@ -46,7 +46,7 @@ void main() {
     }
   }
 
-  final tiles = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
+  final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
   /// A calendar whose body is scoped to [bodyTheme] while the header is not,
   /// which is the shape the migration guide recommends for per-view styling.

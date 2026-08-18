@@ -19,7 +19,7 @@ void main() {
   });
 
   final components = TileComponents(
-    tileBuilder: (event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
+    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
   );
 
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);

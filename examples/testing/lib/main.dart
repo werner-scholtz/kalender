@@ -71,36 +71,36 @@ class _HomeState extends State<Home> {
 
   TileComponents get _tileComponents {
     return TileComponents(
-      tileBuilder: (event, range) => EventTile.builder(event as Event, range),
-      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-      feedbackTileBuilder: (event, size) =>
+      tileBuilder: (context, event, range) => EventTile.builder(event as Event, range),
+      dropTargetTile: (context, event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (context, event, size) =>
           FeedbackTile.builder(event as Event, size),
-      tileWhenDraggingBuilder: (event) =>
+      tileWhenDraggingBuilder: (context, event) =>
           TileWhenDragging.builder(event as Event),
     );
   }
 
   TileComponents get _multiDayTileComponents {
     return TileComponents(
-      tileBuilder: (event, range) =>
+      tileBuilder: (context, event, range) =>
           MultiDayEventTile.builder(event as Event, range),
-      overlayTileBuilder: (event, range) =>
+      overlayTileBuilder: (context, event, range) =>
           OverlayEventTile.builder(event as Event, range),
-      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-      feedbackTileBuilder: (event, size) =>
+      dropTargetTile: (context, event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (context, event, size) =>
           FeedbackTile.builder(event as Event, size),
-      tileWhenDraggingBuilder: (event) =>
+      tileWhenDraggingBuilder: (context, event) =>
           TileWhenDragging.builder(event as Event),
     );
   }
 
   ScheduleTileComponents get _scheduleTileComponents {
     return ScheduleTileComponents(
-      tileBuilder: (event, range) =>
+      tileBuilder: (context, event, range) =>
           MultiDayEventTile.builder(event as Event, range),
-      feedbackTileBuilder: (event, size) =>
+      feedbackTileBuilder: (context, event, size) =>
           FeedbackTile.builder(event as Event, size),
-      tileWhenDraggingBuilder: (event) =>
+      tileWhenDraggingBuilder: (context, event) =>
           TileWhenDragging.builder(event as Event),
     );
   }

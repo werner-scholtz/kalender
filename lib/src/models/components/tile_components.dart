@@ -155,6 +155,7 @@ class ScheduleTileComponents extends TileComponents {
 /// [tileRange] is the wall-clock [DateTimeRange] of the view the tile will be displayed in.
 /// The values are local [DateTime]s (or `TZDateTime`s when a timezone location is set).
 typedef TileBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
   DateTimeRange tileRange,
 );
@@ -163,6 +164,7 @@ typedef TileBuilder = Widget Function(
 ///
 /// [event] is the event that the tile will be built for.
 typedef TileWhenDraggingBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
 );
 
@@ -171,6 +173,7 @@ typedef TileWhenDraggingBuilder = Widget Function(
 /// [event] is the event that the tile will be built for.
 /// [dropTargetWidgetSize] is the size of the drop target widget.
 typedef FeedbackTileBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
   Size dropTargetWidgetSize,
 );
@@ -179,5 +182,6 @@ typedef FeedbackTileBuilder = Widget Function(
 ///
 /// [event] is the event that the tile will be built for.
 typedef TileDropTargetBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
 );

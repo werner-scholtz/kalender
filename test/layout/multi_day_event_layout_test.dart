@@ -31,11 +31,11 @@ void main() {
     late CalendarController controller;
 
     final tileComponents = TileComponents(
-      tileBuilder: (event, tileRange) => Container(
+      tileBuilder: (context, event, tileRange) => Container(
         key: ValueKey(event.id),
         child: Text(event.id.toString()),
       ),
-      dropTargetTile: (event) => Container(key: const ValueKey('drop-target')),
+      dropTargetTile: (context, event) => Container(key: const ValueKey('drop-target')),
     );
 
     final start = InternalDateTime(2025, 3, 24);

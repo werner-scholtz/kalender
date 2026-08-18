@@ -20,9 +20,12 @@ class DefaultTileBase extends StatelessWidget {
 }
 
 // Example builder functions for each tile type:
-Widget defaultTileBuilder(CalendarEvent event, DateTimeRange tileRange) => const DefaultTileBase(label: 'Tile');
-Widget defaultTileWhenDraggingBuilder(CalendarEvent event) => const DefaultTileBase(label: 'TileWhenDragging');
-Widget defaultDropTargetBuilder(CalendarEvent event) => const DefaultTileBase(label: 'DropTarget');
-Widget defaultFeedbackTileBuilder(CalendarEvent event, Size size) {
+Widget defaultTileBuilder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+    const DefaultTileBase(label: 'Tile');
+Widget defaultTileWhenDraggingBuilder(BuildContext context, CalendarEvent event) =>
+    const DefaultTileBase(label: 'TileWhenDragging');
+Widget defaultDropTargetBuilder(BuildContext context, CalendarEvent event) =>
+    const DefaultTileBase(label: 'DropTarget');
+Widget defaultFeedbackTileBuilder(BuildContext context, CalendarEvent event, Size size) {
   return Material(child: DefaultTileBase(label: 'FeedbackTile', width: size.width, height: size.height));
 }

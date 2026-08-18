@@ -118,6 +118,33 @@ The overlay is built into an `Overlay` rather than below the calendar.
 `KalenderTheme` is an `InheritedTheme`, so `KalenderTheme.of` still reaches it
 from the overlay builder's context.
 
+### The tile and trigger builders take a `BuildContext`
+
+These carry no style, so the context is the only change. Every app that draws its
+own tiles is affected.
+
+| Before | After |
+| --- | --- |
+| `tileBuilder: (event, tileRange) =>` | `tileBuilder: (context, event, tileRange) =>` |
+| `overlayTileBuilder: (event, tileRange) =>` | `overlayTileBuilder: (context, event, tileRange) =>` |
+| `tileWhenDraggingBuilder: (event) =>` | `tileWhenDraggingBuilder: (context, event) =>` |
+| `feedbackTileBuilder: (event, size) =>` | `feedbackTileBuilder: (context, event, size) =>` |
+| `dropTargetTile: (event) =>` | `dropTargetTile: (context, event) =>` |
+| `leftTriggerBuilder: (pageWidth) =>` | `leftTriggerBuilder: (context, pageWidth) =>` |
+| `topTriggerBuilder: (viewPortHeight) =>` | `topTriggerBuilder: (context, viewPortHeight) =>` |
+
+A tile builder written as a named function or a static takes the context the same
+way:
+
+```dart
+// Before
+static EventTile builder(CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
+
+// After
+static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+    EventTile(event: event);
+```
+
 ### The `builder` and `fromContext` statics are removed
 
 `TimeLine`, `HourLines`, `DaySeparator`, `TimeIndicator`, `DayHeader`,

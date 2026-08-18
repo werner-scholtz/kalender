@@ -153,7 +153,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final feedbackTile = widget.feedbackTileBuilder?.call(_event, _size);
+    final feedbackTile = widget.feedbackTileBuilder?.call(context, _event, _size);
     return feedbackTile ?? const SizedBox();
   }
 }

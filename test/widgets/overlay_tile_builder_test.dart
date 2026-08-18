@@ -53,8 +53,8 @@ void main() {
       await pumpAndOpenOverlay(
         tester,
         TileComponents(
-          tileBuilder: (event, tileRange) => const Text('normal'),
-          overlayTileBuilder: (event, tileRange) => const Text('overlay'),
+          tileBuilder: (context, event, tileRange) => const Text('normal'),
+          overlayTileBuilder: (context, event, tileRange) => const Text('overlay'),
         ),
       );
 
@@ -65,7 +65,7 @@ void main() {
     testWidgets('falls back to tileBuilder when omitted', (tester) async {
       await pumpAndOpenOverlay(
         tester,
-        TileComponents(tileBuilder: (event, tileRange) => const Text('normal')),
+        TileComponents(tileBuilder: (context, event, tileRange) => const Text('normal')),
       );
 
       expect(find.text('normal'), findsWidgets);

@@ -534,7 +534,7 @@ class MultiDayOverlay extends StatelessWidget {
                                       child: PassThroughPointer(
                                         child: Padding(
                                           padding: eventPadding,
-                                          child: context.tileComponents.dropTargetTile?.call(selectedEvent) ??
+                                          child: context.tileComponents.dropTargetTile?.call(context, selectedEvent) ??
                                               const SizedBox(),
                                         ),
                                       ),

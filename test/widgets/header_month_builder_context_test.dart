@@ -15,7 +15,7 @@ void main() {
     calendarController = CalendarController();
   });
 
-  final tiles = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
+  final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
   Future<void> pump(
     WidgetTester tester,
