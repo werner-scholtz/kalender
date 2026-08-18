@@ -157,9 +157,47 @@ ResizeHandles.builder(event, interaction, tileComponents, dateTimeRange, size, a
 tileComponents.buildResizeHandles(context, event, interaction, dateTimeRange, size, axis, isImprecise)
 ```
 
-A custom positioner takes the context as its first parameter and is otherwise
-unchanged. It still receives the `TileComponents`, which the `ResizeHandles` base
-class requires.
+A custom positioner takes the context as its first parameter and no longer
+receives the `TileComponents`. `ResizeHandles` dropped its `tileComponents` field
+along with it and resolves the handle widgets from the context instead, so a
+custom subclass drops it from its constructor:
+
+```dart
+// Before
+class MyHandles extends ResizeHandles {
+  const MyHandles({
+    required super.event,
+    required super.interaction,
+    required super.tileComponents,
+    required super.dateTimeRange,
+    required super.size,
+    required super.axis,
+    required super.isImprecise,
+  });
+
+  @override
+  Widget build(BuildContext context) => resizeHandle(axis);
+}
+
+// After
+class MyHandles extends ResizeHandles {
+  const MyHandles({
+    required super.event,
+    required super.interaction,
+    required super.dateTimeRange,
+    required super.size,
+    required super.axis,
+    required super.isImprecise,
+  });
+
+  @override
+  Widget build(BuildContext context) => resizeHandle(context, axis);
+}
+```
+
+`startResizeDetector` and `endResizeDetector` are unchanged. An app that needs
+its own `TileComponents` inside a positioner already holds the object it passed
+to the calendar, so it can close over that.
 
 ### The `builder` and `fromContext` statics are removed
 

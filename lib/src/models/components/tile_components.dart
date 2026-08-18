@@ -91,11 +91,10 @@ class TileComponents {
     Axis axis,
     bool isImprecise,
   ) {
-    return resizeHandlePositioner?.call(context, event, interaction, this, dateTimeRange, size, axis, isImprecise) ??
+    return resizeHandlePositioner?.call(context, event, interaction, dateTimeRange, size, axis, isImprecise) ??
         DefaultResizeHandles(
           event: event,
           interaction: interaction,
-          tileComponents: this,
           dateTimeRange: dateTimeRange,
           size: size,
           axis: axis,
