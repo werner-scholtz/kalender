@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
-import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:meta/meta.dart';
 
 /// Base class for events displayed in the calendar.

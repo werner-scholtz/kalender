@@ -25,7 +25,7 @@ extension CalendarLocale on BuildContext {
   /// The locale of the enclosing calendar, as passed to `CalendarView.locale`.
   ///
   /// This is the locale the calendar formats its own dates and times with, which
-  /// is not necessarily the app's locale. Pass it to `intl`'s [DateFormat] or
-  /// [NumberFormat], or to the localized extensions on [DateTime].
+  /// is not necessarily the app's locale. Pass it to `intl`'s `DateFormat` or
+  /// `NumberFormat`, or to the localized extensions on [DateTime].
   dynamic get calendarLocale => LocaleProvider.of(this);
 }
