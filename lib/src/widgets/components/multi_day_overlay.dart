@@ -15,6 +15,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// The [internalRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
 typedef MultiDayOverlayEventTileBuilder = MultiDayEventOverlayTile Function(
+  BuildContext context,
   CalendarEvent event,
   InternalDateTimeRange internalRange,
   VoidCallback dismissOverlay,
@@ -32,8 +33,11 @@ typedef RenderBoxCallback = RenderBox Function();
 /// The [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] for the `MultiDayEventLayoutWidget`.
 /// The [getOverlayPortalRenderBox] is the function that returns the [RenderBox] for the [MultiDayOverlay].
 /// The [overlayTileBuilder] is the builder for the overlay event tile.
-/// The [style] is the style for the overlay.
-typedef MultiDayOverlayBuilder = Widget Function({
+///
+/// Resolve the style with [KalenderTheme], or with [OverlayStyles.fromContext]
+/// for the overlay pair at once.
+typedef MultiDayOverlayBuilder = Widget Function(
+  BuildContext context, {
   required DateTime date,
   required List<CalendarEvent> events,
   required double tileHeight,
@@ -41,7 +45,6 @@ typedef MultiDayOverlayBuilder = Widget Function({
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
   required RenderBoxCallback getOverlayPortalRenderBox,
   required MultiDayOverlayEventTileBuilder overlayTileBuilder,
-  required MultiDayOverlayStyle? style,
 });
 
 class MultiDayOverlayStyle with Diagnosticable {
@@ -320,7 +323,7 @@ class MultiDayOverlay extends StatelessWidget {
     required this.overlayTileBuilder,
     required this.getMultiDayEventLayoutRenderBox,
     required this.getOverlayPortalRenderBox,
-    required this.style,
+    this.style,
   });
 
   /// Returns a [Key] for the overlay based on the date.
@@ -501,6 +504,7 @@ class MultiDayOverlay extends StatelessWidget {
                                         child: SizedBox(
                                           height: tileHeight,
                                           child: overlayTileBuilder(
+                                            context,
                                             event,
                                             InternalDateTimeRange.fromDateTimeRange(date.dayRange),
                                             portalController.hide,

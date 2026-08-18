@@ -86,11 +86,43 @@ weekNumberBuilder: (context, range) {
 },
 ```
 
+### The schedule and overlay builders take a `BuildContext`
+
+| Before | After |
+| --- | --- |
+| `leadingDateBuilder: (date, style) =>` | `leadingDateBuilder: (context, date) =>` |
+| `scheduleTileHighlightBuilder: (date, range, style, child) =>` | `scheduleTileHighlightBuilder: (context, date, range, child) =>` |
+| `emptyItemBuilder: (tileRange) =>` | `emptyItemBuilder: (context, tileRange) =>` |
+| `monthItemBuilder: (monthRange) =>` | `monthItemBuilder: (context, monthRange) =>` |
+| `multiDayPortalOverlayButtonBuilder: (controller, rows, style) =>` | `multiDayPortalOverlayButtonBuilder: (context, controller, rows) =>` |
+
+The two overlay builders take all their arguments by name. The context goes in
+front of them as a positional argument, and the style parameter is gone:
+
+```dart
+// Before
+multiDayOverlayBuilder: ({required date, required events, ..., required style}) => MyOverlay(style: style),
+
+// After
+multiDayOverlayBuilder: (context, {required date, required events, ...}) {
+  final style = KalenderTheme.of(context).multiDayOverlayStyle;
+  return MyOverlay(style: style);
+},
+```
+
+`MultiDayOverlayPortalBuilder` loses its `overlayStyles` parameter the same way.
+`OverlayStyles` itself stays, and `OverlayStyles.fromContext(context)` resolves
+both overlay styles at once for a builder that wants the pair.
+
+The overlay is built into an `Overlay` rather than below the calendar.
+`KalenderTheme` is an `InheritedTheme`, so `KalenderTheme.of` still reaches it
+from the overlay builder's context.
+
 ### The `builder` and `fromContext` statics are removed
 
 `TimeLine`, `HourLines`, `DaySeparator`, `TimeIndicator`, `DayHeader`,
-`WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`
-no longer carry them. Construct the widget directly, or call the matching
+`WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader`, `MonthDayCell`,
+`ScheduleDate` and `ScheduleTileHighlight` no longer carry them. Construct the widget directly, or call the matching
 `buildX` on the components class, which applies your override when you set one.
 `MonthDayCell.shadeAdjacentMonths` is unaffected.
 

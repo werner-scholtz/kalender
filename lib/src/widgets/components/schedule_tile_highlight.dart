@@ -7,12 +7,13 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 ///
 /// The [date] is the date that the highlight will be applied to.
 /// The [dateTimeRange] is the range of dates that the highlight will be applied to.
-/// The [style] is the style of the highlight.
 /// The [child] is the widget that will be displayed inside the highlight.
+///
+/// Resolve the style with [KalenderTheme].
 typedef ScheduleTileHighlightBuilder = Widget Function(
+  BuildContext context,
   InternalDateTime date,
   ValueNotifier<InternalDateTimeRange?> dateTimeRange,
-  ScheduleTileHighlightStyle? style,
   Widget child,
 );
 
@@ -66,7 +67,7 @@ class ScheduleTileHighlight extends StatelessWidget {
   final ValueNotifier<InternalDateTimeRange?> dateTimeRange;
 
   /// The style of the highlight.
-  final ScheduleTileHighlightStyle style;
+  final ScheduleTileHighlightStyle? style;
 
   /// The child widget to display.
   final Widget child;
@@ -75,22 +76,9 @@ class ScheduleTileHighlight extends StatelessWidget {
     super.key,
     required this.date,
     required this.dateTimeRange,
-    required this.style,
+    this.style,
     required this.child,
   });
-  static ScheduleTileHighlight builder(
-    InternalDateTime date,
-    ValueNotifier<InternalDateTimeRange?> dateTimeRange,
-    ScheduleTileHighlightStyle? style,
-    Widget child,
-  ) {
-    return ScheduleTileHighlight(
-      date: date,
-      dateTimeRange: dateTimeRange,
-      style: style ?? const ScheduleTileHighlightStyle(),
-      child: child,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,8 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 - The multi-day header and month builders take a `BuildContext` as their first argument and no longer take a style: `dayHeaderBuilder`, `weekNumberBuilder`, `weekDayHeaderBuilder`, `monthDayHeaderBuilder`, `monthGridBuilder` and `monthDayCellBuilder`. Resolve the style with `KalenderTheme.of(context)`.
 - Those fields are nullable and default to `null`. `MultiDayHeaderComponents`, `MonthHeaderComponents` and `MonthBodyComponents` gained a `buildX` method per field.
 - `builder` and `fromContext` are removed from `DayHeader`, `WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`. `MonthDayCell.shadeAdjacentMonths` stays.
+- The schedule builders take a `BuildContext` as their first argument: `leadingDateBuilder`, `scheduleTileHighlightBuilder`, `emptyItemBuilder` and `monthItemBuilder`. The first two also lost their style parameter and are nullable, and `ScheduleComponents` gained `buildLeadingDate` and `buildScheduleTileHighlight`. `ScheduleDate.builder` and `ScheduleTileHighlight.builder` are removed.
+- The overlay builders take a `BuildContext` as their first positional argument, ahead of their named parameters: `multiDayOverlayBuilder`, `multiDayOverlayPortalBuilder`, `multiDayPortalOverlayButtonBuilder` and `MultiDayOverlayEventTileBuilder`. `MultiDayOverlayBuilder` drops `style` and `MultiDayOverlayPortalBuilder` drops `overlayStyles`. Resolve either with `KalenderTheme.of(context)`, or both at once with `OverlayStyles.fromContext(context)`, which stays.
 
 ### Features
 
