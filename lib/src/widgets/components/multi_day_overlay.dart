@@ -34,8 +34,7 @@ typedef RenderBoxCallback = RenderBox Function();
 /// The [getOverlayPortalRenderBox] is the function that returns the [RenderBox] for the [MultiDayOverlay].
 /// The [overlayTileBuilder] is the builder for the overlay event tile.
 ///
-/// Resolve the style with [KalenderTheme], or with [OverlayStyles.fromContext]
-/// for the overlay pair at once.
+/// Resolve the style with [KalenderTheme].
 typedef MultiDayOverlayBuilder = Widget Function(
   BuildContext context, {
   required DateTime date,

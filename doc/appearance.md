@@ -329,8 +329,7 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
 > Every builder receives a `BuildContext` as its first argument and resolves what
 > it needs from it with `KalenderTheme.of(context)`. The timeline and its gutter
 > width resolve with `GutterStyles.timelineStyleOf(context)`, the value the whole
-> gutter is measured from. `OverlayStyles.fromContext(context)` resolves both
-> overlay styles at once.
+> gutter is measured from.
 
 <details>
   <summary>MultiDayComponents</summary>

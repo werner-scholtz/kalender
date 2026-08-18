@@ -16,7 +16,8 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 - `ResizeHandlePositioner` takes a `BuildContext` as its first argument and no longer takes a `TileComponents`, and `ResizeHandles.builder` is replaced by `TileComponents.buildResizeHandles`.
 - `ResizeHandles` no longer carries a `tileComponents` field. It resolves the handle widgets from the context, so `resizeHandle` takes a `BuildContext` as well. `startResizeDetector` and `endResizeDetector` are unchanged.
 - The trigger builders take a `BuildContext` as their first argument: `HorizontalTriggerWidgetBuilder` and `VerticalTriggerWidgetBuilder`, which covers `leftTriggerBuilder`, `rightTriggerBuilder`, `topTriggerBuilder` and `bottomTriggerBuilder` on every components class.
-- The overlay builders take a `BuildContext` as their first positional argument, ahead of their named parameters: `multiDayOverlayBuilder`, `multiDayOverlayPortalBuilder`, `multiDayPortalOverlayButtonBuilder` and `MultiDayOverlayEventTileBuilder`. `MultiDayOverlayBuilder` drops `style` and `MultiDayOverlayPortalBuilder` drops `overlayStyles`. Resolve either with `KalenderTheme.of(context)`, or both at once with `OverlayStyles.fromContext(context)`, which stays.
+- The overlay builders take a `BuildContext` as their first positional argument, ahead of their named parameters: `multiDayOverlayBuilder`, `multiDayOverlayPortalBuilder`, `multiDayPortalOverlayButtonBuilder` and `MultiDayOverlayEventTileBuilder`. `MultiDayOverlayBuilder` drops `style` and `MultiDayOverlayPortalBuilder` drops `overlayStyles`. Resolve either with `KalenderTheme.of(context)`.
+- `OverlayStyles` is removed. `MultiDayOverlayPortalBuilder` was the only signature that named it, so once that parameter went the class had no entry point left. Read the two styles off `KalenderTheme.of(context)`.
 
 ### Features
 

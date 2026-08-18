@@ -111,8 +111,9 @@ multiDayOverlayBuilder: (context, {required date, required events, ...}) {
 ```
 
 `MultiDayOverlayPortalBuilder` loses its `overlayStyles` parameter the same way.
-`OverlayStyles` itself stays, and `OverlayStyles.fromContext(context)` resolves
-both overlay styles at once for a builder that wants the pair.
+`OverlayStyles` is removed with it: once no signature named it, the class could
+not answer anything. Read `multiDayOverlayStyle` and
+`multiDayPortalOverlayButtonStyle` off `KalenderTheme.of(context)` instead.
 
 The overlay is built into an `Overlay` rather than below the calendar.
 `KalenderTheme` is an `InheritedTheme`, so `KalenderTheme.of` still reaches it
