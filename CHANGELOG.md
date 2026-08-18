@@ -8,9 +8,13 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 - Those five fields are nullable and default to `null`, which selects the package default. `MultiDayBodyComponents` gained a `buildX` method per field that applies the override or the default.
 - `builder` and `fromContext` are removed from `TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator`. Construct the widget, or call the matching `MultiDayBodyComponents.buildX`.
 - `defaultTimelineWidth` no longer takes a `TimelineStyle`. It resolves one from the context.
+- The multi-day header and month builders take a `BuildContext` as their first argument and no longer take a style: `dayHeaderBuilder`, `weekNumberBuilder`, `weekDayHeaderBuilder`, `monthDayHeaderBuilder`, `monthGridBuilder` and `monthDayCellBuilder`. Resolve the style with `KalenderTheme.of(context)`.
+- Those fields are nullable and default to `null`. `MultiDayHeaderComponents`, `MonthHeaderComponents` and `MonthBodyComponents` gained a `buildX` method per field.
+- `builder` and `fromContext` are removed from `DayHeader`, `WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`. `MonthDayCell.shadeAdjacentMonths` stays.
 
 ### Features
 
+- The month week number gutter publishes the style it measures with, including its top alignment, to the scope it draws in. A custom `weekNumberBuilder` reads the month's value with `KalenderTheme.of(context)` where it previously had to be handed one.
 - `GutterStyles` is public, with `GutterStyles.timelineStyleOf` and `GutterStyles.weekNumberStyleOf`. A custom gutter builder can resolve the style the gutter is measured from, which a `KalenderTheme` scoped inside the calendar cannot move.
 
 ## 0.26.0

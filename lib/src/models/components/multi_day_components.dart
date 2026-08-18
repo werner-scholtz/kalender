@@ -55,7 +55,8 @@ class MultiDayComponents {
 /// - Using these will override the respective default components.
 class MultiDayHeaderComponents {
   /// A function that builds the day header widget.
-  final DayHeaderBuilder dayHeaderBuilder;
+  /// Null uses [DayHeader].
+  final DayHeaderBuilder? dayHeaderBuilder;
 
   /// Builds the day name displayed under the day number.
   ///
@@ -68,7 +69,8 @@ class MultiDayHeaderComponents {
   final DateStringBuilder? dayHeaderNumberStringBuilder;
 
   /// A function that builds the week number widget.
-  final WeekNumberBuilder weekNumberBuilder;
+  /// Null uses [WeekNumber].
+  final WeekNumberBuilder? weekNumberBuilder;
 
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
@@ -81,14 +83,25 @@ class MultiDayHeaderComponents {
 
   /// Creates overrides for the default components used by the [MultiDayHeader].
   const MultiDayHeaderComponents({
-    this.dayHeaderBuilder = DayHeader.builder,
+    this.dayHeaderBuilder,
     this.dayHeaderStringBuilder,
     this.dayHeaderNumberStringBuilder,
-    this.weekNumberBuilder = WeekNumber.builder,
+    this.weekNumberBuilder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.overlayBuilders,
   });
+
+  /// Builds a day header, with [dayHeaderBuilder] when set.
+  Widget buildDayHeader(BuildContext context, DateTime date) {
+    return dayHeaderBuilder?.call(context, date) ?? DayHeader(date: date);
+  }
+
+  /// Builds a week number, with [weekNumberBuilder] when set.
+  Widget buildWeekNumber(BuildContext context, DateTimeRange visibleDateTimeRange) {
+    return weekNumberBuilder?.call(context, visibleDateTimeRange) ??
+        WeekNumber(visibleDateTimeRange: visibleDateTimeRange);
+  }
 
   /// Creates a copy of this with the given fields replaced.
   MultiDayHeaderComponents copyWith({

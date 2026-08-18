@@ -94,7 +94,7 @@ void main() {
       final components = CalendarComponents(
         monthComponents: MonthComponents(
           bodyComponents: MonthBodyComponents(
-            monthDayCellBuilder: (details) {
+            monthDayCellBuilder: (context, details) {
               byDate[DateTime(details.date.year, details.date.month, details.date.day)] = details;
               return const SizedBox.shrink();
             },

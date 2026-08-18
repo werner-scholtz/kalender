@@ -32,7 +32,6 @@ class MonthHeader extends StatelessWidget {
           return const SizedBox.shrink();
         }
         final internalVisibleRange = InternalDateTimeRange.fromDateTimeRange(visibleDateTimeRange);
-        final style = KalenderTheme.of(context).weekDayHeaderStyle;
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
         final numberOfRows = viewConfiguration.pageIndexCalculator.numberOfRowsForRange(internalVisibleRange);
 
@@ -42,7 +41,7 @@ class MonthHeader extends StatelessWidget {
               MonthWeekNumberSpacer(
                 visibleRange: internalVisibleRange,
                 numberOfRows: numberOfRows,
-                weekNumberBuilder: bodyComponents.weekNumberBuilder,
+                weekNumberBuilder: bodyComponents.buildWeekNumber,
               ),
             Expanded(
               child: Row(
@@ -50,7 +49,7 @@ class MonthHeader extends StatelessWidget {
                   7,
                   (index) {
                     final date = visibleDateTimeRange.start.add(Duration(days: index));
-                    return Expanded(child: components.weekDayHeaderBuilder.call(date, style));
+                    return Expanded(child: components.buildWeekDayHeader(context, date));
                   },
                 ),
               ),
