@@ -62,7 +62,7 @@ class LocaleProvider extends InheritedWidget {
   /// Creates a [LocaleProvider] with the specified locale.
   const LocaleProvider({super.key, required this.locale, required super.child});
 
-  /// Gets the [LocaleProvider] of type [T] from the context.
+  /// Gets the [LocaleProvider] from the context.
   static dynamic of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocaleProvider>();
     assert(result != null, 'No LocaleProvider found.');
@@ -173,7 +173,7 @@ class Snapping extends InheritedNotifier<ValueNotifier<CalendarSnapping>> {
 class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
   const HeightPerMinute({super.key, required super.notifier, required super.child});
 
-  /// Gets the [HeightPerMinute] of type [T] from the context.
+  /// Gets the [HeightPerMinute] from the context.
   static double of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<HeightPerMinute>();
     assert(result != null, 'No HeightPerMinuteProvider found.');

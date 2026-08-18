@@ -153,7 +153,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 /// Reports its child's size after layout using a custom [RenderProxyBox].
 ///
 /// Unlike approaches that read size via [GlobalKey] in a post-frame callback,
-/// this reads the child's size directly in [performLayout] — the only point in
+/// this reads the child's size directly in `performLayout` — the only point in
 /// the pipeline where the render object is guaranteed to have a valid size.
 class _SizeReporter extends SingleChildRenderObjectWidget {
   final ValueChanged<Size> onSizeChanged;
