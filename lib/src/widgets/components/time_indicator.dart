@@ -4,17 +4,18 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The time indicator builder.
 ///
 /// The [timeOfDayRange] is the range of time that the time indicator will be displayed for.
 /// The [heightPerMinute] is the height of each minute.
-/// The [style] is used to style the time indicator.
+/// The [location] is the calendar's time zone.
+///
+/// Resolve the style with [KalenderTheme].
 typedef TimeIndicatorBuilder = Widget Function(
+  BuildContext context,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
-  TimeIndicatorStyle? style,
   Location? location,
 );
 
@@ -130,52 +131,6 @@ class TimeIndicator extends StatefulWidget {
     this.nowCallback,
     this.style,
   });
-
-  static TimeIndicator builder(
-    TimeOfDayRange timeOfDayRange,
-    double heightPerMinute,
-    TimeIndicatorStyle? style,
-    Location? location, {
-    NowCallback? nowCallback,
-  }) {
-    return TimeIndicator(
-      timeOfDayRange: timeOfDayRange,
-      heightPerMinute: heightPerMinute,
-      location: location,
-      nowCallback: nowCallback,
-      style: style,
-    );
-  }
-
-  /// Creates a [TimeIndicator] from the [BuildContext].
-  ///
-  /// When [nowCallback] is provided, the default [TimeIndicator] will use it
-  /// to determine the current time instead of using the calendar's [Location].
-  /// Custom [TimeIndicatorBuilder]s will not receive the callback automatically.
-  static Widget fromContext(
-    BuildContext context,
-    TimeOfDayRange timeOfDayRange, {
-    NowCallback? nowCallback,
-  }) {
-    final timeIndicatorStyle = KalenderTheme.of(context).timeIndicatorStyle;
-    final components = context.components.multiDayComponents.bodyComponents;
-    // If the default builder is used and a nowCallback is provided, pass it through.
-    if (nowCallback != null && components.timeIndicator == TimeIndicator.builder) {
-      return TimeIndicator.builder(
-        timeOfDayRange,
-        context.heightPerMinute,
-        timeIndicatorStyle,
-        context.location,
-        nowCallback: nowCallback,
-      );
-    }
-    return components.timeIndicator.call(
-      timeOfDayRange,
-      context.heightPerMinute,
-      timeIndicatorStyle,
-      context.location,
-    );
-  }
 
   @override
   State<TimeIndicator> createState() => _TimeIndicatorState();
