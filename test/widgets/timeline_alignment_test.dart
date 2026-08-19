@@ -123,7 +123,7 @@ void main() {
       tester,
       components: CalendarComponents(
         multiDayComponents: MultiDayComponents(
-          bodyComponents: MultiDayBodyComponents(timelineWidth: (context, timeOfDayRange, style) => 100),
+          bodyComponents: MultiDayBodyComponents(timelineWidth: (context, timeOfDayRange) => 100),
         ),
       ),
     );

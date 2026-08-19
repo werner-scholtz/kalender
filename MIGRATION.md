@@ -4,6 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.26.x → v0.27.0](#v026x--v0270) | The multi-day body builders take a `BuildContext` and resolve their own styles. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
@@ -12,6 +13,56 @@ Each section covers one upgrade. Versions not listed below need no changes.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.26.x → v0.27.0
+
+### The multi-day body builders take a `BuildContext`
+
+Each one dropped its style parameter and gained a context as its first argument.
+Resolve the style yourself from the context.
+
+| Before | After |
+| --- | --- |
+| `hourLines: (heightPerMinute, range, style, timelineStyle) =>` | `hourLines: (context, heightPerMinute, range) =>` |
+| `timeline: (heightPerMinute, range, style, dragged, visible) =>` | `timeline: (context, heightPerMinute, range, dragged, visible) =>` |
+| `timelineWidth: (context, range, style) =>` | `timelineWidth: (context, range) =>` |
+| `daySeparator: (style) =>` | `daySeparator: (context) =>` |
+| `timeIndicator: (range, heightPerMinute, style, location) =>` | `timeIndicator: (context, range, heightPerMinute, location) =>` |
+
+A builder that read the style it was passed reads it from the context instead:
+
+```dart
+// Before
+daySeparator: (style) => ColoredBox(color: style?.color ?? Colors.grey),
+
+// After
+daySeparator: (context) {
+  final style = KalenderTheme.of(context).daySeparatorStyle;
+  return ColoredBox(color: style?.color ?? Colors.grey);
+},
+```
+
+The timeline is the exception. Its style decides the gutter width, which the body,
+the header and the drag overlay all measure from, so it comes from `GutterStyles`
+rather than from the theme:
+
+```dart
+timelineWidth: (context, range) => GutterStyles.timelineStyleOf(context).width ?? 56,
+```
+
+### The `builder` and `fromContext` statics are removed
+
+`TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator` no longer carry them.
+Construct the widget directly, or call the matching `buildX` on
+`MultiDayBodyComponents`, which applies your override when you set one.
+
+```dart
+// Before
+MultiDayBodyComponents(daySeparator: DaySeparator.builder)
+
+// After: pass nothing. Null selects the default.
+MultiDayBodyComponents()
+```
 
 ## v0.25.x → v0.26.0
 

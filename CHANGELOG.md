@@ -1,3 +1,18 @@
+## 0.27.0
+
+See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
+
+### Breaking Changes
+
+- The multi-day body builders take a `BuildContext` as their first argument and no longer take a style: `hourLines`, `timeline`, `timelineWidth`, `daySeparator` and `timeIndicator`. Resolve appearance with `KalenderTheme.of(context)`, and the timeline's own style with `GutterStyles.timelineStyleOf(context)`, the value the gutter width is measured from.
+- Those five fields are nullable and default to `null`, which selects the package default. `MultiDayBodyComponents` gained a `buildX` method per field that applies the override or the default.
+- `builder` and `fromContext` are removed from `TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator`. Construct the widget, or call the matching `MultiDayBodyComponents.buildX`.
+- `defaultTimelineWidth` no longer takes a `TimelineStyle`. It resolves one from the context.
+
+### Features
+
+- `GutterStyles` is public, with `GutterStyles.timelineStyleOf` and `GutterStyles.weekNumberStyleOf`. A custom gutter builder can resolve the style the gutter is measured from, which a `KalenderTheme` scoped inside the calendar cannot move.
+
 ## 0.26.0
 
 See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.

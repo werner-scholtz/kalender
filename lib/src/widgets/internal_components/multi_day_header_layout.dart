@@ -40,8 +40,7 @@ class MultiDayHeaderWidget extends StatelessWidget {
       final sharedStyle = GutterStyles.of(context).timelineStyle;
       final scopedStyle = KalenderTheme.of(context).timelineStyle;
       assert(debugCheckGutterStyleReaches(field: 'timelineStyle', shared: sharedStyle, scoped: scopedStyle));
-      final timelineStyle = sharedStyle ?? const TimelineStyle();
-      timelineWidth = bodyComponents.timelineWidth(context, TimeOfDayRange.allDay(), timelineStyle);
+      timelineWidth = bodyComponents.buildTimelineWidth(context, TimeOfDayRange.allDay());
     }
 
     return _MultiDayHeaderWidget(

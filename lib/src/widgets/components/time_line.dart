@@ -4,18 +4,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/gutter_styles.dart';
 
 // TODO: Update docs to reflect visibleDateTimeRange change.
 /// The time line builder.
 ///
 /// The [heightPerMinute] is the height of each minute.
 /// The [timeOfDayRange] is the range of time that the time line will be displayed for.
-/// The [style] is used to style the time line.
+///
+/// Resolve the style with [GutterStyles.timelineStyleOf], the same value the
+/// gutter width is measured from.
 typedef TimeLineBuilder = Widget Function(
+  BuildContext context,
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
-  TimelineStyle? style,
   ValueNotifier<CalendarEvent?> eventBeingDragged,
   ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
 );
@@ -23,14 +24,14 @@ typedef TimeLineBuilder = Widget Function(
 /// Resolves the width of the timeline gutter.
 ///
 /// The same width is used by the multi-day body, header and drag overlay, so that
-/// their day columns stay aligned. The [style] is the already-resolved (non-null)
-/// [TimelineStyle] from the component styles.
+/// their day columns stay aligned. Resolve the style with
+/// [GutterStyles.timelineStyleOf], the value the rest of the gutter is measured
+/// from, rather than from [KalenderTheme].
 ///
 /// See [defaultTimelineWidth] for the default implementation.
 typedef TimelineWidthBuilder = double Function(
   BuildContext context,
   TimeOfDayRange timeOfDayRange,
-  TimelineStyle style,
 );
 
 /// The default [TimelineWidthBuilder].
@@ -41,7 +42,8 @@ typedef TimelineWidthBuilder = double Function(
 /// gutter correct regardless of the locale's time format, the hour's digit
 /// count, and any custom [MultiDayBodyComponents.timelineStringBuilder]. Honors
 /// the ambient [MediaQueryData.textScaler] so it reserves enough room for scaled text.
-double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange, TimelineStyle style) {
+double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange) {
+  final style = GutterStyles.timelineStyleOf(context);
   if (style.width != null) return style.width!;
 
   final textStyle = style.textStyle ?? Theme.of(context).textTheme.labelMedium!;
@@ -309,45 +311,14 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     required this.heightPerMinute,
     required this.eventBeingDragged,
     required this.visibleDateTimeRange,
-    required this.style,
+    this.style,
   });
 
   @override
   TimelineStyle? get timelineStyle => style;
 
-  static TimeLine builder(
-    double heightPerMinute,
-    TimeOfDayRange timeOfDayRange,
-    TimelineStyle? style,
-    ValueNotifier<CalendarEvent?> eventBeingDragged,
-    ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
-  ) {
-    return TimeLine(
-      heightPerMinute: heightPerMinute,
-      timeOfDayRange: timeOfDayRange,
-      style: style,
-      eventBeingDragged: eventBeingDragged,
-      visibleDateTimeRange: visibleDateTimeRange,
-    );
-  }
-
   /// Returns a [Key] for the given time.
   static Key getTimeKey(int hour, int minute) => Key('time-$hour-$minute');
-
-  /// Builds the time line widget based on the provided context.
-  static Widget fromContext(BuildContext context, TimeOfDayRange timeOfDayRange) {
-    final calendarController = context.calendarController;
-    final selectedEvent = calendarController.selectedEvent;
-    final timelineStyle = GutterStyles.of(context).timelineStyle;
-    final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    return bodyComponents.timeline.call(
-      context.heightPerMinute,
-      timeOfDayRange,
-      timelineStyle,
-      selectedEvent,
-      calendarController.visibleDateTimeRange,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -2,15 +2,12 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The day separator builder.
 ///
-/// The [style] is used to style the day separator.
-typedef DaySeparatorBuilder = Widget Function(
-  DaySeparatorStyle? style,
-);
+/// Resolve the style with [KalenderTheme].
+typedef DaySeparatorBuilder = Widget Function(BuildContext context);
 
 /// The style for the [DaySeparator] widget.
 class DaySeparatorStyle with Diagnosticable {
@@ -98,16 +95,6 @@ class DaySeparatorStyle with Diagnosticable {
 class DaySeparator extends StatelessWidget {
   final DaySeparatorStyle? style;
   const DaySeparator({super.key, this.style});
-  static DaySeparator builder(DaySeparatorStyle? style) {
-    return DaySeparator(style: style);
-  }
-
-  static Widget fromContext(BuildContext context) {
-    final daySeparatorStyle = KalenderTheme.of(context).daySeparatorStyle;
-    final components = context.components.multiDayComponents.bodyComponents;
-    return components.daySeparator.call(daySeparatorStyle);
-  }
-
   @override
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).daySeparatorStyle ?? const DaySeparatorStyle()).merge(this.style);

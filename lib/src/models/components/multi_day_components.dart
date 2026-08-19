@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
+import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
@@ -139,14 +142,16 @@ class MultiDayHeaderComponents {
 /// - Using these will override the respective default components.
 class MultiDayBodyComponents {
   /// A function that builds the hour lines widget.
-  final HourLinesBuilder hourLines;
+  /// Null uses [HourLines].
+  final HourLinesBuilder? hourLines;
 
   /// A function that builds the timeline widget.
   ///
   /// The gutter width is decided by [timelineWidth] (not by this widget), so the
   /// header, body and drag overlay always align. Build the timeline to fill the
   /// width [timelineWidth] resolves to.
-  final TimeLineBuilder timeline;
+  /// Null uses [TimeLine].
+  final TimeLineBuilder? timeline;
 
   /// Builds the labels displayed by the timeline.
   ///
@@ -159,14 +164,16 @@ class MultiDayBodyComponents {
   ///
   /// This single value is used by the body, the header and the drag overlay, so
   /// their day columns stay aligned regardless of how [timeline] is customized.
-  /// Defaults to [defaultTimelineWidth].
-  final TimelineWidthBuilder timelineWidth;
+  /// Null uses [defaultTimelineWidth].
+  final TimelineWidthBuilder? timelineWidth;
 
   /// A function that builds the day separator widget.
-  final DaySeparatorBuilder daySeparator;
+  /// Null uses [DaySeparator].
+  final DaySeparatorBuilder? daySeparator;
 
   /// A function that builds the time indicator widget.
-  final TimeIndicatorBuilder timeIndicator;
+  /// Null uses [TimeIndicator].
+  final TimeIndicatorBuilder? timeIndicator;
 
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
@@ -182,17 +189,70 @@ class MultiDayBodyComponents {
 
   /// Creates overrides for the default components used by the [MultiDayBody].
   const MultiDayBodyComponents({
-    this.hourLines = HourLines.builder,
-    this.timeline = TimeLine.builder,
+    this.hourLines,
+    this.timeline,
     this.timelineStringBuilder,
-    this.timelineWidth = defaultTimelineWidth,
-    this.daySeparator = DaySeparator.builder,
-    this.timeIndicator = TimeIndicator.builder,
+    this.timelineWidth,
+    this.daySeparator,
+    this.timeIndicator,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.topTriggerBuilder,
     this.bottomTriggerBuilder,
   });
+
+  /// Builds the hour lines, with [hourLines] when set.
+  Widget buildHourLines(BuildContext context, double heightPerMinute, TimeOfDayRange timeOfDayRange) {
+    return hourLines?.call(context, heightPerMinute, timeOfDayRange) ??
+        HourLines(heightPerMinute: heightPerMinute, timeOfDayRange: timeOfDayRange);
+  }
+
+  /// Builds the timeline, with [timeline] when set.
+  Widget buildTimeline(
+    BuildContext context,
+    double heightPerMinute,
+    TimeOfDayRange timeOfDayRange,
+    ValueNotifier<CalendarEvent?> eventBeingDragged,
+    ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
+  ) {
+    return timeline?.call(context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) ??
+        TimeLine(
+          heightPerMinute: heightPerMinute,
+          timeOfDayRange: timeOfDayRange,
+          eventBeingDragged: eventBeingDragged,
+          visibleDateTimeRange: visibleDateTimeRange,
+        );
+  }
+
+  /// Resolves the gutter width, with [timelineWidth] when set.
+  double buildTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange) {
+    return timelineWidth?.call(context, timeOfDayRange) ?? defaultTimelineWidth(context, timeOfDayRange);
+  }
+
+  /// Builds a day separator, with [daySeparator] when set.
+  Widget buildDaySeparator(BuildContext context) {
+    return daySeparator?.call(context) ?? const DaySeparator();
+  }
+
+  /// Builds the time indicator, with [timeIndicator] when set.
+  ///
+  /// [nowCallback] reaches the default [TimeIndicator] only. A custom
+  /// [timeIndicator] decides for itself what the current time is.
+  Widget buildTimeIndicator(
+    BuildContext context,
+    TimeOfDayRange timeOfDayRange,
+    double heightPerMinute,
+    Location? location, {
+    NowCallback? nowCallback,
+  }) {
+    return timeIndicator?.call(context, timeOfDayRange, heightPerMinute, location) ??
+        TimeIndicator(
+          timeOfDayRange: timeOfDayRange,
+          heightPerMinute: heightPerMinute,
+          location: location,
+          nowCallback: nowCallback,
+        );
+  }
 
   /// Creates a copy of this with the given fields replaced.
   MultiDayBodyComponents copyWith({

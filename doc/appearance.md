@@ -326,8 +326,11 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
 > register one on `ThemeData.extensions` for the whole app, or wrap a calendar in
 > a [`KalenderTheme`](#theming-part-of-the-app) to style one of them.
 >
-> A custom builder is handed the resolved style for the widget it replaces, so it
-> can pass that straight through or override the fields it cares about.
+> A custom builder receives a `BuildContext` and resolves what it needs from it
+> with `KalenderTheme.of(context)`. The timeline and its gutter width resolve with
+> `GutterStyles.timelineStyleOf(context)`, the value the whole gutter is measured
+> from. Builders that still take a style parameter are handed the resolved value
+> directly.
 
 <details>
   <summary>MultiDayComponents</summary>
@@ -347,13 +350,13 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
         ),
       ),
       bodyComponents: MultiDayBodyComponents(
-        hourLines: (heightPerMinute, timeOfDayRange, style, timelineStyle) => CustomWidget(),
-        timeline: (heightPerMinute, timeOfDayRange, style, eventBeingDragged, visibleDateTimeRange) =>
+        hourLines: (context, heightPerMinute, timeOfDayRange) => CustomWidget(),
+        timeline: (context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) =>
             CustomWidget(),
         // Sizes the timeline gutter, for example to fit a custom timeline's labels.
-        timelineWidth: (context, timeOfDayRange, style) => 48,
-        daySeparator: (style) => CustomWidget(),
-        timeIndicator: (timeOfDayRange, heightPerMinute, style, location) => CustomWidget(),
+        timelineWidth: (context, timeOfDayRange) => 48,
+        daySeparator: (context) => CustomWidget(),
+        timeIndicator: (context, timeOfDayRange, heightPerMinute, location) => CustomWidget(),
         leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
         rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
         topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
