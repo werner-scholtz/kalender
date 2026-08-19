@@ -5,6 +5,25 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 ### Breaking Changes
 
 - `TimeOfDayRange.isAllDay` is removed, as its 0.26.0 deprecation message named. Use `coversWholeDay`. `TimeOfDayRange.allDay()` is unaffected.
+- The multi-day body builders take a `BuildContext` as their first argument and no longer take a style: `hourLines`, `timeline`, `timelineWidth`, `daySeparator` and `timeIndicator`. Resolve appearance with `KalenderTheme.of(context)`, and the timeline's own style with `GutterStyles.timelineStyleOf(context)`, the value the gutter width is measured from.
+- Those five fields are nullable and default to `null`, which selects the package default. `MultiDayBodyComponents` gained a `buildX` method per field that applies the override or the default.
+- `builder` and `fromContext` are removed from `TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator`. Construct the widget, or call the matching `MultiDayBodyComponents.buildX`.
+- `defaultTimelineWidth` no longer takes a `TimelineStyle`. It resolves one from the context.
+- The multi-day header and month builders take a `BuildContext` as their first argument and no longer take a style: `dayHeaderBuilder`, `weekNumberBuilder`, `weekDayHeaderBuilder`, `monthDayHeaderBuilder`, `monthGridBuilder` and `monthDayCellBuilder`. Resolve the style with `KalenderTheme.of(context)`.
+- Those fields are nullable and default to `null`. `MultiDayHeaderComponents`, `MonthHeaderComponents` and `MonthBodyComponents` gained a `buildX` method per field.
+- `builder` and `fromContext` are removed from `DayHeader`, `WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`. `MonthDayCell.shadeAdjacentMonths` stays.
+- The schedule builders take a `BuildContext` as their first argument: `leadingDateBuilder`, `scheduleTileHighlightBuilder`, `emptyItemBuilder` and `monthItemBuilder`. The first two also lost their style parameter and are nullable, and `ScheduleComponents` gained `buildLeadingDate` and `buildScheduleTileHighlight`. `ScheduleDate.builder` and `ScheduleTileHighlight.builder` are removed.
+- The tile builders take a `BuildContext` as their first argument: `tileBuilder`, `overlayTileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder` and `dropTargetTile`, along with `defaultTileBuilder` and the other three `default*` functions.
+- `ResizeHandlePositioner` takes a `BuildContext` as its first argument and no longer takes a `TileComponents`, and `ResizeHandles.builder` is replaced by `TileComponents.buildResizeHandles`.
+- `ResizeHandles` no longer carries a `tileComponents` field. It resolves the handle widgets from the context, so `resizeHandle` takes a `BuildContext` as well. `startResizeDetector` and `endResizeDetector` are unchanged.
+- The trigger builders take a `BuildContext` as their first argument: `HorizontalTriggerWidgetBuilder` and `VerticalTriggerWidgetBuilder`, which covers `leftTriggerBuilder`, `rightTriggerBuilder`, `topTriggerBuilder` and `bottomTriggerBuilder` on every components class.
+- The overlay builders take a `BuildContext` as their first positional argument, ahead of their named parameters: `multiDayOverlayBuilder`, `multiDayOverlayPortalBuilder`, `multiDayPortalOverlayButtonBuilder` and `MultiDayOverlayEventTileBuilder`. `MultiDayOverlayBuilder` drops `style` and `MultiDayOverlayPortalBuilder` drops `overlayStyles`. Resolve either with `KalenderTheme.of(context)`.
+- `OverlayStyles` is removed. `MultiDayOverlayPortalBuilder` was the only signature that named it, so once that parameter went the class had no entry point left. Read the two styles off `KalenderTheme.of(context)`.
+
+### Features
+
+- The month week number gutter publishes the style it measures with, including its top alignment, to the scope it draws in. A custom `weekNumberBuilder` reads the month's value with `KalenderTheme.of(context)` where it previously had to be handed one.
+- `GutterStyles` is public, with `GutterStyles.timelineStyleOf` and `GutterStyles.weekNumberStyleOf`. A custom gutter builder can resolve the style the gutter is measured from, which a `KalenderTheme` scoped inside the calendar cannot move.
 
 ## 0.26.0
 

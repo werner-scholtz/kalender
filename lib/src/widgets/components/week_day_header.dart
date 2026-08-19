@@ -7,10 +7,11 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// The week day header builder.
 ///
 /// The [date] is the date that the header will be displayed for.
-/// The [style] is used to style the week day header.
+///
+/// Resolve the style with [KalenderTheme].
 typedef WeekDayHeaderBuilder = Widget Function(
+  BuildContext context,
   DateTime date,
-  WeekDayHeaderStyle? style,
 );
 
 /// The [WeekDayHeaderStyle] class is used by the default [WeekDayHeader] widget.
@@ -82,9 +83,6 @@ class WeekDayHeader extends StatelessWidget {
   final WeekDayHeaderStyle? style;
 
   const WeekDayHeader({super.key, required this.date, this.style});
-  static WeekDayHeader builder(DateTime date, WeekDayHeaderStyle? style) {
-    return WeekDayHeader(date: date, style: style);
-  }
 
   @override
   Widget build(BuildContext context) {

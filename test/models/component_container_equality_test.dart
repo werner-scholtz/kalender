@@ -76,8 +76,8 @@ void main() {
     });
 
     test('a builder written as a closure is never equal', () {
-      final a = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
-      final b = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
+      final a = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
+      final b = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
       expect(a, isNot(equals(b)));
     });
 
@@ -161,6 +161,6 @@ String _dateLabel(BuildContext context, DateTime date) => '';
 
 String _hiddenEventCount(BuildContext context, int numberOfHiddenEvents) => '';
 
-Widget _tile(CalendarEvent event, DateTimeRange tileRange) => const SizedBox();
+Widget _tile(BuildContext context, CalendarEvent event, DateTimeRange tileRange) => const SizedBox();
 
-Widget _dropTarget(CalendarEvent event) => const SizedBox();
+Widget _dropTarget(BuildContext context, CalendarEvent event) => const SizedBox();

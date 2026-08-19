@@ -6,6 +6,9 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 import 'package:kalender/src/models/view_transition.dart';
+import 'package:kalender/src/widgets/components/day_header.dart';
+import 'package:kalender/src/widgets/components/month_day_header.dart';
+import 'package:kalender/src/widgets/components/schedule_date.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 

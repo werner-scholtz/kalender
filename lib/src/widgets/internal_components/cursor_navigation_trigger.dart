@@ -51,7 +51,9 @@ class CursorNavigationTrigger extends StatefulWidget {
               duration: configuration.animationDuration,
               curve: configuration.animationCurve,
             ),
-      child: builder?.call(pageWidth) ?? ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
+      child: builder == null
+          ? ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth))
+          : Builder(builder: (context) => builder(context, pageWidth)),
     );
   }
 
@@ -75,7 +77,9 @@ class CursorNavigationTrigger extends StatefulWidget {
       key: key,
       triggerDelay: configuration.triggerDelay,
       onTrigger: onTrigger,
-      child: builder?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: width),
+      child: builder == null
+          ? SizedBox(height: triggerHeight, width: width)
+          : Builder(builder: (context) => builder(context, viewPortHeight)),
     );
   }
 

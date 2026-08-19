@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.26.x → v0.27.0](#v026x--v0270) | The deprecated `isAllDay` getter on `TimeOfDayRange` is removed. |
+| [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
@@ -31,6 +31,206 @@ if (timeOfDayRange.coversWholeDay) { ... }
 ```
 
 `TimeOfDayRange.allDay()` is a different member and is unaffected.
+
+### The multi-day body builders take a `BuildContext`
+
+Each one dropped its style parameter and gained a context as its first argument.
+Resolve the style yourself from the context.
+
+| Before | After |
+| --- | --- |
+| `hourLines: (heightPerMinute, range, style, timelineStyle) =>` | `hourLines: (context, heightPerMinute, range) =>` |
+| `timeline: (heightPerMinute, range, style, dragged, visible) =>` | `timeline: (context, heightPerMinute, range, dragged, visible) =>` |
+| `timelineWidth: (context, range, style) =>` | `timelineWidth: (context, range) =>` |
+| `daySeparator: (style) =>` | `daySeparator: (context) =>` |
+| `timeIndicator: (range, heightPerMinute, style, location) =>` | `timeIndicator: (context, range, heightPerMinute, location) =>` |
+
+A builder that read the style it was passed reads it from the context instead:
+
+```dart
+// Before
+daySeparator: (style) => ColoredBox(color: style?.color ?? Colors.grey),
+
+// After
+daySeparator: (context) {
+  final style = KalenderTheme.of(context).daySeparatorStyle;
+  return ColoredBox(color: style?.color ?? Colors.grey);
+},
+```
+
+The timeline is the exception. Its style decides the gutter width, which the body,
+the header and the drag overlay all measure from, so it comes from `GutterStyles`
+rather than from the theme:
+
+```dart
+timelineWidth: (context, range) => GutterStyles.timelineStyleOf(context).width ?? 56,
+```
+
+### The multi-day header and month builders take a `BuildContext`
+
+The same change, for the builders that draw headers, the month grid and week
+numbers.
+
+| Before | After |
+| --- | --- |
+| `dayHeaderBuilder: (date, style) =>` | `dayHeaderBuilder: (context, date) =>` |
+| `weekNumberBuilder: (range, style) =>` | `weekNumberBuilder: (context, range) =>` |
+| `weekDayHeaderBuilder: (date, style) =>` | `weekDayHeaderBuilder: (context, date) =>` |
+| `monthDayHeaderBuilder: (date, style) =>` | `monthDayHeaderBuilder: (context, date) =>` |
+| `monthGridBuilder: (style, numberOfRows) =>` | `monthGridBuilder: (context, numberOfRows) =>` |
+| `monthDayCellBuilder: (details) =>` | `monthDayCellBuilder: (context, details) =>` |
+
+A `weekNumberBuilder` in the month gutter still gets the month's own top
+alignment. The gutter publishes the style it measures with to the scope it draws
+in, so `KalenderTheme.of(context).weekNumberStyle` returns the month's value
+there and the calendar-wide value everywhere else.
+
+```dart
+// Before
+weekNumberBuilder: (range, style) => Align(
+  alignment: style?.alignment ?? Alignment.center,
+  child: Text(weekNumberOf(range)),
+),
+
+// After
+weekNumberBuilder: (context, range) {
+  final style = KalenderTheme.of(context).weekNumberStyle;
+  return Align(
+    alignment: style?.alignment ?? Alignment.center,
+    child: Text(weekNumberOf(range)),
+  );
+},
+```
+
+### The schedule and overlay builders take a `BuildContext`
+
+| Before | After |
+| --- | --- |
+| `leadingDateBuilder: (date, style) =>` | `leadingDateBuilder: (context, date) =>` |
+| `scheduleTileHighlightBuilder: (date, range, style, child) =>` | `scheduleTileHighlightBuilder: (context, date, range, child) =>` |
+| `emptyItemBuilder: (tileRange) =>` | `emptyItemBuilder: (context, tileRange) =>` |
+| `monthItemBuilder: (monthRange) =>` | `monthItemBuilder: (context, monthRange) =>` |
+| `multiDayPortalOverlayButtonBuilder: (controller, rows, style) =>` | `multiDayPortalOverlayButtonBuilder: (context, controller, rows) =>` |
+
+The two overlay builders take all their arguments by name. The context goes in
+front of them as a positional argument, and the style parameter is gone:
+
+```dart
+// Before
+multiDayOverlayBuilder: ({required date, required events, ..., required style}) => MyOverlay(style: style),
+
+// After
+multiDayOverlayBuilder: (context, {required date, required events, ...}) {
+  final style = KalenderTheme.of(context).multiDayOverlayStyle;
+  return MyOverlay(style: style);
+},
+```
+
+`MultiDayOverlayPortalBuilder` loses its `overlayStyles` parameter the same way.
+`OverlayStyles` is removed with it: once no signature named it, the class could
+not answer anything. Read `multiDayOverlayStyle` and
+`multiDayPortalOverlayButtonStyle` off `KalenderTheme.of(context)` instead.
+
+The overlay is built into an `Overlay` rather than below the calendar.
+`KalenderTheme` is an `InheritedTheme`, so `KalenderTheme.of` still reaches it
+from the overlay builder's context.
+
+### The tile and trigger builders take a `BuildContext`
+
+These carry no style, so the context is the only change. Every app that draws its
+own tiles is affected.
+
+| Before | After |
+| --- | --- |
+| `tileBuilder: (event, tileRange) =>` | `tileBuilder: (context, event, tileRange) =>` |
+| `overlayTileBuilder: (event, tileRange) =>` | `overlayTileBuilder: (context, event, tileRange) =>` |
+| `tileWhenDraggingBuilder: (event) =>` | `tileWhenDraggingBuilder: (context, event) =>` |
+| `feedbackTileBuilder: (event, size) =>` | `feedbackTileBuilder: (context, event, size) =>` |
+| `dropTargetTile: (event) =>` | `dropTargetTile: (context, event) =>` |
+| `leftTriggerBuilder: (pageWidth) =>` | `leftTriggerBuilder: (context, pageWidth) =>` |
+| `topTriggerBuilder: (viewPortHeight) =>` | `topTriggerBuilder: (context, viewPortHeight) =>` |
+
+A tile builder written as a named function or a static takes the context the same
+way:
+
+```dart
+// Before
+static EventTile builder(CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
+
+// After
+static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+    EventTile(event: event);
+```
+
+### `ResizeHandlePositioner` takes a `BuildContext`
+
+The context goes in front, and the lookup moves off the widget:
+
+```dart
+// Before
+ResizeHandles.builder(event, interaction, tileComponents, dateTimeRange, size, axis, isImprecise)
+
+// After
+tileComponents.buildResizeHandles(context, event, interaction, dateTimeRange, size, axis, isImprecise)
+```
+
+A custom positioner takes the context as its first parameter and no longer
+receives the `TileComponents`. `ResizeHandles` dropped its `tileComponents` field
+along with it and resolves the handle widgets from the context instead, so a
+custom subclass drops it from its constructor:
+
+```dart
+// Before
+class MyHandles extends ResizeHandles {
+  const MyHandles({
+    required super.event,
+    required super.interaction,
+    required super.tileComponents,
+    required super.dateTimeRange,
+    required super.size,
+    required super.axis,
+    required super.isImprecise,
+  });
+
+  @override
+  Widget build(BuildContext context) => resizeHandle(axis);
+}
+
+// After
+class MyHandles extends ResizeHandles {
+  const MyHandles({
+    required super.event,
+    required super.interaction,
+    required super.dateTimeRange,
+    required super.size,
+    required super.axis,
+    required super.isImprecise,
+  });
+
+  @override
+  Widget build(BuildContext context) => resizeHandle(context, axis);
+}
+```
+
+`startResizeDetector` and `endResizeDetector` are unchanged. An app that needs
+its own `TileComponents` inside a positioner already holds the object it passed
+to the calendar, so it can close over that.
+
+### The `builder` and `fromContext` statics are removed
+
+`TimeLine`, `HourLines`, `DaySeparator`, `TimeIndicator`, `DayHeader`,
+`WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader`, `MonthDayCell`,
+`ScheduleDate` and `ScheduleTileHighlight` no longer carry them. Construct the widget directly, or call the matching
+`buildX` on the components class, which applies your override when you set one.
+`MonthDayCell.shadeAdjacentMonths` is unaffected.
+
+```dart
+// Before
+MultiDayBodyComponents(daySeparator: DaySeparator.builder)
+
+// After: pass nothing. Null selects the default.
+MultiDayBodyComponents()
+```
 
 ## v0.25.x → v0.26.0
 

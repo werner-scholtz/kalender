@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
@@ -9,11 +10,12 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 ///
 /// [portalController] is the controller for the overlay portal.
 /// [numberOfHiddenRows] is the number of events that are not displayed because of constraints.
-/// [style] is the style of the button.
+///
+/// Resolve the style with [KalenderTheme].
 typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
+  BuildContext context,
   OverlayPortalController portalController,
   int numberOfHiddenRows,
-  MultiDayPortalOverlayButtonStyle? style,
 );
 
 class MultiDayPortalOverlayButtonStyle with Diagnosticable {
@@ -103,7 +105,7 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
     super.key,
     required this.portalController,
     required this.numberOfHiddenRows,
-    required this.style,
+    this.style,
     this.stringBuilder,
   });
 

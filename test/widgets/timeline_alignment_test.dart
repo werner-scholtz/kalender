@@ -20,7 +20,7 @@ void main() {
     calendarController = CalendarController();
   });
 
-  final tiles = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
+  final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
   Future<void> pumpWeek(
     WidgetTester tester, {
@@ -123,7 +123,7 @@ void main() {
       tester,
       components: CalendarComponents(
         multiDayComponents: MultiDayComponents(
-          bodyComponents: MultiDayBodyComponents(timelineWidth: (context, timeOfDayRange, style) => 100),
+          bodyComponents: MultiDayBodyComponents(timelineWidth: (context, timeOfDayRange) => 100),
         ),
       ),
     );

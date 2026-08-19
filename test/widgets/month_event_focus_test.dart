@@ -20,8 +20,8 @@ void main() {
     eventsController.addEvent(eventB);
 
     final tiles = TileComponents(
-      tileBuilder: (event, tileRange) => SizedBox.expand(key: ValueKey('tile-${event.id}')),
-      dropTargetTile: (event) => SizedBox.expand(key: ValueKey('drop-${event.id}')),
+      tileBuilder: (context, event, tileRange) => SizedBox.expand(key: ValueKey('tile-${event.id}')),
+      dropTargetTile: (context, event) => SizedBox.expand(key: ValueKey('drop-${event.id}')),
     );
 
     await pumpAndSettleWithMaterialApp(

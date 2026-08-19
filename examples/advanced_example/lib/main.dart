@@ -184,11 +184,7 @@ class PeopleWidget extends StatelessWidget {
       children: [
         // Needed for proper spacing — matches the body's timeline gutter width.
         SizedBox(
-          width: defaultTimelineWidth(
-            context,
-            TimeOfDayRange.allDay(),
-            const TimelineStyle(),
-          ),
+          width: defaultTimelineWidth(context, TimeOfDayRange.allDay()),
         ),
         ...List.generate(
           viewConfiguration.numberOfDays,

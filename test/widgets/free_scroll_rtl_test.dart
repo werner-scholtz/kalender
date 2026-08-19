@@ -20,7 +20,7 @@ void main() {
   });
 
   final components = TileComponents(
-    tileBuilder: (event, tileRange) => Container(key: ValueKey('inner-${event.id}')),
+    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}')),
   );
 
   Future<void> pump(WidgetTester tester, TextDirection direction) {

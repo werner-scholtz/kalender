@@ -209,6 +209,7 @@ A message without a version has no deadline and will sit there for years. `lib/`
 - Turning a getter into a method of the same name. Dart rejects declaring both (`duplicate_definition`), so the getter has to vanish the moment the method appears.
 - Adding a named parameter to a method that subclasses override, including optional ones. An override must accept every named parameter its supertype declares, so `copyWith` and `eventsFromDateTimeRange` break every implementer either way.
 - Adding a member to a public mixin or abstract class, or narrowing what it can be applied to, such as constraining `DragTargetUtilities` to `State`.
+- Changing a function typedef's signature. A typedef cannot be deprecated into a new shape, so a builder that gains or loses a parameter breaks every implementer at once. 0.27.0 moved all twenty-four builders to a leading `BuildContext` in one release for that reason: splitting the work by component would have broken the same concept twice.
 
 **Record it in both places.** A deprecation gets a `### Deprecations` entry in the changelog naming the removal version. A breaking change gets a `### Breaking Changes` entry plus a section in [MIGRATION.md](MIGRATION.md) showing the before and after.
 

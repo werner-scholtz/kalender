@@ -11,15 +11,14 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 ///
 /// [event] is the event associated with the resize handles.
 /// [interaction] is the global interaction settings for the calendar.
-/// [tileComponents] are the tile components used to build the resize handles.
 /// [dateTimeRange] is the DateTimeRange that the current view is displaying.
 /// [size] is the size of the event tile.
 /// [axis] is the axis along which the resize handles are positioned.
 /// [isImprecise] indicates whether the current input is imprecise (e.g. touch/finger).
 typedef ResizeHandlePositioner = ResizeHandles Function(
+  BuildContext context,
   CalendarEvent event,
   CalendarInteraction interaction,
-  TileComponents tileComponents,
   DateTimeRange dateTimeRange,
   Size size,
   Axis axis,
@@ -33,9 +32,6 @@ abstract class ResizeHandles extends StatelessWidget {
 
   /// The global interaction settings for the calendar.
   final CalendarInteraction interaction;
-
-  /// The tile components used to build the resize handles.
-  final TileComponents tileComponents;
 
   /// The DateTimeRange that the current view is displaying.
   final DateTimeRange dateTimeRange;
@@ -55,43 +51,12 @@ abstract class ResizeHandles extends StatelessWidget {
   const ResizeHandles({
     required this.event,
     required this.interaction,
-    required this.tileComponents,
     required this.dateTimeRange,
     required this.size,
     required this.axis,
     required this.isImprecise,
     super.key,
   });
-
-  /// Builds the ResizeHandles using the provided [tileComponents] or the default implementation.
-  static ResizeHandles builder(
-    CalendarEvent event,
-    CalendarInteraction interaction,
-    TileComponents tileComponents,
-    DateTimeRange dateTimeRange,
-    Size size,
-    Axis axis,
-    bool isImprecise,
-  ) {
-    return tileComponents.resizeHandlePositioner?.call(
-          event,
-          interaction,
-          tileComponents,
-          dateTimeRange,
-          size,
-          axis,
-          isImprecise,
-        ) ??
-        DefaultResizeHandles(
-          event: event,
-          interaction: interaction,
-          tileComponents: tileComponents,
-          dateTimeRange: dateTimeRange,
-          size: size,
-          axis: axis,
-          isImprecise: isImprecise,
-        );
-  }
 
   /// Whether the axis is vertical.
   bool get isVertical => axis == Axis.vertical;
@@ -113,10 +78,12 @@ abstract class ResizeHandles extends StatelessWidget {
   /// The interaction settings for this event.
   EventInteraction get eventInteraction => event.interaction;
 
-  /// The resize handle to use.
-  Widget resizeHandle(Axis axis) =>
-      (axis == Axis.vertical ? tileComponents.verticalResizeHandle : tileComponents.horizontalResizeHandle) ??
-      const SizedBox();
+  /// The resize handle to use, resolved from the [TileComponents] of [context].
+  Widget resizeHandle(BuildContext context, Axis axis) {
+    final components = context.tileComponents;
+    return (axis == Axis.vertical ? components.verticalResizeHandle : components.horizontalResizeHandle) ??
+        const SizedBox();
+  }
 
   /// A key used to identify the top resize handle.
   static Key startResizeDraggableKey(String eventId) => Key('DayEventTile-StartResizeDraggable-$eventId');
@@ -130,7 +97,6 @@ abstract class ResizeHandles extends StatelessWidget {
   Widget get startResizeDetector => ResizeHandle(
         key: startResizeDraggableKey(event.id),
         event: event,
-        tileComponents: tileComponents,
         direction: axis == Axis.vertical ? ResizeDirection.top : ResizeDirection.left,
       );
 
@@ -140,7 +106,6 @@ abstract class ResizeHandles extends StatelessWidget {
   Widget get endResizeDetector => ResizeHandle(
         key: endResizeDraggableKey(event.id),
         event: event,
-        tileComponents: tileComponents,
         direction: axis == Axis.vertical ? ResizeDirection.bottom : ResizeDirection.right,
       );
 }
@@ -151,7 +116,6 @@ class DefaultResizeHandles extends ResizeHandles {
     required super.event,
     required super.axis,
     required super.interaction,
-    required super.tileComponents,
     required super.dateTimeRange,
     required super.size,
     required super.isImprecise,

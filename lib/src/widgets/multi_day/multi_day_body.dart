@@ -67,8 +67,7 @@ class MultiDayBody extends StatelessWidget {
     final sharedStyle = GutterStyles.of(context).timelineStyle;
     final scopedStyle = KalenderTheme.of(context).timelineStyle;
     assert(debugCheckGutterStyleReaches(field: 'timelineStyle', shared: sharedStyle, scoped: scopedStyle));
-    final timelineStyle = sharedStyle ?? const TimelineStyle();
-    final timelineWidth = bodyComponents.timelineWidth(context, timeOfDayRange, timelineStyle);
+    final timelineWidth = bodyComponents.buildTimelineWidth(context, timeOfDayRange);
 
     return Stack(
       children: [
@@ -88,12 +87,20 @@ class MultiDayBody extends StatelessWidget {
                     key: timelineKey,
                     width: timelineWidth,
                     height: pageHeight,
-                    child: TimeLine.fromContext(context, timeOfDayRange),
+                    child: bodyComponents.buildTimeline(
+                      context,
+                      context.heightPerMinute,
+                      timeOfDayRange,
+                      context.calendarController.selectedEvent,
+                      context.calendarController.visibleDateTimeRange,
+                    ),
                   ),
                   Expanded(
                     child: Stack(
                       children: [
-                        Positioned.fill(child: HourLines.fromContext(context, timeOfDayRange)),
+                        Positioned.fill(
+                          child: bodyComponents.buildHourLines(context, context.heightPerMinute, timeOfDayRange),
+                        ),
                         Positioned.fill(
                           child: MultiDayPage(
                             eventsController: context.eventsController,
@@ -284,7 +291,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
                   _isFreeScroll ? 1 : _numberOfDays + 1,
-                  (_) => DaySeparator.fromContext(context),
+                  (_) => context.components.multiDayComponents.bodyComponents.buildDaySeparator(context),
                 ),
               ),
             ),

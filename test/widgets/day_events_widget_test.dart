@@ -64,7 +64,7 @@ void main() {
     final displayRange = range ?? InternalDateTimeRange.fromDateTimeRange(internalStart.startOfDay.weekRange());
     final tiles = tileComponents ??
         TileComponents(
-          tileBuilder: (event, tileRange) => Container(
+          tileBuilder: (context, event, tileRange) => Container(
             key: ValueKey(event.id),
             child: Text(event.id.toString()),
           ),

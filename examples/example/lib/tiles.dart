@@ -21,7 +21,7 @@ class EventTile extends StatelessWidget {
 
   final CalendarEvent event;
 
-  static EventTile builder(CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
+  static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class EventTile extends StatelessWidget {
 class DropTargetTile extends StatelessWidget {
   const DropTargetTile({super.key});
 
-  static DropTargetTile builder(CalendarEvent event) => const DropTargetTile();
+  static DropTargetTile builder(BuildContext context, CalendarEvent event) => const DropTargetTile();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class FeedbackTile extends StatelessWidget {
   final CalendarEvent event;
   final Size size;
 
-  static FeedbackTile builder(CalendarEvent event, Size dropTargetWidgetSize) =>
+  static FeedbackTile builder(BuildContext context, CalendarEvent event, Size dropTargetWidgetSize) =>
       FeedbackTile(event: event, size: dropTargetWidgetSize);
 
   @override
@@ -79,7 +79,7 @@ class TileWhenDragging extends StatelessWidget {
 
   final CalendarEvent event;
 
-  static TileWhenDragging builder(CalendarEvent event) => TileWhenDragging(event: event);
+  static TileWhenDragging builder(BuildContext context, CalendarEvent event) => TileWhenDragging(event: event);
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +109,7 @@ class ScheduleEventTile extends StatelessWidget {
 
   final CalendarEvent event;
 
-  static ScheduleEventTile builder(CalendarEvent event, DateTimeRange tileRange) => ScheduleEventTile(event: event);
+  static ScheduleEventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) => ScheduleEventTile(event: event);
 
   @override
   Widget build(BuildContext context) {

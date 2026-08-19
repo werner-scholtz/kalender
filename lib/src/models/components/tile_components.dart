@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart'
-    show CalendarEvent, MultiDayBody, MonthBody, ScheduleBody, ResizeHandlePositioner, ScheduleComponents;
+    show
+        CalendarEvent,
+        CalendarInteraction,
+        MultiDayBody,
+        MonthBody,
+        ScheduleBody,
+        ResizeHandlePositioner,
+        ResizeHandles,
+        ScheduleComponents;
 import 'package:kalender/src/widgets/components/default_tile_components.dart';
+import 'package:kalender/src/widgets/components/resize_handles.dart' show DefaultResizeHandles;
 
 /// The components used by the [MultiDayBody]/[MonthBody] to render the event tiles.
 ///
@@ -70,6 +79,27 @@ class TileComponents {
       feedbackTileBuilder: defaultFeedbackTileBuilder,
       dropTargetTile: defaultDropTargetBuilder,
     );
+  }
+
+  /// Positions the resize handles, with [resizeHandlePositioner] when set.
+  ResizeHandles buildResizeHandles(
+    BuildContext context,
+    CalendarEvent event,
+    CalendarInteraction interaction,
+    DateTimeRange dateTimeRange,
+    Size size,
+    Axis axis,
+    bool isImprecise,
+  ) {
+    return resizeHandlePositioner?.call(context, event, interaction, dateTimeRange, size, axis, isImprecise) ??
+        DefaultResizeHandles(
+          event: event,
+          interaction: interaction,
+          dateTimeRange: dateTimeRange,
+          size: size,
+          axis: axis,
+          isImprecise: isImprecise,
+        );
   }
 
   /// Compares the builders, so components built with the same ones are equal.
@@ -153,8 +183,9 @@ class ScheduleTileComponents extends TileComponents {
 /// [event] is the event that the tile will be built for.
 ///
 /// [tileRange] is the wall-clock [DateTimeRange] of the view the tile will be displayed in.
-/// The values are local [DateTime]s (or [TZDateTime]s when a timezone location is set).
+/// The values are local [DateTime]s (or `TZDateTime`s when a timezone location is set).
 typedef TileBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
   DateTimeRange tileRange,
 );
@@ -163,6 +194,7 @@ typedef TileBuilder = Widget Function(
 ///
 /// [event] is the event that the tile will be built for.
 typedef TileWhenDraggingBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
 );
 
@@ -171,6 +203,7 @@ typedef TileWhenDraggingBuilder = Widget Function(
 /// [event] is the event that the tile will be built for.
 /// [dropTargetWidgetSize] is the size of the drop target widget.
 typedef FeedbackTileBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
   Size dropTargetWidgetSize,
 );
@@ -179,5 +212,6 @@ typedef FeedbackTileBuilder = Widget Function(
 ///
 /// [event] is the event that the tile will be built for.
 typedef TileDropTargetBuilder = Widget Function(
+  BuildContext context,
   CalendarEvent event,
 );

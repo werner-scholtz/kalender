@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/gutter_styles.dart';
 
 /// A widget that sizes the width of [child] to the timeline gutter width.
 ///
@@ -19,8 +18,7 @@ class TimelineSizer extends StatelessWidget {
   Widget build(BuildContext context) {
     final calendarComponents = context.components;
     final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
-    final timelineStyle = GutterStyles.of(context).timelineStyle ?? const TimelineStyle();
-    final width = bodyComponents.timelineWidth(context, TimeOfDayRange.allDay(), timelineStyle);
+    final width = bodyComponents.buildTimelineWidth(context, TimeOfDayRange.allDay());
 
     return SizedBox(width: width, child: child);
   }

@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
 
   TileComponents _tileComponents() {
     return TileComponents(
-      tileBuilder: (event, tileRange) {
+      tileBuilder: (context, event, tileRange) {
         final ics = event as IcsEvent;
         return Card(
           margin: EdgeInsets.zero,
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
 
   ScheduleTileComponents _scheduleTileComponents() {
     return ScheduleTileComponents(
-      tileBuilder: (event, tileRange) {
+      tileBuilder: (context, event, tileRange) {
         final ics = event as IcsEvent;
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 1),

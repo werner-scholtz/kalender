@@ -4,10 +4,9 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// A custom [MultiDayOverlayPortalBuilder] takes no [BuildContext], so it cannot
-/// resolve the overlay styles for itself and is handed them instead. The
-/// built-in overlay widgets resolve their own, so nothing is passed down to
-/// them.
+/// Every overlay builder takes a [BuildContext] and resolves its own styles.
+/// The overlay itself is built into an [Overlay] rather than below the calendar,
+/// so its builder's context has to reach a [KalenderTheme] across that boundary.
 void main() {
   final day = DateTime.utc(2025, 1, 15);
 
@@ -53,12 +52,13 @@ void main() {
     );
   }
 
-  testWidgets('a custom portal builder receives styles resolved from the theme', (tester) async {
-    OverlayStyles? received;
+  testWidgets('a custom portal builder resolves the overlay styles from its context', (tester) async {
+    MultiDayOverlayStyle? received;
 
     await pumpOverflowingMonth(
       tester,
-      portalBuilder: ({
+      portalBuilder: (
+        context, {
         required date,
         required events,
         required numberOfHiddenRows,
@@ -66,28 +66,27 @@ void main() {
         required getMultiDayEventLayoutRenderBox,
         required overlayTileBuilder,
         required overlayBuilders,
-        required overlayStyles,
       }) {
-        received = overlayStyles;
+        received = KalenderTheme.of(context).multiDayOverlayStyle;
         return const SizedBox();
       },
     );
 
-    expect(received, isNotNull, reason: 'the builder should not have to resolve the theme itself');
     expect(
-      received!.multiDayOverlayStyle,
+      received,
       isNotNull,
       reason: 'the Material defaults populate this even when the app sets nothing',
     );
   });
 
   testWidgets('a scoped theme reaches the custom portal builder', (tester) async {
-    OverlayStyles? received;
+    MultiDayOverlayStyle? received;
 
     await pumpOverflowingMonth(
       tester,
       scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
-      portalBuilder: ({
+      portalBuilder: (
+        context, {
         required date,
         required events,
         required numberOfHiddenRows,
@@ -95,20 +94,16 @@ void main() {
         required getMultiDayEventLayoutRenderBox,
         required overlayTileBuilder,
         required overlayBuilders,
-        required overlayStyles,
       }) {
-        received = overlayStyles;
+        received = KalenderTheme.of(context).multiDayOverlayStyle;
         return const SizedBox();
       },
     );
 
-    expect(received?.multiDayOverlayStyle?.width, equals(321));
+    expect(received?.width, equals(321));
   });
 
-  // The built-in portal resolves nothing for itself, but it hands these two
-  // builders a style, and neither typedef takes a BuildContext. Passing nothing
-  // to the portal left both permanently null.
-  testWidgets('a custom overflow button builder receives the resolved style', (tester) async {
+  testWidgets('a custom overflow button builder resolves its style from its context', (tester) async {
     MultiDayPortalOverlayButtonStyle? received;
 
     await pumpOverflowingMonth(
@@ -117,25 +112,25 @@ void main() {
         multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(textStyle: TextStyle(fontSize: 21)),
       ),
       overlayBuilders: OverlayBuilders(
-        multiDayPortalOverlayButtonBuilder: (controller, numberOfHiddenRows, style) {
-          received = style;
+        multiDayPortalOverlayButtonBuilder: (context, controller, numberOfHiddenRows) {
+          received = KalenderTheme.of(context).multiDayPortalOverlayButtonStyle;
           return const SizedBox();
         },
       ),
     );
 
-    expect(received, isNotNull, reason: 'the builder cannot resolve the theme itself');
-    expect(received!.textStyle?.fontSize, equals(21));
+    expect(received?.textStyle?.fontSize, equals(21));
   });
 
-  testWidgets('a custom overlay builder receives the resolved style', (tester) async {
+  testWidgets('a custom overlay builder resolves its style across the Overlay boundary', (tester) async {
     MultiDayOverlayStyle? received;
 
     await pumpOverflowingMonth(
       tester,
       scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
       overlayBuilders: OverlayBuilders(
-        multiDayOverlayBuilder: ({
+        multiDayOverlayBuilder: (
+          context, {
           required date,
           required events,
           required tileHeight,
@@ -143,9 +138,8 @@ void main() {
           required overlayTileBuilder,
           required getMultiDayEventLayoutRenderBox,
           required getOverlayPortalRenderBox,
-          required style,
         }) {
-          received = style;
+          received = KalenderTheme.of(context).multiDayOverlayStyle;
           return const SizedBox();
         },
       ),

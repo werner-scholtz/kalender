@@ -109,9 +109,9 @@ void main() {
             components: CalendarComponents(
               monthComponents: MonthComponents(
                 bodyComponents: MonthBodyComponents(
-                  monthDayHeaderBuilder: (date, style) {
+                  monthDayHeaderBuilder: (context, date) {
                     received.add(date);
-                    return MonthDayHeader(date: date, style: style);
+                    return MonthDayHeader(date: date);
                   },
                 ),
               ),
@@ -148,9 +148,9 @@ void main() {
             components: CalendarComponents(
               monthComponents: MonthComponents(
                 bodyComponents: MonthBodyComponents(
-                  monthDayHeaderBuilder: (date, style) {
+                  monthDayHeaderBuilder: (context, date) {
                     received.add(date);
-                    return MonthDayHeader(date: date, style: style);
+                    return MonthDayHeader(date: date);
                   },
                 ),
               ),

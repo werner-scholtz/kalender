@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
+import 'package:kalender/src/models/controllers/events_controller/default_events_controller.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// The [EventsController] is used to manage [CalendarEvent]s.
 ///

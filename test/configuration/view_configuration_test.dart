@@ -35,10 +35,10 @@ void main() {
   // Set up the events controller, callbacks, and components used in the tests.
   final eventsController = DefaultEventsController();
   final components = TileComponents(
-    tileBuilder: (event, tileRange) => Container(key: Key(event.id.toString()), color: Colors.red),
+    tileBuilder: (context, event, tileRange) => Container(key: Key(event.id.toString()), color: Colors.red),
   );
   final scheduleComponents = ScheduleTileComponents(
-    tileBuilder: (event, tileRange) => Container(key: Key(event.id.toString()), color: Colors.blue),
+    tileBuilder: (context, event, tileRange) => Container(key: Key(event.id.toString()), color: Colors.blue),
   );
 
   // The date range for the tests. This gives good coverage for the different view configurations.

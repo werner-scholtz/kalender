@@ -59,7 +59,7 @@ class MonthBody extends StatelessWidget {
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
-        final grid = MonthGrid.fromContext(context, numberOfRows);
+        final grid = monthComponents.bodyComponents.buildMonthGrid(context, numberOfRows);
 
         // The date range of each week row, shared by the content and background.
         final weekRanges = List.generate(numberOfRows, (row) {
@@ -85,7 +85,7 @@ class MonthBody extends StatelessWidget {
         // the default month view does no extra per-cell work. It is painted below
         // the grid (see the layout delegate) so cell backgrounds do not cover the
         // grid lines.
-        final hasCellBuilder = monthComponents.bodyComponents.monthDayCellBuilder != MonthDayCell.builder;
+        final hasCellBuilder = monthComponents.bodyComponents.monthDayCellBuilder != null;
         final background = hasCellBuilder
             ? _MonthDayCellBackground(
                 weekRanges: weekRanges,
@@ -107,7 +107,7 @@ class MonthBody extends StatelessWidget {
                 child: MonthWeekNumberGutter(
                   visibleRange: visibleRange,
                   numberOfRows: numberOfRows,
-                  weekNumberBuilder: monthComponents.bodyComponents.weekNumberBuilder,
+                  weekNumberBuilder: monthComponents.bodyComponents.buildWeekNumber,
                   dividerSide: dividerSide,
                 ),
               ),
@@ -153,7 +153,8 @@ class MonthWeek extends StatelessWidget {
             children: [
               WeekDayHeaders(
                 dates: internalRange.dates(),
-                dayHeaderBuilder: MonthDayHeader.fromContext,
+                dayHeaderBuilder: (context, date) => context.components.monthComponents.bodyComponents
+                    .buildMonthDayHeader(context, date.forLocation(location: context.location)),
               ),
               Expanded(
                 child: LayoutBuilder(
@@ -213,10 +214,15 @@ class _MonthDayCellBackground extends StatelessWidget {
               children: [
                 for (final date in weekRange.dates())
                   Expanded(
-                    child: MonthDayCell.fromContext(
-                      context,
-                      date,
-                      isInFocusedMonth: date.month == focusMonthStart.month && date.year == focusMonthStart.year,
+                    child: Builder(
+                      builder: (context) => context.components.monthComponents.bodyComponents.buildMonthDayCell(
+                        context,
+                        MonthDayCellDetails(
+                          date: date.forLocation(location: context.location),
+                          isToday: context.isToday(date),
+                          isInFocusedMonth: date.month == focusMonthStart.month && date.year == focusMonthStart.year,
+                        ),
+                      ),
                     ),
                   ),
               ],

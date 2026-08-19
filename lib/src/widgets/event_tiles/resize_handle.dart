@@ -4,18 +4,13 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
-import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/components/resize_handles.dart';
 
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {
   /// The event associated with the resize handles.
   final CalendarEvent event;
-
-  /// The tile components used to build the resize handles.
-  final TileComponents tileComponents;
 
   /// The DateTimeRange that the current view is displaying.
   final DateTimeRange dateTimeRange;
@@ -27,7 +22,6 @@ class ResizeHandleWidget extends StatefulWidget {
   const ResizeHandleWidget({
     super.key,
     required this.event,
-    required this.tileComponents,
     required this.dateTimeRange,
     this.axis = Axis.vertical,
   });
@@ -155,10 +149,10 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
     final visibility = Visibility(
       visible: _showHandles && _size != Size.zero,
       maintainState: false,
-      child: ResizeHandles.builder(
+      child: context.tileComponents.buildResizeHandles(
+        context,
         widget.event,
         interaction,
-        widget.tileComponents,
         widget.dateTimeRange,
         _size,
         widget.axis,
@@ -184,14 +178,10 @@ class ResizeHandle extends StatelessWidget {
   /// The event associated with the resize handle.
   final CalendarEvent event;
 
-  /// The tile components used to build the resize handle.
-  final TileComponents tileComponents;
-
   /// Creates an instance of [ResizeHandle].
   const ResizeHandle({
     super.key,
     required this.event,
-    required this.tileComponents,
     required this.direction,
   });
 
@@ -201,6 +191,7 @@ class ResizeHandle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVertical = direction == ResizeDirection.top || direction == ResizeDirection.bottom;
+    final tileComponents = context.tileComponents;
     final resizeHandle = isVertical ? tileComponents.verticalResizeHandle : tileComponents.horizontalResizeHandle;
 
     // Anchor a vertical resize to the pointer so the target day follows the

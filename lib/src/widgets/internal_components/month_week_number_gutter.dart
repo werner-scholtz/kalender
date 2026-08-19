@@ -38,29 +38,29 @@ class MonthWeekNumberGutter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _resolveStyle(context);
-
-    return IntrinsicWidth(
-      child: Column(
-        children: List.generate(
-          numberOfRows,
-          (index) {
-            final range = _rangeForRow(index);
-            return Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: index == 0 ? dividerSide : BorderSide.none,
-                    bottom: dividerSide,
+    return KalenderTheme(
+      data: KalenderTheme.of(context).copyWith(weekNumberStyle: _resolveStyle(context)),
+      child: IntrinsicWidth(
+        child: Column(
+          children: List.generate(
+            numberOfRows,
+            (index) {
+              final range = _rangeForRow(index);
+              return Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: index == 0 ? dividerSide : BorderSide.none,
+                      bottom: dividerSide,
+                    ),
+                  ),
+                  child: Builder(
+                    builder: (context) => weekNumberBuilder(context, range.forLocation(location: context.location)),
                   ),
                 ),
-                child: weekNumberBuilder(
-                  range.forLocation(location: context.location),
-                  style,
-                ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -86,25 +86,25 @@ class MonthWeekNumberSpacer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _resolveStyle(context);
+    return KalenderTheme(
+      data: KalenderTheme.of(context).copyWith(weekNumberStyle: _resolveStyle(context)),
+      child: _WidthOnly(
+        child: IntrinsicWidth(
+          child: Stack(
+            children: List.generate(
+              numberOfRows,
+              (index) {
+                final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
+                final range = InternalDateTimeRange(
+                  start: start,
+                  end: start.add(const Duration(days: DateTime.daysPerWeek)),
+                );
 
-    return _WidthOnly(
-      child: IntrinsicWidth(
-        child: Stack(
-          children: List.generate(
-            numberOfRows,
-            (index) {
-              final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-              final range = InternalDateTimeRange(
-                start: start,
-                end: start.add(const Duration(days: DateTime.daysPerWeek)),
-              );
-
-              return weekNumberBuilder(
-                range.forLocation(location: context.location),
-                style,
-              );
-            },
+                return Builder(
+                  builder: (context) => weekNumberBuilder(context, range.forLocation(location: context.location)),
+                );
+              },
+            ),
           ),
         ),
       ),

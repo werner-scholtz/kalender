@@ -91,6 +91,6 @@ class _TileState extends State<Tile> {
 
   @override
   Widget build(BuildContext context) => _isDragging && widget.tileWhenDraggingBuilder != null
-      ? widget.tileWhenDraggingBuilder!.call(_event)
-      : widget.tileBuilder.call(_event, widget.dateTimeRange.forLocation(location: context.location));
+      ? widget.tileWhenDraggingBuilder!.call(context, _event)
+      : widget.tileBuilder.call(context, _event, widget.dateTimeRange.forLocation(location: context.location));
 }

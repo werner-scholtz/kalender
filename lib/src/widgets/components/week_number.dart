@@ -7,10 +7,12 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// The week number builder.
 ///
 /// The [visibleDateTimeRange] is the range of dates that the week number will be displayed for.
-/// The [style] is used to style the week number.
+///
+/// Resolve the style with [KalenderTheme]. The month gutter merges its own
+/// defaults into that scope, so the same call returns the month's value there.
 typedef WeekNumberBuilder = Widget Function(
+  BuildContext context,
   DateTimeRange visibleDateTimeRange,
-  WeekNumberStyle? style,
 );
 
 /// The style of the [WeekNumber].
@@ -115,9 +117,6 @@ class WeekNumber extends StatelessWidget {
   final WeekNumberStyle? weekNumberStyle;
 
   const WeekNumber({super.key, required this.visibleDateTimeRange, this.weekNumberStyle});
-  static WeekNumber builder(DateTimeRange visibleDateTimeRange, WeekNumberStyle? weekNumberStyle) {
-    return WeekNumber(visibleDateTimeRange: visibleDateTimeRange, weekNumberStyle: weekNumberStyle);
-  }
 
   @override
   Widget build(BuildContext context) {

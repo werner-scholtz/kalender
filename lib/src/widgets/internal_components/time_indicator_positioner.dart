@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// A widget that positions a time indicator to follow the current page position.
 ///
@@ -223,9 +224,11 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
               child: pageOffset <= -_visibilityThreshold || pageOffset >= _visibilityThreshold
                   ? const SizedBox.shrink()
                   : widget.childOverride ??
-                      TimeIndicator.fromContext(
+                      context.components.multiDayComponents.bodyComponents.buildTimeIndicator(
                         context,
                         widget.viewController.viewConfiguration.timeOfDayRange,
+                        context.heightPerMinute,
+                        context.location,
                         nowCallback: widget.viewController.viewConfiguration.nowCallback,
                       ),
             ),

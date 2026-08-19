@@ -3,19 +3,18 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The hour lines builder.
 ///
 /// The [heightPerMinute] is the height of each minute.
 /// The [timeOfDayRange] is the range of time that the hour lines will be displayed for.
-/// The [style] is used to style the hour lines.
-/// The [timelineStyle] is used to determine how many hour lines to display.
+///
+/// Resolve the line style with [KalenderTheme]. The number of lines follows the
+/// timeline's label size, which [GutterStyles.timelineStyleOf] resolves.
 typedef HourLinesBuilder = Widget Function(
+  BuildContext context,
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
-  HourLinesStyle? style,
-  TimelineStyle? timelineStyle,
 );
 
 /// The style of the [HourLines] widget.
@@ -122,30 +121,6 @@ class HourLines extends StatelessWidget with TimeLineUtils {
     this.style,
     this.timelineStyle,
   });
-
-  static HourLines builder(
-    double heightPerMinute,
-    TimeOfDayRange timeOfDayRange,
-    HourLinesStyle? style,
-    TimelineStyle? timelineStyle,
-  ) {
-    return HourLines(
-      heightPerMinute: heightPerMinute,
-      timeOfDayRange: timeOfDayRange,
-      style: style,
-      timelineStyle: timelineStyle,
-    );
-  }
-
-  static Widget fromContext(
-    BuildContext context,
-    TimeOfDayRange timeOfDayRange, {
-    TimelineStyle? timelineStyle,
-  }) {
-    final hourLinesStyle = KalenderTheme.of(context).hourLinesStyle;
-    final components = context.components.multiDayComponents.bodyComponents;
-    return components.hourLines.call(context.heightPerMinute, timeOfDayRange, hourLinesStyle, timelineStyle);
-  }
 
   @override
   Widget build(BuildContext context) {

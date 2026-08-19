@@ -194,6 +194,12 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Reschedule an event.
   CalendarEvent? createEvent(InternalDateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
+  /// Resolves the latest version of the [event] from the [EventsController],
+  /// falling back to the provided instance if not found.
+  CalendarEvent _resolveEvent(CalendarEvent event) {
+    return eventsController.byId(event.id) ?? event;
+  }
+
   /// Processes the [DragTargetDetails] and handle different types of detail data (reschedule, resize, create, other).
   ///
   /// [onCreate] - handle the [Create] type.
@@ -202,12 +208,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// [onOther] - handle other types.
   ///
   /// Each handler function returns a value of type [K], which is the result of handling the data.
-  /// Resolves the latest version of the [event] from the [EventsController],
-  /// falling back to the provided instance if not found.
-  CalendarEvent _resolveEvent(CalendarEvent event) {
-    return eventsController.byId(event.id) ?? event;
-  }
-
   static K handleDragDetails<K extends Object?, T extends Object?>(
     DragTargetDetails<Object?> details, {
     required K Function(int controllerId) onCreate,

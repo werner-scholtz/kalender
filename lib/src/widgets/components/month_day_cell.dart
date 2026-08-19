@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// Builds the background of a single day cell in the month body.
 ///
@@ -14,7 +13,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// This is a background layer and does not receive pointer events. The event
 /// and drag layers sit above it. The default builder renders nothing, leaving
 /// the cell background unchanged.
-typedef MonthDayCellBuilder = Widget Function(MonthDayCellDetails details);
+typedef MonthDayCellBuilder = Widget Function(BuildContext context, MonthDayCellDetails details);
 
 /// Details describing a single day cell, passed to a [MonthDayCellBuilder].
 class MonthDayCellDetails {
@@ -46,9 +45,6 @@ class MonthDayCellDetails {
 class MonthDayCell extends StatelessWidget {
   const MonthDayCell({super.key});
 
-  /// The default [MonthDayCellBuilder] renders nothing.
-  static Widget builder(MonthDayCellDetails details) => const MonthDayCell();
-
   /// A ready-made [MonthDayCellBuilder] that shades the leading and trailing
   /// adjacent-month days, leaving the focused month's days unchanged.
   ///
@@ -61,23 +57,7 @@ class MonthDayCell extends StatelessWidget {
   /// MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths())
   /// ```
   static MonthDayCellBuilder shadeAdjacentMonths({Color? color}) {
-    return (details) => details.isInFocusedMonth ? const MonthDayCell() : _AdjacentMonthShade(color: color);
-  }
-
-  /// Builds the day cell for [date] using the configured [MonthDayCellBuilder].
-  static Widget fromContext(
-    BuildContext context,
-    InternalDateTime date, {
-    required bool isInFocusedMonth,
-  }) {
-    final builder = context.components.monthComponents.bodyComponents.monthDayCellBuilder;
-    return builder(
-      MonthDayCellDetails(
-        date: date.forLocation(location: context.location),
-        isToday: context.isToday(date),
-        isInFocusedMonth: isInFocusedMonth,
-      ),
-    );
+    return (context, details) => details.isInFocusedMonth ? const MonthDayCell() : _AdjacentMonthShade(color: color);
   }
 
   @override
