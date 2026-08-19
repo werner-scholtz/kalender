@@ -6,7 +6,7 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The day separator builder.
 ///
-/// The [style] is used to style the day separator.
+/// Resolve the style with [KalenderTheme].
 typedef DaySeparatorBuilder = Widget Function(BuildContext context);
 
 /// The style for the [DaySeparator] widget.
