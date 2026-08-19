@@ -363,7 +363,6 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
       );
     });
 
-    // TODO: Improve this.
     final eventBeingDraggedTimes = ValueListenableBuilder(
       valueListenable: visibleDateTimeRange,
       builder: (context, visibleRange, child) {

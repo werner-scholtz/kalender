@@ -192,7 +192,6 @@ class MultiDayPage extends StatefulWidget {
 }
 
 class _MultiDayPageState extends State<MultiDayPage> {
-  /// TODO: figure out the exact rebuilds needed here ....
   PageIndexCalculator get _pageNavigation => widget.viewController.viewConfiguration.pageIndexCalculator;
 
   @override

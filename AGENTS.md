@@ -273,8 +273,10 @@ before tagging it:
   including `CreateEventGesture` to `EventInteractionGesture`, the `renderBox`
   parameter on `OnEventTapped` and `OnEventTappedWithDetail`, and
   `MultiDayBodyConfiguration` in favour of `VerticalConfiguration`. Find them
-  with `grep -rn "TODO" lib/`. They are `//` comments so they do not render as
-  prose in the API reference, but each one is a decision still owed.
+  with `grep -rn "TODO" lib/`. Each one is a decision still owed. Keep them as
+  `//` comments: a `///` one renders as prose in the API reference, which is how
+  `FreeScrollFunctions` shipped with a TODO as its entire published
+  documentation. `grep -rn "/// TODO" lib/` is the check.
 - **Deprecations past their window.** None. `lib/` carries no `@Deprecated` at
   all: `TimeOfDayRange.isAllDay` was removed in 0.27.0 as its 0.26.0 message
   named, and the `CalendarComponents` style fields with the seven containers they

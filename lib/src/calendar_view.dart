@@ -93,7 +93,6 @@ class CalendarViewState extends State<CalendarView> {
     widget.calendarController.attach(_viewController);
   }
 
-  // TODO: This needs to be improved on.
   @override
   void didUpdateWidget(covariant CalendarView oldWidget) {
     super.didUpdateWidget(oldWidget);

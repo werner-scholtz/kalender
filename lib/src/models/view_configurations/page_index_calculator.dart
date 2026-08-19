@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
-/// TODO: these will also need to be refactored to work with TZDateTime and Locations.
+// TODO: these will also need to be refactored to work with TZDateTime and Locations.
 
 /// Calculates page indices and date ranges for paginated calendar views.
 ///
@@ -324,7 +324,11 @@ class CustomIndexCalculator extends PageIndexCalculator {
   int get hashCode => Object.hash(CustomIndexCalculator, dateTimeRange, numberOfDays);
 }
 
-/// TODO: see if this can be removed and replaced with [DayIndexCalculator].
+/// Maps every day in the range to its own index, for the free-scrolling band.
+///
+/// Unlike the paginated calculators there is no page: the band scrolls
+/// continuously, so an index is a day offset from the start of the range.
+// TODO: see if this can be removed and replaced with [DayIndexCalculator].
 class FreeScrollFunctions extends PageIndexCalculator {
   FreeScrollFunctions({required super.dateTimeRange});
 

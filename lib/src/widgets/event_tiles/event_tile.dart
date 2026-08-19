@@ -11,8 +11,6 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.da
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 
-// TODO(werner): Update docs.
-
 /// The function that is called when the event is tapped.
 typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
 
