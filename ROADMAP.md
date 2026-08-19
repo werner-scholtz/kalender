@@ -106,6 +106,14 @@ Giving the builders one removes the reason for every pre-merge in the package, a
 
 The default for each builder moves off the widget and onto the components class that holds it, the shape `ScrollConfiguration.of(context).buildScrollbar(context, child, details)` uses. Fields become nullable and default to null, which makes "did the app override this" a question the package can ask. It cannot today: `month_body.dart` decides whether to build the day cell layer by comparing the field against `MonthDayCell.builder`, because a non-null tear-off default leaves nothing else to compare. Both statics on each component, `builder` and `fromContext`, are removed.
 
+### 0.28.0, the next breaking window
+
+Two API decisions deferred out of 0.27.0. Both are breaking, and neither has a deprecation path that costs less than doing it in a release that already breaks, so they wait for the next such release rather than for 1.0.0.
+
+**`OnEventTapped` drops its `RenderBox`.** `TapDetail` already carries the same object, which is what makes the parameter redundant on `OnEventTappedWithDetail`. `OnEventTapped` has no detail to fall back on, so removing it there means pointing callers at the other callback instead. That is the deprecation of a whole callback rather than the trim of a parameter, and the question underneath it is whether `OnEventTapped` earns its place at all once `OnEventTappedWithDetail` gives strictly more.
+
+**`MultiDayBodyConfiguration` folds into `VerticalConfiguration`.** The TODO on it reads as a rename, but the class extends `VerticalConfiguration` and adds `keepPagesAlive`, so the two are not interchangeable today. Moving that field up is what makes a replacement honest, and only then can a deprecation message name one. Which way the merge goes is open: `MultiDayBodyConfiguration` is the more discoverable of the two names.
+
 ### Tests
 
 Coverage is 88.2% of lines, up from 84.4% at 0.23.0, and still uneven. It gates the composability work below. The backfill during 0.24.0 went where the known bugs were, so the models improved sharply and the widget directories did not move at all.
