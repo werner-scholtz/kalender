@@ -29,7 +29,7 @@ void main() {
         TestProvider(
           calendarController: calendarController,
           eventsController: eventsController,
-          tileComponents: TileComponents(tileBuilder: (event, tileRange) => const SizedBox()),
+          tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
           location: getLocation('Etc/UTC'),
           child: WeekNumber(visibleDateTimeRange: range),
         ),

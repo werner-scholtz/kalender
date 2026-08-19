@@ -53,7 +53,7 @@ void main() {
   }
 
   testWidgets('a custom portal builder resolves the overlay styles from its context', (tester) async {
-    OverlayStyles? received;
+    MultiDayOverlayStyle? received;
 
     await pumpOverflowingMonth(
       tester,
@@ -67,20 +67,20 @@ void main() {
         required overlayTileBuilder,
         required overlayBuilders,
       }) {
-        received = OverlayStyles.fromContext(context);
+        received = KalenderTheme.of(context).multiDayOverlayStyle;
         return const SizedBox();
       },
     );
 
     expect(
-      received?.multiDayOverlayStyle,
+      received,
       isNotNull,
       reason: 'the Material defaults populate this even when the app sets nothing',
     );
   });
 
   testWidgets('a scoped theme reaches the custom portal builder', (tester) async {
-    OverlayStyles? received;
+    MultiDayOverlayStyle? received;
 
     await pumpOverflowingMonth(
       tester,
@@ -95,12 +95,12 @@ void main() {
         required overlayTileBuilder,
         required overlayBuilders,
       }) {
-        received = OverlayStyles.fromContext(context);
+        received = KalenderTheme.of(context).multiDayOverlayStyle;
         return const SizedBox();
       },
     );
 
-    expect(received?.multiDayOverlayStyle?.width, equals(321));
+    expect(received?.width, equals(321));
   });
 
   testWidgets('a custom overflow button builder resolves its style from its context', (tester) async {

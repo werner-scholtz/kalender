@@ -97,7 +97,7 @@ Cast the event to your subclass. A convenience getter keeps the cast to one plac
 <!-- snippet: expression -->
 ```dart
 TileComponents(
-  tileBuilder: (event, tileRange) {
+  tileBuilder: (context, event, tileRange) {
     final myEvent = event as Event;
     return Container(
       color: myEvent.color ?? Colors.blue,

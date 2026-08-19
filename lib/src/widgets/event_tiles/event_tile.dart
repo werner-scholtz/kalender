@@ -120,7 +120,6 @@ abstract class EventTile extends StatelessWidget {
                 Positioned.fill(
                   child: ResizeHandleWidget(
                     event: event,
-                    tileComponents: tileComponents,
                     dateTimeRange: dateTimeRange,
                     axis: resizeAxis!,
                   ),

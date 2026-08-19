@@ -415,8 +415,8 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
                         // The page-edge triggers are anchored to the viewport
                         // below, not to this window-wide (translated) target,
                         // so disable the built-in ones here.
-                        leftPageTrigger: (_) => const SizedBox.shrink(),
-                        rightPageTrigger: (_) => const SizedBox.shrink(),
+                        leftPageTrigger: (_, __) => const SizedBox.shrink(),
+                        rightPageTrigger: (_, __) => const SizedBox.shrink(),
                       ),
                     ),
                   ],

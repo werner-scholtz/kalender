@@ -17,13 +17,13 @@ void main() {
   );
 
   final components = TileComponents(
-    tileBuilder: (event, tileRange) => Container(
+    tileBuilder: (context, event, tileRange) => Container(
       key: ValueKey(event.id),
       color: Colors.red,
     ),
   );
   final scheduleComponents = ScheduleTileComponents(
-    tileBuilder: (event, tileRange) => Container(
+    tileBuilder: (context, event, tileRange) => Container(
       key: ValueKey(event.id),
       color: Colors.blue,
     ),

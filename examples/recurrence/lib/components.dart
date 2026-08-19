@@ -7,7 +7,7 @@ TileComponents tileComponents(BuildContext context, {bool body = true}) {
   final onColor = Theme.of(context).colorScheme.onPrimaryContainer;
   final radius = BorderRadius.circular(8);
   return TileComponents(
-    tileBuilder: (event, tileRange) {
+    tileBuilder: (context, event, tileRange) {
       final isRecurring = event is RecurringCalendarEvent;
       return Card(
         margin: body ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 1),
@@ -30,19 +30,19 @@ TileComponents tileComponents(BuildContext context, {bool body = true}) {
         ),
       );
     },
-    dropTargetTile: (event) => DecoratedBox(
+    dropTargetTile: (context, event) => DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
         borderRadius: radius,
       ),
     ),
-    feedbackTileBuilder: (event, dropTargetWidgetSize) => AnimatedContainer(
+    feedbackTileBuilder: (context, event, dropTargetWidgetSize) => AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       width: dropTargetWidgetSize.width * 0.8,
       height: dropTargetWidgetSize.height,
       decoration: BoxDecoration(color: color.withAlpha(100), borderRadius: radius),
     ),
-    tileWhenDraggingBuilder: (event) => Container(
+    tileWhenDraggingBuilder: (context, event) => Container(
       decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius),
     ),
     dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -67,7 +67,7 @@ ScheduleTileComponents scheduleTileComponents(BuildContext context) {
   final color = Theme.of(context).colorScheme.primaryContainer;
   final onColor = Theme.of(context).colorScheme.onPrimaryContainer;
   return ScheduleTileComponents(
-    tileBuilder: (event, tileRange) {
+    tileBuilder: (context, event, tileRange) {
       final isRecurring = event is RecurringCalendarEvent;
       return Card(
         margin: const EdgeInsets.symmetric(vertical: 1),

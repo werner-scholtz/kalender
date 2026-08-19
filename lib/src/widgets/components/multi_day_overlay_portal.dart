@@ -11,8 +11,7 @@ import 'package:kalender/kalender.dart';
 /// [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] MultiDayEventLayoutWidget.
 /// [overlayBuilders] is the builders for the overlay event tile.
 ///
-/// Resolve the style with [KalenderTheme], or with [OverlayStyles.fromContext]
-/// for the overlay pair at once.
+/// Resolve the style with [KalenderTheme].
 typedef MultiDayOverlayPortalBuilder = Widget Function(
   BuildContext context, {
   required DateTime date,

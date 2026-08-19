@@ -459,7 +459,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
 
           return LayoutId(
             id: item.$1,
-            child: drawTile ? dropTarget.call(latest ?? event) : const SizedBox(),
+            child: drawTile ? dropTarget.call(context, latest ?? event) : const SizedBox(),
           );
         },
       ).toList(),

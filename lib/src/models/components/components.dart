@@ -131,61 +131,12 @@ class OverlayBuilders {
       );
 }
 
-/// Styles used by the overlay widgets.
-class OverlayStyles {
-  /// The style for the multi day overlay.
-  final MultiDayOverlayStyle? multiDayOverlayStyle;
-
-  /// The style for the multi day overlay portal button.
-  final MultiDayPortalOverlayButtonStyle? multiDayPortalOverlayButtonStyle;
-
-  const OverlayStyles({
-    this.multiDayOverlayStyle,
-    this.multiDayPortalOverlayButtonStyle,
-  });
-
-  /// The overlay styles resolved from the [KalenderTheme] of the given context.
-  ///
-  /// A convenience for a custom overlay builder that wants both at once. Each
-  /// one is also reachable on its own through [KalenderTheme.of].
-  factory OverlayStyles.fromContext(BuildContext context) {
-    final theme = KalenderTheme.of(context);
-    return OverlayStyles(
-      multiDayOverlayStyle: theme.multiDayOverlayStyle,
-      multiDayPortalOverlayButtonStyle: theme.multiDayPortalOverlayButtonStyle,
-    );
-  }
-
-  /// Creates a copy of this with the given fields replaced.
-  OverlayStyles copyWith({
-    MultiDayOverlayStyle? multiDayOverlayStyle,
-    MultiDayPortalOverlayButtonStyle? multiDayPortalOverlayButtonStyle,
-  }) {
-    return OverlayStyles(
-      multiDayOverlayStyle: multiDayOverlayStyle ?? this.multiDayOverlayStyle,
-      multiDayPortalOverlayButtonStyle: multiDayPortalOverlayButtonStyle ?? this.multiDayPortalOverlayButtonStyle,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is OverlayStyles &&
-        other.multiDayOverlayStyle == multiDayOverlayStyle &&
-        other.multiDayPortalOverlayButtonStyle == multiDayPortalOverlayButtonStyle;
-  }
-
-  @override
-  int get hashCode => Object.hash(multiDayOverlayStyle, multiDayPortalOverlayButtonStyle);
-}
-
 /// The trigger widget builder, should be constrained in width.
 ///
 /// The [pageWidth] is the width of the page.
-typedef HorizontalTriggerWidgetBuilder = Widget Function(double pageWidth);
+typedef HorizontalTriggerWidgetBuilder = Widget Function(BuildContext context, double pageWidth);
 
 /// The trigger widget builder, should be constrained in height.
 ///
 /// The [viewPortHeight] is the height of the page.
-typedef VerticalTriggerWidgetBuilder = Widget Function(double viewPortHeight);
+typedef VerticalTriggerWidgetBuilder = Widget Function(BuildContext context, double viewPortHeight);

@@ -9,8 +9,8 @@ import '../utilities.dart';
 /// way to see the calendar's locale. They now live on the *Components classes and
 /// receive a BuildContext. The style fields stay until 0.24.0 as a fallback.
 void main() {
-  final tiles = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
-  final scheduleTiles = ScheduleTileComponents(tileBuilder: (event, tileRange) => const SizedBox());
+  final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
+  final scheduleTiles = ScheduleTileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
   final day = DateTime.utc(2025, 1, 15);
 
   Future<void> pumpView(

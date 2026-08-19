@@ -50,7 +50,7 @@ void main() {
             modifyEventGesture: CreateEventGesture.tap,
           ),
           multiDayTileComponents: TileComponents(
-            tileBuilder: (event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
+            tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
           ),
         ),
       ),

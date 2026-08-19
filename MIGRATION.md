@@ -111,12 +111,94 @@ multiDayOverlayBuilder: (context, {required date, required events, ...}) {
 ```
 
 `MultiDayOverlayPortalBuilder` loses its `overlayStyles` parameter the same way.
-`OverlayStyles` itself stays, and `OverlayStyles.fromContext(context)` resolves
-both overlay styles at once for a builder that wants the pair.
+`OverlayStyles` is removed with it: once no signature named it, the class could
+not answer anything. Read `multiDayOverlayStyle` and
+`multiDayPortalOverlayButtonStyle` off `KalenderTheme.of(context)` instead.
 
 The overlay is built into an `Overlay` rather than below the calendar.
 `KalenderTheme` is an `InheritedTheme`, so `KalenderTheme.of` still reaches it
 from the overlay builder's context.
+
+### The tile and trigger builders take a `BuildContext`
+
+These carry no style, so the context is the only change. Every app that draws its
+own tiles is affected.
+
+| Before | After |
+| --- | --- |
+| `tileBuilder: (event, tileRange) =>` | `tileBuilder: (context, event, tileRange) =>` |
+| `overlayTileBuilder: (event, tileRange) =>` | `overlayTileBuilder: (context, event, tileRange) =>` |
+| `tileWhenDraggingBuilder: (event) =>` | `tileWhenDraggingBuilder: (context, event) =>` |
+| `feedbackTileBuilder: (event, size) =>` | `feedbackTileBuilder: (context, event, size) =>` |
+| `dropTargetTile: (event) =>` | `dropTargetTile: (context, event) =>` |
+| `leftTriggerBuilder: (pageWidth) =>` | `leftTriggerBuilder: (context, pageWidth) =>` |
+| `topTriggerBuilder: (viewPortHeight) =>` | `topTriggerBuilder: (context, viewPortHeight) =>` |
+
+A tile builder written as a named function or a static takes the context the same
+way:
+
+```dart
+// Before
+static EventTile builder(CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
+
+// After
+static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+    EventTile(event: event);
+```
+
+### `ResizeHandlePositioner` takes a `BuildContext`
+
+The context goes in front, and the lookup moves off the widget:
+
+```dart
+// Before
+ResizeHandles.builder(event, interaction, tileComponents, dateTimeRange, size, axis, isImprecise)
+
+// After
+tileComponents.buildResizeHandles(context, event, interaction, dateTimeRange, size, axis, isImprecise)
+```
+
+A custom positioner takes the context as its first parameter and no longer
+receives the `TileComponents`. `ResizeHandles` dropped its `tileComponents` field
+along with it and resolves the handle widgets from the context instead, so a
+custom subclass drops it from its constructor:
+
+```dart
+// Before
+class MyHandles extends ResizeHandles {
+  const MyHandles({
+    required super.event,
+    required super.interaction,
+    required super.tileComponents,
+    required super.dateTimeRange,
+    required super.size,
+    required super.axis,
+    required super.isImprecise,
+  });
+
+  @override
+  Widget build(BuildContext context) => resizeHandle(axis);
+}
+
+// After
+class MyHandles extends ResizeHandles {
+  const MyHandles({
+    required super.event,
+    required super.interaction,
+    required super.dateTimeRange,
+    required super.size,
+    required super.axis,
+    required super.isImprecise,
+  });
+
+  @override
+  Widget build(BuildContext context) => resizeHandle(context, axis);
+}
+```
+
+`startResizeDetector` and `endResizeDetector` are unchanged. An app that needs
+its own `TileComponents` inside a positioner already holds the object it passed
+to the calendar, so it can close over that.
 
 ### The `builder` and `fromContext` statics are removed
 
