@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-// TODO: Update docs to reflect visibleDateTimeRange change.
 /// The time line builder.
 ///
 /// The [heightPerMinute] is the height of each minute.
 /// The [timeOfDayRange] is the range of time that the time line will be displayed for.
+/// The [eventBeingDragged] is the event currently being dragged or resized, which
+/// the default timeline labels with its start and end time.
+/// The [visibleDateTimeRange] is the range the calendar is showing, which those
+/// labels are only drawn for.
 ///
 /// Resolve the style with [GutterStyles.timelineStyleOf], the same value the
 /// gutter width is measured from.
@@ -360,7 +363,6 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
       );
     });
 
-    // TODO: Improve this.
     final eventBeingDraggedTimes = ValueListenableBuilder(
       valueListenable: visibleDateTimeRange,
       builder: (context, visibleRange, child) {

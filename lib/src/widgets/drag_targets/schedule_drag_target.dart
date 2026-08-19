@@ -184,7 +184,6 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
     // Get the date for the item index.
     final date = viewController.dateTimeFromIndex(itemIndex);
 
-    // TODO: This needs to be checked.
     if (date == null) return null;
     return InternalDateTime.fromDateTime(date);
   }

@@ -91,7 +91,6 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
       itemCount: widget.viewController.viewConfiguration.pageIndexCalculator.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
-        // TODO: Should be fine.
         final range =
             widget.viewController.viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(value, context.location);
         context.callbacks?.onPageChanged?.call(range);
@@ -251,8 +250,6 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   /// schedule items (months, events, empty days) based on the configuration
   /// and available events. This is a potentially expensive operation for
   /// large date ranges with many events.
-  ///
-  /// TODO: Performance optimization needed for large event collections.
   void _generateMap() {
     // Get the range of dates from the view configuration.
     final dates = widget.dateTimeRange.dates();

@@ -6,8 +6,6 @@ import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-// TODO(werner): Update docs.
-
 /// The tile widget that displays the user-defined event content.
 ///
 /// This widget manages the visual transition between normal and dragging states

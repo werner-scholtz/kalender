@@ -32,10 +32,10 @@ if (timeOfDayRange.coversWholeDay) { ... }
 
 `TimeOfDayRange.allDay()` is a different member and is unaffected.
 
-### The multi-day body builders take a `BuildContext`
+### Every builder takes a `BuildContext`
 
-Each one dropped its style parameter and gained a context as its first argument.
-Resolve the style yourself from the context.
+Each builder gained a context as its first argument. The fifteen that carried a
+style lost it, and resolve one from the context instead.
 
 | Before | After |
 | --- | --- |
@@ -44,6 +44,24 @@ Resolve the style yourself from the context.
 | `timelineWidth: (context, range, style) =>` | `timelineWidth: (context, range) =>` |
 | `daySeparator: (style) =>` | `daySeparator: (context) =>` |
 | `timeIndicator: (range, heightPerMinute, style, location) =>` | `timeIndicator: (context, range, heightPerMinute, location) =>` |
+| `dayHeaderBuilder: (date, style) =>` | `dayHeaderBuilder: (context, date) =>` |
+| `weekNumberBuilder: (range, style) =>` | `weekNumberBuilder: (context, range) =>` |
+| `weekDayHeaderBuilder: (date, style) =>` | `weekDayHeaderBuilder: (context, date) =>` |
+| `monthDayHeaderBuilder: (date, style) =>` | `monthDayHeaderBuilder: (context, date) =>` |
+| `monthGridBuilder: (style, numberOfRows) =>` | `monthGridBuilder: (context, numberOfRows) =>` |
+| `monthDayCellBuilder: (details) =>` | `monthDayCellBuilder: (context, details) =>` |
+| `leadingDateBuilder: (date, style) =>` | `leadingDateBuilder: (context, date) =>` |
+| `scheduleTileHighlightBuilder: (date, range, style, child) =>` | `scheduleTileHighlightBuilder: (context, date, range, child) =>` |
+| `emptyItemBuilder: (tileRange) =>` | `emptyItemBuilder: (context, tileRange) =>` |
+| `monthItemBuilder: (monthRange) =>` | `monthItemBuilder: (context, monthRange) =>` |
+| `multiDayPortalOverlayButtonBuilder: (controller, rows, style) =>` | `multiDayPortalOverlayButtonBuilder: (context, controller, rows) =>` |
+| `tileBuilder: (event, tileRange) =>` | `tileBuilder: (context, event, tileRange) =>` |
+| `overlayTileBuilder: (event, tileRange) =>` | `overlayTileBuilder: (context, event, tileRange) =>` |
+| `tileWhenDraggingBuilder: (event) =>` | `tileWhenDraggingBuilder: (context, event) =>` |
+| `feedbackTileBuilder: (event, size) =>` | `feedbackTileBuilder: (context, event, size) =>` |
+| `dropTargetTile: (event) =>` | `dropTargetTile: (context, event) =>` |
+| `leftTriggerBuilder: (pageWidth) =>` | `leftTriggerBuilder: (context, pageWidth) =>` |
+| `topTriggerBuilder: (viewPortHeight) =>` | `topTriggerBuilder: (context, viewPortHeight) =>` |
 
 A builder that read the style it was passed reads it from the context instead:
 
@@ -58,32 +76,33 @@ daySeparator: (context) {
 },
 ```
 
-The timeline is the exception. Its style decides the gutter width, which the body,
-the header and the drag overlay all measure from, so it comes from `GutterStyles`
-rather than from the theme:
+A builder written as a named function or a static takes the context the same way:
+
+```dart
+// Before
+static EventTile builder(CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
+
+// After
+static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+    EventTile(event: event);
+```
+
+Four cases need more than the signature change.
+
+#### The timeline resolves from `GutterStyles`, not the theme
+
+Its style decides the gutter width, which the body, the header and the drag
+overlay all measure from. A theme scoped inside the calendar cannot move it.
 
 ```dart
 timelineWidth: (context, range) => GutterStyles.timelineStyleOf(context).width ?? 56,
 ```
 
-### The multi-day header and month builders take a `BuildContext`
+#### The month week number keeps its top alignment
 
-The same change, for the builders that draw headers, the month grid and week
-numbers.
-
-| Before | After |
-| --- | --- |
-| `dayHeaderBuilder: (date, style) =>` | `dayHeaderBuilder: (context, date) =>` |
-| `weekNumberBuilder: (range, style) =>` | `weekNumberBuilder: (context, range) =>` |
-| `weekDayHeaderBuilder: (date, style) =>` | `weekDayHeaderBuilder: (context, date) =>` |
-| `monthDayHeaderBuilder: (date, style) =>` | `monthDayHeaderBuilder: (context, date) =>` |
-| `monthGridBuilder: (style, numberOfRows) =>` | `monthGridBuilder: (context, numberOfRows) =>` |
-| `monthDayCellBuilder: (details) =>` | `monthDayCellBuilder: (context, details) =>` |
-
-A `weekNumberBuilder` in the month gutter still gets the month's own top
-alignment. The gutter publishes the style it measures with to the scope it draws
-in, so `KalenderTheme.of(context).weekNumberStyle` returns the month's value
-there and the calendar-wide value everywhere else.
+The gutter publishes the style it measures with to the scope it draws in, so
+`KalenderTheme.of(context).weekNumberStyle` returns the month's value there and
+the calendar-wide value everywhere else.
 
 ```dart
 // Before
@@ -102,18 +121,10 @@ weekNumberBuilder: (context, range) {
 },
 ```
 
-### The schedule and overlay builders take a `BuildContext`
+#### The two overlay builders take the context positionally
 
-| Before | After |
-| --- | --- |
-| `leadingDateBuilder: (date, style) =>` | `leadingDateBuilder: (context, date) =>` |
-| `scheduleTileHighlightBuilder: (date, range, style, child) =>` | `scheduleTileHighlightBuilder: (context, date, range, child) =>` |
-| `emptyItemBuilder: (tileRange) =>` | `emptyItemBuilder: (context, tileRange) =>` |
-| `monthItemBuilder: (monthRange) =>` | `monthItemBuilder: (context, monthRange) =>` |
-| `multiDayPortalOverlayButtonBuilder: (controller, rows, style) =>` | `multiDayPortalOverlayButtonBuilder: (context, controller, rows) =>` |
-
-The two overlay builders take all their arguments by name. The context goes in
-front of them as a positional argument, and the style parameter is gone:
+They take all their other arguments by name, so the context goes in front of
+them:
 
 ```dart
 // Before
@@ -135,34 +146,7 @@ The overlay is built into an `Overlay` rather than below the calendar.
 `KalenderTheme` is an `InheritedTheme`, so `KalenderTheme.of` still reaches it
 from the overlay builder's context.
 
-### The tile and trigger builders take a `BuildContext`
-
-These carry no style, so the context is the only change. Every app that draws its
-own tiles is affected.
-
-| Before | After |
-| --- | --- |
-| `tileBuilder: (event, tileRange) =>` | `tileBuilder: (context, event, tileRange) =>` |
-| `overlayTileBuilder: (event, tileRange) =>` | `overlayTileBuilder: (context, event, tileRange) =>` |
-| `tileWhenDraggingBuilder: (event) =>` | `tileWhenDraggingBuilder: (context, event) =>` |
-| `feedbackTileBuilder: (event, size) =>` | `feedbackTileBuilder: (context, event, size) =>` |
-| `dropTargetTile: (event) =>` | `dropTargetTile: (context, event) =>` |
-| `leftTriggerBuilder: (pageWidth) =>` | `leftTriggerBuilder: (context, pageWidth) =>` |
-| `topTriggerBuilder: (viewPortHeight) =>` | `topTriggerBuilder: (context, viewPortHeight) =>` |
-
-A tile builder written as a named function or a static takes the context the same
-way:
-
-```dart
-// Before
-static EventTile builder(CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
-
-// After
-static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
-    EventTile(event: event);
-```
-
-### `ResizeHandlePositioner` takes a `BuildContext`
+#### `ResizeHandlePositioner` also loses its `TileComponents`
 
 The context goes in front, and the lookup moves off the widget:
 
@@ -779,7 +763,7 @@ The multi-day body, header and drag overlay previously worked out the left timel
 
 `MultiDayBodyComponents.prototypeTimeLine`, the `PrototypeTimeline` widget, and the `PrototypeTimeLineBuilder` typedef have been removed.
 
-**If you only set `bodyStyles.timelineStyle`** (including a custom `stringBuilder`): no change needed — the header and body now always match.
+**If you only set `bodyStyles.timelineStyle`** (including a custom `stringBuilder`): no change needed. The header and body now always match.
 
 **If you overrode `prototypeTimeLine`:** return the width as a `double` from `timelineWidth` instead of building a widget.
 
@@ -838,7 +822,7 @@ The received `date` is already in the calendar's configured location, so any man
 | On switching view type (e.g. Week → Month → Week) | Before (`0.18.x`) | Now (`0.19.0`) |
 |---|---|---|
 | Vertical scroll (time-of-day) | **Reset** to `initialTimeOfDay` every time | **Preserved** (`ScrollTransition.preserve`) |
-| Zoom (`heightPerMinute`) | Preserved only between *adjacent* multi-day views; lost through a non-scrolling view (e.g. Month) | **Preserved**, including across a round-trip through Month (`ZoomTransition.preserve`) |
+| Zoom (`heightPerMinute`) | Preserved only between *adjacent* multi-day views. Lost through a non-scrolling view, for example Month | **Preserved**, including across a round-trip through Month (`ZoomTransition.preserve`) |
 | Visible date | Carried forward from the outgoing view | Unchanged (`DateTransition.carryFocus`) |
 
 To restore the old "always reset the scroll on a view change" behaviour:
@@ -852,7 +836,7 @@ MultiDayViewConfiguration.week(
 
 ### `EmptyDayBehavior.showToday` renamed to `showOnlyToday`
 
-`EmptyDayBehavior.showToday` has been renamed to `EmptyDayBehavior.showOnlyToday`. The behaviour is unchanged — among empty days, only today is shown — the new name just removes the ambiguity (it never showed *all* empty days plus today).
+`EmptyDayBehavior.showToday` has been renamed to `EmptyDayBehavior.showOnlyToday`. The behaviour is unchanged: among empty days, only today is shown. The new name removes the ambiguity, since it never showed *all* empty days plus today.
 
 **Before:**
 ```dart
@@ -868,8 +852,8 @@ ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.showOnlyToday)
 
 `ViewConfiguration.initialDateSelectionStrategy` has been removed. How a view switch transfers state is now expressed per dimension:
 
-- **Date** (all views): `dateTransition` — `DateTransition.carryFocus` (default) or `restorePerView` — plus an optional `dateResolver` for custom logic.
-- **Scroll / zoom** (`MultiDayViewConfiguration` only): `scrollTransition` / `zoomTransition` — `preserve` (default), `reset`, or `restorePerView` — plus optional `scrollResolver` / `zoomResolver`.
+- **Date** (all views): `dateTransition`, either `DateTransition.carryFocus` (default) or `restorePerView`, plus an optional `dateResolver` for custom logic.
+- **Scroll and zoom** (`MultiDayViewConfiguration` only): `scrollTransition` and `zoomTransition`, either `preserve` (default), `reset`, or `restorePerView`, plus optional `scrollResolver` and `zoomResolver`.
 
 A custom `initialDateSelectionStrategy` becomes a `dateResolver`. The signature changes from named parameters to a single `ViewTransitionContext`, and the built-in `kDefaultTo*` helpers now take the outgoing `ViewController` directly (or use `kCarryFocusDate(transition)`).
 
@@ -911,9 +895,9 @@ Resize handle behavior is now driven by **input precision** (`InputMode`) instea
 
 | Value | Meaning |
 |-------|---------|
-| `auto` (default) | Detect dynamically — hover indicates precise input, selection indicates imprecise |
-| `precise` | Mouse, stylus, trackpad — full-width handles, shown on hover |
-| `imprecise` | Touch/finger — corner handles, shown on selection |
+| `auto` (default) | Detect dynamically. Hover indicates precise input, selection indicates imprecise |
+| `precise` | Mouse, stylus, trackpad. Full-width handles, shown on hover |
+| `imprecise` | Touch or finger. Corner handles, shown on selection |
 
 **`CalendarInteraction` has two new fields:**
 ```dart
@@ -989,7 +973,7 @@ class MyResizeHandles extends ResizeHandles {
 CalendarEvent<MyData>(dateTimeRange: range, data: MyData(...))
 ```
 
-**After** — extend `CalendarEvent` instead:
+**After**, extend `CalendarEvent` instead:
 ```dart
 class MyEvent extends CalendarEvent {
   final String title;
