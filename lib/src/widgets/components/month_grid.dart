@@ -2,14 +2,13 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The month grid builder.
 ///
-/// The [style] is used to style the month grid.
+/// Resolve the style with [KalenderTheme].
 typedef MonthGridBuilder = Widget Function(
-  MonthGridStyle? style,
+  BuildContext context,
   int numberOfRows,
 );
 
@@ -76,14 +75,6 @@ class MonthGrid extends StatelessWidget {
   final int numberOfRows;
 
   const MonthGrid({super.key, this.style, required this.numberOfRows});
-  static MonthGrid builder(MonthGridStyle? style, int numberOfRows) {
-    return MonthGrid(style: style, numberOfRows: numberOfRows);
-  }
-
-  static Widget fromContext(BuildContext context, int numberOfRows) {
-    final component = context.components.monthComponents.bodyComponents.monthGridBuilder;
-    return component.call(KalenderTheme.of(context).monthGridStyle, numberOfRows);
-  }
 
   @override
   Widget build(BuildContext context) {

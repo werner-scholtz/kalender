@@ -187,14 +187,16 @@ class _CalendarContentState extends State<CalendarContent> {
       monthComponents: MonthComponents(
         bodyComponents: MonthBodyComponents(
           weekNumberBuilder: _buildWeekNumberText,
-          monthDayCellBuilder:
-              context.configuration.shadeAdjacentMonth ? MonthDayCell.shadeAdjacentMonths() : MonthDayCell.builder,
+          monthDayCellBuilder: context.configuration.shadeAdjacentMonth ? MonthDayCell.shadeAdjacentMonths() : null,
         ),
       ),
     );
   }
 
-  Widget _buildWeekNumberText(DateTimeRange visibleDateTimeRange, WeekNumberStyle? style) {
+  Widget _buildWeekNumberText(BuildContext context, DateTimeRange visibleDateTimeRange) {
+    // In the month gutter this resolves the calendar's own top-aligned default,
+    // which it merges into the scope the gutter is drawn in.
+    final style = KalenderTheme.of(context).weekNumberStyle;
     final internalDateTimeRange = InternalDateTimeRange(
       start: InternalDateTime.fromExternal(visibleDateTimeRange.start),
       end: InternalDateTime.fromExternal(visibleDateTimeRange.end),

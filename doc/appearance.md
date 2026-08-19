@@ -340,8 +340,8 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
   CalendarComponents(
     multiDayComponents: MultiDayComponents(
       headerComponents: MultiDayHeaderComponents(
-        dayHeaderBuilder: (date, style) => CustomWidget(),
-        weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
+        dayHeaderBuilder: (context, date) => CustomWidget(),
+        weekNumberBuilder: (context, visibleDateTimeRange) => CustomWidget(),
         leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
         rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
         overlayBuilders: OverlayBuilders(
@@ -375,15 +375,15 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
   CalendarComponents(
     monthComponents: MonthComponents(
       headerComponents: MonthHeaderComponents(
-        weekDayHeaderBuilder: (date, style) => SizedBox(),
+        weekDayHeaderBuilder: (context, date) => SizedBox(),
       ),
       bodyComponents: MonthBodyComponents(
-        monthDayHeaderBuilder: (date, style) => SizedBox(),
+        monthDayHeaderBuilder: (context, date) => SizedBox(),
         // Custom per-cell background, or use the ready-made
         // MonthDayCell.shadeAdjacentMonths() to shade adjacent-month days.
-        monthDayCellBuilder: (details) => SizedBox(),
-        monthGridBuilder: (style, numberOfRows) => SizedBox(),
-        weekNumberBuilder: (visibleDateTimeRange, style) => SizedBox(),
+        monthDayCellBuilder: (context, details) => SizedBox(),
+        monthGridBuilder: (context, numberOfRows) => SizedBox(),
+        weekNumberBuilder: (context, visibleDateTimeRange) => SizedBox(),
         leftTriggerBuilder: (pageWidth) => SizedBox(),
         rightTriggerBuilder: (pageWidth) => SizedBox(),
         overlayBuilders: OverlayBuilders(

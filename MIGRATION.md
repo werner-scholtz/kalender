@@ -50,11 +50,49 @@ rather than from the theme:
 timelineWidth: (context, range) => GutterStyles.timelineStyleOf(context).width ?? 56,
 ```
 
+### The multi-day header and month builders take a `BuildContext`
+
+The same change, for the builders that draw headers, the month grid and week
+numbers.
+
+| Before | After |
+| --- | --- |
+| `dayHeaderBuilder: (date, style) =>` | `dayHeaderBuilder: (context, date) =>` |
+| `weekNumberBuilder: (range, style) =>` | `weekNumberBuilder: (context, range) =>` |
+| `weekDayHeaderBuilder: (date, style) =>` | `weekDayHeaderBuilder: (context, date) =>` |
+| `monthDayHeaderBuilder: (date, style) =>` | `monthDayHeaderBuilder: (context, date) =>` |
+| `monthGridBuilder: (style, numberOfRows) =>` | `monthGridBuilder: (context, numberOfRows) =>` |
+| `monthDayCellBuilder: (details) =>` | `monthDayCellBuilder: (context, details) =>` |
+
+A `weekNumberBuilder` in the month gutter still gets the month's own top
+alignment. The gutter publishes the style it measures with to the scope it draws
+in, so `KalenderTheme.of(context).weekNumberStyle` returns the month's value
+there and the calendar-wide value everywhere else.
+
+```dart
+// Before
+weekNumberBuilder: (range, style) => Align(
+  alignment: style?.alignment ?? Alignment.center,
+  child: Text(weekNumberOf(range)),
+),
+
+// After
+weekNumberBuilder: (context, range) {
+  final style = KalenderTheme.of(context).weekNumberStyle;
+  return Align(
+    alignment: style?.alignment ?? Alignment.center,
+    child: Text(weekNumberOf(range)),
+  );
+},
+```
+
 ### The `builder` and `fromContext` statics are removed
 
-`TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator` no longer carry them.
-Construct the widget directly, or call the matching `buildX` on
-`MultiDayBodyComponents`, which applies your override when you set one.
+`TimeLine`, `HourLines`, `DaySeparator`, `TimeIndicator`, `DayHeader`,
+`WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`
+no longer carry them. Construct the widget directly, or call the matching
+`buildX` on the components class, which applies your override when you set one.
+`MonthDayCell.shadeAdjacentMonths` is unaffected.
 
 ```dart
 // Before

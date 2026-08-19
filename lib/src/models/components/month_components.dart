@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
 import 'package:kalender/src/widgets/components/month_day_cell.dart';
@@ -50,10 +51,12 @@ class MonthComponents {
 /// - Using these will override the respective default components.
 class MonthBodyComponents {
   /// A function that builds the month grid widget.
-  final MonthGridBuilder monthGridBuilder;
+  /// Null uses [MonthGrid].
+  final MonthGridBuilder? monthGridBuilder;
 
   /// A function that builds the month day header widget.
-  final MonthDayHeaderBuilder monthDayHeaderBuilder;
+  /// Null uses [MonthDayHeader].
+  final MonthDayHeaderBuilder? monthDayHeaderBuilder;
 
   /// Builds the day number displayed by the month day header.
   ///
@@ -63,11 +66,13 @@ class MonthBodyComponents {
   /// A function that builds the background of each day cell.
   ///
   /// Called once per cell; use it to style individual days, e.g. to gray out
-  /// days that fall outside the focused month. Defaults to an empty cell.
-  final MonthDayCellBuilder monthDayCellBuilder;
+  /// days that fall outside the focused month. Null leaves the cell empty.
+  final MonthDayCellBuilder? monthDayCellBuilder;
 
   /// A function that builds the week number widget.
-  final WeekNumberBuilder weekNumberBuilder;
+  ///
+  /// Null uses [WeekNumber].
+  final WeekNumberBuilder? weekNumberBuilder;
 
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
@@ -80,15 +85,36 @@ class MonthBodyComponents {
 
   /// Creates overrides for the default components used by the [MonthBody].
   const MonthBodyComponents({
-    this.monthGridBuilder = MonthGrid.builder,
-    this.monthDayHeaderBuilder = MonthDayHeader.builder,
+    this.monthGridBuilder,
+    this.monthDayHeaderBuilder,
     this.monthDayHeaderStringBuilder,
-    this.monthDayCellBuilder = MonthDayCell.builder,
-    this.weekNumberBuilder = WeekNumber.builder,
+    this.monthDayCellBuilder,
+    this.weekNumberBuilder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.overlayBuilders,
   });
+
+  /// Builds the month grid, with [monthGridBuilder] when set.
+  Widget buildMonthGrid(BuildContext context, int numberOfRows) {
+    return monthGridBuilder?.call(context, numberOfRows) ?? MonthGrid(numberOfRows: numberOfRows);
+  }
+
+  /// Builds a month day header, with [monthDayHeaderBuilder] when set.
+  Widget buildMonthDayHeader(BuildContext context, DateTime date) {
+    return monthDayHeaderBuilder?.call(context, date) ?? MonthDayHeader(date: date);
+  }
+
+  /// Builds a day cell background, with [monthDayCellBuilder] when set.
+  Widget buildMonthDayCell(BuildContext context, MonthDayCellDetails details) {
+    return monthDayCellBuilder?.call(context, details) ?? const MonthDayCell();
+  }
+
+  /// Builds a week number, with [weekNumberBuilder] when set.
+  Widget buildWeekNumber(BuildContext context, DateTimeRange visibleDateTimeRange) {
+    return weekNumberBuilder?.call(context, visibleDateTimeRange) ??
+        WeekNumber(visibleDateTimeRange: visibleDateTimeRange);
+  }
 
   /// Creates a copy of this with the given fields replaced.
   MonthBodyComponents copyWith({
@@ -146,7 +172,8 @@ class MonthBodyComponents {
 /// - Using these will override the respective default components.
 class MonthHeaderComponents {
   /// A function that builds the week day header widget.
-  final WeekDayHeaderBuilder weekDayHeaderBuilder;
+  /// Null uses [WeekDayHeader].
+  final WeekDayHeaderBuilder? weekDayHeaderBuilder;
 
   /// Builds the day name displayed by the week day header.
   ///
@@ -155,9 +182,14 @@ class MonthHeaderComponents {
 
   /// Creates overrides for the default components used by the [MonthHeader].
   const MonthHeaderComponents({
-    this.weekDayHeaderBuilder = WeekDayHeader.builder,
+    this.weekDayHeaderBuilder,
     this.weekDayHeaderStringBuilder,
   });
+
+  /// Builds a week day header, with [weekDayHeaderBuilder] when set.
+  Widget buildWeekDayHeader(BuildContext context, DateTime date) {
+    return weekDayHeaderBuilder?.call(context, date) ?? WeekDayHeader(date: date);
+  }
 
   /// Creates a copy of this with the given fields replaced.
   MonthHeaderComponents copyWith({

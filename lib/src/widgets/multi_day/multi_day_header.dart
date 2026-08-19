@@ -82,7 +82,6 @@ class _SingleDayHeader extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     final headerComponents = components.multiDayComponents.headerComponents;
-    final dayHeaderStyle = KalenderTheme.of(context).dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
       valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
@@ -90,7 +89,7 @@ class _SingleDayHeader extends StatelessWidget {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
           return const SizedBox.shrink();
         }
-        return headerComponents.dayHeaderBuilder.call(value.start, dayHeaderStyle);
+        return headerComponents.buildDayHeader(context, value.start);
       },
     );
 
@@ -156,7 +155,6 @@ class _MultiDayHeader extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
-    final weekNumberStyle = KalenderTheme.of(context).weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
@@ -164,7 +162,7 @@ class _MultiDayHeader extends StatelessWidget {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
           return const SizedBox.shrink();
         }
-        return headerComponents.weekNumberBuilder.call(value.forLocation(location: context.location), weekNumberStyle);
+        return headerComponents.buildWeekNumber(context, value.forLocation(location: context.location));
       },
     );
 
@@ -180,7 +178,8 @@ class _MultiDayHeader extends StatelessWidget {
             children: [
               WeekDayHeaders(
                 dates: visibleDates,
-                dayHeaderBuilder: DayHeader.fromContext,
+                dayHeaderBuilder: (context, date) => context.components.multiDayComponents.headerComponents
+                    .buildDayHeader(context, date.forLocation(location: context.location)),
               ),
               if (configuration.showTiles)
                 Stack(
@@ -236,12 +235,11 @@ class _FreeScrollHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final headerComponents = components.multiDayComponents.headerComponents;
-    final weekNumberStyle = KalenderTheme.of(context).weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) return const SizedBox.shrink();
-        return headerComponents.weekNumberBuilder.call(value.forLocation(location: context.location), weekNumberStyle);
+        return headerComponents.buildWeekNumber(context, value.forLocation(location: context.location));
       },
     );
 
@@ -390,7 +388,11 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              WeekDayHeaders(dates: windowDates, dayHeaderBuilder: DayHeader.fromContext),
+              WeekDayHeaders(
+                dates: windowDates,
+                dayHeaderBuilder: (context, date) => context.components.multiDayComponents.headerComponents
+                    .buildDayHeader(context, date.forLocation(location: context.location)),
+              ),
               if (widget.configuration.showTiles)
                 Stack(
                   children: [

@@ -8,9 +8,11 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 ///
 /// The [date] is a wall-clock [DateTime] in the calendar's configured location,
 /// so comparisons against `DateTime.now()` behave correctly.
+///
+/// Resolve the style with [KalenderTheme].
 typedef MonthDayHeaderBuilder = Widget Function(
+  BuildContext context,
   DateTime date,
-  MonthDayHeaderStyle? style,
 );
 
 /// The style of the [MonthDayHeader].
@@ -102,15 +104,6 @@ class MonthDayHeader extends StatelessWidget {
   final MonthDayHeaderStyle? style;
 
   const MonthDayHeader({super.key, required this.date, this.style});
-  static MonthDayHeader builder(DateTime date, MonthDayHeaderStyle? style) {
-    return MonthDayHeader(date: date, style: style);
-  }
-
-  static Widget fromContext(BuildContext context, InternalDateTime date) {
-    final dayHeader = context.components.monthComponents.bodyComponents.monthDayHeaderBuilder;
-    final style = KalenderTheme.of(context).monthDayHeaderStyle;
-    return dayHeader(date.forLocation(location: context.location), style);
-  }
 
   @override
   Widget build(BuildContext context) {
