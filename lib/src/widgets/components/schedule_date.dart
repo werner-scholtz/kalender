@@ -10,10 +10,11 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// The day header builder.
 ///
 /// The [date] is the date that the header will be displayed for.
-/// The [style] is used to style the day header.
+///
+/// Resolve the style with [KalenderTheme].
 typedef ScheduleDateBuilder = Widget Function(
+  BuildContext context,
   InternalDateTime date,
-  ScheduleDateStyle? style,
 );
 
 /// The style of the [ScheduleDate].
@@ -90,9 +91,6 @@ class ScheduleDate extends StatelessWidget {
   /// The [date] is the date that will be displayed.
   /// The [style] is the style of the [ScheduleDate].
   const ScheduleDate({super.key, required this.date, this.style});
-  static ScheduleDate builder(InternalDateTime date, ScheduleDateStyle? style) {
-    return ScheduleDate(date: date, style: style);
-  }
 
   @override
   Widget build(BuildContext context) {

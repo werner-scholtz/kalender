@@ -346,7 +346,7 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
         rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
         overlayBuilders: OverlayBuilders(
           multiDayPortalOverlayButtonBuilder:
-              (portalController, numberOfHiddenRows, style) => SizedBox(),
+              (context, portalController, numberOfHiddenRows) => SizedBox(),
         ),
       ),
       bodyComponents: MultiDayBodyComponents(
@@ -388,7 +388,7 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
         rightTriggerBuilder: (pageWidth) => SizedBox(),
         overlayBuilders: OverlayBuilders(
           multiDayPortalOverlayButtonBuilder:
-              (portalController, numberOfHiddenRows, style) => SizedBox(),
+              (context, portalController, numberOfHiddenRows) => SizedBox(),
         ),
       ),
     ),
@@ -404,17 +404,17 @@ Pass a `CalendarComponents` object to `CalendarView` to override the default wid
   CalendarComponents(
     scheduleComponents: ScheduleComponents(
       // The date column shown beside the first row of each day.
-      leadingDateBuilder: (date, style) => Container(),
+      leadingDateBuilder: (context, date) => Container(),
 
       // Wraps a row to highlight it as the drop target during a drag.
-      scheduleTileHighlightBuilder: (date, dateTimeRange, style, child) =>
+      scheduleTileHighlightBuilder: (context, date, dateTimeRange, child) =>
           Container(child: child),
 
       // Optional: builder for days with no events.
-      emptyItemBuilder: (tileRange) => Container(),
+      emptyItemBuilder: (context, tileRange) => Container(),
 
       // Optional: builder for the month heading rows.
-      monthItemBuilder: (monthRange) => Container(),
+      monthItemBuilder: (context, monthRange) => Container(),
     ),
   )
   ```

@@ -362,12 +362,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         if (frame.totalNumberOfRows > maxNumberOfRows)
           Row(
             children: (() {
-              final overlayBuilders = widget.multiDayOverlayBuilders;
-              // The built-in overlay widgets resolve their own style. A custom
-              // builder for either takes no BuildContext, so it is handed the
-              // resolved pair, and only then is resolving it worth doing.
-              final needsStyles = overlayBuilders?.multiDayOverlayBuilder != null ||
-                  overlayBuilders?.multiDayPortalOverlayButtonBuilder != null;
               return frame.columnRowMap.entries.map((entry) {
                 final column = entry.key;
                 final row = entry.value;
@@ -376,6 +370,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
                 late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
 
                 late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
+                      context,
                       date: date,
                       events: eventsForColumn,
                       numberOfHiddenRows: numberOfHiddenRows,
@@ -383,7 +378,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
                       getMultiDayEventLayoutRenderBox: getRenderBox,
                       overlayTileBuilder: _overlayEventTileBuilder,
                       overlayBuilders: widget.multiDayOverlayBuilders,
-                      overlayStyles: OverlayStyles.fromContext(context),
                     ) ??
                     MultiDayOverlayPortal(
                       key: MultiDayOverlayPortal.getKey(date),
@@ -394,10 +388,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
                       getMultiDayEventLayoutRenderBox: getRenderBox,
                       overlayBuilders: widget.multiDayOverlayBuilders,
                       overlayTileBuilder: _overlayEventTileBuilder,
-                      // MultiDayOverlay and MultiDayPortalOverlayButton resolve
-                      // their own, but a custom builder for either takes no
-                      // BuildContext and is handed these instead.
-                      overlayStyles: needsStyles ? OverlayStyles.fromContext(context) : null,
                     );
 
                 return Expanded(
@@ -412,6 +402,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
   /// The function that builds the overlay event tile for the event.
   MultiDayEventOverlayTile _overlayEventTileBuilder(
+    BuildContext context,
     CalendarEvent event,
     InternalDateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,

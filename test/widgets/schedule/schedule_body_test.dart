@@ -247,6 +247,6 @@ void main() {
   });
 }
 
-Widget _customMonthItem(DateTimeRange monthRange) => const Text('custom month');
+Widget _customMonthItem(BuildContext context, DateTimeRange monthRange) => const Text('custom month');
 
-Widget _customEmptyItem(DateTimeRange tileRange) => const Text('custom empty');
+Widget _customEmptyItem(BuildContext context, DateTimeRange tileRange) => const Text('custom empty');

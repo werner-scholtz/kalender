@@ -380,25 +380,24 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             final leadingWidth = widget.configuration.leadingWidth;
             Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
 
-            // A MonthItem row reads neither of the two below, so resolve the
-            // theme only once a row that needs it asks.
-            late final theme = KalenderTheme.of(context);
-            late final leading =
-                components.leadingDateBuilder.call(InternalDateTime.fromDateTime(date), theme.scheduleDateStyle);
-            late final highlightStyle = theme.scheduleTileHighlightStyle;
-            late final highlightBuilder = components.scheduleTileHighlightBuilder;
+            late final leading = components.buildLeadingDate(context, InternalDateTime.fromDateTime(date));
 
             if (item is MonthItem) {
               final locale = context.locale;
-              return components.monthItemBuilder?.call(InternalDateTime.fromDateTime(date).monthRange) ??
+              return components.monthItemBuilder?.call(context, InternalDateTime.fromDateTime(date).monthRange) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
                 minLeadingWidth: 0,
                 leading: leadingSlot(leading),
-                title: components.emptyItemBuilder?.call(InternalDateTime.fromDateTime(date).dayRange),
+                title: components.emptyItemBuilder?.call(context, InternalDateTime.fromDateTime(date).dayRange),
               );
-              return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
+              return components.buildScheduleTileHighlight(
+                context,
+                date,
+                viewController.highlightedDateTimeRange,
+                child,
+              );
             } else if (item is EventItem) {
               final showDate = item.isFirst;
               final event = eventsController.byId(item.eventId)!;
@@ -416,7 +415,12 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                 ),
               );
 
-              return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
+              return components.buildScheduleTileHighlight(
+                context,
+                date,
+                viewController.highlightedDateTimeRange,
+                child,
+              );
             } else {
               throw Exception('Unknown item type: ${item.runtimeType}');
             }

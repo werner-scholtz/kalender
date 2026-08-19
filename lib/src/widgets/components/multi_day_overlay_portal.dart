@@ -10,8 +10,11 @@ import 'package:kalender/kalender.dart';
 /// [tileHeight] is the height of the tile.
 /// [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] MultiDayEventLayoutWidget.
 /// [overlayBuilders] is the builders for the overlay event tile.
-/// [overlayStyles] is the styles for the overlay event tile.
-typedef MultiDayOverlayPortalBuilder = Widget Function({
+///
+/// Resolve the style with [KalenderTheme], or with [OverlayStyles.fromContext]
+/// for the overlay pair at once.
+typedef MultiDayOverlayPortalBuilder = Widget Function(
+  BuildContext context, {
   required DateTime date,
   required List<CalendarEvent> events,
   required int numberOfHiddenRows,
@@ -19,7 +22,6 @@ typedef MultiDayOverlayPortalBuilder = Widget Function({
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
   required MultiDayOverlayEventTileBuilder overlayTileBuilder,
   required OverlayBuilders? overlayBuilders,
-  required OverlayStyles? overlayStyles,
 });
 
 /// A widget that manages the overlay portal for a single day.
@@ -45,13 +47,6 @@ class MultiDayOverlayPortal extends StatefulWidget {
   /// The builders for the overlay.
   final OverlayBuilders? overlayBuilders;
 
-  /// The styles for the overlay widgets.
-  ///
-  /// Null leaves each overlay widget to resolve its own style from the
-  /// [KalenderTheme], which is what the built-in ones do. Pass a value only to
-  /// override the theme.
-  final OverlayStyles? overlayStyles;
-
   const MultiDayOverlayPortal({
     required this.date,
     required this.events,
@@ -60,7 +55,6 @@ class MultiDayOverlayPortal extends StatefulWidget {
     required this.getMultiDayEventLayoutRenderBox,
     required this.overlayTileBuilder,
     required this.overlayBuilders,
-    this.overlayStyles,
     super.key,
   });
 
@@ -100,6 +94,7 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
       controller: _portalController,
       overlayChildBuilder: (overlayContext) {
         return widget.overlayBuilders?.multiDayOverlayBuilder?.call(
+              overlayContext,
               date: widget.date,
               events: widget.events,
               tileHeight: widget.tileHeight,
@@ -107,7 +102,6 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
               overlayTileBuilder: widget.overlayTileBuilder,
               getMultiDayEventLayoutRenderBox: widget.getMultiDayEventLayoutRenderBox,
               getOverlayPortalRenderBox: getOverlayPortalRenderBox,
-              style: widget.overlayStyles?.multiDayOverlayStyle,
             ) ??
             MultiDayOverlay(
               key: MultiDayOverlay.getKey(widget.date),
@@ -118,19 +112,17 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
               overlayTileBuilder: widget.overlayTileBuilder,
               getMultiDayEventLayoutRenderBox: widget.getMultiDayEventLayoutRenderBox,
               getOverlayPortalRenderBox: getOverlayPortalRenderBox,
-              style: widget.overlayStyles?.multiDayOverlayStyle,
             );
       },
       child: widget.overlayBuilders?.multiDayPortalOverlayButtonBuilder?.call(
+            context,
             _portalController,
             widget.numberOfHiddenRows,
-            widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
           ) ??
           MultiDayPortalOverlayButton(
             key: MultiDayPortalOverlayButton.getKey(widget.date),
             portalController: _portalController,
             numberOfHiddenRows: widget.numberOfHiddenRows,
-            style: widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
             stringBuilder: widget.overlayBuilders?.multiDayPortalOverlayButtonStringBuilder,
           ),
     );
