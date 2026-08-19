@@ -12,7 +12,7 @@ import '../utilities.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Jan 6, 2025 is a Monday, so a week-view initialized here shows
-/// Monday Jan 6 → Sunday Jan 12 in [visibleDates], giving deterministic
+/// Monday Jan 6 → Sunday Jan 12 in `visibleDates`, giving deterministic
 /// date assertions in all cursor-position tests.
 final _weekInitialDate = DateTime(2025, 1, 6);
 

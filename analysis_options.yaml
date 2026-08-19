@@ -32,6 +32,7 @@ linter:
     type_literal_in_constant_pattern: true
     directives_ordering: true
     prefer_const_constructors: true
+    comment_references: true
 
 formatter:
   page_width: 120

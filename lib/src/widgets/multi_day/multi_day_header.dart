@@ -267,7 +267,7 @@ class _FreeScrollHeader extends StatelessWidget {
 ///
 /// Only the visible window is rendered, so the strip stays small regardless of
 /// how large the display range is. The horizontal position is derived from
-/// [MultiDayViewController.pageOffset] and applied synchronously in [build], so
+/// [MultiDayViewController.pageOffset] and applied synchronously in `build`, so
 /// re-anchoring the window and its offset compensation happen on the same frame
 /// (no visible jump).
 class _FreeScrollMultiDayBand extends StatefulWidget {

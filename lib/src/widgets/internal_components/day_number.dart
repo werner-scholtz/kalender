@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// date, and the multi-day overlay.
 ///
 /// It is never interactive. It is a label that happens to be drawn like a
-/// button, so [onPressed] is always null and the highlight has to set the
+/// button, so `onPressed` is always null and the highlight has to set the
 /// disabled colors to stay tonal.
 class DayNumber extends StatelessWidget {
   const DayNumber({
