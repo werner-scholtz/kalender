@@ -4,6 +4,7 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 
 ### Breaking Changes
 
+- `TimeOfDayRange.isAllDay` is removed, as its 0.26.0 deprecation message named. Use `coversWholeDay`. `TimeOfDayRange.allDay()` is unaffected.
 - The multi-day body builders take a `BuildContext` as their first argument and no longer take a style: `hourLines`, `timeline`, `timelineWidth`, `daySeparator` and `timeIndicator`. Resolve appearance with `KalenderTheme.of(context)`, and the timeline's own style with `GutterStyles.timelineStyleOf(context)`, the value the gutter width is measured from.
 - Those five fields are nullable and default to `null`, which selects the package default. `MultiDayBodyComponents` gained a `buildX` method per field that applies the override or the default.
 - `builder` and `fromContext` are removed from `TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator`. Construct the widget, or call the matching `MultiDayBodyComponents.buildX`.

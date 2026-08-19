@@ -202,7 +202,7 @@ The same reasoning removes a public **type** outright once every entry point to 
 @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
 ```
 
-A message without a version has no deadline and will sit there for years. None currently do, and `grep -rn "@Deprecated" lib/` is the check that keeps it that way.
+A message without a version has no deadline and will sit there for years. `lib/` currently carries no `@Deprecated` at all, and `grep -rn "@Deprecated" lib/` is the check that keeps it that way.
 
 **Some changes cannot be deprecated at all.** There is no window available for any of these, so they go straight into a breaking batch with a migration entry:
 
@@ -275,11 +275,11 @@ before tagging it:
   `MultiDayBodyConfiguration` in favour of `VerticalConfiguration`. Find them
   with `grep -rn "TODO" lib/`. They are `//` comments so they do not render as
   prose in the API reference, but each one is a decision still owed.
-- **Deprecations past their window.** `TimeOfDayRange.isAllDay` is removed in
-  0.27.0, which its 0.26.0 deprecation message names. `coversWholeDay` replaces
-  it, and it is the only `@Deprecated` left in `lib/`. The style fields on
-  `CalendarComponents` and the seven style container classes they reached were
-  removed in 0.26.0. See [Verifying a removal](#verifying-a-removal).
+- **Deprecations past their window.** None. `lib/` carries no `@Deprecated` at
+  all: `TimeOfDayRange.isAllDay` was removed in 0.27.0 as its 0.26.0 message
+  named, and the `CalendarComponents` style fields with the seven containers they
+  reached went in 0.26.0. `grep -rn "@Deprecated" lib/` is the check. See
+  [Verifying a removal](#verifying-a-removal).
 - **Function fields compared with `==`.** `ViewConfiguration.nowCallback` is the
   one left. It takes part in equality, so a closure written inline is a new
   function every build and defeats the caching the comparison exists to enable.

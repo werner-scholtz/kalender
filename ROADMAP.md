@@ -94,7 +94,7 @@ The all-day flag was scoped out to 0.27.0, on the argument that new public API d
 
 One break, across the widest customisation surface the package has. It gets a release of its own rather than riding along with model changes, and it happens before 1.0.0 because a freeze would put it behind a 2.0.0.
 
-`TimeOfDayRange.isAllDay` is removed here, as its 0.26.0 deprecation message names. `coversWholeDay` replaces it.
+`TimeOfDayRange.isAllDay` is removed here, as its 0.26.0 deprecation message names. `coversWholeDay` replaces it. Done, and it leaves `lib/` with no deprecation outstanding.
 
 **Every builder typedef takes a `BuildContext` first.** Fifteen of the twenty-four carry a style, and fourteen of those take no context, so a custom builder cannot call `KalenderTheme.of` and resolve anything for itself. The package resolves on its behalf and passes the result in, which is the only reason a style parameter sits on those signatures at all. The nine that carry no style take no context either. They change in the same release because a typedef signature cannot be deprecated in place, so each round of this is a hard break and splitting the work would break one concept twice.
 
