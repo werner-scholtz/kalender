@@ -131,7 +131,6 @@ class OverlayBuilders {
       );
 }
 
-
 /// The trigger widget builder, should be constrained in width.
 ///
 /// The [pageWidth] is the width of the page.
