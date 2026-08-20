@@ -165,12 +165,14 @@ For tiles that need to know the exact tapped time or find nearby events, use the
     }
 
     // Static factory. Pass directly to TileComponents.tileBuilder.
-    static Widget builder(CalendarEvent event, DateTimeRange tileRange) =>
+    static Widget builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
         CustomDayEventTile(
           event: event,
           tileRange: InternalDateTimeRange.fromDateTimeRange(tileRange),
         );
   }
+
+  const dayTileComponents = TileComponents(tileBuilder: CustomDayEventTile.builder);
   ```
 </details>
 
@@ -220,12 +222,14 @@ For tiles that need to know the exact tapped time or find nearby events, use the
       );
     }
 
-    static Widget builder(CalendarEvent event, DateTimeRange tileRange) =>
+    static Widget builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
         CustomMultiDayEventTile(
           event: event,
           tileRange: InternalDateTimeRange.fromDateTimeRange(tileRange),
         );
   }
+
+  const multiDayTileComponents = TileComponents(tileBuilder: CustomMultiDayEventTile.builder);
   ```
 </details>
 
