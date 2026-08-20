@@ -124,7 +124,7 @@ class DefaultResizeHandles extends StatelessWidget {
     final length = isVertical ? details.size.height : details.size.width;
 
     // The length of the resize handle.
-    // TODO: Make this configurable in the future.
+    // TODO: Move to a ResizeHandleStyle on the theme in 0.28.0.
     final handleLength = isImprecise ? 24.0 : 16.0;
 
     // Determine whether to hide the start resize handle.

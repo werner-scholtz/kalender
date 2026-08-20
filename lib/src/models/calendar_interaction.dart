@@ -104,7 +104,7 @@ enum InputMode {
 }
 
 /// The [CreateEventGesture] is used to differentiate between the different ways to create an event.
-// TODO: Rename this to EventInteractionGesture.
+// TODO: Rename this to EventInteractionGesture in 0.28.0.
 enum CreateEventGesture {
   /// Creates event on tap gesture.
   tap,
