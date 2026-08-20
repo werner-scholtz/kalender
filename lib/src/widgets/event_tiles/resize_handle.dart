@@ -4,8 +4,10 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
+import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/components/resize_handles.dart';
 
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {
@@ -151,12 +153,14 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
       maintainState: false,
       child: context.tileComponents.buildResizeHandles(
         context,
-        widget.event,
-        interaction,
-        widget.dateTimeRange,
-        _size,
-        widget.axis,
-        isImprecise,
+        ResizeHandleDetails(
+          event: widget.event,
+          interaction: interaction,
+          dateTimeRange: widget.dateTimeRange,
+          size: _size,
+          axis: widget.axis,
+          isImprecise: isImprecise,
+        ),
       ),
     );
 
@@ -170,20 +174,27 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   }
 }
 
-/// A widget that detects resize gestures for an event.
-class ResizeHandle extends StatelessWidget {
+/// The draggable that detects a resize gesture, wrapping the handle widget from
+/// [TileComponents.verticalResizeHandle] or [TileComponents.horizontalResizeHandle].
+class ResizeDetector extends StatelessWidget {
   /// The direction of the resize.
   final ResizeDirection direction;
 
   /// The event associated with the resize handle.
   final CalendarEvent event;
 
-  /// Creates an instance of [ResizeHandle].
-  const ResizeHandle({
+  /// Creates an instance of [ResizeDetector].
+  const ResizeDetector({
     super.key,
     required this.event,
     required this.direction,
   });
+
+  /// A key used to identify the start resize handle.
+  static Key startResizeDraggableKey(String eventId) => Key('ResizeDetector-Start-$eventId');
+
+  /// A key used to identify the end resize handle.
+  static Key endResizeDraggableKey(String eventId) => Key('ResizeDetector-End-$eventId');
 
   /// The resize event data.
   Resize get data => Resize(event: event, direction: direction);

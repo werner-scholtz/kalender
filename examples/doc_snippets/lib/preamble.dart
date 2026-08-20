@@ -76,7 +76,3 @@ final range =
     DateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
 final event = CalendarEvent(dateTimeRange: range);
 const someId = 'an-event-id';
-
-/// Stands in for a positioner the reader writes, see doc/appearance.md.
-ResizeHandlePositioner get myResizeHandlePositioner =>
-    throw UnimplementedError();

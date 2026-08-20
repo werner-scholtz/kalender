@@ -146,25 +146,25 @@ The overlay is built into an `Overlay` rather than below the calendar.
 `KalenderTheme` is an `InheritedTheme`, so `KalenderTheme.of` still reaches it
 from the overlay builder's context.
 
-#### `ResizeHandlePositioner` also loses its `TileComponents`
+#### `ResizeHandlePositioner` returns a plain `Widget`
 
-The context goes in front, and the lookup moves off the widget:
-
-```dart
-// Before
-ResizeHandles.builder(event, interaction, tileComponents, dateTimeRange, size, axis, isImprecise)
-
-// After
-tileComponents.buildResizeHandles(context, event, interaction, dateTimeRange, size, axis, isImprecise)
-```
-
-A custom positioner takes the context as its first parameter and no longer
-receives the `TileComponents`. `ResizeHandles` dropped its `tileComponents` field
-along with it and resolves the handle widgets from the context instead, so a
-custom subclass drops it from its constructor:
+It was the only builder that made you subclass an abstract class. `ResizeHandles`
+is removed and its six values and nine helpers move to `ResizeHandleDetails`,
+which the positioner receives. Return any widget you like.
 
 ```dart
 // Before
+resizeHandlePositioner: (event, interaction, tileComponents, dateTimeRange, size, axis, isImprecise) =>
+    MyHandles(
+      event: event,
+      interaction: interaction,
+      tileComponents: tileComponents,
+      dateTimeRange: dateTimeRange,
+      size: size,
+      axis: axis,
+      isImprecise: isImprecise,
+    ),
+
 class MyHandles extends ResizeHandles {
   const MyHandles({
     required super.event,
@@ -181,24 +181,52 @@ class MyHandles extends ResizeHandles {
 }
 
 // After
-class MyHandles extends ResizeHandles {
-  const MyHandles({
-    required super.event,
-    required super.interaction,
-    required super.dateTimeRange,
-    required super.size,
-    required super.axis,
-    required super.isImprecise,
-  });
-
-  @override
-  Widget build(BuildContext context) => resizeHandle(context, axis);
-}
+resizeHandlePositioner: (context, details) => details.resizeHandle(context),
 ```
 
-`startResizeDetector` and `endResizeDetector` are unchanged. An app that needs
-its own `TileComponents` inside a positioner already holds the object it passed
-to the calendar, so it can close over that.
+`showStart`, `showEnd`, `continuesBefore`, `continuesAfter`, `isVertical`,
+`eventInteraction`, `startResizeDetector` and `endResizeDetector` are unchanged
+and are read off `details`. `resizeHandle` takes the context and resolves the
+handle widgets from it, where it read them off a `tileComponents` field before,
+so the axis is now optional and defaults to the one being resized.
+
+The two key factories move to `ResizeDetector`, the widget they key, which
+reaches any test that looks one up. The key strings change with them: both named
+`DayEventTile` whatever the tile actually was.
+
+```dart
+// Before
+find.byKey(ResizeHandles.startResizeDraggableKey(eventId))
+
+// After
+find.byKey(ResizeDetector.startResizeDraggableKey(eventId))
+```
+
+`ResizeDetector` is the draggable that wraps the handle widget you supply through
+`TileComponents.verticalResizeHandle`. It is exported now, so a handle can also
+be found without a key. It carries `event` and `direction`, which pin down one
+where the type alone matches several:
+
+```dart
+find.byWidgetPredicate((w) => w is ResizeDetector && w.event.id == eventId && w.direction == ResizeDirection.top)
+```
+
+Scope with `find.descendant` where the same event may be built more than once,
+which a page kept alive or an overlay can do.
+
+`TileComponents.buildResizeHandles` takes the details rather than seven
+positional arguments, and returns a `Widget`:
+
+```dart
+// Before
+ResizeHandles.builder(event, interaction, tileComponents, dateTimeRange, size, axis, isImprecise)
+
+// After
+tileComponents.buildResizeHandles(context, details)
+```
+
+An app that needs its own `TileComponents` inside a positioner already holds the
+object it passed to the calendar, so it can close over that.
 
 ### The `builder` and `fromContext` statics are removed
 

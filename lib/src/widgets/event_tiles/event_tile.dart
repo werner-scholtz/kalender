@@ -7,7 +7,6 @@ import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_gesture_detector.dart';
 
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
-import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 

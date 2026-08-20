@@ -5,9 +5,9 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 
 import '../utilities.dart';
 
-/// A custom [ResizeHandlePositioner] receives a [BuildContext] and no longer
-/// receives the [TileComponents]. The base class resolves the handle widgets
-/// from the context, so a subclass builds the detectors without carrying them.
+/// A custom [ResizeHandlePositioner] returns a plain [Widget] and receives a
+/// [ResizeHandleDetails], which carries the tile's geometry and resolves the
+/// handle widgets from the context.
 void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -58,15 +58,15 @@ void main() {
 
     final tiles = TileComponents(
       tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
-      resizeHandlePositioner: (context, event, interaction, dateTimeRange, size, axis, isImprecise) {
+      resizeHandlePositioner: (context, details) {
         resolved = KalenderTheme.of(context).daySeparatorStyle?.color;
-        return _ProbeResizeHandles(
-          event: event,
-          interaction: interaction,
-          dateTimeRange: dateTimeRange,
-          size: size,
-          axis: axis,
-          isImprecise: isImprecise,
+        return Stack(
+          fit: StackFit.expand,
+          key: _probeKey,
+          children: [
+            Positioned(top: 0, left: 0, right: 0, height: 8, child: details.startResizeDetector),
+            Positioned(bottom: 0, left: 0, right: 0, height: 8, child: details.endResizeDetector),
+          ],
         );
       },
     );
@@ -74,24 +74,15 @@ void main() {
     await pumpDay(tester, tiles);
     await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());
 
-    expect(find.byType(_ProbeResizeHandles), findsWidgets);
+    expect(find.byKey(_probeKey), findsWidgets);
     expect(resolved, const Color(0xFF00FF00));
   });
 
-  testWidgets('the base class resolves the handle widgets from the context', (tester) async {
+  testWidgets('the details resolve the handle widgets from the context', (tester) async {
     final tiles = TileComponents(
       tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
       verticalResizeHandle: const _Handle(),
-      resizeHandlePositioner: (context, event, interaction, dateTimeRange, size, axis, isImprecise) {
-        return _HandleOnly(
-          event: event,
-          interaction: interaction,
-          dateTimeRange: dateTimeRange,
-          size: size,
-          axis: axis,
-          isImprecise: isImprecise,
-        );
-      },
+      resizeHandlePositioner: (context, details) => details.resizeHandle(context),
     );
 
     await pumpDay(tester, tiles);
@@ -101,45 +92,8 @@ void main() {
   });
 }
 
-/// Builds the package's own resize detectors, which no longer need the
-/// [TileComponents] passed to them.
-class _ProbeResizeHandles extends ResizeHandles {
-  const _ProbeResizeHandles({
-    required super.event,
-    required super.interaction,
-    required super.dateTimeRange,
-    required super.size,
-    required super.axis,
-    required super.isImprecise,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned(top: 0, left: 0, right: 0, height: 8, child: startResizeDetector),
-        Positioned(bottom: 0, left: 0, right: 0, height: 8, child: endResizeDetector),
-      ],
-    );
-  }
-}
-
-/// Uses [ResizeHandles.resizeHandle], which resolves the handle widget from the
-/// context rather than from a field.
-class _HandleOnly extends ResizeHandles {
-  const _HandleOnly({
-    required super.event,
-    required super.interaction,
-    required super.dateTimeRange,
-    required super.size,
-    required super.axis,
-    required super.isImprecise,
-  });
-
-  @override
-  Widget build(BuildContext context) => resizeHandle(context, axis);
-}
+/// Identifies the widget a custom positioner returned.
+const _probeKey = ValueKey<String>('probe-resize-handles');
 
 class _Handle extends StatelessWidget {
   const _Handle();

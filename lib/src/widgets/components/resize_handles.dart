@@ -7,26 +7,17 @@ import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 
-/// The builder that positions the ResizeHandles.
+/// The builder that positions the resize handles of an event tile.
 ///
-/// [event] is the event associated with the resize handles.
-/// [interaction] is the global interaction settings for the calendar.
-/// [dateTimeRange] is the DateTimeRange that the current view is displaying.
-/// [size] is the size of the event tile.
-/// [axis] is the axis along which the resize handles are positioned.
-/// [isImprecise] indicates whether the current input is imprecise (e.g. touch/finger).
-typedef ResizeHandlePositioner = ResizeHandles Function(
+/// [details] carries the event, the tile geometry and the helpers that decide
+/// which handles to show and build them.
+typedef ResizeHandlePositioner = Widget Function(
   BuildContext context,
-  CalendarEvent event,
-  CalendarInteraction interaction,
-  DateTimeRange dateTimeRange,
-  Size size,
-  Axis axis,
-  bool isImprecise,
+  ResizeHandleDetails details,
 );
 
-/// The base class for the ResizeDetectorPositioner.
-abstract class ResizeHandles extends StatelessWidget {
+/// What a [ResizeHandlePositioner] needs to lay out the resize handles of one event tile.
+class ResizeHandleDetails {
   /// The event associated with the resize handles.
   final CalendarEvent event;
 
@@ -48,18 +39,20 @@ abstract class ResizeHandles extends StatelessWidget {
   /// When `false`, resize handles span the full width/height of the event tile.
   final bool isImprecise;
 
-  const ResizeHandles({
+  const ResizeHandleDetails({
     required this.event,
     required this.interaction,
     required this.dateTimeRange,
     required this.size,
     required this.axis,
     required this.isImprecise,
-    super.key,
   });
 
   /// Whether the axis is vertical.
   bool get isVertical => axis == Axis.vertical;
+
+  /// The interaction settings for this event.
+  EventInteraction get eventInteraction => event.interaction;
 
   /// Whether the event continues before the current date range.
   bool continuesBefore({Location? location}) => event.internalStart(location: location).isBefore(dateTimeRange.start);
@@ -75,68 +68,60 @@ abstract class ResizeHandles extends StatelessWidget {
   bool showEnd({Location? location}) =>
       interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter(location: location);
 
-  /// The interaction settings for this event.
-  EventInteraction get eventInteraction => event.interaction;
-
   /// The resize handle to use, resolved from the [TileComponents] of [context].
-  Widget resizeHandle(BuildContext context, Axis axis) {
+  ///
+  /// Resolves the handle for [axis] unless another one is given.
+  Widget resizeHandle(BuildContext context, {Axis? axis}) {
     final components = context.tileComponents;
-    return (axis == Axis.vertical ? components.verticalResizeHandle : components.horizontalResizeHandle) ??
+    final effective = axis ?? this.axis;
+    return (effective == Axis.vertical ? components.verticalResizeHandle : components.horizontalResizeHandle) ??
         const SizedBox();
   }
 
-  /// A key used to identify the top resize handle.
-  static Key startResizeDraggableKey(String eventId) => Key('DayEventTile-StartResizeDraggable-$eventId');
-
-  /// A key used to identify the bottom resize handle.
-  static Key endResizeDraggableKey(String eventId) => Key('DayEventTile-EndResizeDraggable-$eventId');
-
   /// The start resize detector.
   ///
-  /// The direction is determined by the axis.
-  Widget get startResizeDetector => ResizeHandle(
-        key: startResizeDraggableKey(event.id),
+  /// The direction is determined by [axis].
+  ResizeDetector get startResizeDetector => ResizeDetector(
+        key: ResizeDetector.startResizeDraggableKey(event.id),
         event: event,
-        direction: axis == Axis.vertical ? ResizeDirection.top : ResizeDirection.left,
+        direction: isVertical ? ResizeDirection.top : ResizeDirection.left,
       );
 
   /// The end resize detector.
   ///
-  /// The direction is determined by the axis.
-  Widget get endResizeDetector => ResizeHandle(
-        key: endResizeDraggableKey(event.id),
+  /// The direction is determined by [axis].
+  ResizeDetector get endResizeDetector => ResizeDetector(
+        key: ResizeDetector.endResizeDraggableKey(event.id),
         event: event,
-        direction: axis == Axis.vertical ? ResizeDirection.bottom : ResizeDirection.right,
+        direction: isVertical ? ResizeDirection.bottom : ResizeDirection.right,
       );
 }
 
-/// The base class for the ResizeDetectorPositioner.
-class DefaultResizeHandles extends ResizeHandles {
-  const DefaultResizeHandles({
-    required super.event,
-    required super.axis,
-    required super.interaction,
-    required super.dateTimeRange,
-    required super.size,
-    required super.isImprecise,
-    super.key,
-  });
+/// The default layout for the resize handles of an event tile.
+class DefaultResizeHandles extends StatelessWidget {
+  /// The event tile the handles are positioned on.
+  final ResizeHandleDetails details;
+
+  const DefaultResizeHandles({required this.details, super.key});
 
   @override
   Widget build(BuildContext context) {
     final location = context.location;
-    if (!showStart(location: location) && !showEnd(location: location)) {
+    if (!details.showStart(location: location) && !details.showEnd(location: location)) {
       // If neither handle should be shown, return an empty widget.
       return const SizedBox();
     }
 
-    if (isImprecise && axis == Axis.horizontal && !interaction.allowHorizontalImpreciseResize) {
+    final isImprecise = details.isImprecise;
+    final isVertical = details.isVertical;
+
+    if (isImprecise && !isVertical && !details.interaction.allowHorizontalImpreciseResize) {
       // Horizontal resize handles are not supported by default for imprecise input.
       // This is because they will be super small and hard to interact with.
       return const SizedBox();
     }
 
-    final length = isVertical ? size.height : size.width;
+    final length = isVertical ? details.size.height : details.size.width;
 
     // The length of the resize handle.
     // TODO: Make this configurable in the future.
@@ -148,7 +133,7 @@ class DefaultResizeHandles extends ResizeHandles {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (!hideStart && showStart(location: location))
+        if (!hideStart && details.showStart(location: location))
           isVertical
               ? Positioned(
                   top: 0,
@@ -156,16 +141,16 @@ class DefaultResizeHandles extends ResizeHandles {
                   right: isImprecise ? null : 0,
                   width: isImprecise ? handleLength : null,
                   height: handleLength,
-                  child: startResizeDetector,
+                  child: details.startResizeDetector,
                 )
               : Positioned(
                   left: 0,
                   top: 0,
                   bottom: 0,
                   width: handleLength,
-                  child: startResizeDetector,
+                  child: details.startResizeDetector,
                 ),
-        if (showEnd(location: location))
+        if (details.showEnd(location: location))
           isVertical
               ? Positioned(
                   bottom: 0,
@@ -173,14 +158,14 @@ class DefaultResizeHandles extends ResizeHandles {
                   right: 0,
                   width: isImprecise ? handleLength : null,
                   height: handleLength,
-                  child: endResizeDetector,
+                  child: details.endResizeDetector,
                 )
               : Positioned(
                   right: 0,
                   top: 0,
                   bottom: 0,
                   width: handleLength,
-                  child: endResizeDetector,
+                  child: details.endResizeDetector,
                 ),
       ],
     );
