@@ -190,7 +190,7 @@ class CalendarCallbacks {
 ///
 /// The [event] is the event that was tapped.
 /// The [renderBox] is the [RenderBox] of the event tile.
-// TODO: Remove renderBox in 1.0.0 as it is now included in the OnEventTappedWithDetail.
+// TODO: Remove renderBox in 0.28.0, OnEventTappedWithDetail carries it.
 typedef OnEventTapped = void Function(CalendarEvent event, RenderBox renderBox);
 
 /// The callback for when an event is tapped.
@@ -199,7 +199,7 @@ typedef OnEventTapped = void Function(CalendarEvent event, RenderBox renderBox);
 /// The [renderBox] is the [RenderBox] of the event tile.
 /// The [detail] is the details of the date that was tapped.
 /// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
-// TODO: Remove renderBox in 1.0.0 as it is now included in the detail.
+// TODO: Remove renderBox in 0.28.0, the detail carries it.
 typedef OnEventTappedWithDetail = void Function(
   CalendarEvent event,
   RenderBox renderBox,
