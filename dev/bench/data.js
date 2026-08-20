@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1787216501622,
+  "lastUpdate": 1787216504456,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -37310,6 +37310,198 @@ window.BENCHMARK_DATA = {
             "range": "± 1.47",
             "unit": "ms",
             "extra": "p90_build=11.12ms p99_build=28.67ms missed_build=5 (runs=5)"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cf64a1a79e37c6e43f02e6693909e2c81fc40513",
+          "message": "Merge pull request #465 from werner-scholtz/chore/release-0.27.0\n\nchore: release 0.27.0",
+          "timestamp": "2026-08-20T10:43:17+02:00",
+          "tree_id": "92b8c73f5f1deb003d482163e53ff8265947110f",
+          "url": "https://github.com/werner-scholtz/kalender/commit/cf64a1a79e37c6e43f02e6693909e2c81fc40513"
+        },
+        "date": 1787216504143,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "ten_events_per_day-week-loadingEvents / avg_build_ms",
+            "value": 1.6248666666666665,
+            "range": "± 0.06",
+            "unit": "ms",
+            "extra": "p90_build=5.20ms p99_build=8.52ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-navigation / avg_build_ms",
+            "value": 9.729533333333332,
+            "range": "± 0.79",
+            "unit": "ms",
+            "extra": "p90_build=26.18ms p99_build=35.77ms missed_build=3 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-scrolling / avg_build_ms",
+            "value": 1.8765714285714286,
+            "range": "± 0.2",
+            "unit": "ms",
+            "extra": "p90_build=2.40ms p99_build=3.12ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-rescheduling / avg_build_ms",
+            "value": 1.3645416666666668,
+            "range": "± 0.25",
+            "unit": "ms",
+            "extra": "p90_build=2.63ms p99_build=4.41ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-resizing / avg_build_ms",
+            "value": 0.777166666666667,
+            "range": "± 0.1",
+            "unit": "ms",
+            "extra": "p90_build=2.08ms p99_build=2.94ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-loadingEvents / avg_build_ms",
+            "value": 8.15592,
+            "range": "± 0.88",
+            "unit": "ms",
+            "extra": "p90_build=23.13ms p99_build=33.66ms missed_build=7 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-navigation / avg_build_ms",
+            "value": 11.420833333333334,
+            "range": "± 1.12",
+            "unit": "ms",
+            "extra": "p90_build=32.06ms p99_build=36.08ms missed_build=4 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-rescheduling / avg_build_ms",
+            "value": 2.0922105263157897,
+            "range": "± 0.4",
+            "unit": "ms",
+            "extra": "p90_build=4.87ms p99_build=9.08ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-resizing / avg_build_ms",
+            "value": 0.4683333333333333,
+            "range": "± 0.1",
+            "unit": "ms",
+            "extra": "p90_build=0.39ms p99_build=3.82ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-schedule-loadingEvents / avg_build_ms",
+            "value": 7.139428571428573,
+            "range": "± 0.93",
+            "unit": "ms",
+            "extra": "p90_build=19.66ms p99_build=37.80ms missed_build=6 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-schedule-navigation / avg_build_ms",
+            "value": 28.300545454545457,
+            "range": "± 6.58",
+            "unit": "ms",
+            "extra": "p90_build=49.26ms p99_build=56.95ms missed_build=9 (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-schedule-rescheduling / avg_build_ms",
+            "value": 1.5277500000000002,
+            "range": "± 0.13",
+            "unit": "ms",
+            "extra": "p90_build=5.55ms p99_build=15.46ms missed_build=1 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-loadingEvents / avg_build_ms",
+            "value": 17.193227272727274,
+            "range": "± 0.75",
+            "unit": "ms",
+            "extra": "p90_build=58.49ms p99_build=71.22ms missed_build=7 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-navigation / avg_build_ms",
+            "value": 56.301500000000004,
+            "range": "± 18.4",
+            "unit": "ms",
+            "extra": "p90_build=112.30ms p99_build=112.30ms missed_build=1 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-scrolling / avg_build_ms",
+            "value": 1.2094761904761904,
+            "range": "± 0.12",
+            "unit": "ms",
+            "extra": "p90_build=1.62ms p99_build=1.93ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-rescheduling / avg_build_ms",
+            "value": 0.120570093457944,
+            "range": "± 0",
+            "unit": "ms",
+            "extra": "p90_build=0.14ms p99_build=0.17ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-resizing / avg_build_ms",
+            "value": 0.12895652173913041,
+            "range": "± 0",
+            "unit": "ms",
+            "extra": "p90_build=0.15ms p99_build=0.17ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-loadingEvents / avg_build_ms",
+            "value": 8.578666666666667,
+            "range": "± 0.57",
+            "unit": "ms",
+            "extra": "p90_build=21.17ms p99_build=33.61ms missed_build=14 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-navigation / avg_build_ms",
+            "value": 14.66925,
+            "range": "± 0.76",
+            "unit": "ms",
+            "extra": "p90_build=38.21ms p99_build=71.93ms missed_build=4 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-rescheduling / avg_build_ms",
+            "value": 2.2027500000000004,
+            "range": "± 0.06",
+            "unit": "ms",
+            "extra": "p90_build=4.81ms p99_build=9.86ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-resizing / avg_build_ms",
+            "value": 0.8788750000000002,
+            "range": "± 0.27",
+            "unit": "ms",
+            "extra": "p90_build=2.46ms p99_build=8.82ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-schedule-loadingEvents / avg_build_ms",
+            "value": 5.262346153846155,
+            "range": "± 0.55",
+            "unit": "ms",
+            "extra": "p90_build=15.29ms p99_build=18.06ms missed_build=6 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-schedule-navigation / avg_build_ms",
+            "value": 26.28061538461538,
+            "range": "± 1.3",
+            "unit": "ms",
+            "extra": "p90_build=50.11ms p99_build=51.30ms missed_build=10 (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-schedule-rescheduling / avg_build_ms",
+            "value": 2.90677011494253,
+            "range": "± 1.64",
+            "unit": "ms",
+            "extra": "p90_build=9.17ms p99_build=31.41ms missed_build=6 (runs=5)"
           }
         ]
       }
