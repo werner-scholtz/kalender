@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1787209861998,
+  "lastUpdate": 1787210869043,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -10627,6 +10627,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 1001.45925,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9ab8266de8bd72e6f524638955197939dc64f223",
+          "message": "Merge pull request #460 from werner-scholtz/fix/gutter-week-number-accessor\n\nfix: GutterStyles.weekNumberStyleOf is removed",
+          "timestamp": "2026-08-20T09:07:56+02:00",
+          "tree_id": "ba4c78faed9434adbd84c2cb24a0a25e5a65bed7",
+          "url": "https://github.com/werner-scholtz/kalender/commit/9ab8266de8bd72e6f524638955197939dc64f223"
+        },
+        "date": 1787210865004,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 128.7466460268318,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 534.4784448558582,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 1546.9235382308846,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 6041.51497005988,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 631.43375,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 1958.6656671664168,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2163.56,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 10911.471204188481,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 187.75177670202905,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 99.32216442268462,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 697.065,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3026.58375,
             "unit": "us"
           }
         ]
