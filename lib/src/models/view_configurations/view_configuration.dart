@@ -265,7 +265,7 @@ abstract class HorizontalConfiguration {
   }
 }
 
-// TODO: rename these to use `k` prefix
+// TODO: Decide on the `k` prefix in 0.28.0, renaming these is breaking.
 const defaultTileHeight = 24.0;
 const defaultNewEventDuration = Duration(minutes: 30);
 const defaultShowMultiDayEvents = false;

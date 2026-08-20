@@ -118,18 +118,27 @@ The default for each builder moves off the widget and onto the components class 
 
 ### 0.28.0, the next breaking window
 
-Two API decisions deferred out of 0.27.0. Both are breaking, and neither has a deprecation path that costs less than doing it in a release that already breaks, so they wait for the next such release rather than for 1.0.0.
+The breaking changes with nowhere cheaper to go. None has a deprecation path that costs less than doing it in a release that already breaks, so they wait for the next such release rather than for 1.0.0. Batching them is the point: a break that lands on its own costs a migration entry and a minor version for one item.
 
 **`OnEventTapped` drops its `RenderBox`.** `TapDetail` already carries the same object, which is what makes the parameter redundant on `OnEventTappedWithDetail`. `OnEventTapped` has no detail to fall back on, so removing it there means pointing callers at the other callback instead. That is the deprecation of a whole callback rather than the trim of a parameter, and the question underneath it is whether `OnEventTapped` earns its place at all once `OnEventTappedWithDetail` gives strictly more.
 
 **`MultiDayBodyConfiguration` folds into `VerticalConfiguration`.** The TODO on it reads as a rename, but the class extends `VerticalConfiguration` and adds `keepPagesAlive`, so the two are not interchangeable today. Moving that field up is what makes a replacement honest, and only then can a deprecation message name one. Which way the merge goes is open: `MultiDayBodyConfiguration` is the more discoverable of the two names.
 
+**`CreateEventGesture` becomes `EventInteractionGesture`.** The name says "create" and the enum also decides how an event is modified, which is why `CalendarInteraction` carries it twice, as `createEventGesture` and `modifyEventGesture`. A public enum cannot be renamed behind a deprecation, so it goes in a breaking batch or not at all. Carried a TODO with no release attached until now.
+
+**The `default*` constants take a `k` prefix.** `defaultTileHeight`, `defaultNewEventDuration`, `defaultEventLayoutStrategy` and the rest are public top-level constants, so renaming them is breaking. Worth doing with the others rather than alone, and worth deciding against outright if the prefix is not wanted, since the TODO has outlived several releases.
+
+**Whether the tile key factories are public API.** Nine of the twenty-two `static Key` factories sit on classes nothing exports, so `DayEventTile.tileKey` and its siblings cannot be reached from an app at all. Either the tiles are exported or the factories stop being public, and both are breaking. 0.27.0 showed the third option works: `ResizeDetector` carries `event` and `direction`, so it is findable with `find.byType` and a predicate and needs no key. Flutter publishes no key factories anywhere and its own tests use `find.byType` over `find.byKey` about four to one.
+
+**A `ResizeHandleStyle`, moved here from the theming list.** It adds rather than changes API, so it needs no breaking window, but it belongs with the resize handle work the previous release started. `KalenderThemeData` carries thirteen style classes and the resize handles are the only thing the calendar draws without one. The handle length is a hardcoded 24 for imprecise input and 16 otherwise, with a TODO on it in `DefaultResizeHandles`. Less pressing since 0.27.0, because changing the layout is now a lambda where it used to mean subclassing an abstract class.
+
+`FreeScrollFunctions` carries a TODO asking whether `DayIndexCalculator` can replace it. It became public with the rest of `PageIndexCalculator` in 0.26.0, so removing it is breaking and belongs here if the answer turns out to be yes. It is a question rather than a decision, so nothing is planned for it.
+
 ### Theming, still open
 
-Both are here rather than after 1.0.0 because the first adds public API and the second changes it.
+**Three public fields keep Material in the API,** carried forward from 0.25.0 since changing them is breaking: `MultiDayOverlayStyle.cardTheme` is a `CardThemeData`, `MultiDayOverlayStyle.closeButtonStyle` is a `ButtonStyle`, and `WeekNumberStyle.visualDensity` is a `VisualDensity`. A framework neutral core cannot name any of those types. No release is attached, so they can ride along with the next breaking one or wait.
 
-- **The resize handles have no style class.** `KalenderThemeData` carries thirteen and every other thing the calendar draws has one. The handle length is a hardcoded 24 for imprecise input and 16 otherwise, with a TODO on it in `DefaultResizeHandles`. A `ResizeHandleStyle` is the shape that matches the rest, rather than a length parameter bolted on. Less pressing since 0.27.0, because changing the layout is now a lambda where it used to mean subclassing an abstract class.
-- **Three public fields keep Material in the API,** carried forward from 0.25.0 since changing them is breaking: `MultiDayOverlayStyle.cardTheme` is a `CardThemeData`, `MultiDayOverlayStyle.closeButtonStyle` is a `ButtonStyle`, and `WeekNumberStyle.visualDensity` is a `VisualDensity`. A framework neutral core cannot name any of those types.
+The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 ### Tests
 
