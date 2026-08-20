@@ -87,6 +87,11 @@ static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRang
     EventTile(event: event);
 ```
 
+The package's own `defaultTileBuilder`, `defaultTileWhenDraggingBuilder`,
+`defaultFeedbackTileBuilder` and `defaultDropTargetBuilder` gained the context
+the same way. Passing one as a tear-off needs no change. Calling one inside a
+builder of your own means passing the context along.
+
 Four cases need more than the signature change.
 
 #### The timeline resolves from `GutterStyles`, not the theme
@@ -96,6 +101,17 @@ overlay all measure from. A theme scoped inside the calendar cannot move it.
 
 ```dart
 timelineWidth: (context, range) => GutterStyles.timelineStyleOf(context).width ?? 56,
+```
+
+`defaultTimelineWidth` resolves the style the same way, so it no longer takes
+one. A builder that measured the default and adjusted it drops the argument:
+
+```dart
+// Before
+timelineWidth: (context, range, style) => defaultTimelineWidth(context, range, style) + 8,
+
+// After
+timelineWidth: (context, range) => defaultTimelineWidth(context, range) + 8,
 ```
 
 #### The month week number keeps its top alignment
