@@ -1,6 +1,6 @@
 name: kalender
 description: A highly customizable calendar widget with day, multi-day, month and schedule views, drag-and-drop rescheduling, event resizing, and timezone support.
-version: 0.27.0-dev.2
+version: 0.27.0
 repository: https://github.com/werner-scholtz/kalender.git
 issue_tracker: https://github.com/werner-scholtz/kalender/issues
 topics:

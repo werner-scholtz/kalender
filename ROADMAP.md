@@ -90,7 +90,7 @@ The all-day flag was scoped out to 0.27.0, on the argument that new public API d
 
   What this does not do is let an app pick arbitrary visible days. See [#90](https://github.com/werner-scholtz/kalender/issues/90) below.
 
-### 0.27.0, the builders take a context, previewed in 0.27.0-dev.2
+### 0.27.0, the builders take a context, done
 
 One concept, across the widest customisation surface the package has. It gets a release of its own rather than riding along with model changes, and it happens before 1.0.0 because a freeze would put it behind a 2.0.0. What the plan below did not anticipate is how much doing it turned up, which the last three items record.
 
