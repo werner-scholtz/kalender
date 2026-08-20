@@ -190,8 +190,8 @@ and are read off `details`. `resizeHandle` takes the context and resolves the
 handle widgets from it, where it read them off a `tileComponents` field before,
 so the axis is now optional and defaults to the one being resized.
 
-The two key factories move to `ResizeHandle`, the widget they key, which reaches
-any test that looks one up. The key strings change with them: both named
+The two key factories move to `ResizeDetector`, the widget they key, which
+reaches any test that looks one up. The key strings change with them: both named
 `DayEventTile` whatever the tile actually was.
 
 ```dart
@@ -199,15 +199,16 @@ any test that looks one up. The key strings change with them: both named
 find.byKey(ResizeHandles.startResizeDraggableKey(eventId))
 
 // After
-find.byKey(ResizeHandle.startResizeDraggableKey(eventId))
+find.byKey(ResizeDetector.startResizeDraggableKey(eventId))
 ```
 
-`ResizeHandle` is exported, so a handle can also be found without a key. It
-carries `event` and `direction`, which pin down one handle where the type alone
-matches several:
+`ResizeDetector` is the draggable that wraps the handle widget you supply through
+`TileComponents.verticalResizeHandle`. It is exported now, so a handle can also
+be found without a key. It carries `event` and `direction`, which pin down one
+where the type alone matches several:
 
 ```dart
-find.byWidgetPredicate((w) => w is ResizeHandle && w.event.id == eventId && w.direction == ResizeDirection.top)
+find.byWidgetPredicate((w) => w is ResizeDetector && w.event.id == eventId && w.direction == ResizeDirection.top)
 ```
 
 Scope with `find.descendant` where the same event may be built more than once,

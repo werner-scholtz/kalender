@@ -59,7 +59,7 @@ export 'package:kalender/src/widgets/components/multi_day_overlay.dart';
 export 'package:kalender/src/widgets/components/multi_day_overlay_portal.dart';
 export 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.dart';
 export 'package:kalender/src/widgets/components/resize_handles.dart';
-export 'package:kalender/src/widgets/event_tiles/resize_handle.dart' show ResizeHandle;
+export 'package:kalender/src/widgets/event_tiles/resize_handle.dart' show ResizeDetector;
 export 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart' show MultiDayEventOverlayTile;
 export 'package:kalender/src/widgets/components/time_indicator.dart';
 export 'package:kalender/src/widgets/components/time_line.dart';

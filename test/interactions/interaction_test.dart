@@ -185,15 +185,15 @@ void main() {
       expect(dayTile, findsOneWidget, reason: 'DayEventTile with id $dayEventID not found');
       await tester.hoverOn(dayTile, gesture);
       expect(find.byKey(DayEventTile.rescheduleDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(dayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(dayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(dayEventID)), findsOneWidget);
 
       final multiDayTile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
       expect(multiDayTile, findsOneWidget, reason: 'MultiDayEventTile with id $multiDayEventID not found');
       await tester.hoverOn(multiDayTile, gesture);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
     });
 
     testWidgets('custom events respect per-event interaction overrides', (tester) async {
@@ -207,15 +207,15 @@ void main() {
       expect(customDayTile, findsOneWidget, reason: 'DayEventTile with id $customDayEventID not found');
       await tester.hoverOn(customDayTile, gesture);
       expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(customDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customDayEventID)), findsOneWidget);
 
       final customMultiDayTile = find.byKey(MultiDayEventTile.tileKey(customMultiDayEventID));
       expect(customMultiDayTile, findsOneWidget, reason: 'MultiDayEventTile with id $customMultiDayEventID not found');
       await tester.hoverOn(customMultiDayTile, gesture);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
     });
   });
 
@@ -234,8 +234,8 @@ void main() {
       expect(tile, findsOneWidget, reason: 'MultiDayEventTile with id $multiDayEventID not found');
       await tester.hoverOn(tile, gesture);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
     });
 
     testWidgets('custom event respects per-event interaction overrides', (tester) async {
@@ -249,8 +249,8 @@ void main() {
       expect(customTile, findsOneWidget, reason: 'MultiDayEventTile with id $customMultiDayEventID not found');
       await tester.hoverOn(customTile, gesture);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
     });
   });
 
@@ -269,8 +269,8 @@ void main() {
       expect(tile, findsOneWidget, reason: 'ScheduleEventTile with id $multiDayEventID not found');
       await tester.hoverOn(tile, gesture);
       expect(find.byKey(ScheduleEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(multiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
     });
 
     testWidgets('custom event suppresses all interaction handles', (tester) async {
@@ -283,8 +283,8 @@ void main() {
       expect(customTile, findsOneWidget, reason: 'ScheduleEventTile with id $customMultiDayEventID not found');
       await tester.hoverOn(customTile, gesture);
       expect(find.byKey(ScheduleEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(customMultiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customMultiDayEventID)), findsNothing);
     });
   });
 
@@ -298,8 +298,8 @@ void main() {
       expect(find.byType(MultiDayBody), findsOneWidget);
 
       // Before selection, resize handles are not visible.
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(dayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(dayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(dayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(dayEventID)), findsNothing);
 
       // Select the day event to trigger handle visibility.
       final dayEvent = eventsController.events.firstWhere((e) => e.id == dayEventID);
@@ -307,15 +307,15 @@ void main() {
       await tester.pumpAndSettle();
 
       // Vertical resize handles should now be visible.
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(dayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(dayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(dayEventID)), findsOneWidget);
 
       // Horizontal resize handles (multi-day header) should be hidden in imprecise mode.
       final multiDayEvent = eventsController.events.firstWhere((e) => e.id == multiDayEventID);
       calendarController.selectEvent(multiDayEvent);
       await tester.pumpAndSettle();
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(multiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
     });
 
     testWidgets('custom events respect per-event interaction overrides on selection', (tester) async {
@@ -328,8 +328,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(customDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customDayEventID)), findsOneWidget);
     });
   });
 
@@ -348,8 +348,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Horizontal resize handles should be hidden in imprecise mode by default.
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(multiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
     });
   });
 
@@ -371,8 +371,8 @@ void main() {
         kind: PointerDeviceKind.touch,
       );
 
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(multiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
     });
 
     testWidgets('mouse hover events still show horizontal resize handles', (tester) async {
@@ -388,8 +388,8 @@ void main() {
         kind: PointerDeviceKind.mouse,
       );
 
-      expect(find.byKey(ResizeHandle.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeHandle.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
     });
   });
 }

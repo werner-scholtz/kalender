@@ -5,9 +5,9 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 
 import '../utilities.dart';
 
-/// [ResizeHandle] is findable without a key.
+/// [ResizeDetector] is findable without a key.
 ///
-/// It is exported and carries [ResizeHandle.event] and [ResizeHandle.direction],
+/// It is exported and carries [ResizeDetector.event] and [ResizeDetector.direction],
 /// so a predicate picks out one handle where the type alone matches several.
 /// Making either field private, or dropping the export, breaks these tests.
 void main() {
@@ -64,7 +64,7 @@ void main() {
   /// The handle for [eventId] facing [direction].
   Finder handleFor(String eventId, ResizeDirection direction) {
     return find.byWidgetPredicate(
-      (widget) => widget is ResizeHandle && widget.event.id == eventId && widget.direction == direction,
+      (widget) => widget is ResizeDetector && widget.event.id == eventId && widget.direction == direction,
     );
   }
 
@@ -73,7 +73,7 @@ void main() {
     await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());
 
     // A start and an end handle for the hovered tile.
-    expect(find.byType(ResizeHandle), findsNWidgets(2));
+    expect(find.byType(ResizeDetector), findsNWidgets(2));
   });
 
   testWidgets('the event and the direction narrow it to one', (tester) async {
@@ -97,7 +97,7 @@ void main() {
     final tile = find.byKey(DayEventTile.tileKey(eventId));
     final other = find.byKey(DayEventTile.tileKey(otherId));
 
-    expect(find.descendant(of: tile, matching: find.byType(ResizeHandle)), findsNWidgets(2));
-    expect(find.descendant(of: other, matching: find.byType(ResizeHandle)), findsNothing);
+    expect(find.descendant(of: tile, matching: find.byType(ResizeDetector)), findsNWidgets(2));
+    expect(find.descendant(of: other, matching: find.byType(ResizeDetector)), findsNothing);
   });
 }

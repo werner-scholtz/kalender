@@ -81,8 +81,8 @@ class ResizeHandleDetails {
   /// The start resize detector.
   ///
   /// The direction is determined by [axis].
-  ResizeHandle get startResizeDetector => ResizeHandle(
-        key: ResizeHandle.startResizeDraggableKey(event.id),
+  ResizeDetector get startResizeDetector => ResizeDetector(
+        key: ResizeDetector.startResizeDraggableKey(event.id),
         event: event,
         direction: isVertical ? ResizeDirection.top : ResizeDirection.left,
       );
@@ -90,8 +90,8 @@ class ResizeHandleDetails {
   /// The end resize detector.
   ///
   /// The direction is determined by [axis].
-  ResizeHandle get endResizeDetector => ResizeHandle(
-        key: ResizeHandle.endResizeDraggableKey(event.id),
+  ResizeDetector get endResizeDetector => ResizeDetector(
+        key: ResizeDetector.endResizeDraggableKey(event.id),
         event: event,
         direction: isVertical ? ResizeDirection.bottom : ResizeDirection.right,
       );

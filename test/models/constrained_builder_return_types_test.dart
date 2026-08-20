@@ -31,7 +31,7 @@ void main() {
     accept(build);
   });
 
-  test('ResizeHandleDetails builds a nameable ResizeHandle', () {
+  test('ResizeHandleDetails builds a nameable ResizeDetector', () {
     final range = DateTimeRange(start: DateTime(2025), end: DateTime(2025, 1, 2));
     final details = ResizeHandleDetails(
       event: CalendarEvent(dateTimeRange: range),
@@ -42,8 +42,8 @@ void main() {
       isImprecise: false,
     );
 
-    // Typed as ResizeHandle, so the detectors are checked against the export.
-    ResizeDirection directionOf(ResizeHandle handle) => handle.direction;
+    // Typed as ResizeDetector, so the detectors are checked against the export.
+    ResizeDirection directionOf(ResizeDetector handle) => handle.direction;
 
     expect(directionOf(details.startResizeDetector), ResizeDirection.top);
     expect(directionOf(details.endResizeDetector), ResizeDirection.bottom);
