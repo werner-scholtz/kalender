@@ -162,7 +162,7 @@ The detailed guides live in [`doc/`](doc/README.md):
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or pull request on [GitHub](https://github.com/werner-scholtz/kalender).
+Contributions are welcome. Please open an issue or pull request on [GitHub](https://github.com/werner-scholtz/kalender).
 
 ## License
 

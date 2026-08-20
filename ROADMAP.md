@@ -21,7 +21,7 @@ So "Before 1.0.0" holds both: the breaking work, and the features that introduce
 
 All five items planned for this release shipped. See [CHANGELOG.md](CHANGELOG.md) for the full list, which is longer, since the release also absorbed work that was never planned here.
 
-- **Split the readme.** Reference material moved to `doc/` and the readme became the shop window.
+- **Split the readme.** Reference material moved to `doc/` and the readme kept the overview.
 - **Remove the deprecated string builders,** along with `MonthDayHeaderStyle.textStyle`.
 - **Stop re-exporting the whole `timezone` package.** `Location` and `TZDateTime` stayed.
 - **Widen value equality on `CalendarInteraction` and `HorizontalConfiguration`.** Four missing fields, each one a change that never reached the calendar. This grew too. `CalendarSnapping` was dropping its snap strategy, and `ScheduleViewConfiguration` and `PageIndexCalculator` had no `==` at all, so every rebuild recreated the view controller and its layout caches.
@@ -58,7 +58,7 @@ The all-day flag was scoped out to 0.27.0, on the argument that new public API d
 
   The builders receive the theme-resolved style rather than null, which leaves them better off than today, where a custom builder gets an empty style unless the app used the deprecated container.
 
-  The month week number needs rescuing: its top alignment can only be set through `MonthBodyComponentStyles` today, because the month body passes that style to the widget and a passed style wins over the theme, so removing the container would make the alignment unreachable. Dropping the unconditional `Alignment.center` from `KalenderThemeData.defaults` lets the month body read the theme instead, since the widget already falls back to centre on its own. That part is non-breaking on its own and can land ahead of the removal.
+  The month week number needs one fix first. Its top alignment can only be set through `MonthBodyComponentStyles` today, because the month body passes that style to the widget and a passed style wins over the theme, so removing the container would make the alignment unreachable. Dropping the unconditional `Alignment.center` from `KalenderThemeData.defaults` lets the month body read the theme instead, since the widget already falls back to centre on its own. That part is non-breaking on its own and can land ahead of the removal.
 
   One behavior change follows. Afterwards the only route to that alignment is `KalenderThemeData.weekNumberStyle`, which feeds both the month gutter and the multi-day header, so an app cannot set them apart any more. Defaults are unaffected, so this reaches only an app that set a non-default alignment.
 
@@ -155,7 +155,7 @@ The rest runs from 79% to 100% with no large gap.
 
 No release attached yet. It reshapes public API, so the shape has to settle before 1.0.0, and it touches enough of the package that it waits on the test coverage above.
 
-Theming was the first slice of a larger idea: assembling a calendar from parts rather than configuring one whole. Three pieces are unbuilt.
+Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. Three pieces are unbuilt.
 
 - **The state layer is closed.** The providers carrying calendar state are private, so nothing outside the package can read them.
 - **View types are hardcoded.** Three switches map a `ViewConfiguration` to its controller, body and header, so a view type cannot be added without forking.
