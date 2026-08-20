@@ -90,6 +90,25 @@ void main() {
     test('nowCallback also reaches hashCode', () {
       expect(week().hashCode, isNot(equals(weekWith(nowCallback: _stubNow).hashCode)));
     });
+
+    // A free scroll view and a single day view over the same range share a page
+    // index calculator, so `type` is what tells the two configurations apart.
+    test('type', () {
+      final singleDay = MultiDayViewConfiguration.singleDay(
+        name: 'same',
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 13),
+      );
+      final freeScroll = MultiDayViewConfiguration.freeScroll(
+        name: 'same',
+        numberOfDays: 1,
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 13),
+      );
+
+      expect(singleDay, isNot(equals(freeScroll)));
+      expect(singleDay.hashCode, isNot(equals(freeScroll.hashCode)));
+    });
   });
 
   group('fields that deliberately do not break equality', () {

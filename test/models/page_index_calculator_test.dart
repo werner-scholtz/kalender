@@ -99,6 +99,30 @@ void main() {
       });
     });
 
+    group('freeScroll for $location', () {
+      test('the band maps a day per index, the same as a single day view', () {
+        expect(PageIndexCalculator.freeScroll(range), isA<DayIndexCalculator>());
+      });
+
+      // The band used to round the end of the range up to the next midnight
+      // whatever it was, so a range already ending at midnight gained a day and
+      // the last column fell outside it.
+      test('a range ending at midnight is not extended by a day', () {
+        final calculator = PageIndexCalculator.freeScroll(range);
+        expect(calculator.numberOfPages(location), 366);
+
+        final last = calculator.dateTimeRangeFromIndex(calculator.numberOfPages(location) - 1, location);
+        expect(last.start, InternalDateTime(2020, 12, 31));
+        expect(last.end, InternalDateTime(2021));
+      });
+
+      test('a range ending mid-day still covers the part day', () {
+        final partDay = DateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2020, 1, 8, 13, 30));
+        final calculator = PageIndexCalculator.freeScroll(partDay);
+        expect(calculator.numberOfPages(location), 8);
+      });
+    });
+
     group('WeekIndexCalculator for $location', () {
       late WeekIndexCalculator calculator;
       setUpAll(() {

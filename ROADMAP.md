@@ -132,7 +132,7 @@ The breaking changes with nowhere cheaper to go. None has a deprecation path tha
 
 **A `ResizeHandleStyle`, moved here from the theming list.** It adds rather than changes API, so it needs no breaking window, but it belongs with the resize handle work the previous release started. `KalenderThemeData` carries thirteen style classes and the resize handles are the only thing the calendar draws without one. The handle length is a hardcoded 24 for imprecise input and 16 otherwise, with a TODO on it in `DefaultResizeHandles`. Less pressing since 0.27.0, because changing the layout is now a lambda where it used to mean subclassing an abstract class.
 
-`FreeScrollFunctions` carries a TODO asking whether `DayIndexCalculator` can replace it. It became public with the rest of `PageIndexCalculator` in 0.26.0, so removing it is breaking and belongs here if the answer turns out to be yes. It is a question rather than a decision, so nothing is planned for it.
+**`FreeScrollFunctions` is removed, and it took a defect with it.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight whatever it was, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` joins `==` and `hashCode` with it, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
 
 ### Theming, still open
 
