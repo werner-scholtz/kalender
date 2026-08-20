@@ -29,7 +29,7 @@ All five items planned for this release shipped. See [CHANGELOG.md](CHANGELOG.md
 
 Five further breaking changes landed that were not planned here: `throttleMilliseconds` was removed in favour of combining drag updates per frame, `DragTargetUtilities` became a `State`-only mixin, three long-deprecated members were removed, `ScheduleTileComponents` dropped three parameters that did nothing, and its two row builders moved to `ScheduleComponents`. Ten breaking changes in one release against the four this section planned is worth noting for the next one, since batching them was the reason the section existed.
 
-### 0.25.0, theming shape
+### 0.25.0, theming shape, done
 
 The theme extension arrived in 0.21.0 and the string builders moved out of the style classes in 0.23.0. What is left is where kalender still differs from Flutter's own component themes.
 
@@ -46,7 +46,7 @@ The theme extension arrived in 0.21.0 and the string builders moved out of the s
 
 One unrelated removal rides along, because 0.24.0 promised it here. **`CalendarEvent.isMultiDayEvent` is removed,** as its deprecation message says. `spansMultipleDays` replaces it.
 
-### 0.26.0, the styles and the copy contract
+### 0.26.0, the styles and the copy contract, done
 
 Three breaking items, plus the all-day flag and one fix that arrived while the release was still open. The first is contractual: the deprecation message shipped in 0.25.0 names this release by number, so it is the one item here that has a deadline rather than an argument.
 
@@ -90,9 +90,9 @@ The all-day flag was scoped out to 0.27.0, on the argument that new public API d
 
   What this does not do is let an app pick arbitrary visible days. See [#90](https://github.com/werner-scholtz/kalender/issues/90) below.
 
-### 0.27.0, the builders take a context
+### 0.27.0, the builders take a context, shipped in 0.27.0-dev.1
 
-One break, across the widest customisation surface the package has. It gets a release of its own rather than riding along with model changes, and it happens before 1.0.0 because a freeze would put it behind a 2.0.0.
+One concept, across the widest customisation surface the package has. It gets a release of its own rather than riding along with model changes, and it happens before 1.0.0 because a freeze would put it behind a 2.0.0. What the plan below did not anticipate is how much doing it turned up, which the last three items record.
 
 `TimeOfDayRange.isAllDay` is removed here, as its 0.26.0 deprecation message names. `coversWholeDay` replaces it. Done, and it leaves `lib/` with no deprecation outstanding.
 
@@ -106,6 +106,16 @@ Giving the builders one removes the reason for every pre-merge in the package, a
 
 The default for each builder moves off the widget and onto the components class that holds it, the shape `ScrollConfiguration.of(context).buildScrollbar(context, child, details)` uses. Fields become nullable and default to null, which makes "did the app override this" a question the package can ask. It cannot today: `month_body.dart` decides whether to build the day cell layer by comparing the field against `MonthDayCell.builder`, because a non-null tear-off default leaves nothing else to compare. Both statics on each component, `builder` and `fromContext`, are removed.
 
+**`ResizeHandlePositioner` was reshaped as well, which the plan above did not cover.** Giving it a context exposed that it was the odd one of the twenty-four on three counts at once: seven parameters against five for the next largest, a return type constrained to an abstract class, and the only builder anywhere in the package that required subclassing. The six values it received were exactly the constructor arguments of the class it had to return, so every implementation forwarded them by hand, and the appearance guide showed no way to write one at all. It pointed at a preamble symbol that threw `UnimplementedError`, whose comment pointed back at the guide.
+
+  `ResizeHandles` is removed. Its six values and seven helpers move to `ResizeHandleDetails` and the positioner returns a plain `Widget`, which is the shape `MonthDayCellBuilder` already had with `MonthDayCellDetails`. Doing it in this release rather than the next one costs a single migration entry, where waiting would have broken the same typedef twice for one concept.
+
+**Three times now, public API has named a type nothing exported.** `PageIndexCalculator` was the first, returned by `ViewConfiguration.pageIndexCalculator` and fixed in 0.26.0. `ResizeHandleDetails.startResizeDetector` returns the resize draggable, which no app could name. `MultiDayOverlayEventTileBuilder` returns `MultiDayEventOverlayTile`, which made that typedef public but impossible to implement. Both remaining ones are exported now, and a test implements every builder with a constrained return type, so the analyzer catches the next one rather than a user.
+
+  Exporting the resize draggable also renamed it. `ResizeHandle` is the obvious name for the widget an app supplies through `TileComponents.verticalResizeHandle`, so publishing the package's own class under that name collided with the expected case, and the web demo stopped compiling. It is `ResizeDetector`, which is what `ResizeHandleDetails` already called it.
+
+**The tile key factories are unreachable.** Nine of the package's twenty-two `static Key` factories sit on classes nothing exports, so `DayEventTile.tileKey` and its siblings are internal test helpers with public spelling. Whether they are API or not is unsettled and is not urgent, since a widget carrying its own identifying fields is findable without one. Flutter's answer is worth recording: the framework publishes no key factories at all, and its own tests use `find.byType` over `find.byKey` roughly four to one.
+
 ### 0.28.0, the next breaking window
 
 Two API decisions deferred out of 0.27.0. Both are breaking, and neither has a deprecation path that costs less than doing it in a release that already breaks, so they wait for the next such release rather than for 1.0.0.
@@ -114,24 +124,32 @@ Two API decisions deferred out of 0.27.0. Both are breaking, and neither has a d
 
 **`MultiDayBodyConfiguration` folds into `VerticalConfiguration`.** The TODO on it reads as a rename, but the class extends `VerticalConfiguration` and adds `keepPagesAlive`, so the two are not interchangeable today. Moving that field up is what makes a replacement honest, and only then can a deprecation message name one. Which way the merge goes is open: `MultiDayBodyConfiguration` is the more discoverable of the two names.
 
+### Theming, still open
+
+Both are here rather than after 1.0.0 because the first adds public API and the second changes it.
+
+- **The resize handles have no style class.** `KalenderThemeData` carries thirteen and every other thing the calendar draws has one. The handle length is a hardcoded 24 for imprecise input and 16 otherwise, with a TODO on it in `DefaultResizeHandles`. A `ResizeHandleStyle` is the shape that matches the rest, rather than a length parameter bolted on. Less pressing since 0.27.0, because changing the layout is now a lambda where it used to mean subclassing an abstract class.
+- **Three public fields keep Material in the API,** carried forward from 0.25.0 since changing them is breaking: `MultiDayOverlayStyle.cardTheme` is a `CardThemeData`, `MultiDayOverlayStyle.closeButtonStyle` is a `ButtonStyle`, and `WeekNumberStyle.visualDensity` is a `VisualDensity`. A framework neutral core cannot name any of those types.
+
 ### Tests
 
-Coverage is 88.2% of lines, up from 84.4% at 0.23.0, and still uneven. It gates the composability work below. The backfill during 0.24.0 went where the known bugs were, so the models improved sharply and the widget directories did not move at all.
+Coverage is 89.2% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below. The two areas the 0.24.0 backfill named as next have still not moved, and the release that rewrote the worst-covered area fixed it outright.
 
-Both columns are line coverage of the directory and everything under it, measured with `flutter test --coverage` at each of the two tags.
+Both columns are line coverage of the directory and everything under it, measured with `flutter test --coverage`.
 
-| Area | 0.23.0 | Now | What is missing |
+| Area | 0.24.0 | Now | What is missing |
 |---|---|---|---|
-| `models/` | 75% | 87% | Covered during 0.24.0. `CalendarInteraction.==` had no test at all, which is how four missing fields went unnoticed. `calendar_callbacks.dart` at 29% is what is left. |
-| `models/mixins/` | 63% | 84% | `event_tile_utils.dart` was at zero and is now covered. |
-| `models/view_configurations/` | 78% | 83% | `schedule_view_configuration.dart` at 42% and `month_view_configuration.dart` at 68%. Two `copyWith` methods here were still silently dropping fields as late as 0.24.0. |
-| `widgets/drag_targets/` | 71% | 71% | Untouched. `schedule_drag_target.dart` covers 10 of its 87 lines, the largest single gap in the package. |
-| `widgets/event_tiles/` | 81% | 81% | Untouched. `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%. |
-| `theme/` | 78% | 78% | Untouched, and 0.25.0 rewrites this code. The lowest covered area of the package going into the release that changes it most. |
+| `models/` | 87% | 83% | Went down, because of a directory this table had no row for. See below. |
+| `models/components/` | not tracked | 58% | The lowest in the package. `copyWith`, `==` and `hashCode` on the components classes have no test at all. Audited for dropped fields and there are none, so it is untested rather than wrong. |
+| `models/mixins/` | 84% | 84% | Untouched. |
+| `models/view_configurations/` | 83% | 84% | `schedule_view_configuration.dart` at 42%. |
+| `widgets/drag_targets/` | 71% | 71% | Untouched. `schedule_drag_target.dart` covers 10 of its 87 lines, still the largest single gap in the package. |
+| `widgets/event_tiles/` | 81% | 82% | Barely moved. `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%. |
+| `theme/` | 78% | 97% | Done. 0.25.0 rewrote this code and tested it, taking it from the lowest covered area to one of the highest. |
 
 The rest runs from 79% to 100% with no large gap.
 
-The three rows that did not move are the next work, and `schedule_drag_target.dart` is the one to start with. The pattern worth taking from 0.24.0 is that every gap closed turned up a bug that was already shipped.
+`schedule_drag_target.dart` is still the one to start with, and `models/components/` is the new one. The latter is the shape the package has already shipped twice: a `copyWith` that silently drops a field, found in `view_configurations` as late as 0.24.0, in a class nothing tested. The pattern worth taking from 0.24.0 is that every gap closed turned up a bug that was already shipped.
 
 ### Composability
 
