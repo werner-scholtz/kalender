@@ -246,7 +246,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
 
 ## Theming
 
-Out of the box the calendar follows your app's Material 3 theme: line colors, text styles, and the rest are derived from the ambient `ColorScheme` and `TextTheme`.
+By default the calendar follows your app's Material 3 theme: line colors, text styles, and the rest are derived from the ambient `ColorScheme` and `TextTheme`.
 
 To change how every calendar in the app looks, register a `KalenderThemeData` on your theme. Any field you leave out keeps its Material 3 default.
 

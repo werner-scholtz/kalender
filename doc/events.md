@@ -8,7 +8,7 @@ on screen, see [Layout](layout.md). For what they look like, see
 
 ## Custom Events
 
-Since v0.16.0, `CalendarEvent` is no longer generic. The idiomatic way to attach custom data (title, color, description, etc.) is to **extend** `CalendarEvent` directly.
+Since v0.16.0, `CalendarEvent` is no longer generic. Attach custom data (title, color, description, and so on) by **extending** `CalendarEvent` directly.
 
 <!-- snippet: file -->
 ```dart

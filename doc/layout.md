@@ -22,7 +22,7 @@ Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 
 To create a custom strategy, subclass `EventLayoutDelegate`. See [`CustomSideBySideLayoutDelegate`](../examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
 
-Here's a minimal skeleton:
+Here is a minimal implementation:
 
 <!-- snippet: file -->
 ```dart

@@ -271,7 +271,7 @@ Both are removed in 0.24.0.
 
 - `monthDayHeaderBuilder` now receives a localized wall-clock `DateTime` instead of a UTC-flagged `InternalDateTime`, matching `dayHeaderBuilder`. [#248](https://github.com/werner-scholtz/kalender/issues/248)
 - Replaced `ViewConfiguration.initialDateSelectionStrategy` with per-dimension view-transition options: `dateTransition` on all views, and `scrollTransition` / `zoomTransition` on `MultiDayViewConfiguration`, each with an optional resolver for custom logic. [#249](https://github.com/werner-scholtz/kalender/issues/249)
-- View switches now preserve the vertical scroll (time-of-day) and zoom by default instead of resetting to `initialTimeOfDay`; opt out with `ScrollTransition.reset` / `ZoomTransition.reset`. [#249](https://github.com/werner-scholtz/kalender/issues/249)
+- View switches now preserve the vertical scroll (time-of-day) and zoom by default instead of resetting to `initialTimeOfDay`. Opt out with `ScrollTransition.reset` / `ZoomTransition.reset`. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Renamed `EmptyDayBehavior.showToday` to `EmptyDayBehavior.showOnlyToday`, since it shows only today among empty days. [#253](https://github.com/werner-scholtz/kalender/issues/253)
 - Replaced `MultiDayBodyComponents.prototypeTimeLine` with a `timelineWidth` builder that returns the gutter width directly (`double`). The multi-day body, header and drag overlay now share this one width, so customizing the timeline can no longer misalign the header. Removed the `PrototypeTimeline` widget and `PrototypeTimeLineBuilder`. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 
@@ -286,11 +286,11 @@ Both are removed in 0.24.0.
 
 ### Fixes
 
-- Fixed schedule view event tiles not lining up; every row now shares a fixed-width leading column whether or not it shows a date. [#253](https://github.com/werner-scholtz/kalender/issues/253)
-- Fixed the continuous schedule view scrolling to the wrong position when today has no events; the initial scroll and `animateToDateTime` now target today, or the nearest day when it is hidden. [#253](https://github.com/werner-scholtz/kalender/issues/253)
-- Fixed the free-scroll multi-day header "wobbling" (re-animating its height) whenever a calendar item changed; its paged content now keeps its state across rebuilds instead of being rebuilt from scratch. [#282](https://github.com/werner-scholtz/kalender/pull/282)
-- Fixed the free-scroll multi-day header clipping days that have more events than the leading day; the header now sizes to the tallest day currently in view. [#283](https://github.com/werner-scholtz/kalender/pull/283)
-- Fixed the multi-day/week header drifting out of alignment with the body when the timeline used a custom `stringBuilder` or width; the gutter width now has a single source. [#180](https://github.com/werner-scholtz/kalender/issues/180)
+- Fixed schedule view event tiles not lining up. Every row now shares a fixed-width leading column whether or not it shows a date. [#253](https://github.com/werner-scholtz/kalender/issues/253)
+- Fixed the continuous schedule view scrolling to the wrong position when today has no events. The initial scroll and `animateToDateTime` now target today, or the nearest day when it is hidden. [#253](https://github.com/werner-scholtz/kalender/issues/253)
+- Fixed the free-scroll multi-day header re-animating its height whenever a calendar item changed. Its paged content now keeps its state across rebuilds instead of being rebuilt from scratch. [#282](https://github.com/werner-scholtz/kalender/pull/282)
+- Fixed the free-scroll multi-day header clipping days that have more events than the leading day. The header now sizes to the tallest day currently in view. [#283](https://github.com/werner-scholtz/kalender/pull/283)
+- Fixed the multi-day/week header drifting out of alignment with the body when the timeline used a custom `stringBuilder` or width. The gutter width now has a single source. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - The timeline gutter width now accounts for the text scale factor, so it no longer under-sizes when text is enlarged. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - The timeline gutter now measures every label across the day rather than a single sample, so a custom label format whose widest entry is not at 23:59 no longer clips. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 
@@ -404,7 +404,7 @@ Both are removed in 0.24.0.
 
 - New `InputMode` enum (`auto`, `precise`, `imprecise`) on `CalendarInteraction` replaces platform-based mobile/desktop detection for resize handle behavior.
 - Resize handle positioning and visibility is now driven by input precision (mouse/stylus/trackpad vs touch) instead of platform (`iOS`/`Android`).
-- `InputMode.auto` (default) detects input type dynamically — hover triggers precise mode, selection triggers imprecise mode.
+- `InputMode.auto` (default) detects input type dynamically. Hover triggers precise mode, selection triggers imprecise mode.
 - New `allowHorizontalImpreciseResize` option on `CalendarInteraction` to opt-in to horizontal resize handles for touch input (disabled by default).
 - `CalendarInteraction.resolveIsImprecise()` provides a way to query the resolved input mode.
 - Removed direct `isMobileDevice` usage from resize handle widgets.
@@ -419,7 +419,7 @@ Both are removed in 0.24.0.
 - Event IDs changed from `int` to `String`. This affects `addEvent` (returns `String`), `addEvents` (returns `List<String>`), `removeById`, `byId`, and any code that stores or compares event IDs.
 - `EventTile.eventId` is now a `String`.
 - `MultiDayOverlayEventTile` renamed to `MultiDayEventOverlayTile`.
-- `EventsController` folder moved into the `controllers` folder; update any direct imports.
+- `EventsController` folder moved into the `controllers` folder. Update any direct imports.
 
 ### Features
 
@@ -436,7 +436,7 @@ Both are removed in 0.24.0.
 ### Improvements
 
 - `EventLayoutDelegateCache` is now cleared automatically when `heightPerMinute` changes.
-- `eventsFromDateTimeRange` — the `location` parameter is no longer required.
+- `eventsFromDateTimeRange`: the `location` parameter is no longer required.
 - Vertical drag-target behavior improved.
 - `DefaultEventsController` is now exported from `kalender.dart` directly.
 
