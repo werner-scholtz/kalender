@@ -65,8 +65,17 @@ the package's own behavior, so set only what you want to change.
     // The drag anchor strategy used by feedbackTileBuilder.
     dragAnchorStrategy: childDragAnchorStrategy,
 
-    // Position and size the resize handles (a function returning your ResizeHandles subclass).
-    resizeHandlePositioner: myResizeHandlePositioner,
+    // Position and size the resize handles. `details` carries the tile's geometry
+    // and builds the detectors, so decide the layout and place them.
+    resizeHandlePositioner: (context, details) => Stack(
+      fit: StackFit.expand,
+      children: [
+        if (details.showStart())
+          Positioned(top: 0, left: 0, right: 0, height: 8, child: details.startResizeDetector),
+        if (details.showEnd())
+          Positioned(bottom: 0, left: 0, right: 0, height: 8, child: details.endResizeDetector),
+      ],
+    ),
 
     // The vertical resize handle widget.
     verticalResizeHandle: Container(),

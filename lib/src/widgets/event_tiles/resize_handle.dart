@@ -6,6 +6,7 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/components/resize_handles.dart';
 
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {
@@ -151,12 +152,14 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
       maintainState: false,
       child: context.tileComponents.buildResizeHandles(
         context,
-        widget.event,
-        interaction,
-        widget.dateTimeRange,
-        _size,
-        widget.axis,
-        isImprecise,
+        ResizeHandleDetails(
+          event: widget.event,
+          interaction: interaction,
+          dateTimeRange: widget.dateTimeRange,
+          size: _size,
+          axis: widget.axis,
+          isImprecise: isImprecise,
+        ),
       ),
     );
 
@@ -184,6 +187,12 @@ class ResizeHandle extends StatelessWidget {
     required this.event,
     required this.direction,
   });
+
+  /// A key used to identify the start resize handle.
+  static Key startResizeDraggableKey(String eventId) => Key('ResizeHandle-Start-$eventId');
+
+  /// A key used to identify the end resize handle.
+  static Key endResizeDraggableKey(String eventId) => Key('ResizeHandle-End-$eventId');
 
   /// The resize event data.
   Resize get data => Resize(event: event, direction: direction);

@@ -118,12 +118,12 @@ void main() {
           await tester.hoverOn(dayEventTile, gesture);
           final topResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(ResizeHandles.startResizeDraggableKey(eventId)),
+            matching: find.byKey(ResizeHandle.startResizeDraggableKey(eventId)),
           );
           expect(topResizeHandle, findsOneWidget, reason: 'Top resize handle should be rendered');
           final bottomResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(ResizeHandles.endResizeDraggableKey(eventId)),
+            matching: find.byKey(ResizeHandle.endResizeDraggableKey(eventId)),
           );
           expect(bottomResizeHandle, findsOneWidget, reason: 'Bottom resize handle should be rendered');
 
@@ -208,7 +208,7 @@ void main() {
 
         final bottomHandle = find.descendant(
           of: tile,
-          matching: find.byKey(ResizeHandles.endResizeDraggableKey(id)),
+          matching: find.byKey(ResizeHandle.endResizeDraggableKey(id)),
         );
         expect(bottomHandle, findsOneWidget, reason: 'the bottom resize handle should be rendered');
 
@@ -295,7 +295,7 @@ void main() {
 
           // Resize handles are not visible before selection.
           expect(
-            find.descendant(of: dayEventTile, matching: find.byKey(ResizeHandles.endResizeDraggableKey(eventId))),
+            find.descendant(of: dayEventTile, matching: find.byKey(ResizeHandle.endResizeDraggableKey(eventId))),
             findsNothing,
           );
 
@@ -306,7 +306,7 @@ void main() {
 
           final bottomResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(ResizeHandles.endResizeDraggableKey(eventId)),
+            matching: find.byKey(ResizeHandle.endResizeDraggableKey(eventId)),
           );
           expect(bottomResizeHandle, findsOneWidget, reason: 'Bottom resize handle should show after selection');
 

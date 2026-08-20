@@ -14,8 +14,10 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 - `builder` and `fromContext` are removed from `DayHeader`, `WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`. `MonthDayCell.shadeAdjacentMonths` stays.
 - The schedule builders take a `BuildContext` as their first argument: `leadingDateBuilder`, `scheduleTileHighlightBuilder`, `emptyItemBuilder` and `monthItemBuilder`. The first two also lost their style parameter and are nullable, and `ScheduleComponents` gained `buildLeadingDate` and `buildScheduleTileHighlight`. `ScheduleDate.builder` and `ScheduleTileHighlight.builder` are removed.
 - The tile builders take a `BuildContext` as their first argument: `tileBuilder`, `overlayTileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder` and `dropTargetTile`, along with `defaultTileBuilder` and the other three `default*` functions.
-- `ResizeHandlePositioner` takes a `BuildContext` as its first argument and no longer takes a `TileComponents`, and `ResizeHandles.builder` is replaced by `TileComponents.buildResizeHandles`.
-- `ResizeHandles` no longer carries a `tileComponents` field. It resolves the handle widgets from the context, so `resizeHandle` takes a `BuildContext` as well. `startResizeDetector` and `endResizeDetector` are unchanged.
+- `ResizeHandlePositioner` takes a `BuildContext` and a `ResizeHandleDetails` and returns a `Widget`. It was the only builder that required subclassing an abstract class, so `ResizeHandles` is removed and its six values and seven helpers move to `ResizeHandleDetails`.
+- `ResizeHandles.startResizeDraggableKey` and `endResizeDraggableKey` move to `ResizeHandle`, the widget they key. Both key strings named `DayEventTile` whatever the tile actually was, and now name the handle.
+- `ResizeHandleDetails.resizeHandle` resolves the handle widgets from the context rather than from a `tileComponents` field, and its axis is optional, defaulting to the one being resized. `showStart`, `showEnd`, `continuesBefore`, `continuesAfter`, `isVertical`, `eventInteraction`, `startResizeDetector` and `endResizeDetector` are otherwise unchanged.
+- `ResizeHandles.builder` is replaced by `TileComponents.buildResizeHandles`, which takes the details rather than seven positional arguments and returns a `Widget`. `DefaultResizeHandles` takes a `ResizeHandleDetails`.
 - The trigger builders take a `BuildContext` as their first argument: `HorizontalTriggerWidgetBuilder` and `VerticalTriggerWidgetBuilder`, which covers `leftTriggerBuilder`, `rightTriggerBuilder`, `topTriggerBuilder` and `bottomTriggerBuilder` on every components class.
 - The overlay builders take a `BuildContext` as their first positional argument, ahead of their named parameters: `multiDayOverlayBuilder`, `multiDayOverlayPortalBuilder`, `multiDayPortalOverlayButtonBuilder` and `MultiDayOverlayEventTileBuilder`. `MultiDayOverlayBuilder` drops `style` and `MultiDayOverlayPortalBuilder` drops `overlayStyles`. Resolve either with `KalenderTheme.of(context)`.
 - `OverlayStyles` is removed. `MultiDayOverlayPortalBuilder` was the only signature that named it, so once that parameter went the class had no entry point left. Read the two styles off `KalenderTheme.of(context)`.
@@ -23,6 +25,7 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 ### Features
 
 - The month week number gutter publishes the style it measures with, including its top alignment, to the scope it draws in. A custom `weekNumberBuilder` reads the month's value with `KalenderTheme.of(context)` where it previously had to be handed one.
+- `ResizeHandle` is exported. It was already reachable as the return of `ResizeHandleDetails.startResizeDetector` with no way for an app to name it. It carries `event` and `direction`, so a handle is findable with `find.byType` and a predicate rather than only by key.
 - `GutterStyles` is public, with `GutterStyles.timelineStyleOf` and `GutterStyles.weekNumberStyleOf`. A custom gutter builder can resolve the style the gutter is measured from, which a `KalenderTheme` scoped inside the calendar cannot move.
 
 ## 0.26.0
