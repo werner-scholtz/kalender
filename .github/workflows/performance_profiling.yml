@@ -25,11 +25,14 @@ permissions:
   contents: write
   pull-requests: write
 
-# Serialise runs that may push to gh-pages so concurrent main pushes don't
-# conflict on the data file.
+# One run at a time per ref, and a newer one replaces an older one. Merging a
+# stack of pull requests pushes to main once per merge, so without this every
+# intermediate commit is profiled for 17 minutes and publishes a data point that
+# the next merge immediately supersedes. Cancelling also keeps two runs from
+# pushing to the gh-pages data file at once.
 concurrency:
   group: benchmarks-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   benchmark:
@@ -109,12 +112,31 @@ jobs:
         run: git restore .
 
       # --- Publish to the dashboard at gh-pages/dev/bench ----------------------
+      # A run is only cancelled while main moves under it if the cancellation
+      # arrives in time. This covers the rest: results for a commit that is no
+      # longer the tip are measured but not stored, so the dashboard carries one
+      # point per stack rather than one per merge.
+      - name: Check this commit is still the tip of main
+        id: tip
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tip=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
+          if [ "$tip" != "${{ github.sha }}" ]; then
+            echo "main is now $tip, so results for ${{ github.sha }} are not stored."
+            echo "superseded=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "superseded=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # Comment-only: fail-on-alert is false, so regressions are surfaced in a PR
       # comment but never block the build. Alert thresholds sit above the
       # measured noise floors (micro is far tighter than frame). On main we
-      # persist (auto-push); on PRs we only compare + comment (save-data-file
+      # persist (auto-push). On PRs we only compare and comment (save-data-file
       # false) so PR runs never mutate the stored history.
       - name: Store micro-benchmark results
+        if: steps.tip.outputs.superseded != 'true'
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: Kalender Micro-benchmarks
@@ -131,6 +153,7 @@ jobs:
           summary-always: true
 
       - name: Store frame profiling results
+        if: steps.tip.outputs.superseded != 'true'
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: Kalender Frame Profiling
