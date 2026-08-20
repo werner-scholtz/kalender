@@ -41,13 +41,6 @@ class GutterStyles extends InheritedWidget {
     return maybeOf(context)?.timelineStyle ?? KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
   }
 
-  /// The week number style the month gutter is measured from.
-  ///
-  /// Falls back to [KalenderTheme] where there is no [GutterStyles], which is
-  /// the case outside a [CalendarView].
-  static WeekNumberStyle weekNumberStyleOf(BuildContext context) {
-    return maybeOf(context)?.weekNumberStyle ?? KalenderTheme.of(context).weekNumberStyle ?? const WeekNumberStyle();
-  }
 
   /// The [GutterStyles] above [context], or null when there is none.
   ///

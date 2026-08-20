@@ -27,7 +27,7 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 - The month week number gutter publishes the style it measures with, including its top alignment, to the scope it draws in. A custom `weekNumberBuilder` reads the month's value with `KalenderTheme.of(context)` where it previously had to be handed one.
 - `MultiDayEventOverlayTile` is exported. `MultiDayOverlayEventTileBuilder` returns it, and the class was not reachable, so the typedef was public but could not be implemented.
 - `ResizeDetector` is exported, the draggable that wraps the handle widget an app supplies. It was already reachable as the return of `ResizeHandleDetails.startResizeDetector` with no way to name it. It carries `event` and `direction`, so a handle is findable with `find.byType` and a predicate rather than only by key. It was named `ResizeHandle` while it was internal, which collides with the obvious name for the widget an app puts in `TileComponents.verticalResizeHandle`.
-- `GutterStyles` is public, with `GutterStyles.timelineStyleOf` and `GutterStyles.weekNumberStyleOf`. A custom gutter builder can resolve the style the gutter is measured from, which a `KalenderTheme` scoped inside the calendar cannot move.
+- `GutterStyles` is public, with `GutterStyles.timelineStyleOf`. A custom `timeline` or `timelineWidth` builder resolves the style the gutter is measured from, which a `KalenderTheme` scoped inside the calendar cannot move. A custom `weekNumberBuilder` reads `KalenderTheme.of(context).weekNumberStyle` instead, which is the month's own value inside the month gutter.
 
 ## 0.26.0
 
