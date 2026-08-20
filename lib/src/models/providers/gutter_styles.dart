@@ -41,7 +41,6 @@ class GutterStyles extends InheritedWidget {
     return maybeOf(context)?.timelineStyle ?? KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
   }
 
-
   /// The [GutterStyles] above [context], or null when there is none.
   ///
   /// Null where a component widget is built outside a [CalendarView], which the
