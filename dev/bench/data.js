@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1787216504456,
+  "lastUpdate": 1787290592142,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -10963,6 +10963,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3325.3718140929536,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "de09a59cc1d85d33ed4a8af132b28477461517e0",
+          "message": "Merge pull request #466 from werner-scholtz/fix/free-scroll-page-count\n\nfix!: the free scroll band stops at the end of its display range",
+          "timestamp": "2026-08-21T07:18:11+02:00",
+          "tree_id": "a9adb6272a122787c4f0be9cbb939f25f2bddbbc",
+          "url": "https://github.com/werner-scholtz/kalender/commit/de09a59cc1d85d33ed4a8af132b28477461517e0"
+        },
+        "date": 1787290587559,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 174.78410172130438,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 705.41725,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2076.083,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8019.088,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 729.15075,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2242.132,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2443.2725,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12247.706586826347,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 248.33591700453135,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 111.5962185361327,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 780.39275,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3331.4362818590703,
             "unit": "us"
           }
         ]
