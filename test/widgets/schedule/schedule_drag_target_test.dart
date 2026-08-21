@@ -19,8 +19,8 @@ void main() {
   final interaction = CalendarInteraction(
     allowRescheduling: true,
     inputMode: InputMode.precise,
-    createEventGesture: CreateEventGesture.tap,
-    modifyEventGesture: CreateEventGesture.tap,
+    createEventGesture: EventInteractionGesture.tap,
+    modifyEventGesture: EventInteractionGesture.tap,
   );
 
   setUp(() {

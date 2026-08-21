@@ -57,7 +57,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
                           : null,
                       child: context.interaction.allowEventCreation
                           ? switch (context.interaction.createEventGesture) {
-                              CreateEventGesture.tap => Draggable(
+                              EventInteractionGesture.tap => Draggable(
                                   dragAnchorStrategy: pointerDragAnchorStrategy,
                                   onDragStarted: () => createNewEvent(context, date, position),
                                   onDraggableCanceled: onDragFinished,
@@ -66,7 +66,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
                                   feedback: Container(color: Colors.transparent, width: 1, height: 1),
                                   child: Container(color: Colors.transparent, height: widget.pageHeight),
                                 ),
-                              CreateEventGesture.longPress => LongPressDraggable(
+                              EventInteractionGesture.longPress => LongPressDraggable(
                                   dragAnchorStrategy: pointerDragAnchorStrategy,
                                   onDragStarted: () => createNewEvent(context, date, position),
                                   onDraggableCanceled: onDragFinished,

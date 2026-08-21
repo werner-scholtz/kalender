@@ -5,6 +5,7 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 ### Breaking Changes
 
 - `FreeScrollFunctions` is removed. It duplicated `DayIndexCalculator`, which `PageIndexCalculator.freeScroll` now returns. Name `DayIndexCalculator` where the removed class was named.
+- `CreateEventGesture` is renamed to `EventInteractionGesture`. The enum decides how an event is modified as well as created. The `createEventGesture` and `modifyEventGesture` fields on `CalendarInteraction` keep their names.
 
 ### Bug Fixes
 

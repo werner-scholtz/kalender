@@ -46,8 +46,8 @@ void main() {
         body: CalendarBody(
           interaction: CalendarInteraction(
             inputMode: InputMode.precise,
-            createEventGesture: CreateEventGesture.tap,
-            modifyEventGesture: CreateEventGesture.tap,
+            createEventGesture: EventInteractionGesture.tap,
+            modifyEventGesture: EventInteractionGesture.tap,
           ),
           multiDayTileComponents: TileComponents(
             tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),

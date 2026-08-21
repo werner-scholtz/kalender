@@ -78,12 +78,12 @@ class DemoConfiguration extends ChangeNotifier {
 
   /// The header interaction of the calendar.
   late final ValueNotifier<CalendarInteraction> interactionHeader = ValueNotifier(CalendarInteraction(
-    createEventGesture: isMobile ? CreateEventGesture.longPress : CreateEventGesture.tap,
+    createEventGesture: isMobile ? EventInteractionGesture.longPress : EventInteractionGesture.tap,
   ));
 
   /// The body interaction of the calendar.
   late final ValueNotifier<CalendarInteraction> interactionBody = ValueNotifier(CalendarInteraction(
-    createEventGesture: isMobile ? CreateEventGesture.longPress : CreateEventGesture.tap,
+    createEventGesture: isMobile ? EventInteractionGesture.longPress : EventInteractionGesture.tap,
   ));
 
   /// The snapping configuration of the calendar.

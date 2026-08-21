@@ -79,23 +79,23 @@ void main() {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
       final interaction = CalendarInteraction();
-      expect(interaction.createEventGesture, equals(CreateEventGesture.longPress));
-      expect(interaction.modifyEventGesture, equals(CreateEventGesture.longPress));
+      expect(interaction.createEventGesture, equals(EventInteractionGesture.longPress));
+      expect(interaction.modifyEventGesture, equals(EventInteractionGesture.longPress));
     });
 
     test('desktop defaults to tap for create/modify', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.linux;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
       final interaction = CalendarInteraction();
-      expect(interaction.createEventGesture, equals(CreateEventGesture.tap));
-      expect(interaction.modifyEventGesture, equals(CreateEventGesture.tap));
+      expect(interaction.createEventGesture, equals(EventInteractionGesture.tap));
+      expect(interaction.modifyEventGesture, equals(EventInteractionGesture.tap));
     });
 
     test('an explicit gesture overrides the platform default', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      final interaction = CalendarInteraction(createEventGesture: CreateEventGesture.tap);
-      expect(interaction.createEventGesture, equals(CreateEventGesture.tap));
+      final interaction = CalendarInteraction(createEventGesture: EventInteractionGesture.tap);
+      expect(interaction.createEventGesture, equals(EventInteractionGesture.tap));
     });
   });
 
@@ -109,31 +109,31 @@ void main() {
         allowEventCreation: true,
         inputMode: InputMode.precise,
         allowHorizontalImpreciseResize: false,
-        createEventGesture: CreateEventGesture.tap,
-        modifyEventGesture: CreateEventGesture.tap,
+        createEventGesture: EventInteractionGesture.tap,
+        modifyEventGesture: EventInteractionGesture.tap,
       );
 
       final copy = original.copyWith(
         allowResizing: false,
         inputMode: InputMode.imprecise,
-        modifyEventGesture: CreateEventGesture.longPress,
+        modifyEventGesture: EventInteractionGesture.longPress,
       );
 
       expect(copy.allowResizing, isFalse);
       expect(copy.inputMode, equals(InputMode.imprecise));
-      expect(copy.modifyEventGesture, equals(CreateEventGesture.longPress));
+      expect(copy.modifyEventGesture, equals(EventInteractionGesture.longPress));
       // Untouched fields are preserved.
       expect(copy.allowRescheduling, isTrue);
       expect(copy.allowEventCreation, isTrue);
       expect(copy.allowHorizontalImpreciseResize, isFalse);
-      expect(copy.createEventGesture, equals(CreateEventGesture.tap));
+      expect(copy.createEventGesture, equals(EventInteractionGesture.tap));
     });
 
     test('copyWith with no arguments preserves every field', () {
       final original = CalendarInteraction(
         allowResizing: false,
         inputMode: InputMode.imprecise,
-        createEventGesture: CreateEventGesture.longPress,
+        createEventGesture: EventInteractionGesture.longPress,
       );
       final copy = original.copyWith();
       expect(copy.allowResizing, equals(original.allowResizing));
@@ -151,8 +151,8 @@ void main() {
           allowEventCreation: true,
           inputMode: InputMode.precise,
           allowHorizontalImpreciseResize: false,
-          createEventGesture: CreateEventGesture.tap,
-          modifyEventGesture: CreateEventGesture.tap,
+          createEventGesture: EventInteractionGesture.tap,
+          modifyEventGesture: EventInteractionGesture.tap,
         );
 
     test('identical configurations are equal with matching hashCodes', () {
@@ -166,8 +166,8 @@ void main() {
       'allowEventCreation': (i) => i.copyWith(allowEventCreation: false),
       'inputMode': (i) => i.copyWith(inputMode: InputMode.imprecise),
       'allowHorizontalImpreciseResize': (i) => i.copyWith(allowHorizontalImpreciseResize: true),
-      'createEventGesture': (i) => i.copyWith(createEventGesture: CreateEventGesture.longPress),
-      'modifyEventGesture': (i) => i.copyWith(modifyEventGesture: CreateEventGesture.longPress),
+      'createEventGesture': (i) => i.copyWith(createEventGesture: EventInteractionGesture.longPress),
+      'modifyEventGesture': (i) => i.copyWith(modifyEventGesture: EventInteractionGesture.longPress),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
         expect(entry.value(make()), isNot(equals(make())));
