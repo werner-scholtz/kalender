@@ -103,13 +103,12 @@ enum InputMode {
   imprecise,
 }
 
-/// The [CreateEventGesture] is used to differentiate between the different ways to create an event.
-// TODO: Rename this to EventInteractionGesture in 0.28.0.
-enum CreateEventGesture {
-  /// Creates event on tap gesture.
+/// The [EventInteractionGesture] is used to differentiate between the different ways to create and modify an event.
+enum EventInteractionGesture {
+  /// Uses a tap gesture.
   tap,
 
-  /// Creates event on tap hold gesture.
+  /// Uses a tap and hold gesture.
   longPress,
 }
 
@@ -150,17 +149,17 @@ class CalendarInteraction {
   ///
   /// This gesture determines how users can create new events in the calendar.
   /// It can be either a tap or a long press gesture.
-  final CreateEventGesture createEventGesture;
-  static const defaultCreateEventGesture = CreateEventGesture.tap;
-  static const defaultMobileCreateEventGesture = CreateEventGesture.longPress;
+  final EventInteractionGesture createEventGesture;
+  static const defaultCreateEventGesture = EventInteractionGesture.tap;
+  static const defaultMobileCreateEventGesture = EventInteractionGesture.longPress;
 
   /// The gesture used to modify an event.
   ///
   /// This gesture determines how users can modify existing events in the calendar.
   /// It can be either a tap or a long press gesture.
-  final CreateEventGesture modifyEventGesture;
-  static const defaultModifyEventGesture = CreateEventGesture.tap;
-  static const defaultMobileModifyEventGesture = CreateEventGesture.longPress;
+  final EventInteractionGesture modifyEventGesture;
+  static const defaultModifyEventGesture = EventInteractionGesture.tap;
+  static const defaultMobileModifyEventGesture = EventInteractionGesture.longPress;
 
   /// The input mode for the calendar.
   ///
@@ -198,8 +197,8 @@ class CalendarInteraction {
     this.allowEventCreation = defaultAllowEventCreation,
     this.inputMode = defaultInputMode,
     this.allowHorizontalImpreciseResize = defaultAllowHorizontalImpreciseResize,
-    CreateEventGesture? createEventGesture,
-    CreateEventGesture? modifyEventGesture,
+    EventInteractionGesture? createEventGesture,
+    EventInteractionGesture? modifyEventGesture,
   })  : createEventGesture =
             createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
         modifyEventGesture =
@@ -213,8 +212,8 @@ class CalendarInteraction {
     bool? allowEventCreation,
     InputMode? inputMode,
     bool? allowHorizontalImpreciseResize,
-    CreateEventGesture? createEventGesture,
-    CreateEventGesture? modifyEventGesture,
+    EventInteractionGesture? createEventGesture,
+    EventInteractionGesture? modifyEventGesture,
   }) {
     return CalendarInteraction(
       allowResizing: allowResizing ?? this.allowResizing,

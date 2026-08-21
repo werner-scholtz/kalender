@@ -26,8 +26,8 @@ void main() {
 
   final precise = CalendarInteraction(
     inputMode: InputMode.precise,
-    createEventGesture: CreateEventGesture.tap,
-    modifyEventGesture: CreateEventGesture.tap,
+    createEventGesture: EventInteractionGesture.tap,
+    modifyEventGesture: EventInteractionGesture.tap,
   );
 
   MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;

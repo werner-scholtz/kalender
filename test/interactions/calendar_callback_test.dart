@@ -15,16 +15,16 @@ void main() {
     allowRescheduling: true,
     allowEventCreation: true,
     inputMode: InputMode.precise,
-    createEventGesture: CreateEventGesture.tap,
-    modifyEventGesture: CreateEventGesture.tap,
+    createEventGesture: EventInteractionGesture.tap,
+    modifyEventGesture: EventInteractionGesture.tap,
   );
   final impreciseInteraction = CalendarInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
     inputMode: InputMode.imprecise,
-    createEventGesture: CreateEventGesture.longPress,
-    modifyEventGesture: CreateEventGesture.longPress,
+    createEventGesture: EventInteractionGesture.longPress,
+    modifyEventGesture: EventInteractionGesture.longPress,
   );
 
   setUp(() {

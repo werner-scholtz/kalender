@@ -42,7 +42,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
                         : null,
                     child: context.interaction.allowEventCreation
                         ? switch (context.interaction.createEventGesture) {
-                            CreateEventGesture.tap => Draggable(
+                            EventInteractionGesture.tap => Draggable(
                                 onDragStarted: () => createNewEvent(context, date, position),
                                 onDraggableCanceled: onDragFinished,
                                 onDragEnd: onDragFinished,
@@ -51,7 +51,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
                                 feedback: Container(color: Colors.transparent, width: 1, height: 1),
                                 child: Container(color: Colors.transparent),
                               ),
-                            CreateEventGesture.longPress => LongPressDraggable(
+                            EventInteractionGesture.longPress => LongPressDraggable(
                                 onDragStarted: () => createNewEvent(context, date, position),
                                 onDraggableCanceled: onDragFinished,
                                 onDragEnd: onDragFinished,

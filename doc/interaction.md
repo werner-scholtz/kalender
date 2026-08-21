@@ -25,9 +25,9 @@ CalendarBody(
     allowRescheduling: true,
     allowEventCreation: true,
     // Tap on desktop, long-press on mobile, when left unset.
-    createEventGesture: CreateEventGesture.tap,
+    createEventGesture: EventInteractionGesture.tap,
     // The gesture that starts modifying an existing event, same defaults.
-    modifyEventGesture: CreateEventGesture.tap,
+    modifyEventGesture: EventInteractionGesture.tap,
     // Input mode affects resize handle positioning and visibility:
     //   auto:      detects dynamically from pointer events
     //   precise:   mouse, stylus, trackpad (full-width handles, hover-to-show)

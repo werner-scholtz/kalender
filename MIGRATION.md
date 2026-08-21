@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. `FreeScrollFunctions` is removed. |
+| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. `FreeScrollFunctions` is removed. `CreateEventGesture` is renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
@@ -39,6 +39,26 @@ if (config.pageIndexCalculator is FreeScrollFunctions) { ... }
 // After. This no longer tells a free scroll view from a single day one, since
 // both use the same calculator. Read `MultiDayViewConfiguration.type` for that.
 if (config.pageIndexCalculator is DayIndexCalculator) { ... }
+```
+
+### `CreateEventGesture` is now `EventInteractionGesture`
+
+The enum decides how an event is modified as well as created, which the old name
+covered only half of. The `createEventGesture` and `modifyEventGesture` fields on
+`CalendarInteraction` keep their names, so only the type changes.
+
+```dart
+// Before
+CalendarInteraction(
+  createEventGesture: CreateEventGesture.tap,
+  modifyEventGesture: CreateEventGesture.longPress,
+);
+
+// After
+CalendarInteraction(
+  createEventGesture: EventInteractionGesture.tap,
+  modifyEventGesture: EventInteractionGesture.longPress,
+);
 ```
 
 ## v0.26.x → v0.27.0

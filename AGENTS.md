@@ -173,7 +173,7 @@ Mixins `DayEventTileUtils` and `MultiDayEventTileUtils` provide helper methods f
 - Native `Draggable`/`LongPressDraggable` for existing events. `NewDraggable` mixin for creating new events.
 - Drag targets: `VerticalDragTarget` (day/week), `HorizontalDragTarget` (month/header), `ScheduleDragTarget`.
 - Drag data: `DraggableEvent` for existing events, create markers for new events, `ResizeDirection` enum for resize operations.
-- Platform-aware gestures: Desktop uses tap, mobile uses long-press (configurable via `CreateEventGesture`).
+- Platform-aware gestures: Desktop uses tap, mobile uses long-press (configurable via `EventInteractionGesture`).
 - Callbacks: `onEventCreate()`, `onEventChange()`, `onWillAcceptWithDetails*()`.
 
 ### Error Handling
@@ -272,11 +272,10 @@ before tagging it:
 - **TODOs on public API.** Several are renames or removals held for 0.28.0, the
   next breaking window: the `renderBox` parameter on `OnEventTapped` and
   `OnEventTappedWithDetail`, the `MultiDayBodyConfiguration` merge into
-  `VerticalConfiguration`, `CreateEventGesture` to `EventInteractionGesture`, and
-  the `k` prefix on the `default*` constants. Find them with
-  `grep -rn "TODO" lib/`. Each one is a decision still owed. Keep them as `//`
-  comments: a `///` one renders as prose in the API reference, which is how
-  `FreeScrollFunctions` shipped with a TODO as its entire published
+  `VerticalConfiguration`, and the `k` prefix on the `default*` constants. Find
+  them with `grep -rn "TODO" lib/`. Each one is a decision still owed. Keep them
+  as `//` comments: a `///` one renders as prose in the API reference, which is
+  how `FreeScrollFunctions` shipped with a TODO as its entire published
   documentation before it was removed in 0.28.0. `grep -rn "/// TODO" lib/` is
   the check.
 - **Deprecations past their window.** None. `lib/` carries no `@Deprecated` at

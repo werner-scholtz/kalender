@@ -49,8 +49,8 @@ class TileDraggable extends StatelessWidget {
     }
 
     return switch (context.interaction.modifyEventGesture) {
-      CreateEventGesture.tap => Draggable.new,
-      CreateEventGesture.longPress => LongPressDraggable.new,
+      EventInteractionGesture.tap => Draggable.new,
+      EventInteractionGesture.longPress => LongPressDraggable.new,
     }(
       key: rescheduleDraggableKey,
       data: Reschedule(event: event),
