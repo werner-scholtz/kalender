@@ -273,11 +273,12 @@ before tagging it:
   next breaking window: the `renderBox` parameter on `OnEventTapped` and
   `OnEventTappedWithDetail`, the `MultiDayBodyConfiguration` merge into
   `VerticalConfiguration`, `CreateEventGesture` to `EventInteractionGesture`, and
-  the `k` prefix on the `default*` constants. Find them
-  with `grep -rn "TODO" lib/`. Each one is a decision still owed. Keep them as
-  `//` comments: a `///` one renders as prose in the API reference, which is how
+  the `k` prefix on the `default*` constants. Find them with
+  `grep -rn "TODO" lib/`. Each one is a decision still owed. Keep them as `//`
+  comments: a `///` one renders as prose in the API reference, which is how
   `FreeScrollFunctions` shipped with a TODO as its entire published
-  documentation. `grep -rn "/// TODO" lib/` is the check.
+  documentation before it was removed in 0.28.0. `grep -rn "/// TODO" lib/` is
+  the check.
 - **Deprecations past their window.** None. `lib/` carries no `@Deprecated` at
   all: `TimeOfDayRange.isAllDay` was removed in 0.27.0 as its 0.26.0 message
   named, and the `CalendarComponents` style fields with the seven containers they

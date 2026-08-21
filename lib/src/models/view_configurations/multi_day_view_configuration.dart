@@ -343,6 +343,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     if (identical(this, other)) return true;
 
     return other is MultiDayViewConfiguration &&
+        other.type == type &&
         other.name == name &&
         other.initialDateTime == initialDateTime &&
         other.dateTransition == dateTransition &&
@@ -362,6 +363,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   @override
   int get hashCode {
     return Object.hash(
+      type,
       name,
       initialDateTime,
       dateTransition,

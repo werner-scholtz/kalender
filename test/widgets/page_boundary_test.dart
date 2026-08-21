@@ -71,6 +71,27 @@ void main() {
     expect(range.dominantMonthDate.month, 6, reason: 'The last month of the range should be reachable');
   });
 
+  testWidgets('free scroll stops at the end of the range', (tester) async {
+    // 2025-06-01 through 2025-06-07, the end exclusive at midnight. The band
+    // used to round that end up to the next midnight and draw an eighth column
+    // for 2025-06-08, a day outside the range.
+    await pump(
+      tester,
+      MultiDayViewConfiguration.freeScroll(
+        numberOfDays: 3,
+        displayRange: DateTimeRange(start: DateTime(2025, 6), end: DateTime(2025, 6, 8)),
+        initialDateTime: DateTime(2025, 6),
+      ),
+    );
+
+    final viewController = calendarController.viewController! as MultiDayViewController;
+    expect(viewController.numberOfPages, 7, reason: 'one column per day in the range, and no more');
+
+    final last = viewController.viewConfiguration.pageIndexCalculator
+        .dateTimeRangeFromIndex(viewController.numberOfPages - 1, null);
+    expect(last.start, InternalDateTime(2025, 6, 7), reason: 'the last column is the last day of the range');
+  });
+
   testWidgets('paginated schedule renders a single-month range', (tester) async {
     await pump(
       tester,

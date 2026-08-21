@@ -69,9 +69,12 @@ abstract class PageIndexCalculator {
     return CustomIndexCalculator(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
-  /// Creates a [PageIndexCalculator] for a single day [MultiDayViewConfiguration.freeScroll].
+  /// Creates a [PageIndexCalculator] for a free scrolling [MultiDayViewConfiguration.freeScroll].
+  ///
+  /// The band scrolls continuously rather than paging, so an index is a day offset from the start of
+  /// the range.
   factory PageIndexCalculator.freeScroll(DateTimeRange dateTimeRange) {
-    return FreeScrollFunctions(dateTimeRange: dateTimeRange);
+    return DayIndexCalculator(dateTimeRange: dateTimeRange);
   }
 
   /// Creates a [PageIndexCalculator] for a schedule [ContinuousScheduleIndexCalculator].
@@ -322,57 +325,6 @@ class CustomIndexCalculator extends PageIndexCalculator {
 
   @override
   int get hashCode => Object.hash(CustomIndexCalculator, dateTimeRange, numberOfDays);
-}
-
-/// Maps every day in the range to its own index, for the free-scrolling band.
-///
-/// Unlike the paginated calculators there is no page: the band scrolls
-/// continuously, so an index is a day offset from the start of the range.
-// TODO: see if this can be removed and replaced with [DayIndexCalculator].
-class FreeScrollFunctions extends PageIndexCalculator {
-  FreeScrollFunctions({required super.dateTimeRange});
-
-  @override
-  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
-    final internalRange = this.internalRange(location);
-    // Add the index to the start date to get the date to display.
-    final start = internalRange.start.add(Duration(days: index));
-    final end = start.add(const Duration(days: 1));
-    return InternalDateTimeRange(start: start, end: end);
-  }
-
-  @override
-  int indexFromDate(DateTime date, Location? location) {
-    final startOfDate = InternalDateTime.fromExternal(date, location: location);
-    final startOfRange = internalRange(location).start;
-    // Calculate the difference in days between the two dates.
-    final days = startOfDate.difference(startOfRange).inDays;
-    // Guard against an empty range (numberOfPages == 0), where numberOfPages - 1
-    // would be a negative upper bound and make clamp throw.
-    final pageCount = numberOfPages(location);
-    return pageCount == 0 ? 0 : days.clamp(0, pageCount - 1);
-  }
-
-  @override
-  int numberOfPages(Location? location) {
-    final range = internalRange(location);
-    return range.end.difference(range.start).inDays;
-  }
-
-  @override
-  InternalDateTimeRange internalRange(Location? location) {
-    return InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(dateTimeRange.start, location: location).startOfDay,
-      end: InternalDateTime.fromExternal(dateTimeRange.end, location: location).endOfDay,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is FreeScrollFunctions && other.dateTimeRange == dateTimeRange;
-
-  @override
-  int get hashCode => Object.hash(FreeScrollFunctions, dateTimeRange);
 }
 
 /// Calculates page indices and date ranges for a month view.

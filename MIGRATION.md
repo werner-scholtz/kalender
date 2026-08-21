@@ -4,6 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. `FreeScrollFunctions` is removed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
@@ -13,6 +14,32 @@ Each section covers one upgrade. Versions not listed below need no changes.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.27.x → v0.28.0
+
+### The free scroll band stops one day earlier
+
+Nothing stops compiling, and a free scroll calendar loses its last column. The
+band rounded the end of the display range up to the next midnight whatever it
+was, so a range already ending at midnight gained a day it should not have had.
+That covers the default range and any range written the usual way. A range
+ending part way through a day is unchanged.
+
+Extend the range by a day if you were relying on the extra column.
+
+### `FreeScrollFunctions` is removed
+
+`PageIndexCalculator.freeScroll` returns a `DayIndexCalculator` now, so only code
+that names the removed type changes.
+
+```dart
+// Before
+if (config.pageIndexCalculator is FreeScrollFunctions) { ... }
+
+// After. This no longer tells a free scroll view from a single day one, since
+// both use the same calculator. Read `MultiDayViewConfiguration.type` for that.
+if (config.pageIndexCalculator is DayIndexCalculator) { ... }
+```
 
 ## v0.26.x → v0.27.0
 

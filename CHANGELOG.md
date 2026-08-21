@@ -1,3 +1,19 @@
+## 0.28.0
+
+See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
+
+### Breaking Changes
+
+- `FreeScrollFunctions` is removed. It duplicated `DayIndexCalculator`, which `PageIndexCalculator.freeScroll` now returns. Name `DayIndexCalculator` where the removed class was named.
+
+### Bug Fixes
+
+- The free scroll band no longer draws a day past the end of its display range. It rounded the range end up to the next midnight whatever it was, so a range already ending at midnight gained a day, which includes the default range and any range written the usual way. A range ending part way through a day is unaffected.
+
+### Behavior Changes
+
+- `MultiDayViewConfiguration.type` takes part in `==` and `hashCode`. Two configurations of different view types over the same range compared equal where the view type was the only difference between them.
+
 ## 0.27.0
 
 See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
