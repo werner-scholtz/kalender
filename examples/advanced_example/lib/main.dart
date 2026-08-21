@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
         viewConfiguration: _viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) =>
+          onEventTapped: (event) =>
               calendarController.selectEvent(event),
           onEventCreateWithDetail: Event.fromDetail,
           onEventCreated: (event) => eventsController.addEvent(event),

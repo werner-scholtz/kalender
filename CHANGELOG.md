@@ -6,6 +6,8 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 
 - `FreeScrollFunctions` is removed. It duplicated `DayIndexCalculator`, which `PageIndexCalculator.freeScroll` now returns. Name `DayIndexCalculator` where the removed class was named.
 - `CreateEventGesture` is renamed to `EventInteractionGesture`. The enum decides how an event is modified as well as created. The `createEventGesture` and `modifyEventGesture` fields on `CalendarInteraction` keep their names.
+- `OnEventTapped` and `OnEventTappedWithDetail` no longer take a `RenderBox`. `TapDetail.renderBox` carries the same object, so the parameter was a duplicate on the second and the only route to the box on the first. They are now `void Function(CalendarEvent event)` and `void Function(CalendarEvent event, TapDetail detail)`. This covers `onEventTapped`, `onEventTappedWithDetail`, `onEventSecondaryTapped` and `onEventSecondaryTappedWithDetail`.
+- `OnTappedWithDetails` is renamed to `OnTappedWithDetail` and `OnLongPressedWithDetails` to `OnLongPressedWithDetail`. The name now matches the detail type each carries, a single `TapDetail`. The fields that use them already had the singular name and are unchanged. `OnWillAcceptWithDetailsVertical` and `OnWillAcceptWithDetailsHorizontal` keep the plural, since they carry a `DragTargetDetails`.
 
 ### Bug Fixes
 
