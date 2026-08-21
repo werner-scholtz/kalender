@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
-        callbacks: CalendarCallbacks(onEventTapped: (event, renderBox) => _onEventTapped(event)),
+        callbacks: CalendarCallbacks(onEventTapped: (event) => _onEventTapped(event)),
         header: Material(
           elevation: 2,
           child: Column(

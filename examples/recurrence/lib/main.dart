@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => _onEventTapped(event),
+          onEventTapped: (event) => _onEventTapped(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) async {
             final result = await _showDialog(event);

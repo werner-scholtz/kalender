@@ -254,10 +254,10 @@ class _CalendarContentState extends State<CalendarContent> {
       );
 
   CalendarCallbacks get _callbacks => CalendarCallbacks(
-        onEventTapped: (event, renderBox) {
+        onEventTappedWithDetail: (event, detail) {
           context.controller.deselectEvent();
           context.controller.selectEvent(event);
-          EventDetailOverlay.createEventOverlay(context, event as Event, renderBox);
+          EventDetailOverlay.createEventOverlay(context, event as Event, detail.renderBox);
         },
         onTapped: (_) => context.controller.deselectEvent(),
         onEventCreate: (event) => Event(

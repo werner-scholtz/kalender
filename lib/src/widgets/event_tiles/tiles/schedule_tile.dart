@@ -25,10 +25,9 @@ class ScheduleEventTile extends EventTile {
   EventTileOnTapUp? get onTapUp => (details, context) {
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventTapped?.call(event, renderObject);
+        context.callbacks?.onEventTapped?.call(event);
         context.callbacks?.onEventTappedWithDetail?.call(
           event,
-          renderObject,
           MultiDayDetail(
             dateTimeRange: dateTimeRange.forLocation(location: context.location),
             renderBox: renderObject,
@@ -41,10 +40,9 @@ class ScheduleEventTile extends EventTile {
   EventTileOnTapUp? get onSecondaryTapUp => (details, context) {
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventSecondaryTapped?.call(event, renderObject);
+        context.callbacks?.onEventSecondaryTapped?.call(event);
         context.callbacks?.onEventSecondaryTappedWithDetail?.call(
           event,
-          renderObject,
           MultiDayDetail(
             dateTimeRange: dateTimeRange.forLocation(location: context.location),
             renderBox: renderObject,

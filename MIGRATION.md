@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. `FreeScrollFunctions` is removed. `CreateEventGesture` is renamed. |
+| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
@@ -60,6 +60,72 @@ CalendarInteraction(
   modifyEventGesture: EventInteractionGesture.longPress,
 );
 ```
+
+### The tap callbacks drop their `RenderBox`
+
+`TapDetail.renderBox` carries the same object the parameter did, so it was a
+duplicate on `OnEventTappedWithDetail` and the only route to the box on
+`OnEventTapped`. The two are now a short form and a full form:
+
+```dart
+// Before
+typedef OnEventTapped = void Function(CalendarEvent event, RenderBox renderBox);
+typedef OnEventTappedWithDetail = void Function(CalendarEvent event, RenderBox renderBox, TapDetail detail);
+
+// After
+typedef OnEventTapped = void Function(CalendarEvent event);
+typedef OnEventTappedWithDetail = void Function(CalendarEvent event, TapDetail detail);
+```
+
+Four fields on `CalendarCallbacks` use them. Drop the parameter where you ignored
+it:
+
+```dart
+// Before
+CalendarCallbacks(
+  onEventTapped: (event, renderBox) => select(event),
+  onEventSecondaryTapped: (event, renderBox) => showMenu(event),
+);
+
+// After
+CalendarCallbacks(
+  onEventTapped: (event) => select(event),
+  onEventSecondaryTapped: (event) => showMenu(event),
+);
+```
+
+If you used the box, move to the detail callback and read it from there:
+
+```dart
+// Before
+CalendarCallbacks(
+  onEventTapped: (event, renderBox) => showOverlay(event, renderBox),
+);
+
+// After
+CalendarCallbacks(
+  onEventTappedWithDetail: (event, detail) => showOverlay(event, detail.renderBox),
+);
+```
+
+### `OnTappedWithDetails` and `OnLongPressedWithDetails` lose the plural
+
+Each carries a single `TapDetail`, so the name now matches the type. Rename the
+typedef where you name it. The fields that use it already had the singular name
+and do not change.
+
+```dart
+// Before
+OnTappedWithDetails onTapped = (details) { ... };
+OnLongPressedWithDetails onLongPressed = (details) { ... };
+
+// After
+OnTappedWithDetail onTapped = (detail) { ... };
+OnLongPressedWithDetail onLongPressed = (detail) { ... };
+```
+
+`OnWillAcceptWithDetailsVertical` and `OnWillAcceptWithDetailsHorizontal` keep
+the plural, since they carry a `DragTargetDetails`.
 
 ## v0.26.x → v0.27.0
 

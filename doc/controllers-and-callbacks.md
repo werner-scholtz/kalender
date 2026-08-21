@@ -195,16 +195,17 @@ CalendarCallbacks(
   // --- Event interactions ---
 
   // Called when an event tile is tapped.
-  onEventTapped: (event, renderBox) {},
+  onEventTapped: (event) {},
 
   // Called when an event tile is tapped. Includes tap position detail.
-  // The 'detail' parameter provides the tap location and its exact calculated 'DateTime'
-  // position based on the tapped position within the event UI.
-  onEventTappedWithDetail: (event, renderBox, detail) {},
+  // The 'detail' parameter provides the tap location, the tile's 'RenderBox' and
+  // its exact calculated 'DateTime' position based on the tapped position within
+  // the event UI.
+  onEventTappedWithDetail: (event, detail) {},
 
   // Called when an event is secondary tapped (right-clicked).
-  onEventSecondaryTapped: (event, renderBox) {},
-  onEventSecondaryTappedWithDetail: (event, renderBox, detail) {},
+  onEventSecondaryTapped: (event) {},
+  onEventSecondaryTappedWithDetail: (event, detail) {},
 
   // Called before the calendar creates a new event from a gesture.
   // Return your concrete Event subclass here.

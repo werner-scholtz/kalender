@@ -25,10 +25,9 @@ class MultiDayEventTile extends EventTile {
   void Function(TapUpDetails details, BuildContext context)? get onTapUp => (details, context) {
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventTapped?.call(event, renderObject);
+        context.callbacks?.onEventTapped?.call(event);
         context.callbacks?.onEventTappedWithDetail?.call(
           event,
-          renderObject,
           MultiDayDetail(
             dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
             renderBox: renderObject,
@@ -41,10 +40,9 @@ class MultiDayEventTile extends EventTile {
   void Function(TapUpDetails details, BuildContext context)? get onSecondaryTapUp => (details, context) {
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventSecondaryTapped?.call(event, renderObject);
+        context.callbacks?.onEventSecondaryTapped?.call(event);
         context.callbacks?.onEventSecondaryTappedWithDetail?.call(
           event,
-          renderObject,
           MultiDayDetail(
             dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
             renderBox: renderObject,
