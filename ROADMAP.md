@@ -142,7 +142,7 @@ The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 ### Tests
 
-Coverage is 89.2% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below. The two areas the 0.24.0 backfill named as next have still not moved, and the release that rewrote the worst-covered area fixed it outright.
+Coverage is 90.5% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below. The two areas the 0.24.0 backfill named as next have still not moved, and the release that rewrote the worst-covered area fixed it outright.
 
 Both columns are line coverage of the directory and everything under it, measured with `flutter test --coverage`.
 
@@ -152,13 +152,13 @@ Both columns are line coverage of the directory and everything under it, measure
 | `models/components/` | not tracked | 58% | The lowest in the package. `copyWith`, `==` and `hashCode` on the components classes have no test at all. Audited for dropped fields and there are none, so it is untested rather than wrong. |
 | `models/mixins/` | 84% | 84% | Untouched. |
 | `models/view_configurations/` | 83% | 84% | `schedule_view_configuration.dart` at 42%. |
-| `widgets/drag_targets/` | 71% | 71% | Untouched. `schedule_drag_target.dart` covers 10 of its 87 lines, still the largest single gap in the package. |
+| `widgets/drag_targets/` | 71% | 91% | Done. `schedule_drag_target.dart` went from 10 of its 87 lines to 82, which covered the whole reschedule path in the schedule view. |
 | `widgets/event_tiles/` | 81% | 82% | Barely moved. `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%. |
 | `theme/` | 78% | 97% | Done. 0.25.0 rewrote this code and tested it, taking it from the lowest covered area to one of the highest. |
 
 The rest runs from 79% to 100% with no large gap.
 
-`schedule_drag_target.dart` is still the one to start with, and `models/components/` is the new one. The latter is the shape the package has already shipped twice: a `copyWith` that silently drops a field, found in `view_configurations` as late as 0.24.0, in a class nothing tested. The pattern worth taking from 0.24.0 is that every gap closed turned up a bug that was already shipped.
+`models/components/` is the one left, and it is the shape the package has already shipped twice: a `copyWith` that silently drops a field, found in `view_configurations` as late as 0.24.0, in a class nothing tested. The pattern worth taking from 0.24.0 held again here. Covering the schedule drag target showed that a drop takes the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day lands at midnight. The multi-day body keeps it.
 
 ### Composability
 
