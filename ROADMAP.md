@@ -142,14 +142,14 @@ The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 ### Tests
 
-Coverage is 90.5% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below. The two areas the 0.24.0 backfill named as next have still not moved, and the release that rewrote the worst-covered area fixed it outright.
+Coverage is 92.3% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below, and that gate is now met.
 
 Both columns are line coverage of the directory and everything under it, measured with `flutter test --coverage`.
 
 | Area | 0.24.0 | Now | What is missing |
 |---|---|---|---|
-| `models/` | 87% | 83% | Went down, because of a directory this table had no row for. See below. |
-| `models/components/` | not tracked | 58% | The lowest in the package. `copyWith`, `==` and `hashCode` on the components classes have no test at all. Audited for dropped fields and there are none, so it is untested rather than wrong. |
+| `models/` | 87% | 89% | Recovered, and past the 0.24.0 figure, once the directory below was covered. |
+| `models/components/` | not tracked | 98% | Done. `copyWith`, `==` and `hashCode` on the nine components classes had no test at all. What is left is six bare `@override` lines that lcov counts and no test can reach. |
 | `models/mixins/` | 84% | 84% | Untouched. |
 | `models/view_configurations/` | 83% | 84% | `schedule_view_configuration.dart` at 42%. |
 | `widgets/drag_targets/` | 71% | 91% | Done. `schedule_drag_target.dart` went from 10 of its 87 lines to 82, which covered the whole reschedule path in the schedule view. |
@@ -158,7 +158,9 @@ Both columns are line coverage of the directory and everything under it, measure
 
 The rest runs from 79% to 100% with no large gap.
 
-`models/components/` is the one left, and it is the shape the package has already shipped twice: a `copyWith` that silently drops a field, found in `view_configurations` as late as 0.24.0, in a class nothing tested. The pattern worth taking from 0.24.0 held again here. Covering the schedule drag target showed that a drop takes the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day lands at midnight. The multi-day body keeps it.
+Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%.
+
+The pattern from 0.24.0 held again, in that closing a gap turned something up. Covering the schedule drag target showed that a drop takes the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day lands at midnight. The multi-day body keeps it. The components classes were sound: the tests found no dropped field, which matches the audit done during 0.27.0.
 
 ### Composability
 
