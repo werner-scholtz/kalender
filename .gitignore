@@ -36,3 +36,6 @@ build/
 
 # Written by tool/analyze_doc_snippets.dart on every run.
 /examples/doc_snippets/lib/generated/
+
+# Written by `flutter test --coverage`.
+/coverage/
