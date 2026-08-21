@@ -270,8 +270,7 @@ A pre-1.0.0 release can carry unfinished work that a 1.0.0 cannot. Audit these
 before tagging it:
 
 - **TODOs on public API.** Several are renames or removals held for 0.28.0, the
-  next breaking window: the `renderBox` parameter on `OnEventTapped` and
-  `OnEventTappedWithDetail`, the `MultiDayBodyConfiguration` merge into
+  next breaking window: the `MultiDayBodyConfiguration` merge into
   `VerticalConfiguration`, and the `k` prefix on the `default*` constants. Find
   them with `grep -rn "TODO" lib/`. Each one is a decision still owed. Keep them
   as `//` comments: a `///` one renders as prose in the API reference, which is

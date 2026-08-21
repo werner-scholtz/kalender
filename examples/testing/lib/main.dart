@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
         viewConfiguration: config.viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) =>
+          onEventTapped: (event) =>
               calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
