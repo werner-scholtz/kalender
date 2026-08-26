@@ -20,6 +20,10 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 - `MultiDayViewConfiguration.type` takes part in `==` and `hashCode`. Two configurations of different view types over the same range compared equal where the view type was the only difference between them.
 - A drop in the schedule view keeps the event's time of day. It took the time of day from the target day, so a 09:00 meeting dragged to another day landed at midnight. The multi-day header already kept it, and the schedule now uses the same path.
 
+### Features
+
+- `ResizeHandleStyle` sizes the area `DefaultResizeHandles` gives each handle, through `KalenderThemeData.resizeHandleStyle`. `length` covers precise input and `impreciseLength` covers a finger, defaulting to 16 and 24, the values the layout hardcoded. The handle widgets themselves still come from `TileComponents.verticalResizeHandle` and `horizontalResizeHandle`. Changing the length no longer means writing a `resizeHandlePositioner`.
+
 ## 0.27.0
 
 See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.

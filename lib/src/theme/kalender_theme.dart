@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 
 /// The Material defaults for a [ThemeData], built once.
 ///
-/// [KalenderThemeData.defaults] constructs thirteen style objects, and the
+/// [KalenderThemeData.defaults] constructs fourteen style objects, and the
 /// calendar resolves the theme on nearly every widget build. An [Expando] holds
 /// its keys weakly, so an entry is collected with the theme it belongs to.
 final _defaultsCache = Expando<KalenderThemeData>('kalender defaults');
@@ -77,6 +77,9 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   /// The style of the [MultiDayPortalOverlayButton].
   final MultiDayPortalOverlayButtonStyle? multiDayPortalOverlayButtonStyle;
 
+  /// The style of the resize handles laid out by [DefaultResizeHandles].
+  final ResizeHandleStyle? resizeHandleStyle;
+
   /// Creates a new [KalenderThemeData].
   const KalenderThemeData({
     this.dayHeaderStyle,
@@ -92,6 +95,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     this.scheduleTileHighlightStyle,
     this.multiDayOverlayStyle,
     this.multiDayPortalOverlayButtonStyle,
+    this.resizeHandleStyle,
   });
 
   /// The Material 3 defaults, derived from the [Theme] of the given [context].
@@ -188,6 +192,8 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         textPadding: const EdgeInsets.symmetric(horizontal: 4),
         textOverflow: TextOverflow.ellipsis,
       ),
+      // A finger needs a larger target than a cursor does.
+      resizeHandleStyle: const ResizeHandleStyle(length: 16, impreciseLength: 24),
     );
   }
 
@@ -206,6 +212,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     ScheduleTileHighlightStyle? scheduleTileHighlightStyle,
     MultiDayOverlayStyle? multiDayOverlayStyle,
     MultiDayPortalOverlayButtonStyle? multiDayPortalOverlayButtonStyle,
+    ResizeHandleStyle? resizeHandleStyle,
   }) {
     return KalenderThemeData(
       dayHeaderStyle: dayHeaderStyle ?? this.dayHeaderStyle,
@@ -221,6 +228,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       scheduleTileHighlightStyle: scheduleTileHighlightStyle ?? this.scheduleTileHighlightStyle,
       multiDayOverlayStyle: multiDayOverlayStyle ?? this.multiDayOverlayStyle,
       multiDayPortalOverlayButtonStyle: multiDayPortalOverlayButtonStyle ?? this.multiDayPortalOverlayButtonStyle,
+      resizeHandleStyle: resizeHandleStyle ?? this.resizeHandleStyle,
     );
   }
 
@@ -246,6 +254,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       multiDayPortalOverlayButtonStyle:
           multiDayPortalOverlayButtonStyle?.merge(other.multiDayPortalOverlayButtonStyle) ??
               other.multiDayPortalOverlayButtonStyle,
+      resizeHandleStyle: resizeHandleStyle?.merge(other.resizeHandleStyle) ?? other.resizeHandleStyle,
     );
   }
 
@@ -271,6 +280,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         other.multiDayPortalOverlayButtonStyle,
         t,
       ),
+      resizeHandleStyle: ResizeHandleStyle.lerp(resizeHandleStyle, other.resizeHandleStyle, t),
     );
   }
 
@@ -291,7 +301,8 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         other.scheduleDateStyle == scheduleDateStyle &&
         other.scheduleTileHighlightStyle == scheduleTileHighlightStyle &&
         other.multiDayOverlayStyle == multiDayOverlayStyle &&
-        other.multiDayPortalOverlayButtonStyle == multiDayPortalOverlayButtonStyle;
+        other.multiDayPortalOverlayButtonStyle == multiDayPortalOverlayButtonStyle &&
+        other.resizeHandleStyle == resizeHandleStyle;
   }
 
   @override
@@ -309,6 +320,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         scheduleTileHighlightStyle,
         multiDayOverlayStyle,
         multiDayPortalOverlayButtonStyle,
+        resizeHandleStyle,
       );
 
   @override
@@ -344,6 +356,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         defaultValue: null,
       ),
     );
+    properties.add(DiagnosticsProperty<ResizeHandleStyle>('resizeHandleStyle', resizeHandleStyle, defaultValue: null));
   }
 }
 
