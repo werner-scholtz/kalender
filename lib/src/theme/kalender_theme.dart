@@ -152,7 +152,6 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       ),
       weekNumberStyle: WeekNumberStyle(
         textStyle: textTheme.bodyMedium,
-        visualDensity: VisualDensity.compact,
         tooltip: 'Week Number',
         padding: const EdgeInsets.symmetric(horizontal: 4),
       ),

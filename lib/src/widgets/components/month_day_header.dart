@@ -24,11 +24,6 @@ class MonthDayHeaderStyle with Diagnosticable {
     this.margin,
   });
 
-  /// Has never had any effect. [MonthDayHeader] displays only a day number,
-  /// which is styled by [numberTextStyle], and no day name.
-
-  /// Use this function to customize the sting displayed by the [MonthDayHeader].
-
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
 
