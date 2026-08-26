@@ -3,12 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
-  // ─── defaultSnapStrategy ─────────────────────────────────────────────────────
+  // ─── kDefaultSnapStrategy ─────────────────────────────────────────────────────
 
   group('IntervalSnapStrategy', () {
     final startOfDay = InternalDateTime(2024, 1, 15);
     InternalDateTime snap(InternalDateTime cursor) {
-      return defaultSnapStrategy.snap(cursorDate: cursor, startOfDay: startOfDay, snapIntervalMinutes: 15);
+      return kDefaultSnapStrategy.snap(cursorDate: cursor, startOfDay: startOfDay, snapIntervalMinutes: 15);
     }
 
     test('snaps the cursor down to the nearest interval (rounds toward the lower boundary)', () {
@@ -27,7 +27,7 @@ void main() {
     });
 
     test('the default strategy is the interval one', () {
-      expect(defaultSnapStrategy, equals(const EventSnapStrategy.interval()));
+      expect(kDefaultSnapStrategy, equals(const EventSnapStrategy.interval()));
     });
   });
 

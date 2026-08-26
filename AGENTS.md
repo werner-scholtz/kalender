@@ -269,9 +269,9 @@ git branch release/0.23.x v0.23.0
 A pre-1.0.0 release can carry unfinished work that a 1.0.0 cannot. Audit these
 before tagging it:
 
-- **TODOs on public API.** Several are renames or removals held for 0.28.0, the
-  next breaking window, such as the `k` prefix on the `default*` constants. Find
-  them with `grep -rn "TODO" lib/`. Each one is a decision still owed. Keep them
+- **TODOs on public API.** Renames and removals get held for the next breaking
+  window rather than done piecemeal. Find them with `grep -rn "TODO" lib/`. Each
+  one is a decision still owed. Keep them
   as `//` comments: a `///` one renders as prose in the API reference, which is
   how `FreeScrollFunctions` shipped with a TODO as its entire published
   documentation before it was removed in 0.28.0. `grep -rn "/// TODO" lib/` is

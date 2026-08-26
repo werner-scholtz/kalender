@@ -38,7 +38,7 @@ abstract class ViewConfiguration {
     this.dateTransition = DateTransition.carryFocus,
     this.dateResolver,
     this.nowCallback,
-    this.multiDayRule = defaultMultiDayRule,
+    this.multiDayRule = kDefaultMultiDayRule,
   });
 
   /// The name of the [ViewConfiguration].
@@ -140,9 +140,9 @@ abstract class VerticalConfiguration {
   final ScrollTriggerConfiguration scrollTriggerConfiguration;
 
   const VerticalConfiguration({
-    this.showMultiDayEvents = defaultShowMultiDayEvents,
-    this.horizontalPadding = defaultHorizontalPadding,
-    this.eventLayoutStrategy = defaultEventLayoutStrategy,
+    this.showMultiDayEvents = kDefaultShowMultiDayEvents,
+    this.horizontalPadding = kDefaultHorizontalPadding,
+    this.eventLayoutStrategy = kDefaultEventLayoutStrategy,
     this.scrollPhysics,
     this.pageScrollPhysics,
     this.minimumTileHeight,
@@ -213,9 +213,9 @@ abstract class HorizontalConfiguration {
   final PageTriggerConfiguration pageTriggerConfiguration;
 
   const HorizontalConfiguration({
-    this.showTiles = defaultShowEventTiles,
-    this.tileHeight = defaultTileHeight,
-    this.multiDayLayoutStrategy = defaultMultiDayLayoutStrategy,
+    this.showTiles = kDefaultShowEventTiles,
+    this.tileHeight = kDefaultTileHeight,
+    this.multiDayLayoutStrategy = kDefaultMultiDayLayoutStrategy,
     this.maximumNumberOfVerticalEvents,
     this.eventPadding = kDefaultMultiDayEventPadding,
     required this.allowSingleDayEvents,
@@ -265,18 +265,16 @@ abstract class HorizontalConfiguration {
   }
 }
 
-// TODO: Decide on the `k` prefix in 0.28.0, renaming these is breaking.
-const defaultTileHeight = 24.0;
-const defaultNewEventDuration = Duration(minutes: 30);
-const defaultShowMultiDayEvents = false;
-const defaultEventLayoutStrategy = EventLayoutStrategy.overlap();
-const defaultMultiDayLayoutStrategy = MultiDayLayoutStrategy.byDuration();
-const defaultFirstDayOfWeek = DateTime.monday;
-const defaultShowEventTiles = true;
-const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
-const defaultHeightPerMinute = 0.7;
-const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
-
+const kDefaultTileHeight = 24.0;
+const kDefaultNewEventDuration = Duration(minutes: 30);
+const kDefaultShowMultiDayEvents = false;
+const kDefaultEventLayoutStrategy = EventLayoutStrategy.overlap();
+const kDefaultMultiDayLayoutStrategy = MultiDayLayoutStrategy.byDuration();
+const kDefaultFirstDayOfWeek = DateTime.monday;
+const kDefaultShowEventTiles = true;
+const kDefaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
+const kDefaultHeightPerMinute = 0.7;
+const kDefaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
 const kDefaultEmptyDayBehavior = EmptyDayBehavior.showOnlyToday;
 DateTimeRange kDefaultRange() {

@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. Two enums and typedefs are renamed. |
+| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
@@ -126,6 +126,39 @@ OnLongPressedWithDetail onLongPressed = (detail) { ... };
 
 `OnWillAcceptWithDetailsVertical` and `OnWillAcceptWithDetailsHorizontal` keep
 the plural, since they carry a `DragTargetDetails`.
+
+### The `default*` constants take a `k` prefix
+
+Twelve public top-level constants are renamed, which is a find and replace where
+you name one. Four already carried the prefix and are unchanged, and the
+`default*` top-level functions keep their names.
+
+| Before | After |
+| --- | --- |
+| `defaultTileHeight` | `kDefaultTileHeight` |
+| `defaultNewEventDuration` | `kDefaultNewEventDuration` |
+| `defaultShowMultiDayEvents` | `kDefaultShowMultiDayEvents` |
+| `defaultEventLayoutStrategy` | `kDefaultEventLayoutStrategy` |
+| `defaultMultiDayLayoutStrategy` | `kDefaultMultiDayLayoutStrategy` |
+| `defaultFirstDayOfWeek` | `kDefaultFirstDayOfWeek` |
+| `defaultShowEventTiles` | `kDefaultShowEventTiles` |
+| `defaultInitialTimeOfDay` | `kDefaultInitialTimeOfDay` |
+| `defaultHeightPerMinute` | `kDefaultHeightPerMinute` |
+| `defaultHorizontalPadding` | `kDefaultHorizontalPadding` |
+| `defaultMultiDayRule` | `kDefaultMultiDayRule` |
+| `defaultSnapStrategy` | `kDefaultSnapStrategy` |
+
+```dart
+// Before
+MultiDayViewConfiguration.week(initialHeightPerMinute: defaultHeightPerMinute);
+
+// After
+MultiDayViewConfiguration.week(initialHeightPerMinute: kDefaultHeightPerMinute);
+```
+
+The `static const default*` members on `CalendarInteraction` and
+`CalendarSnapping` are unchanged. The prefix marks a top-level constant, and a
+class already namespaces its own.
 
 ## v0.26.x → v0.27.0
 

@@ -219,9 +219,9 @@ extension ProviderContext on BuildContext {
   /// The rule deciding which events belong in the multi-day header.
   ///
   /// Comes from the current view's [ViewConfiguration.multiDayRule], falling
-  /// back to [defaultMultiDayRule] before a view is attached.
+  /// back to [kDefaultMultiDayRule] before a view is attached.
   MultiDayRule get multiDayRule =>
-      calendarController.viewController?.viewConfiguration.multiDayRule ?? defaultMultiDayRule;
+      calendarController.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
 
   Location? get location => LocationProvider.of(this);
   ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);

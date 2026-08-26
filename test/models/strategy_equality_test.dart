@@ -34,7 +34,7 @@ void main() {
     });
 
     test('overlap is the default', () {
-      expect(defaultEventLayoutStrategy, equals(const EventLayoutStrategy.overlap()));
+      expect(kDefaultEventLayoutStrategy, equals(const EventLayoutStrategy.overlap()));
     });
   });
 
@@ -48,7 +48,7 @@ void main() {
     });
 
     test('byDuration is the default', () {
-      expect(defaultMultiDayLayoutStrategy, equals(const MultiDayLayoutStrategy.byDuration()));
+      expect(kDefaultMultiDayLayoutStrategy, equals(const MultiDayLayoutStrategy.byDuration()));
     });
 
     test('a custom strategy is not equal to the built-in one', () {

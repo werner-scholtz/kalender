@@ -48,7 +48,7 @@ class HorizontalDragTarget extends StatefulWidget {
         if (!configuration.allowSingleDayEvents &&
             !event.spansMultipleDays(
               location: controller.viewController?.location,
-              defaultRule: controller.viewController?.viewConfiguration.multiDayRule ?? defaultMultiDayRule,
+              defaultRule: controller.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule,
             )) {
           return false;
         }

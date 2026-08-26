@@ -79,7 +79,7 @@ void main() {
     expect(created, isNotNull, reason: 'a drag across the header should create an event');
     expect(confirmed, isNotNull, reason: 'the created event should be confirmed');
     expect(
-      created!.spansMultipleDays(location: null, defaultRule: defaultMultiDayRule),
+      created!.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule),
       isTrue,
       reason: 'dragging across days should create a multi-day event',
     );

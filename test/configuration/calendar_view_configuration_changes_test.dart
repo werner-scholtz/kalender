@@ -618,7 +618,7 @@ void main() {
       await pumpCalendarView(tester, config: wk, withBody: true);
 
       // Back to the configured default (0.7), not the 1.5 we set.
-      expect(multiDay().heightPerMinute.value, equals(defaultHeightPerMinute));
+      expect(multiDay().heightPerMinute.value, equals(kDefaultHeightPerMinute));
     });
 
     testWidgets('ZoomTransition.restorePerView restores the view\'s own last zoom', (tester) async {
@@ -659,7 +659,7 @@ void main() {
       await pumpCalendarView(tester, config: month(), withBody: true);
       await pumpCalendarView(tester, config: week(scrollResolver: fixedNine), withBody: true);
 
-      // 09:00 * defaultHeightPerMinute (0.7) = 540 * 0.7 = 378px.
+      // 09:00 * kDefaultHeightPerMinute (0.7) = 540 * 0.7 = 378px.
       expect(multiDay().scrollController.offset, closeTo(540 * 0.7, 1.0));
       expect(calendarController.visibleTimeOfDay.value, equals(const TimeOfDay(hour: 9, minute: 0)));
     });
