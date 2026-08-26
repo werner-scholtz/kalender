@@ -168,7 +168,7 @@ The rest runs from 79% to 100% with no large gap.
 
 Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%.
 
-The pattern from 0.24.0 held again, in that closing a gap turned something up. Covering the schedule drag target showed that a drop takes the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day lands at midnight. The multi-day body keeps it. The components classes were sound: the tests found no dropped field, which matches the audit done during 0.27.0.
+The pattern from 0.24.0 held again, in that closing a gap turned something up. Covering the schedule drag target showed that a drop took the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day landed at midnight. The multi-day header already kept it, and the schedule uses the same path in 0.28.0. The components classes were sound: the tests found no dropped field, which matches the audit done during 0.27.0.
 
 ### Composability
 

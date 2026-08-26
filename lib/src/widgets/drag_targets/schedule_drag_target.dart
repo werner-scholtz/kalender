@@ -189,27 +189,14 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   }
 
   @override
-  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime) {
-    final rangeAsUtc = event.internalRange(location: context.location);
-    // Set the highlighted date in the schedule view controller.
+  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
+    // The highlight marks whole rows, so it stays anchored to the target day.
     widget.viewController.highlightedDateTimeRange.value = InternalDateTimeRange(
       start: cursorDateTime,
-      end: cursorDateTime.add(rangeAsUtc.duration),
+      end: cursorDateTime.add(event.duration),
     );
-    if (event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
-      final duration = rangeAsUtc.duration;
-      final endTime = cursorDateTime.add(duration);
-      final newRange = InternalDateTimeRange(start: cursorDateTime, end: endTime);
-      return event.withDateTimeRange(toLocationDateTimeRange(newRange));
-    } else {
-      // Calculate the new dateTimeRange for the event.
-      final newStartTime = cursorDateTime;
-      final duration = event.duration;
-      final endTime = newStartTime.add(duration);
-      final newRange = InternalDateTimeRange(start: newStartTime, end: endTime);
 
-      return event.withDateTimeRange(toLocationDateTimeRange(newRange));
-    }
+    return rescheduleToDate(event, cursorDateTime);
   }
 
   @override

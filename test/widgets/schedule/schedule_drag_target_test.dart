@@ -112,18 +112,23 @@ void main() {
     expect(changed!.start.isAfter(originalStart), isTrue, reason: 'a downward drag moves the event forward');
   });
 
-  testWidgets('a drop takes the time of day from the target day, not the event', (tester) async {
+  testWidgets('a drop keeps the time of day of the event', (tester) async {
     // The schedule view has no time axis, so a drop carries only a date. The
-    // event lands at the start of the target day rather than keeping 09:00.
+    // event takes that date and keeps 09:00, the way the multi-day header does.
     CalendarEvent? changed;
     final id = addEvent(DateTime(2025, 6, 2, 9), const Duration(hours: 1));
     await pumpSchedule(tester, callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated));
 
+    final original = eventsController.byId(id)!;
     final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)), 120);
     await gesture.up();
     await tester.pumpAndSettle();
 
-    expect(changed!.start.toLocal().hour, 0, reason: 'the event lands at the start of the target day');
+    final start = changed!.start.toLocal();
+    final originalStart = original.start.toLocal();
+    expect(start.hour, originalStart.hour, reason: 'the hour is kept');
+    expect(start.minute, originalStart.minute, reason: 'the minute is kept');
+    expect(start.isAfter(originalStart), isTrue, reason: 'the drag moved the event to a later day');
     expect(changed!.duration, equals(const Duration(hours: 1)), reason: 'the duration is kept');
   });
 

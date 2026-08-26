@@ -17,6 +17,7 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 ### Behavior Changes
 
 - `MultiDayViewConfiguration.type` takes part in `==` and `hashCode`. Two configurations of different view types over the same range compared equal where the view type was the only difference between them.
+- A drop in the schedule view keeps the event's time of day. It took the time of day from the target day, so a 09:00 meeting dragged to another day landed at midnight. The multi-day header already kept it, and the schedule now uses the same path.
 
 ## 0.27.0
 
