@@ -152,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventTapped: (event) => calendarController.selectEvent(event),
           onEventCreate: (event) {
             // Give newly created events a default title.
             return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');

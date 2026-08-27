@@ -263,19 +263,13 @@ void main() {
 
     testWidgets('onEventTapped fires when tapping an event', (tester) async {
       CalendarEvent? tappedEvent;
-      RenderBox? tappedRenderBox;
       TapDetail? tappedDetail;
 
       await pumpMultiDayView(
         tester,
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) {
-            tappedEvent = event;
-            tappedRenderBox = renderBox;
-          },
-          onEventTappedWithDetail: (event, renderBox, detail) {
-            tappedDetail = detail;
-          },
+          onEventTapped: (event) => tappedEvent = event,
+          onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
         ),
       );
 
@@ -288,7 +282,6 @@ void main() {
       expect(gestureDetector, findsOneWidget);
 
       expect(tappedEvent, isNull);
-      expect(tappedRenderBox, isNull);
       expect(tappedDetail, isNull);
 
       await tester.tapAt(tester.getTopLeft(gestureDetector) + const Offset(0, 60));
@@ -296,8 +289,8 @@ void main() {
 
       expect(tappedEvent, isNotNull);
       expect(tappedEvent!.id, id);
-      expect(tappedRenderBox, isNotNull);
       expect(tappedDetail, isNotNull);
+      expect(tappedDetail!.renderBox.hasSize, isTrue);
       expect(tappedDetail!.isDayDetail, isTrue);
 
       final dayDetail = tappedDetail as DayDetail;
@@ -524,19 +517,13 @@ void main() {
 
     testWidgets('onEventTapped fires when tapping an event', (tester) async {
       CalendarEvent? tappedEvent;
-      RenderBox? tappedRenderBox;
       TapDetail? tappedDetail;
 
       await pumpMonthView(
         tester,
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) {
-            tappedEvent = event;
-            tappedRenderBox = renderBox;
-          },
-          onEventTappedWithDetail: (event, renderBox, detail) {
-            tappedDetail = detail;
-          },
+          onEventTapped: (event) => tappedEvent = event,
+          onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
         ),
       );
 
@@ -549,7 +536,6 @@ void main() {
       expect(gestureDetector, findsOneWidget);
 
       expect(tappedEvent, isNull);
-      expect(tappedRenderBox, isNull);
       expect(tappedDetail, isNull);
 
       await tester.tap(gestureDetector);
@@ -557,8 +543,8 @@ void main() {
 
       expect(tappedEvent, isNotNull);
       expect(tappedEvent!.id, id);
-      expect(tappedRenderBox, isNotNull);
       expect(tappedDetail, isNotNull);
+      expect(tappedDetail!.renderBox.hasSize, isTrue);
       expect(tappedDetail!.isMultiDayDetail, isTrue);
     });
 

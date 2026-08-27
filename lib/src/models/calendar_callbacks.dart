@@ -71,7 +71,7 @@ class CalendarCallbacks {
   /// The callback for when a user taps on the calendar with details.
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
-  final OnTappedWithDetails? onTappedWithDetail;
+  final OnTappedWithDetail? onTappedWithDetail;
 
   /// The callback for when a user secondary taps on the calendar.
   final OnTapped? onSecondaryTapped;
@@ -79,7 +79,7 @@ class CalendarCallbacks {
   /// The callback for when a user secondary taps on the calendar with details.
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
-  final OnTappedWithDetails? onSecondaryTappedWithDetail;
+  final OnTappedWithDetail? onSecondaryTappedWithDetail;
 
   /// The callback for when a user long presses on the calendar.
   final OnLongPressed? onLongPressed;
@@ -87,7 +87,7 @@ class CalendarCallbacks {
   /// The callback for when a user long presses on the calendar with details.
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
-  final OnLongPressedWithDetails? onLongPressedWithDetail;
+  final OnLongPressedWithDetail? onLongPressedWithDetail;
 
   /// The callback for when a user secondary long presses on the calendar.
   final OnLongPressed? onSecondaryLongPressed;
@@ -95,7 +95,7 @@ class CalendarCallbacks {
   /// The callback for when a user secondary long presses on the calendar with details.
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
-  final OnLongPressedWithDetails? onSecondaryLongPressedWithDetail;
+  final OnLongPressedWithDetail? onSecondaryLongPressedWithDetail;
 
   /// The callback for when a drag target is evaluating whether to accept a draggable, on a vertical view.
   ///
@@ -153,13 +153,13 @@ class CalendarCallbacks {
     OnPageChanged? onPageChanged,
     OnScrollPositionChanged? onScrollPositionChanged,
     OnTapped? onTapped,
-    OnTappedWithDetails? onTappedWithDetail,
+    OnTappedWithDetail? onTappedWithDetail,
     OnTapped? onSecondaryTapped,
-    OnTappedWithDetails? onSecondaryTappedWithDetail,
+    OnTappedWithDetail? onSecondaryTappedWithDetail,
     OnLongPressed? onLongPressed,
-    OnLongPressedWithDetails? onLongPressedWithDetail,
+    OnLongPressedWithDetail? onLongPressedWithDetail,
     OnLongPressed? onSecondaryLongPressed,
-    OnLongPressedWithDetails? onSecondaryLongPressedWithDetail,
+    OnLongPressedWithDetail? onSecondaryLongPressedWithDetail,
   }) {
     return CalendarCallbacks(
       onEventTapped: onEventTapped ?? this.onEventTapped,
@@ -189,20 +189,19 @@ class CalendarCallbacks {
 /// The callback for when an event is tapped.
 ///
 /// The [event] is the event that was tapped.
-/// The [renderBox] is the [RenderBox] of the event tile.
-// TODO: Remove renderBox in 0.28.0, OnEventTappedWithDetail carries it.
-typedef OnEventTapped = void Function(CalendarEvent event, RenderBox renderBox);
+///
+/// Use [OnEventTappedWithDetail] to also receive the tapped date and the
+/// [RenderBox] of the event tile.
+typedef OnEventTapped = void Function(CalendarEvent event);
 
 /// The callback for when an event is tapped.
 ///
 /// The [event] is the event that was tapped.
-/// The [renderBox] is the [RenderBox] of the event tile.
 /// The [detail] is the details of the date that was tapped.
 /// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
-// TODO: Remove renderBox in 0.28.0, the detail carries it.
+/// - [TapDetail.renderBox] is the [RenderBox] of the event tile.
 typedef OnEventTappedWithDetail = void Function(
   CalendarEvent event,
-  RenderBox renderBox,
   TapDetail detail,
 );
 
@@ -252,8 +251,8 @@ typedef OnTapped = void Function(DateTime date);
 
 /// The callback for when a user taps on an empty space in the calendar with details.
 ///
-/// [details] contains the details of the tap.
-typedef OnTappedWithDetails = void Function(TapDetail details);
+/// [detail] contains the details of the tap.
+typedef OnTappedWithDetail = void Function(TapDetail detail);
 
 /// The callback for when a user long presses on an empty space in the calendar.
 ///
@@ -263,8 +262,8 @@ typedef OnLongPressed = void Function(DateTime date);
 
 /// The callback for when a user long presses on an empty space in the calendar with details.
 ///
-/// [details] contains the details of the tap.
-typedef OnLongPressedWithDetails = void Function(TapDetail details);
+/// [detail] contains the details of the long press.
+typedef OnLongPressedWithDetail = void Function(TapDetail detail);
 
 /// The callback for when a drag target is evaluating whether to accept a draggable.
 ///
