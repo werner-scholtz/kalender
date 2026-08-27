@@ -1129,8 +1129,8 @@ Resize handle behavior is now driven by **input precision** (`InputMode`) instea
 **`CalendarInteraction` has two new fields:**
 ```dart
 CalendarInteraction(
-  inputMode: InputMode.auto,                  // NEW — default is auto
-  allowHorizontalImpreciseResize: false,      // NEW — opt-in for horizontal touch resize
+  inputMode: InputMode.auto,                  // NEW, defaults to auto
+  allowHorizontalImpreciseResize: false,      // NEW, opt in for horizontal touch resize
 )
 ```
 
