@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1787290594796,
+  "lastUpdate": 1787813307379,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -11047,6 +11047,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3331.4362818590703,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "250100f3445830dbf5260001fd3ebabd3d70b597",
+          "message": "Merge pull request #470 from werner-scholtz/refactor/event-interaction-gesture\n\nrefactor!: CreateEventGesture is now EventInteractionGesture",
+          "timestamp": "2026-08-27T08:31:53+02:00",
+          "tree_id": "230cce4aa729884552d38204eb041e90b662d813",
+          "url": "https://github.com/werner-scholtz/kalender/commit/250100f3445830dbf5260001fd3ebabd3d70b597"
+        },
+        "date": 1787813302607,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 130.44406889827755,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 528.00725,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 1572.3935532233884,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 6064.706586826347,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 635.90975,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 1955.1619190404797,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2138.58,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 10887.225130890052,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 186.5100708690787,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 100.65290438838245,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 695.21,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 2991.1825,
             "unit": "us"
           }
         ]
