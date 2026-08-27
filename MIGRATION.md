@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. Two enums and typedefs are renamed. |
+| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
@@ -178,6 +178,24 @@ MultiDayViewConfiguration.week(initialHeightPerMinute: kDefaultHeightPerMinute);
 The `static const default*` members on `CalendarInteraction` and
 `CalendarSnapping` are unchanged. The prefix marks a top-level constant, and a
 class already namespaces its own.
+
+### `WeekNumberStyle.visualDensity` becomes `buttonSize`
+
+The field's only effect was the size of the week number button, which
+`MonthDayHeaderStyle.buttonSize` already expressed as a `Size`. Give the size you
+want instead of a density:
+
+```dart
+// Before
+WeekNumberStyle(visualDensity: VisualDensity.comfortable);
+
+// After
+WeekNumberStyle(buttonSize: Size(48, 48));
+```
+
+A calendar that never set it renders the same. The button keeps its natural size
+when `buttonSize` is null, and the widget applies `VisualDensity.compact` itself,
+which is what the default theme set.
 
 ## v0.26.x → v0.27.0
 

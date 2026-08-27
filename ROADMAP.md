@@ -138,13 +138,19 @@ Flutter is the precedent. Its framework publishes no public static key at all, t
 
 What an app cannot reach comes to two things rather than ten: the drag or gesture wrapper around a tile, and a day column. Everything else has a route. The tile itself is the app's own widget, since `TileComponents.tileBuilder` is required. A resize handle is `find.byType(ResizeDetector)` with a predicate. `MultiDayEventOverlayTile` was exported in 0.27.0 with its three factories, and the overflow button, overlay card, close button, barrier, header and hour labels all have public factories on exported classes. If the drag wrapper is asked for, the answer is the `ResizeDetector` move again, which adds API rather than breaking it.
 
+**`WeekNumberStyle.visualDensity` becomes `Size? buttonSize`.** The last of the three Material types carried from 0.25.0 that was worth changing. See [Theming, still open](#theming-still-open) for why the other two stay.
+
 **A `ResizeHandleStyle`, moved here from the theming list.** It adds rather than changes API, so it needs no breaking window, but it belongs with the resize handle work the previous release started. `KalenderThemeData` carries thirteen style classes and the resize handles are the only thing the calendar draws without one. The handle length is a hardcoded 24 for imprecise input and 16 otherwise, with a TODO on it in `DefaultResizeHandles`. Less pressing since 0.27.0, because changing the layout is now a lambda where it used to mean subclassing an abstract class.
 
 **`FreeScrollFunctions` is removed, and it took a defect with it.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight whatever it was, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` joins `==` and `hashCode` with it, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
 
 ### Theming, still open
 
-**Three public fields keep Material in the API,** carried forward from 0.25.0 since changing them is breaking: `MultiDayOverlayStyle.cardTheme` is a `CardThemeData`, `MultiDayOverlayStyle.closeButtonStyle` is a `ButtonStyle`, and `WeekNumberStyle.visualDensity` is a `VisualDensity`. A framework neutral core cannot name any of those types. No release is attached, so they can ride along with the next breaking one or wait.
+**The three Material types in the public API are settled.** `WeekNumberStyle.visualDensity` is replaced by `Size? buttonSize` in 0.28.0. `MultiDayOverlayStyle.cardTheme` and `closeButtonStyle` stay.
+
+The question was carried from 0.25.0 as "a framework neutral core cannot name a Material type", and that framing does not hold. `KalenderThemeData` is a `ThemeExtension`, which is Material-only, and the widgets involved are `Card` and `IconButton.filledTonal`. Removing the fields makes nothing neutral. It would take rewriting the default widgets to stop being Material, which is not planned and runs against the direction of styles in a `ThemeExtension` with Material 3 defaults.
+
+The question per field is whether it reaches something an app cannot otherwise reach, and whether the type is the right shape for the knob. `cardTheme` is the override point over the app's own `CardTheme.of(context)` and its interpolation is `CardThemeData.lerp`. `closeButtonStyle` merges over the filled tonal defaults and its interpolation is `ButtonStyle.lerp`. Re-declaring either means reimplementing a Flutter type. `visualDensity` reached only the button's size, which `MonthDayHeaderStyle.buttonSize` already expressed as a `Size`, so the two headers spelled one thing two ways.
 
 The missing `ResizeHandleStyle` moved to 0.28.0 above.
 

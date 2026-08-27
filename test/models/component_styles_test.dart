@@ -168,8 +168,18 @@ void main() {
   });
 
   group('WeekNumberStyle', () {
-    const a = WeekNumberStyle(tooltip: 'a', padding: EdgeInsets.all(4), alignment: Alignment.topLeft);
-    const b = WeekNumberStyle(tooltip: 'b', padding: EdgeInsets.all(8), alignment: Alignment.bottomRight);
+    const a = WeekNumberStyle(
+      tooltip: 'a',
+      padding: EdgeInsets.all(4),
+      alignment: Alignment.topLeft,
+      buttonSize: Size(20, 20),
+    );
+    const b = WeekNumberStyle(
+      tooltip: 'b',
+      padding: EdgeInsets.all(8),
+      alignment: Alignment.bottomRight,
+      buttonSize: Size(40, 40),
+    );
 
     test('copyWith', () {
       final copy = a.copyWith(tooltip: 'c');
@@ -178,8 +188,8 @@ void main() {
     });
 
     test('merge', () {
-      final merged = a.merge(const WeekNumberStyle(visualDensity: VisualDensity.comfortable));
-      expect(merged.visualDensity, VisualDensity.comfortable);
+      final merged = a.merge(const WeekNumberStyle(buttonSize: Size(32, 32)));
+      expect(merged.buttonSize, const Size(32, 32));
       expect(merged.tooltip, a.tooltip);
       expect(a.merge(null), a);
     });
@@ -187,6 +197,7 @@ void main() {
     test('lerp', () {
       final mid = WeekNumberStyle.lerp(a, b, 0.5)!;
       expect(mid.padding, const EdgeInsets.all(6));
+      expect(mid.buttonSize, const Size(30, 30));
       expect(mid.alignment, Alignment.center);
       expect(WeekNumberStyle.lerp(a, b, 0.25)!.tooltip, 'a');
       expect(WeekNumberStyle.lerp(a, b, 0.75)!.tooltip, 'b');
@@ -194,7 +205,15 @@ void main() {
     });
 
     test('equality', () {
-      expect(a, const WeekNumberStyle(tooltip: 'a', padding: EdgeInsets.all(4), alignment: Alignment.topLeft));
+      expect(
+        a,
+        const WeekNumberStyle(
+          tooltip: 'a',
+          padding: EdgeInsets.all(4),
+          alignment: Alignment.topLeft,
+          buttonSize: Size(20, 20),
+        ),
+      );
       expect(a == b, false);
     });
   });

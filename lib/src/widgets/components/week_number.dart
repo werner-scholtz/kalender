@@ -20,7 +20,7 @@ class WeekNumberStyle with Diagnosticable {
   /// Creates a new [WeekNumberStyle].
   const WeekNumberStyle({
     this.textStyle,
-    this.visualDensity,
+    this.buttonSize,
     this.tooltip,
     this.padding,
     this.alignment,
@@ -29,8 +29,9 @@ class WeekNumberStyle with Diagnosticable {
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.
   final TextStyle? textStyle;
 
-  /// The [VisualDensity] used by the [WeekNumber] widget.
-  final VisualDensity? visualDensity;
+  /// The size of the week number button. When null the button keeps its
+  /// natural size.
+  final Size? buttonSize;
 
   /// The tooltip used by the [WeekNumber] widget.
   final String? tooltip;
@@ -44,14 +45,14 @@ class WeekNumberStyle with Diagnosticable {
   /// Creates a copy of this style with the given fields replaced with the new values.
   WeekNumberStyle copyWith({
     TextStyle? textStyle,
-    VisualDensity? visualDensity,
+    Size? buttonSize,
     String? tooltip,
     EdgeInsets? padding,
     AlignmentGeometry? alignment,
   }) {
     return WeekNumberStyle(
       textStyle: textStyle ?? this.textStyle,
-      visualDensity: visualDensity ?? this.visualDensity,
+      buttonSize: buttonSize ?? this.buttonSize,
       tooltip: tooltip ?? this.tooltip,
       padding: padding ?? this.padding,
       alignment: alignment ?? this.alignment,
@@ -63,7 +64,7 @@ class WeekNumberStyle with Diagnosticable {
     if (other == null) return this;
     return WeekNumberStyle(
       textStyle: other.textStyle ?? textStyle,
-      visualDensity: other.visualDensity ?? visualDensity,
+      buttonSize: other.buttonSize ?? buttonSize,
       tooltip: other.tooltip ?? tooltip,
       padding: other.padding ?? padding,
       alignment: other.alignment ?? alignment,
@@ -75,7 +76,7 @@ class WeekNumberStyle with Diagnosticable {
     if (identical(a, b)) return a;
     return WeekNumberStyle(
       textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
-      visualDensity: t < 0.5 ? a?.visualDensity : b?.visualDensity,
+      buttonSize: Size.lerp(a?.buttonSize, b?.buttonSize, t),
       tooltip: t < 0.5 ? a?.tooltip : b?.tooltip,
       padding: EdgeInsets.lerp(a?.padding, b?.padding, t),
       alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
@@ -88,20 +89,20 @@ class WeekNumberStyle with Diagnosticable {
 
     return other is WeekNumberStyle &&
         other.textStyle == textStyle &&
-        other.visualDensity == visualDensity &&
+        other.buttonSize == buttonSize &&
         other.tooltip == tooltip &&
         other.padding == padding &&
         other.alignment == alignment;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, visualDensity, tooltip, padding, alignment);
+  int get hashCode => Object.hash(textStyle, buttonSize, tooltip, padding, alignment);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<TextStyle>('textStyle', textStyle, defaultValue: null));
-    properties.add(DiagnosticsProperty<VisualDensity>('visualDensity', visualDensity, defaultValue: null));
+    properties.add(DiagnosticsProperty<Size>('buttonSize', buttonSize, defaultValue: null));
     properties.add(StringProperty('tooltip', tooltip, defaultValue: null));
     properties.add(DiagnosticsProperty<EdgeInsets>('padding', padding, defaultValue: null));
     properties.add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment, defaultValue: null));
@@ -129,6 +130,7 @@ class WeekNumber extends StatelessWidget {
 
     final style = (KalenderTheme.of(context).weekNumberStyle ?? const WeekNumberStyle()).merge(weekNumberStyle);
     final padding = style.padding ?? const EdgeInsets.symmetric(horizontal: 4);
+    final buttonSize = style.buttonSize;
 
     return Align(
       alignment: style.alignment ?? Alignment.center,
@@ -137,7 +139,9 @@ class WeekNumber extends StatelessWidget {
         child: IconButton.filledTonal(
           tooltip: style.tooltip,
           onPressed: null,
-          visualDensity: style.visualDensity ?? VisualDensity.compact,
+          visualDensity: VisualDensity.compact,
+          padding: buttonSize == null ? null : EdgeInsets.zero,
+          constraints: buttonSize == null ? null : BoxConstraints.tight(buttonSize),
           // The gutter is sized by the timeline, not by this label, so a range
           // spanning two weeks wraps. Without this the short second line sits
           // against the leading edge.
