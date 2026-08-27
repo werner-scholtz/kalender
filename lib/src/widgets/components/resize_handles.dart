@@ -1,3 +1,6 @@
+import 'dart:ui' show lerpDouble;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:kalender/src/enumerations.dart';
@@ -5,6 +8,7 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 
 /// The builder that positions the resize handles of an event tile.
@@ -97,6 +101,65 @@ class ResizeHandleDetails {
       );
 }
 
+/// The style of the resize handles laid out by [DefaultResizeHandles].
+///
+/// The handle widgets themselves come from [TileComponents.verticalResizeHandle]
+/// and [TileComponents.horizontalResizeHandle]. This sizes the area each one is
+/// given.
+class ResizeHandleStyle with Diagnosticable {
+  /// Creates a new [ResizeHandleStyle].
+  const ResizeHandleStyle({this.length, this.impreciseLength});
+
+  /// The length of a resize handle for precise input, such as a mouse.
+  final double? length;
+
+  /// The length of a resize handle for imprecise input, such as a finger.
+  final double? impreciseLength;
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  ResizeHandleStyle copyWith({double? length, double? impreciseLength}) {
+    return ResizeHandleStyle(
+      length: length ?? this.length,
+      impreciseLength: impreciseLength ?? this.impreciseLength,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  ResizeHandleStyle merge(ResizeHandleStyle? other) {
+    if (other == null) return this;
+    return ResizeHandleStyle(
+      length: other.length ?? length,
+      impreciseLength: other.impreciseLength ?? impreciseLength,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b].
+  static ResizeHandleStyle? lerp(ResizeHandleStyle? a, ResizeHandleStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return ResizeHandleStyle(
+      length: lerpDouble(a?.length, b?.length, t),
+      impreciseLength: lerpDouble(a?.impreciseLength, b?.impreciseLength, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ResizeHandleStyle && other.length == length && other.impreciseLength == impreciseLength;
+  }
+
+  @override
+  int get hashCode => Object.hash(length, impreciseLength);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DoubleProperty('length', length, defaultValue: null));
+    properties.add(DoubleProperty('impreciseLength', impreciseLength, defaultValue: null));
+  }
+}
+
 /// The default layout for the resize handles of an event tile.
 class DefaultResizeHandles extends StatelessWidget {
   /// The event tile the handles are positioned on.
@@ -123,9 +186,8 @@ class DefaultResizeHandles extends StatelessWidget {
 
     final length = isVertical ? details.size.height : details.size.width;
 
-    // The length of the resize handle.
-    // TODO: Move to a ResizeHandleStyle on the theme in 0.28.0.
-    final handleLength = isImprecise ? 24.0 : 16.0;
+    final style = KalenderTheme.of(context).resizeHandleStyle ?? const ResizeHandleStyle();
+    final handleLength = isImprecise ? (style.impreciseLength ?? 24.0) : (style.length ?? 16.0);
 
     // Determine whether to hide the start resize handle.
     final hideStart = (handleLength * 2) > (length / 2);

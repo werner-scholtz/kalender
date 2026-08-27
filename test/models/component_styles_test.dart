@@ -218,6 +218,36 @@ void main() {
     });
   });
 
+  group('ResizeHandleStyle', () {
+    const a = ResizeHandleStyle(length: 10, impreciseLength: 20);
+    const b = ResizeHandleStyle(length: 20, impreciseLength: 40);
+
+    test('copyWith', () {
+      final copy = a.copyWith(length: 12);
+      expect(copy.length, 12);
+      expect(copy.impreciseLength, a.impreciseLength);
+    });
+
+    test('merge', () {
+      final merged = a.merge(const ResizeHandleStyle(impreciseLength: 32));
+      expect(merged.impreciseLength, 32);
+      expect(merged.length, a.length);
+      expect(a.merge(null), a);
+    });
+
+    test('lerp', () {
+      final mid = ResizeHandleStyle.lerp(a, b, 0.5)!;
+      expect(mid.length, 15);
+      expect(mid.impreciseLength, 30);
+      expect(ResizeHandleStyle.lerp(null, null, 0.5), null);
+    });
+
+    test('equality', () {
+      expect(a, const ResizeHandleStyle(length: 10, impreciseLength: 20));
+      expect(a == b, false);
+    });
+  });
+
   group('MonthGridStyle', () {
     const a = MonthGridStyle(color: Color(0xFF000000), thickness: 1);
     const b = MonthGridStyle(color: Color(0xFFFFFFFF), thickness: 3);
@@ -531,10 +561,11 @@ void main() {
         ScheduleTileHighlightStyle(),
         MultiDayOverlayStyle(),
         MultiDayPortalOverlayButtonStyle(),
+        ResizeHandleStyle(),
         KalenderThemeData(),
       ];
 
-      expect(styles, hasLength(14));
+      expect(styles, hasLength(15));
       for (final style in styles) {
         expect(style.toString(), startsWith(style.runtimeType.toString()));
       }
