@@ -13,8 +13,8 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 
 ### Bug Fixes
 
-- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. The last segment carries whatever is left of the `TimeOfDayRange`, so it is shorter than the rest unless the range divides evenly by the segment length, and its label was drawn near the top of the timeline. A range of 09:00 to 18:00 showed 18:00 above 10:00. The hour lines were already positioned this way and did not move. `TimeOfDayRange.allDay` divides evenly, which is why the default range was unaffected.
-- The free scroll band no longer draws a day past the end of its display range. It rounded the range end up to the next midnight whatever it was, so a range already ending at midnight gained a day, which includes the default range and any range written the usual way. A range ending part way through a day is unaffected.
+- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. The last segment is whatever is left of the `TimeOfDayRange`, so it is shorter than the rest unless the range divides evenly by the segment length, and its label was drawn near the top of the timeline. A range of 09:00 to 18:00 showed 18:00 above 10:00. The hour lines were already positioned this way and did not move. `TimeOfDayRange.allDay` divides evenly, which is why the default range was unaffected.
+- The free scroll band no longer draws a day past the end of its display range. It rounded the range end up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day, which includes the default range and any range written the usual way. A range ending part way through a day is unaffected.
 
 ### Behavior Changes
 
