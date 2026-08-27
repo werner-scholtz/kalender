@@ -114,9 +114,9 @@ The default for each builder moves off the widget and onto the components class 
 
   Exporting the resize draggable also renamed it. `ResizeHandle` is the obvious name for the widget an app supplies through `TileComponents.verticalResizeHandle`, so publishing the package's own class under that name collided with the expected case, and the web demo stopped compiling. It is `ResizeDetector`, which is what `ResizeHandleDetails` already called it.
 
-**The tile key factories are unreachable.** Ten of the package's twenty-three `static Key` factories sit on classes nothing exports, so `DayEventTile.tileKey` and its siblings are internal test helpers with public spelling. Settled in 0.28.0 below as internal, since a widget carrying its own identifying fields is findable without one. Flutter's answer is worth recording: the framework publishes no key factories at all, and its own tests use `find.byType` over `find.byKey` roughly three to one.
+**The tile key factories are unreachable.** Ten of the package's twenty-three `static Key` factories sit on classes nothing exports, so `DayEventTile.tileKey` and its siblings are internal test helpers named as though they were public. Settled in 0.28.0 below as internal, since a widget carrying its own identifying fields is findable without one. Flutter's answer is worth recording: the framework publishes no key factories at all, and its own tests use `find.byType` over `find.byKey` roughly three to one.
 
-### 0.28.0, the next breaking window
+### 0.28.0, the next breaking window, previewed in 0.28.0-dev.1
 
 The breaking changes with nowhere cheaper to go. None has a deprecation path that costs less than doing it in a release that already breaks, so they wait for the next such release rather than for 1.0.0. Batching them is the point: a break that lands on its own costs a migration entry and a minor version for one item.
 
@@ -128,7 +128,7 @@ The breaking changes with nowhere cheaper to go. None has a deprecation path tha
 
 Merging needs a concrete survivor, since `MultiDayBody` builds an instance and `VerticalConfiguration` is abstract. `HorizontalDragTarget` would then stay typed against an abstract axis base while `VerticalDragTarget` became typed against a concrete view class, which is the asymmetry that matters, since it is in the code rather than in the names. `CalendarBody` also names its three configuration fields after views rather than axes, so renaming would leave one field whose name does not match its type. No second vertical implementation exists or is planned: the two views on this roadmap are grids, and `ScheduleBodyConfiguration` shares three of the eight fields and takes no configuration object in its drag target at all. The cost of keeping both is about sixty lines, mostly `copyWith`.
 
-**`CreateEventGesture` is now `EventInteractionGesture`.** The old name said "create" and the enum also decides how an event is modified, which is why `CalendarInteraction` carries it twice, as `createEventGesture` and `modifyEventGesture`. A public enum cannot be renamed behind a deprecation, so it went into this batch or nowhere. The two field names are unchanged.
+**`CreateEventGesture` is now `EventInteractionGesture`.** The old name said "create" and the enum also decides how an event is modified, which is why `CalendarInteraction` carries it twice, as `createEventGesture` and `modifyEventGesture`. A public enum cannot be renamed behind a deprecation, so it belongs in a release that already breaks. The two field names are unchanged.
 
 **The `default*` constants take a `k` prefix.** Twelve public top-level constants are renamed, and four already carried the prefix, so the package spelled the same kind of constant two ways. Flutter prefixes its public top-level constants and Effective Dart says not to use prefix letters, and the tie is broken by the four that already have it. The `default*` top-level functions keep their names, as do the `static const default*` members on `CalendarInteraction` and `CalendarSnapping`, since a class already namespaces its own.
 
@@ -142,7 +142,21 @@ What an app cannot reach comes to two things rather than ten: the drag or gestur
 
 **A `ResizeHandleStyle`, moved here from the theming list.** It adds rather than changes API, so it needs no breaking window, but it belongs with the resize handle work the previous release started. `KalenderThemeData` carried thirteen style classes and the resize handles were the only thing the calendar drew without one. The style carries `length` for precise input and `impreciseLength` for a finger, defaulting to the 16 and 24 the layout hardcoded, so changing the length no longer means writing a `resizeHandlePositioner`.
 
-**`FreeScrollFunctions` is removed, and it took a defect with it.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight whatever it was, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` joins `==` and `hashCode` with it, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
+**The timeline labels are positioned by the segments above them.** They were placed at a multiple of their own segment height, which is only correct when every segment is the same height. `TimeOfDayRange.splitIntoSegments` gives the last segment whatever is left of the range, so a range of 09:00 to 18:00 drew 18:00 above 10:00. `HourLines` already kept a running total, which is why the grid lines stayed correct while the labels did not. `TimeOfDayRange.allDay` divides evenly by the segment length, so the default range never showed it.
+
+**`FreeScrollFunctions` is removed, and removing it fixed a defect.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` joins `==` and `hashCode` with it, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
+
+### The next breaking window
+
+Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
+
+**`CalendarView.locale` is typed `dynamic`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo or a wrong type compile and fail at runtime. intl typed this late: 0.20.2 still declared `DateFormat.EEEE([locale])` with no type and 0.20.3 declares `String? locale`. Kalender allows `>=0.19.0 <0.23.0`, which covers both, and a `String?` works against every version in that range.
+
+Nine declarations carry the type. Three are public: the field, `CalendarLocale.calendarLocale` on `BuildContext`, and the optional parameter on the four `DateTimeExtensions` localized methods. The rest are `LocaleProvider` and its accessors.
+
+It breaks anyone passing something other than a `String`, and anyone assigning `calendarLocale` to a non-nullable `String`, since the implicit downcast a `dynamic` allowed becomes a compile error.
+
+One question comes first: `String?` or Flutter's `Locale`. `String?` is what intl takes and needs no conversion. `Locale` is the Flutter convention, but `toLanguageTag` produces `en-US` where intl's locale names use `en_US`, so it would need a stated conversion at the boundary.
 
 ### Theming, still open
 
@@ -150,7 +164,7 @@ What an app cannot reach comes to two things rather than ten: the drag or gestur
 
 The question was carried from 0.25.0 as "a framework neutral core cannot name a Material type", and that framing does not hold. `KalenderThemeData` is a `ThemeExtension`, which is Material-only, and the widgets involved are `Card` and `IconButton.filledTonal`. Removing the fields makes nothing neutral. It would take rewriting the default widgets to stop being Material, which is not planned and runs against the direction of styles in a `ThemeExtension` with Material 3 defaults.
 
-The question per field is whether it reaches something an app cannot otherwise reach, and whether the type is the right shape for the knob. `cardTheme` is the override point over the app's own `CardTheme.of(context)` and its interpolation is `CardThemeData.lerp`. `closeButtonStyle` merges over the filled tonal defaults and its interpolation is `ButtonStyle.lerp`. Re-declaring either means reimplementing a Flutter type. `visualDensity` reached only the button's size, which `MonthDayHeaderStyle.buttonSize` already expressed as a `Size`, so the two headers spelled one thing two ways.
+The question per field is whether it reaches something an app cannot otherwise reach, and whether the type is the right one for what the field sets. `cardTheme` is the override point over the app's own `CardTheme.of(context)` and its interpolation is `CardThemeData.lerp`. `closeButtonStyle` merges over the filled tonal defaults and its interpolation is `ButtonStyle.lerp`. Re-declaring either means reimplementing a Flutter type. `visualDensity` reached only the button's size, which `MonthDayHeaderStyle.buttonSize` already expressed as a `Size`, so the two headers spelled one thing two ways.
 
 The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
