@@ -12,8 +12,8 @@ void main() {
 
   final preciseInteraction = CalendarInteraction(
     inputMode: InputMode.precise,
-    createEventGesture: CreateEventGesture.tap,
-    modifyEventGesture: CreateEventGesture.tap,
+    createEventGesture: EventInteractionGesture.tap,
+    modifyEventGesture: EventInteractionGesture.tap,
   );
 
   final components = TileComponents(
@@ -240,8 +240,8 @@ void main() {
 
       final impreciseInteraction = CalendarInteraction(
         inputMode: InputMode.imprecise,
-        createEventGesture: CreateEventGesture.longPress,
-        modifyEventGesture: CreateEventGesture.longPress,
+        createEventGesture: EventInteractionGesture.longPress,
+        modifyEventGesture: EventInteractionGesture.longPress,
       );
 
       final impreciseViewConfigurations = [

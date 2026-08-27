@@ -13,8 +13,8 @@ void main() {
   final viewConfiguration = MultiDayViewConfiguration.week();
   final preciseInteraction = CalendarInteraction(
     inputMode: InputMode.precise,
-    createEventGesture: CreateEventGesture.tap,
-    modifyEventGesture: CreateEventGesture.tap,
+    createEventGesture: EventInteractionGesture.tap,
+    modifyEventGesture: EventInteractionGesture.tap,
   );
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 

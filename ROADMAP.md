@@ -124,7 +124,7 @@ The breaking changes with nowhere cheaper to go. None has a deprecation path tha
 
 **`MultiDayBodyConfiguration` folds into `VerticalConfiguration`.** The TODO on it reads as a rename, but the class extends `VerticalConfiguration` and adds `keepPagesAlive`, so the two are not interchangeable today. Moving that field up is what makes a replacement honest, and only then can a deprecation message name one. Which way the merge goes is open: `MultiDayBodyConfiguration` is the more discoverable of the two names.
 
-**`CreateEventGesture` becomes `EventInteractionGesture`.** The name says "create" and the enum also decides how an event is modified, which is why `CalendarInteraction` carries it twice, as `createEventGesture` and `modifyEventGesture`. A public enum cannot be renamed behind a deprecation, so it goes in a breaking batch or not at all. Carried a TODO with no release attached until now.
+**`CreateEventGesture` is now `EventInteractionGesture`.** The old name said "create" and the enum also decides how an event is modified, which is why `CalendarInteraction` carries it twice, as `createEventGesture` and `modifyEventGesture`. A public enum cannot be renamed behind a deprecation, so it went into this batch or nowhere. The two field names are unchanged.
 
 **The `default*` constants take a `k` prefix.** `defaultTileHeight`, `defaultNewEventDuration`, `defaultEventLayoutStrategy` and the rest are public top-level constants, so renaming them is breaking. Worth doing with the others rather than alone, and worth deciding against outright if the prefix is not wanted, since the TODO has outlived several releases.
 
