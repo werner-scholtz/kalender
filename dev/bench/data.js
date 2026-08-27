@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1787818013181,
+  "lastUpdate": 1787831555238,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -11215,6 +11215,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3359.061469265367,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d7b1f3ffe262a14dee50a423328165703205b7ec",
+          "message": "Merge pull request #480 from werner-scholtz/fix/timeline-label-positions\n\nfix: the timeline labels are positioned by the segments above them",
+          "timestamp": "2026-08-27T13:34:28+02:00",
+          "tree_id": "caef91fa17aeabc2810ac325fd9f07dab9740719",
+          "url": "https://github.com/werner-scholtz/kalender/commit/d7b1f3ffe262a14dee50a423328165703205b7ec"
+        },
+        "date": 1787831550101,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 171.88710651142733,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 689.13225,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2074.843,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8050.558052434457,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 711.181,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2223.629,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2383.122,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 11991.494252873563,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 245.3605880208966,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 110.13931318987623,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 770.46375,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3283.857571214393,
             "unit": "us"
           }
         ]
