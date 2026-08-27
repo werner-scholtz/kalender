@@ -87,6 +87,13 @@ dart tool/test_timezones_linux.dart test/extensions/internal_date_time_test.dart
   - `WidgetTesterUtils.hoverOn()` / `createMouseGesture()`: mouse interaction helpers.
 - DST transition dates from multiple regions are defined in `datesToTest` for thorough timezone coverage.
 - Timezone-sensitive tests **must** use `testWithTimeZones` and the shared `datesToTest` / `locationsToTest` lists.
+- A `static Key` factory on a class the package does not export is an internal
+  test helper, not public API. Ten of the twenty-three sit on `DayEventTile`,
+  `MultiDayEventTile`, `ScheduleEventTile` and `DayEventsWidget`, which no app
+  can name. The package's own tests reach them by importing the source path.
+  Do not add one to reach a widget from an app: give the widget the fields that
+  identify it and find it with `find.byType` and a predicate, the way
+  `ResizeDetector` carries `event` and `direction`.
 
 ## Architecture Conventions
 
