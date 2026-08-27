@@ -333,15 +333,18 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     final textXOffset = itemSize.height / 2;
     final segmentDuration = this.segmentDuration(timeOfDayRange, heightPerMinute, itemSize.height);
     final segments = timeOfDayRange.splitIntoSegments(segmentDuration);
+    // The last segment is shorter than the rest whenever the range does not
+    // divide evenly, so each label is placed after the segments before it rather
+    // than at a multiple of its own height.
+    var offset = 0.0;
     final positionedTimes = segments.indexed.map((e) {
       final (index, range) = e;
 
-      final height = range.duration.inMinutes * heightPerMinute;
-
-      final pos = index * height;
+      final pos = offset;
+      offset += range.duration.inMinutes * heightPerMinute;
 
       // Always skip the first item.
-      if (index == 0 || index == segments.length) return null;
+      if (index == 0) return null;
 
       // The time to display is the next hour.
       final displayTime = range.start;
