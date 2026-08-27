@@ -139,7 +139,7 @@ void main() {
 
     test('Reschedule single-day event, header config (allowSingleDayEvents=false) → false', () {
       final event = _singleDayEvent();
-      expect(event.spansMultipleDays(location: null, defaultRule: defaultMultiDayRule), isFalse);
+      expect(event.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isFalse);
       expect(
         HorizontalDragTarget.onWillAcceptWithDetails(
           _dragDetails(Reschedule(event: event)),
@@ -164,7 +164,7 @@ void main() {
 
     test('Reschedule multi-day event, header config → true', () {
       final event = _multiDayEvent();
-      expect(event.spansMultipleDays(location: null, defaultRule: defaultMultiDayRule), isTrue);
+      expect(event.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isTrue);
       expect(
         HorizontalDragTarget.onWillAcceptWithDetails(
           _dragDetails(Reschedule(event: event)),
@@ -289,7 +289,7 @@ void main() {
           end: DateTime(2025, 1, 6, 18, 0),
         ),
       );
-      expect(hugeEvent.spansMultipleDays(location: null, defaultRule: defaultMultiDayRule), isFalse);
+      expect(hugeEvent.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isFalse);
 
       expect(
         VerticalDragTarget.onWillAcceptWithDetails(
@@ -553,7 +553,7 @@ void main() {
       final state = await pumpMonthState(tester, ec: ec);
 
       final event = ec.events.first;
-      expect(event.spansMultipleDays(location: null, defaultRule: defaultMultiDayRule), isTrue);
+      expect(event.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isTrue);
 
       final cursor = InternalDateTime(2025, 1, 9);
       final result = state.rescheduleEvent(event, cursor) as CalendarEvent?;

@@ -2,7 +2,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 import 'package:kalender/src/platform.dart';
 
 /// The strategy a calendar uses when nothing overrides it.
-const defaultSnapStrategy = EventSnapStrategy.interval();
+const kDefaultSnapStrategy = EventSnapStrategy.interval();
 
 /// Decides where a dragged event lands, given the position of the cursor.
 ///
@@ -378,7 +378,7 @@ class CalendarSnapping {
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
     this.snapRange = defaultSnapRange,
-    this.eventSnapStrategy = defaultSnapStrategy,
+    this.eventSnapStrategy = kDefaultSnapStrategy,
   });
 
   /// Creates a copy of this [CalendarSnapping] but with the given fields replaced with the new values.

@@ -36,7 +36,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     DateTimeRange? displayRange,
-    this.firstDayOfWeek = defaultFirstDayOfWeek,
+    this.firstDayOfWeek = kDefaultFirstDayOfWeek,
     this.showWeekNumbers = false,
   }) : pageIndexCalculator = MonthIndexCalculator(
           dateTimeRange: displayRange ?? kDefaultRange(),
