@@ -16,6 +16,11 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 
 **[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Migration Guide](MIGRATION.md)**
 
+> [!WARNING]
+> This package is still in development, so breaking changes land in minor releases until 1.0.0. The caret range `flutter pub add` writes keeps you on one minor version, which is where fixes land. Every minor bump has an entry in the [migration guide](MIGRATION.md).
+>
+> If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
+
 <p align="center">
   <img src="readme_assets/desktop_light.png" alt="Week view on desktop, light theme" width="74%" />
   <img src="readme_assets/mobile_light.png" alt="Three-day view on mobile, light theme" width="23%" />
@@ -37,11 +42,6 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 - **Timezone aware.** Events stored as UTC, shown in any IANA location. Tested under a matrix of timezones.
 - **Localized.** Day and month names from intl, and every string replaceable.
 - **MIT licensed.** No commercial license to buy.
-
-> [!WARNING]
-> This package is still in development, so breaking changes land in minor releases until 1.0.0. A caret range like `^0.26.0` keeps you on 0.26.x, which is where fixes land. Every minor bump has an entry in the [migration guide](MIGRATION.md).
->
-> If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
 
 ## Installation
 
