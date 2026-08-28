@@ -162,17 +162,11 @@ The providers do not all collapse. Eleven exist, and only five are calendar-wide
 
 So the model carries the five, the other six stay scoped widgets, and both sit behind one set of accessors. That makes one rule true everywhere: an accessor reads the nearest value. The five simply only ever have one instance. An app never learns which is which, and the gutter becomes the only place in the package where the rule does not hold.
 
-**`CalendarView` may become `Kalender` before 1.0.0.** Not scoped to a release. The package is `kalender` and the widget an app places is `CalendarView`, which reads oddly next to `CalendarScope`. A pure rename, so it belongs in whichever release already breaks.
-
 **`CalendarView.locale` becomes `Locale`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo compile and fail at runtime. `Locale` is `dart:ui` rather than Material, it carries value equality, and an app holding `Localizations.localeOf(context)` has one already. `Intl.canonicalizedLocale` rewrites the separator, so `toLanguageTag`'s `en-US` and intl's `en_US` both resolve to the same data and no conversion rule is needed. intl's own `Locale` in `package:intl/locale.dart` is not used, since `DateFormat` does not accept it and it would put an intl type in the public API.
 
 Nine declarations carry the type. Three are public: the field, `CalendarLocale.calendarLocale` on `BuildContext`, and the optional parameter on the four `DateTimeExtensions` localized methods. It breaks anyone passing a `String`, and anyone assigning `calendarLocale` to a non-nullable `String`, since the implicit downcast a `dynamic` allowed becomes a compile error.
 
 **An intl4x example.** `examples/intl4x` supplies the six builders that answer with intl and renders the calendar through [intl4x](https://pub.dev/packages/intl4x) instead. Its test calls no `initializeDateFormatting`, so the default builders throw for `de` and the intl4x ones do not, which shows the substitution is complete rather than partial. Kalender keeps intl as its default, since a calendar with no localized names out of the box is a regression, and intl4x documents its API as still changing.
-
-### The next breaking window
-
-Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
 
 **The gutter shares its measured width rather than its style.** `weekNumberStyle` and `timelineStyle` size the gutters, which are drawn in the body and reserved again in the header, so the calendar resolves them once above both. A `KalenderTheme` scoped inside either half is ignored for those two fields and honoured for every other one. 0.27.0 taught that a builder resolves its styles from the nearest scope, and these are the two places where that is untrue.
 
@@ -183,6 +177,19 @@ The width has to be shared. The style does not. Today both are, which is what ma
 That removes `GutterStyles` and `GutterStyles.timelineStyleOf` from the public API, deletes `debugCheckGutterStyleReaches`, and leaves gutter appearance in the theme extension where it interpolates with the rest. A scoped theme then restyles the labels without resizing the gutter, which is visible rather than silent. Measured against the repository, nothing exercises the case: across every example and guide the only gutter settings are an explicit `timelineWidth` returning 48 and a `WeekNumberStyle` tooltip.
 
 It also fixes two things that are not about theming. `buildTimelineWidth` runs at three sites below `CalendarView`, so the measurement, which lays out up to 24 text painters and 288 under a custom string builder, runs three times per build instead of once. And the body passes the real `timeOfDayRange` where the header and the drag overlay pass `TimeOfDayRange.allDay()`. `defaultTimelineWidth` ignores the parameter, so nothing breaks today, but a custom `timelineWidth` builder that read it would return different widths in the header and the body, which is the misalignment `GutterStyles` exists to prevent.
+
+The month comes along, which is what makes the rule true of the whole package rather than two thirds of it. Its gutter agrees today by a different mechanism: `MonthWeekNumberGutter` and `MonthWeekNumberSpacer` both wrap the week number in `KalenderTheme.of(context).copyWith(weekNumberStyle: shared)` and take the widget's intrinsic size, so they match because the same style is injected into both. That is the sharing being removed, so the month gets a `weekNumberWidth` builder alongside `timelineWidth` and a `defaultWeekNumberWidth` that measures the widest label the gutter can show, the way `defaultTimelineWidth` measures across the day. `WeekNumberStyle.buttonSize` landed in 0.28.0, so the inputs exist.
+
+`ScheduleViewConfiguration.leadingWidth` is already this design with the number given rather than measured, so the schedule needs no change and the three views end up saying one thing.
+
+Four of the nine tests in `gutter_style_scope_test.dart` describe the behaviour being removed and go with it. The four that check the gutter and the spacer measure alike, that a theme above the calendar reaches the gutter, that the drag target spacer matches, and that the labels fit are kept.
+
+
+### The next breaking window
+
+Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
+
+**`CalendarView` may become `Kalender`.** The package is `kalender` and the widget an app places is `CalendarView`, which reads oddly next to `CalendarScope`. A pure rename, so it belongs in whichever release already breaks.
 
 ### Theming, still open
 
