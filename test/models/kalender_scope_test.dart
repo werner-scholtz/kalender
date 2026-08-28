@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// [CalendarScope] reads the state of the calendar a widget is built inside.
+/// [KalenderScope] reads the state of the calendar a widget is built inside.
 void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -44,15 +44,15 @@ void main() {
 
   testWidgets('reads the controllers the calendar was given', (tester) async {
     await pumpReading(tester, (context) {
-      final events = CalendarScope.eventsControllerOf(context);
-      final calendar = CalendarScope.calendarControllerOf(context);
+      final events = KalenderScope.eventsControllerOf(context);
+      final calendar = KalenderScope.calendarControllerOf(context);
       return '${identical(events, eventsController)}/${identical(calendar, calendarController)}';
     });
     expect(find.text('true/true'), findsWidgets);
   });
 
   testWidgets('reads the locale the calendar was given', (tester) async {
-    await pumpReading(tester, (context) => '${CalendarScope.localeOf(context)}');
+    await pumpReading(tester, (context) => '${KalenderScope.localeOf(context)}');
     expect(find.text('de'), findsWidgets);
   });
 
@@ -67,7 +67,7 @@ void main() {
         components: CalendarComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
-              dayHeaderStringBuilder: (context, date) => '${CalendarScope.interactionOf(context).allowResizing}',
+              dayHeaderStringBuilder: (context, date) => '${KalenderScope.interactionOf(context).allowResizing}',
             ),
           ),
         ),
@@ -95,7 +95,7 @@ void main() {
       tester,
       Builder(
         builder: (context) => Text(
-          '${CalendarScope.maybeEventsControllerOf(context)}/${CalendarScope.maybeCalendarControllerOf(context)}',
+          '${KalenderScope.maybeEventsControllerOf(context)}/${KalenderScope.maybeCalendarControllerOf(context)}',
           textDirection: TextDirection.ltr,
         ),
       ),
