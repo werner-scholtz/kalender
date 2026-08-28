@@ -176,7 +176,7 @@ The callback's return value is used for:
 Any `DateTime` subtype works, so the callback can return UTC or a `TZDateTime` in a
 specific zone.
 
-`nowCallback` takes part in the view configuration's equality, so pass the same
+`nowCallback` is included in the view configuration's equality, so pass the same
 function on every build. A tear-off such as `DateTime.now` is one, as is any
 top-level or static function. A closure works too, as long as it is stored
 rather than written inline:

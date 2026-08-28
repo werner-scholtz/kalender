@@ -18,7 +18,7 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 
 ### Behavior Changes
 
-- `MultiDayViewConfiguration.type` takes part in `==` and `hashCode`.
+- `MultiDayViewConfiguration.type` is included in `==` and `hashCode`.
 - A drop in the schedule view keeps the event's time of day, where it previously landed at midnight.
 
 ### Features
@@ -79,7 +79,7 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 
 ### Features
 
-- `CalendarEvent.isAllDay` places an event in the multi-day header lane whatever its duration, with no `MultiDayRule` consulted. It defaults to false, leaves the date range untouched, is carried across drags and resizes by `carryOver`, and takes part in `layoutEquals` and `hashCode`.
+- `CalendarEvent.isAllDay` places an event in the multi-day header lane whatever its duration, with no `MultiDayRule` consulted. It defaults to false, leaves the date range untouched, is carried across drags and resizes by `carryOver`, and is included in `layoutEquals` and `hashCode`.
 - `PageIndexCalculator` and its subclasses are exported. `ViewConfiguration.pageIndexCalculator` returns the type, which an app had no way to name. [#444](https://github.com/werner-scholtz/kalender/issues/444)
 - `EventSnapStrategy.none()` leaves a dragged event where the cursor is.
 - `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in.
@@ -98,9 +98,9 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 - The overlay styles are resolved once, where a custom overlay builder needs them, rather than at four call sites in the header and the month body. `MultiDayOverlayPortal.overlayStyles` is optional, where null leaves each overlay widget to resolve its own.
 - The Material defaults are built once per `ThemeData` rather than on every `KalenderTheme.of` call, which runs on nearly every widget build. The cache is keyed weakly on the theme.
 - A schedule row resolves the theme only when it reads one of the two styles that need it.
-- `MultiDayBodyConfiguration.keepPagesAlive` takes part in `==` and `hashCode`, so changing only that value reaches the calendar.
+- `MultiDayBodyConfiguration.keepPagesAlive` is included in `==` and `hashCode`, so changing only that value reaches the calendar.
 - `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` no longer compare equal to each other, and the same for the two `VerticalConfiguration` subclasses. The base `==` tested only `other is HorizontalConfiguration` with no runtime type check.
-- `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it already took part in `==`.
+- `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it was already included in `==`.
 
 ### Tests
 
@@ -173,7 +173,7 @@ See [MIGRATION.md](MIGRATION.md#v023x--v0240) for what to change.
 ### Fixes
 
 - View configurations built with the same arguments compare equal, so a rebuild no longer recreates the view controller and its layout caches. `PageIndexCalculator` and `ScheduleViewConfiguration` had no `==`. At 50 events a day, five rebuilds went from 105 vertical layout computations to none. [#404](https://github.com/werner-scholtz/kalender/pull/404)
-- `ViewConfiguration.nowCallback` takes part in `==`. Pass a top-level or static function. [#404](https://github.com/werner-scholtz/kalender/pull/404)
+- `ViewConfiguration.nowCallback` is included in `==`. Pass a top-level or static function. [#404](https://github.com/werner-scholtz/kalender/pull/404)
 - `CalendarView` attaches to a replaced `calendarController` instead of staying on the old one. [#404](https://github.com/werner-scholtz/kalender/pull/404)
 - `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four fields were missing, so changing only one of them never updated the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
 - `CalendarSnapping` compares and copies `eventSnapStrategy`. Changing only the strategy had no effect, and `copyWith` reset it to `defaultSnapStrategy`. Pass a top-level or static function. [#402](https://github.com/werner-scholtz/kalender/pull/402)
