@@ -1,0 +1,23 @@
+name: intl4x_example
+description: "Renders the calendar's day and month names with intl4x rather than intl."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  kalender:
+    path: ../../../kalender/
+  # Pinned. The package documents its API as still changing.
+  intl4x: 1.0.0-alpha.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
