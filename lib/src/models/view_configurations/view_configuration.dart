@@ -18,7 +18,7 @@ export 'package:kalender/kalender_extensions.dart';
 /// subtype works, so it can return local time, UTC, or a `TZDateTime` in a
 /// specific zone.
 ///
-/// Pass the same function on every build, since it takes part in the view
+/// Pass the same function on every build, since it is included in the view
 /// configuration's equality. These qualify:
 ///
 /// - a tear-off, such as [DateTime.now] or a top-level or static function,
@@ -85,7 +85,7 @@ abstract class ViewConfiguration {
   /// MultiDayViewConfiguration.week(nowCallback: DateTime.now)
   /// ```
   ///
-  /// Pass the same function on every build, since this takes part in `==`. See
+  /// Pass the same function on every build, since this is included in `==`. See
   /// [NowCallback] for the shapes that qualify. [dateResolver] and the
   /// multi-day resolvers are not compared, because they are read from the
   /// incoming configuration at a view switch and so are already current.

@@ -61,7 +61,7 @@ class MyLayoutDelegate extends EventLayoutDelegate {
 }
 ```
 
-Then wrap it in a strategy. Give the class value equality, comparing on `runtimeType` so a subclass of it does not compare equal. The field takes part in the body configuration's equality, and a strategy that compares unequal on every build makes every rebuild look like a change.
+Then wrap it in a strategy. Give the class value equality, comparing on `runtimeType` so a subclass of it does not compare equal. The field is included in the body configuration's equality, and a strategy that compares unequal on every build makes every rebuild look like a change.
 
 <!-- snippet: continues -->
 ```dart
@@ -114,7 +114,7 @@ Events are placed in a grid of rows × columns (rows = concurrent events, column
 
 Write your own by extending `MultiDayLayoutStrategy`. Call `defaultMultiDayFrameGenerator` to keep the built-in row assignment and change only the order, by supplying an `eventComparator`.
 
-Give the class value equality, comparing on `runtimeType` for the same reason as above. This field takes part in the body configuration's equality, and a strategy that compares unequal on every build clears the layout frame cache and regenerates every row each time.
+Give the class value equality, comparing on `runtimeType` for the same reason as above. This field is included in the body configuration's equality, and a strategy that compares unequal on every build clears the layout frame cache and regenerates every row each time.
 
 <!-- snippet: file -->
 ```dart

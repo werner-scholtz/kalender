@@ -4,26 +4,26 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 
 ### Breaking Changes
 
-- `FreeScrollFunctions` is removed. It duplicated `DayIndexCalculator`, which `PageIndexCalculator.freeScroll` now returns. Name `DayIndexCalculator` where the removed class was named.
-- `CreateEventGesture` is renamed to `EventInteractionGesture`. The enum decides how an event is modified as well as created. The `createEventGesture` and `modifyEventGesture` fields on `CalendarInteraction` keep their names.
-- `OnEventTapped` and `OnEventTappedWithDetail` no longer take a `RenderBox`. `TapDetail.renderBox` carries the same object, so the parameter was a duplicate on the second and the only route to the box on the first. They are now `void Function(CalendarEvent event)` and `void Function(CalendarEvent event, TapDetail detail)`. This covers `onEventTapped`, `onEventTappedWithDetail`, `onEventSecondaryTapped` and `onEventSecondaryTappedWithDetail`.
-- `OnTappedWithDetails` is renamed to `OnTappedWithDetail` and `OnLongPressedWithDetails` to `OnLongPressedWithDetail`. The name now matches the detail type each carries, a single `TapDetail`. The fields that use them already had the singular name and are unchanged. `OnWillAcceptWithDetailsVertical` and `OnWillAcceptWithDetailsHorizontal` keep the plural, since they carry a `DragTargetDetails`.
-- The `default*` public top-level constants take a `k` prefix: `kDefaultTileHeight`, `kDefaultNewEventDuration`, `kDefaultShowMultiDayEvents`, `kDefaultEventLayoutStrategy`, `kDefaultMultiDayLayoutStrategy`, `kDefaultFirstDayOfWeek`, `kDefaultShowEventTiles`, `kDefaultInitialTimeOfDay`, `kDefaultHeightPerMinute`, `kDefaultHorizontalPadding`, `kDefaultMultiDayRule` and `kDefaultSnapStrategy`. Four already carried it, so the package spelled the same kind of constant two ways. The `default*` top-level functions and the `static const default*` members on `CalendarInteraction` and `CalendarSnapping` keep their names, since the prefix marks a top-level constant.
-- `WeekNumberStyle.visualDensity` is replaced by `Size? buttonSize`, which matches `MonthDayHeaderStyle.buttonSize`. The field's only effect was the button's size, and the two headers spelled that two ways. When null the button keeps its natural size, and it interpolates through `Size.lerp` where density switched at the midpoint. `MultiDayOverlayStyle.cardTheme` and `closeButtonStyle` stay as they are, since both pass through to a Flutter type whose merge and interpolation would otherwise be reimplemented.
+- `FreeScrollFunctions` is removed. Use `DayIndexCalculator`, which `PageIndexCalculator.freeScroll` returns.
+- `CreateEventGesture` is renamed to `EventInteractionGesture`. The `createEventGesture` and `modifyEventGesture` fields keep their names.
+- `OnEventTapped` and `OnEventTappedWithDetail` no longer take a `RenderBox`. Read it from `TapDetail.renderBox`.
+- `OnTappedWithDetails` and `OnLongPressedWithDetails` lose the plural. The two `OnWillAccept` typedefs keep it.
+- Twelve `default*` public top-level constants take a `k` prefix. The migration guide lists each one.
+- `WeekNumberStyle.visualDensity` is replaced by `Size? buttonSize`, matching `MonthDayHeaderStyle.buttonSize`.
 
 ### Bug Fixes
 
-- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. The last segment is whatever is left of the `TimeOfDayRange`, so it is shorter than the rest unless the range divides evenly by the segment length, and its label was drawn near the top of the timeline. A range of 09:00 to 18:00 showed 18:00 above 10:00. The hour lines were already positioned this way and did not move. `TimeOfDayRange.allDay` divides evenly, which is why the default range was unaffected.
-- The free scroll band no longer draws a day past the end of its display range. It rounded the range end up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day, which includes the default range and any range written the usual way. A range ending part way through a day is unaffected.
+- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. A constrained range such as 09:00 to 18:00 drew 18:00 above 10:00. The all-day default was unaffected.
+- The free scroll band no longer draws a day past the end of its display range. Any range ending at midnight gained a day, which includes the default.
 
 ### Behavior Changes
 
-- `MultiDayViewConfiguration.type` takes part in `==` and `hashCode`. Two configurations of different view types over the same range compared equal where the view type was the only difference between them.
-- A drop in the schedule view keeps the event's time of day. It took the time of day from the target day, so a 09:00 meeting dragged to another day landed at midnight. The multi-day header already kept it, and the schedule now uses the same path.
+- `MultiDayViewConfiguration.type` is included in `==` and `hashCode`.
+- A drop in the schedule view keeps the event's time of day, where it previously landed at midnight.
 
 ### Features
 
-- `ResizeHandleStyle` sizes the area `DefaultResizeHandles` gives each handle, through `KalenderThemeData.resizeHandleStyle`. `length` covers precise input and `impreciseLength` covers a finger, defaulting to 16 and 24, the values the layout hardcoded. The handle widgets themselves still come from `TileComponents.verticalResizeHandle` and `horizontalResizeHandle`. Changing the length no longer means writing a `resizeHandlePositioner`.
+- `ResizeHandleStyle` sizes the resize handles through `KalenderThemeData.resizeHandleStyle`, with `length` for precise input and `impreciseLength` for a finger.
 
 ## 0.27.0
 
@@ -31,30 +31,30 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 
 ### Breaking Changes
 
-- `TimeOfDayRange.isAllDay` is removed, as its 0.26.0 deprecation message named. Use `coversWholeDay`. `TimeOfDayRange.allDay()` is unaffected.
-- The multi-day body builders take a `BuildContext` as their first argument and no longer take a style: `hourLines`, `timeline`, `timelineWidth`, `daySeparator` and `timeIndicator`. Resolve appearance with `KalenderTheme.of(context)`, and the timeline's own style with `GutterStyles.timelineStyleOf(context)`, the value the gutter width is measured from.
-- Those five fields are nullable and default to `null`, which selects the package default. `MultiDayBodyComponents` gained a `buildX` method per field that applies the override or the default.
-- `builder` and `fromContext` are removed from `TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator`. Construct the widget, or call the matching `MultiDayBodyComponents.buildX`.
+- `TimeOfDayRange.isAllDay` is removed, as its 0.26.0 deprecation named. Use `coversWholeDay`. `TimeOfDayRange.allDay()` is unaffected.
+- The multi-day body builders take a `BuildContext` first and no longer take a style: `hourLines`, `timeline`, `timelineWidth`, `daySeparator` and `timeIndicator`.
+- Those five fields are nullable and default to `null`. `MultiDayBodyComponents` gained a `buildX` method per field.
+- `builder` and `fromContext` are removed from `TimeLine`, `HourLines`, `DaySeparator` and `TimeIndicator`.
 - `defaultTimelineWidth` no longer takes a `TimelineStyle`. It resolves one from the context.
-- The multi-day header and month builders take a `BuildContext` as their first argument and no longer take a style: `dayHeaderBuilder`, `weekNumberBuilder`, `weekDayHeaderBuilder`, `monthDayHeaderBuilder`, `monthGridBuilder` and `monthDayCellBuilder`. Resolve the style with `KalenderTheme.of(context)`.
+- The multi-day header and month builders take a `BuildContext` first and no longer take a style: `dayHeaderBuilder`, `weekNumberBuilder`, `weekDayHeaderBuilder`, `monthDayHeaderBuilder`, `monthGridBuilder` and `monthDayCellBuilder`.
 - Those fields are nullable and default to `null`. `MultiDayHeaderComponents`, `MonthHeaderComponents` and `MonthBodyComponents` gained a `buildX` method per field.
 - `builder` and `fromContext` are removed from `DayHeader`, `WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`. `MonthDayCell.shadeAdjacentMonths` stays.
-- The schedule builders take a `BuildContext` as their first argument: `leadingDateBuilder`, `scheduleTileHighlightBuilder`, `emptyItemBuilder` and `monthItemBuilder`. The first two also lost their style parameter and are nullable, and `ScheduleComponents` gained `buildLeadingDate` and `buildScheduleTileHighlight`. `ScheduleDate.builder` and `ScheduleTileHighlight.builder` are removed.
-- The tile builders take a `BuildContext` as their first argument: `tileBuilder`, `overlayTileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder` and `dropTargetTile`, along with `defaultTileBuilder` and the other three `default*` functions.
-- `ResizeHandlePositioner` takes a `BuildContext` and a `ResizeHandleDetails` and returns a `Widget`. It was the only builder that required subclassing an abstract class, so `ResizeHandles` is removed and its six values and seven helpers move to `ResizeHandleDetails`.
-- `ResizeHandles.startResizeDraggableKey` and `endResizeDraggableKey` move to `ResizeDetector`, the widget they key. Both key strings named `DayEventTile` whatever the tile actually was, and now name the detector.
-- `ResizeHandleDetails.resizeHandle` resolves the handle widgets from the context rather than from a `tileComponents` field, and its axis is optional, defaulting to the one being resized. `showStart`, `showEnd`, `continuesBefore`, `continuesAfter`, `isVertical`, `eventInteraction`, `startResizeDetector` and `endResizeDetector` are otherwise unchanged.
-- `ResizeHandles.builder` is replaced by `TileComponents.buildResizeHandles`, which takes the details rather than seven positional arguments and returns a `Widget`. `DefaultResizeHandles` takes a `ResizeHandleDetails`.
-- The trigger builders take a `BuildContext` as their first argument: `HorizontalTriggerWidgetBuilder` and `VerticalTriggerWidgetBuilder`, which covers `leftTriggerBuilder`, `rightTriggerBuilder`, `topTriggerBuilder` and `bottomTriggerBuilder` on every components class.
-- The overlay builders take a `BuildContext` as their first positional argument, ahead of their named parameters: `multiDayOverlayBuilder`, `multiDayOverlayPortalBuilder`, `multiDayPortalOverlayButtonBuilder` and `MultiDayOverlayEventTileBuilder`. `MultiDayOverlayBuilder` drops `style` and `MultiDayOverlayPortalBuilder` drops `overlayStyles`. Resolve either with `KalenderTheme.of(context)`.
-- `OverlayStyles` is removed. `MultiDayOverlayPortalBuilder` was the only signature that named it, so once that parameter went the class had no entry point left. Read the two styles off `KalenderTheme.of(context)`.
+- The schedule builders take a `BuildContext` first: `leadingDateBuilder`, `scheduleTileHighlightBuilder`, `emptyItemBuilder` and `monthItemBuilder`. `ScheduleComponents` gained `buildLeadingDate` and `buildScheduleTileHighlight`, and `ScheduleDate.builder` and `ScheduleTileHighlight.builder` are removed.
+- The tile builders take a `BuildContext` first: `tileBuilder`, `overlayTileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder` and `dropTargetTile`, along with the four `default*` functions.
+- `ResizeHandlePositioner` takes a `BuildContext` and a `ResizeHandleDetails` and returns a `Widget`. `ResizeHandles` is removed, its six values and seven helpers moving to `ResizeHandleDetails`.
+- `ResizeHandles.startResizeDraggableKey` and `endResizeDraggableKey` move to `ResizeDetector`, the widget they key.
+- `ResizeHandleDetails.resizeHandle` resolves the handle widgets from the context rather than from a `tileComponents` field, and its axis is optional.
+- `ResizeHandles.builder` is replaced by `TileComponents.buildResizeHandles`. `DefaultResizeHandles` takes a `ResizeHandleDetails`.
+- The trigger builders take a `BuildContext` first: `HorizontalTriggerWidgetBuilder` and `VerticalTriggerWidgetBuilder`, covering `leftTriggerBuilder`, `rightTriggerBuilder`, `topTriggerBuilder` and `bottomTriggerBuilder`.
+- The overlay builders take a `BuildContext` as their first positional argument: `multiDayOverlayBuilder`, `multiDayOverlayPortalBuilder`, `multiDayPortalOverlayButtonBuilder` and `MultiDayOverlayEventTileBuilder`. The first two drop their style parameter.
+- `OverlayStyles` is removed. Read the two styles off `KalenderTheme.of(context)`.
 
 ### Features
 
-- The month week number gutter publishes the style it measures with, including its top alignment, to the scope it draws in. A custom `weekNumberBuilder` reads the month's value with `KalenderTheme.of(context)` where it previously had to be handed one.
-- `MultiDayEventOverlayTile` is exported. `MultiDayOverlayEventTileBuilder` returns it, and the class was not reachable, so the typedef was public but could not be implemented.
-- `ResizeDetector` is exported, the draggable that wraps the handle widget an app supplies. It was already reachable as the return of `ResizeHandleDetails.startResizeDetector` with no way to name it. It carries `event` and `direction`, so a handle is findable with `find.byType` and a predicate rather than only by key. It was named `ResizeHandle` while it was internal, which collides with the obvious name for the widget an app puts in `TileComponents.verticalResizeHandle`.
-- `GutterStyles` is public, with `GutterStyles.timelineStyleOf`. A custom `timeline` or `timelineWidth` builder resolves the style the gutter is measured from, which a `KalenderTheme` scoped inside the calendar cannot move. A custom `weekNumberBuilder` reads `KalenderTheme.of(context).weekNumberStyle` instead, which is the month's own value inside the month gutter.
+- The month week number gutter publishes the style it measures with to the scope it draws in, so a custom `weekNumberBuilder` reads it with `KalenderTheme.of(context)`.
+- `MultiDayEventOverlayTile` is exported, so `MultiDayOverlayEventTileBuilder` can be implemented.
+- `ResizeDetector` is exported. It carries `event` and `direction`, so a handle is findable with `find.byType` and a predicate rather than only by key.
+- `GutterStyles` is public, with `GutterStyles.timelineStyleOf`, which resolves the style the gutter is measured from.
 
 ## 0.26.0
 
@@ -62,54 +62,54 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 
 ### Breaking Changes
 
-- The style fields on `CalendarComponents` are removed, as their 0.25.0 deprecation named: `monthComponentStyles`, `multiDayComponentStyles`, `scheduleComponentStyles` and `overlayStyles`, along with their constructor and `copyWith` parameters and their places in `==` and `hashCode`. Use `KalenderThemeData`, or `KalenderTheme` to scope it to one calendar. The builder fields stay.
-- The seven style container classes those fields reached go with them: `MonthComponentStyles`, `MonthBodyComponentStyles`, `MonthHeaderComponentStyles`, `MultiDayComponentStyles`, `MultiDayBodyComponentStyles`, `MultiDayHeaderComponentStyles` and `ScheduleComponentStyles`. `OverlayStyles` stays, since `MultiDayOverlayPortalBuilder` names it.
-- `eventLayoutStrategy`, `generateMultiDayLayoutFrame` and `eventSnapStrategy` are classes rather than function typedefs, each with value equality and named factories for the built-ins: `EventLayoutStrategy.overlap()` and `.sideBySide()`, `MultiDayLayoutStrategy.byDuration()`, and `EventSnapStrategy.interval()`. A function cannot be deprecated into a class, so there is no window. [#380](https://github.com/werner-scholtz/kalender/issues/380)
-- `HorizontalConfiguration.generateMultiDayLayoutFrame` is renamed to `multiDayLayoutStrategy` and is no longer nullable. It defaults to `MultiDayLayoutStrategy.byDuration()`, which `null` selected before.
-- `CalendarEvent.copyWith` is removed. Override `copyWithData` instead and rebuild only what your subclass adds. The calendar calls `withDateTimeRange`, which applies that hook and then restores `id`, `interaction`, `multiDayRule` and `isAllDay` through `carryOver`. A missing hook is reported by `@mustBeOverridden` at analysis time and by a debug assert on the first drag. Your own `copyWith` is no longer an override, so it can take whatever parameters suit you.
-- `CalendarEvent.interaction` and `CalendarEvent.multiDayRule` are getters rather than fields. Reading either is unchanged, and neither was assignable before.
-- `HourLines.fromContext` no longer takes a `style` argument. It resolved the style from the theme and discarded what was passed. `timelineStyle` is unaffected.
+- The style fields on `CalendarComponents` are removed, as their 0.25.0 deprecation named: `monthComponentStyles`, `multiDayComponentStyles`, `scheduleComponentStyles` and `overlayStyles`. Use `KalenderThemeData`, or `KalenderTheme` to scope it to one calendar.
+- The seven style container classes those fields reached go with them: `MonthComponentStyles`, `MonthBodyComponentStyles`, `MonthHeaderComponentStyles`, `MultiDayComponentStyles`, `MultiDayBodyComponentStyles`, `MultiDayHeaderComponentStyles` and `ScheduleComponentStyles`. `OverlayStyles` stays.
+- `eventLayoutStrategy`, `generateMultiDayLayoutFrame` and `eventSnapStrategy` are classes rather than function typedefs, each with value equality and named factories for the built-ins: `EventLayoutStrategy.overlap()` and `.sideBySide()`, `MultiDayLayoutStrategy.byDuration()`, and `EventSnapStrategy.interval()`. [#380](https://github.com/werner-scholtz/kalender/issues/380)
+- `HorizontalConfiguration.generateMultiDayLayoutFrame` is renamed to `multiDayLayoutStrategy` and defaults to `MultiDayLayoutStrategy.byDuration()`.
+- `CalendarEvent.copyWith` is removed. Override `copyWithData` instead.
+- `CalendarEvent.interaction` and `CalendarEvent.multiDayRule` are getters rather than fields.
+- `HourLines.fromContext` no longer takes a `style` argument.
 
 ### Behavior Changes
 
-- A custom component builder receives the theme-resolved style rather than an empty one, so `style?.textStyle ?? myFallback` reaches the theme value where it used to reach the fallback. Read the fields you want to override rather than falling back on null. This affects `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`.
-- `MultiDayOverlayPortalBuilder` receives a populated `OverlayStyles`, built by the new `OverlayStyles.fromContext`.
-- `KalenderThemeData.weekNumberStyle.alignment` reaches the month week number, which ignored it before. The month still sits at the top by default, so only a calendar that set a non-default alignment moves. [#423](https://github.com/werner-scholtz/kalender/pull/423)
+- A custom component builder receives the theme-resolved style rather than an empty one, so `style?.textStyle ?? myFallback` reaches the theme value: `dayHeaderBuilder`, `daySeparator`, `hourLines`, `monthDayHeaderBuilder`, `monthGridBuilder`, `timeIndicator`, `timeline`, `weekDayHeaderBuilder`, `weekNumberBuilder` and `leadingDateBuilder`.
+- `MultiDayOverlayPortalBuilder` receives a populated `OverlayStyles`, built by `OverlayStyles.fromContext`.
+- `KalenderThemeData.weekNumberStyle.alignment` reaches the month week number, which ignored it before. [#423](https://github.com/werner-scholtz/kalender/pull/423)
 - A custom `weekNumberBuilder` receives the same resolved style in the month header as in the month body. [#423](https://github.com/werner-scholtz/kalender/pull/423)
 
 ### Features
 
-- `CalendarEvent.isAllDay` places an event in the multi-day header lane whatever its duration, with no `MultiDayRule` consulted. It defaults to false, leaves the date range untouched, is carried across drags and resizes by `carryOver`, and takes part in `layoutEquals` and `hashCode`.
-- `PageIndexCalculator` and its subclasses are exported. `ViewConfiguration.pageIndexCalculator` returns the type, which an app had no way to name. [#444](https://github.com/werner-scholtz/kalender/issues/444)
+- `CalendarEvent.isAllDay` places an event in the multi-day header lane whatever its duration, with no `MultiDayRule` consulted. It defaults to false and is included in `layoutEquals` and `hashCode`.
+- `PageIndexCalculator` and its subclasses are exported. [#444](https://github.com/werner-scholtz/kalender/issues/444)
 - `EventSnapStrategy.none()` leaves a dragged event where the cursor is.
-- `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in.
+- `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment.
 - `meta` is a direct dependency at `^1.9.0`, the version that introduced `@mustBeOverridden`.
 
 ### Deprecations
 
-- `TimeOfDayRange.isAllDay` is renamed to `coversWholeDay` and will be removed in 0.27.0. It reports whether the range runs from 00:00 to 23:59, and the old name is wanted for `CalendarEvent.isAllDay`. `TimeOfDayRange.allDay()` is unchanged.
+- `TimeOfDayRange.isAllDay` is renamed to `coversWholeDay` and will be removed in 0.27.0. `TimeOfDayRange.allDay()` is unchanged.
 
 ### Fixes
 
-- `MultiDayViewConfiguration.week` and `.workWeek` honour `numberOfDays`. Both built their page index calculator with a hardcoded 7 and 5, so the body laid out `numberOfDays` columns under a header showing a full week, and every column sat out of line with its header. Both take 1 through 7, which shortens the page and leaves the weekly pagination alone. `copyWith` carries the value, where it reset it to the default before. [#444](https://github.com/werner-scholtz/kalender/issues/444)
-- The month week number gutter and the multi-day timeline are measured once above both the header and the body, so the two halves cannot be given different widths. A `KalenderTheme` scoped to one half moved it and left the other behind, which put every day column out of line with its header. A scoped `weekNumberStyle` or `timelineStyle` the calendar has to ignore is now reported in debug builds.
-- The week number label is centred when the visible range crosses a week boundary. The gutter is sized by the timeline rather than by the label, so `32 - 33` wraps and the short second line sat against the leading edge. [#427](https://github.com/werner-scholtz/kalender/pull/427)
+- `MultiDayViewConfiguration.week` and `.workWeek` honour `numberOfDays`. Both built their page index calculator with a hardcoded 7 and 5, so every column sat out of line with its header. `copyWith` carries the value. [#444](https://github.com/werner-scholtz/kalender/issues/444)
+- The month week number gutter and the multi-day timeline are measured once above both the header and the body, so the two halves cannot be given different widths. A scoped `weekNumberStyle` or `timelineStyle` the calendar has to ignore is reported in debug builds.
+- The week number label is centred when the visible range crosses a week boundary. [#427](https://github.com/werner-scholtz/kalender/pull/427)
 - A custom `multiDayOverlayBuilder` or `multiDayPortalOverlayButtonBuilder` receives the style resolved from the theme.
-- The overlay styles are resolved once, where a custom overlay builder needs them, rather than at four call sites in the header and the month body. `MultiDayOverlayPortal.overlayStyles` is optional, where null leaves each overlay widget to resolve its own.
-- The Material defaults are built once per `ThemeData` rather than on every `KalenderTheme.of` call, which runs on nearly every widget build. The cache is keyed weakly on the theme.
+- The overlay styles are resolved once rather than at four call sites. `MultiDayOverlayPortal.overlayStyles` is optional.
+- The Material defaults are built once per `ThemeData` rather than on every `KalenderTheme.of` call. The cache is keyed weakly on the theme.
 - A schedule row resolves the theme only when it reads one of the two styles that need it.
-- `MultiDayBodyConfiguration.keepPagesAlive` takes part in `==` and `hashCode`, so changing only that value reaches the calendar.
-- `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` no longer compare equal to each other, and the same for the two `VerticalConfiguration` subclasses. The base `==` tested only `other is HorizontalConfiguration` with no runtime type check.
-- `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it already took part in `==`.
+- `MultiDayBodyConfiguration.keepPagesAlive` is included in `==` and `hashCode`.
+- `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` no longer compare equal to each other, and the same for the two `VerticalConfiguration` subclasses.
+- `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it was already included in `==`.
 
 ### Tests
 
-- Added coverage for the copy contract: a moved event keeps the identity, interaction and rule its subclass never mentions, the copy is the subclass's own type, a subclass with no hook is named by the assert, and the events controller still finds a dragged event by its id.
-- Added coverage for `multiDayOverlayPortalBuilder`, which had none, across the `Overlay` boundary it is built into.
-- Added coverage that a `KalenderTheme` scoped to the body cannot move the month week number gutter or the multi-day timeline away from what the header reserves, and that an ignored scoped value is reported once rather than on every frame.
+- Added coverage for the copy contract: identity and rules survive a move, the copy is the subclass's own type, and a missing hook is named by the assert.
+- Added coverage for `multiDayOverlayPortalBuilder`, across the `Overlay` boundary it is built into.
+- Added coverage that a `KalenderTheme` scoped to the body cannot move the month week number gutter or the multi-day timeline, and that an ignored scoped value is reported once.
 - Added coverage that the drag target's gutter spacer matches the drawn gutter and that the timeline labels fit the box measured for them.
 - Added equality coverage for the three strategy classes.
-- Added coverage for a shortened week: the page length, that the pagination stays weekly, that `copyWith` carries the value, and that the header renders that many day headers.
+- Added coverage for a shortened week: page length, weekly pagination, `copyWith`, and the header's day count.
 
 ## 0.25.0
 
@@ -173,7 +173,7 @@ See [MIGRATION.md](MIGRATION.md#v023x--v0240) for what to change.
 ### Fixes
 
 - View configurations built with the same arguments compare equal, so a rebuild no longer recreates the view controller and its layout caches. `PageIndexCalculator` and `ScheduleViewConfiguration` had no `==`. At 50 events a day, five rebuilds went from 105 vertical layout computations to none. [#404](https://github.com/werner-scholtz/kalender/pull/404)
-- `ViewConfiguration.nowCallback` takes part in `==`. Pass a top-level or static function. [#404](https://github.com/werner-scholtz/kalender/pull/404)
+- `ViewConfiguration.nowCallback` is included in `==`. Pass a top-level or static function. [#404](https://github.com/werner-scholtz/kalender/pull/404)
 - `CalendarView` attaches to a replaced `calendarController` instead of staying on the old one. [#404](https://github.com/werner-scholtz/kalender/pull/404)
 - `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four fields were missing, so changing only one of them never updated the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
 - `CalendarSnapping` compares and copies `eventSnapStrategy`. Changing only the strategy had no effect, and `copyWith` reset it to `defaultSnapStrategy`. Pass a top-level or static function. [#402](https://github.com/werner-scholtz/kalender/pull/402)

@@ -848,7 +848,7 @@ CalendarEvent(
 )
 ```
 
-`CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it.
+`CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It is included in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it.
 
 `copyWith` takes no `multiDayRule` parameter, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. A subclass has to forward it:
 

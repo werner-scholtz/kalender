@@ -289,7 +289,7 @@ before tagging it:
   reached went in 0.26.0. `grep -rn "@Deprecated" lib/` is the check. See
   [Verifying a removal](#verifying-a-removal).
 - **Function fields compared with `==`.** `ViewConfiguration.nowCallback` is the
-  one left. It takes part in equality, so a closure written inline is a new
+  one left. It is included in equality, so a closure written inline is a new
   function every build and defeats the caching the comparison exists to enable.
   It stays a function because it takes no arguments and has nothing to model, and
   its place in `==` is what makes a change reach the calendar at all. Documented
