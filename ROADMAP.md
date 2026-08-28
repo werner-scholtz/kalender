@@ -116,7 +116,7 @@ The default for each builder moves off the widget and onto the components class 
 
 **The tile key factories are unreachable.** Ten of the package's twenty-three `static Key` factories sit on classes nothing exports, so `DayEventTile.tileKey` and its siblings are internal test helpers named as though they were public. Settled in 0.28.0 below as internal, since a widget carrying its own identifying fields is findable without one. Flutter's answer is worth recording: the framework publishes no key factories at all, and its own tests use `find.byType` over `find.byKey` roughly three to one.
 
-### 0.28.0, the next breaking window, previewed in 0.28.0-dev.1
+### 0.28.0, the next breaking window, done
 
 The breaking changes with nowhere cheaper to go. None has a deprecation path that costs less than doing it in a release that already breaks, so they wait for the next such release rather than for 1.0.0. Batching them is the point: a break that lands on its own costs a migration entry and a minor version for one item.
 
