@@ -154,7 +154,13 @@ Today `calendar_provider.dart` holds five `InheritedWidget`s, `EventsControllerP
 
 Exporting the five is the obvious move and is rejected. It makes the tree shape public, so apps come to depend on which provider sits where, on each one existing, and on inserting their own between them. That cannot be walked back after 1.0.0. `GutterStyles` is the standing example of the cost: it went public in 0.27.0 and now the guide and a debug report both exist to explain where it must sit.
 
+The accessors live on `CalendarScope`, as `CalendarScope.localeOf(context)` and one per value. The internal `context.locale` style extension getters stay internal: they cannot carry an aspect, so they would rebuild on everything.
+
 The shape is `MediaQuery`. It is an `InheritedModel` over a **private** aspect enum, and its public surface is about forty static accessors, `sizeOf`, `paddingOf`, `textScalerOf`, each with a `maybeXOf` twin. A widget reading the size does not rebuild when the padding changes. Kalender takes the same form: one widget over the five providers, a private aspect enum, and one accessor per value. The tree stays free to change, rebuilds stay narrow, and the granularity itself is not public, so aspects can be added or removed without a break.
+
+The providers do not all collapse. Eleven exist, and only five are calendar-wide: the events controller, the calendar controller, the locale, the location and the gutter styles. The other six are inserted again in `CalendarBody` and `CalendarHeader` and are meant to be. `CalendarBody.build` reads `_callbacks ?? context.callbacks`, so the body overrides the view's callbacks and falls back to them, and interaction works the same way. `TileComponents` differs per half and per view type. Collapsing those into one value would remove a documented feature.
+
+So the model carries the five, the other six stay scoped widgets, and both sit behind one set of accessors. That makes one rule true everywhere: an accessor reads the nearest value. The five simply only ever have one instance. An app never learns which is which, and the gutter becomes the only place in the package where the rule does not hold.
 
 **`CalendarView.locale` becomes `Locale`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo compile and fail at runtime. `Locale` is `dart:ui` rather than Material, it carries value equality, and an app holding `Localizations.localeOf(context)` has one already. `Intl.canonicalizedLocale` rewrites the separator, so `toLanguageTag`'s `en-US` and intl's `en_US` both resolve to the same data and no conversion rule is needed. intl's own `Locale` in `package:intl/locale.dart` is not used, since `DateFormat` does not accept it and it would put an intl type in the public API.
 
@@ -162,17 +168,28 @@ Nine declarations carry the type. Three are public: the field, `CalendarLocale.c
 
 **An intl4x example.** `examples/intl4x` supplies the six builders that answer with intl and renders the calendar through [intl4x](https://pub.dev/packages/intl4x) instead. Its test calls no `initializeDateFormatting`, so the default builders throw for `de` and the intl4x ones do not, which shows the substitution is complete rather than partial. Kalender keeps intl as its default, since a calendar with no localized names out of the box is a regression, and intl4x documents its API as still changing.
 
+**The gutter shares its measured width rather than its style.** `weekNumberStyle` and `timelineStyle` size the gutters, which are drawn in the body and reserved again in the header, so the calendar resolves them once above both. A `KalenderTheme` scoped inside either half is ignored for those two fields and honoured for every other one. 0.27.0 taught that a builder resolves its styles from the nearest scope, and these are the two places where that is untrue.
+
+The cause is that a layout value is derived from a themed value. `defaultTimelineWidth` measures every label the timeline can show in the resolved text style, and that measurement is the gutter's width, so changing a font changes a layout dimension. A layout dimension has to agree across the two halves, and a theme means the nearest one wins. Those three cannot all hold, and `GutterStyles` resolves it by suspending the third for two fields.
+
+The width has to be shared. The style does not. Today both are, which is what makes the exception larger than it needs to be. `CalendarView` computes the width once and publishes a `double`, the header spacer, the body gutter and the drag overlay read that number, and everything that paints resolves its style from `KalenderTheme.of(context)` at the nearest scope like every other style. A shared layout number needs no explanation, where a shared style collides with what theming means.
+
+That removes `GutterStyles` and `GutterStyles.timelineStyleOf` from the public API, deletes `debugCheckGutterStyleReaches`, and leaves gutter appearance in the theme extension where it interpolates with the rest. A scoped theme then restyles the labels without resizing the gutter, which is visible rather than silent. Measured against the repository, nothing exercises the case: across every example and guide the only gutter settings are an explicit `timelineWidth` returning 48 and a `WeekNumberStyle` tooltip.
+
+It also fixes two things that are not about theming. `buildTimelineWidth` runs at three sites below `CalendarView`, so the measurement, which lays out up to 24 text painters and 288 under a custom string builder, runs three times per build instead of once. And the body passes the real `timeOfDayRange` where the header and the drag overlay pass `TimeOfDayRange.allDay()`. `defaultTimelineWidth` ignores the parameter, so nothing breaks today, but a custom `timelineWidth` builder that read it would return different widths in the header and the body, which is the misalignment `GutterStyles` exists to prevent.
+
+The month comes along, which is what makes the rule true of the whole package rather than two thirds of it. Its gutter agrees today by a different mechanism: `MonthWeekNumberGutter` and `MonthWeekNumberSpacer` both wrap the week number in `KalenderTheme.of(context).copyWith(weekNumberStyle: shared)` and take the widget's intrinsic size, so they match because the same style is injected into both. That is the sharing being removed, so the month gets a `weekNumberWidth` builder alongside `timelineWidth` and a `defaultWeekNumberWidth` that measures the widest label the gutter can show, the way `defaultTimelineWidth` measures across the day. `WeekNumberStyle.buttonSize` landed in 0.28.0, so the inputs exist.
+
+`ScheduleViewConfiguration.leadingWidth` is already this design with the number given rather than measured, so the schedule needs no change and the three views end up saying one thing.
+
+Four of the nine tests in `gutter_style_scope_test.dart` describe the behaviour being removed and go with it. The four that check the gutter and the spacer measure alike, that a theme above the calendar reaches the gutter, that the drag target spacer matches, and that the labels fit are kept.
+
+
 ### The next breaking window
 
 Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
 
-**The gutter styles contradict the rule the rest of the theme follows.** `weekNumberStyle` and `timelineStyle` size the gutters, which are drawn in the body and reserved again in the header, so the calendar resolves them once above both. A `KalenderTheme` scoped inside either half is ignored for those two fields and honoured for every other one. 0.27.0 taught that a builder resolves its styles from the nearest scope, and these are the two places where that is untrue. The debug report added with `GutterStyles` covers the case rather than removing it.
-
-Flutter does not have this problem because it does not use an inherited widget when two siblings must agree on a measurement. `Table` takes `columnWidths` as a property and `CustomMultiChildLayout` computes in the parent. Every inherited widget Flutter ships honours the nearest scope.
-
-The direction is to stop offering a setting where it cannot work: take the two fields out of `KalenderThemeData` and give them one home that only exists above the header and the body. The trap then cannot be expressed and the debug report, the guide note and the assert all go.
-
-The cost is that gutter appearance leaves the theme extension, so an app theming through `ThemeData.extensions` has two places to look and the gutter no longer interpolates with the rest of the theme. That trade is not settled, so this has no release attached.
+**`CalendarView` may become `Kalender`.** The package is `kalender` and the widget an app places is `CalendarView`, which reads oddly next to `CalendarScope`. A pure rename, so it belongs in whichever release already breaks.
 
 ### Theming, still open
 
