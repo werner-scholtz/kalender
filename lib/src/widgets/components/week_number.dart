@@ -4,6 +4,29 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
+/// The width of the month's week number column.
+///
+/// The column is drawn in the month body and reserved again in the month header,
+/// so both read one number rather than each measuring what they build.
+typedef WeekNumberWidthBuilder = double Function(BuildContext context);
+
+/// The width [defaultWeekNumberWidth] returns when the style sets none.
+///
+/// Matches `kDefaultScheduleLeadingWidth`, the schedule's equivalent.
+const kDefaultWeekNumberWidth = 56.0;
+
+/// The default [WeekNumberWidthBuilder].
+///
+/// Returns the width of [WeekNumberStyle.buttonSize] plus its padding when the
+/// style sets one, and [kDefaultWeekNumberWidth] otherwise.
+double defaultWeekNumberWidth(BuildContext context) {
+  final style = KalenderTheme.of(context).weekNumberStyle ?? const WeekNumberStyle();
+  final buttonSize = style.buttonSize;
+  if (buttonSize == null) return kDefaultWeekNumberWidth;
+  final padding = style.padding ?? const EdgeInsets.symmetric(horizontal: 4);
+  return buttonSize.width + padding.horizontal;
+}
+
 /// The week number builder.
 ///
 /// The [visibleDateTimeRange] is the range of dates that the week number will be displayed for.

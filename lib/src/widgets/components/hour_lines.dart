@@ -10,7 +10,7 @@ import 'package:kalender/kalender.dart';
 /// The [timeOfDayRange] is the range of time that the hour lines will be displayed for.
 ///
 /// Resolve the line style with [KalenderTheme]. The number of lines follows the
-/// timeline's label size, which [GutterStyles.timelineStyleOf] resolves.
+/// timeline's label size, which [KalenderTheme] resolves.
 typedef HourLinesBuilder = Widget Function(
   BuildContext context,
   double heightPerMinute,

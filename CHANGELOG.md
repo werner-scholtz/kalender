@@ -1,3 +1,25 @@
+## 0.29.0
+
+See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.
+
+### Breaking Changes
+
+- `GutterStyles` and `GutterStyles.timelineStyleOf` are removed. Resolve every style, including `timelineStyle` and `weekNumberStyle`, with `KalenderTheme.of(context)`.
+
+### Behavior Changes
+
+- The gutters share the width the calendar measured rather than the style it measured from, so a `KalenderTheme` scoped inside the header or the body restyles a gutter without resizing it.
+- The month week number column has a fixed width. It sized itself to the widest label it drew, so the column changed width as you paged and the day columns moved with it.
+
+### Features
+
+- `MonthBodyComponents.weekNumberWidth` sets the width of the month week number column, with `defaultWeekNumberWidth` and `kDefaultWeekNumberWidth` as the default. It matches `MultiDayBodyComponents.timelineWidth`.
+
+### Fixes
+
+- The timeline gutter is measured once rather than at each of the three places that read it, so a measurement laying out up to 24 text painters no longer runs three times per build.
+- A custom `timelineWidth` builder receives one range rather than the view's range in the body and `TimeOfDayRange.allDay()` in the header and the drag overlay, which would have returned different widths for the two halves.
+
 ## 0.28.0
 
 See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.

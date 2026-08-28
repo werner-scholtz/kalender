@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/gutter_styles.dart';
+import 'package:kalender/src/models/providers/gutter_widths.dart';
 
 /// The widget used for the MultiDayHeader.
 ///
@@ -35,12 +35,9 @@ class MultiDayHeaderWidget extends StatelessWidget {
     if (override != null) {
       timelineWidth = override;
     } else {
-      final calendarComponents = context.components;
-      final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
-      final sharedStyle = GutterStyles.of(context).timelineStyle;
-      final scopedStyle = KalenderTheme.of(context).timelineStyle;
-      assert(debugCheckGutterStyleReaches(field: 'timelineStyle', shared: sharedStyle, scoped: scopedStyle));
-      timelineWidth = bodyComponents.buildTimelineWidth(context, TimeOfDayRange.allDay());
+      final bodyComponents = context.components.multiDayComponents.bodyComponents;
+      timelineWidth = GutterWidths.maybeOf(context)?.timeline ??
+          bodyComponents.buildTimelineWidth(context, TimeOfDayRange.allDay());
     }
 
     return _MultiDayHeaderWidget(

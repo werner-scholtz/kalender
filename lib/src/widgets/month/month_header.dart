@@ -21,7 +21,6 @@ class MonthHeader extends StatelessWidget {
     final viewController = calendarController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
-    final bodyComponents = calendarComponents.monthComponents.bodyComponents;
     final components = calendarComponents.monthComponents.headerComponents;
 
     return ValueListenableBuilder(
@@ -31,18 +30,11 @@ class MonthHeader extends StatelessWidget {
           debugPrint('Warning: The visibleDateTimeRange is null in MonthHeader.');
           return const SizedBox.shrink();
         }
-        final internalVisibleRange = InternalDateTimeRange.fromDateTimeRange(visibleDateTimeRange);
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
-        final numberOfRows = viewConfiguration.pageIndexCalculator.numberOfRowsForRange(internalVisibleRange);
 
         return Row(
           children: [
-            if (showWeekNumbers)
-              MonthWeekNumberSpacer(
-                visibleRange: internalVisibleRange,
-                numberOfRows: numberOfRows,
-                weekNumberBuilder: bodyComponents.buildWeekNumber,
-              ),
+            if (showWeekNumbers) const MonthWeekNumberSpacer(),
             Expanded(
               child: Row(
                 children: List<Widget>.generate(

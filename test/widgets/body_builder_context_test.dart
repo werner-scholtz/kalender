@@ -5,9 +5,7 @@ import 'package:kalender/kalender.dart';
 import '../utilities.dart';
 
 /// The multi-day body builders take a [BuildContext] and resolve their own
-/// styles from it. Appearance styles come from [KalenderTheme]. The timeline's
-/// style comes from [GutterStyles], the value the gutter width is measured from,
-/// which a scoped theme cannot move.
+/// styles from it, all of them from the nearest [KalenderTheme].
 void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -44,14 +42,14 @@ void main() {
     return CalendarComponents(multiDayComponents: MultiDayComponents(bodyComponents: components));
   }
 
-  testWidgets('a custom timeline resolves the measured gutter style from its context', (tester) async {
+  testWidgets('a custom timeline resolves the timeline style from its context', (tester) async {
     await pumpWeek(
       tester,
       theme: const KalenderThemeData(timelineStyle: TimelineStyle(width: 123)),
       components: bodyComponents(
         MultiDayBodyComponents(
           timeline: (context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) {
-            return Text('${GutterStyles.timelineStyleOf(context).width}', key: const ValueKey('timeline'));
+            return Text('${KalenderTheme.of(context).timelineStyle?.width}', key: const ValueKey('timeline'));
           },
         ),
       ),
