@@ -154,7 +154,15 @@ Today `calendar_provider.dart` holds five `InheritedWidget`s, `EventsControllerP
 
 Exporting the five is the obvious move and is rejected. It makes the tree shape public, so apps come to depend on which provider sits where, on each one existing, and on inserting their own between them. That cannot be walked back after 1.0.0. `GutterStyles` is the standing example of the cost: it went public in 0.27.0 and now the guide and a debug report both exist to explain where it must sit.
 
+The accessors live on `CalendarScope`, as `CalendarScope.localeOf(context)` and one per value. The internal `context.locale` style extension getters stay internal: they cannot carry an aspect, so they would rebuild on everything.
+
 The shape is `MediaQuery`. It is an `InheritedModel` over a **private** aspect enum, and its public surface is about forty static accessors, `sizeOf`, `paddingOf`, `textScalerOf`, each with a `maybeXOf` twin. A widget reading the size does not rebuild when the padding changes. Kalender takes the same form: one widget over the five providers, a private aspect enum, and one accessor per value. The tree stays free to change, rebuilds stay narrow, and the granularity itself is not public, so aspects can be added or removed without a break.
+
+The providers do not all collapse. Eleven exist, and only five are calendar-wide: the events controller, the calendar controller, the locale, the location and the gutter styles. The other six are inserted again in `CalendarBody` and `CalendarHeader` and are meant to be. `CalendarBody.build` reads `_callbacks ?? context.callbacks`, so the body overrides the view's callbacks and falls back to them, and interaction works the same way. `TileComponents` differs per half and per view type. Collapsing those into one value would remove a documented feature.
+
+So the model carries the five, the other six stay scoped widgets, and both sit behind one set of accessors. That makes one rule true everywhere: an accessor reads the nearest value. The five simply only ever have one instance. An app never learns which is which, and the gutter becomes the only place in the package where the rule does not hold.
+
+**`CalendarView` may become `Kalender` before 1.0.0.** Not scoped to a release. The package is `kalender` and the widget an app places is `CalendarView`, which reads oddly next to `CalendarScope`. A pure rename, so it belongs in whichever release already breaks.
 
 **`CalendarView.locale` becomes `Locale`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo compile and fail at runtime. `Locale` is `dart:ui` rather than Material, it carries value equality, and an app holding `Localizations.localeOf(context)` has one already. `Intl.canonicalizedLocale` rewrites the separator, so `toLanguageTag`'s `en-US` and intl's `en_US` both resolve to the same data and no conversion rule is needed. intl's own `Locale` in `package:intl/locale.dart` is not used, since `DateFormat` does not accept it and it would put an intl type in the public API.
 
