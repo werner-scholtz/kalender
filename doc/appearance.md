@@ -276,7 +276,7 @@ KalenderTheme(
   data: const KalenderThemeData(
     hourLinesStyle: HourLinesStyle(thickness: 2),
   ),
-  child: CalendarView(
+  child: KalenderView(
     eventsController: DefaultEventsController(),
     calendarController: CalendarController(),
     viewConfiguration: MultiDayViewConfiguration.week(),
@@ -332,7 +332,7 @@ KalenderThemeData(
 
 ## Appearance / Custom Components
 
-Pass a `CalendarComponents` object to `CalendarView` to override the default widget builders.
+Pass a `CalendarComponents` object to `KalenderView` to override the default widget builders.
 
 > [!NOTE]
 > `CalendarComponents` carries builders only. Styles live on `KalenderThemeData`:

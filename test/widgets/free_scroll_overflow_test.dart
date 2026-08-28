@@ -27,7 +27,7 @@ void main() {
   Future<void> pumpFreeScroll(WidgetTester tester) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(

@@ -60,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
     final selected = ref.watch(selectedViewProvider);
 
     return Scaffold(
-      body: CalendarView(
+      body: KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: selected,

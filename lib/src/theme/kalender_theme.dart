@@ -369,7 +369,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
 /// ```dart
 /// KalenderTheme(
 ///   data: const KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 2)),
-///   child: CalendarView(...),
+///   child: KalenderView(...),
 /// )
 /// ```
 ///

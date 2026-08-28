@@ -6,7 +6,7 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 import '../utilities.dart';
 
 /// End-to-end regression coverage for the time indicator inside a real
-/// [CalendarView], targeting the manifestations reported in
+/// [KalenderView], targeting the manifestations reported in
 /// https://github.com/werner-scholtz/kalender/issues/261 (a follow-up to the
 /// `isSameDay` timezone bug in #254):
 ///
@@ -15,7 +15,7 @@ import '../utilities.dart';
 ///   * the indicator not showing up at all on the correct day.
 ///
 /// The isolated positioner widgets are already covered elsewhere; these tests
-/// exercise the layer users actually hit — a full `CalendarView` + `CalendarBody`
+/// exercise the layer users actually hit — a full `KalenderView` + `CalendarBody`
 /// where the real `TimeIndicator` is positioned by `TimeIndicatorPositioner`.
 ///
 /// A `nowCallback` fixes "today" so the assertions are deterministic regardless
@@ -41,7 +41,7 @@ void main() {
   ) =>
       pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: viewConfiguration,
@@ -49,7 +49,7 @@ void main() {
         ),
       );
 
-  group('TimeIndicator in CalendarView (#261)', () {
+  group('TimeIndicator in KalenderView (#261)', () {
     // For each weekday, "today" is fixed to that day at noon (well within the
     // default time-of-day range so the indicator is drawn). The indicator must
     // render exactly once and sit in that weekday's column — never on another.

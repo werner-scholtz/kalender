@@ -53,7 +53,7 @@ void main() {
 
         await pumpAndSettleWithMaterialApp(
           tester,
-          CalendarView(
+          KalenderView(
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: viewConfiguration,
@@ -87,7 +87,7 @@ void main() {
 
           final topLeft = tester.getTopLeft(overlayCard);
           final bottomRight = tester.getBottomRight(overlayCard);
-          final calendarRect = tester.getRect(find.byType(CalendarView));
+          final calendarRect = tester.getRect(find.byType(KalenderView));
 
           expect(topLeft.dx >= calendarRect.left && topLeft.dy >= calendarRect.top, isTrue);
           expect(bottomRight.dx <= calendarRect.right && bottomRight.dy <= calendarRect.bottom, isTrue);
@@ -153,7 +153,7 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: CalendarController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -173,7 +173,7 @@ void main() {
       final card = find.byKey(MultiDayOverlay.getOverlayCardKey(day));
       expect(card, findsOne);
 
-      return (card: tester.getRect(card), view: tester.getRect(find.byType(CalendarView)));
+      return (card: tester.getRect(card), view: tester.getRect(find.byType(KalenderView)));
     }
 
     // January 2025 lays out as 5 rows (Mon 30 Dec - Sun 2 Feb), so the 29th

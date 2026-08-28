@@ -43,7 +43,7 @@ class _MyCalendarState extends State<MyCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarView(
+    return KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.week(

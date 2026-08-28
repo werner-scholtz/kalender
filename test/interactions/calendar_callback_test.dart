@@ -39,7 +39,7 @@ void main() {
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(
@@ -61,7 +61,7 @@ void main() {
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -626,7 +626,7 @@ void main() {
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(
@@ -647,7 +647,7 @@ void main() {
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MonthViewConfiguration.singleMonth(

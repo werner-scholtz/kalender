@@ -89,7 +89,7 @@ void main() {
       ) =>
           pumpAndSettleWithMaterialApp(
             tester,
-            CalendarView(
+            KalenderView(
               eventsController: eventsController,
               calendarController: calendarController,
               viewConfiguration: viewConfiguration,
@@ -271,7 +271,7 @@ void main() {
       ) =>
           pumpAndSettleWithMaterialApp(
             tester,
-            CalendarView(
+            KalenderView(
               eventsController: eventsController,
               calendarController: calendarController,
               viewConfiguration: viewConfiguration,
@@ -365,7 +365,7 @@ void main() {
         testWidgets('Day Separator - ${viewConfiguration.name}', (tester) async {
           await pumpAndSettleWithMaterialApp(
             tester,
-            CalendarView(
+            KalenderView(
               eventsController: eventsController,
               calendarController: calendarController,
               viewConfiguration: viewConfiguration,

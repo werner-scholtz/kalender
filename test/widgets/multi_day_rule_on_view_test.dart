@@ -39,7 +39,7 @@ void main() {
   Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.week(

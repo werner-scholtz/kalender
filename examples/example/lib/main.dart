@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarView(
+      body: KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,

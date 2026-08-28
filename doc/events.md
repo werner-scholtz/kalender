@@ -111,7 +111,7 @@ TileComponents(
 
 Use `onEventCreate` to intercept the bare `CalendarEvent` created by a gesture and return a fully typed instance:
 
-Pass this as `CalendarView.callbacks`:
+Pass this as `KalenderView.callbacks`:
 
 <!-- snippet: expression -->
 ```dart

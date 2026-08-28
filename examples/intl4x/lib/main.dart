@@ -119,7 +119,7 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
             const SizedBox(width: 16),
           ],
         ),
-        body: CalendarView(
+        body: KalenderView(
           eventsController: _eventsController,
           calendarController: _calendarController,
           locale: _locale.toLanguageTag(),

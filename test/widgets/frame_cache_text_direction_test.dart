@@ -37,7 +37,7 @@ void main() {
   Widget build(TextDirection textDirection) {
     return Directionality(
       textDirection: textDirection,
-      child: CalendarView(
+      child: KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: configuration,

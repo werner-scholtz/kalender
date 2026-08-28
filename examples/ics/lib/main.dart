@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 8),
         ],
       ),
-      body: CalendarView(
+      body: KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/calendar_view.dart';
+import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/components/month_components.dart';
 import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/components/schedule_components.dart';
@@ -9,7 +9,7 @@ import 'package:kalender/src/widgets/components/multi_day_overlay.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.dart';
 
-/// A class holding the widget builders used by the [CalendarView].
+/// A class holding the widget builders used by the [KalenderView].
 ///
 /// Provide your own widgets with [multiDayComponents], [monthComponents] and
 /// [scheduleComponents]. Styling goes through [KalenderThemeData] for the whole

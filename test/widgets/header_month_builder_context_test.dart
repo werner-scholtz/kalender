@@ -23,7 +23,7 @@ void main() {
     CalendarComponents? components,
     KalenderThemeData? theme,
   }) async {
-    final view = CalendarView(
+    final view = KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: viewConfiguration,

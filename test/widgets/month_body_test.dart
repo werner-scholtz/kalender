@@ -42,7 +42,7 @@ void main() {
       CalendarComponents? components,
       KalenderThemeData? theme,
     }) {
-      final view = CalendarView(
+      final view = KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -178,7 +178,7 @@ void main() {
     testWidgets('renders a month when the displayRange spans a single month', (tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -350,7 +350,7 @@ void main() {
     // 0), which is the exact condition that used to produce the spurious buttons.
     //
     // Unlike the MultiDayEventLayoutWidget-level tests in
-    // test/layout/multi_day_event_layout_test.dart, these drive the full CalendarView
+    // test/layout/multi_day_event_layout_test.dart, these drive the full KalenderView
     // month path so MonthBody itself derives the max from the cell height.
     // ---------------------------------------------------------------------------
 
@@ -359,7 +359,7 @@ void main() {
 
     Future<void> pumpShortCellMonthView(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
           tester,
-          CalendarView(
+          KalenderView(
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -415,14 +415,14 @@ void main() {
     //
     // The generics were removed in 0.16.0, so the crash is structurally impossible.
     // These tests lock that in at the exact layer the reporter hit: a custom
-    // strategy wired through MonthBodyConfiguration in a full CalendarView month
+    // strategy wired through MonthBodyConfiguration in a full KalenderView month
     // view.
     group('custom multiDayLayoutStrategy (#235)', () {
       late _RecordingStrategy strategy;
 
       Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
             tester,
-            CalendarView(
+            KalenderView(
               eventsController: eventsController,
               calendarController: calendarController,
               viewConfiguration: MonthViewConfiguration.singleMonth(

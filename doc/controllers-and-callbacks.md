@@ -32,7 +32,7 @@ Convert with `InternalDateTimeRange.fromDateTimeRange(range)`.
 
 ### CalendarController
 
-[`CalendarController`](https://pub.dev/documentation/kalender/latest/kalender/CalendarController-class.html) drives a single `CalendarView` widget.
+[`CalendarController`](https://pub.dev/documentation/kalender/latest/kalender/CalendarController-class.html) drives a single `KalenderView` widget.
 
 **State notifiers:**
 
@@ -163,7 +163,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ],
         ),
         Expanded(
-          child: CalendarView(
+          child: KalenderView(
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: viewConfiguration,
@@ -187,7 +187,7 @@ The [basic example](../examples/example) has a fuller version of this toolbar.
 
 ## Callbacks
 
-Pass a `CalendarCallbacks` to `CalendarView` to react to user interactions.
+Pass a `CalendarCallbacks` to `KalenderView` to react to user interactions.
 
 <!-- snippet: expression -->
 ```dart

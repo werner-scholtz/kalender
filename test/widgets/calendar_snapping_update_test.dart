@@ -20,7 +20,7 @@ void main() {
   });
 
   Widget buildCalendar(CalendarSnapping snapping) {
-    return CalendarView(
+    return KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.week(

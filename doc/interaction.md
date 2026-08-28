@@ -120,4 +120,4 @@ class ZoomableCalendar extends StatelessWidget {
 }
 ```
 
-Wrap your `CalendarView` with this widget to enable Ctrl+scroll zooming.
+Wrap your `KalenderView` with this widget to enable Ctrl+scroll zooming.

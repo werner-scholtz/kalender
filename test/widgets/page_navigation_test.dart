@@ -29,7 +29,7 @@ void main() {
     Future<void> pump(WidgetTester tester, ViewConfiguration config) {
       return pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: config,

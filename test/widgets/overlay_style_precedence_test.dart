@@ -59,7 +59,7 @@ void main() {
     }) {
       // 29 Jan 2025 sits in the last row of a 5-row January.
       final eventsController = controllerWithOverflowOn(DateTime.utc(2025, 1, 29));
-      final view = CalendarView(
+      final view = KalenderView(
         eventsController: eventsController,
         calendarController: CalendarController(),
         viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -113,7 +113,7 @@ void main() {
       KalenderThemeData? theme,
     }) {
       final day = DateTime.utc(2025, 1, 15);
-      final view = CalendarView(
+      final view = KalenderView(
         eventsController: controllerWithOverflowOn(day),
         calendarController: CalendarController(),
         viewConfiguration: MultiDayViewConfiguration.week(

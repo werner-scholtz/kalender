@@ -41,7 +41,7 @@ class EventsControllerProvider extends InheritedWidget {
   }
 }
 
-/// The [CalendarControllerProvider] is used to provide the [CalendarController] to the [CalendarView]'s descendants.
+/// The [CalendarControllerProvider] is used to provide the [CalendarController] to the [KalenderView]'s descendants.
 class CalendarControllerProvider extends InheritedNotifier<CalendarController> {
   const CalendarControllerProvider({super.key, required super.notifier, required super.child});
 

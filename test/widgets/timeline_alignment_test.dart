@@ -29,7 +29,7 @@ void main() {
     TextDirection textDirection = TextDirection.ltr,
     dynamic locale,
   }) async {
-    final view = CalendarView(
+    final view = KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.week(

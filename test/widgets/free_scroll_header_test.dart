@@ -43,7 +43,7 @@ void main() {
     ]);
   }
 
-  Widget freeScrollView({DateTime? initialDate}) => CalendarView(
+  Widget freeScrollView({DateTime? initialDate}) => KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(

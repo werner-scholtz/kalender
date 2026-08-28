@@ -33,7 +33,7 @@ void main() {
       );
     }
 
-    final view = CalendarView(
+    final view = KalenderView(
       eventsController: eventsController,
       calendarController: CalendarController(),
       viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -257,7 +257,7 @@ void main() {
       final text = tester.widget<Text>(
         find.descendant(of: find.byKey(MultiDayOverlay.getOverlayCardKey(day)), matching: find.text('15')),
       );
-      final expected = Theme.of(tester.element(find.byType(CalendarView))).textTheme.bodyMedium;
+      final expected = Theme.of(tester.element(find.byType(KalenderView))).textTheme.bodyMedium;
       expect(text.style, expected, reason: 'the M3 default should reach the date');
     });
 

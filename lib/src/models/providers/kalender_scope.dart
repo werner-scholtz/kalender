@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-/// Reads the state of the [CalendarView] a widget is built inside.
+/// Reads the state of the [KalenderView] a widget is built inside.
 ///
 /// A custom component receives a [BuildContext] and reads what it needs from it,
 /// the way `MediaQuery.sizeOf` and `Theme.of` are read. Each accessor depends on
@@ -14,13 +14,13 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// [tileComponentsOf] can differ between the header and the body, since
 /// [CalendarHeader] and [CalendarBody] each take their own.
 ///
-/// The `of` form throws where there is no [CalendarView] above the context. The
+/// The `of` form throws where there is no [KalenderView] above the context. The
 /// `maybeOf` form returns null there instead.
 abstract final class KalenderScope {
   /// The [EventsController] driving the calendar.
   static EventsController eventsControllerOf(BuildContext context) => EventsControllerProvider.of(context);
 
-  /// The [EventsController] driving the calendar, or null outside a [CalendarView].
+  /// The [EventsController] driving the calendar, or null outside a [KalenderView].
   static EventsController? maybeEventsControllerOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<EventsControllerProvider>()?.eventsController;
   }
@@ -28,14 +28,14 @@ abstract final class KalenderScope {
   /// The [CalendarController] driving the calendar.
   static CalendarController calendarControllerOf(BuildContext context) => CalendarControllerProvider.of(context);
 
-  /// The [CalendarController] driving the calendar, or null outside a [CalendarView].
+  /// The [CalendarController] driving the calendar, or null outside a [KalenderView].
   static CalendarController? maybeCalendarControllerOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<CalendarControllerProvider>()?.notifier;
   }
 
   /// The locale the calendar formats its own dates and times with.
   ///
-  /// This is `CalendarView.locale`, which is not necessarily the app's locale.
+  /// This is `KalenderView.locale`, which is not necessarily the app's locale.
   /// Pass it to intl's `DateFormat` or `NumberFormat`, or to the localized
   /// extensions on [DateTime].
   static dynamic localeOf(BuildContext context) => LocaleProvider.of(context);

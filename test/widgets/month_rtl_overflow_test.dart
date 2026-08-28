@@ -77,7 +77,7 @@ void main() {
         tester,
         Directionality(
           textDirection: textDirection,
-          child: CalendarView(
+          child: KalenderView(
             eventsController: eventsController,
             calendarController: CalendarController(),
             viewConfiguration: MonthViewConfiguration.singleMonth(

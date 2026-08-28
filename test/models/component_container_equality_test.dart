@@ -111,7 +111,7 @@ void main() {
           home: StatefulBuilder(
             builder: (context, setState) {
               rebuild = setState;
-              return CalendarView(
+              return KalenderView(
                 eventsController: DefaultEventsController(),
                 calendarController: CalendarController(),
                 viewConfiguration: MultiDayViewConfiguration.week(),

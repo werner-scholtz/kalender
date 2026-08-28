@@ -18,7 +18,7 @@ void main() {
     calendarViewKey = GlobalKey();
   });
 
-  /// Helper to pump a CalendarView with the given config and optional body.
+  /// Helper to pump a KalenderView with the given config and optional body.
   Future<void> pumpCalendarView(
     WidgetTester tester, {
     required ViewConfiguration config,
@@ -26,7 +26,7 @@ void main() {
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         key: calendarViewKey,
         eventsController: eventsController,
         calendarController: calendarController,
@@ -669,7 +669,7 @@ void main() {
       final reported = <TimeOfDay>[];
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           key: calendarViewKey,
           eventsController: eventsController,
           calendarController: calendarController,
@@ -686,7 +686,7 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           key: calendarViewKey,
           eventsController: eventsController,
           calendarController: calendarController,

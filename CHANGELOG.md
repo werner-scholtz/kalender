@@ -11,6 +11,10 @@ See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.
 - The gutters share the width the calendar measured rather than the style it measured from, so a `KalenderTheme` scoped inside the header or the body restyles a gutter without resizing it.
 - The month week number column has a fixed width. It sized itself to the widest label it drew, so the column changed width as you paged and the day columns moved with it.
 
+### Deprecations
+
+- `CalendarView` is renamed to `KalenderView`, and `CalendarViewState` to `KalenderViewState`. The old names are typedefs to the new ones, so existing code compiles and builds the same widget, and will be removed in 0.30.0.
+
 ### Features
 
 - `KalenderScope` reads the state of the calendar a widget is built inside: `eventsControllerOf`, `calendarControllerOf`, `localeOf`, `locationOf`, `componentsOf`, `callbacksOf`, `interactionOf`, `snappingOf`, `tileComponentsOf`, `heightPerMinuteOf` and `multiDayRuleOf`, with `maybeOf` forms for the two controllers. Each accessor depends on one value, and every one returns the nearest, so a custom component in the header reads the header's interaction rather than the body's.

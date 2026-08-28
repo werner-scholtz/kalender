@@ -7,7 +7,7 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 import '../utilities.dart';
 
 /// The month week number column and the multi-day timeline are each drawn in the
-/// body and reserved again in the header. [CalendarView] measures each once and
+/// body and reserved again in the header. [KalenderView] measures each once and
 /// publishes the number, so the two halves cannot be given different widths.
 ///
 /// Only the width is shared. A scoped [KalenderTheme] restyles what is drawn,
@@ -30,7 +30,7 @@ void main() {
 
   /// A calendar whose body is scoped to [bodyTheme] while the header is not.
   Widget splitTheme(ViewConfiguration configuration, KalenderThemeData bodyTheme) {
-    return CalendarView(
+    return KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: configuration,
@@ -40,7 +40,7 @@ void main() {
   }
 
   Widget plain(ViewConfiguration configuration, {KalenderThemeData? theme}) {
-    final view = CalendarView(
+    final view = KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: configuration,
@@ -79,7 +79,7 @@ void main() {
     testWidgets('a width builder above the calendar reaches both halves', (tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: month(),
@@ -156,7 +156,7 @@ void main() {
       _timelineWidthCalls = 0;
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: week(),

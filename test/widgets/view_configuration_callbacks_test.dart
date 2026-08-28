@@ -27,7 +27,7 @@ void main() {
   });
 
   Widget build(ViewConfiguration configuration) {
-    return CalendarView(
+    return KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: configuration,

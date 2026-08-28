@@ -8,7 +8,7 @@ switch away from it. For what the user can do inside a view, see
 
 ## Switching between views
 
-Switch between views by passing a different `ViewConfiguration` to `CalendarView`. What carries over on a switch is controlled per dimension:
+Switch between views by passing a different `ViewConfiguration` to `KalenderView`. What carries over on a switch is controlled per dimension:
 
 - **Date** (all views): `dateTransition`. Use `DateTransition.carryFocus` (default, follows your current date) or `DateTransition.restorePerView` (each view reopens its own last date, matched by `name`).
 - **Scroll & zoom** (multi-day views): `scrollTransition` / `zoomTransition`. Use `preserve` (default), `reset`, or `restorePerView`.

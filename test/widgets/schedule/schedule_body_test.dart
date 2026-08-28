@@ -32,7 +32,7 @@ void main() {
         ),
       );
 
-  CalendarView buildSchedule({
+  KalenderView buildSchedule({
     EmptyDayBehavior emptyDay = EmptyDayBehavior.showOnlyToday,
     double leadingWidth = kDefaultScheduleLeadingWidth,
     NowCallback? nowCallback,
@@ -40,7 +40,7 @@ void main() {
     Location? location,
     CalendarComponents? components,
   }) {
-    return CalendarView(
+    return KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       location: location,

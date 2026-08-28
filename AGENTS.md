@@ -2,7 +2,7 @@
 
 ## Overview
 
-Kalender is a Flutter calendar widget package providing four views: **MultiDay** (day/week), **Month**, **Schedule**, and a generic **CalendarView** orchestrator. The library is pre-1.0 and actively developed.
+Kalender is a Flutter calendar widget package providing four views: **MultiDay** (day/week), **Month**, **Schedule**, and a generic **KalenderView** orchestrator. The library is pre-1.0 and actively developed.
 
 - **SDK constraints**: Dart `>=3.0.0 <4.0.0`, Flutter `>=3.22.0`
 - **Key dependencies**: `intl`, `timezone`, `collection`, `linked_pageview`, `scrollable_positioned_list`
@@ -26,7 +26,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/src/extensions/` | Internal DateTime/TimeOfDay utilities (DST-safe wall-clock arithmetic) |
 | `lib/src/calendar_body.dart` | Top-level body widget that delegates to the correct view |
 | `lib/src/calendar_header.dart` | Top-level header widget |
-| `lib/src/calendar_view.dart` | Main CalendarView orchestrator widget |
+| `lib/src/calendar_view.dart` | Main KalenderView orchestrator widget |
 | `test/` | Unit and widget tests (mirrors `lib/src/` structure) |
 | `test/utilities.dart` | Shared test helpers: `TestProvider`, `wrapWithMaterialApp`, `testWithTimeZones`, `WidgetTesterUtils` |
 | `doc/` | The user-facing guides, indexed by `doc/README.md` |

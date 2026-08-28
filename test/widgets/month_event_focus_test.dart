@@ -26,7 +26,7 @@ void main() {
 
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MonthViewConfiguration.singleMonth(

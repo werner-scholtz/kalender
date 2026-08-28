@@ -39,7 +39,7 @@ void main() {
       tester,
       KalenderTheme(
         data: const KalenderThemeData(daySeparatorStyle: DaySeparatorStyle(color: Color(0xFF00FF00))),
-        child: CalendarView(
+        child: KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(

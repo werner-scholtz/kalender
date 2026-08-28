@@ -64,7 +64,7 @@ void main() {
     );
 
     Widget build(MultiDayViewConfiguration configuration) {
-      return CalendarView(
+      return KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: configuration,
