@@ -146,17 +146,33 @@ What an app cannot reach comes to two things rather than ten: the drag or gestur
 
 **`FreeScrollFunctions` is removed, and removing it fixed a defect.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` is included in `==` and `hashCode` by the same change, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
 
+### 0.29.0, the state layer
+
+**The state layer becomes public, as one model rather than five widgets.** Composability's first piece, and the gate on [#215](https://github.com/werner-scholtz/kalender/issues/215), [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262), [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The coverage gate it waited on is met.
+
+Today `calendar_provider.dart` holds five `InheritedWidget`s, `EventsControllerProvider`, `CalendarControllerProvider`, `LocaleProvider`, `LocationProvider` and `TileComponentProvider`. The classes are public but the file is not exported, so no app can name one, and `CalendarView.build` nests them in a fixed order.
+
+Exporting the five is the obvious move and is rejected. It makes the tree shape public, so apps come to depend on which provider sits where, on each one existing, and on inserting their own between them. That cannot be walked back after 1.0.0. `GutterStyles` is the standing example of the cost: it went public in 0.27.0 and now the guide and a debug report both exist to explain where it must sit.
+
+The shape is `MediaQuery`. It is an `InheritedModel` over a **private** aspect enum, and its public surface is about forty static accessors, `sizeOf`, `paddingOf`, `textScalerOf`, each with a `maybeXOf` twin. A widget reading the size does not rebuild when the padding changes. Kalender takes the same form: one widget over the five providers, a private aspect enum, and one accessor per value. The tree stays free to change, rebuilds stay narrow, and the granularity itself is not public, so aspects can be added or removed without a break.
+
+**`CalendarView.locale` becomes `Locale`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo compile and fail at runtime. `Locale` is `dart:ui` rather than Material, it carries value equality, and an app holding `Localizations.localeOf(context)` has one already. `Intl.canonicalizedLocale` rewrites the separator, so `toLanguageTag`'s `en-US` and intl's `en_US` both resolve to the same data and no conversion rule is needed. intl's own `Locale` in `package:intl/locale.dart` is not used, since `DateFormat` does not accept it and it would put an intl type in the public API.
+
+Nine declarations carry the type. Three are public: the field, `CalendarLocale.calendarLocale` on `BuildContext`, and the optional parameter on the four `DateTimeExtensions` localized methods. It breaks anyone passing a `String`, and anyone assigning `calendarLocale` to a non-nullable `String`, since the implicit downcast a `dynamic` allowed becomes a compile error.
+
+**An intl4x example.** `examples/intl4x` supplies the six builders that answer with intl and renders the calendar through [intl4x](https://pub.dev/packages/intl4x) instead. Its test calls no `initializeDateFormatting`, so the default builders throw for `de` and the intl4x ones do not, which shows the substitution is complete rather than partial. Kalender keeps intl as its default, since a calendar with no localized names out of the box is a regression, and intl4x documents its API as still changing.
+
 ### The next breaking window
 
 Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
 
-**`CalendarView.locale` is typed `dynamic`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo or a wrong type compile and fail at runtime. intl typed this late: 0.20.2 still declared `DateFormat.EEEE([locale])` with no type and 0.20.3 declares `String? locale`. Kalender allows `>=0.19.0 <0.23.0`, which covers both, and a `String?` works against every version in that range.
+**The gutter styles contradict the rule the rest of the theme follows.** `weekNumberStyle` and `timelineStyle` size the gutters, which are drawn in the body and reserved again in the header, so the calendar resolves them once above both. A `KalenderTheme` scoped inside either half is ignored for those two fields and honoured for every other one. 0.27.0 taught that a builder resolves its styles from the nearest scope, and these are the two places where that is untrue. The debug report added with `GutterStyles` covers the case rather than removing it.
 
-Nine declarations carry the type. Three are public: the field, `CalendarLocale.calendarLocale` on `BuildContext`, and the optional parameter on the four `DateTimeExtensions` localized methods. The rest are `LocaleProvider` and its accessors.
+Flutter does not have this problem because it does not use an inherited widget when two siblings must agree on a measurement. `Table` takes `columnWidths` as a property and `CustomMultiChildLayout` computes in the parent. Every inherited widget Flutter ships honours the nearest scope.
 
-It breaks anyone passing something other than a `String`, and anyone assigning `calendarLocale` to a non-nullable `String`, since the implicit downcast a `dynamic` allowed becomes a compile error.
+The direction is to stop offering a setting where it cannot work: take the two fields out of `KalenderThemeData` and give them one home that only exists above the header and the body. The trap then cannot be expressed and the debug report, the guide note and the assert all go.
 
-One question comes first: `String?` or Flutter's `Locale`. `String?` is what intl takes and needs no conversion. `Locale` is the Flutter convention, but `toLanguageTag` produces `en-US` where intl's locale names use `en_US`, so it would need a stated conversion at the boundary.
+The cost is that gutter appearance leaves the theme extension, so an app theming through `ThemeData.extensions` has two places to look and the gutter no longer interpolates with the rest of the theme. That trade is not settled, so this has no release attached.
 
 ### Theming, still open
 

@@ -30,6 +30,7 @@ jobs:
           - recurrence
           - riverpod
           - ics
+          - intl4x
           - web_demo
           - testing
     steps:
