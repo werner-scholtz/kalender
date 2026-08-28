@@ -4,26 +4,26 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 
 ### Breaking Changes
 
-- `FreeScrollFunctions` is removed. It duplicated `DayIndexCalculator`, which `PageIndexCalculator.freeScroll` now returns. Name `DayIndexCalculator` where the removed class was named.
-- `CreateEventGesture` is renamed to `EventInteractionGesture`. The enum decides how an event is modified as well as created. The `createEventGesture` and `modifyEventGesture` fields on `CalendarInteraction` keep their names.
-- `OnEventTapped` and `OnEventTappedWithDetail` no longer take a `RenderBox`. `TapDetail.renderBox` carries the same object, so the parameter was a duplicate on the second and the only route to the box on the first. They are now `void Function(CalendarEvent event)` and `void Function(CalendarEvent event, TapDetail detail)`. This covers `onEventTapped`, `onEventTappedWithDetail`, `onEventSecondaryTapped` and `onEventSecondaryTappedWithDetail`.
-- `OnTappedWithDetails` is renamed to `OnTappedWithDetail` and `OnLongPressedWithDetails` to `OnLongPressedWithDetail`. The name now matches the detail type each carries, a single `TapDetail`. The fields that use them already had the singular name and are unchanged. `OnWillAcceptWithDetailsVertical` and `OnWillAcceptWithDetailsHorizontal` keep the plural, since they carry a `DragTargetDetails`.
-- The `default*` public top-level constants take a `k` prefix: `kDefaultTileHeight`, `kDefaultNewEventDuration`, `kDefaultShowMultiDayEvents`, `kDefaultEventLayoutStrategy`, `kDefaultMultiDayLayoutStrategy`, `kDefaultFirstDayOfWeek`, `kDefaultShowEventTiles`, `kDefaultInitialTimeOfDay`, `kDefaultHeightPerMinute`, `kDefaultHorizontalPadding`, `kDefaultMultiDayRule` and `kDefaultSnapStrategy`. Four already carried it, so the package spelled the same kind of constant two ways. The `default*` top-level functions and the `static const default*` members on `CalendarInteraction` and `CalendarSnapping` keep their names, since the prefix marks a top-level constant.
-- `WeekNumberStyle.visualDensity` is replaced by `Size? buttonSize`, which matches `MonthDayHeaderStyle.buttonSize`. The field's only effect was the button's size, and the two headers spelled that two ways. When null the button keeps its natural size, and it interpolates through `Size.lerp` where density switched at the midpoint. `MultiDayOverlayStyle.cardTheme` and `closeButtonStyle` stay as they are, since both pass through to a Flutter type whose merge and interpolation would otherwise be reimplemented.
+- `FreeScrollFunctions` is removed. Use `DayIndexCalculator`, which `PageIndexCalculator.freeScroll` returns.
+- `CreateEventGesture` is renamed to `EventInteractionGesture`. The `createEventGesture` and `modifyEventGesture` fields keep their names.
+- `OnEventTapped` and `OnEventTappedWithDetail` no longer take a `RenderBox`. Read it from `TapDetail.renderBox`.
+- `OnTappedWithDetails` and `OnLongPressedWithDetails` lose the plural. The two `OnWillAccept` typedefs keep it.
+- Twelve `default*` public top-level constants take a `k` prefix. The migration guide lists each one.
+- `WeekNumberStyle.visualDensity` is replaced by `Size? buttonSize`, matching `MonthDayHeaderStyle.buttonSize`.
 
 ### Bug Fixes
 
-- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. The last segment is whatever is left of the `TimeOfDayRange`, so it is shorter than the rest unless the range divides evenly by the segment length, and its label was drawn near the top of the timeline. A range of 09:00 to 18:00 showed 18:00 above 10:00. The hour lines were already positioned this way and did not move. `TimeOfDayRange.allDay` divides evenly, which is why the default range was unaffected.
-- The free scroll band no longer draws a day past the end of its display range. It rounded the range end up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day, which includes the default range and any range written the usual way. A range ending part way through a day is unaffected.
+- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. A constrained range such as 09:00 to 18:00 drew 18:00 above 10:00. The all-day default was unaffected.
+- The free scroll band no longer draws a day past the end of its display range. Any range ending at midnight gained a day, which includes the default.
 
 ### Behavior Changes
 
-- `MultiDayViewConfiguration.type` takes part in `==` and `hashCode`. Two configurations of different view types over the same range compared equal where the view type was the only difference between them.
-- A drop in the schedule view keeps the event's time of day. It took the time of day from the target day, so a 09:00 meeting dragged to another day landed at midnight. The multi-day header already kept it, and the schedule now uses the same path.
+- `MultiDayViewConfiguration.type` takes part in `==` and `hashCode`.
+- A drop in the schedule view keeps the event's time of day, where it previously landed at midnight.
 
 ### Features
 
-- `ResizeHandleStyle` sizes the area `DefaultResizeHandles` gives each handle, through `KalenderThemeData.resizeHandleStyle`. `length` covers precise input and `impreciseLength` covers a finger, defaulting to 16 and 24, the values the layout hardcoded. The handle widgets themselves still come from `TileComponents.verticalResizeHandle` and `horizontalResizeHandle`. Changing the length no longer means writing a `resizeHandlePositioner`.
+- `ResizeHandleStyle` sizes the resize handles through `KalenderThemeData.resizeHandleStyle`, with `length` for precise input and `impreciseLength` for a finger.
 
 ## 0.27.0
 
