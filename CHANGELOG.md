@@ -13,6 +13,7 @@ See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.
 
 ### Features
 
+- `CalendarScope` reads the state of the calendar a widget is built inside: `eventsControllerOf`, `calendarControllerOf`, `localeOf`, `locationOf`, `componentsOf`, `callbacksOf`, `interactionOf`, `snappingOf`, `tileComponentsOf`, `heightPerMinuteOf` and `multiDayRuleOf`, with `maybeOf` forms for the two controllers. Each accessor depends on one value, and every one returns the nearest, so a custom component in the header reads the header's interaction rather than the body's.
 - `MonthBodyComponents.weekNumberWidth` sets the width of the month week number column, with `defaultWeekNumberWidth` and `kDefaultWeekNumberWidth` as the default. It matches `MultiDayBodyComponents.timelineWidth`.
 
 ### Fixes
