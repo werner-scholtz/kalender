@@ -56,21 +56,21 @@ class EventsControllerProvider extends InheritedWidget {
 // Calendar-scoped state (controller, configuration, location)
 // ---------------------------------------------------------------------------
 
-class CalendarScope extends InheritedWidget {
+class DemoScope extends InheritedWidget {
   final CalendarController controller;
   final DemoConfiguration configuration;
   final ValueNotifier<Location?> location;
 
-  CalendarScope({
+  DemoScope({
     required super.child,
     super.key,
   })  : controller = CalendarController(),
         configuration = DemoConfiguration(),
         location = ValueNotifier<Location?>(null);
 
-  static CalendarScope _of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<CalendarScope>();
-    assert(result != null, 'No CalendarScope found.');
+  static DemoScope _of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<DemoScope>();
+    assert(result != null, 'No DemoScope found.');
     return result!;
   }
 
@@ -79,7 +79,7 @@ class CalendarScope extends InheritedWidget {
   static ValueNotifier<Location?> locationOf(BuildContext context) => _of(context).location;
 
   @override
-  bool updateShouldNotify(covariant CalendarScope oldWidget) {
+  bool updateShouldNotify(covariant DemoScope oldWidget) {
     return controller != oldWidget.controller ||
         configuration != oldWidget.configuration ||
         location != oldWidget.location;

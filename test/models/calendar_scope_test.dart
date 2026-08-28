@@ -83,8 +83,11 @@ void main() {
     );
 
     // true is the default, so false is the only value that proves which one was read.
-    expect(find.text('false'), findsWidgets,
-        reason: 'the day header reads the header interaction, not the body or the default');
+    expect(
+      find.text('false'),
+      findsWidgets,
+      reason: 'the day header reads the header interaction, not the body or the default',
+    );
   });
 
   testWidgets('the maybe form returns null outside a calendar', (tester) async {
