@@ -19,7 +19,7 @@ See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.
 ### Features
 
 - `KalenderScope` reads the state of the enclosing calendar, one accessor per value: `eventsControllerOf`, `calendarControllerOf`, `localeOf`, `locationOf`, `componentsOf`, `callbacksOf`, `interactionOf`, `snappingOf`, `tileComponentsOf`, `heightPerMinuteOf` and `multiDayRuleOf`, with `maybeOf` forms for the two controllers.
-- `MonthBodyComponents.weekNumberWidth` sets the width of the month week number column, with `defaultWeekNumberWidth` and `kDefaultWeekNumberWidth` as the default.
+- `MonthBodyComponents.weekNumberWidth` takes a `WeekNumberWidthBuilder` sizing the month week number column, with `defaultWeekNumberWidth` and `kDefaultWeekNumberWidth` as the default.
 
 ### Fixes
 

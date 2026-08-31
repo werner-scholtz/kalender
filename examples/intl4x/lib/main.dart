@@ -13,10 +13,11 @@ void main() => runApp(const IntlFourXApp());
 /// The locales offered by the picker.
 const _locales = [Locale('en'), Locale('de'), Locale('fr'), Locale('pt', 'BR'), Locale('ja')];
 
-/// Kalender passes locales as `dynamic`, so read it back and hand intl4x its own type.
+/// Reads the calendar's locale and hands intl4x its own type. `toLanguageTag`
+/// gives the `pt-BR` form intl4x parses, where `toString` gives `pt_BR`.
 intl4x.Locale _localeOf(BuildContext context) {
   final calendarLocale = context.calendarLocale;
-  return intl4x.Locale.parse(calendarLocale?.toString() ?? 'en');
+  return intl4x.Locale.parse(calendarLocale?.toLanguageTag() ?? 'en');
 }
 
 /// intl4x has no weekday-only formatter. `DateTimeFormat.yearMonthDayWeekday`

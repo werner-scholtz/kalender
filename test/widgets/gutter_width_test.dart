@@ -174,7 +174,112 @@ void main() {
       // reserves it again, and all three read the one measurement.
       expect(_timelineWidthCalls, 1);
     });
+
+    testWidgets('the labels fit the gutter measured for them', (tester) async {
+      await pumpAndSettleWithMaterialApp(tester, plain(week()));
+
+      final gutter = tester.getRect(find.byKey(MultiDayBody.timelineKey));
+      final labels = find.descendant(
+        of: find.byKey(MultiDayBody.timelineKey),
+        matching: find.byType(Text),
+      );
+      expect(labels, findsWidgets);
+
+      for (var index = 0; index < tester.widgetList(labels).length; index++) {
+        expect(
+          tester.getRect(labels.at(index)).width,
+          lessThanOrEqualTo(gutter.width + 0.5),
+          reason: 'the measurement must reserve room for every label it measured',
+        );
+      }
+    });
+
+    testWidgets('a view that draws no timeline does not measure one', (tester) async {
+      _timelineWidthCalls = 0;
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        KalenderView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: month(),
+          components: const CalendarComponents(
+            multiDayComponents: MultiDayComponents(
+              bodyComponents: MultiDayBodyComponents(timelineWidth: _countingTimelineWidth),
+            ),
+          ),
+          header: CalendarHeader(multiDayTileComponents: tiles),
+          body: CalendarBody(multiDayTileComponents: tiles),
+        ),
+      );
+
+      expect(_timelineWidthCalls, 0);
+    });
   });
+
+  // The builders run above CalendarHeader and CalendarBody, so what the calendar
+  // installs resolves and the four those two install do not.
+  testWidgets('a width builder reaches the calendar state', (tester) async {
+    _resolved.clear();
+    _widthBuilderCalls = 0;
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      KalenderView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: week(),
+        components: const CalendarComponents(
+          multiDayComponents: MultiDayComponents(
+            bodyComponents: MultiDayBodyComponents(timelineWidth: _readsCalendarState),
+          ),
+        ),
+        header: CalendarHeader(multiDayTileComponents: tiles),
+        body: CalendarBody(multiDayTileComponents: tiles),
+      ),
+    );
+
+    expect(_widthBuilderCalls, 1);
+    expect(_resolved, {
+      'eventsControllerOf': true,
+      'calendarControllerOf': true,
+      'localeOf': true,
+      'locationOf': true,
+      'componentsOf': true,
+      'callbacksOf': true,
+      'multiDayRuleOf': true,
+      'interactionOf': false,
+      'snappingOf': false,
+      'tileComponentsOf': false,
+      'heightPerMinuteOf': false,
+    });
+  });
+}
+
+final _resolved = <String, bool>{};
+int _widthBuilderCalls = 0;
+
+void _record(String name, void Function(BuildContext) read, BuildContext context) {
+  try {
+    read(context);
+    _resolved[name] = true;
+  } catch (_) {
+    _resolved[name] = false;
+  }
+}
+
+double _readsCalendarState(BuildContext context, TimeOfDayRange range) {
+  _widthBuilderCalls++;
+  _record('eventsControllerOf', KalenderScope.eventsControllerOf, context);
+  _record('calendarControllerOf', KalenderScope.calendarControllerOf, context);
+  _record('localeOf', KalenderScope.localeOf, context);
+  _record('locationOf', KalenderScope.locationOf, context);
+  _record('componentsOf', KalenderScope.componentsOf, context);
+  _record('callbacksOf', KalenderScope.callbacksOf, context);
+  _record('multiDayRuleOf', KalenderScope.multiDayRuleOf, context);
+  _record('interactionOf', KalenderScope.interactionOf, context);
+  _record('snappingOf', KalenderScope.snappingOf, context);
+  _record('tileComponentsOf', KalenderScope.tileComponentsOf, context);
+  _record('heightPerMinuteOf', KalenderScope.heightPerMinuteOf, context);
+  return 56;
 }
 
 int _timelineWidthCalls = 0;
