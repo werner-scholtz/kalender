@@ -19,6 +19,7 @@ export 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 export 'package:kalender/src/theme/kalender_theme.dart';
 
 /// Models
+export 'package:kalender/src/models/providers/kalender_scope.dart';
 export 'package:kalender/src/models/controllers/calendar_controller.dart';
 export 'package:kalender/src/models/controllers/events_controller.dart';
 export 'package:kalender/src/models/view_configurations/view_configuration.dart';

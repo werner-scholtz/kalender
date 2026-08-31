@@ -19,7 +19,7 @@ class Calendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarScope(
+    return DemoScope(
       child: Builder(
         builder: (context) => EventDetailOverlay(
           location: context.location.value,

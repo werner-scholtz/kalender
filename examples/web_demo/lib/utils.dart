@@ -171,9 +171,9 @@ extension BuildContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get colorScheme => theme.colorScheme;
   TextTheme get textTheme => theme.textTheme;
-  ValueNotifier<Location?> get location => CalendarScope.locationOf(this);
-  DemoConfiguration get configuration => CalendarScope.configurationOf(this);
-  CalendarController get controller => CalendarScope.controllerOf(this);
+  ValueNotifier<Location?> get location => DemoScope.locationOf(this);
+  DemoConfiguration get configuration => DemoScope.configurationOf(this);
+  CalendarController get controller => DemoScope.controllerOf(this);
 }
 
 final isTouch = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;

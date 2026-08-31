@@ -154,7 +154,7 @@ Today `calendar_provider.dart` holds five `InheritedWidget`s, `EventsControllerP
 
 Exporting the five is the obvious move and is rejected. It makes the tree shape public, so apps come to depend on which provider sits where, on each one existing, and on inserting their own between them. That cannot be walked back after 1.0.0. `GutterStyles` is the standing example of the cost: it went public in 0.27.0 and now the guide and a debug report both exist to explain where it must sit.
 
-The accessors live on `CalendarScope`, as `CalendarScope.localeOf(context)` and one per value. The internal `context.locale` style extension getters stay internal: they cannot carry an aspect, so they would rebuild on everything.
+The accessors live on `KalenderScope`, as `KalenderScope.localeOf(context)` and one per value. The internal `context.locale` style extension getters stay internal: they cannot carry an aspect, so they would rebuild on everything.
 
 The shape is `MediaQuery`. It is an `InheritedModel` over a **private** aspect enum, and its public surface is about forty static accessors, `sizeOf`, `paddingOf`, `textScalerOf`, each with a `maybeXOf` twin. A widget reading the size does not rebuild when the padding changes. Kalender takes the same form: one widget over the five providers, a private aspect enum, and one accessor per value. The tree stays free to change, rebuilds stay narrow, and the granularity itself is not public, so aspects can be added or removed without a break.
 
@@ -189,7 +189,7 @@ Four of the nine tests in `gutter_style_scope_test.dart` describe the behaviour 
 
 Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
 
-**`CalendarView` may become `Kalender`.** The package is `kalender` and the widget an app places is `CalendarView`, which reads oddly next to `CalendarScope`. A pure rename, so it belongs in whichever release already breaks.
+**`CalendarView` may become `Kalender`.** The package is `kalender` and the widget an app places is `CalendarView`, which reads oddly next to `KalenderScope`. A pure rename, so it belongs in whichever release already breaks.
 
 ### Theming, still open
 
