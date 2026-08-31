@@ -38,7 +38,7 @@ abstract final class KalenderScope {
   /// This is `KalenderView.locale`, which is not necessarily the app's locale.
   /// Pass it to intl's `DateFormat` or `NumberFormat`, or to the localized
   /// extensions on [DateTime].
-  static dynamic localeOf(BuildContext context) => LocaleProvider.of(context);
+  static Locale? localeOf(BuildContext context) => LocaleProvider.of(context);
 
   /// The IANA location the calendar displays its events in, or null when it has none.
   static Location? locationOf(BuildContext context) => LocationProvider.of(context);

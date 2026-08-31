@@ -37,7 +37,7 @@ void main() {
         body: KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
-          locale: 'de',
+          locale: const Locale('de'),
           components: components,
           viewConfiguration: ScheduleViewConfiguration.continuous(
             displayRange: DateTimeRange(start: DateTime(2025), end: DateTime(2025, 3)),

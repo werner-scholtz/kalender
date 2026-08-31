@@ -18,12 +18,12 @@ void main() async {
 
 The function comes from `date_symbol_data_local.dart`, not from `intl.dart`. The intl package compiles in the `en_US` data only, so every other locale needs this call, including `en`. Without it, kalender throws an error naming the locale that failed and the call to add.
 
-`KalenderView` has a `locale` property that controls day/month name formatting.
+`KalenderView` has a `locale` property that controls day/month name formatting. It takes a `Locale`, and `Localizations.localeOf(context)` gives you the app's.
 
 <!-- snippet: expression -->
 ```dart
 KalenderView(
-  locale: 'af_ZA',
+  locale: const Locale('af', 'ZA'),
   eventsController: eventsController,
   calendarController: calendarController,
   viewConfiguration: viewConfiguration,
@@ -56,21 +56,21 @@ once for the whole app through [`KalenderThemeData`](appearance.md#theming).
 Every string the calendar writes can be replaced with a string builder on the
 matching `*Components` class. Each one receives the `BuildContext`, so it can read
 the calendar's own locale with `context.calendarLocale`, which is not necessarily
-the app's locale:
+the app's locale. intl takes a string, so pass `toLanguageTag()`:
 
 <!-- snippet: expression -->
 ```dart
 import 'package:intl/intl.dart';
 
 KalenderView(
-  locale: 'af_ZA',
+  locale: const Locale('af', 'ZA'),
   eventsController: eventsController,
   calendarController: calendarController,
   viewConfiguration: viewConfiguration,
   components: CalendarComponents(
     multiDayComponents: MultiDayComponents(
       headerComponents: MultiDayHeaderComponents(
-        dayHeaderStringBuilder: (context, date) => DateFormat.E(context.calendarLocale).format(date),
+        dayHeaderStringBuilder: (context, date) => DateFormat.E(context.calendarLocale?.toLanguageTag()).format(date),
       ),
     ),
     overlayBuilders: OverlayBuilders(

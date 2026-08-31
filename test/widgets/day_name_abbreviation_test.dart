@@ -14,8 +14,8 @@ void main() {
   // three letters of its full name in several locales.
   final wednesday = InternalDateTime(2025, 1, 15);
 
-  Future<void> pumpScheduleDate(WidgetTester tester, dynamic locale) async {
-    await initializeDateFormatting('$locale');
+  Future<void> pumpScheduleDate(WidgetTester tester, Locale locale) async {
+    await initializeDateFormatting(locale.toLanguageTag());
     await pumpAndSettleWithMaterialApp(
       tester,
       TestProvider(
@@ -29,21 +29,21 @@ void main() {
   }
 
   testWidgets('uses the locale\'s own abbreviation, not the first three letters', (tester) async {
-    await pumpScheduleDate(tester, 'de');
+    await pumpScheduleDate(tester, const Locale('de'));
 
     expect(find.text('Mi'), findsOneWidget);
     expect(find.text('Mit'), findsNothing, reason: 'Mittwoch cut at three characters is not how German abbreviates it');
   });
 
   testWidgets('English is unchanged, which is why this went unnoticed', (tester) async {
-    await pumpScheduleDate(tester, 'en');
+    await pumpScheduleDate(tester, const Locale('en'));
 
     expect(find.text('Wed'), findsOneWidget);
   });
 
   testWidgets('keeps abbreviations that are not three characters long', (tester) async {
     // Russian abbreviates Wednesday to two characters, and the cut produced three.
-    await pumpScheduleDate(tester, 'ru');
+    await pumpScheduleDate(tester, const Locale('ru'));
 
     expect(find.text('ср'), findsOneWidget);
     expect(find.text('сре'), findsNothing);
@@ -57,7 +57,7 @@ void main() {
         calendarController: CalendarController(),
         eventsController: DefaultEventsController(),
         tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
-        locale: 'de',
+        locale: const Locale('de'),
         child: Column(children: [ScheduleDate(date: wednesday), DayHeader(date: wednesday)]),
       ),
     );

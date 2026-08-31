@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
@@ -12,7 +14,7 @@ void main() {
     test('reports the missing setup call instead of intl\'s bare exception', () {
       FlutterError? thrown;
       try {
-        date.dayNameLocalized('de');
+        date.dayNameLocalized(const Locale('de'));
       } on FlutterError catch (error) {
         thrown = error;
       }
@@ -25,16 +27,16 @@ void main() {
     });
 
     test('covers every localized name builder', () {
-      expect(() => date.dayNameLocalized('fr'), throwsA(isA<FlutterError>()));
-      expect(() => date.dayNameShortLocalized('fr'), throwsA(isA<FlutterError>()));
-      expect(() => date.monthNameLocalized('fr'), throwsA(isA<FlutterError>()));
-      expect(() => date.monthNameShortLocalized('fr'), throwsA(isA<FlutterError>()));
+      expect(() => date.dayNameLocalized(const Locale('fr')), throwsA(isA<FlutterError>()));
+      expect(() => date.dayNameShortLocalized(const Locale('fr')), throwsA(isA<FlutterError>()));
+      expect(() => date.monthNameLocalized(const Locale('fr')), throwsA(isA<FlutterError>()));
+      expect(() => date.monthNameShortLocalized(const Locale('fr')), throwsA(isA<FlutterError>()));
     });
 
     test('"en" needs the call even though "en_US" does not', () {
       // intl compiles in en_US only, so the bare language tag is not covered.
-      expect(() => date.dayNameLocalized('en'), throwsA(isA<FlutterError>()));
-      expect(date.dayNameLocalized('en_US'), 'Wednesday');
+      expect(() => date.dayNameLocalized(const Locale('en')), throwsA(isA<FlutterError>()));
+      expect(date.dayNameLocalized(const Locale('en', 'US')), 'Wednesday');
     });
 
     test('the default locale still works without any setup', () {

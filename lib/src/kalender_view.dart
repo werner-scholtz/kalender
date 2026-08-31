@@ -34,10 +34,10 @@ class KalenderView extends StatefulWidget {
   /// The body widget that will be displayed below the header.
   final Widget? body;
 
-  /// The locale used for internationalization ex. `en_US`, `de_DE`, etc.
+  /// The locale used for internationalization, for example `const Locale('en', 'US')`.
   ///
-  /// If not provided, a default locale be used.
-  final dynamic locale;
+  /// If not provided, intl's default locale is used.
+  final Locale? locale;
 
   /// The location of the calendar view. (from the timezone package)
   ///
@@ -78,7 +78,7 @@ class KalenderViewState extends State<KalenderView> {
   final Map<String, ViewSnapshot> _viewHistory = {};
   ViewSnapshot? _lastMultiDaySnapshot;
   // TODO: update this to be a valueNotifier.
-  late dynamic _locale = widget.locale;
+  late Locale? _locale = widget.locale;
   late final _location = ValueNotifier<Location?>(widget.location);
 
   @override

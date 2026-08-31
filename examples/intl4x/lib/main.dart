@@ -122,7 +122,7 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
         body: KalenderView(
           eventsController: _eventsController,
           calendarController: _calendarController,
-          locale: _locale.toLanguageTag(),
+          locale: _locale,
           components: intl4xComponents(),
           viewConfiguration: MultiDayViewConfiguration.week(
             displayRange: DateTimeRange(
