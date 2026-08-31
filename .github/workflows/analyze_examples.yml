@@ -31,6 +31,7 @@ jobs:
           - riverpod
           - ics
           - intl4x
+          - material_ui
           - web_demo
           - testing
     steps:

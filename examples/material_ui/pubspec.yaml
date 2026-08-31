@@ -1,0 +1,22 @@
+name: material_ui_example
+description: "Runs the calendar against the standalone material_ui package instead of package:flutter/material.dart."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  kalender:
+    path: ../../../kalender/
+  material_ui: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

@@ -34,6 +34,12 @@ build/
 
 /examples/**/pubspec.lock
 
+# fvm resolves .fvmrc into this symlinked directory.
+.fvm/
+
+# The root pin is a local choice. The examples pin the version they need.
+/.fvmrc
+
 # Written by tool/analyze_doc_snippets.dart on every run.
 /examples/doc_snippets/lib/generated/
 

@@ -15,6 +15,7 @@ each answer one question.
 | [ics](ics) | Importing and exporting iCalendar files. `enough_icalendar` parses and writes, `rrule` expands the rule, and occurrences are produced only for the visible window so a "repeat forever" rule stays cheap. |
 | [riverpod](riverpod) | Sharing the events controller, the calendar controller and the selected view through providers. |
 | [web_demo](web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/). Every option through a runtime configuration panel, theming, locales, text direction, timezones, and a desktop split view over one shared event store. |
+| [material_ui](material_ui) | The calendar inside an app that migrated to the standalone `material_ui` package. Shows the three things that break against `package:flutter/material.dart` and the workaround for each. |
 | [testing](testing) | A performance harness rather than an app. Drives the calendar through navigation, scrolling, rescheduling and resizing at 10 and 50 events per day and records frame build times. Feeds the [benchmarks dashboard](https://werner-scholtz.github.io/kalender/dev/bench/). |
 | [doc_snippets](doc_snippets) | Not an app either. Holds the placeholder identifiers that `tool/analyze_doc_snippets.dart` compiles the documentation snippets against. |
 
