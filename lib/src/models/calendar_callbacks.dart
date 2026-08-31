@@ -4,9 +4,9 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 
-/// The callbacks used by the [CalendarView].
+/// The callbacks used by the [KalenderView].
 ///
-/// - These callbacks are used to notify the parent widget of events that occur in the [CalendarView].
+/// - These callbacks are used to notify the parent widget of events that occur in the [KalenderView].
 class CalendarCallbacks {
   /// The callback for when an event is tapped.
   ///
@@ -107,7 +107,7 @@ class CalendarCallbacks {
   /// When overriding this please see [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
   final OnWillAcceptWithDetailsHorizontal? onWillAcceptWithDetailsHorizontal;
 
-  /// Creates a set of callbacks for the [CalendarView].
+  /// Creates a set of callbacks for the [KalenderView].
   const CalendarCallbacks({
     this.onEventTapped,
     this.onEventTappedWithDetail,

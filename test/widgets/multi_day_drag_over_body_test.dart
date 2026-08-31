@@ -37,7 +37,7 @@ void main() {
   Future<void> pumpWeek(WidgetTester tester, {CalendarCallbacks? callbacks}) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         callbacks: callbacks,
@@ -59,7 +59,7 @@ void main() {
     expect(tile, findsOneWidget, reason: 'the multi-day tile should render in the header');
 
     final originalStart = eventsController.byId(eventId)!.start;
-    final dayWidth = tester.getSize(find.byType(CalendarView)).width / 7;
+    final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
 
     // Pick the tile up, then move well below the header, into the body.
     final gesture = await tester.startGesture(tester.getCenter(tile));
@@ -87,7 +87,7 @@ void main() {
     await pumpWeek(tester);
 
     final original = eventsController.byId(eventId)!;
-    final dayWidth = tester.getSize(find.byType(CalendarView)).width / 7;
+    final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
 
     final gesture = await tester.startGesture(tester.getCenter(find.byKey(MultiDayEventTile.tileKey(eventId))));
     await tester.pump(const Duration(milliseconds: 100));
@@ -116,7 +116,7 @@ void main() {
     await pumpWeek(tester, callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated));
 
     final originalStart = eventsController.byId(eventId)!.start;
-    final dayWidth = tester.getSize(find.byType(CalendarView)).width / 7;
+    final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
 
     final gesture = await tester.startGesture(tester.getCenter(find.byKey(MultiDayEventTile.tileKey(eventId))));
     await tester.pump(const Duration(milliseconds: 100));

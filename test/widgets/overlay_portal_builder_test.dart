@@ -33,7 +33,7 @@ void main() {
     final calendarController = CalendarController();
     addTearDown(calendarController.dispose);
 
-    final view = CalendarView(
+    final view = KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -171,7 +171,7 @@ void main() {
       tester,
       KalenderTheme(
         data: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
-        child: CalendarView(
+        child: KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MonthViewConfiguration.singleMonth(

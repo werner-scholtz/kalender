@@ -34,7 +34,7 @@ void main() {
     final tiles = ScheduleTileComponents(tileBuilder: (context, event, range) => const SizedBox());
     return MaterialApp(
       home: Scaffold(
-        body: CalendarView(
+        body: KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           locale: 'de',

@@ -35,7 +35,7 @@ void main() {
   Future<void> pumpFreeScroll(WidgetTester tester, CalendarCallbacks callbacks) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
@@ -111,7 +111,7 @@ void main() {
     expect(changedAfter, isNull);
 
     // Drag the tile one day to the right.
-    final dayWidth = tester.getSize(find.byType(CalendarView)).width / 7;
+    final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
     await tester.drag(tile, Offset(dayWidth, 0));
     await tester.pumpAndSettle();
 

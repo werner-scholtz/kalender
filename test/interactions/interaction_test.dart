@@ -73,7 +73,7 @@ void main() {
 
   Future<void> pumpMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
@@ -88,7 +88,7 @@ void main() {
 
   Future<void> pumpMonthView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -102,7 +102,7 @@ void main() {
 
   Future<void> pumpScheduleView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
@@ -113,7 +113,7 @@ void main() {
 
   Future<void> pumpImpreciseMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
@@ -128,7 +128,7 @@ void main() {
 
   Future<void> pumpImpreciseMonthView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -142,7 +142,7 @@ void main() {
 
   Future<void> pumpAutoMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(

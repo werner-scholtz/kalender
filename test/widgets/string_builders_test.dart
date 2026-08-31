@@ -23,7 +23,7 @@ void main() {
   }) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController ?? DefaultEventsController(),
         calendarController: CalendarController(),
         viewConfiguration: viewConfiguration,
@@ -181,7 +181,7 @@ void main() {
         tester,
         Directionality(
           textDirection: textDirection,
-          child: CalendarView(
+          child: KalenderView(
             eventsController: controllerWithOverflowOn(day),
             calendarController: CalendarController(),
             viewConfiguration: MultiDayViewConfiguration.week(

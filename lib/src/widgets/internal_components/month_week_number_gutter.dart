@@ -18,7 +18,7 @@ WeekNumberStyle _resolveStyle(BuildContext context) {
 /// The width the calendar measured for the week number column.
 ///
 /// Falls back to measuring where there is no [GutterWidths], which is the case
-/// outside a [CalendarView].
+/// outside a [KalenderView].
 double _width(BuildContext context) {
   return GutterWidths.maybeOf(context)?.weekNumber ??
       context.components.monthComponents.bodyComponents.buildWeekNumberWidth(context);

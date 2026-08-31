@@ -28,7 +28,7 @@ void main() {
   Future<void> pumpFreeScroll(WidgetTester tester) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
@@ -56,7 +56,7 @@ void main() {
     await pumpFreeScroll(tester);
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
-    final calWidth = tester.getSize(find.byType(CalendarView)).width;
+    final calWidth = tester.getSize(find.byType(KalenderView)).width;
 
     expect(tile, findsOneWidget, reason: 'the multi-day event should be a single continuous tile');
     final tileWidth = tester.getSize(tile).width;
@@ -101,7 +101,7 @@ void main() {
 
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(

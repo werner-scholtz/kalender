@@ -35,7 +35,7 @@ void main() {
   Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule, {CalendarCallbacks? callbacks}) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         callbacks: callbacks,
@@ -90,7 +90,7 @@ void main() {
     );
 
     final original = eventsController.byId(id)!;
-    final dayWidth = tester.getSize(find.byType(CalendarView)).width / 7;
+    final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
 
     final gesture = await tester.startGesture(tester.getCenter(find.byKey(MultiDayEventTile.tileKey(id))));
     await tester.pump(const Duration(milliseconds: 100));

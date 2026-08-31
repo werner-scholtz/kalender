@@ -28,7 +28,7 @@ void main() {
   Future<void> pumpDay(WidgetTester tester, TimeOfDayRange timeOfDayRange) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(

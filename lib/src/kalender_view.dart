@@ -4,7 +4,7 @@ import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 
-class CalendarView extends StatefulWidget {
+class KalenderView extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
   final EventsController eventsController;
 
@@ -14,7 +14,7 @@ class CalendarView extends StatefulWidget {
   /// The [ViewConfiguration] that will be used to render the calendar view.
   final ViewConfiguration viewConfiguration;
 
-  /// The [CalendarCallbacks] used by the [CalendarView]
+  /// The [CalendarCallbacks] used by the [KalenderView]
   final CalendarCallbacks? callbacks;
 
   /// The components and styles used by the calendar.
@@ -44,11 +44,11 @@ class CalendarView extends StatefulWidget {
   /// If not provided, the default location will be used.
   final Location? location;
 
-  /// Creates a [CalendarView] widget.
+  /// Creates a [KalenderView] widget.
   ///
   /// This widget creates a [ViewController] based on the [viewConfiguration].
   /// It then attaches the [ViewController] to the [calendarController].
-  const CalendarView({
+  const KalenderView({
     super.key,
     required this.eventsController,
     required this.calendarController,
@@ -62,11 +62,11 @@ class CalendarView extends StatefulWidget {
   });
 
   @override
-  State<CalendarView> createState() => CalendarViewState();
+  State<KalenderView> createState() => KalenderViewState();
 }
 
-class CalendarViewState extends State<CalendarView> {
-  /// The [ViewController] that will be used by the children of the [CalendarView].
+class KalenderViewState extends State<KalenderView> {
+  /// The [ViewController] that will be used by the children of the [KalenderView].
   late ViewController _viewController;
 
   /// A snapshot of what each view last displayed, keyed by its configuration
@@ -95,7 +95,7 @@ class CalendarViewState extends State<CalendarView> {
   }
 
   @override
-  void didUpdateWidget(covariant CalendarView oldWidget) {
+  void didUpdateWidget(covariant KalenderView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     final didChangeLocale = _locale != widget.locale;
@@ -339,3 +339,14 @@ class CalendarViewState extends State<CalendarView> {
     );
   }
 }
+
+/// The previous name of [KalenderView].
+///
+/// `CalendarView(...)` still constructs a [KalenderView], since this is the same
+/// type under its old name.
+@Deprecated('Renamed to KalenderView. Will be removed in 0.30.0.')
+typedef CalendarView = KalenderView;
+
+/// The previous name of [KalenderViewState].
+@Deprecated('Renamed to KalenderViewState. Will be removed in 0.30.0.')
+typedef CalendarViewState = KalenderViewState;

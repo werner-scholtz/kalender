@@ -17,7 +17,7 @@ void main() {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    expect(find.byType(CalendarView), findsWidgets);
+    expect(find.byType(KalenderView), findsWidgets);
     expect(find.byType(ThemeButton), findsOneWidget);
     expect(find.byType(LocaleDropdown), findsOneWidget);
   });

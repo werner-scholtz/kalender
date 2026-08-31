@@ -31,7 +31,7 @@ class MultiDayBody extends StatelessWidget {
   ///
   /// This widget is used to display events in a day/week view format.
   ///
-  /// This widget is intended to be the body of a [CalendarView].
+  /// This widget is intended to be the body of a [KalenderView].
   const MultiDayBody({
     super.key,
     this.configuration,

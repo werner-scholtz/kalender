@@ -33,7 +33,7 @@ void main() {
   Future<void> pumpCalendar(WidgetTester tester) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,

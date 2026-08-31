@@ -462,7 +462,7 @@ extension ViewControllerUtilities on WidgetTester {
   }) async {
     await pumpAndSettleWithMaterialApp(
       this,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: controller,
         viewConfiguration: viewConfiguration,

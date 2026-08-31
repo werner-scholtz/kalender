@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarView(
+      body: KalenderView(
         eventsController: config.eventsController,
         calendarController: config.calendarController,
         viewConfiguration: config.viewConfiguration,

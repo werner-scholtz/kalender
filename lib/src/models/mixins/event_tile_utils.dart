@@ -37,7 +37,7 @@ mixin EventTileUtils {
 
 /// A mixin that provides useful utilities for day-based event tiles.
 ///
-/// This mixin is intended to be used with widgets that are descendants of a [CalendarView]
+/// This mixin is intended to be used with widgets that are descendants of a [KalenderView]
 /// specifically for widgets built by [TileComponents.tileBuilder] in a day-based view.
 ///
 /// Example usage:

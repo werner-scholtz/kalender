@@ -5,7 +5,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 class CalendarHeader extends StatefulWidget {
   /// The callbacks used by the [CalendarBody].
   ///
-  /// This provides a way to override the [CalendarCallbacks] passed to the [CalendarView].
+  /// This provides a way to override the [CalendarCallbacks] passed to the [KalenderView].
   final CalendarCallbacks? callbacks;
 
   /// MultiDay

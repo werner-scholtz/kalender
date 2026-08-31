@@ -26,7 +26,7 @@ Future<dynamic> _pumpWeekView(
 }) async {
   await pumpAndSettleWithMaterialApp(
     tester,
-    CalendarView(
+    KalenderView(
       eventsController: eventsController ?? DefaultEventsController(),
       calendarController: CalendarController(),
       viewConfiguration: MultiDayViewConfiguration.week(
@@ -192,7 +192,7 @@ void main() {
   //    method reads viewController from the live controller)
   // ────────────────────────────────────────────────────────────────────────────
   group('VerticalDragTarget.onWillAcceptWithDetails', () {
-    CalendarView weekCalendarView(CalendarController controller) => CalendarView(
+    KalenderView weekCalendarView(CalendarController controller) => KalenderView(
           eventsController: DefaultEventsController(),
           calendarController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
@@ -269,7 +269,7 @@ void main() {
       final controller = CalendarController();
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: DefaultEventsController(),
           calendarController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
@@ -438,7 +438,7 @@ void main() {
     Future<void> pumpMonthView(WidgetTester tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: DefaultEventsController(),
           calendarController: CalendarController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -513,7 +513,7 @@ void main() {
     Future<dynamic> pumpMonthState(WidgetTester tester, {EventsController? ec}) async {
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: ec ?? DefaultEventsController(),
           calendarController: CalendarController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -621,7 +621,7 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: ec,
           calendarController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
@@ -673,7 +673,7 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: ec,
           calendarController: controller,
           viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -725,7 +725,7 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: ec,
           calendarController: CalendarController(),
           viewConfiguration: ScheduleViewConfiguration.continuous(
@@ -742,7 +742,7 @@ void main() {
     testWidgets('paginated schedule view renders without exception', (tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
+        KalenderView(
           eventsController: DefaultEventsController(),
           calendarController: CalendarController(),
           viewConfiguration: ScheduleViewConfiguration.paginated(

@@ -9,7 +9,7 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await tester.pumpAndSettle();
 
-    expect(find.byType(CalendarView), findsOneWidget);
+    expect(find.byType(KalenderView), findsOneWidget);
     expect(find.byType(DropdownMenu<ViewConfiguration>), findsOneWidget);
   });
 

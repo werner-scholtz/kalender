@@ -8,7 +8,7 @@ import '../utilities.dart';
 // whose time band is within the visible scroll window (plus an overscan margin)
 // are built.
 //
-// These use a real CalendarView so the vertical scroll view is attached and the
+// These use a real KalenderView so the vertical scroll view is attached and the
 // culling actually runs. Without an attached scroll view the column falls back
 // to building every event, and neither behaviour below could be observed.
 void main() {
@@ -42,7 +42,7 @@ void main() {
     );
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(

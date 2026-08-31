@@ -31,7 +31,7 @@ void main() {
   });
 
   Future<void> pumpDay(WidgetTester tester, {ResizeHandleStyle? style, InputMode mode = InputMode.precise}) {
-    final view = CalendarView(
+    final view = KalenderView(
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.singleDay(

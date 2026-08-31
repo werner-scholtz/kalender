@@ -7,7 +7,7 @@ import 'package:timezone/timezone.dart';
 import '../utilities.dart';
 
 /// End-to-end regression coverage for "today" highlighting in a real
-/// [CalendarView], targeting the timezone bug reported in:
+/// [KalenderView], targeting the timezone bug reported in:
 ///
 ///   * #254 — `isSameDay` produced wrong results for non-UTC timezones,
 ///   * #251 — wrong current-date highlighting (e.g. Dec 24 highlighted Dec 23),
@@ -16,7 +16,7 @@ import '../utilities.dart';
 ///
 /// The root cause was fixed by the `InternalDateTime` + `NowCallback` refactor in
 /// `0.18.0`. The isolated component checks live in `now_callback_is_today_test.dart`;
-/// these exercise the layer users actually hit — a full `CalendarView` — and are
+/// these exercise the layer users actually hit — a full `KalenderView` — and are
 /// run across the timezone matrix (`tool/test_timezones_linux.dart`) to cover the
 /// non-UTC / near-midnight condition that made the original bug visible.
 void main() {
@@ -33,7 +33,7 @@ void main() {
         matching: find.text('$day'),
       );
 
-  group('Today highlighting in CalendarView (#254 #248 #251)', () {
+  group('Today highlighting in KalenderView (#254 #248 #251)', () {
     // ── Month view ──────────────────────────────────────────────────────────
     group('MonthView', () {
       Future<void> pumpMonth(
@@ -43,7 +43,7 @@ void main() {
       }) =>
           pumpAndSettleWithMaterialApp(
             tester,
-            CalendarView(
+            KalenderView(
               eventsController: eventsController,
               calendarController: calendarController,
               viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -99,7 +99,7 @@ void main() {
         final received = <DateTime>[];
         await pumpAndSettleWithMaterialApp(
           tester,
-          CalendarView(
+          KalenderView(
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -137,7 +137,7 @@ void main() {
 
         await pumpAndSettleWithMaterialApp(
           tester,
-          CalendarView(
+          KalenderView(
             eventsController: eventsController,
             calendarController: calendarController,
             location: newYork,
@@ -179,7 +179,7 @@ void main() {
       }) =>
           pumpAndSettleWithMaterialApp(
             tester,
-            CalendarView(
+            KalenderView(
               eventsController: eventsController,
               calendarController: calendarController,
               viewConfiguration: MultiDayViewConfiguration.week(

@@ -8,7 +8,7 @@ void main() {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    expect(find.byType(CalendarView), findsOneWidget);
+    expect(find.byType(KalenderView), findsOneWidget);
     expect(find.byIcon(Icons.today), findsOneWidget);
   });
 

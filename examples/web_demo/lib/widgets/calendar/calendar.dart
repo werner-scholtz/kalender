@@ -61,7 +61,7 @@ class _CalendarContentState extends State<CalendarContent> {
                   ]),
                   builder: (context, _) => _scope(
                     context,
-                    CalendarView(
+                    KalenderView(
                       location: context.location.value,
                       locale: Localizations.localeOf(context).toLanguageTag(),
                       calendarController: context.controller,

@@ -5,7 +5,7 @@ import 'package:kalender/kalender.dart';
 ///
 /// The month week number column and the multi-day timeline are each drawn in the
 /// body and reserved again as a spacer in the header, so their day columns line
-/// up only while the two agree. [CalendarView] measures each once and publishes
+/// up only while the two agree. [KalenderView] measures each once and publishes
 /// the number here, which is what both halves read.
 ///
 /// Only the width is shared. Everything that paints a gutter resolves its style
@@ -27,7 +27,7 @@ class GutterWidths extends InheritedWidget {
 
   /// The [GutterWidths] above [context], or null when there is none.
   ///
-  /// Null where a component widget is built outside a [CalendarView], which the
+  /// Null where a component widget is built outside a [KalenderView], which the
   /// tests and the doc snippets do.
   static GutterWidths? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<GutterWidths>();

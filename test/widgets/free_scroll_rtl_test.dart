@@ -28,7 +28,7 @@ void main() {
       tester,
       Directionality(
         textDirection: direction,
-        child: CalendarView(
+        child: KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.freeScroll(
@@ -55,7 +55,7 @@ void main() {
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     expect(tile, findsOneWidget, reason: 'the multi-day event should be a single continuous tile in RTL');
-    final calWidth = tester.getSize(find.byType(CalendarView)).width;
+    final calWidth = tester.getSize(find.byType(KalenderView)).width;
     expect(tester.getSize(tile).width, greaterThan(calWidth * 0.22));
   });
 
@@ -67,7 +67,7 @@ void main() {
     final id = eventsController.addEvent(event);
 
     await pump(tester, TextDirection.ltr);
-    final calRect = tester.getRect(find.byType(CalendarView));
+    final calRect = tester.getRect(find.byType(KalenderView));
     final ltrCenter = tester.getCenter(find.byKey(MultiDayEventTile.tileKey(id)));
 
     // Rebuild fresh in RTL.

@@ -29,7 +29,7 @@ to `main` whose commit message contains `web demo`.
 ## Layout
 
 - `lib/main.dart` — bootstrap, app-wide theme/locale/direction, the shared events controller.
-- `lib/widgets/calendar/` — the `CalendarView` composition and demo tile/overlay chrome.
+- `lib/widgets/calendar/` — the `KalenderView` composition and demo tile/overlay chrome.
 - `lib/widgets/toolbar/` and `lib/widgets/configuration/` — the app controls and runtime editors.
 - `lib/l10n/` — the ARB translation files.
 

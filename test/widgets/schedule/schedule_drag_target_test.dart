@@ -40,7 +40,7 @@ void main() {
   }) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         callbacks: callbacks,
@@ -185,7 +185,7 @@ void main() {
       await pumpSchedule(tester);
 
       final before = firstVisibleIndex();
-      final size = tester.getSize(find.byType(CalendarView));
+      final size = tester.getSize(find.byType(KalenderView));
       final gesture = await holdAt(
         tester,
         find.byKey(ScheduleEventTile.tileKey(id)),
@@ -211,7 +211,7 @@ void main() {
       final gesture = await holdAt(
         tester,
         find.byKey(ScheduleEventTile.tileKey(id)),
-        Offset(tester.getSize(find.byType(CalendarView)).width / 2, 4),
+        Offset(tester.getSize(find.byType(KalenderView)).width / 2, 4),
       );
 
       expect(firstVisibleIndex(), lessThan(before), reason: 'the top edge should scroll the list back');

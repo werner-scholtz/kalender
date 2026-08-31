@@ -18,11 +18,11 @@ void main() async {
 
 The function comes from `date_symbol_data_local.dart`, not from `intl.dart`. The intl package compiles in the `en_US` data only, so every other locale needs this call, including `en`. Without it, kalender throws an error naming the locale that failed and the call to add.
 
-`CalendarView` has a `locale` property that controls day/month name formatting.
+`KalenderView` has a `locale` property that controls day/month name formatting.
 
 <!-- snippet: expression -->
 ```dart
-CalendarView(
+KalenderView(
   locale: 'af_ZA',
   eventsController: eventsController,
   calendarController: calendarController,
@@ -48,7 +48,7 @@ MaterialApp(
 )
 ```
 
-It can be set either way: on a single `CalendarView` through `CalendarComponents`, or
+It can be set either way: on a single `KalenderView` through `CalendarComponents`, or
 once for the whole app through [`KalenderThemeData`](appearance.md#theming).
 
 ### Custom text
@@ -62,7 +62,7 @@ the app's locale:
 ```dart
 import 'package:intl/intl.dart';
 
-CalendarView(
+KalenderView(
   locale: 'af_ZA',
   eventsController: eventsController,
   calendarController: calendarController,
@@ -103,13 +103,13 @@ MultiDayBodyComponents(
 
 ## Location
 
-`CalendarView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `CalendarEvent` constructor automatically converts `dateTimeRange` values to UTC, so events are always stored in UTC internally and converted to the given location for display.
+`KalenderView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `CalendarEvent` constructor automatically converts `dateTimeRange` values to UTC, so events are always stored in UTC internally and converted to the given location for display.
 
 <!-- snippet: expression -->
 ```dart
 import 'package:timezone/timezone.dart' as tz;
 
-CalendarView(
+KalenderView(
   location: tz.getLocation('America/New_York'),
   eventsController: eventsController,
   calendarController: calendarController,
@@ -155,7 +155,7 @@ When events come from an `.ics` file, a device calendar, or an API, map each sou
 
 - **Floating time** (no zone, common in `.ics`): decide which zone it should mean, usually the calendar's `location`, and build a `TZDateTime` there.
 
-Then set `CalendarView(location:)` to the zone the calendar should display in. The [ics example](../examples/ics) shows this end to end.
+Then set `KalenderView(location:)` to the zone the calendar should display in. The [ics example](../examples/ics) shows this end to end.
 
 ### Now Callback
 

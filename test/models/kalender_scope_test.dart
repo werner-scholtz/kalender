@@ -24,7 +24,7 @@ void main() {
     final tiles = TileComponents(tileBuilder: (context, event, range) => const SizedBox());
     return pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         locale: 'de',
@@ -60,7 +60,7 @@ void main() {
     final tiles = TileComponents(tileBuilder: (context, event, range) => const SizedBox());
     await pumpAndSettleWithMaterialApp(
       tester,
-      CalendarView(
+      KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),

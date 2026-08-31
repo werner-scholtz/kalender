@@ -6,7 +6,7 @@ export 'package:kalender/src/calendar_body.dart';
 export 'package:kalender/src/calendar_header.dart';
 
 /// Widgets
-export 'package:kalender/src/calendar_view.dart';
+export 'package:kalender/src/kalender_view.dart';
 
 /// Enumerations
 export 'package:kalender/src/enumerations.dart';

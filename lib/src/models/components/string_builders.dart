@@ -22,7 +22,7 @@ typedef HiddenEventCountStringBuilder = String Function(BuildContext context, in
 
 /// Gives a string builder access to the locale of the calendar it is building for.
 extension CalendarLocale on BuildContext {
-  /// The locale of the enclosing calendar, as passed to `CalendarView.locale`.
+  /// The locale of the enclosing calendar, as passed to `KalenderView.locale`.
   ///
   /// This is the locale the calendar formats its own dates and times with, which
   /// is not necessarily the app's locale. Pass it to `intl`'s `DateFormat` or

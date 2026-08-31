@@ -4,7 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.28.x → v0.29.0](#v028x--v0290) | `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
+| [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
@@ -17,6 +17,21 @@ Each section covers one upgrade. Versions not listed below need no changes.
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
 
 ## v0.28.x → v0.29.0
+
+### `CalendarView` is renamed to `KalenderView`
+
+Nothing breaks yet. `CalendarView` is a typedef to `KalenderView`, so it keeps
+compiling and keeps building the same widget, and it is removed in 0.30.0.
+
+```dart
+// Before
+CalendarView(...)
+
+// After
+KalenderView(...)
+```
+
+`CalendarViewState` becomes `KalenderViewState` the same way.
 
 ### The gutters share a width, not a style
 
