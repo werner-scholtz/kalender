@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/gutter_widths.dart';
 
 class CalendarView extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
@@ -285,9 +286,13 @@ class CalendarViewState extends State<CalendarView> {
     final bodyId = widget.body == null ? null : CalendarLayoutDelegate.body;
     final headerId = widget.header == null ? null : CalendarLayoutDelegate.header;
 
-    // Resolved here rather than where each gutter is drawn, so the header and
-    // the body cannot be given different widths. See [GutterStyles].
-    final kalenderTheme = KalenderTheme.of(context);
+    // Measured here rather than where each gutter is drawn, so the header and
+    // the body cannot be given different widths. See [GutterWidths].
+    final components = widget.components ?? const CalendarComponents();
+    // Only the multi-day views draw a timeline, and only they carry a range.
+    final viewConfiguration = widget.viewConfiguration;
+    final timeOfDayRange =
+        viewConfiguration is MultiDayViewConfiguration ? viewConfiguration.timeOfDayRange : TimeOfDayRange.allDay();
 
     return LocationProvider(
       notifier: _location,
@@ -296,28 +301,34 @@ class CalendarViewState extends State<CalendarView> {
         child: Callbacks(
           callbacks: widget.callbacks,
           child: Components(
-            components: widget.components ?? const CalendarComponents(),
-            child: GutterStyles(
-              weekNumberStyle: kalenderTheme.weekNumberStyle,
-              timelineStyle: kalenderTheme.timelineStyle,
-              child: EventsControllerProvider(
-                eventsController: widget.eventsController,
-                child: CalendarControllerProvider(
-                  notifier: widget.calendarController,
-                  child: CustomMultiChildLayout(
-                    delegate: CalendarLayoutDelegate(headerId, bodyId),
-                    children: [
-                      if (bodyId != null)
-                        LayoutId(
-                          id: bodyId,
-                          child: widget.body!,
-                        ),
-                      if (headerId != null)
-                        LayoutId(
-                          id: headerId,
-                          child: widget.header!,
-                        ),
-                    ],
+            components: components,
+            // Below Components, since a width builder may read it.
+            child: Builder(
+              builder: (context) => GutterWidths(
+                weekNumber: components.monthComponents.bodyComponents.buildWeekNumberWidth(context),
+                timeline: components.multiDayComponents.bodyComponents.buildTimelineWidth(
+                  context,
+                  timeOfDayRange,
+                ),
+                child: EventsControllerProvider(
+                  eventsController: widget.eventsController,
+                  child: CalendarControllerProvider(
+                    notifier: widget.calendarController,
+                    child: CustomMultiChildLayout(
+                      delegate: CalendarLayoutDelegate(headerId, bodyId),
+                      children: [
+                        if (bodyId != null)
+                          LayoutId(
+                            id: bodyId,
+                            child: widget.body!,
+                          ),
+                        if (headerId != null)
+                          LayoutId(
+                            id: headerId,
+                            child: widget.header!,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),

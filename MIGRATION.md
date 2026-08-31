@@ -4,6 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.28.x → v0.29.0](#v028x--v0290) | `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
 | [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
@@ -14,6 +15,52 @@ Each section covers one upgrade. Versions not listed below need no changes.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.28.x → v0.29.0
+
+### The gutters share a width, not a style
+
+`GutterStyles` and `GutterStyles.timelineStyleOf` are removed. Every style,
+including `timelineStyle` and `weekNumberStyle`, resolves from the nearest
+`KalenderTheme` like all the others:
+
+```dart
+// Before
+final style = GutterStyles.timelineStyleOf(context);
+
+// After
+final style = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
+```
+
+The calendar measures each gutter once and both halves read that number, so a
+`KalenderTheme` scoped inside the header or the body now restyles the gutter
+without resizing it. Setting a larger font in a scoped theme no longer widens the
+column. Set the width directly instead:
+
+```dart
+CalendarComponents(
+  multiDayComponents: MultiDayComponents(
+    bodyComponents: MultiDayBodyComponents(
+      timelineWidth: (context, range) => 72,
+    ),
+  ),
+  monthComponents: MonthComponents(
+    bodyComponents: MonthBodyComponents(
+      weekNumberWidth: (context) => 72,
+    ),
+  ),
+)
+```
+
+### The month week number column has a fixed width
+
+It sized itself to the widest label it was drawing, so the column changed width
+as you paged between months and the day columns shifted with it. It is now
+`kDefaultWeekNumberWidth`, 56, matching `kDefaultScheduleLeadingWidth`.
+
+A custom `weekNumberBuilder` wider than that needs `weekNumberWidth` set, where
+it was measured for you before. Setting `WeekNumberStyle.buttonSize` still widens
+the column, since `defaultWeekNumberWidth` reads it.
 
 ## v0.27.x → v0.28.0
 
@@ -285,6 +332,9 @@ overlay all measure from. A theme scoped inside the calendar cannot move it.
 ```dart
 timelineWidth: (context, range) => GutterStyles.timelineStyleOf(context).width ?? 56,
 ```
+
+`GutterStyles` is removed in 0.29.0. Resolve with `KalenderTheme.of(context)`
+instead.
 
 `defaultTimelineWidth` resolves the style the same way, so it no longer takes
 one. A builder that measured the default and adjusted it drops the argument:

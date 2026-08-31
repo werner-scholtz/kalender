@@ -74,6 +74,13 @@ class MonthBodyComponents {
   /// Null uses [WeekNumber].
   final WeekNumberBuilder? weekNumberBuilder;
 
+  /// A function that returns the width of the week number column.
+  ///
+  /// Null uses [defaultWeekNumberWidth]. The month body and the month header
+  /// both read the one value this returns, so a custom [weekNumberBuilder] wider
+  /// than the default needs this set too.
+  final WeekNumberWidthBuilder? weekNumberWidth;
+
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
 
@@ -90,6 +97,7 @@ class MonthBodyComponents {
     this.monthDayHeaderStringBuilder,
     this.monthDayCellBuilder,
     this.weekNumberBuilder,
+    this.weekNumberWidth,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.overlayBuilders,
@@ -110,6 +118,11 @@ class MonthBodyComponents {
     return monthDayCellBuilder?.call(context, details) ?? const MonthDayCell();
   }
 
+  /// Resolves the width of the week number column, with [weekNumberWidth] when set.
+  double buildWeekNumberWidth(BuildContext context) {
+    return weekNumberWidth?.call(context) ?? defaultWeekNumberWidth(context);
+  }
+
   /// Builds a week number, with [weekNumberBuilder] when set.
   Widget buildWeekNumber(BuildContext context, DateTimeRange visibleDateTimeRange) {
     return weekNumberBuilder?.call(context, visibleDateTimeRange) ??
@@ -123,6 +136,7 @@ class MonthBodyComponents {
     DateStringBuilder? monthDayHeaderStringBuilder,
     MonthDayCellBuilder? monthDayCellBuilder,
     WeekNumberBuilder? weekNumberBuilder,
+    WeekNumberWidthBuilder? weekNumberWidth,
     HorizontalTriggerWidgetBuilder? leftTriggerBuilder,
     HorizontalTriggerWidgetBuilder? rightTriggerBuilder,
     OverlayBuilders? overlayBuilders,
@@ -133,6 +147,7 @@ class MonthBodyComponents {
       monthDayHeaderStringBuilder: monthDayHeaderStringBuilder ?? this.monthDayHeaderStringBuilder,
       monthDayCellBuilder: monthDayCellBuilder ?? this.monthDayCellBuilder,
       weekNumberBuilder: weekNumberBuilder ?? this.weekNumberBuilder,
+      weekNumberWidth: weekNumberWidth ?? this.weekNumberWidth,
       leftTriggerBuilder: leftTriggerBuilder ?? this.leftTriggerBuilder,
       rightTriggerBuilder: rightTriggerBuilder ?? this.rightTriggerBuilder,
       overlayBuilders: overlayBuilders ?? this.overlayBuilders,
@@ -149,6 +164,7 @@ class MonthBodyComponents {
         other.monthDayHeaderStringBuilder == monthDayHeaderStringBuilder &&
         other.monthDayCellBuilder == monthDayCellBuilder &&
         other.weekNumberBuilder == weekNumberBuilder &&
+        other.weekNumberWidth == weekNumberWidth &&
         other.leftTriggerBuilder == leftTriggerBuilder &&
         other.rightTriggerBuilder == rightTriggerBuilder &&
         other.overlayBuilders == overlayBuilders;
@@ -161,6 +177,7 @@ class MonthBodyComponents {
         monthDayHeaderStringBuilder,
         monthDayCellBuilder,
         weekNumberBuilder,
+        weekNumberWidth,
         leftTriggerBuilder,
         rightTriggerBuilder,
         overlayBuilders,

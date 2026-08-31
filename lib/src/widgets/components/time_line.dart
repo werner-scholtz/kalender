@@ -14,8 +14,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// The [visibleDateTimeRange] is the range the calendar is showing, which those
 /// labels are only drawn for.
 ///
-/// Resolve the style with [GutterStyles.timelineStyleOf], the same value the
-/// gutter width is measured from.
+/// Resolve the style with `KalenderTheme.of`.
 typedef TimeLineBuilder = Widget Function(
   BuildContext context,
   double heightPerMinute,
@@ -26,10 +25,9 @@ typedef TimeLineBuilder = Widget Function(
 
 /// Resolves the width of the timeline gutter.
 ///
-/// The same width is used by the multi-day body, header and drag overlay, so that
-/// their day columns stay aligned. Resolve the style with
-/// [GutterStyles.timelineStyleOf], the value the rest of the gutter is measured
-/// from, rather than from [KalenderTheme].
+/// The calendar calls this once and the multi-day body, header and drag overlay
+/// all read the result, so their day columns stay aligned. Resolve the style
+/// with [KalenderTheme].
 ///
 /// See [defaultTimelineWidth] for the default implementation.
 typedef TimelineWidthBuilder = double Function(
@@ -46,7 +44,7 @@ typedef TimelineWidthBuilder = double Function(
 /// count, and any custom [MultiDayBodyComponents.timelineStringBuilder]. Honors
 /// the ambient [MediaQueryData.textScaler] so it reserves enough room for scaled text.
 double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange) {
-  final style = GutterStyles.timelineStyleOf(context);
+  final style = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
   if (style.width != null) return style.width!;
 
   final textStyle = style.textStyle ?? Theme.of(context).textTheme.labelMedium!;
@@ -225,15 +223,10 @@ mixin TimeLineUtils {
   /// The style of the timeline.
   TimelineStyle? get timelineStyle;
 
-  /// The shared gutter style overlaid with [timelineStyle].
-  ///
-  /// The base comes from [GutterStyles], the same value the gutter width is
-  /// measured from, so labels cannot be laid out wider than the box holding
-  /// them. Outside a [CalendarView] there is no [GutterStyles], so the theme
-  /// stands in.
+  /// The nearest [KalenderTheme]'s timeline style overlaid with [timelineStyle].
   TimelineStyle effectiveStyle(BuildContext context) {
-    final shared = GutterStyles.maybeOf(context)?.timelineStyle ?? KalenderTheme.of(context).timelineStyle;
-    return (shared ?? const TimelineStyle()).merge(timelineStyle);
+    final theme = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
+    return theme.merge(timelineStyle);
   }
 
   /// The label shown for [time].

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/gutter_styles.dart';
+import 'package:kalender/src/models/providers/gutter_widths.dart';
 
 /// The month grid puts the week number at the top of its row rather than
 /// centring it, which is where every other week number sits.
@@ -10,16 +9,19 @@ const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter)
 
 /// The style the month week number is drawn with.
 ///
-/// [KalenderThemeData.weekNumberStyle] wins over the top alignment. It comes from
-/// [GutterStyles], resolved above both the header and the body, so the gutter and
-/// the header's spacer always measure the same width.
+/// [KalenderThemeData.weekNumberStyle] wins over the top alignment, resolved from
+/// the nearest scope like every other style.
 WeekNumberStyle _resolveStyle(BuildContext context) {
-  final shared = GutterStyles.of(context).weekNumberStyle;
-  // Read outside the assert so the widget depends on the theme in release builds
-  // too, then compared inside it so the warning costs nothing when shipped.
-  final scoped = KalenderTheme.of(context).weekNumberStyle;
-  assert(debugCheckGutterStyleReaches(field: 'weekNumberStyle', shared: shared, scoped: scoped));
-  return _monthWeekNumberDefaults.merge(shared);
+  return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle);
+}
+
+/// The width the calendar measured for the week number column.
+///
+/// Falls back to measuring where there is no [GutterWidths], which is the case
+/// outside a [CalendarView].
+double _width(BuildContext context) {
+  return GutterWidths.maybeOf(context)?.weekNumber ??
+      context.components.monthComponents.bodyComponents.buildWeekNumberWidth(context);
 }
 
 class MonthWeekNumberGutter extends StatelessWidget {
@@ -40,7 +42,8 @@ class MonthWeekNumberGutter extends StatelessWidget {
   Widget build(BuildContext context) {
     return KalenderTheme(
       data: KalenderTheme.of(context).copyWith(weekNumberStyle: _resolveStyle(context)),
-      child: IntrinsicWidth(
+      child: SizedBox(
+        width: _width(context),
         child: Column(
           children: List.generate(
             numberOfRows,
@@ -73,60 +76,8 @@ class MonthWeekNumberGutter extends StatelessWidget {
 }
 
 class MonthWeekNumberSpacer extends StatelessWidget {
-  final InternalDateTimeRange visibleRange;
-  final int numberOfRows;
-  final WeekNumberBuilder weekNumberBuilder;
-
-  const MonthWeekNumberSpacer({
-    super.key,
-    required this.visibleRange,
-    required this.numberOfRows,
-    required this.weekNumberBuilder,
-  });
+  const MonthWeekNumberSpacer({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return KalenderTheme(
-      data: KalenderTheme.of(context).copyWith(weekNumberStyle: _resolveStyle(context)),
-      child: _WidthOnly(
-        child: IntrinsicWidth(
-          child: Stack(
-            children: List.generate(
-              numberOfRows,
-              (index) {
-                final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-                final range = InternalDateTimeRange(
-                  start: start,
-                  end: start.add(const Duration(days: DateTime.daysPerWeek)),
-                );
-
-                return Builder(
-                  builder: (context) => weekNumberBuilder(context, range.forLocation(location: context.location)),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _WidthOnly extends SingleChildRenderObjectWidget {
-  const _WidthOnly({required super.child});
-
-  @override
-  RenderObject createRenderObject(BuildContext context) => _RenderWidthOnly();
-}
-
-class _RenderWidthOnly extends RenderProxyBox {
-  @override
-  void performLayout() {
-    child?.layout(constraints, parentUsesSize: true);
-    final childWidth = child?.size.width ?? 0;
-    size = constraints.constrain(Size(childWidth, 0));
-  }
-
-  @override
-  void paint(PaintingContext context, Offset offset) {}
+  Widget build(BuildContext context) => SizedBox(width: _width(context));
 }
