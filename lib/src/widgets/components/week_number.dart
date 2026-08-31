@@ -11,8 +11,10 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// so both read one number rather than each measuring what they build. It is not
 /// called for a view that draws no week numbers.
 ///
-/// It runs below the calendar's providers, so the context resolves both
-/// [KalenderTheme] and [KalenderScope].
+/// It runs above `CalendarHeader` and `CalendarBody`, so the context resolves
+/// [KalenderTheme] and every [KalenderScope] accessor except the four those two
+/// install: `interactionOf`, `snappingOf`, `tileComponentsOf` and
+/// `heightPerMinuteOf`.
 typedef WeekNumberWidthBuilder = double Function(BuildContext context);
 
 /// The width [defaultWeekNumberWidth] returns when the style sets none.

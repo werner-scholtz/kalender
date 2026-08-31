@@ -216,10 +216,11 @@ void main() {
     });
   });
 
-  // The builders run below every provider the calendar installs, so one that
-  // reads the controllers resolves them rather than throwing.
+  // The builders run above CalendarHeader and CalendarBody, so what the calendar
+  // installs resolves and the four those two install do not.
   testWidgets('a width builder reaches the calendar state', (tester) async {
-    _widthBuilderError = null;
+    _resolved.clear();
+    _widthBuilderCalls = 0;
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -236,22 +237,48 @@ void main() {
       ),
     );
 
-    expect(_widthBuilderError, isNull);
+    expect(_widthBuilderCalls, 1);
+    expect(_resolved, {
+      'eventsControllerOf': true,
+      'calendarControllerOf': true,
+      'localeOf': true,
+      'locationOf': true,
+      'componentsOf': true,
+      'callbacksOf': true,
+      'multiDayRuleOf': true,
+      'interactionOf': false,
+      'snappingOf': false,
+      'tileComponentsOf': false,
+      'heightPerMinuteOf': false,
+    });
   });
 }
 
-Object? _widthBuilderError;
+final _resolved = <String, bool>{};
+int _widthBuilderCalls = 0;
+
+void _record(String name, void Function(BuildContext) read, BuildContext context) {
+  try {
+    read(context);
+    _resolved[name] = true;
+  } catch (_) {
+    _resolved[name] = false;
+  }
+}
 
 double _readsCalendarState(BuildContext context, TimeOfDayRange range) {
-  try {
-    KalenderScope.calendarControllerOf(context);
-    KalenderScope.eventsControllerOf(context);
-    KalenderScope.componentsOf(context);
-    KalenderScope.localeOf(context);
-    KalenderScope.locationOf(context);
-  } catch (error) {
-    _widthBuilderError = error;
-  }
+  _widthBuilderCalls++;
+  _record('eventsControllerOf', KalenderScope.eventsControllerOf, context);
+  _record('calendarControllerOf', KalenderScope.calendarControllerOf, context);
+  _record('localeOf', KalenderScope.localeOf, context);
+  _record('locationOf', KalenderScope.locationOf, context);
+  _record('componentsOf', KalenderScope.componentsOf, context);
+  _record('callbacksOf', KalenderScope.callbacksOf, context);
+  _record('multiDayRuleOf', KalenderScope.multiDayRuleOf, context);
+  _record('interactionOf', KalenderScope.interactionOf, context);
+  _record('snappingOf', KalenderScope.snappingOf, context);
+  _record('tileComponentsOf', KalenderScope.tileComponentsOf, context);
+  _record('heightPerMinuteOf', KalenderScope.heightPerMinuteOf, context);
   return 56;
 }
 
