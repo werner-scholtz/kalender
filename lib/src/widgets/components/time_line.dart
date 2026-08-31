@@ -26,8 +26,11 @@ typedef TimeLineBuilder = Widget Function(
 /// Resolves the width of the timeline gutter.
 ///
 /// The calendar calls this once and the multi-day body, header and drag overlay
-/// all read the result, so their day columns stay aligned. Resolve the style
-/// with [KalenderTheme].
+/// all read the result, so their day columns stay aligned. It is not called for
+/// a view that draws no timeline.
+///
+/// It runs below the calendar's providers, so the context resolves both
+/// [KalenderTheme] and [KalenderScope].
 ///
 /// See [defaultTimelineWidth] for the default implementation.
 typedef TimelineWidthBuilder = double Function(

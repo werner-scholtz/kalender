@@ -2,12 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_scope.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The width of the month's week number column.
 ///
 /// The column is drawn in the month body and reserved again in the month header,
-/// so both read one number rather than each measuring what they build.
+/// so both read one number rather than each measuring what they build. It is not
+/// called for a view that draws no week numbers.
+///
+/// It runs below the calendar's providers, so the context resolves both
+/// [KalenderTheme] and [KalenderScope].
 typedef WeekNumberWidthBuilder = double Function(BuildContext context);
 
 /// The width [defaultWeekNumberWidth] returns when the style sets none.
@@ -165,7 +170,7 @@ class WeekNumber extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           padding: buttonSize == null ? null : EdgeInsets.zero,
           constraints: buttonSize == null ? null : BoxConstraints.tight(buttonSize),
-          // The gutter is sized by the timeline, not by this label, so a range
+          // The gutter is sized by the calendar, not by this label, so a range
           // spanning two weeks wraps. Without this the short second line sits
           // against the leading edge.
           icon: Text(

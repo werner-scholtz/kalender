@@ -174,7 +174,85 @@ void main() {
       // reserves it again, and all three read the one measurement.
       expect(_timelineWidthCalls, 1);
     });
+
+    testWidgets('the labels fit the gutter measured for them', (tester) async {
+      await pumpAndSettleWithMaterialApp(tester, plain(week()));
+
+      final gutter = tester.getRect(find.byKey(MultiDayBody.timelineKey));
+      final labels = find.descendant(
+        of: find.byKey(MultiDayBody.timelineKey),
+        matching: find.byType(Text),
+      );
+      expect(labels, findsWidgets);
+
+      for (var index = 0; index < tester.widgetList(labels).length; index++) {
+        expect(
+          tester.getRect(labels.at(index)).width,
+          lessThanOrEqualTo(gutter.width + 0.5),
+          reason: 'the measurement must reserve room for every label it measured',
+        );
+      }
+    });
+
+    testWidgets('a view that draws no timeline does not measure one', (tester) async {
+      _timelineWidthCalls = 0;
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        KalenderView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: month(),
+          components: const CalendarComponents(
+            multiDayComponents: MultiDayComponents(
+              bodyComponents: MultiDayBodyComponents(timelineWidth: _countingTimelineWidth),
+            ),
+          ),
+          header: CalendarHeader(multiDayTileComponents: tiles),
+          body: CalendarBody(multiDayTileComponents: tiles),
+        ),
+      );
+
+      expect(_timelineWidthCalls, 0);
+    });
   });
+
+  // The builders run below every provider the calendar installs, so one that
+  // reads the controllers resolves them rather than throwing.
+  testWidgets('a width builder reaches the calendar state', (tester) async {
+    _widthBuilderError = null;
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      KalenderView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: week(),
+        components: const CalendarComponents(
+          multiDayComponents: MultiDayComponents(
+            bodyComponents: MultiDayBodyComponents(timelineWidth: _readsCalendarState),
+          ),
+        ),
+        header: CalendarHeader(multiDayTileComponents: tiles),
+        body: CalendarBody(multiDayTileComponents: tiles),
+      ),
+    );
+
+    expect(_widthBuilderError, isNull);
+  });
+}
+
+Object? _widthBuilderError;
+
+double _readsCalendarState(BuildContext context, TimeOfDayRange range) {
+  try {
+    KalenderScope.calendarControllerOf(context);
+    KalenderScope.eventsControllerOf(context);
+    KalenderScope.componentsOf(context);
+    KalenderScope.localeOf(context);
+    KalenderScope.locationOf(context);
+  } catch (error) {
+    _widthBuilderError = error;
+  }
+  return 56;
 }
 
 int _timelineWidthCalls = 0;

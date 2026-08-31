@@ -10,12 +10,15 @@ import 'package:kalender/kalender.dart';
 ///
 /// Only the width is shared. Everything that paints a gutter resolves its style
 /// from the nearest [KalenderTheme], the way every other style is resolved.
+///
+/// A width is null where the view draws no such gutter, and the builder that
+/// measures it does not run there.
 class GutterWidths extends InheritedWidget {
-  /// The width of the month week number column.
-  final double weekNumber;
+  /// The width of the month week number column, or null where none is drawn.
+  final double? weekNumber;
 
-  /// The width of the multi-day timeline column.
-  final double timeline;
+  /// The width of the multi-day timeline column, or null where none is drawn.
+  final double? timeline;
 
   /// Creates a [GutterWidths] with the given measurements.
   const GutterWidths({
