@@ -146,11 +146,11 @@ What an app cannot reach comes to two things rather than ten: the drag or gestur
 
 **`FreeScrollFunctions` is removed, and removing it fixed a defect.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` is included in `==` and `hashCode` by the same change, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
 
-### 0.29.0, the state layer
+### 0.29.0, the state layer, previewed in 0.29.0-dev.1
 
 **The state layer becomes public, as one model rather than five widgets.** Composability's first piece, and the gate on [#215](https://github.com/werner-scholtz/kalender/issues/215), [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262), [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The coverage gate it waited on is met.
 
-Today `calendar_provider.dart` holds five `InheritedWidget`s, `EventsControllerProvider`, `CalendarControllerProvider`, `LocaleProvider`, `LocationProvider` and `TileComponentProvider`. The classes are public but the file is not exported, so no app can name one, and `CalendarView.build` nests them in a fixed order.
+Today `calendar_provider.dart` holds five `InheritedWidget`s, `EventsControllerProvider`, `CalendarControllerProvider`, `LocaleProvider`, `LocationProvider` and `TileComponentProvider`. The classes are public but the file is not exported, so no app can name one, and `KalenderView.build` nests them in a fixed order.
 
 Exporting the five is the obvious move and is rejected. It makes the tree shape public, so apps come to depend on which provider sits where, on each one existing, and on inserting their own between them. That cannot be walked back after 1.0.0. `GutterStyles` is the standing example of the cost: it went public in 0.27.0 and now the guide and a debug report both exist to explain where it must sit.
 
@@ -162,7 +162,9 @@ The providers do not all collapse. Eleven exist, and only five are calendar-wide
 
 So the model carries the five, the other six stay scoped widgets, and both sit behind one set of accessors. That makes one rule true everywhere: an accessor reads the nearest value. The five simply only ever have one instance. An app never learns which is which, and the gutter becomes the only place in the package where the rule does not hold.
 
-**`CalendarView.locale` becomes `Locale`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo compile and fail at runtime. `Locale` is `dart:ui` rather than Material, it carries value equality, and an app holding `Localizations.localeOf(context)` has one already. `Intl.canonicalizedLocale` rewrites the separator, so `toLanguageTag`'s `en-US` and intl's `en_US` both resolve to the same data and no conversion rule is needed. intl's own `Locale` in `package:intl/locale.dart` is not used, since `DateFormat` does not accept it and it would put an intl type in the public API.
+**`CalendarView` is renamed to `KalenderView`.** The package is `kalender` and the widget an app places was `CalendarView`, which read oddly next to `KalenderScope`. Pulled forward from the next breaking window, since this release already breaks. The old names stay as typedefs and are removed in 0.30.0.
+
+**`KalenderView.locale` becomes `Locale`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo compile and fail at runtime. `Locale` is `dart:ui` rather than Material, it carries value equality, and an app holding `Localizations.localeOf(context)` has one already. `Intl.canonicalizedLocale` rewrites the separator, so `toLanguageTag`'s `en-US` and intl's `en_US` both resolve to the same data and no conversion rule is needed. intl's own `Locale` in `package:intl/locale.dart` is not used, since `DateFormat` does not accept it and it would put an intl type in the public API.
 
 Nine declarations carry the type. Three are public: the field, `CalendarLocale.calendarLocale` on `BuildContext`, and the optional parameter on the four `DateTimeExtensions` localized methods. It breaks anyone passing a `String`, and anyone assigning `calendarLocale` to a non-nullable `String`, since the implicit downcast a `dynamic` allowed becomes a compile error.
 
@@ -172,11 +174,11 @@ Nine declarations carry the type. Three are public: the field, `CalendarLocale.c
 
 The cause is that a layout value is derived from a themed value. `defaultTimelineWidth` measures every label the timeline can show in the resolved text style, and that measurement is the gutter's width, so changing a font changes a layout dimension. A layout dimension has to agree across the two halves, and a theme means the nearest one wins. Those three cannot all hold, and `GutterStyles` resolves it by suspending the third for two fields.
 
-The width has to be shared. The style does not. Today both are, which is what makes the exception larger than it needs to be. `CalendarView` computes the width once and publishes a `double`, the header spacer, the body gutter and the drag overlay read that number, and everything that paints resolves its style from `KalenderTheme.of(context)` at the nearest scope like every other style. A shared layout number needs no explanation, where a shared style collides with what theming means.
+The width has to be shared. The style does not. Today both are, which is what makes the exception larger than it needs to be. `KalenderView` computes the width once and publishes a `double`, the header spacer, the body gutter and the drag overlay read that number, and everything that paints resolves its style from `KalenderTheme.of(context)` at the nearest scope like every other style. A shared layout number needs no explanation, where a shared style collides with what theming means.
 
 That removes `GutterStyles` and `GutterStyles.timelineStyleOf` from the public API, deletes `debugCheckGutterStyleReaches`, and leaves gutter appearance in the theme extension where it interpolates with the rest. A scoped theme then restyles the labels without resizing the gutter, which is visible rather than silent. Measured against the repository, nothing exercises the case: across every example and guide the only gutter settings are an explicit `timelineWidth` returning 48 and a `WeekNumberStyle` tooltip.
 
-It also fixes two things that are not about theming. `buildTimelineWidth` runs at three sites below `CalendarView`, so the measurement, which lays out up to 24 text painters and 288 under a custom string builder, runs three times per build instead of once. And the body passes the real `timeOfDayRange` where the header and the drag overlay pass `TimeOfDayRange.allDay()`. `defaultTimelineWidth` ignores the parameter, so nothing breaks today, but a custom `timelineWidth` builder that read it would return different widths in the header and the body, which is the misalignment `GutterStyles` exists to prevent.
+It also fixes two things that are not about theming. `buildTimelineWidth` runs at three sites below `KalenderView`, so the measurement, which lays out up to 24 text painters and 288 under a custom string builder, runs three times per build instead of once. And the body passes the real `timeOfDayRange` where the header and the drag overlay pass `TimeOfDayRange.allDay()`. `defaultTimelineWidth` ignores the parameter, so nothing breaks today, but a custom `timelineWidth` builder that read it would return different widths in the header and the body, which is the misalignment `GutterStyles` exists to prevent.
 
 The month comes along, which is what makes the rule true of the whole package rather than two thirds of it. Its gutter agrees today by a different mechanism: `MonthWeekNumberGutter` and `MonthWeekNumberSpacer` both wrap the week number in `KalenderTheme.of(context).copyWith(weekNumberStyle: shared)` and take the widget's intrinsic size, so they match because the same style is injected into both. That is the sharing being removed, so the month gets a `weekNumberWidth` builder alongside `timelineWidth` and a `defaultWeekNumberWidth` that measures the widest label the gutter can show, the way `defaultTimelineWidth` measures across the day. `WeekNumberStyle.buttonSize` landed in 0.28.0, so the inputs exist.
 
@@ -189,7 +191,7 @@ Four of the nine tests in `gutter_style_scope_test.dart` describe the behaviour 
 
 Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
 
-**`CalendarView` may become `Kalender`.** The package is `kalender` and the widget an app places is `CalendarView`, which reads oddly next to `KalenderScope`. A pure rename, so it belongs in whichever release already breaks.
+Nothing is queued. The rename that sat here shipped in 0.29.0.
 
 ### Theming, still open
 
@@ -258,7 +260,7 @@ Selection is the thread through the middle three. There is no `selectedDate` on 
 | [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A set of visible weekdays on the view configuration. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. Scoped below. |
 | [#98](https://github.com/werner-scholtz/kalender/issues/98) named and uneditable time regions | A second thing the calendar draws besides events, that events sit on top of. The largest new model here. |
 | [#259](https://github.com/werner-scholtz/kalender/issues/259) drag to create over a locked event | A drag starting on an unmodifiable event should fall through to creation instead of doing nothing. Mostly behavior. |
-| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `CalendarView`. |
+| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `KalenderView`. |
 
 **Arbitrary visible weekdays, [#90](https://github.com/werner-scholtz/kalender/issues/90), needs the page to stop being one date range.** 0.26.0 covers the contiguous case with `numberOfDays` on `week` and `workWeek`, which is what the reporter of [#444](https://github.com/werner-scholtz/kalender/issues/444) asked for. Every contiguous span starting on `firstDayOfWeek` is expressible that way, so what a set of weekdays adds is the non-contiguous case, Monday, Wednesday and Friday, and a span that starts somewhere other than `firstDayOfWeek`.
 

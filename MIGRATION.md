@@ -572,7 +572,7 @@ CalendarView(
 )
 ```
 
-`weekNumberStyle` and `timelineStyle` are the exception. They size the gutters that both halves have to agree on, so the calendar resolves them above the header and the body and a scope inside either one does not reach them. Set those two above the `CalendarView`. A scoped value the calendar ignores is reported in debug builds.
+`weekNumberStyle` and `timelineStyle` were the exception. They sized the gutters that both halves have to agree on, so the calendar resolved them above the header and the body and a scope inside either one did not reach them. That exception is removed in 0.29.0, see [The gutters share a width, not a style](#the-gutters-share-a-width-not-a-style).
 
 ### Custom component builders receive a resolved style
 
@@ -603,7 +603,7 @@ Nothing to change unless you set `KalenderThemeData.weekNumberStyle.alignment`. 
 
 The theme field feeds both the month gutter and the multi-day header, so the two can no longer be given different alignments. `MonthBodyComponentStyles` was the only way to set them apart and it is gone.
 
-Set it above the `CalendarView` rather than on a `KalenderTheme` scoped to the header or the body. `weekNumberStyle` sizes the month gutter, which the header reserves space for, so it is resolved once above both.
+Set it above the calendar rather than on a `KalenderTheme` scoped to the header or the body. That restriction is removed in 0.29.0, see [The gutters share a width, not a style](#the-gutters-share-a-width-not-a-style).
 
 ### `CalendarEvent.copyWith` becomes `copyWithData`
 

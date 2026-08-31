@@ -4,27 +4,27 @@ See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.
 
 ### Breaking Changes
 
-- `GutterStyles` and `GutterStyles.timelineStyleOf` are removed. Resolve every style, including `timelineStyle` and `weekNumberStyle`, with `KalenderTheme.of(context)`.
+- `GutterStyles` and `GutterStyles.timelineStyleOf` are removed.
 - `KalenderView.locale`, `KalenderScope.localeOf`, `BuildContext.calendarLocale` and the four localized methods on `DateTimeExtensions` take a `Locale` rather than a `dynamic`.
 
 ### Behavior Changes
 
-- The gutters share the width the calendar measured rather than the style it measured from, so a `KalenderTheme` scoped inside the header or the body restyles a gutter without resizing it.
-- The month week number column has a fixed width. It sized itself to the widest label it drew, so the column changed width as you paged and the day columns moved with it.
+- The gutters share the width the calendar measured rather than the style it measured from.
+- The month week number column has a fixed width.
 
 ### Deprecations
 
-- `CalendarView` is renamed to `KalenderView`, and `CalendarViewState` to `KalenderViewState`. The old names are typedefs to the new ones, so existing code compiles and builds the same widget, and will be removed in 0.30.0.
+- `CalendarView` is renamed to `KalenderView`, and `CalendarViewState` to `KalenderViewState`. The old names are typedefs, removed in 0.30.0.
 
 ### Features
 
-- `KalenderScope` reads the state of the calendar a widget is built inside: `eventsControllerOf`, `calendarControllerOf`, `localeOf`, `locationOf`, `componentsOf`, `callbacksOf`, `interactionOf`, `snappingOf`, `tileComponentsOf`, `heightPerMinuteOf` and `multiDayRuleOf`, with `maybeOf` forms for the two controllers. Each accessor depends on one value, and every one returns the nearest, so a custom component in the header reads the header's interaction rather than the body's.
-- `MonthBodyComponents.weekNumberWidth` sets the width of the month week number column, with `defaultWeekNumberWidth` and `kDefaultWeekNumberWidth` as the default. It matches `MultiDayBodyComponents.timelineWidth`.
+- `KalenderScope` reads the state of the enclosing calendar, one accessor per value: `eventsControllerOf`, `calendarControllerOf`, `localeOf`, `locationOf`, `componentsOf`, `callbacksOf`, `interactionOf`, `snappingOf`, `tileComponentsOf`, `heightPerMinuteOf` and `multiDayRuleOf`, with `maybeOf` forms for the two controllers.
+- `MonthBodyComponents.weekNumberWidth` sets the width of the month week number column, with `defaultWeekNumberWidth` and `kDefaultWeekNumberWidth` as the default.
 
 ### Fixes
 
-- The timeline gutter is measured once rather than at each of the three places that read it, so a measurement laying out up to 24 text painters no longer runs three times per build.
-- A custom `timelineWidth` builder receives one range rather than the view's range in the body and `TimeOfDayRange.allDay()` in the header and the drag overlay, which would have returned different widths for the two halves.
+- The timeline gutter is measured once rather than at each of the three places that read it.
+- A custom `timelineWidth` builder receives one range rather than the view's range in the body and `TimeOfDayRange.allDay()` in the header and the drag overlay.
 
 ## 0.28.0
 
