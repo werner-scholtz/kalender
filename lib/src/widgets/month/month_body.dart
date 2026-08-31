@@ -99,6 +99,7 @@ class MonthBody extends StatelessWidget {
             backgroundId: background != null ? 3 : null,
             gridId: 1,
             contentId: 2,
+            textDirection: Directionality.of(context),
           ),
           children: [
             if (showWeekNumbers)

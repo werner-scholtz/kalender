@@ -23,6 +23,7 @@ See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.
 
 ### Fixes
 
+- The month week number column mirrors in right-to-left layouts, where it drew opposite the space the header reserved.
 - The timeline gutter is measured once rather than at each of the three places that read it.
 - A custom `timelineWidth` builder receives one range rather than the view's range in the body and `TimeOfDayRange.allDay()` in the header and the drag overlay.
 
