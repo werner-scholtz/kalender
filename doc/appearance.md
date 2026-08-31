@@ -340,7 +340,8 @@ Pass a `CalendarComponents` object to `KalenderView` to override the default wid
 > a [`KalenderTheme`](#theming-part-of-the-app) to style one of them.
 >
 > Every builder receives a `BuildContext` as its first argument and resolves what
-> it needs from it with `KalenderTheme.of(context)`.
+> it needs from it: styles with `KalenderTheme.of(context)`, and the state of the
+> enclosing calendar with `KalenderScope`, one accessor per value.
 
 <details>
   <summary>MultiDayComponents</summary>

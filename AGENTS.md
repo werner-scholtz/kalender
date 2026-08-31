@@ -26,7 +26,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/src/extensions/` | Internal DateTime/TimeOfDay utilities (DST-safe wall-clock arithmetic) |
 | `lib/src/calendar_body.dart` | Top-level body widget that delegates to the correct view |
 | `lib/src/calendar_header.dart` | Top-level header widget |
-| `lib/src/calendar_view.dart` | Main KalenderView orchestrator widget |
+| `lib/src/kalender_view.dart` | Main KalenderView orchestrator widget |
 | `test/` | Unit and widget tests (mirrors `lib/src/` structure) |
 | `test/utilities.dart` | Shared test helpers: `TestProvider`, `wrapWithMaterialApp`, `testWithTimeZones`, `WidgetTesterUtils` |
 | `doc/` | The user-facing guides, indexed by `doc/README.md` |
@@ -123,8 +123,12 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/c
 | `Interaction` | `CalendarInteraction` | Interaction permissions (create, resize, reschedule) |
 | `Snapping` | `CalendarSnapping` | Snap-to-grid configuration |
 | `HeightPerMinute` | `double` | Vertical zoom level |
-| `LocaleProvider` | `dynamic` | Internationalization locale |
+| `LocaleProvider` | `Locale?` | Internationalization locale |
 | `LocationProvider` | `Location?` | Timezone location |
+
+`GutterWidths` sits in `lib/src/models/providers/gutter_widths.dart`. `KalenderView` measures the month week number column and the multi-day timeline once and publishes the widths there, so the header and the body cannot be given different ones. A width is null where the view draws no such gutter.
+
+`KalenderScope` in `lib/src/models/providers/kalender_scope.dart` is the exported accessor for the table above, one static per value. The providers themselves are not exported. Add an accessor there when a provider gains something an app should reach.
 
 ### Event Model
 
