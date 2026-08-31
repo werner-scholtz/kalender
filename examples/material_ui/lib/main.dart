@@ -68,6 +68,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    eventsController.dispose();
+    calendarController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Kalender on material_ui')),

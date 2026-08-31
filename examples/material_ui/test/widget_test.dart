@@ -27,13 +27,28 @@ Widget _app({required bool bridge}) {
   );
 }
 
-class _Calendar extends StatelessWidget {
+class _Calendar extends StatefulWidget {
+  @override
+  State<_Calendar> createState() => _CalendarState();
+}
+
+class _CalendarState extends State<_Calendar> {
+  final eventsController = DefaultEventsController();
+  final calendarController = CalendarController();
+
+  @override
+  void dispose() {
+    eventsController.dispose();
+    calendarController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     return KalenderView(
-      eventsController: DefaultEventsController(),
-      calendarController: CalendarController(),
+      eventsController: eventsController,
+      calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: legacy.DateTimeRange(
           start: now.subtract(const Duration(days: 7)),
