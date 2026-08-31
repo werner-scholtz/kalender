@@ -30,14 +30,14 @@ void main() {
     calendarController.dispose();
   });
 
-  Widget schedule({CalendarComponents? components}) {
+  Widget schedule({CalendarComponents? components, Locale locale = const Locale('de')}) {
     final tiles = ScheduleTileComponents(tileBuilder: (context, event, range) => const SizedBox());
     return MaterialApp(
       home: Scaffold(
         body: KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,
-          locale: const Locale('de'),
+          locale: locale,
           components: components,
           viewConfiguration: ScheduleViewConfiguration.continuous(
             displayRange: DateTimeRange(start: DateTime(2025), end: DateTime(2025, 3)),
@@ -72,5 +72,19 @@ void main() {
 
     expect(tester.takeException(), isNull, reason: 'nothing reached intl');
     expect(find.text('Januar'), findsOneWidget, reason: 'the month heading came from intl4x');
+  });
+
+  // `Locale.toString()` gives `pt_BR`, which intl4x's parser rejects.
+  testWidgets('a locale with a country reaches intl4x', (tester) async {
+    await runZoned(
+      () async {
+        await tester.pumpWidget(schedule(components: intl4xComponents(), locale: const Locale('pt', 'BR')));
+        await tester.pumpAndSettle();
+      },
+      zoneValues: {#test.allowFormatting: true},
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('janeiro'), findsOneWidget);
   });
 }
