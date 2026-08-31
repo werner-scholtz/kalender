@@ -108,7 +108,7 @@ class TestProvider extends StatelessWidget {
   final ValueNotifier<CalendarInteraction>? interaction;
   final ValueNotifier<CalendarSnapping>? snapping;
   final ValueNotifier<double>? heightPerMinute;
-  final dynamic locale;
+  final Locale? locale;
   final Location? location;
 
   const TestProvider({

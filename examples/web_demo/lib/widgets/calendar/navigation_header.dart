@@ -252,10 +252,10 @@ class HeaderDateButton extends StatelessWidget {
         if (controller.viewController is MonthViewController) {
           final secondWeek = value.start.copyWith(day: value.start.day + 7);
           year = secondWeek.year;
-          month = secondWeek.monthNameLocalized(context.localeTag);
+          month = secondWeek.monthNameLocalized(Localizations.localeOf(context));
         } else {
           year = value.start.year;
-          month = value.start.monthNameLocalized(context.localeTag);
+          month = value.start.monthNameLocalized(Localizations.localeOf(context));
         }
 
         final button = FilledButton.tonal(

@@ -5,6 +5,7 @@ See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.
 ### Breaking Changes
 
 - `GutterStyles` and `GutterStyles.timelineStyleOf` are removed. Resolve every style, including `timelineStyle` and `weekNumberStyle`, with `KalenderTheme.of(context)`.
+- `KalenderView.locale`, `KalenderScope.localeOf`, `BuildContext.calendarLocale` and the four localized methods on `DateTimeExtensions` take a `Locale` rather than a `dynamic`.
 
 ### Behavior Changes
 

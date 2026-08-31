@@ -52,7 +52,7 @@ class FirstDayOfWeekEditor extends StatelessWidget {
       value: firstDayOfWeek,
       items: const [1, 2, 3, 4, 5, 6, 7],
       onChanged: (value) => onChanged(value),
-      itemToString: (value) => DateTime(2024, 1, value).dayNameLocalized(context.localeTag),
+      itemToString: (value) => DateTime(2024, 1, value).dayNameLocalized(Localizations.localeOf(context)),
     );
   }
 }

@@ -27,7 +27,7 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         calendarController: calendarController,
-        locale: 'de',
+        locale: const Locale('de'),
         viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: CalendarComponents(
           multiDayComponents: MultiDayComponents(

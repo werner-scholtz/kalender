@@ -27,7 +27,7 @@ void main() {
     CalendarComponents? components,
     KalenderThemeData? theme,
     TextDirection textDirection = TextDirection.ltr,
-    dynamic locale,
+    Locale? locale,
   }) async {
     final view = KalenderView(
       eventsController: eventsController,
@@ -148,7 +148,7 @@ void main() {
     await pumpWeek(
       tester,
       components: withTimelineStringBuilder((context, time) => '${context.calendarLocale}'),
-      locale: 'de_DE',
+      locale: const Locale('de', 'DE'),
     );
 
     expect(labelAt(tester, 1), 'de_DE');

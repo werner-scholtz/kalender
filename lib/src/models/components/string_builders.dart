@@ -27,5 +27,5 @@ extension CalendarLocale on BuildContext {
   /// This is the locale the calendar formats its own dates and times with, which
   /// is not necessarily the app's locale. Pass it to `intl`'s `DateFormat` or
   /// `NumberFormat`, or to the localized extensions on [DateTime].
-  dynamic get calendarLocale => LocaleProvider.of(this);
+  Locale? get calendarLocale => LocaleProvider.of(this);
 }

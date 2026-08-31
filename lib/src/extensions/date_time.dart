@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
@@ -6,7 +8,7 @@ import 'package:intl/intl.dart';
 ///
 /// The format is built inside the guard because intl resolves its locale data lazily, so either the construction or
 /// the format call can fail.
-String _formatLocalized(DateFormat Function() format, DateTime date, dynamic locale) {
+String _formatLocalized(DateFormat Function() format, DateTime date, Locale? locale) {
   try {
     return format().format(date);
   } catch (error) {
@@ -47,40 +49,44 @@ extension DateTimeExtensions on DateTime {
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15); // Monday
-  /// print(date.dayNameLocalized('en')); // Output: "Monday"
-  /// print(date.dayNameLocalized('fr')); // Output: "lundi"
-  /// print(date.dayNameLocalized('es')); // Output: "lunes"
+  /// print(date.dayNameLocalized(const Locale('en'))); // Output: "Monday"
+  /// print(date.dayNameLocalized(const Locale('fr'))); // Output: "lundi"
+  /// print(date.dayNameLocalized(const Locale('es'))); // Output: "lunes"
   /// ```
-  String dayNameLocalized([dynamic locale]) => _formatLocalized(() => DateFormat.EEEE(locale), this, locale);
+  String dayNameLocalized([Locale? locale]) =>
+      _formatLocalized(() => DateFormat.EEEE(locale?.toLanguageTag()), this, locale);
 
   /// Gets the abbreviated day name in a specific locale.
   ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15); // Monday
-  /// print(date.dayNameShortLocalized('en')); // Output: "Mon"
-  /// print(date.dayNameShortLocalized('fr')); // Output: "lun"
+  /// print(date.dayNameShortLocalized(const Locale('en'))); // Output: "Mon"
+  /// print(date.dayNameShortLocalized(const Locale('fr'))); // Output: "lun"
   /// ```
-  String dayNameShortLocalized([dynamic locale]) => _formatLocalized(() => DateFormat.E(locale), this, locale);
+  String dayNameShortLocalized([Locale? locale]) =>
+      _formatLocalized(() => DateFormat.E(locale?.toLanguageTag()), this, locale);
 
   /// Gets the month name in a specific locale.
   ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15); // January
-  /// print(date.monthNameLocalized('en')); // Output: "January"
-  /// print(date.monthNameLocalized('fr')); // Output: "janvier"
-  /// print(date.monthNameLocalized('es')); // Output: "enero"
+  /// print(date.monthNameLocalized(const Locale('en'))); // Output: "January"
+  /// print(date.monthNameLocalized(const Locale('fr'))); // Output: "janvier"
+  /// print(date.monthNameLocalized(const Locale('es'))); // Output: "enero"
   /// ```
-  String monthNameLocalized([dynamic locale]) => _formatLocalized(() => DateFormat.MMMM(locale), this, locale);
+  String monthNameLocalized([Locale? locale]) =>
+      _formatLocalized(() => DateFormat.MMMM(locale?.toLanguageTag()), this, locale);
 
   /// Gets the abbreviated month name in a specific locale.
   ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15); // January
-  /// print(date.monthNameShortLocalized('en')); // Output: "Jan"
-  /// print(date.monthNameShortLocalized('fr')); // Output: "janv."
+  /// print(date.monthNameShortLocalized(const Locale('en'))); // Output: "Jan"
+  /// print(date.monthNameShortLocalized(const Locale('fr'))); // Output: "janv."
   /// ```
-  String monthNameShortLocalized([dynamic locale]) => _formatLocalized(() => DateFormat.MMM(locale), this, locale);
+  String monthNameShortLocalized([Locale? locale]) =>
+      _formatLocalized(() => DateFormat.MMM(locale?.toLanguageTag()), this, locale);
 }
