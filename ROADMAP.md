@@ -146,7 +146,7 @@ What an app cannot reach comes to two things rather than ten: the drag or gestur
 
 **`FreeScrollFunctions` is removed, and removing it fixed a defect.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` is included in `==` and `hashCode` by the same change, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
 
-### 0.29.0, the state layer, previewed in 0.29.0-dev.1
+### 0.29.0, the state layer, done
 
 **The state layer becomes public, as one model rather than five widgets.** Composability's first piece, and the gate on [#215](https://github.com/werner-scholtz/kalender/issues/215), [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262), [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The coverage gate it waited on is met.
 
