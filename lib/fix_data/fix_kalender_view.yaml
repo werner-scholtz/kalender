@@ -7,8 +7,9 @@
 
 version: 1
 transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/490
   - title: "Rename to 'KalenderView'"
-    date: 2026-09-01
+    date: 2026-08-31
     element:
       uris: [ 'package:kalender/kalender.dart' ]
       typedef: 'CalendarView'
@@ -16,8 +17,9 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderView'
 
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/490
   - title: "Rename to 'KalenderViewState'"
-    date: 2026-09-01
+    date: 2026-08-31
     element:
       uris: [ 'package:kalender/kalender.dart' ]
       typedef: 'CalendarViewState'

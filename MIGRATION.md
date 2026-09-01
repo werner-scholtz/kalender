@@ -2,8 +2,31 @@
 
 Each section covers one upgrade. Versions not listed below need no changes.
 
-Run `dart fix --apply` before working through a section. Kalender ships fixes for
-the renames it can automate, so the steps below are what is left over.
+## Before you start: run `dart fix`
+
+Kalender ships data-driven fixes, so most renames are applied for you. Upgrade the
+package first, then run `dart fix` from your project root:
+
+```bash
+flutter pub upgrade kalender
+dart fix --dry-run              # preview
+dart fix --apply                # apply
+```
+
+It is safe to run across several versions at once. The fixes ship with the version
+you upgraded to and describe the older members, so a jump from an old release
+applies every rename in between.
+
+What it does not do:
+
+- Values it cannot rewrite safely, such as a `String` locale becoming a `Locale`.
+  Splitting `'en_US'` into `Locale('en', 'US')` is not something a fix can express,
+  and a wrong guess would compile.
+- A replacement that is an expression rather than another member.
+- The body of a method you override. The signature is rewritten and the body is
+  not, so finish the edit where the compiler points.
+
+The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |

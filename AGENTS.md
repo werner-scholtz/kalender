@@ -238,6 +238,10 @@ What it cannot do: rewrite a declaration in the user's own code. An override of 
 
 A type change with no rename has nothing to trigger on, since kalender cannot deprecate another package's type. Rename the parameter alongside the type change and the fix can wrap the old value.
 
+**`date` is when the change landed, not when the fix was written.** Use the date the pull request merged and name that pull request in a comment above the transform, the way `material_ui` does. It does not affect behaviour: chained renames resolve whatever order the dates are in, tested by inverting them.
+
+**A fix reaches an override's signature but not its body.** Renaming a parameter rewrites the declaration in a user's subclass and every call site, and leaves references to that parameter inside the body untouched, so the result does not compile until they finish it. Say so in the migration guide for any change to a `@mustBeOverridden` member.
+
 **Every fix is tested.** The fixture pair lives in `test_fixes/<name>.dart` and `<name>.dart.expect`, and CI runs:
 
 ```bash
