@@ -97,6 +97,21 @@ void main() {
       expect(spacerWidth(tester), 90);
     });
 
+    // The header lays its spacer out in a Row, which mirrors on its own, while the
+    // body positions the gutter through a layout delegate.
+    for (final direction in TextDirection.values) {
+      testWidgets('the gutter and the spacer sit on the same side in $direction', (tester) async {
+        await pumpAndSettleWithMaterialApp(
+          tester,
+          Directionality(textDirection: direction, child: plain(month())),
+        );
+        expect(
+          tester.getRect(find.byType(MonthWeekNumberGutter)).left,
+          moreOrLessEquals(tester.getRect(find.byType(MonthWeekNumberSpacer)).left, epsilon: 0.5),
+        );
+      });
+    }
+
     testWidgets('a button size above the calendar widens the column', (tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,

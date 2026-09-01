@@ -6,18 +6,23 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
   final int gridId;
   final int contentId;
 
+  /// The side the gutter leads from.
+  final TextDirection textDirection;
+
   MonthWeekNumberBodyLayoutDelegate({
     required this.gutterId,
     this.backgroundId,
     required this.gridId,
     required this.contentId,
+    required this.textDirection,
   });
 
   @override
   void performLayout(Size size) {
     var gutterWidth = 0.0;
+    final hasGutter = gutterId != null && hasChild(gutterId!);
 
-    if (gutterId != null && hasChild(gutterId!)) {
+    if (hasGutter) {
       final gutterSize = layoutChild(
         gutterId!,
         BoxConstraints(
@@ -28,24 +33,30 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
         ),
       );
       gutterWidth = gutterSize.width;
-      positionChild(gutterId!, Offset.zero);
     }
 
-    final contentConstraints =
-        BoxConstraints.tight(Size((size.width - gutterWidth).clamp(0.0, size.width), size.height));
+    final contentWidth = (size.width - gutterWidth).clamp(0.0, size.width);
+    // The month header lays its spacer out in a Row, which mirrors on its own.
+    final rightToLeft = textDirection == TextDirection.rtl;
+    final gutterOffset = rightToLeft ? Offset(contentWidth, 0) : Offset.zero;
+    final contentOffset = rightToLeft ? Offset.zero : Offset(gutterWidth, 0);
+
+    if (hasGutter) positionChild(gutterId!, gutterOffset);
+
+    final contentConstraints = BoxConstraints.tight(Size(contentWidth, size.height));
 
     // The background occupies the same rect as the content but is painted first,
     // so it sits below the grid lines and the day content.
     if (backgroundId != null && hasChild(backgroundId!)) {
       layoutChild(backgroundId!, contentConstraints);
-      positionChild(backgroundId!, Offset(gutterWidth, 0));
+      positionChild(backgroundId!, contentOffset);
     }
 
     layoutChild(gridId, contentConstraints);
-    positionChild(gridId, Offset(gutterWidth, 0));
+    positionChild(gridId, contentOffset);
 
     layoutChild(contentId, contentConstraints);
-    positionChild(contentId, Offset(gutterWidth, 0));
+    positionChild(contentId, contentOffset);
   }
 
   @override
@@ -53,7 +64,8 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
     return gutterId != oldDelegate.gutterId ||
         backgroundId != oldDelegate.backgroundId ||
         gridId != oldDelegate.gridId ||
-        contentId != oldDelegate.contentId;
+        contentId != oldDelegate.contentId ||
+        textDirection != oldDelegate.textDirection;
   }
 }
 
