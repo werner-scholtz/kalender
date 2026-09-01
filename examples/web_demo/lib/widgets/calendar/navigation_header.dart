@@ -33,6 +33,9 @@ class NavigationHeader extends StatelessWidget {
         // On touch devices buttons are 44px; account for that when deciding
         // which elements to show so the Row never overflows.
         // Minimum widths (approx): date~80 + 2×nav~88 + loc~44 + view~44 + cfg~44 + spacing = ~315
+        // The full date label needs ~180 where the compact one takes ~80, so it
+        // only appears once it and the right-hand cluster both fit.
+        final compactDate = maxW < 560;
         final showNav = isTouch ? maxW >= 315 : maxW > 300;
         // Drop the location menu on very narrow mobile widths (< ~225px).
         final showLocation = !isTouch || maxW >= 225;
@@ -46,7 +49,7 @@ class NavigationHeader extends StatelessWidget {
               // navigating (which only changes its text) grows it into empty
               // space instead of pushing the buttons around. The navigation
               // controls live in the right-hand cluster.
-              HeaderDateButton(controller: controller, compact: maxW < 500),
+              HeaderDateButton(controller: controller, compact: compactDate),
               const Spacer(),
               if (showNav) ...[
                 IconButton(
@@ -285,9 +288,12 @@ class HeaderDateButton extends StatelessWidget {
                   children: [
                     Icon(Icons.calendar_month, color: context.colorScheme.primary),
                     const SizedBox(width: 8),
-                    Text(
-                      '$month $year',
-                      style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    Flexible(
+                      child: Text(
+                        '$month $year',
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ],
                 ),
@@ -295,7 +301,7 @@ class HeaderDateButton extends StatelessWidget {
 
         if (compact) return button;
         return ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 140),
+          constraints: const BoxConstraints(minWidth: 140, maxWidth: 240),
           child: button,
         );
       },
