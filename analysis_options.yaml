@@ -8,6 +8,9 @@ analyzer:
   # they are analyzed by the dedicated analyze-examples CI job, not from here.
   exclude:
     - examples/**
+    # Deliberately uses deprecated members. Checked by
+    # `dart fix --compare-to-golden test_fixes` instead.
+    - test_fixes/**
   language:
     strict-inference: true
     strict-raw-types: true

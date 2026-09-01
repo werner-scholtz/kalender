@@ -2,6 +2,9 @@
 
 Each section covers one upgrade. Versions not listed below need no changes.
 
+Run `dart fix --apply` before working through a section. Kalender ships fixes for
+the renames it can automate, so the steps below are what is left over.
+
 | Upgrade | What changes |
 | --- | --- |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
