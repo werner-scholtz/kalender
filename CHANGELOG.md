@@ -1,3 +1,13 @@
+## 0.30.0
+
+### Features
+
+- `DateTimeExtensions.timeLocalized` formats the time of day for a locale, with `use24HourFormat` to force `HH:mm`.
+
+### Fixes
+
+- The timeline labels its hours with `intl` where the app installs no `MaterialLocalizations`, rather than throwing. ([#491](https://github.com/werner-scholtz/kalender/issues/491))
+
 ## 0.29.1
 
 ### Features

@@ -4,9 +4,10 @@ import 'package:kalender/kalender.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {
-  testWidgets('without the bridge the timeline cannot resolve MaterialLocalizations', (tester) async {
+  testWidgets('the calendar renders without the bridge', (tester) async {
     await tester.pumpWidget(_app(bridge: false));
-    expect(tester.takeException(), isA<FlutterError>());
+    expect(tester.takeException(), isNull);
+    expect(find.byType(CalendarBody), findsOneWidget);
   });
 
   testWidgets('with the bridge the calendar renders', (tester) async {
