@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 import 'package:kalender/src/models/controllers/events_controller/default_events_controller.dart';

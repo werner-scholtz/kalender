@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
 /// The [Components] widget provides the [CalendarComponents] to the widget tree.

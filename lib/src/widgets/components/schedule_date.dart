@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
@@ -78,7 +78,7 @@ class ScheduleDateStyle with Diagnosticable {
 
 /// A widget that displays the name of the day and the day number of the week.
 class ScheduleDate extends StatelessWidget {
-  /// Key applied to the [IconButton] when the date is today.
+  /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('ScheduleDate.today');
 
   final InternalDateTime date;
