@@ -89,4 +89,20 @@ extension DateTimeExtensions on DateTime {
   /// ```
   String monthNameShortLocalized([Locale? locale]) =>
       _formatLocalized(() => DateFormat.MMM(locale?.toLanguageTag()), this, locale);
+
+  /// Gets the time of day in a specific locale.
+  ///
+  /// [use24HourFormat] forces `HH:mm`. Otherwise the locale decides, which is
+  /// what intl resolves for `jm`.
+  ///
+  /// Example:
+  /// ```dart
+  /// final time = DateTime(2024, 1, 15, 17, 30);
+  /// print(time.timeLocalized(locale: const Locale('en', 'US'))); // Output: "5:30 PM"
+  /// print(time.timeLocalized(locale: const Locale('de'))); // Output: "17:30"
+  /// ```
+  String timeLocalized({Locale? locale, bool use24HourFormat = false}) {
+    final tag = locale?.toLanguageTag();
+    return _formatLocalized(() => use24HourFormat ? DateFormat.Hm(tag) : DateFormat.jm(tag), this, locale);
+  }
 }

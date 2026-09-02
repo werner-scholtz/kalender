@@ -5,6 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
+/// The label for [time].
+///
+/// `MaterialLocalizations` decides the format where the app installs them, which
+/// keeps a Material app's timeline byte for byte what it was. An app on the
+/// standalone `material_ui` package installs its own, not these, so there the
+/// format comes from intl and the calendar's locale.
+String _formatTime(BuildContext context, TimeOfDay time) {
+  final use24HourFormat = MediaQuery.alwaysUse24HourFormatOf(context);
+  final material = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations);
+  if (material != null) return material.formatTimeOfDay(time, alwaysUse24HourFormat: use24HourFormat);
+
+  final locale = context.dependOnInheritedWidgetOfExactType<LocaleProvider>()?.locale;
+  return time.toDateTime(DateTime.utc(2000)).timeLocalized(locale: locale, use24HourFormat: use24HourFormat);
+}
+
 /// The time line builder.
 ///
 /// The [heightPerMinute] is the height of each minute.
@@ -76,7 +91,7 @@ double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange)
   for (var hour = 0; hour < TimeOfDay.hoursPerDay; hour++) {
     for (final minute in minutes) {
       final time = TimeOfDay(hour: hour, minute: minute);
-      final text = stringBuilder?.call(context, time) ?? time.format(context);
+      final text = stringBuilder?.call(context, time) ?? _formatTime(context, time);
       painter.text = TextSpan(text: text, style: textStyle);
       painter.layout();
       if (painter.width > widest) widest = painter.width;
@@ -237,7 +252,7 @@ mixin TimeLineUtils {
   /// The label shown for [time].
   String timelineString(BuildContext context, TimeOfDay time) {
     final stringBuilder = context.components.multiDayComponents.bodyComponents.timelineStringBuilder;
-    return stringBuilder?.call(context, time) ?? time.format(context);
+    return stringBuilder?.call(context, time) ?? _formatTime(context, time);
   }
 
   /// The [TextStyle] that will be used for the text.

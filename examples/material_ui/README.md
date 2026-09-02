@@ -6,27 +6,24 @@ Runs the calendar inside an app that has migrated to the standalone
 
 The package still imports `package:flutter/material.dart`. Those are two
 separate sets of classes with the same names, so an app on `material_ui` hits
-three problems. This example shows each one and what to do about it.
+three problems. This example shows each one and what to do about it. The first
+is fixed in the package, the other two are not.
 
-## 1. The timeline throws at runtime
+## 1. The timeline used to throw at runtime
 
-`TimeOfDay.format` resolves `MaterialLocalizations`, and a `material_ui`
-`MaterialApp` installs its own, not the ones the package looks up:
+Fixed. `TimeOfDay.format` resolved `MaterialLocalizations`, which a `material_ui`
+`MaterialApp` does not install, so the calendar threw:
 
 ```
 No MaterialLocalizations found.
-Builder widgets require MaterialLocalizations to be provided by a Localizations widget ancestor.
 ```
 
-Wrap the app in `MaterialUiCompatibilityBridge`, which maps the theme and
-installs the delegates the package expects:
+The calendar now formats its hour labels with `intl` against the locale it was
+given whenever those localizations are absent, so this needs nothing from you.
+An app that does install them keeps the labels it had.
 
-```dart
-MaterialApp(
-  builder: (context, child) => MaterialUiCompatibilityBridge(child: child!),
-  ...
-)
-```
+`MaterialUiCompatibilityBridge` is still worth having for the theme, see 3 below,
+but the calendar renders without it.
 
 ## 2. `DateTimeRange` and `TimeOfDay` do not compile
 
