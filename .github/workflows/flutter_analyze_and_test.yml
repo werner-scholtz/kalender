@@ -44,6 +44,13 @@ jobs:
         shell: bash
         working-directory: ./
 
+      # The data-driven fixes in lib/fix_data ship to users, so a broken one is
+      # only visible here.
+      - name: Migration fixes
+        run: dart fix --compare-to-golden test_fixes
+        shell: bash
+        working-directory: ./
+
   doc-snippets: # The code in the README and the guides, which flutter analyze cannot see
     runs-on: ubuntu-latest
     steps:

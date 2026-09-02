@@ -1,3 +1,9 @@
+## 0.29.1
+
+### Features
+
+- `dart fix --apply` renames `CalendarView` to `KalenderView` and `CalendarViewState` to `KalenderViewState`.
+
 ## 0.29.0
 
 See [MIGRATION.md](MIGRATION.md#v028x--v0290) for what to change.

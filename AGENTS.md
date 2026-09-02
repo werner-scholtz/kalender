@@ -224,6 +224,40 @@ A message without a version has no deadline and will sit there for years. `lib/`
 
 **Record it in both places.** A deprecation gets a `### Deprecations` entry in the changelog naming the removal version. A breaking change gets a `### Breaking Changes` entry plus a section in [MIGRATION.md](MIGRATION.md) showing the before and after.
 
+### Automating a migration
+
+**Ship a fix for everything that can carry one.** A migration step a user performs by hand is a step some users will not perform. Data-driven fixes live in `lib/fix_data/fix_*.yaml` and ship inside the package, so `dart fix --apply` in a user's project applies them. The format is at https://dart.dev/go/data-driven-fixes.
+
+What a fix can do:
+
+- Rename a class, typedef, mixin, enum, constructor, method, getter, setter or field.
+- Rename, add or remove a named parameter.
+- Derive a new argument from an old one, so one parameter can become two. `CalendarEvent(dateTimeRange: r)` to `CalendarEvent(start: r.start, end: r.end)` is an `addParameter` pair with `argumentValue.expression` reading `arguments[dateTimeRange]`, plus a `removeParameter`.
+
+What it cannot do: rewrite a declaration in the user's own code. An override of a changed `@mustBeOverridden` method is a hand edit, and the migration guide has to carry it.
+
+A type change with no rename has nothing to trigger on, since kalender cannot deprecate another package's type. Rename the parameter alongside the type change and the fix can wrap the old value.
+
+**`date` is when the change landed, not when the fix was written.** Use the date the pull request merged and name that pull request in a comment above the transform, the way `material_ui` does. It does not affect behaviour: chained renames resolve whatever order the dates are in, tested by inverting them.
+
+**What a fix reaches depends on the change kind.** Measured against a subclass overriding a `@mustBeOverridden` member:
+
+| Change | Call sites | Override signature | Override body |
+| --- | --- | --- | --- |
+| `rename` | yes | not applicable | not applicable |
+| `renameParameter` | yes | yes | no, references to the parameter are left undefined |
+| `addParameter` with `removeParameter` | yes | no, reported as `invalid_override` | not applicable |
+
+So a parameter reshape, which is the shape a signature change usually takes, fixes every call site and leaves every subclass to be edited by hand. Say so in the migration guide for any change to a `@mustBeOverridden` member.
+
+**Every fix is tested.** The fixture pair lives in `test_fixes/<name>.dart` and `<name>.dart.expect`, and CI runs:
+
+```bash
+dart fix --compare-to-golden test_fixes
+```
+
+`test_fixes/` is excluded from the package analysis, since the fixtures use deprecated members on purpose, and excluded from the published archive.
+
 **`### Breaking Changes` is for code that stops compiling. `### Behavior Changes` is for code that still compiles and renders differently.** They ask the reader for different things: one is "fix your code", the other is "look at your screenshots". Do not put them under one heading. 0.23.0 is the reference for the second kind, 0.24.0 for the first.
 
 **If the version is not tagged yet, amend the existing entries rather than appending.** Someone upgrading should read what the release does, not the history of how it got there.

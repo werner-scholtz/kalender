@@ -5,6 +5,7 @@ coverage/
 __pycache__/
 
 test/
+test_fixes/
 readme_assets/
 examples/
 tool/

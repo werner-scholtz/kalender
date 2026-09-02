@@ -39,6 +39,11 @@ dart run tool/analyze_doc_snippets.dart
 A block without a directive fails the run, so a new snippet cannot go in unchecked. `tool/analyze_doc_snippets.dart` documents the directives at the top.
 
 - Removing or renaming anything public? The rules for deprecating it, how long it stays, and what to write in the changelog and migration guide are in [AGENTS.md](AGENTS.md#breaking-changes-and-deprecations). They also cover the changes that cannot be deprecated at all.
+- Renaming anything public also ships a data-driven fix so `dart fix --apply` does it for the user, with a fixture pair in `test_fixes/`. See [AGENTS.md](AGENTS.md#automating-a-migration). Check it with:
+
+```bash
+dart fix --compare-to-golden test_fixes
+```
 
 ## Reporting issues
 

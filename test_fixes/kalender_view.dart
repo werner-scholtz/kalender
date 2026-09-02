@@ -1,0 +1,6 @@
+// The input for `fix_kalender_view.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:kalender/kalender.dart';
+
+CalendarView? view;
+CalendarViewState? state;

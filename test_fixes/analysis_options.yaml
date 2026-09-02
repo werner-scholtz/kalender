@@ -1,0 +1,7 @@
+# The fixtures below use members that kalender itself deprecated, so the lint that
+# triggers the fixes has to be on. Outside the package the analyzer reports
+# `deprecated_member_use` instead, which is on by default.
+
+linter:
+  rules:
+    - deprecated_member_use_from_same_package
