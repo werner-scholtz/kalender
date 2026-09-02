@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1788349055029,
+  "lastUpdate": 1788354073576,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -12055,6 +12055,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3825.5751748251746,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "4210b19c3c3cf2ace50737299ace1f94a0792fb8",
+          "message": "Merge pull request #504 from werner-scholtz/refactor/theme-defaults-from-a-palette\n\nBuild the theme defaults from a palette",
+          "timestamp": "2026-09-02T14:40:54+02:00",
+          "tree_id": "1bc5a80d4101810cc473924a4653346c886ff966",
+          "url": "https://github.com/werner-scholtz/kalender/commit/4210b19c3c3cf2ace50737299ace1f94a0792fb8"
+        },
+        "date": 1788354067359,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 175.06133519993,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 696.79775,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2057.889,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8055.772,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 705.902,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2179.561,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2382.122,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 11971.437125748504,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 250.09979133423346,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 109.02988070018954,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 759.18725,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3233.686656671664,
             "unit": "us"
           }
         ]
