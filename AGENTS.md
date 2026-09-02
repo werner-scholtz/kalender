@@ -240,7 +240,15 @@ A type change with no rename has nothing to trigger on, since kalender cannot de
 
 **`date` is when the change landed, not when the fix was written.** Use the date the pull request merged and name that pull request in a comment above the transform, the way `material_ui` does. It does not affect behaviour: chained renames resolve whatever order the dates are in, tested by inverting them.
 
-**A fix reaches an override's signature but not its body.** Renaming a parameter rewrites the declaration in a user's subclass and every call site, and leaves references to that parameter inside the body untouched, so the result does not compile until they finish it. Say so in the migration guide for any change to a `@mustBeOverridden` member.
+**What a fix reaches depends on the change kind.** Measured against a subclass overriding a `@mustBeOverridden` member:
+
+| Change | Call sites | Override signature | Override body |
+| --- | --- | --- | --- |
+| `rename` | yes | not applicable | not applicable |
+| `renameParameter` | yes | yes | no, references to the parameter are left undefined |
+| `addParameter` with `removeParameter` | yes | no, reported as `invalid_override` | not applicable |
+
+So a parameter reshape, which is the shape a signature change usually takes, fixes every call site and leaves every subclass to be edited by hand. Say so in the migration guide for any change to a `@mustBeOverridden` member.
 
 **Every fix is tested.** The fixture pair lives in `test_fixes/<name>.dart` and `<name>.dart.expect`, and CI runs:
 
