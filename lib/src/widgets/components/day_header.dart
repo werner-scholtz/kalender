@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
@@ -101,7 +101,7 @@ class DayHeaderStyle with Diagnosticable {
 
 /// A widget that displays the name of the day and the day number of the week.
 class DayHeader extends StatelessWidget {
-  /// Key applied to the [IconButton] when the date is today.
+  /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('DayHeader.today');
 
   /// The date that will be displayed in the [DayHeader].

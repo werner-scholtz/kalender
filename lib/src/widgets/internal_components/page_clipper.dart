@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// A widget that clips the child widget a certain distance from the left.
 class PageClipWidget extends StatelessWidget {

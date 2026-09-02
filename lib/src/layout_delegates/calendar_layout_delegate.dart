@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// The calendar header when in use should be able to throw a drop shadow on the body.
 /// Ideally a [Column] widget would be used with the children as [body, header].

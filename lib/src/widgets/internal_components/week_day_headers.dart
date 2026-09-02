@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/src/extensions/internal_date_time.dart';
 
 /// A row of weekday headers for a week in the month view.

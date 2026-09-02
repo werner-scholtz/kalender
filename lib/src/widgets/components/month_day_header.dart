@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/day_number.dart';
@@ -92,7 +92,7 @@ class MonthDayHeaderStyle with Diagnosticable {
 
 /// A widget that displays the day number.
 class MonthDayHeader extends StatelessWidget {
-  /// Key applied to the [IconButton] when the date is today.
+  /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('MonthDayHeader.today');
 
   final DateTime date;

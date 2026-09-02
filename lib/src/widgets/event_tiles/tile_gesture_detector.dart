@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The function that is called when the event is tapped.
