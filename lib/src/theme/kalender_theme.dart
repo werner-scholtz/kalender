@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/theme/kalender_palette.dart';
 
 /// The Material defaults for a [ThemeData], built once.
 ///
@@ -112,83 +113,84 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   static KalenderThemeData _defaultsFor(ThemeData theme) {
     final cached = _defaultsCache[theme];
     if (cached != null) return cached;
-    return _defaultsCache[theme] = _buildDefaults(theme);
+    return _defaultsCache[theme] = _buildDefaults(KalenderPalette.fromTheme(theme));
   }
 
-  static KalenderThemeData _buildDefaults(ThemeData theme) {
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-
+  /// Builds the defaults from [palette].
+  ///
+  /// Names no Material beyond [Icons.close], which stage 4 replaces with an
+  /// owned or caller-supplied icon.
+  static KalenderThemeData _buildDefaults(KalenderPalette palette) {
     final tooltipDecoration = BoxDecoration(
-      color: colorScheme.surfaceContainerHighest,
+      color: palette.surface,
       borderRadius: BorderRadius.circular(8),
     );
 
     return KalenderThemeData(
       dayHeaderStyle: DayHeaderStyle(
-        textStyle: textTheme.bodySmall,
-        numberTextStyle: textTheme.bodyMedium,
+        textStyle: palette.small,
+        numberTextStyle: palette.medium,
         mainAxisAlignment: MainAxisAlignment.start,
       ),
       timelineStyle: TimelineStyle(
-        textStyle: textTheme.labelMedium,
+        textStyle: palette.label,
         textDirection: TextDirection.ltr,
         textPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 36),
         startDecoration: tooltipDecoration,
         endDecoration: tooltipDecoration,
       ),
       hourLinesStyle: HourLinesStyle(
-        color: colorScheme.surfaceContainerHighest,
+        color: palette.surface,
         thickness: 1,
         indent: 0,
         endIndent: 0,
       ),
       daySeparatorStyle: DaySeparatorStyle(
-        color: colorScheme.surfaceContainerHighest,
+        color: palette.surface,
         width: 1,
         topIndent: 0,
         bottomIndent: 0,
       ),
       timeIndicatorStyle: TimeIndicatorStyle(
-        lineColor: colorScheme.error,
+        lineColor: palette.error,
         thickness: 1,
         circleSize: const Size(10, 10),
       ),
       weekNumberStyle: WeekNumberStyle(
-        textStyle: textTheme.bodyMedium,
+        textStyle: palette.medium,
         tooltip: 'Week Number',
         padding: const EdgeInsets.symmetric(horizontal: 4),
       ),
       monthGridStyle: MonthGridStyle(
-        color: colorScheme.surfaceContainerHighest,
+        color: palette.surface,
         thickness: 0,
       ),
       monthDayHeaderStyle: MonthDayHeaderStyle(
-        numberTextStyle: textTheme.bodyMedium,
+        numberTextStyle: palette.medium,
         // Keeps the today highlight clear of the gridline above it and the
         // event tiles below it.
         margin: const EdgeInsets.symmetric(vertical: 2),
       ),
       weekDayHeaderStyle: WeekDayHeaderStyle(
-        textStyle: textTheme.bodySmall,
+        textStyle: palette.small,
         padding: const EdgeInsets.symmetric(vertical: 2),
       ),
       scheduleDateStyle: ScheduleDateStyle(
-        textStyle: textTheme.bodySmall,
-        numberTextStyle: textTheme.bodyMedium,
+        textStyle: palette.small,
+        numberTextStyle: palette.medium,
       ),
       scheduleTileHighlightStyle: ScheduleTileHighlightStyle(
-        decoration: BoxDecoration(color: colorScheme.primary.withAlpha(50)),
+        decoration: BoxDecoration(color: palette.accent.withAlpha(50)),
       ),
       multiDayOverlayStyle: MultiDayOverlayStyle(
         closeIcon: const Icon(Icons.close),
-        dateTextStyle: textTheme.bodyMedium,
+        dateTextStyle: palette.medium,
         headerPadding: const EdgeInsets.symmetric(vertical: 8),
         eventsPadding: const EdgeInsets.all(4),
         eventPadding: const EdgeInsets.symmetric(vertical: 2),
       ),
       multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(
-        textStyle: textTheme.bodyMedium,
+        textStyle: palette.medium,
         textPadding: const EdgeInsets.symmetric(horizontal: 4),
         textOverflow: TextOverflow.ellipsis,
       ),
