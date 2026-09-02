@@ -13,9 +13,12 @@ dart fix --dry-run              # preview
 dart fix --apply                # apply
 ```
 
-It is safe to run across several versions at once. The fixes ship with the version
-you upgraded to and describe the older members, so a jump from an old release
-applies every rename in between.
+Fixes cover changes made in 0.29.0 and later. Upgrading from anything earlier is
+by hand, since those renames were never given fix data. Inside the covered range
+it is safe to run across several versions at once, because the fixes ship with the
+version you upgraded to and describe the members it replaced.
+
+Coverage only grows forward: every rename from here on ships with one.
 
 What it does not do:
 
