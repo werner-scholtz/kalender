@@ -21,11 +21,11 @@ import '../utilities.dart';
 /// non-UTC / near-midnight condition that made the original bug visible.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   Finder todayNumber(Key todayKey, int day) => find.descendant(
@@ -54,7 +54,7 @@ void main() {
                 initialDateTime: month,
                 nowCallback: nowCallback,
               ),
-              body: const CalendarBody(),
+              body: const KalenderBody(),
             ),
           );
 
@@ -106,7 +106,7 @@ void main() {
               displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
               initialDateTime: DateTime(2025, 12),
             ),
-            components: CalendarComponents(
+            components: KalenderComponents(
               monthComponents: MonthComponents(
                 bodyComponents: MonthBodyComponents(
                   monthDayHeaderBuilder: (context, date) {
@@ -116,7 +116,7 @@ void main() {
                 ),
               ),
             ),
-            body: const CalendarBody(),
+            body: const KalenderBody(),
           ),
         );
 
@@ -145,7 +145,7 @@ void main() {
               displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
               initialDateTime: DateTime(2025, 12),
             ),
-            components: CalendarComponents(
+            components: KalenderComponents(
               monthComponents: MonthComponents(
                 bodyComponents: MonthBodyComponents(
                   monthDayHeaderBuilder: (context, date) {
@@ -155,7 +155,7 @@ void main() {
                 ),
               ),
             ),
-            body: const CalendarBody(),
+            body: const KalenderBody(),
           ),
         );
 
@@ -187,8 +187,8 @@ void main() {
                 initialDateTime: monday,
                 nowCallback: nowCallback,
               ),
-              header: const CalendarHeader(),
-              body: const CalendarBody(),
+              header: const KalenderHeader(),
+              body: const KalenderBody(),
             ),
           );
 

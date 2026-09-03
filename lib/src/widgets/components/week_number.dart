@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/models/providers/kalender_scope.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
@@ -11,7 +11,7 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// so both read one number rather than each measuring what they build. It is not
 /// called for a view that draws no week numbers.
 ///
-/// It runs above `CalendarHeader` and `CalendarBody`, so the context resolves
+/// It runs above `KalenderHeader` and `KalenderBody`, so the context resolves
 /// [KalenderTheme] and every [KalenderScope] accessor except the four those two
 /// install: `interactionOf`, `snappingOf`, `tileComponentsOf` and
 /// `heightPerMinuteOf`.

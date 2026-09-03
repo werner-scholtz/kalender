@@ -24,14 +24,14 @@ void _expectMonthRows(WidgetTester tester, int expectedRows) {
 void main() {
   group('MonthBody Tests', () {
     late DefaultEventsController eventsController;
-    late CalendarController calendarController;
+    late KalenderController calendarController;
 
     // Wide enough to cover every test month.
     final displayRange = KalenderDateTimeRange(start: DateTime(2023), end: DateTime(2026));
 
     setUp(() {
       eventsController = DefaultEventsController();
-      calendarController = CalendarController();
+      calendarController = KalenderController();
     });
 
     // All cases use firstDayOfWeek = DateTime.monday (the default).
@@ -39,7 +39,7 @@ void main() {
       WidgetTester tester,
       DateTime initialDateTime, {
       bool showWeekNumbers = false,
-      CalendarComponents? components,
+      KalenderComponents? components,
       KalenderThemeData? theme,
     }) {
       final view = KalenderView(
@@ -51,7 +51,7 @@ void main() {
           showWeekNumbers: showWeekNumbers,
         ),
         components: components,
-        body: const CalendarBody(),
+        body: const KalenderBody(),
       );
 
       return pumpAndSettleWithMaterialApp(
@@ -91,7 +91,7 @@ void main() {
     testWidgets('monthDayCellBuilder is called per day with focused-month flags', (tester) async {
       final byDate = <DateTime, MonthDayCellDetails>{};
 
-      final components = CalendarComponents(
+      final components = KalenderComponents(
         monthComponents: MonthComponents(
           bodyComponents: MonthBodyComponents(
             monthDayCellBuilder: (context, details) {
@@ -136,7 +136,7 @@ void main() {
       // MonthDayCell.shadeAdjacentMonths() paints the 4 adjacent-month days
       // (2 leading Dec + 2 trailing Feb) with a low-opacity onSurface overlay by
       // default and leaves the 31 focused days as the empty MonthDayCell.
-      final components = CalendarComponents(
+      final components = KalenderComponents(
         monthComponents: MonthComponents(
           bodyComponents: MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths()),
         ),
@@ -154,7 +154,7 @@ void main() {
 
     testWidgets('shadeAdjacentMonths uses a custom color when given', (tester) async {
       const custom = Color(0xFF123456);
-      final components = CalendarComponents(
+      final components = KalenderComponents(
         monthComponents: MonthComponents(
           bodyComponents: MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths(color: custom)),
         ),
@@ -185,7 +185,7 @@ void main() {
             displayRange: KalenderDateTimeRange(start: DateTime(2026, 5), end: DateTime(2026, 5, 31)),
             initialDateTime: DateTime(2026, 5),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
 
@@ -366,7 +366,7 @@ void main() {
               displayRange: displayRange,
               initialDateTime: initialDateTime,
             ),
-            body: const CalendarBody(
+            body: const KalenderBody(
               monthBodyConfiguration: MonthBodyConfiguration(tileHeight: tallTileHeight),
             ),
           ),
@@ -385,7 +385,7 @@ void main() {
     testWidgets('shows exactly one overflow button for a single event when max is 0 (#255)', (tester) async {
       // A single-day event on Jan 15, 2025 (within the displayed month).
       eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 1, 15, 9),
           end: DateTime(2025, 1, 15, 10),
         ),
@@ -427,7 +427,7 @@ void main() {
                 displayRange: displayRange,
                 initialDateTime: initialDateTime,
               ),
-              body: CalendarBody(
+              body: KalenderBody(
                 monthBodyConfiguration: MonthBodyConfiguration(multiDayLayoutStrategy: strategy),
               ),
             ),
@@ -436,7 +436,7 @@ void main() {
       setUp(() => strategy = _RecordingStrategy());
 
       testWidgets('renders month view without error and is invoked', (tester) async {
-        final event = CalendarEvent(
+        final event = KalenderEvent(
           start: DateTime(2025, 1, 15, 9),
           end: DateTime(2025, 1, 15, 10),
         );
@@ -474,7 +474,7 @@ class _RecordingStrategy extends MultiDayLayoutStrategy {
   @override
   MultiDayLayoutFrame generateFrame({
     required InternalDateTimeRange visibleDateTimeRange,
-    required List<CalendarEvent> events,
+    required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,

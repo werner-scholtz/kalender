@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
@@ -28,7 +28,7 @@ typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext cont
 /// - [MultiDayEventTile] - For multi-day headers with horizontal resizing.
 /// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
 abstract class EventTile extends StatelessWidget {
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// The components used to build the tile.
   final TileComponents tileComponents;
@@ -60,7 +60,7 @@ abstract class EventTile extends StatelessWidget {
   /// The function that is called when the event is tapped.
   ///
   /// Concrete implementations should override this to provide view-specific
-  /// tap handling, such as calling [CalendarCallbacks.onEventTapped] with
+  /// tap handling, such as calling [KalenderCallbacks.onEventTapped] with
   /// appropriate detail objects.
   EventTileOnTapUp? get onTapUp;
 

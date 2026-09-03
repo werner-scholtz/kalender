@@ -13,7 +13,7 @@ void main() {
   // times to the system timezone, so building the events in local time keeps
   // them on the delegate's date on any machine. UTC times would shift to a
   // different day under a non-UTC timezone and the events would be clamped out.
-  CalendarEvent event(int startSeconds, int endSeconds) => CalendarEvent(
+  KalenderEvent event(int startSeconds, int endSeconds) => KalenderEvent(
         start: DateTime(2024, 1, 1).add(Duration(seconds: startSeconds)),
         end: DateTime(2024, 1, 1).add(Duration(seconds: endSeconds)),
       );

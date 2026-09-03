@@ -1,7 +1,7 @@
 import 'package:kalender/kalender.dart';
 import 'package:recurrence/recurrence.dart';
 
-class RecurringCalendarEvent extends CalendarEvent {
+class RecurringCalendarEvent extends KalenderEvent {
   final String groupId;
 
   RecurringCalendarEvent({
@@ -14,7 +14,7 @@ class RecurringCalendarEvent extends CalendarEvent {
   });
 
   /// Rebuilds the group this occurrence belongs to. The rest is restored by
-  /// [CalendarEvent].
+  /// [KalenderEvent].
   @override
   RecurringCalendarEvent copyWithData({required DateTime start, required DateTime end}) {
     return RecurringCalendarEvent(start: start, end: end, groupId: groupId);

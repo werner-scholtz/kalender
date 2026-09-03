@@ -47,6 +47,33 @@ The sections below cover what is left after the fixes have run.
 
 ## v0.29.x → v0.30.0
 
+### The `Calendar*` types are renamed to `Kalender*`
+
+`dart fix` applies all of these. The package has been converging on `Kalender` as
+its ownership marker since `KalenderView`, and this release finishes it.
+
+| Before | After |
+| --- | --- |
+| `CalendarBody` | `KalenderBody` |
+| `CalendarCallbacks` | `KalenderCallbacks` |
+| `CalendarComponents` | `KalenderComponents` |
+| `CalendarController` | `KalenderController` |
+| `CalendarEvent` | `KalenderEvent` |
+| `CalendarHeader` | `KalenderHeader` |
+| `CalendarInteraction` | `KalenderInteraction` |
+| `CalendarSnapping` | `KalenderSnapping` |
+
+The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now. Its
+member is still `context.calendarLocale`, so code reading it is unaffected.
+
+Named parameters keep their names, so `KalenderView(calendarController: ...)` is
+unchanged.
+
+### `CalendarView` and `CalendarViewState` are removed
+
+Deprecated in 0.29.0 as the one-release window requires. `dart fix` has renamed
+them to `KalenderView` and `KalenderViewState` since 0.29.1, and still does.
+
 ### `KalenderDateTimeRange` replaces Material's `DateTimeRange`
 
 Material and Cupertino left the Flutter framework and became the `material_ui` and
@@ -60,29 +87,18 @@ with `KalenderDateTimeRange(` covers it, plus the annotations.
 
 ```dart
 // Before
-CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: end))
+MultiDayViewConfiguration.week(displayRange: DateTimeRange(start: start, end: end))
 
 // After
-CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: end))
+MultiDayViewConfiguration.week(displayRange: KalenderDateTimeRange(start: start, end: end))
 ```
 
 It carries the same members as the type it replaces: `start`, `end`, `duration`,
 `==` and `hashCode`.
 
-The same substitution applies to `displayRange`, the `tileRange` a tile builder
-receives, `EmptyItemBuilder`, `MonthItemBuilder`, `OnPageChanged`,
-`CalendarController.visibleDateTimeRange` and `ViewConfiguration.dateTimeRange`.
-
-A subclass overriding `copyWithData` changes by hand, since a fix rewrites call
-sites and not the declarations in your own code:
-
-```dart
-// Before
-Event copyWithData({required DateTimeRange dateTimeRange}) => ...
-
-// After
-Event copyWithData({required KalenderDateTimeRange dateTimeRange}) => ...
-```
+The same substitution applies to the `tileRange` a tile builder receives,
+`EmptyItemBuilder`, `MonthItemBuilder`, `OnPageChanged`,
+`KalenderController.visibleDateTimeRange` and `ViewConfiguration.dateTimeRange`.
 
 A range handed back by a Material API is converted rather than rewritten.
 `package:kalender/material.dart` carries `toKalenderDateTimeRange` for that
@@ -163,6 +179,12 @@ TimeOfDayRange(start: TimeOfDay(hour: 8, minute: 0), end: TimeOfDay(hour: 18, mi
 KalenderTimeRange(start: KalenderTime(hour: 8, minute: 0), end: KalenderTime(hour: 18, minute: 0))
 ```
 
+### `TimeOfDayStringBuilder` is renamed to `KalenderTimeStringBuilder`
+
+`dart fix` applies this one. It is the type of
+`MultiDayBodyComponents.timelineStringBuilder`, which keeps its name, and it takes
+a `KalenderTime` now.
+
 ### `TimeOfDayExtension` is removed
 
 `toInternalDateTime` and `toDateTime` are methods on `KalenderTime`, so the calls
@@ -181,7 +203,7 @@ range you were passing.
 CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: end))
 
 // After
-CalendarEvent(start: start, end: end)
+KalenderEvent(start: start, end: end)
 ```
 
 `dateTimeRange` survives as a getter, so `event.dateTimeRange` still returns a
@@ -204,7 +226,7 @@ class Event extends CalendarEvent {
 }
 
 // After
-class Event extends CalendarEvent {
+class Event extends KalenderEvent {
   Event({super.id, required super.start, required super.end, required this.title});
   final String title;
 

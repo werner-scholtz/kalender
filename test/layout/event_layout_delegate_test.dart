@@ -15,16 +15,16 @@ void main() {
   // None of the events overlap, so every strategy should render each tile at
   // full width.
   final events = [
-    CalendarEvent(
+    KalenderEvent(
       start: date.copyWith(hour: 1, minute: 29),
       end: date.copyWith(hour: 1, minute: 30),
     ),
-    CalendarEvent(
+    KalenderEvent(
       start: date.copyWith(hour: 1, minute: 30),
       end: date.copyWith(hour: 1, minute: 59, second: 59, microsecond: 999999),
     ),
-    CalendarEvent(start: date.copyWith(hour: 2), end: date.copyWith(hour: 3)),
-    CalendarEvent(start: date.copyWith(hour: 3), end: date.copyWith(hour: 4)),
+    KalenderEvent(start: date.copyWith(hour: 2), end: date.copyWith(hour: 3)),
+    KalenderEvent(start: date.copyWith(hour: 3), end: date.copyWith(hour: 4)),
   ];
 
   final heightPerMinutes = List.generate(100, (i) => 0.1 + i / 100);

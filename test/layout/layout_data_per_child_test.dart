@@ -10,15 +10,15 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 void main() {
   final date = InternalDateTime(2024, 1, 1);
 
-  CalendarEvent event({String? id, int hour = 9}) {
-    return CalendarEvent(
+  KalenderEvent event({String? id, int hour = 9}) {
+    return KalenderEvent(
       id: id,
       start: DateTime.utc(2024, 1, 1, hour),
       end: DateTime.utc(2024, 1, 1, hour + 1),
     );
   }
 
-  OverlapLayoutDelegate delegateFor(List<CalendarEvent> events, {EventLayoutDelegateCache? cache}) {
+  OverlapLayoutDelegate delegateFor(List<KalenderEvent> events, {EventLayoutDelegateCache? cache}) {
     return OverlapLayoutDelegate(
       events: events,
       heightPerMinute: 1,
@@ -74,7 +74,7 @@ void main() {
 }
 
 /// Hashes to a constant, so every instance collides.
-class _ConstantHashEvent extends CalendarEvent {
+class _ConstantHashEvent extends KalenderEvent {
   _ConstantHashEvent({required int hour})
       : super(
           start: DateTime.utc(2024, 1, 1, hour),

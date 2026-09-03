@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time_range.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
@@ -171,7 +171,7 @@ class MultiDayBodyComponents {
   /// Defaults to the localized time of day in the calendar's locale. The gutter width
   /// measures every label this can produce, so a builder whose output varies per
   /// minute still gets a gutter wide enough for it.
-  final TimeOfDayStringBuilder? timelineStringBuilder;
+  final KalenderTimeStringBuilder? timelineStringBuilder;
 
   /// Resolves the width of the timeline gutter.
   ///
@@ -225,7 +225,7 @@ class MultiDayBodyComponents {
     BuildContext context,
     double heightPerMinute,
     KalenderTimeRange timeOfDayRange,
-    ValueNotifier<CalendarEvent?> eventBeingDragged,
+    ValueNotifier<KalenderEvent?> eventBeingDragged,
     ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
   ) {
     return timeline?.call(context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) ??
@@ -271,7 +271,7 @@ class MultiDayBodyComponents {
   MultiDayBodyComponents copyWith({
     HourLinesBuilder? hourLines,
     TimeLineBuilder? timeline,
-    TimeOfDayStringBuilder? timelineStringBuilder,
+    KalenderTimeStringBuilder? timelineStringBuilder,
     TimelineWidthBuilder? timelineWidth,
     DaySeparatorBuilder? daySeparator,
     TimeIndicatorBuilder? timeIndicator,

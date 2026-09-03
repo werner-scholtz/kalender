@@ -2,18 +2,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions/internal_date_time_range.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
-import 'package:kalender/src/models/controllers/calendar_controller.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/controllers/kalender_controller.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
+import 'package:kalender/src/models/kalender_interaction.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/components/resize_handles.dart';
 
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {
   /// The event associated with the resize handles.
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// The InternalDateTimeRange that the current view is displaying.
   final InternalDateTimeRange dateTimeRange;
@@ -39,7 +39,7 @@ class ResizeHandleWidget extends StatefulWidget {
 /// based on user interaction.
 class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// The calendar controller (nullable to handle dispose before initialization).
-  CalendarController? _controller;
+  KalenderController? _controller;
 
   /// Whether the resize handles are shown due to a hover event (precise input).
   bool _showFromHover = false;
@@ -136,7 +136,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// If the [InputMode] is [InputMode.auto], the input is considered imprecise
   /// when the handles were shown via selection (not hover).
   /// Otherwise, the explicit [InputMode] setting is used.
-  bool _resolveIsImprecise(CalendarInteraction interaction) {
+  bool _resolveIsImprecise(KalenderInteraction interaction) {
     return switch (interaction.inputMode) {
       InputMode.precise => false,
       InputMode.imprecise => true,
@@ -182,7 +182,7 @@ class ResizeDetector extends StatelessWidget {
   final ResizeDirection direction;
 
   /// The event associated with the resize handle.
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// Creates an instance of [ResizeDetector].
   const ResizeDetector({

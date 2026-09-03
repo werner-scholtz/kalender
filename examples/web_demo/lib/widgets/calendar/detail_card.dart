@@ -10,7 +10,7 @@ class EventDetailCard extends StatefulWidget {
   final double width;
   final VoidCallback onDismiss;
   final EventsController eventsController;
-  final CalendarController controller;
+  final KalenderController controller;
   final Location? location;
 
   const EventDetailCard({

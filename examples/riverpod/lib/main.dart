@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
 }
 
 /// The shared calendar controller.
-final calendarControllerProvider = Provider<CalendarController>((ref) => CalendarController());
+final calendarControllerProvider = Provider<KalenderController>((ref) => KalenderController());
 
 /// The shared events controller.
 final eventsProvider = Provider<EventsController>((ref) => DefaultEventsController());
@@ -65,7 +65,7 @@ class HomeScreen extends ConsumerWidget {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: selected,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventTapped: (event) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
@@ -84,11 +84,11 @@ class HomeScreen extends ConsumerWidget {
                 padding: EdgeInsets.all(8),
                 child: Row(children: [ViewSwitcher()]),
               ),
-              CalendarHeader(),
+              KalenderHeader(),
             ],
           ),
         ),
-        body: CalendarBody(
+        body: KalenderBody(
           multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
           monthBodyConfiguration: MonthBodyConfiguration(),
         ),

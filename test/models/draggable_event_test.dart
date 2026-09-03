@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 
 void main() {
-  CalendarEvent makeEvent({String id = 'e1'}) => CalendarEvent(
+  KalenderEvent makeEvent({String id = 'e1'}) => KalenderEvent(
         id: id,
         start: DateTime.utc(2024, 1, 15, 9),
         end: DateTime.utc(2024, 1, 15, 10),

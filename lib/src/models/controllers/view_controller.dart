@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
+import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
 
 export 'view_controllers/month_view_controller.dart';
 export 'view_controllers/multi_day_view_controller.dart';
@@ -11,7 +11,7 @@ export 'view_controllers/schedule_view_controller.dart';
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
-abstract class ViewController with CalendarNavigationFunctions {
+abstract class ViewController with KalenderNavigationFunctions {
   /// The location of the current view.
   Location? location;
 
@@ -23,8 +23,8 @@ abstract class ViewController with CalendarNavigationFunctions {
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 
-  /// The [CalendarEvent]s that are currently visible.
-  ValueNotifier<Set<CalendarEvent>> get visibleEvents;
+  /// The [KalenderEvent]s that are currently visible.
+  ValueNotifier<Set<KalenderEvent>> get visibleEvents;
 
   // TODO: this can be passed between ViewControllers, but for now it is created here.
 
@@ -72,7 +72,7 @@ abstract class ViewController with CalendarNavigationFunctions {
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent event, {
+    KalenderEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

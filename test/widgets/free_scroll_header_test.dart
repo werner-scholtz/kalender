@@ -12,8 +12,8 @@ import '../utilities.dart';
 //    day (#283).
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
-  late CalendarCallbacks callbacks;
+  late KalenderController calendarController;
+  late KalenderCallbacks callbacks;
 
   final tileComponents = TileComponents(
     tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
@@ -21,8 +21,8 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
-    callbacks = CalendarCallbacks(
+    calendarController = KalenderController();
+    callbacks = KalenderCallbacks(
       onEventCreated: eventsController.addEvent,
       onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
     );
@@ -34,11 +34,11 @@ void main() {
   // are single-row.
   void addTwoRowDay() {
     eventsController.addEvents([
-      CalendarEvent(
+      KalenderEvent(
         start: base.add(const Duration(days: 1)),
         end: base.add(const Duration(days: 3)),
       ),
-      CalendarEvent(
+      KalenderEvent(
         start: base.add(const Duration(days: 2)),
         end: base.add(const Duration(days: 4)),
       ),
@@ -54,8 +54,8 @@ void main() {
           displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
         ),
         callbacks: callbacks,
-        header: CalendarHeader(multiDayTileComponents: tileComponents),
-        body: CalendarBody(multiDayTileComponents: tileComponents),
+        header: KalenderHeader(multiDayTileComponents: tileComponents),
+        body: KalenderBody(multiDayTileComponents: tileComponents),
       );
 
   group('FreeScroll header', () {
@@ -75,13 +75,13 @@ void main() {
         ),
       );
 
-      final heightBefore = tester.getSize(find.byType(CalendarHeader)).height;
+      final heightBefore = tester.getSize(find.byType(KalenderHeader)).height;
 
       // Force the header to build again, as a calendar item change would.
       rebuild.value++;
       await tester.pumpAndSettle();
 
-      final heightAfter = tester.getSize(find.byType(CalendarHeader)).height;
+      final heightAfter = tester.getSize(find.byType(KalenderHeader)).height;
       expect(heightAfter, closeTo(heightBefore, 0.5), reason: 'the header must not wobble on rebuild');
     });
 
@@ -89,10 +89,10 @@ void main() {
     // view, regardless of whether it is the leading day.
     Future<double> pumpAndMeasureHeader(WidgetTester tester, DateTime initialDate) async {
       eventsController = DefaultEventsController();
-      calendarController = CalendarController();
+      calendarController = KalenderController();
       addTwoRowDay();
       await pumpAndSettleWithMaterialApp(tester, freeScrollView(initialDate: initialDate));
-      return tester.getSize(find.byType(CalendarHeader)).height;
+      return tester.getSize(find.byType(KalenderHeader)).height;
     }
 
     testWidgets('fits the tallest visible day, not just the leading day', (tester) async {

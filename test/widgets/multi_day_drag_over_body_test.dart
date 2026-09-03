@@ -8,12 +8,12 @@ import '../utilities.dart';
 /// the body. The header's drop target should keep following the cursor's day.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   late String eventId;
 
   final start = DateTime(2025, 1, 6); // A Monday.
 
-  final interaction = CalendarInteraction(
+  final interaction = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -21,17 +21,17 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     // A two-day event starting on the Tuesday.
     eventId = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.add(const Duration(days: 1, hours: 9)),
         end: start.add(const Duration(days: 3, hours: 9)),
       ),
     );
   });
 
-  Future<void> pumpWeek(WidgetTester tester, {CalendarCallbacks? callbacks}) {
+  Future<void> pumpWeek(WidgetTester tester, {KalenderCallbacks? callbacks}) {
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -43,8 +43,8 @@ void main() {
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
           initialDateTime: start,
         ),
-        header: CalendarHeader(interaction: interaction),
-        body: CalendarBody(interaction: interaction),
+        header: KalenderHeader(interaction: interaction),
+        body: KalenderBody(interaction: interaction),
       ),
     );
   }
@@ -109,8 +109,8 @@ void main() {
   });
 
   testWidgets('dropping over the body commits the new date', (tester) async {
-    CalendarEvent? changed;
-    await pumpWeek(tester, callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated));
+    KalenderEvent? changed;
+    await pumpWeek(tester, callbacks: KalenderCallbacks(onEventChanged: (_, updated) => changed = updated));
 
     final originalStart = eventsController.byId(eventId)!.start;
     final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;

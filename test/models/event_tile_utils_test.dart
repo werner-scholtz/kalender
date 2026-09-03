@@ -12,7 +12,7 @@ class _DayTileHarness extends StatelessWidget with DayEventTileUtils {
   _DayTileHarness({required this.event, required this.tileRange});
 
   @override
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   @override
   final KalenderDateTimeRange tileRange;
@@ -27,7 +27,7 @@ class _MultiDayTileHarness extends StatelessWidget with MultiDayEventTileUtils {
   _MultiDayTileHarness({required this.event, required this.tileRange});
 
   @override
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   @override
   final KalenderDateTimeRange tileRange;
@@ -44,11 +44,11 @@ void main() {
   final utcLocation = getLocation('Etc/UTC');
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController(locations: [utcLocation]);
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   tearDown(() {
@@ -77,7 +77,7 @@ void main() {
   // ─── DayEventTileUtils ───────────────────────────────────────────────────────
 
   group('DayEventTileUtils', () {
-    final event = CalendarEvent(
+    final event = KalenderEvent(
       start: DateTime.utc(2024, 1, 15, 9),
       end: DateTime.utc(2024, 1, 15, 10),
     );
@@ -113,14 +113,14 @@ void main() {
       final selfId = eventsController.addEvent(event);
       // Within a +/-30min window of 09:00-10:00 (08:30-10:30).
       final nearbyId = eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime.utc(2024, 1, 15, 8),
           end: DateTime.utc(2024, 1, 15, 8, 45),
         ),
       );
       // Outside the window.
       eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime.utc(2024, 1, 15, 11),
           end: DateTime.utc(2024, 1, 15, 12),
         ),
@@ -152,7 +152,7 @@ void main() {
   // ─── MultiDayEventTileUtils ──────────────────────────────────────────────────
 
   group('MultiDayEventTileUtils', () {
-    final event = CalendarEvent(
+    final event = KalenderEvent(
       start: DateTime.utc(2024, 1, 15, 9),
       end: DateTime.utc(2024, 1, 17, 18),
     );
@@ -195,7 +195,7 @@ void main() {
     testWidgets('dateFromPosition clips an event that overflows the tile on both sides', (tester) async {
       // Event runs Jan 13 → Jan 20 but the tile only shows Jan 15 → Jan 18, so
       // the 300px width maps to the 3 visible days (Jan 15, 16, 17).
-      final overflowing = CalendarEvent(
+      final overflowing = KalenderEvent(
         start: DateTime.utc(2024, 1, 13, 9),
         end: DateTime.utc(2024, 1, 20, 18),
       );
@@ -209,7 +209,7 @@ void main() {
     testWidgets('nearbyEvents includes multi-day events by default', (tester) async {
       final selfId = eventsController.addEvent(event);
       final otherMultiDayId = eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime.utc(2024, 1, 16),
           end: DateTime.utc(2024, 1, 18),
         ),

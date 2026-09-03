@@ -12,11 +12,11 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final components = TileComponents(
@@ -37,8 +37,8 @@ void main() {
             initialDateTime: start,
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
           ),
-          header: CalendarHeader(multiDayTileComponents: components),
-          body: CalendarBody(multiDayTileComponents: components),
+          header: KalenderHeader(multiDayTileComponents: components),
+          body: KalenderBody(multiDayTileComponents: components),
         ),
       ),
     );
@@ -48,7 +48,7 @@ void main() {
 
   testWidgets('RTL: a multi-day event renders as one spanning tile', (tester) async {
     final id = eventsController.addEvent(
-      CalendarEvent(start: start, end: start.add(const Duration(days: 4))),
+      KalenderEvent(start: start, end: start.add(const Duration(days: 4))),
     );
 
     await pump(tester, TextDirection.rtl);
@@ -61,7 +61,7 @@ void main() {
 
   testWidgets('RTL mirrors the tile position relative to LTR', (tester) async {
     // A 2-day event on the first two visible days.
-    final event = CalendarEvent(
+    final event = KalenderEvent(
       start: start,
       end: start.add(const Duration(days: 2)),
     );
@@ -73,7 +73,7 @@ void main() {
 
     // Rebuild fresh in RTL.
     eventsController = DefaultEventsController()..addEvent(event);
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     await pump(tester, TextDirection.rtl);
     final rtlCenter = tester.getCenter(find.byKey(MultiDayEventTile.tileKey(id)));
 
@@ -85,7 +85,7 @@ void main() {
 
   testWidgets('RTL: scrolling forward moves the tile toward the start side (right)', (tester) async {
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.add(const Duration(days: 1)),
         end: start.add(const Duration(days: 4)),
       ),

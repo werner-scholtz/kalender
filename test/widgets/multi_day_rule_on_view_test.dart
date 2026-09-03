@@ -9,12 +9,12 @@ import '../utilities.dart';
 /// between the header and the body without the events themselves changing.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   late String eventId;
 
   final start = DateTime(2025, 1, 6); // A Monday.
 
-  final interaction = CalendarInteraction(
+  final interaction = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -22,11 +22,11 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     // 23:00 to 01:00. Two calendar days, two hours long, so the two rules
     // disagree about it and nothing else does.
     eventId = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.add(const Duration(days: 1, hours: 23)),
         end: start.add(const Duration(days: 2, hours: 1)),
       ),
@@ -45,8 +45,8 @@ void main() {
           initialDateTime: start,
           multiDayRule: rule,
         ),
-        header: CalendarHeader(interaction: interaction),
-        body: CalendarBody(interaction: interaction),
+        header: KalenderHeader(interaction: interaction),
+        body: KalenderBody(interaction: interaction),
       ),
     );
   }
@@ -85,7 +85,7 @@ void main() {
   testWidgets('an event override survives a change of view rule', (tester) async {
     eventsController.clearEvents();
     final pinned = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.add(const Duration(days: 1, hours: 23)),
         end: start.add(const Duration(days: 2, hours: 1)),
         multiDayRule: const MultiDayRule.calendarDays(),

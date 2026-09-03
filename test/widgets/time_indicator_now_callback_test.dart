@@ -33,7 +33,7 @@ void main() {
                       viewController: MultiDayViewController(
                         viewConfiguration: viewConfiguration,
                         visibleDateTimeRange: ValueNotifier(range),
-                        visibleEvents: ValueNotifier(<CalendarEvent>{}),
+                        visibleEvents: ValueNotifier(<KalenderEvent>{}),
                       ),
                       initialPage: 0,
                       childOverride: SizedBox(key: key),
@@ -70,7 +70,7 @@ void main() {
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
                     visibleDateTimeRange: ValueNotifier(range),
-                    visibleEvents: ValueNotifier(<CalendarEvent>{}),
+                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
                   ),
                   initialPage: 0,
                   dateOverride: monday,
@@ -111,7 +111,7 @@ void main() {
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
                     visibleDateTimeRange: ValueNotifier(todayRange),
-                    visibleEvents: ValueNotifier(<CalendarEvent>{}),
+                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
                   ),
                   initialPage: 0,
                   childOverride: SizedBox(key: key),
@@ -144,7 +144,7 @@ void main() {
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
                     visibleDateTimeRange: ValueNotifier(range),
-                    visibleEvents: ValueNotifier(<CalendarEvent>{}),
+                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
                     initialDate: monday,
                   ),
                   initialPage: 0,

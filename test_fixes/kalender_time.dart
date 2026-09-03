@@ -3,3 +3,4 @@
 import 'package:kalender/kalender.dart';
 
 TimeOfDayRange? range;
+TimeOfDayStringBuilder? builder;

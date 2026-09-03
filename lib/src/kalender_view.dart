@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 class KalenderView extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
   final EventsController eventsController;
 
-  /// The [CalendarController] that is used to control the calendar view.
-  final CalendarController calendarController;
+  /// The [KalenderController] that is used to control the calendar view.
+  final KalenderController calendarController;
 
   /// The [ViewConfiguration] that will be used to render the calendar view.
   final ViewConfiguration viewConfiguration;
 
-  /// The [CalendarCallbacks] used by the [KalenderView]
-  final CalendarCallbacks? callbacks;
+  /// The [KalenderCallbacks] used by the [KalenderView]
+  final KalenderCallbacks? callbacks;
 
   /// The components and styles used by the calendar.
   ///
@@ -26,7 +26,7 @@ class KalenderView extends StatefulWidget {
   ///
   /// Styles live on [KalenderThemeData] rather than here. Register one on
   /// [ThemeData.extensions], or wrap a calendar in a [KalenderTheme] to scope it.
-  final CalendarComponents? components;
+  final KalenderComponents? components;
 
   /// The header widget that will be displayed above the body.
   final Widget? header;
@@ -283,10 +283,10 @@ class KalenderViewState extends State<KalenderView> {
 
   @override
   Widget build(BuildContext context) {
-    final bodyId = widget.body == null ? null : CalendarLayoutDelegate.body;
-    final headerId = widget.header == null ? null : CalendarLayoutDelegate.header;
+    final bodyId = widget.body == null ? null : KalenderLayoutDelegate.body;
+    final headerId = widget.header == null ? null : KalenderLayoutDelegate.header;
 
-    final components = widget.components ?? const CalendarComponents();
+    final components = widget.components ?? const KalenderComponents();
     // Each gutter is measured only for the view that draws it.
     final viewConfiguration = widget.viewConfiguration;
     final multiDayConfiguration = viewConfiguration is MultiDayViewConfiguration ? viewConfiguration : null;
@@ -303,7 +303,7 @@ class KalenderViewState extends State<KalenderView> {
             components: components,
             child: EventsControllerProvider(
               eventsController: widget.eventsController,
-              child: CalendarControllerProvider(
+              child: KalenderControllerProvider(
                 notifier: widget.calendarController,
                 // Below every provider a width builder may read, and above both
                 // halves so they cannot be given different widths.
@@ -319,7 +319,7 @@ class KalenderViewState extends State<KalenderView> {
                             multiDayConfiguration.timeOfDayRange,
                           ),
                     child: CustomMultiChildLayout(
-                      delegate: CalendarLayoutDelegate(headerId, bodyId),
+                      delegate: KalenderLayoutDelegate(headerId, bodyId),
                       children: [
                         if (bodyId != null)
                           LayoutId(
@@ -343,14 +343,3 @@ class KalenderViewState extends State<KalenderView> {
     );
   }
 }
-
-/// The previous name of [KalenderView].
-///
-/// `CalendarView(...)` still constructs a [KalenderView], since this is the same
-/// type under its old name.
-@Deprecated('Renamed to KalenderView. Will be removed in 0.30.0.')
-typedef CalendarView = KalenderView;
-
-/// The previous name of [KalenderViewState].
-@Deprecated('Renamed to KalenderViewState. Will be removed in 0.30.0.')
-typedef CalendarViewState = KalenderViewState;

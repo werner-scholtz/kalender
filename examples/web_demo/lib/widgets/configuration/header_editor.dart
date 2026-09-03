@@ -13,7 +13,7 @@ class MultiDayHeaderEditor extends StatelessWidget {
   });
 
   MultiDayHeaderConfiguration get configuration => demoConfiguration.multiDayHeaderConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionHeader;
+  ValueNotifier<KalenderInteraction> get interaction => demoConfiguration.interactionHeader;
 
   @override
   Widget build(BuildContext context) {

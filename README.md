@@ -35,7 +35,7 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 - **Four views, one widget.** Day, Multi-day, Month and Schedule.
 - **Reschedule by hand.** Drag, resize and zoom, on mouse, stylus, trackpad or touch.
 - **Snapping you control.** To an interval, the time indicator, other events, or your own rule.
-- **No fixed event model.** Subclass `CalendarEvent` and read your own fields anywhere.
+- **No fixed event model.** Subclass `KalenderEvent` and read your own fields anywhere.
 - **Controllers and callbacks.** Navigate from code, and react to taps, creation and changes.
 - **Replaceable, not just configurable.** Swap any widget, or keep it and restyle it.
 - **Material 3 by default.** Follows your app's theme with no setup.
@@ -65,7 +65,7 @@ flutter pub add intl
 
 ## Quick Start
 
-The minimal setup, using only the base `CalendarEvent` class with no custom fields:
+The minimal setup, using only the base `KalenderEvent` class with no custom fields:
 
 <!-- snippet: file -->
 ```dart
@@ -96,7 +96,7 @@ class MyCalendar extends StatefulWidget {
 
 class _MyCalendarState extends State<MyCalendar> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   @override
   void dispose() {
@@ -114,11 +114,11 @@ class _MyCalendarState extends State<MyCalendar> {
         // Without this the day opens at midnight.
         initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
       ),
-      callbacks: CalendarCallbacks(
+      callbacks: KalenderCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),
       ),
-      header: CalendarHeader(),
-      body: CalendarBody(),
+      header: KalenderHeader(),
+      body: KalenderBody(),
     );
   }
 }
@@ -148,7 +148,7 @@ Runnable apps in [`examples/`](examples/README.md):
 The detailed guides live in [`doc/`](doc/README.md):
 
 - **[Views](doc/views.md).** Multi-day (day, week, work week, custom day counts, free scroll), month and schedule. What carries over on a view switch: the focused date, the scroll position, the zoom level.
-- **[Events](doc/events.md).** Subclassing `CalendarEvent` to attach your own data, updating events through the controller, and what puts an event in the multi-day header rather than the day timeline: the `MultiDayRule`, or `isAllDay` on the event itself.
+- **[Events](doc/events.md).** Subclassing `KalenderEvent` to attach your own data, updating events through the controller, and what puts an event in the multi-day header rather than the day timeline: the `MultiDayRule`, or `isAllDay` on the event itself.
 - **[Interaction](doc/interaction.md).** Creating, rescheduling and resizing, set separately for the header and the body and lockable per event. Snapping to an interval, the time indicator, other events, or your own strategy. Zoom driven from the controller.
 - **[Controllers & Callbacks](doc/controllers-and-callbacks.md).** Jumping and animating to a date or an event, switching views, reacting to taps, creation, resizing and rescheduling, and building a navigation toolbar.
 - **[Appearance](doc/appearance.md).** A `ThemeExtension` with Material 3 defaults that follows your app's `ThemeData`, and replacing components outright: event tiles, day headers, the timeline gutter, the time indicator, the multi-day overflow overlay.

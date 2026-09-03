@@ -7,10 +7,10 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
-  late CalendarCallbacks callbacks;
+  late KalenderController calendarController;
+  late KalenderCallbacks callbacks;
 
-  final preciseInteraction = CalendarInteraction(
+  final preciseInteraction = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -31,8 +31,8 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
-    callbacks = CalendarCallbacks(
+    calendarController = KalenderController();
+    callbacks = KalenderCallbacks(
       onEventCreated: eventsController.addEvent,
       onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
     );
@@ -74,7 +74,7 @@ void main() {
       late String eventId;
       setUp(() {
         eventId = eventsController.addEvent(
-          CalendarEvent(
+          KalenderEvent(
             start: start.copyWith(hour: 6),
             end: start.copyWith(hour: 8),
           ),
@@ -92,7 +92,7 @@ void main() {
               calendarController: calendarController,
               viewConfiguration: viewConfiguration,
               callbacks: callbacks,
-              body: CalendarBody(
+              body: KalenderBody(
                 interaction: preciseInteraction,
                 multiDayTileComponents: components,
                 monthTileComponents: components,
@@ -188,7 +188,7 @@ void main() {
         // either side.
         final weekConfiguration = viewConfigurations[1];
         final id = eventsController.addEvent(
-          CalendarEvent(
+          KalenderEvent(
             start: start.copyWith(day: start.day + 2, hour: 10),
             end: start.copyWith(day: start.day + 2, hour: 12),
           ),
@@ -234,7 +234,7 @@ void main() {
       final end = DateTime(2025, 3, 31);
       final dateTimeRange = KalenderDateTimeRange(start: start, end: end);
 
-      final impreciseInteraction = CalendarInteraction(
+      final impreciseInteraction = KalenderInteraction(
         inputMode: InputMode.imprecise,
         createEventGesture: EventInteractionGesture.longPress,
         modifyEventGesture: EventInteractionGesture.longPress,
@@ -252,7 +252,7 @@ void main() {
       late String eventId;
       setUp(() {
         eventId = eventsController.addEvent(
-          CalendarEvent(
+          KalenderEvent(
             start: start.copyWith(hour: 6),
             end: start.copyWith(hour: 8),
           ),
@@ -270,7 +270,7 @@ void main() {
               calendarController: calendarController,
               viewConfiguration: viewConfiguration,
               callbacks: callbacks,
-              body: CalendarBody(
+              body: KalenderBody(
                 interaction: impreciseInteraction,
                 multiDayTileComponents: components,
                 monthTileComponents: components,
@@ -364,7 +364,7 @@ void main() {
               calendarController: calendarController,
               viewConfiguration: viewConfiguration,
               callbacks: callbacks,
-              body: CalendarBody(
+              body: KalenderBody(
                 multiDayTileComponents: components,
                 monthTileComponents: components,
                 scheduleTileComponents: scheduleComponents,

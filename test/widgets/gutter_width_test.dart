@@ -14,11 +14,11 @@ import '../utilities.dart';
 /// the way it does for every other style.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   tearDown(() {
@@ -34,8 +34,8 @@ void main() {
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: configuration,
-      header: CalendarHeader(multiDayTileComponents: tiles),
-      body: KalenderTheme(data: bodyTheme, child: CalendarBody(multiDayTileComponents: tiles)),
+      header: KalenderHeader(multiDayTileComponents: tiles),
+      body: KalenderTheme(data: bodyTheme, child: KalenderBody(multiDayTileComponents: tiles)),
     );
   }
 
@@ -44,8 +44,8 @@ void main() {
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: configuration,
-      header: CalendarHeader(multiDayTileComponents: tiles),
-      body: CalendarBody(multiDayTileComponents: tiles),
+      header: KalenderHeader(multiDayTileComponents: tiles),
+      body: KalenderBody(multiDayTileComponents: tiles),
     );
     return theme == null ? view : KalenderTheme(data: theme, child: view);
   }
@@ -83,13 +83,13 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: month(),
-          components: const CalendarComponents(
+          components: const KalenderComponents(
             monthComponents: MonthComponents(
               bodyComponents: MonthBodyComponents(weekNumberWidth: _fixedWidth),
             ),
           ),
-          header: CalendarHeader(multiDayTileComponents: tiles),
-          body: CalendarBody(multiDayTileComponents: tiles),
+          header: KalenderHeader(multiDayTileComponents: tiles),
+          body: KalenderBody(multiDayTileComponents: tiles),
         ),
       );
 
@@ -175,13 +175,13 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: week(),
-          components: const CalendarComponents(
+          components: const KalenderComponents(
             multiDayComponents: MultiDayComponents(
               bodyComponents: MultiDayBodyComponents(timelineWidth: _countingTimelineWidth),
             ),
           ),
-          header: CalendarHeader(multiDayTileComponents: tiles),
-          body: CalendarBody(multiDayTileComponents: tiles),
+          header: KalenderHeader(multiDayTileComponents: tiles),
+          body: KalenderBody(multiDayTileComponents: tiles),
         ),
       );
 
@@ -217,13 +217,13 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: month(),
-          components: const CalendarComponents(
+          components: const KalenderComponents(
             multiDayComponents: MultiDayComponents(
               bodyComponents: MultiDayBodyComponents(timelineWidth: _countingTimelineWidth),
             ),
           ),
-          header: CalendarHeader(multiDayTileComponents: tiles),
-          body: CalendarBody(multiDayTileComponents: tiles),
+          header: KalenderHeader(multiDayTileComponents: tiles),
+          body: KalenderBody(multiDayTileComponents: tiles),
         ),
       );
 
@@ -231,7 +231,7 @@ void main() {
     });
   });
 
-  // The builders run above CalendarHeader and CalendarBody, so what the calendar
+  // The builders run above KalenderHeader and KalenderBody, so what the calendar
   // installs resolves and the four those two install do not.
   testWidgets('a width builder reaches the calendar state', (tester) async {
     _resolved.clear();
@@ -242,13 +242,13 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: week(),
-        components: const CalendarComponents(
+        components: const KalenderComponents(
           multiDayComponents: MultiDayComponents(
             bodyComponents: MultiDayBodyComponents(timelineWidth: _readsCalendarState),
           ),
         ),
-        header: CalendarHeader(multiDayTileComponents: tiles),
-        body: CalendarBody(multiDayTileComponents: tiles),
+        header: KalenderHeader(multiDayTileComponents: tiles),
+        body: KalenderBody(multiDayTileComponents: tiles),
       ),
     );
 

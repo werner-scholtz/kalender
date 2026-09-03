@@ -1,0 +1,98 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderBody'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarBody'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderBody'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderCallbacks'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarCallbacks'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderCallbacks'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderComponents'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarComponents'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderComponents'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderController'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarController'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderController'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderEvent'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderEvent'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderHeader'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarHeader'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderHeader'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderInteraction'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarInteraction'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderInteraction'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderSnapping'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'CalendarSnapping'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderSnapping'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderLocale'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      extension: 'CalendarLocale'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderLocale'

@@ -1,16 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
-/// The [Components] widget provides the [CalendarComponents] to the widget tree.
+/// The [Components] widget provides the [KalenderComponents] to the widget tree.
 class Components extends InheritedWidget {
-  /// The [CalendarComponents] that will be used by the Calendar.
-  final CalendarComponents components;
+  /// The [KalenderComponents] that will be used by the Calendar.
+  final KalenderComponents components;
 
   /// Creates a [Components] with the specified components.
   const Components({super.key, required this.components, required super.child});
 
   /// Gets the [Components] from the context.
-  static CalendarComponents of(BuildContext context) {
+  static KalenderComponents of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Components>();
     assert(result != null, 'No ComponentsProvider found.');
     return result!.components;
@@ -41,14 +41,14 @@ class EventsControllerProvider extends InheritedWidget {
   }
 }
 
-/// The [CalendarControllerProvider] is used to provide the [CalendarController] to the [KalenderView]'s descendants.
-class CalendarControllerProvider extends InheritedNotifier<CalendarController> {
-  const CalendarControllerProvider({super.key, required super.notifier, required super.child});
+/// The [KalenderControllerProvider] is used to provide the [KalenderController] to the [KalenderView]'s descendants.
+class KalenderControllerProvider extends InheritedNotifier<KalenderController> {
+  const KalenderControllerProvider({super.key, required super.notifier, required super.child});
 
-  /// Gets the [CalendarControllerProvider] from the context.
-  static CalendarController of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<CalendarControllerProvider>();
-    assert(result != null, 'No CalendarControllerProvider  found.');
+  /// Gets the [KalenderControllerProvider] from the context.
+  static KalenderController of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<KalenderControllerProvider>();
+    assert(result != null, 'No KalenderControllerProvider  found.');
     return result!.notifier!;
   }
 }
@@ -96,10 +96,10 @@ class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
   }
 }
 
-/// The [Callbacks] widget provides the [CalendarCallbacks] to the widget tree.
+/// The [Callbacks] widget provides the [KalenderCallbacks] to the widget tree.
 class Callbacks extends InheritedWidget {
-  /// The [CalendarCallbacks] that will be used by the Calendar.
-  final CalendarCallbacks? callbacks;
+  /// The [KalenderCallbacks] that will be used by the Calendar.
+  final KalenderCallbacks? callbacks;
 
   /// Creates a [Callbacks] with the specified callbacks.
   const Callbacks({super.key, required this.callbacks, required super.child});
@@ -110,7 +110,7 @@ class Callbacks extends InheritedWidget {
   }
 
   /// Gets the [Callbacks] from the context.
-  static CalendarCallbacks? of(BuildContext context) {
+  static KalenderCallbacks? of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Callbacks>();
     assert(result != null, 'No CallbackProvider  found.');
     return result!.callbacks;
@@ -138,32 +138,32 @@ class TileComponentProvider extends InheritedWidget {
   }
 }
 
-/// The [Interaction] widget provides the [CalendarInteraction] to the widget tree.
-class Interaction extends InheritedNotifier<ValueNotifier<CalendarInteraction>> {
+/// The [Interaction] widget provides the [KalenderInteraction] to the widget tree.
+class Interaction extends InheritedNotifier<ValueNotifier<KalenderInteraction>> {
   const Interaction({super.key, required super.notifier, required super.child});
 
   /// Gets the [Interaction] from the context.
-  static CalendarInteraction of(BuildContext context) {
+  static KalenderInteraction of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Interaction>();
-    assert(result != null, 'No CalendarInteractionProvider found.');
+    assert(result != null, 'No KalenderInteractionProvider found.');
     return result!.notifier!.value;
   }
 }
 
-/// The [Snapping] widget provides the [CalendarSnapping] to the widget tree.
-class Snapping extends InheritedNotifier<ValueNotifier<CalendarSnapping>> {
+/// The [Snapping] widget provides the [KalenderSnapping] to the widget tree.
+class Snapping extends InheritedNotifier<ValueNotifier<KalenderSnapping>> {
   const Snapping({super.key, required super.notifier, required super.child});
 
   /// Gets the [Snapping] from the context.
-  static CalendarSnapping of(BuildContext context) {
+  static KalenderSnapping of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Snapping>();
-    assert(result != null, 'No CalendarSnappingProvider found.');
+    assert(result != null, 'No KalenderSnappingProvider found.');
     return result!.notifier!.value;
   }
 
-  static ValueNotifier<CalendarSnapping> valueNotifier(BuildContext context) {
+  static ValueNotifier<KalenderSnapping> valueNotifier(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Snapping>();
-    assert(result != null, 'No CalendarSnappingProvider found.');
+    assert(result != null, 'No KalenderSnappingProvider found.');
     return result!.notifier!;
   }
 }
@@ -185,14 +185,14 @@ extension ProviderContext on BuildContext {
   /// Retrieve the [EventsController].
   EventsController get eventsController => EventsControllerProvider.of(this);
 
-  /// Retrieve the [CalendarController].
-  CalendarController get calendarController => CalendarControllerProvider.of(this);
+  /// Retrieve the [KalenderController].
+  KalenderController get calendarController => KalenderControllerProvider.of(this);
 
-  /// Retrieve the [CalendarComponents].
-  CalendarComponents get components => Components.of(this);
+  /// Retrieve the [KalenderComponents].
+  KalenderComponents get components => Components.of(this);
 
-  /// Retrieve the [CalendarCallbacks] from the [Callbacks].
-  CalendarCallbacks? get callbacks => Callbacks.of(this);
+  /// Retrieve the [KalenderCallbacks] from the [Callbacks].
+  KalenderCallbacks? get callbacks => Callbacks.of(this);
 
   /// Retrieve the [TileComponents] from the [TileComponentProvider].
   TileComponents get tileComponents => TileComponentProvider.of(this);
@@ -203,14 +203,14 @@ extension ProviderContext on BuildContext {
   /// Retrieve the locale.
   Locale? get locale => LocaleProvider.of(this);
 
-  /// Retrieve the [CalendarInteraction].
-  CalendarInteraction get interaction => Interaction.of(this);
+  /// Retrieve the [KalenderInteraction].
+  KalenderInteraction get interaction => Interaction.of(this);
 
-  /// Retrieve the [CalendarSnapping].
-  CalendarSnapping get snapping => Snapping.of(this);
+  /// Retrieve the [KalenderSnapping].
+  KalenderSnapping get snapping => Snapping.of(this);
 
-  /// Retrieve the [ValueNotifier] containing the [CalendarSnapping].
-  ValueNotifier<CalendarSnapping> get snappingNotifier => Snapping.valueNotifier(this);
+  /// Retrieve the [ValueNotifier] containing the [KalenderSnapping].
+  ValueNotifier<KalenderSnapping> get snappingNotifier => Snapping.valueNotifier(this);
 
   /// Retrieve the height per minute.
   double get heightPerMinute => HeightPerMinute.of(this);

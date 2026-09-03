@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 
@@ -28,14 +28,14 @@ Future<dynamic> _pumpWeekView(
     tester,
     KalenderView(
       eventsController: eventsController ?? DefaultEventsController(),
-      calendarController: CalendarController(),
+      calendarController: KalenderController(),
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: year2025DisplayRange,
         initialDateTime: _weekInitialDate,
         timeOfDayRange: timeOfDayRange,
         initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
       ),
-      body: const CalendarBody(),
+      body: const KalenderBody(),
     ),
   );
   return tester.state<State>(find.byType(VerticalDragTarget)) as dynamic;
@@ -48,13 +48,13 @@ final _restrictedRange = KalenderTimeRange(
 );
 
 /// A single-day event (2 h) on Jan 6, 2025.
-CalendarEvent _singleDayEvent({DateTime? start, DateTime? end}) => CalendarEvent(
+KalenderEvent _singleDayEvent({DateTime? start, DateTime? end}) => KalenderEvent(
       start: start ?? DateTime(2025, 1, 6, 10, 0),
       end: end ?? DateTime(2025, 1, 6, 12, 0),
     );
 
 /// A midnight-to-midnight event (always spans multiple days).
-CalendarEvent _multiDayEvent() => CalendarEvent(
+KalenderEvent _multiDayEvent() => KalenderEvent(
       start: DateTime(2025, 1, 6, 0, 0),
       end: DateTime(2025, 1, 7, 0, 0),
     );
@@ -69,7 +69,7 @@ void main() {
   //    static method never touches viewController so no widget is needed)
   // ────────────────────────────────────────────────────────────────────────────
   group('HorizontalDragTarget.onWillAcceptWithDetails', () {
-    final controller = CalendarController();
+    final controller = KalenderController();
 
     // MultiDayHeaderConfiguration: allowSingleDayEvents = false
     const headerConfig = MultiDayHeaderConfiguration();
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('Create with mismatched controller id → false', () {
-      final other = CalendarController();
+      final other = KalenderController();
       expect(
         HorizontalDragTarget.onWillAcceptWithDetails(
           _dragDetails(Create(controllerId: other.id)),
@@ -188,18 +188,18 @@ void main() {
   //    method reads viewController from the live controller)
   // ────────────────────────────────────────────────────────────────────────────
   group('VerticalDragTarget.onWillAcceptWithDetails', () {
-    KalenderView weekCalendarView(CalendarController controller) => KalenderView(
+    KalenderView weekCalendarView(KalenderController controller) => KalenderView(
           eventsController: DefaultEventsController(),
           calendarController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
             displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         );
 
     testWidgets('Create with matching controller id → true', (tester) async {
-      final controller = CalendarController();
+      final controller = KalenderController();
       await pumpAndSettleWithMaterialApp(tester, weekCalendarView(controller));
       const config = MultiDayBodyConfiguration();
 
@@ -214,10 +214,10 @@ void main() {
     });
 
     testWidgets('Create with mismatched controller id → false', (tester) async {
-      final controller = CalendarController();
+      final controller = KalenderController();
       await pumpAndSettleWithMaterialApp(tester, weekCalendarView(controller));
       const config = MultiDayBodyConfiguration();
-      final other = CalendarController();
+      final other = KalenderController();
 
       expect(
         VerticalDragTarget.onWillAcceptWithDetails(
@@ -230,7 +230,7 @@ void main() {
     });
 
     testWidgets('Resize bottom (vertical) → true', (tester) async {
-      final controller = CalendarController();
+      final controller = KalenderController();
       await pumpAndSettleWithMaterialApp(tester, weekCalendarView(controller));
       const config = MultiDayBodyConfiguration();
 
@@ -245,7 +245,7 @@ void main() {
     });
 
     testWidgets('Resize left (horizontal) → false', (tester) async {
-      final controller = CalendarController();
+      final controller = KalenderController();
       await pumpAndSettleWithMaterialApp(tester, weekCalendarView(controller));
       const config = MultiDayBodyConfiguration();
 
@@ -262,7 +262,7 @@ void main() {
     testWidgets('Reschedule event whose duration exceeds restricted timeOfDayRange → false', (tester) async {
       // Time range 09:00–17:00 has duration = 8h 1min.
       // An event from 08:00–18:00 (10 h) exceeds that, so it should be rejected.
-      final controller = CalendarController();
+      final controller = KalenderController();
       await pumpAndSettleWithMaterialApp(
         tester,
         KalenderView(
@@ -273,13 +273,13 @@ void main() {
             initialDateTime: _weekInitialDate,
             timeOfDayRange: _restrictedRange,
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
       const config = MultiDayBodyConfiguration();
 
       // 10-hour event (> 8h 1min range duration) — still a single-day event
-      final hugeEvent = CalendarEvent(
+      final hugeEvent = KalenderEvent(
         start: DateTime(2025, 1, 6, 8, 0),
         end: DateTime(2025, 1, 6, 18, 0),
       );
@@ -434,12 +434,12 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: CalendarController(),
+          calendarController: KalenderController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
     }
@@ -509,12 +509,12 @@ void main() {
         tester,
         KalenderView(
           eventsController: ec ?? DefaultEventsController(),
-          calendarController: CalendarController(),
+          calendarController: KalenderController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
       return tester.state<State>(find.byType(HorizontalDragTarget).first) as dynamic;
@@ -533,7 +533,7 @@ void main() {
       final event = ec.events.first;
       // Move to Jan 9
       final cursor = InternalDateTime(2025, 1, 9);
-      final result = state.rescheduleEvent(event, cursor) as CalendarEvent?;
+      final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);
       final resultStart = result!.internalStart();
@@ -550,7 +550,7 @@ void main() {
       expect(event.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isTrue);
 
       final cursor = InternalDateTime(2025, 1, 9);
-      final result = state.rescheduleEvent(event, cursor) as CalendarEvent?;
+      final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);
       expect(
@@ -573,7 +573,7 @@ void main() {
       final event = ec.events.first;
       // Jump to Jan 20
       final cursor = InternalDateTime(2025, 1, 20);
-      final result = state.rescheduleEvent(event, cursor) as CalendarEvent?;
+      final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);
       final resultStart = result!.internalStart();
@@ -587,7 +587,7 @@ void main() {
   // 7. Resize leave/re-enter regression
   //
   //    When a resize drag leaves a DragTarget, onLeave calls deselectEvent()
-  //    which clears CalendarController.selectedEventId.  On re-entry,
+  //    which clears KalenderController.selectedEventId.  On re-entry,
   //    onWillAcceptWithDetails must call selectEvent() so that
   //    _DayDropTargetColumnState.build() can locate the event by id and
   //    *replace* it in-place rather than inserting a duplicate at position 0.
@@ -611,7 +611,7 @@ void main() {
         're-entry with Resize data restores it', (tester) async {
       final ec = DefaultEventsController();
       ec.addEvent(_singleDayEvent());
-      final controller = CalendarController();
+      final controller = KalenderController();
 
       await pumpAndSettleWithMaterialApp(
         tester,
@@ -622,7 +622,7 @@ void main() {
             displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
 
@@ -663,7 +663,7 @@ void main() {
       final ec = DefaultEventsController();
       // Multi-day event so it lives in the HorizontalDragTarget (header/month).
       ec.addEvent(_multiDayEvent());
-      final controller = CalendarController();
+      final controller = KalenderController();
 
       await pumpAndSettleWithMaterialApp(
         tester,
@@ -674,7 +674,7 @@ void main() {
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
 
@@ -709,7 +709,7 @@ void main() {
     testWidgets('continuous schedule view renders without exception', (tester) async {
       final ec = DefaultEventsController();
       ec.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 1, 6, 10),
           end: DateTime(2025, 1, 6, 12),
         ),
@@ -719,12 +719,12 @@ void main() {
         tester,
         KalenderView(
           eventsController: ec,
-          calendarController: CalendarController(),
+          calendarController: KalenderController(),
           viewConfiguration: ScheduleViewConfiguration.continuous(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 6),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
 
@@ -736,12 +736,12 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: CalendarController(),
+          calendarController: KalenderController(),
           viewConfiguration: ScheduleViewConfiguration.paginated(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 6),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
 

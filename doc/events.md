@@ -8,11 +8,11 @@ on screen, see [Layout](layout.md). For what they look like, see
 
 ## Custom Events
 
-Since v0.16.0, `CalendarEvent` is no longer generic. Attach custom data (title, color, description, and so on) by **extending** `CalendarEvent` directly.
+Since v0.16.0, `KalenderEvent` is no longer generic. Attach custom data (title, color, description, and so on) by **extending** `KalenderEvent` directly.
 
 <!-- snippet: file -->
 ```dart
-class Event extends CalendarEvent {
+class Event extends KalenderEvent {
   final String title;
   final String? description;
   final Color? color;
@@ -70,11 +70,11 @@ class Event extends CalendarEvent {
 ```
 
 > [!NOTE]
-> If you don't override `==` and `hashCode`, the calendar cannot detect changes to your custom fields and tiles will not update when those values change (e.g. via `eventsController.updateEvent(...)`). Always override both whenever you add fields to your `CalendarEvent` subclass.
+> If you don't override `==` and `hashCode`, the calendar cannot detect changes to your custom fields and tiles will not update when those values change (e.g. via `eventsController.updateEvent(...)`). Always override both whenever you add fields to your `KalenderEvent` subclass.
 
 ### The copy contract
 
-The calendar calls `withDateTimeRange` on every drag and resize. It calls your `copyWithData`, then restores the `id`, `interaction`, `multiDayRule` and `isAllDay` that `CalendarEvent` holds, which is why `copyWithData` lists only your own fields. Call `carryOver` from a copy method of your own to get the same. A subclass with no `copyWithData` is flagged by the analyzer, since it is `@mustBeOverridden`.
+The calendar calls `withDateTimeRange` on every drag and resize. It calls your `copyWithData`, then restores the `id`, `interaction`, `multiDayRule` and `isAllDay` that `KalenderEvent` holds, which is why `copyWithData` lists only your own fields. Call `carryOver` from a copy method of your own to get the same. A subclass with no `copyWithData` is flagged by the analyzer, since it is `@mustBeOverridden`.
 
 ### Updating events
 
@@ -112,13 +112,13 @@ TileComponents(
 
 ### Returning your subclass on event creation
 
-Use `onEventCreate` to intercept the bare `CalendarEvent` created by a gesture and return a fully typed instance:
+Use `onEventCreate` to intercept the bare `KalenderEvent` created by a gesture and return a fully typed instance:
 
 Pass this as `KalenderView.callbacks`:
 
 <!-- snippet: expression -->
 ```dart
-CalendarCallbacks(
+KalenderCallbacks(
   onEventCreate: (event) => Event(
     start: event.start,
       end: event.end,
@@ -139,7 +139,7 @@ An event that is all-day by nature rather than by duration says so directly, and
 
 <!-- snippet: expression -->
 ```dart
-CalendarEvent(start: range.start, end: range.end, isAllDay: true)
+KalenderEvent(start: range.start, end: range.end, isAllDay: true)
 ```
 
 This puts it in the header lane whatever its duration, which no `MultiDayRule` can express for an event lasting an hour. The date range is left alone, so an app wanting midnight to midnight supplies it. `isAllDay` defaults to false, where the rules below apply as before.
@@ -148,14 +148,14 @@ A single event can override the calendar's rule:
 
 <!-- snippet: expression -->
 ```dart
-CalendarEvent(
+KalenderEvent(
   start: range.start,
   end: range.end,
   multiDayRule: const MultiDayRule.calendarDays(),
 )
 ```
 
-`CalendarEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. You never forward it by hand: `copyWithData` rebuilds only the fields your subclass adds, and `CalendarEvent` reapplies the rule, the id and the interaction config afterwards. Accept `super.multiDayRule` in the constructor so an event can be given one.
+`KalenderEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. You never forward it by hand: `copyWithData` rebuilds only the fields your subclass adds, and `KalenderEvent` reapplies the rule, the id and the interaction config afterwards. Accept `super.multiDayRule` in the constructor so an event can be given one.
 
 `spansMultipleDays` returns whether an event counts as multi-day, applying the same rules the calendar does:
 

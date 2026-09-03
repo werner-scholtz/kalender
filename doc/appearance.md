@@ -8,9 +8,9 @@ components. For where tiles are placed rather than how they look, see
 
 ## Tile Components
 
-`TileComponents` is the primary way to control how events look in the calendar. Pass it to `CalendarHeader` and/or `CalendarBody` for day, multi-day, and month views.
+`TileComponents` is the primary way to control how events look in the calendar. Pass it to `KalenderHeader` and/or `KalenderBody` for day, multi-day, and month views.
 
-For schedule views, use `ScheduleTileComponents` instead (passed via `CalendarBody.scheduleTileComponents`).
+For schedule views, use `ScheduleTileComponents` instead (passed via `KalenderBody.scheduleTileComponents`).
 
 ### Simple tile
 
@@ -18,7 +18,7 @@ For most apps a plain `tileBuilder` is all you need:
 
 <!-- snippet: expression -->
 ```dart
-CalendarBody(
+KalenderBody(
   multiDayTileComponents: TileComponents(
     tileBuilder: (context, event, tileRange) {
       final myEvent = event as Event;
@@ -124,7 +124,7 @@ Schedule tiles cannot be resized, so `ScheduleTileComponents` takes no resize ha
 For tiles that need to know the exact tapped time or find nearby events, use the provided mixins.
 
 > [!TIP]
-> **Disabling the calendar's built-in tap detector:** The calendar only wraps event tiles in a `GestureDetector` when `onEventTapped` or `onEventTappedWithDetail` is provided in `CalendarCallbacks`. If you omit both callbacks, the wrapper is skipped and a `GestureDetector` inside your custom tile widget can receive events unobstructed. This is the intended pattern when using `DayEventTileUtils` or `MultiDayEventTileUtils`.
+> **Disabling the calendar's built-in tap detector:** The calendar only wraps event tiles in a `GestureDetector` when `onEventTapped` or `onEventTappedWithDetail` is provided in `KalenderCallbacks`. If you omit both callbacks, the wrapper is skipped and a `GestureDetector` inside your custom tile widget can receive events unobstructed. This is the intended pattern when using `DayEventTileUtils` or `MultiDayEventTileUtils`.
 
 <details>
   <summary>DayEventTileUtils (day / multi-day body tiles)</summary>
@@ -133,7 +133,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
   ```dart
   class CustomDayEventTile extends StatelessWidget with DayEventTileUtils {
     @override
-    final CalendarEvent event;
+    final KalenderEvent event;
 
     @override
     final KalenderDateTimeRange tileRange;
@@ -174,7 +174,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
     }
 
     // Static factory. Pass directly to TileComponents.tileBuilder.
-    static Widget builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) =>
+    static Widget builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) =>
         CustomDayEventTile(
           event: event,
           tileRange: tileRange,
@@ -192,7 +192,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
   ```dart
   class CustomMultiDayEventTile extends StatelessWidget with MultiDayEventTileUtils {
     @override
-    final CalendarEvent event;
+    final KalenderEvent event;
 
     @override
     final KalenderDateTimeRange tileRange;
@@ -231,7 +231,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
       );
     }
 
-    static Widget builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) =>
+    static Widget builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) =>
         CustomMultiDayEventTile(
           event: event,
           tileRange: tileRange,
@@ -278,9 +278,9 @@ KalenderTheme(
   ),
   child: KalenderView(
     eventsController: DefaultEventsController(),
-    calendarController: CalendarController(),
+    calendarController: KalenderController(),
     viewConfiguration: MultiDayViewConfiguration.week(),
-    body: CalendarBody(),
+    body: KalenderBody(),
   ),
 )
 ```
@@ -332,10 +332,10 @@ KalenderThemeData(
 
 ## Appearance / Custom Components
 
-Pass a `CalendarComponents` object to `KalenderView` to override the default widget builders.
+Pass a `KalenderComponents` object to `KalenderView` to override the default widget builders.
 
 > [!NOTE]
-> `CalendarComponents` carries builders only. Styles live on `KalenderThemeData`:
+> `KalenderComponents` carries builders only. Styles live on `KalenderThemeData`:
 > register one on `ThemeData.extensions` for the whole app, or wrap a calendar in
 > a [`KalenderTheme`](#theming-part-of-the-app) to style one of them.
 >
@@ -348,7 +348,7 @@ Pass a `CalendarComponents` object to `KalenderView` to override the default wid
 
   <!-- snippet: expression -->
   ```dart
-  CalendarComponents(
+  KalenderComponents(
     multiDayComponents: MultiDayComponents(
       headerComponents: MultiDayHeaderComponents(
         dayHeaderBuilder: (context, date) => CustomWidget(),
@@ -383,7 +383,7 @@ Pass a `CalendarComponents` object to `KalenderView` to override the default wid
 
   <!-- snippet: expression -->
   ```dart
-  CalendarComponents(
+  KalenderComponents(
     monthComponents: MonthComponents(
       headerComponents: MonthHeaderComponents(
         weekDayHeaderBuilder: (context, date) => SizedBox(),
@@ -412,7 +412,7 @@ Pass a `CalendarComponents` object to `KalenderView` to override the default wid
 
   <!-- snippet: expression -->
   ```dart
-  CalendarComponents(
+  KalenderComponents(
     scheduleComponents: ScheduleComponents(
       // The date column shown beside the first row of each day.
       leadingDateBuilder: (context, date) => Container(),

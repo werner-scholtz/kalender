@@ -8,18 +8,18 @@ import '../utilities.dart';
 /// styles from it, all of them from the nearest [KalenderTheme].
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
   Future<void> pumpWeek(
     WidgetTester tester, {
-    CalendarComponents? components,
+    KalenderComponents? components,
     KalenderThemeData? theme,
   }) async {
     final view = KalenderView(
@@ -29,8 +29,8 @@ void main() {
         displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
       ),
       components: components,
-      header: CalendarHeader(multiDayTileComponents: tiles),
-      body: CalendarBody(multiDayTileComponents: tiles),
+      header: KalenderHeader(multiDayTileComponents: tiles),
+      body: KalenderBody(multiDayTileComponents: tiles),
     );
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -38,8 +38,8 @@ void main() {
     );
   }
 
-  CalendarComponents bodyComponents(MultiDayBodyComponents components) {
-    return CalendarComponents(multiDayComponents: MultiDayComponents(bodyComponents: components));
+  KalenderComponents bodyComponents(MultiDayBodyComponents components) {
+    return KalenderComponents(multiDayComponents: MultiDayComponents(bodyComponents: components));
   }
 
   testWidgets('a custom timeline resolves the timeline style from its context', (tester) async {

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart' show CursorNavigationTrigger;
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
@@ -11,8 +11,8 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 /// The [ScheduleDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
 class ScheduleDragTarget extends StatefulWidget {
   final EventsController eventsController;
-  final CalendarController calendarController;
-  final CalendarCallbacks? callbacks;
+  final KalenderController calendarController;
+  final KalenderCallbacks? callbacks;
   final ScheduleViewController viewController;
   final BoxConstraints constraints;
   final bool paginated;
@@ -57,10 +57,10 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   EventsController get eventsController => widget.eventsController;
 
   @override
-  CalendarController get controller => widget.calendarController;
+  KalenderController get controller => widget.calendarController;
 
   @override
-  CalendarCallbacks? get callbacks => widget.callbacks;
+  KalenderCallbacks? get callbacks => widget.callbacks;
 
   @override
   bool get multiDayDragTarget => false;
@@ -189,7 +189,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   }
 
   @override
-  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) {
     // The highlight marks whole rows, so it stays anchored to the target day.
     widget.viewController.highlightedDateTimeRange.value = InternalDateTimeRange(
       start: cursorDateTime,
@@ -212,5 +212,5 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   }
 
   @override
-  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime) => null;
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, DateTime cursorDateTime) => null;
 }

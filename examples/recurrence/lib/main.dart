@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final now = DateTime.now();
   late final displayRange =
       KalenderDateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
   final controller = RecurrenceController();
   late ViewConfiguration viewConfiguration = MultiDayViewConfiguration.week(
     displayRange: displayRange,
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
         eventsController: controller.controller,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventTapped: (event) => _onEventTapped(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) async {
@@ -81,11 +81,11 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               CalendarToolBar(calendarController: calendarController),
-              CalendarHeader(multiDayTileComponents: tileComponents(context, body: false)),
+              KalenderHeader(multiDayTileComponents: tileComponents(context, body: false)),
             ],
           ),
         ),
-        body: CalendarBody(
+        body: KalenderBody(
           multiDayTileComponents: tileComponents(context),
           monthTileComponents: tileComponents(context, body: false),
           scheduleTileComponents: scheduleTileComponents(context),
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _onEventTapped(CalendarEvent event) async {
+  void _onEventTapped(KalenderEvent event) async {
     calendarController.selectEvent(event);
 
     final group = event is RecurringCalendarEvent ? controller.groupFor(event) : null;
@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<RecurrenceDialogResult?> _showDialog(
-    CalendarEvent event, {
+    KalenderEvent event, {
     RecurrenceGroup? existingGroup,
   }) {
     return showAdaptiveDialog<RecurrenceDialogResult?>(

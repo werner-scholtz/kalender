@@ -13,18 +13,18 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final components = TileComponents(
     tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
   );
 
-  final precise = CalendarInteraction(
+  final precise = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -32,7 +32,7 @@ void main() {
 
   MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;
 
-  Future<void> pumpFreeScroll(WidgetTester tester, CalendarCallbacks callbacks) {
+  Future<void> pumpFreeScroll(WidgetTester tester, KalenderCallbacks callbacks) {
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -45,19 +45,19 @@ void main() {
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         ),
         callbacks: callbacks,
-        header: CalendarHeader(multiDayTileComponents: components, interaction: precise),
-        body: CalendarBody(multiDayTileComponents: components, interaction: precise),
+        header: KalenderHeader(multiDayTileComponents: components, interaction: precise),
+        body: KalenderBody(multiDayTileComponents: components, interaction: precise),
       ),
     );
   }
 
   testWidgets('dragging across the header creates a multi-day event', (tester) async {
-    CalendarEvent? created;
-    CalendarEvent? confirmed;
+    KalenderEvent? created;
+    KalenderEvent? confirmed;
 
     await pumpFreeScroll(
       tester,
-      CalendarCallbacks(
+      KalenderCallbacks(
         onEventCreate: (event) {
           created = event;
           return event;
@@ -71,7 +71,7 @@ void main() {
 
     // Drag horizontally across the multi-day band (the lower part of the
     // header, empty since there are no events yet) to span several days.
-    final headerRect = tester.getRect(find.byType(CalendarHeader));
+    final headerRect = tester.getRect(find.byType(KalenderHeader));
     final startPoint = Offset(headerRect.left + headerRect.width * 0.25, headerRect.bottom - 4);
     await tester.dragFrom(startPoint, Offset(headerRect.width * 0.4, 0));
     await tester.pumpAndSettle();
@@ -86,12 +86,12 @@ void main() {
   });
 
   testWidgets('dragging an existing multi-day tile reschedules it', (tester) async {
-    CalendarEvent? changedBefore;
-    CalendarEvent? changedAfter;
+    KalenderEvent? changedBefore;
+    KalenderEvent? changedAfter;
 
     // A 3-day event inside the first visible week.
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.add(const Duration(days: 1)),
         end: start.add(const Duration(days: 4)),
       ),
@@ -99,7 +99,7 @@ void main() {
 
     await pumpFreeScroll(
       tester,
-      CalendarCallbacks(
+      KalenderCallbacks(
         onEventChange: (event) => changedBefore = event,
         onEventChanged: (_, updated) => changedAfter = updated,
       ),
@@ -121,7 +121,7 @@ void main() {
 
   testWidgets('dragging an event to the viewport edge scrolls to adjacent days', (tester) async {
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.add(const Duration(days: 1)),
         end: start.add(const Duration(days: 3)),
       ),
@@ -129,7 +129,7 @@ void main() {
 
     await pumpFreeScroll(
       tester,
-      CalendarCallbacks(
+      KalenderCallbacks(
         onEventChange: (event) => event,
         onEventChanged: (_, __) {},
       ),
@@ -140,7 +140,7 @@ void main() {
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     expect(tile, findsOneWidget);
-    final headerRect = tester.getRect(find.byType(CalendarHeader));
+    final headerRect = tester.getRect(find.byType(KalenderHeader));
     final tileCenter = tester.getCenter(tile);
 
     // Start a reschedule drag and hold it over the right viewport edge.

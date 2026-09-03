@@ -111,7 +111,7 @@ class _CalendarContentState extends State<CalendarContent> {
                                       ),
                                     ),
                                   ),
-                                  child: CalendarHeader(
+                                  child: KalenderHeader(
                                     multiDayTileComponents: _multiDayTileComponents,
                                     multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
                                     interaction: context.configuration.interactionBody.value,
@@ -129,7 +129,7 @@ class _CalendarContentState extends State<CalendarContent> {
                           context.configuration.monthBodyConfigurationNotifier,
                         ]),
                         builder: (context, _) {
-                          return CalendarBody(
+                          return KalenderBody(
                             multiDayTileComponents: _tileComponents,
                             monthTileComponents: _multiDayTileComponents,
                             multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
@@ -182,8 +182,8 @@ class _CalendarContentState extends State<CalendarContent> {
 
   // The colors and text styles live in the app theme as a KalenderThemeData
   // extension (see theme.dart). Only widget builders are wired up here.
-  CalendarComponents _components(BuildContext context) {
-    return CalendarComponents(
+  KalenderComponents _components(BuildContext context) {
+    return KalenderComponents(
       monthComponents: MonthComponents(
         bodyComponents: MonthBodyComponents(
           weekNumberBuilder: _buildWeekNumberText,
@@ -253,7 +253,7 @@ class _CalendarContentState extends State<CalendarContent> {
         dragAnchorStrategy: _dragAnchorStrategy,
       );
 
-  CalendarCallbacks get _callbacks => CalendarCallbacks(
+  KalenderCallbacks get _callbacks => KalenderCallbacks(
         onEventTappedWithDetail: (event, detail) {
           context.controller.deselectEvent();
           context.controller.selectEvent(event);

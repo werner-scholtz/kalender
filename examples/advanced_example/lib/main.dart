@@ -9,7 +9,7 @@ void main() {
 }
 
 /// Represents an event with a title and color.
-class Event extends CalendarEvent {
+class Event extends KalenderEvent {
   final String title;
   final Person person;
 
@@ -23,7 +23,7 @@ class Event extends CalendarEvent {
     super.multiDayRule,
   });
 
-  factory Event.fromDetail(CalendarEvent calendarEvent, TapDetail detail) {
+  factory Event.fromDetail(KalenderEvent calendarEvent, TapDetail detail) {
     if (detail is MultiDayDetail) {
       throw Exception('MultiDayDetail is not supported in this example.');
     }
@@ -96,7 +96,7 @@ const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Pers
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
   late MultiDayViewConfiguration _viewConfiguration = _viewConfigurations.first;
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 2),
@@ -110,8 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: _viewConfiguration,
-        components: CalendarComponents(),
-        callbacks: CalendarCallbacks(
+        components: KalenderComponents(),
+        callbacks: KalenderCallbacks(
           onEventTapped: (event) => calendarController.selectEvent(event),
           onEventCreateWithDetail: Event.fromDetail,
           onEventCreated: (event) => eventsController.addEvent(event),
@@ -140,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             const SizedBox(height: 8),
-            CalendarHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
+            KalenderHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
             const Divider(),
@@ -148,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: ZoomDetector(
           controller: calendarController,
-          child: CalendarBody(
+          child: KalenderBody(
             multiDayTileComponents: tileComponents,
             monthTileComponents: multiDayTileComponents,
             scheduleTileComponents: scheduleTileComponents,

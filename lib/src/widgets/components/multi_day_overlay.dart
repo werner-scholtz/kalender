@@ -4,7 +4,7 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/day_number.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
@@ -15,7 +15,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
 typedef MultiDayOverlayEventTileBuilder = MultiDayEventOverlayTile Function(
   BuildContext context,
-  CalendarEvent event,
+  KalenderEvent event,
   InternalDateTimeRange internalRange,
   VoidCallback dismissOverlay,
 );
@@ -37,7 +37,7 @@ typedef RenderBoxCallback = RenderBox Function();
 typedef MultiDayOverlayBuilder = Widget Function(
   BuildContext context, {
   required DateTime date,
-  required List<CalendarEvent> events,
+  required List<KalenderEvent> events,
   required double tileHeight,
   required OverlayPortalController portalController,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
@@ -292,7 +292,7 @@ class MultiDayOverlay extends StatelessWidget {
   final InternalDateTime date;
 
   /// All the events that should be displayed for the given [date].
-  final List<CalendarEvent> events;
+  final List<KalenderEvent> events;
 
   /// The height of the tile.
   final double tileHeight;
@@ -511,7 +511,7 @@ class MultiDayOverlay extends StatelessWidget {
                                       ),
                                   ],
                                 ),
-                                ValueListenableBuilder<CalendarEvent?>(
+                                ValueListenableBuilder<KalenderEvent?>(
                                   valueListenable: context.calendarController.selectedEvent,
                                   builder: (context, selectedEvent, child) {
                                     if (selectedEvent == null) return const SizedBox();

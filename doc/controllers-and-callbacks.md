@@ -30,9 +30,9 @@ did. Together they are how the calendar connects to the rest of your app.
 `eventsFromDateTimeRange` takes an `InternalDateTimeRange`, not a `KalenderDateTimeRange`.
 Convert with `InternalDateTimeRange.fromDateTimeRange(range)`.
 
-### CalendarController
+### KalenderController
 
-[`CalendarController`](https://pub.dev/documentation/kalender/latest/kalender/CalendarController-class.html) drives a single `KalenderView` widget.
+[`KalenderController`](https://pub.dev/documentation/kalender/latest/kalender/KalenderController-class.html) drives a single `KalenderView` widget.
 
 **State notifiers:**
 
@@ -40,8 +40,8 @@ Convert with `InternalDateTimeRange.fromDateTimeRange(range)`.
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
 | `visibleDateTimeRange` | `ValueNotifier<KalenderDateTimeRange?>`     | The currently visible date range                       |
 | `visibleTimeOfDay`     | `ValueNotifier<KalenderTime?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
-| `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
-| `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |
+| `visibleEvents`        | `ValueNotifier<Set<KalenderEvent>>` | Events visible on screen                               |
+| `selectedEvent`        | `ValueNotifier<KalenderEvent?>`     | The focused event (shows drop target / resize handles) |
 
 **Navigation methods:**
 
@@ -71,7 +71,7 @@ class MyCalendar extends StatefulWidget {
 
 class _MyCalendarState extends State<MyCalendar> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   @override
   void dispose() {
@@ -105,7 +105,7 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   @override
   void dispose() {
@@ -167,8 +167,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: viewConfiguration,
-            header: CalendarHeader(),
-            body: CalendarBody(),
+            header: KalenderHeader(),
+            body: KalenderBody(),
           ),
         ),
       ],
@@ -187,11 +187,11 @@ The [basic example](../examples/example) has a fuller version of this toolbar.
 
 ## Callbacks
 
-Pass a `CalendarCallbacks` to `KalenderView` to react to user interactions.
+Pass a `KalenderCallbacks` to `KalenderView` to react to user interactions.
 
 <!-- snippet: expression -->
 ```dart
-CalendarCallbacks(
+KalenderCallbacks(
   // --- Event interactions ---
 
   // Called when an event tile is tapped.

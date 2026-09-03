@@ -6,21 +6,21 @@ const kDefaultSnapStrategy = EventSnapStrategy.interval();
 
 /// Decides where a dragged event lands, given the position of the cursor.
 ///
-/// Set it on [CalendarSnapping.eventSnapStrategy]:
+/// Set it on [KalenderSnapping.eventSnapStrategy]:
 ///
 /// ```dart
-/// CalendarSnapping(
+/// KalenderSnapping(
 ///   eventSnapStrategy: const EventSnapStrategy.none(),
 /// )
 /// ```
 ///
 /// This is a class rather than a function so that it has value equality.
-/// [CalendarSnapping] is compared with `==` to decide whether the calendar needs
+/// [KalenderSnapping] is compared with `==` to decide whether the calendar needs
 /// to rebuild, and a function field would defeat that.
 abstract class EventSnapStrategy {
   const EventSnapStrategy();
 
-  /// Snaps to the nearest multiple of [CalendarSnapping.snapIntervalMinutes]
+  /// Snaps to the nearest multiple of [KalenderSnapping.snapIntervalMinutes]
   /// measured from the start of the day. The default.
   const factory EventSnapStrategy.interval() = IntervalSnapStrategy;
 
@@ -31,7 +31,7 @@ abstract class EventSnapStrategy {
   ///
   /// [cursorDate] is where the cursor sits, [startOfDay] is the start of the day
   /// it sits in, and [snapIntervalMinutes] comes from
-  /// [CalendarSnapping.snapIntervalMinutes].
+  /// [KalenderSnapping.snapIntervalMinutes].
   InternalDateTime snap({
     required InternalDateTime cursorDate,
     required InternalDateTime startOfDay,
@@ -112,7 +112,7 @@ enum EventInteractionGesture {
   longPress,
 }
 
-/// The [CalendarInteraction] class defines the interaction settings for the calendar.
+/// The [KalenderInteraction] class defines the interaction settings for the calendar.
 ///
 /// This class allows you to configure various aspects of how users can interact with the calendar,
 /// such as resizing, rescheduling, and creating events. It also provides settings for snapping
@@ -120,13 +120,13 @@ enum EventInteractionGesture {
 ///
 /// Example usage:
 /// ```dart
-/// CalendarInteraction(
+/// KalenderInteraction(
 ///   allowResizing: true,
 ///   allowRescheduling: true,
 ///   allowEventCreation: true,
 /// );
 /// ```
-class CalendarInteraction {
+class KalenderInteraction {
   /// Allow the resizing of events.
   ///
   /// If set to `true`, users can resize events by dragging their edges.
@@ -188,10 +188,10 @@ class CalendarInteraction {
     };
   }
 
-  /// Creates a new [CalendarInteraction] instance with the specified settings.
+  /// Creates a new [KalenderInteraction] instance with the specified settings.
   ///
   /// All parameters are optional and default to the values defined in the class.
-  CalendarInteraction({
+  KalenderInteraction({
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
     this.allowEventCreation = defaultAllowEventCreation,
@@ -204,9 +204,9 @@ class CalendarInteraction {
         modifyEventGesture =
             modifyEventGesture ?? (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
 
-  /// Creates a copy of this [CalendarInteraction] but with the given fields replaced with the new values.
+  /// Creates a copy of this [KalenderInteraction] but with the given fields replaced with the new values.
   /// If the fields are not provided, the original values will be used.
-  CalendarInteraction copyWith({
+  KalenderInteraction copyWith({
     bool? allowResizing,
     bool? allowRescheduling,
     bool? allowEventCreation,
@@ -215,7 +215,7 @@ class CalendarInteraction {
     EventInteractionGesture? createEventGesture,
     EventInteractionGesture? modifyEventGesture,
   }) {
-    return CalendarInteraction(
+    return KalenderInteraction(
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       allowEventCreation: allowEventCreation ?? this.allowEventCreation,
@@ -230,7 +230,7 @@ class CalendarInteraction {
   operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is CalendarInteraction &&
+    return other is KalenderInteraction &&
         other.allowResizing == allowResizing &&
         other.allowRescheduling == allowRescheduling &&
         other.allowEventCreation == allowEventCreation &&
@@ -255,7 +255,7 @@ class CalendarInteraction {
 /// The [EventInteraction] class defines the interaction settings for individual calendar events.
 ///
 /// This class allows you to configure how users can interact with specific events,
-/// such as resizing the start/end times and rescheduling. Unlike [CalendarInteraction] which
+/// such as resizing the start/end times and rescheduling. Unlike [KalenderInteraction] which
 /// applies globally, [EventInteraction] is applied per event for fine-grained control.
 ///
 /// Example usage:
@@ -325,21 +325,21 @@ class EventInteraction {
   int get hashCode => Object.hash(allowStartResize, allowEndResize, allowRescheduling);
 }
 
-/// The [CalendarSnapping] class defines the snapping settings for the calendar.
+/// The [KalenderSnapping] class defines the snapping settings for the calendar.
 ///
 /// This class allows you to configure various aspects of how events snap to specific intervals
 /// or other events in the calendar.
 ///
 /// Example usage:
 /// ```dart
-/// CalendarSnapping(
+/// KalenderSnapping(
 ///   snapIntervalMinutes: 15,
 ///   snapToTimeIndicator: true,
 ///   snapToOtherEvents: true,
 ///   snapRange: Duration(minutes: 10),
 /// );
 /// ```
-class CalendarSnapping {
+class KalenderSnapping {
   /// The snap interval in minutes for events.
   ///
   /// This interval is used when snapping events to the nearest time slot.
@@ -370,10 +370,10 @@ class CalendarSnapping {
   /// This strategy is only used by the multi-day body.
   final EventSnapStrategy eventSnapStrategy;
 
-  /// Creates a new [CalendarSnapping] instance with the specified settings.
+  /// Creates a new [KalenderSnapping] instance with the specified settings.
   ///
   /// All parameters are optional and default to the values defined in the class.
-  const CalendarSnapping({
+  const KalenderSnapping({
     this.snapIntervalMinutes = defaultSnapIntervalMinutes,
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
@@ -381,16 +381,16 @@ class CalendarSnapping {
     this.eventSnapStrategy = kDefaultSnapStrategy,
   });
 
-  /// Creates a copy of this [CalendarSnapping] but with the given fields replaced with the new values.
+  /// Creates a copy of this [KalenderSnapping] but with the given fields replaced with the new values.
   /// If the fields are not provided, the original values will be used.
-  CalendarSnapping copyWith({
+  KalenderSnapping copyWith({
     int? snapIntervalMinutes,
     bool? snapToTimeIndicator,
     bool? snapToOtherEvents,
     Duration? snapRange,
     EventSnapStrategy? eventSnapStrategy,
   }) {
-    return CalendarSnapping(
+    return KalenderSnapping(
       snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
       snapToTimeIndicator: snapToTimeIndicator ?? this.snapToTimeIndicator,
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
@@ -403,7 +403,7 @@ class CalendarSnapping {
   operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is CalendarSnapping &&
+    return other is KalenderSnapping &&
         other.snapIntervalMinutes == snapIntervalMinutes &&
         other.snapToTimeIndicator == snapToTimeIndicator &&
         other.snapToOtherEvents == snapToOtherEvents &&

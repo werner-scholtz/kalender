@@ -6,10 +6,10 @@ import 'package:flutter/widgets.dart';
 /// However there is an issue with the [Column] widget
 /// https://github.com/flutter/flutter/issues/12206 which prevents this from working correctly.
 ///
-class CalendarLayoutDelegate extends MultiChildLayoutDelegate {
+class KalenderLayoutDelegate extends MultiChildLayoutDelegate {
   final int? headerId;
   final int? bodyId;
-  CalendarLayoutDelegate(this.headerId, this.bodyId);
+  KalenderLayoutDelegate(this.headerId, this.bodyId);
 
   static const header = 0;
   static const body = 1;
@@ -58,7 +58,7 @@ class CalendarLayoutDelegate extends MultiChildLayoutDelegate {
   }
 
   @override
-  bool shouldRelayout(covariant CalendarLayoutDelegate oldDelegate) {
+  bool shouldRelayout(covariant KalenderLayoutDelegate oldDelegate) {
     return headerId != oldDelegate.headerId || bodyId != oldDelegate.bodyId;
   }
 }

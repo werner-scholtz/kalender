@@ -8,7 +8,7 @@ import 'package:kalender/kalender.dart';
 
 class ZoomDetector extends StatelessWidget {
   final Widget child;
-  final CalendarController controller;
+  final KalenderController controller;
   const ZoomDetector({super.key, required this.child, required this.controller});
 
   @override
@@ -21,7 +21,7 @@ class ZoomDetector extends StatelessWidget {
 }
 
 mixin ZoomUtils {
-  CalendarController get controller;
+  KalenderController get controller;
   ViewController? get viewController => controller.viewController;
 
   /// The minimum zoom level for the calendar.
@@ -95,7 +95,7 @@ mixin ZoomUtils {
 
 class DesktopZoomDetector extends StatefulWidget {
   final Widget child;
-  final CalendarController controller;
+  final KalenderController controller;
   const DesktopZoomDetector({super.key, required this.child, required this.controller});
 
   @override
@@ -104,7 +104,7 @@ class DesktopZoomDetector extends StatefulWidget {
 
 class _DesktopZoomDetectorState extends State<DesktopZoomDetector> with ZoomUtils {
   @override
-  CalendarController get controller => widget.controller;
+  KalenderController get controller => widget.controller;
 
   @override
   void initState() {
@@ -159,7 +159,7 @@ class _DesktopZoomDetectorState extends State<DesktopZoomDetector> with ZoomUtil
 
 class MobileZoomDetector extends StatefulWidget {
   final Widget child;
-  final CalendarController controller;
+  final KalenderController controller;
   const MobileZoomDetector({super.key, required this.child, required this.controller});
 
   @override
@@ -168,7 +168,7 @@ class MobileZoomDetector extends StatefulWidget {
 
 class _MobileZoomDetectorState extends State<MobileZoomDetector> with ZoomUtils {
   @override
-  CalendarController get controller => widget.controller;
+  KalenderController get controller => widget.controller;
 
   double _previousScale = 0.0;
 

@@ -48,37 +48,37 @@ void main() {
     });
   });
 
-  // ─── CalendarInteraction.resolveIsImprecise ──────────────────────────────────
+  // ─── KalenderInteraction.resolveIsImprecise ──────────────────────────────────
 
-  group('CalendarInteraction.resolveIsImprecise', () {
+  group('KalenderInteraction.resolveIsImprecise', () {
     test('precise mode is never imprecise', () {
-      expect(CalendarInteraction(inputMode: InputMode.precise).resolveIsImprecise(), isFalse);
+      expect(KalenderInteraction(inputMode: InputMode.precise).resolveIsImprecise(), isFalse);
     });
 
     test('imprecise mode is always imprecise', () {
-      expect(CalendarInteraction(inputMode: InputMode.imprecise).resolveIsImprecise(), isTrue);
+      expect(KalenderInteraction(inputMode: InputMode.imprecise).resolveIsImprecise(), isTrue);
     });
 
     test('auto mode follows the platform: mobile → imprecise', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      expect(CalendarInteraction(inputMode: InputMode.auto).resolveIsImprecise(), isTrue);
+      expect(KalenderInteraction(inputMode: InputMode.auto).resolveIsImprecise(), isTrue);
     });
 
     test('auto mode follows the platform: desktop → precise', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      expect(CalendarInteraction(inputMode: InputMode.auto).resolveIsImprecise(), isFalse);
+      expect(KalenderInteraction(inputMode: InputMode.auto).resolveIsImprecise(), isFalse);
     });
   });
 
-  // ─── CalendarInteraction: default gestures depend on platform ────────────────
+  // ─── KalenderInteraction: default gestures depend on platform ────────────────
 
-  group('CalendarInteraction default gestures', () {
+  group('KalenderInteraction default gestures', () {
     test('mobile defaults to long-press for create/modify', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      final interaction = CalendarInteraction();
+      final interaction = KalenderInteraction();
       expect(interaction.createEventGesture, equals(EventInteractionGesture.longPress));
       expect(interaction.modifyEventGesture, equals(EventInteractionGesture.longPress));
     });
@@ -86,7 +86,7 @@ void main() {
     test('desktop defaults to tap for create/modify', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.linux;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      final interaction = CalendarInteraction();
+      final interaction = KalenderInteraction();
       expect(interaction.createEventGesture, equals(EventInteractionGesture.tap));
       expect(interaction.modifyEventGesture, equals(EventInteractionGesture.tap));
     });
@@ -94,16 +94,16 @@ void main() {
     test('an explicit gesture overrides the platform default', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      final interaction = CalendarInteraction(createEventGesture: EventInteractionGesture.tap);
+      final interaction = KalenderInteraction(createEventGesture: EventInteractionGesture.tap);
       expect(interaction.createEventGesture, equals(EventInteractionGesture.tap));
     });
   });
 
-  // ─── CalendarInteraction.copyWith ────────────────────────────────────────────
+  // ─── KalenderInteraction.copyWith ────────────────────────────────────────────
 
-  group('CalendarInteraction.copyWith', () {
+  group('KalenderInteraction.copyWith', () {
     test('replaces only the provided fields and preserves the rest', () {
-      final original = CalendarInteraction(
+      final original = KalenderInteraction(
         allowResizing: true,
         allowRescheduling: true,
         allowEventCreation: true,
@@ -130,7 +130,7 @@ void main() {
     });
 
     test('copyWith with no arguments preserves every field', () {
-      final original = CalendarInteraction(
+      final original = KalenderInteraction(
         allowResizing: false,
         inputMode: InputMode.imprecise,
         createEventGesture: EventInteractionGesture.longPress,
@@ -142,10 +142,10 @@ void main() {
     });
   });
 
-  // ─── CalendarInteraction: equality ───────────────────────────────────────────
+  // ─── KalenderInteraction: equality ───────────────────────────────────────────
 
-  group('CalendarInteraction equality', () {
-    CalendarInteraction make() => CalendarInteraction(
+  group('KalenderInteraction equality', () {
+    KalenderInteraction make() => KalenderInteraction(
           allowResizing: true,
           allowRescheduling: true,
           allowEventCreation: true,
@@ -160,7 +160,7 @@ void main() {
       expect(make().hashCode, equals(make().hashCode));
     });
 
-    for (final entry in <String, CalendarInteraction Function(CalendarInteraction)>{
+    for (final entry in <String, KalenderInteraction Function(KalenderInteraction)>{
       'allowResizing': (i) => i.copyWith(allowResizing: false),
       'allowRescheduling': (i) => i.copyWith(allowRescheduling: false),
       'allowEventCreation': (i) => i.copyWith(allowEventCreation: false),
@@ -222,11 +222,11 @@ void main() {
     }
   });
 
-  // ─── CalendarSnapping ────────────────────────────────────────────────────────
+  // ─── KalenderSnapping ────────────────────────────────────────────────────────
 
-  group('CalendarSnapping', () {
+  group('KalenderSnapping', () {
     test('copyWith replaces only the provided fields', () {
-      const original = CalendarSnapping(
+      const original = KalenderSnapping(
         snapIntervalMinutes: 10,
         snapToTimeIndicator: true,
         snapToOtherEvents: true,
@@ -240,32 +240,32 @@ void main() {
     });
 
     test('copyWith preserves a custom eventSnapStrategy', () {
-      const original = CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none());
+      const original = KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none());
       final copy = original.copyWith(snapIntervalMinutes: 30);
       expect(copy.eventSnapStrategy, equals(const EventSnapStrategy.none()));
     });
 
     test('copyWith replaces eventSnapStrategy when given one', () {
-      const original = CalendarSnapping();
+      const original = KalenderSnapping();
       final copy = original.copyWith(eventSnapStrategy: const EventSnapStrategy.none());
       expect(copy.eventSnapStrategy, equals(const EventSnapStrategy.none()));
     });
 
     test('identical configurations are equal with matching hashCodes', () {
-      expect(const CalendarSnapping(), equals(const CalendarSnapping()));
-      expect(const CalendarSnapping().hashCode, equals(const CalendarSnapping().hashCode));
+      expect(const KalenderSnapping(), equals(const KalenderSnapping()));
+      expect(const KalenderSnapping().hashCode, equals(const KalenderSnapping().hashCode));
     });
 
-    for (final entry in <String, CalendarSnapping>{
-      'snapIntervalMinutes': const CalendarSnapping(snapIntervalMinutes: 5),
-      'snapToTimeIndicator': const CalendarSnapping(snapToTimeIndicator: false),
-      'snapToOtherEvents': const CalendarSnapping(snapToOtherEvents: false),
-      'snapRange': const CalendarSnapping(snapRange: Duration(minutes: 30)),
-      'eventSnapStrategy': const CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none()),
+    for (final entry in <String, KalenderSnapping>{
+      'snapIntervalMinutes': const KalenderSnapping(snapIntervalMinutes: 5),
+      'snapToTimeIndicator': const KalenderSnapping(snapToTimeIndicator: false),
+      'snapToOtherEvents': const KalenderSnapping(snapToOtherEvents: false),
+      'snapRange': const KalenderSnapping(snapRange: Duration(minutes: 30)),
+      'eventSnapStrategy': const KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none()),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
-        expect(entry.value, isNot(equals(const CalendarSnapping())));
-        expect(entry.value.hashCode, isNot(equals(const CalendarSnapping().hashCode)));
+        expect(entry.value, isNot(equals(const KalenderSnapping())));
+        expect(entry.value.hashCode, isNot(equals(const KalenderSnapping().hashCode)));
       });
     }
   });

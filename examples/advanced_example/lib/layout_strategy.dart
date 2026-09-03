@@ -15,7 +15,7 @@ class PeopleLayoutStrategy extends EventLayoutStrategy {
 
   @override
   EventLayoutDelegate createDelegate({
-    required Iterable<CalendarEvent> events,
+    required Iterable<KalenderEvent> events,
     required InternalDateTime date,
     required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
@@ -58,7 +58,7 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
   });
 
   @override
-  List<CalendarEvent> sortEvents(Iterable<CalendarEvent> events) => events.toList();
+  List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events) => events.toList();
 
   @override
   List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {

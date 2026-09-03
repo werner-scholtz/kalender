@@ -15,17 +15,17 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/kalender_extensions.dart` | Public extension APIs: `DateTimeExtensions`, `InternalDateTime`, `InternalDateTimeRange`, `TimeOfDay` |
 | `lib/src/` | All implementation code |
 | `lib/src/models/` | Core data structures: controllers, events, view configurations, providers, components, mixins |
-| `lib/src/models/controllers/` | `CalendarController` (ChangeNotifier), `EventsController` (abstract), `ViewController` (abstract), view-specific controllers |
-| `lib/src/models/providers/` | InheritedWidget providers (`CalendarControllerProvider`, `EventsControllerProvider`, `Components`, `Callbacks`, `Interaction`, `Snapping`, `HeightPerMinute`, `TileComponentProvider`, `LocaleProvider`, `LocationProvider`) |
-| `lib/src/models/components/` | Customizable builder classes: `TileComponents`, `CalendarComponents`, view-specific components and styles |
-| `lib/src/models/mixins/` | Reusable mixins: `CalendarNavigationFunctions`, `DragTargetUtils`, `EventTileUtils`, `NewEvent`, `SnapPoints`, `ScheduleMap` |
+| `lib/src/models/controllers/` | `KalenderController` (ChangeNotifier), `EventsController` (abstract), `ViewController` (abstract), view-specific controllers |
+| `lib/src/models/providers/` | InheritedWidget providers (`KalenderControllerProvider`, `EventsControllerProvider`, `Components`, `Callbacks`, `Interaction`, `Snapping`, `HeightPerMinute`, `TileComponentProvider`, `LocaleProvider`, `LocationProvider`) |
+| `lib/src/models/components/` | Customizable builder classes: `TileComponents`, `KalenderComponents`, view-specific components and styles |
+| `lib/src/models/mixins/` | Reusable mixins: `KalenderNavigationFunctions`, `DragTargetUtils`, `EventTileUtils`, `NewEvent`, `SnapPoints`, `ScheduleMap` |
 | `lib/src/models/view_configurations/` | `ViewConfiguration` (abstract base), `MultiDayViewConfiguration`, `MonthViewConfiguration`, `ScheduleViewConfiguration` |
-| `lib/src/models/calendar_events/` | `CalendarEvent` base class (extensible via subclassing) |
+| `lib/src/models/kalender_events/` | `KalenderEvent` base class (extensible via subclassing) |
 | `lib/src/widgets/` | UI widgets by view (`month/`, `multi_day/`, `schedule/`) plus shared (`components/`, `event_tiles/`, `draggable/`, `drag_targets/`) |
 | `lib/src/layout_delegates/` | Event layout/positioning strategies (`EventLayoutStrategy`, `MultiDayLayoutStrategy`) with caching |
 | `lib/src/extensions/` | Internal DateTime/TimeOfDay utilities (DST-safe wall-clock arithmetic) |
-| `lib/src/calendar_body.dart` | Top-level body widget that delegates to the correct view |
-| `lib/src/calendar_header.dart` | Top-level header widget |
+| `lib/src/kalender_body.dart` | Top-level body widget that delegates to the correct view |
+| `lib/src/kalender_header.dart` | Top-level header widget |
 | `lib/src/kalender_view.dart` | Main KalenderView orchestrator widget |
 | `test/` | Unit and widget tests (mirrors `lib/src/` structure) |
 | `test/utilities.dart` | Shared test helpers: `TestProvider`, `wrapWithMaterialApp`, `testWithTimeZones`, `WidgetTesterUtils` |
@@ -47,7 +47,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 - **No print**: `avoid_print` is enforced.
 - **Widget ordering**: `sort_child_properties_last`: the `child` parameter goes last.
 - **Unnecessary wrappers**: `avoid_unnecessary_containers` and `unnecessary_lambdas`.
-- **Naming**: snake_case for files (`calendar_event.dart`), PascalCase for classes. Widget files match their class name. View widgets use `Body`/`Header` suffixes (e.g. `MonthBody`, `MonthHeader`).
+- **Naming**: snake_case for files (`kalender_event.dart`), PascalCase for classes. Widget files match their class name. View widgets use `Body`/`Header` suffixes (e.g. `MonthBody`, `MonthHeader`).
 
 ## Build & Test
 
@@ -107,21 +107,21 @@ Each calendar view (MultiDay, Month, Schedule) follows the same layered structur
 4. **Header widget** (`widgets/<view>/<view>_header.dart`): renders the top navigation/day headers.
 5. **TileComponents**: customizable builder functions for rendering event tiles.
 
-`CalendarBody` and `CalendarHeader` select the correct sub-widget via a `switch` on the active `ViewController` type.
+`KalenderBody` and `KalenderHeader` select the correct sub-widget via a `switch` on the active `ViewController` type.
 
 ### State Management (InheritedWidget only, no external packages)
 
-All state flows through InheritedWidget providers in `lib/src/models/providers/calendar_provider.dart`:
+All state flows through InheritedWidget providers in `lib/src/models/providers/kalender_provider.dart`:
 
 | Provider | Wraps | Purpose |
 |----------|-------|---------|
-| `CalendarControllerProvider` | `CalendarController` | Top-level calendar state (visible range, selected event, navigation) |
+| `KalenderControllerProvider` | `KalenderController` | Top-level calendar state (visible range, selected event, navigation) |
 | `EventsControllerProvider` | `EventsController` | Event storage/retrieval |
-| `Components` | `CalendarComponents` | Visual component builders |
+| `Components` | `KalenderComponents` | Visual component builders |
 | `TileComponentProvider` | `TileComponents` | Event tile builders |
-| `Callbacks` | `CalendarCallbacks` | User interaction callbacks |
-| `Interaction` | `CalendarInteraction` | Interaction permissions (create, resize, reschedule) |
-| `Snapping` | `CalendarSnapping` | Snap-to-grid configuration |
+| `Callbacks` | `KalenderCallbacks` | User interaction callbacks |
+| `Interaction` | `KalenderInteraction` | Interaction permissions (create, resize, reschedule) |
+| `Snapping` | `KalenderSnapping` | Snap-to-grid configuration |
 | `HeightPerMinute` | `double` | Vertical zoom level |
 | `LocaleProvider` | `Locale?` | Internationalization locale |
 | `LocationProvider` | `Location?` | Timezone location |
@@ -132,22 +132,22 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/c
 
 ### Event Model
 
-- `CalendarEvent` is the base class: extend it to attach custom data (title, colour, etc.).
+- `KalenderEvent` is the base class: extend it to attach custom data (title, colour, etc.).
 - Events store UTC internally (`start` and `end` as `DateTime` in UTC). Use `internalStart()`/`internalEnd()` for wall-clock access.
 - Event IDs are `String` (10-char random alphanumeric, auto-generated).
-- Override `copyWithData()`, `==`, and `hashCode` in subclasses. `copyWithData` carries `@mustBeOverridden`, and `CalendarEvent` reapplies `id`, `interaction` and `multiDayRule` through `carryOver` afterwards, so a subclass never forwards those by hand.
+- Override `copyWithData()`, `==`, and `hashCode` in subclasses. `copyWithData` carries `@mustBeOverridden`, and `KalenderEvent` reapplies `id`, `interaction` and `multiDayRule` through `carryOver` afterwards, so a subclass never forwards those by hand.
 - `EventInteraction` controls per-event permissions (resizing, rescheduling).
 - `layoutEquals()` is used for render optimisation: returns true if the event occupies the same visual space.
 
 ### Controller Hierarchy
 
-- **CalendarController** (`ChangeNotifier` + mixins): top-level orchestrator. Manages `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`. Attaches/detaches from a `ViewController`.
+- **KalenderController** (`ChangeNotifier` + mixins): top-level orchestrator. Manages `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`. Attaches/detaches from a `ViewController`.
 - **EventsController** (abstract `ChangeNotifier`): event CRUD interface. `addEvent()` returns `String` id. Implement or use `DefaultEventsController`.
 - **ViewController** (abstract): view-specific state. Implementations: `MultiDayViewController`, `MonthViewController`, `ScheduleViewController`.
 
 ### DateTime & Timezone Handling
 
-- **All dates stored in UTC**: `CalendarEvent.start`/`.end` are always UTC.
+- **All dates stored in UTC**: `KalenderEvent.start`/`.end` are always UTC.
 - **Wall-clock arithmetic** uses `InternalDateTime` and `InternalDateTimeRange` (in `lib/src/extensions/`) to handle DST transitions safely.
 - Use `InternalDateTime.fromExternal(utcDateTime, location: location)` to convert for display.
 - The `timezone` package provides `Location` objects for timezone-aware logic.
@@ -167,7 +167,7 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/c
 
 | Builder | Purpose |
 |---------|---------|
-| `tileBuilder` | Default stationary event tile `(CalendarEvent, DateTimeRange) → Widget` |
+| `tileBuilder` | Default stationary event tile `(KalenderEvent, DateTimeRange) → Widget` |
 | `overlayTileBuilder` | Tile variant for overlay display |
 | `tileWhenDraggingBuilder` | Placeholder shown at original position during drag |
 | `feedbackTileBuilder` | Widget shown under the pointer during drag |
@@ -201,9 +201,9 @@ This is a pre-1.0 package, so the minor version is the breaking slot. Breaking c
 
 These are rules, not preferences.
 
-**Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone. `CalendarInteraction.throttleMilliseconds` was removed outright in 0.24.0 for exactly this reason: nothing was left behind it. `CalendarEvent.isMultiDayEvent` was deprecated instead, because it still returns a usable answer.
+**Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone. `KalenderInteraction.throttleMilliseconds` was removed outright in 0.24.0 for exactly this reason: nothing was left behind it. `KalenderEvent.isMultiDayEvent` was deprecated instead, because it still returns a usable answer.
 
-The same reasoning removes a public **type** outright once every entry point to it has gone. It cannot answer anything, and a window would protect a type annotation and nothing else. The style container classes are removed in 0.26.0 alongside the `CalendarComponents` fields that reached them, without a deprecation of their own.
+The same reasoning removes a public **type** outright once every entry point to it has gone. It cannot answer anything, and a window would protect a type annotation and nothing else. The style container classes are removed in 0.26.0 alongside the `KalenderComponents` fields that reached them, without a deprecation of their own.
 
 **The window is one minor release.** Deprecated in 0.23.0 means removed in 0.24.0. Do not extend it, and do not remove early.
 
@@ -232,7 +232,7 @@ What a fix can do:
 
 - Rename a class, typedef, mixin, enum, constructor, method, getter, setter or field.
 - Rename, add or remove a named parameter.
-- Derive a new argument from an old one, so one parameter can become two. `CalendarEvent(dateTimeRange: r)` to `CalendarEvent(start: r.start, end: r.end)` is an `addParameter` pair with `argumentValue.expression` reading `arguments[dateTimeRange]`, plus a `removeParameter`.
+- Derive a new argument from an old one, so one parameter can become two. `KalenderEvent(dateTimeRange: r)` to `KalenderEvent(start: r.start, end: r.end)` is an `addParameter` pair with `argumentValue.expression` reading `arguments[dateTimeRange]`, plus a `removeParameter`.
 
 What it cannot do: rewrite a declaration in the user's own code. An override of a changed `@mustBeOverridden` method is a hand edit, and the migration guide has to carry it.
 
@@ -323,7 +323,7 @@ before tagging it:
   the check.
 - **Deprecations past their window.** None. `lib/` carries no `@Deprecated` at
   all: `TimeOfDayRange.isAllDay` was removed in 0.27.0 as its 0.26.0 message
-  named, and the `CalendarComponents` style fields with the seven containers they
+  named, and the `KalenderComponents` style fields with the seven containers they
   reached went in 0.26.0. `grep -rn "@Deprecated" lib/` is the check. See
   [Verifying a removal](#verifying-a-removal).
 - **Function fields compared with `==`.** `ViewConfiguration.nowCallback` is the
@@ -333,12 +333,12 @@ before tagging it:
   its place in `==` is what makes a change reach the calendar at all. Documented
   on the field. The other three converted to classes in 0.26.0
   ([#380](https://github.com/werner-scholtz/kalender/issues/380)):
-  `CalendarSnapping.eventSnapStrategy`, `VerticalConfiguration.eventLayoutStrategy`
+  `KalenderSnapping.eventSnapStrategy`, `VerticalConfiguration.eventLayoutStrategy`
   and `HorizontalConfiguration.multiDayLayoutStrategy`, renamed from
   `generateMultiDayLayoutFrame`.
 
 Key breaking changes to be aware of:
-- **v0.16.0**: `CalendarEvent` removed generic type parameter (use subclassing instead of `CalendarEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.
+- **v0.16.0**: `KalenderEvent` removed generic type parameter (use subclassing instead of `KalenderEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.
 - **v0.15.0**: Full timezone support added. `InternalDateTime` classes introduced. `ViewConfiguration.selectedDate` renamed to `initialDateTime`.
 
 ## Documentation

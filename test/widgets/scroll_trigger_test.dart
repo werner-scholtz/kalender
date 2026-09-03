@@ -13,18 +13,18 @@ void main() {
   final start = DateTime(2025, 3, 24); // Monday
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final components = TileComponents(
     tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
   );
 
-  final precise = CalendarInteraction(
+  final precise = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -45,7 +45,7 @@ void main() {
           initialDateTime: start,
           initialTimeOfDay: KalenderTime(hour: hour, minute: 0),
         ),
-        body: CalendarBody(multiDayTileComponents: components, interaction: precise),
+        body: KalenderBody(multiDayTileComponents: components, interaction: precise),
       ),
     );
   }
@@ -72,7 +72,7 @@ void main() {
     // to scroll down. The event sits just below the top edge, so it is visible.
     final eventStart = start.add(const Duration(hours: 1));
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: eventStart,
         end: eventStart.add(const Duration(hours: 1)),
       ),
@@ -83,7 +83,7 @@ void main() {
 
     final tile = find.byKey(DayEventTile.tileKey(id));
     expect(tile, findsOneWidget);
-    final bodyRect = tester.getRect(find.byType(CalendarBody));
+    final bodyRect = tester.getRect(find.byType(KalenderBody));
     await dragTo(tester, tile, Offset(tester.getCenter(tile).dx, bodyRect.bottom - 2));
 
     expect(
@@ -97,7 +97,7 @@ void main() {
     // Start at midday so the morning is above and there is room to scroll up.
     final eventStart = start.add(const Duration(hours: 12));
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: eventStart,
         end: eventStart.add(const Duration(hours: 1)),
       ),
@@ -109,7 +109,7 @@ void main() {
 
     final tile = find.byKey(DayEventTile.tileKey(id));
     expect(tile, findsOneWidget);
-    final bodyRect = tester.getRect(find.byType(CalendarBody));
+    final bodyRect = tester.getRect(find.byType(KalenderBody));
     await dragTo(tester, tile, Offset(tester.getCenter(tile).dx, bodyRect.top + 2));
 
     expect(

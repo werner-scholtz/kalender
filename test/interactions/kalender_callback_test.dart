@@ -8,8 +8,8 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
-  final interaction = CalendarInteraction(
+  late KalenderController calendarController;
+  final interaction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
@@ -17,7 +17,7 @@ void main() {
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
   );
-  final impreciseInteraction = CalendarInteraction(
+  final impreciseInteraction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
@@ -28,13 +28,13 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   /// Helper to pump a MultiDayView (single day) with the given callbacks.
   Future<void> pumpMultiDayView(
     WidgetTester tester, {
-    required CalendarCallbacks callbacks,
+    required KalenderCallbacks callbacks,
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -47,8 +47,8 @@ void main() {
           initialDateTime: DateTime(2025, 1, 1),
         ),
         callbacks: callbacks,
-        header: CalendarHeader(interaction: interaction),
-        body: CalendarBody(interaction: interaction),
+        header: KalenderHeader(interaction: interaction),
+        body: KalenderBody(interaction: interaction),
       ),
     );
   }
@@ -56,7 +56,7 @@ void main() {
   /// Helper to pump a MonthView with the given callbacks.
   Future<void> pumpMonthView(
     WidgetTester tester, {
-    required CalendarCallbacks callbacks,
+    required KalenderCallbacks callbacks,
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -68,8 +68,8 @@ void main() {
           initialDateTime: DateTime(2025, 1, 1),
         ),
         callbacks: callbacks,
-        header: CalendarHeader(interaction: interaction),
-        body: CalendarBody(interaction: interaction),
+        header: KalenderHeader(interaction: interaction),
+        body: KalenderBody(interaction: interaction),
       ),
     );
   }
@@ -84,7 +84,7 @@ void main() {
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onTapped: (date) => tappedDate = date,
           onTappedWithDetail: (details) => tappedDetail = details,
         ),
@@ -113,7 +113,7 @@ void main() {
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onSecondaryTapped: (date) => tappedDate = date,
           onSecondaryTappedWithDetail: (details) => tappedDetail = details,
         ),
@@ -142,7 +142,7 @@ void main() {
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onLongPressed: (date) => longPressedDate = date,
           onLongPressedWithDetail: (details) => longPressedDetail = details,
         ),
@@ -166,7 +166,7 @@ void main() {
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onSecondaryLongPressed: (date) => longPressedDate = date,
           onSecondaryLongPressedWithDetail: (details) => longPressedDetail = details,
         ),
@@ -185,12 +185,12 @@ void main() {
     });
 
     testWidgets('drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      CalendarEvent? createdEvent;
-      CalendarEvent? createdConfirmed;
+      KalenderEvent? createdEvent;
+      KalenderEvent? createdConfirmed;
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) {
             createdEvent = event;
             return event;
@@ -211,12 +211,12 @@ void main() {
     });
 
     testWidgets('drag-to-create does NOT fire onEventChange/onEventChanged', (tester) async {
-      CalendarEvent? changedBefore;
-      CalendarEvent? changedAfter;
+      KalenderEvent? changedBefore;
+      KalenderEvent? changedAfter;
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) => event,
           onEventCreated: (_) {},
           onEventChange: (event) => changedBefore = event,
@@ -232,19 +232,19 @@ void main() {
     });
 
     testWidgets('drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      CalendarEvent? changedBefore;
-      CalendarEvent? changedAfter;
+      KalenderEvent? changedBefore;
+      KalenderEvent? changedAfter;
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventChange: (event) => changedBefore = event,
           onEventChanged: (_, updated) => changedAfter = updated,
         ),
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 1, 1, 1),
           end: DateTime(2025, 1, 1, 12),
         ),
@@ -264,19 +264,19 @@ void main() {
     });
 
     testWidgets('onEventTapped fires when tapping an event', (tester) async {
-      CalendarEvent? tappedEvent;
+      KalenderEvent? tappedEvent;
       TapDetail? tappedDetail;
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventTapped: (event) => tappedEvent = event,
           onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
         ),
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 1, 1, 1),
           end: DateTime(2025, 1, 1, 12),
         ),
@@ -308,7 +308,7 @@ void main() {
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onPageChanged: (range) => changedRange = range,
         ),
       );
@@ -323,11 +323,11 @@ void main() {
     });
 
     testWidgets('onEventCreate returning null falls back to default event', (tester) async {
-      CalendarEvent? createdConfirmed;
+      KalenderEvent? createdConfirmed;
 
       await pumpMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) => null, // Return null to use default event
           onEventCreated: (event) => createdConfirmed = event,
         ),
@@ -352,7 +352,7 @@ void main() {
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onTapped: (date) => tappedDate = date,
           onTappedWithDetail: (details) => tappedDetail = details,
         ),
@@ -377,7 +377,7 @@ void main() {
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onSecondaryTapped: (date) => tappedDate = date,
           onSecondaryTappedWithDetail: (details) => tappedDetail = details,
         ),
@@ -402,7 +402,7 @@ void main() {
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onLongPressed: (date) => longPressedDate = date,
           onLongPressedWithDetail: (details) => longPressedDetail = details,
         ),
@@ -426,7 +426,7 @@ void main() {
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onSecondaryLongPressed: (date) => longPressedDate = date,
           onSecondaryLongPressedWithDetail: (details) => longPressedDetail = details,
         ),
@@ -445,12 +445,12 @@ void main() {
     });
 
     testWidgets('drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      CalendarEvent? createdEvent;
-      CalendarEvent? createdConfirmed;
+      KalenderEvent? createdEvent;
+      KalenderEvent? createdConfirmed;
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) {
             createdEvent = event;
             return event;
@@ -471,12 +471,12 @@ void main() {
     });
 
     testWidgets('drag-to-create does NOT fire onEventChange/onEventChanged', (tester) async {
-      CalendarEvent? changedBefore;
-      CalendarEvent? changedAfter;
+      KalenderEvent? changedBefore;
+      KalenderEvent? changedAfter;
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) => event,
           onEventCreated: (_) {},
           onEventChange: (event) => changedBefore = event,
@@ -492,19 +492,19 @@ void main() {
     });
 
     testWidgets('drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      CalendarEvent? changedBefore;
-      CalendarEvent? changedAfter;
+      KalenderEvent? changedBefore;
+      KalenderEvent? changedAfter;
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventChange: (event) => changedBefore = event,
           onEventChanged: (_, updated) => changedAfter = updated,
         ),
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
+        KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
       );
       await tester.pumpAndSettle();
 
@@ -521,19 +521,19 @@ void main() {
     });
 
     testWidgets('onEventTapped fires when tapping an event', (tester) async {
-      CalendarEvent? tappedEvent;
+      KalenderEvent? tappedEvent;
       TapDetail? tappedDetail;
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventTapped: (event) => tappedEvent = event,
           onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
         ),
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
+        KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
       );
       await tester.pumpAndSettle();
 
@@ -558,7 +558,7 @@ void main() {
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onPageChanged: (range) => changedRange = range,
         ),
       );
@@ -573,11 +573,11 @@ void main() {
     });
 
     testWidgets('onEventCreate returning null falls back to default event', (tester) async {
-      CalendarEvent? createdConfirmed;
+      KalenderEvent? createdConfirmed;
 
       await pumpMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) => null, // Return null to use default event
           onEventCreated: (event) => createdConfirmed = event,
         ),
@@ -597,7 +597,7 @@ void main() {
   // ---------------------------------------------------------------------------
   group('Empty Callbacks (negative tests)', () {
     testWidgets('MultiDayView renders and responds without callbacks', (tester) async {
-      await pumpMultiDayView(tester, callbacks: const CalendarCallbacks());
+      await pumpMultiDayView(tester, callbacks: const KalenderCallbacks());
 
       final body = find.byType(MultiDayBody);
       expect(body, findsOneWidget);
@@ -609,7 +609,7 @@ void main() {
     });
 
     testWidgets('MonthView renders and responds without callbacks', (tester) async {
-      await pumpMonthView(tester, callbacks: const CalendarCallbacks());
+      await pumpMonthView(tester, callbacks: const KalenderCallbacks());
 
       final body = find.byType(MonthBody);
       expect(body, findsOneWidget);
@@ -627,7 +627,7 @@ void main() {
 
   Future<void> pumpImpreciseMultiDayView(
     WidgetTester tester, {
-    required CalendarCallbacks callbacks,
+    required KalenderCallbacks callbacks,
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -640,15 +640,15 @@ void main() {
           initialDateTime: DateTime(2025, 1, 1),
         ),
         callbacks: callbacks,
-        header: CalendarHeader(interaction: impreciseInteraction),
-        body: CalendarBody(interaction: impreciseInteraction),
+        header: KalenderHeader(interaction: impreciseInteraction),
+        body: KalenderBody(interaction: impreciseInteraction),
       ),
     );
   }
 
   Future<void> pumpImpreciseMonthView(
     WidgetTester tester, {
-    required CalendarCallbacks callbacks,
+    required KalenderCallbacks callbacks,
   }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -660,8 +660,8 @@ void main() {
           initialDateTime: DateTime(2025, 1, 1),
         ),
         callbacks: callbacks,
-        header: CalendarHeader(interaction: impreciseInteraction),
-        body: CalendarBody(interaction: impreciseInteraction),
+        header: KalenderHeader(interaction: impreciseInteraction),
+        body: KalenderBody(interaction: impreciseInteraction),
       ),
     );
   }
@@ -671,12 +671,12 @@ void main() {
   // ---------------------------------------------------------------------------
   group('MultiDayView Imprecise Callbacks', () {
     testWidgets('long-press drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      CalendarEvent? createdEvent;
-      CalendarEvent? createdConfirmed;
+      KalenderEvent? createdEvent;
+      KalenderEvent? createdConfirmed;
 
       await pumpImpreciseMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) {
             createdEvent = event;
             return event;
@@ -697,19 +697,19 @@ void main() {
     });
 
     testWidgets('long-press drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      CalendarEvent? changedBefore;
-      CalendarEvent? changedAfter;
+      KalenderEvent? changedBefore;
+      KalenderEvent? changedAfter;
 
       await pumpImpreciseMultiDayView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventChange: (event) => changedBefore = event,
           onEventChanged: (_, updated) => changedAfter = updated,
         ),
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 1, 1, 1),
           end: DateTime(2025, 1, 1, 12),
         ),
@@ -734,12 +734,12 @@ void main() {
   // ---------------------------------------------------------------------------
   group('MonthView Imprecise Callbacks', () {
     testWidgets('long-press drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      CalendarEvent? createdEvent;
-      CalendarEvent? createdConfirmed;
+      KalenderEvent? createdEvent;
+      KalenderEvent? createdConfirmed;
 
       await pumpImpreciseMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventCreate: (event) {
             createdEvent = event;
             return event;
@@ -760,19 +760,19 @@ void main() {
     });
 
     testWidgets('long-press drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      CalendarEvent? changedBefore;
-      CalendarEvent? changedAfter;
+      KalenderEvent? changedBefore;
+      KalenderEvent? changedAfter;
 
       await pumpImpreciseMonthView(
         tester,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventChange: (event) => changedBefore = event,
           onEventChanged: (_, updated) => changedAfter = updated,
         ),
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
+        KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
       );
       await tester.pumpAndSettle();
 

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
@@ -29,13 +29,13 @@ class HorizontalDragTarget extends StatefulWidget {
   State<HorizontalDragTarget> createState() => _HorizontalDragTargetState();
 
   /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
-  /// This can be overridden by providing a custom implementation via [CalendarCallbacks.onWillAcceptWithDetailsHorizontal].
+  /// This can be overridden by providing a custom implementation via [KalenderCallbacks.onWillAcceptWithDetailsHorizontal].
   ///
   /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
   /// The checks performed for each are detailed in the respective sections below.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
-    CalendarController controller,
+    KalenderController controller,
     HorizontalConfiguration configuration,
   ) {
     return DragTargetUtilities.handleDragDetails(
@@ -63,9 +63,9 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   EventsController get eventsController => context.eventsController;
   @override
-  CalendarController get controller => context.calendarController;
+  KalenderController get controller => context.calendarController;
   @override
-  CalendarCallbacks? get callbacks => context.callbacks;
+  KalenderCallbacks? get callbacks => context.callbacks;
   @override
   List<InternalDateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
@@ -189,7 +189,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) {
     // If the configuration does not allow single-day events (e.g., multi-day header),
     // return null to prevent updating the selection while dragging over this area.
     if (!widget.configuration.allowSingleDayEvents &&
@@ -201,7 +201,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
     final internalRange = event.internalRange(location: context.location);
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
@@ -213,7 +213,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  CalendarEvent? createEvent(InternalDateTime cursorDateTime) {
+  KalenderEvent? createEvent(InternalDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
