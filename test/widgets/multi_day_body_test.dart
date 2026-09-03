@@ -75,10 +75,8 @@ void main() {
       setUp(() {
         eventId = eventsController.addEvent(
           CalendarEvent(
-            dateTimeRange: KalenderDateTimeRange(
-              start: start.copyWith(hour: 6),
-              end: start.copyWith(hour: 8),
-            ),
+            start: start.copyWith(hour: 6),
+            end: start.copyWith(hour: 8),
           ),
         );
       });
@@ -191,10 +189,8 @@ void main() {
         final weekConfiguration = viewConfigurations[1];
         final id = eventsController.addEvent(
           CalendarEvent(
-            dateTimeRange: KalenderDateTimeRange(
-              start: start.copyWith(day: start.day + 2, hour: 10),
-              end: start.copyWith(day: start.day + 2, hour: 12),
-            ),
+            start: start.copyWith(day: start.day + 2, hour: 10),
+            end: start.copyWith(day: start.day + 2, hour: 12),
           ),
         );
 
@@ -257,10 +253,8 @@ void main() {
       setUp(() {
         eventId = eventsController.addEvent(
           CalendarEvent(
-            dateTimeRange: KalenderDateTimeRange(
-              start: start.copyWith(hour: 6),
-              end: start.copyWith(hour: 8),
-            ),
+            start: start.copyWith(hour: 6),
+            end: start.copyWith(hour: 8),
           ),
         );
       });

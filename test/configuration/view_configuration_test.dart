@@ -60,7 +60,7 @@ void main() {
       final key = start.copyWith(year: start.year, month: start.month, day: start.day + i);
       final end = key.copyWith(hour: start.hour + 1);
       final value = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: key, end: end)),
+        CalendarEvent(start: key, end: end),
       );
       return MapEntry<DateTime, String>(key, value);
     },

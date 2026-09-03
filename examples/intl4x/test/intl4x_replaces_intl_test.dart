@@ -20,7 +20,8 @@ void main() {
     // The schedule draws a month heading and a day row only where events exist.
     eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 6, 9), end: DateTime(2025, 1, 6, 10)),
+        start: DateTime(2025, 1, 6, 9),
+        end: DateTime(2025, 1, 6, 10),
       ),
     );
   });

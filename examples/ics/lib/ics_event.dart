@@ -7,7 +7,8 @@ import 'package:kalender/kalender.dart';
 class IcsEvent extends CalendarEvent {
   IcsEvent({
     super.id,
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.uid,
     required this.title,
     required this.color,
@@ -23,9 +24,10 @@ class IcsEvent extends CalendarEvent {
   final Color color;
 
   @override
-  IcsEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
+  IcsEvent copyWithData({required DateTime start, required DateTime end}) {
     return IcsEvent(
-      dateTimeRange: dateTimeRange,
+      start: start,
+      end: end,
       uid: uid,
       title: title,
       description: description,

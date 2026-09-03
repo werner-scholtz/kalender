@@ -261,7 +261,8 @@ class _CalendarContentState extends State<CalendarContent> {
         },
         onTapped: (_) => context.controller.deselectEvent(),
         onEventCreate: (event) => Event(
-          dateTimeRange: KalenderDateTimeRange(start: event.start, end: event.end),
+          start: event.start,
+          end: event.end,
           title: context.l10n.newEventTitle,
         ),
         onEventCreated: (event) => context.eventsController.addEvent(event),
@@ -271,11 +272,13 @@ class _CalendarContentState extends State<CalendarContent> {
         ),
         onLongPressedWithDetail: (TapDetail detail) {
           final range = switch (detail) {
-            DayDetail detail => KalenderDateTimeRange(start: detail.date, end: detail.date.add(const Duration(minutes: 45))),
+            DayDetail detail =>
+              KalenderDateTimeRange(start: detail.date, end: detail.date.add(const Duration(minutes: 45))),
             MultiDayDetail detail => detail.dateTimeRange,
             _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
           };
-          context.eventsController.addEvent(Event(dateTimeRange: range, title: context.l10n.newEventTitle));
+          context.eventsController
+              .addEvent(Event(start: range.start, end: range.end, title: context.l10n.newEventTitle));
         },
       );
 }

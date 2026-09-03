@@ -25,10 +25,7 @@ Future<void> performSegmentedDrag(
   for (int i = 1; i <= segmentCount; i++) {
     final t = i / segmentCount;
     final intermediate = Offset.lerp(start, end, t)!;
-    await dragGesture.moveTo(
-      intermediate,
-      timeStamp: Duration(milliseconds: segmentDurationMs * i),
-    );
+    await dragGesture.moveTo(intermediate, timeStamp: Duration(milliseconds: segmentDurationMs * i));
     await tester.pump(Duration(milliseconds: pumpDurationMs));
   }
 }
@@ -56,6 +53,5 @@ extension ViewUtils on Views {
 }
 
 extension ScenarioUtils on Scenario {
-  List<KalenderTimeRange> get eventRanges =>
-      timeOfDayRanges.take(numberOfEvents).toList();
+  List<KalenderTimeRange> get eventRanges => timeOfDayRanges.take(numberOfEvents).toList();
 }

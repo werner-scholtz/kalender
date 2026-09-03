@@ -73,7 +73,8 @@ void main() {
     final eventStart = start.add(const Duration(hours: 1));
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
+        start: eventStart,
+        end: eventStart.add(const Duration(hours: 1)),
       ),
     );
 
@@ -97,7 +98,8 @@ void main() {
     final eventStart = start.add(const Duration(hours: 12));
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
+        start: eventStart,
+        end: eventStart.add(const Duration(hours: 1)),
       ),
     );
 

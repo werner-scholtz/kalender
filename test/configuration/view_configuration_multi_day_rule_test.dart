@@ -55,7 +55,8 @@ void main() {
     // classify differently.
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 15, 22), end: DateTime(2025, 1, 16, 2)),
+        start: DateTime(2025, 1, 15, 22),
+        end: DateTime(2025, 1, 16, 2),
       ),
     );
     final base = MultiDayViewConfiguration.week(

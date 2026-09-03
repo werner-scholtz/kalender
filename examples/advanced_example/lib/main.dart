@@ -15,7 +15,8 @@ class Event extends CalendarEvent {
 
   Event({
     super.id,
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.title,
     required this.person,
     super.interaction,
@@ -30,7 +31,8 @@ class Event extends CalendarEvent {
     final tapLocation = detail.localOffset;
     final person = people[tapLocation.dx ~/ (dayWidth / people.length)];
     return Event(
-      dateTimeRange: calendarEvent.dateTimeRange,
+      start: calendarEvent.start,
+      end: calendarEvent.end,
       title: 'New Event',
       person: person,
       interaction: calendarEvent.interaction,
@@ -38,17 +40,14 @@ class Event extends CalendarEvent {
   }
 
   @override
-  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return Event(dateTimeRange: dateTimeRange, title: title, person: person);
+  Event copyWithData({required DateTime start, required DateTime end}) {
+    return Event(start: start, end: end, title: title, person: person);
   }
 
   @override
   operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Event &&
-        other.title == title &&
-        other.person == person &&
-        other.dateTimeRange == dateTimeRange;
+    return other is Event && other.title == title && other.person == person && other.dateTimeRange == dateTimeRange;
   }
 
   @override
@@ -80,9 +79,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Advanced Example',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
       home: const MyHomePage(),
     );
   }
@@ -95,10 +92,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-const people = [
-  Person(name: "Person A", color: Colors.blue),
-  Person(name: "Person B", color: Colors.amber),
-];
+const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Person B", color: Colors.amber)];
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
@@ -118,14 +112,11 @@ class _MyHomePageState extends State<MyHomePage> {
         viewConfiguration: _viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event) =>
-              calendarController.selectEvent(event),
+          onEventTapped: (event) => calendarController.selectEvent(event),
           onEventCreateWithDetail: Event.fromDetail,
           onEventCreated: (event) => eventsController.addEvent(event),
-          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
-            event: event,
-            updatedEvent: updatedEvent,
-          ),
+          onEventChanged: (event, updatedEvent) =>
+              eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
         header: Column(
           children: [
@@ -149,11 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             const SizedBox(height: 8),
-            CalendarHeader(
-              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
-                showTiles: false,
-              ),
-            ),
+            CalendarHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
             const Divider(),
@@ -165,9 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
             multiDayTileComponents: tileComponents,
             monthTileComponents: multiDayTileComponents,
             scheduleTileComponents: scheduleTileComponents,
-            multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              eventLayoutStrategy: PeopleLayoutStrategy(people),
-            ),
+            multiDayBodyConfiguration: MultiDayBodyConfiguration(eventLayoutStrategy: PeopleLayoutStrategy(people)),
           ),
         ),
       ),
@@ -183,19 +168,13 @@ class PeopleWidget extends StatelessWidget {
     return Row(
       children: [
         // Needed for proper spacing — matches the body's timeline gutter width.
-        SizedBox(
-          width: defaultTimelineWidth(context, KalenderTimeRange.allDay()),
-        ),
+        SizedBox(width: defaultTimelineWidth(context, KalenderTimeRange.allDay())),
         ...List.generate(
           viewConfiguration.numberOfDays,
           (index) => Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: people
-                  .map(
-                    (person) => Expanded(child: PersonWidget(person: person)),
-                  )
-                  .toList(growable: false),
+              children: people.map((person) => Expanded(child: PersonWidget(person: person))).toList(growable: false),
             ),
           ),
         ),

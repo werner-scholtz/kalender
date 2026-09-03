@@ -21,7 +21,8 @@ mixin NewDraggableWidget {
   /// Create the new event and select it where needed.
   void createNewEvent(BuildContext context, InternalDateTime date, Offset localPosition) {
     final dateTimeRange = calculateDateTimeRange(date, localPosition);
-    final newEvent = CalendarEvent(dateTimeRange: dateTimeRange.forLocation(location: context.location));
+    final range = dateTimeRange.forLocation(location: context.location);
+    final newEvent = CalendarEvent(start: range.start, end: range.end);
 
     CalendarEvent? event;
     if (callbacks?.onEventCreateWithDetail != null) {

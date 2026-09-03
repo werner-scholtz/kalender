@@ -63,7 +63,8 @@ forbids stays forbidden even where the calendar allows it.
 <!-- snippet: expression -->
 ```dart
 CalendarEvent(
-  dateTimeRange: range,
+  start: range.start,
+  end: range.end,
   // Movable, but its start and end are fixed.
   interaction: EventInteraction(
     allowStartResize: false,

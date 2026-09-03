@@ -226,7 +226,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
   }
 
   void _updateEvent(KalenderDateTimeRange newRange) {
-    final updatedEvent = event.copyWith(dateTimeRange: newRange);
+    final updatedEvent = event.copyWith(start: newRange.start, end: newRange.end);
     widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
     setState(() => event = updatedEvent);
   }

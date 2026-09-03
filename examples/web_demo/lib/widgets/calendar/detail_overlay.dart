@@ -40,7 +40,8 @@ class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTicke
     // the first access would be in dispose(), where the ticker's context lookup
     // is unsafe.
     _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
-    _curvedAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeOut, reverseCurve: Curves.easeIn);
+    _curvedAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut, reverseCurve: Curves.easeIn);
     _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(_curvedAnimation);
   }
 
