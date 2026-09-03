@@ -75,10 +75,8 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
     final today = DateTime.now();
     _eventsController.addEvents([
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: DateTime(today.year, today.month, today.day, 9),
-          end: DateTime(today.year, today.month, today.day, 11),
-        ),
+        start: DateTime(today.year, today.month, today.day, 9),
+        end: DateTime(today.year, today.month, today.day, 11),
       ),
     ]);
   }
@@ -113,8 +111,7 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
               value: _locale,
               onChanged: (value) => setState(() => _locale = value!),
               items: [
-                for (final locale in _locales)
-                  DropdownMenuItem(value: locale, child: Text(locale.toLanguageTag())),
+                for (final locale in _locales) DropdownMenuItem(value: locale, child: Text(locale.toLanguageTag())),
               ],
             ),
             const SizedBox(width: 16),

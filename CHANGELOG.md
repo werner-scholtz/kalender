@@ -10,6 +10,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `TimeOfDayExtension` is removed. `toInternalDateTime` and `toDateTime` are methods on `KalenderTime`.
 - `InternalDateTimeRange` no longer extends `DateTimeRange`, and `forLocation` returns a `KalenderDateTimeRange`.
 - `InternalDateTimeRange.overlaps` takes an `InternalDateTimeRange`, and `InternalDateTimeRange.fromDateTimeRange` takes a `KalenderDateTimeRange`.
+- `CalendarEvent` and `CalendarEvent.copyWithData` take `start` and `end` rather than `dateTimeRange`.
 - `PageIndexCalculator` and its subclasses take `start` and `end` rather than `dateTimeRange`.
 - `DragTargetUtils.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` take an `InternalDateTimeRange`.
 - `EventTileUtils.eventRangeOnDate` returns an `InternalDateTimeRange`.

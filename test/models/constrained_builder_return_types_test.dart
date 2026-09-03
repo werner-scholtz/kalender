@@ -34,7 +34,7 @@ void main() {
   test('ResizeHandleDetails builds a nameable ResizeDetector', () {
     final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 1, 2));
     final details = ResizeHandleDetails(
-      event: CalendarEvent(dateTimeRange: range),
+      event: CalendarEvent(start: range.start, end: range.end),
       interaction: CalendarInteraction(),
       dateTimeRange: InternalDateTimeRange.fromDateTimeRange(range),
       size: const Size(100, 100),

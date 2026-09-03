@@ -7,7 +7,8 @@ class RecurringCalendarEvent extends CalendarEvent {
   RecurringCalendarEvent({
     super.id,
     required this.groupId,
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     super.interaction,
     super.multiDayRule,
   });
@@ -15,8 +16,8 @@ class RecurringCalendarEvent extends CalendarEvent {
   /// Rebuilds the group this occurrence belongs to. The rest is restored by
   /// [CalendarEvent].
   @override
-  RecurringCalendarEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return RecurringCalendarEvent(dateTimeRange: dateTimeRange, groupId: groupId);
+  RecurringCalendarEvent copyWithData({required DateTime start, required DateTime end}) {
+    return RecurringCalendarEvent(start: start, end: end, groupId: groupId);
   }
 
   @override

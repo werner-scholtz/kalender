@@ -55,8 +55,8 @@ void main() {
     // A 2-day event in the first visible week, shown in the multi-day header.
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange:
-            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
+        start: start.add(const Duration(days: 1)),
+        end: start.add(const Duration(days: 3)),
       ),
     );
 
@@ -93,7 +93,8 @@ void main() {
     final eventStart = start.add(const Duration(days: 1, hours: 9));
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
+        start: eventStart,
+        end: eventStart.add(const Duration(hours: 1)),
       ),
     );
 

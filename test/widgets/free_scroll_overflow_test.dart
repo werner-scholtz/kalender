@@ -46,8 +46,8 @@ void main() {
     // Two overlapping 2-day events. With a one-row limit the second overflows,
     // so Mon and Tue each get a "+N more" portal.
     eventsController.addEvents([
-      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 2)))),
-      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 2)))),
+      CalendarEvent(start: start, end: start.add(const Duration(days: 2))),
+      CalendarEvent(start: start, end: start.add(const Duration(days: 2))),
     ]);
 
     await pumpFreeScroll(tester);

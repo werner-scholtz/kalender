@@ -35,12 +35,12 @@ void main() {
   void addTwoRowDay() {
     eventsController.addEvents([
       CalendarEvent(
-        dateTimeRange:
-            KalenderDateTimeRange(start: base.add(const Duration(days: 1)), end: base.add(const Duration(days: 3))),
+        start: base.add(const Duration(days: 1)),
+        end: base.add(const Duration(days: 3)),
       ),
       CalendarEvent(
-        dateTimeRange:
-            KalenderDateTimeRange(start: base.add(const Duration(days: 2)), end: base.add(const Duration(days: 4))),
+        start: base.add(const Duration(days: 2)),
+        end: base.add(const Duration(days: 4)),
       ),
     ]);
   }

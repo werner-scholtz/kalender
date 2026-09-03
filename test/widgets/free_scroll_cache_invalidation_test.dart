@@ -65,7 +65,7 @@ void main() {
 
     // A three-day event starting on the initial leading day.
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: initial, end: initial.add(const Duration(days: 3)))),
+      CalendarEvent(start: initial, end: initial.add(const Duration(days: 3))),
     );
     await tester.pumpAndSettle();
 

@@ -27,10 +27,8 @@ void main() {
   });
 
   CalendarEvent eventAt(DateTime day, int hour) => CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: TZDateTime(tokyo, day.year, day.month, day.day, hour),
-          end: TZDateTime(tokyo, day.year, day.month, day.day, hour + 1),
-        ),
+        start: TZDateTime(tokyo, day.year, day.month, day.day, hour),
+        end: TZDateTime(tokyo, day.year, day.month, day.day, hour + 1),
       );
 
   KalenderView buildSchedule({

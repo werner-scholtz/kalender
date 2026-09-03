@@ -39,7 +39,8 @@ class MyApp extends StatelessWidget {
 class Event extends CalendarEvent {
   Event({
     super.id,
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.title,
     this.color,
     super.interaction,
@@ -52,8 +53,8 @@ class Event extends CalendarEvent {
   // Rebuilds only what this class adds. The id, the interaction config and the
   // rule are restored by CalendarEvent afterwards.
   @override
-  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return Event(dateTimeRange: dateTimeRange, title: title, color: color);
+  Event copyWithData({required DateTime start, required DateTime end}) {
+    return Event(start: start, end: end, title: title, color: color);
   }
 
   @override
@@ -110,34 +111,26 @@ class _MyHomePageState extends State<MyHomePage> {
     final today = DateTime(now.year, now.month, now.day);
     eventsController.addEvents([
       Event(
-        dateTimeRange: KalenderDateTimeRange(
-          start: today.add(const Duration(hours: 9)),
-          end: today.add(const Duration(hours: 10, minutes: 30)),
-        ),
+        start: today.add(const Duration(hours: 9)),
+        end: today.add(const Duration(hours: 10, minutes: 30)),
         title: 'Team Standup',
         color: Colors.blue,
       ),
       Event(
-        dateTimeRange: KalenderDateTimeRange(
-          start: today.add(const Duration(hours: 13)),
-          end: today.add(const Duration(hours: 14)),
-        ),
+        start: today.add(const Duration(hours: 13)),
+        end: today.add(const Duration(hours: 14)),
         title: 'Lunch Meeting',
         color: Colors.green,
       ),
       Event(
-        dateTimeRange: KalenderDateTimeRange(
-          start: today.add(const Duration(days: 1, hours: 10)),
-          end: today.add(const Duration(days: 1, hours: 12)),
-        ),
+        start: today.add(const Duration(days: 1, hours: 10)),
+        end: today.add(const Duration(days: 1, hours: 12)),
         title: 'Workshop',
         color: Colors.orange,
       ),
       Event(
-        dateTimeRange: KalenderDateTimeRange(
-          start: today,
-          end: today.add(const Duration(days: 3)),
-        ),
+        start: today,
+        end: today.add(const Duration(days: 3)),
         title: 'Conference',
         color: Colors.purple,
       ),
@@ -155,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onEventTapped: (event) => calendarController.selectEvent(event),
           onEventCreate: (event) {
             // Give newly created events a default title.
-            return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
+            return Event(start: event.start, end: event.end, title: 'New Event');
           },
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(

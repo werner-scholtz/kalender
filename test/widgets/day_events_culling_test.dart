@@ -28,10 +28,8 @@ void main() {
   String addEvent(int hour, {int durationHours = 1}) {
     return eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: day.copyWith(hour: hour),
-          end: day.copyWith(hour: hour + durationHours),
-        ),
+        start: day.copyWith(hour: hour),
+        end: day.copyWith(hour: hour + durationHours),
       ),
     );
   }

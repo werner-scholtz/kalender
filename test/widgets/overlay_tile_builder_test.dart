@@ -18,8 +18,8 @@ void main() {
     final startOfWeek = DateTime(now.year, now.month, now.day);
     final range = KalenderDateTimeRange(start: startOfWeek, end: startOfWeek.copyWith(day: startOfWeek.day + 2));
     eventsController.addEvents([
-      CalendarEvent(dateTimeRange: range),
-      CalendarEvent(dateTimeRange: range),
+      CalendarEvent(start: range.start, end: range.end),
+      CalendarEvent(start: range.start, end: range.end),
     ]);
 
     final dpi = tester.view.devicePixelRatio;

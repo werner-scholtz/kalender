@@ -210,12 +210,14 @@ CalendarCallbacks(
   // Called before the calendar creates a new event from a gesture.
   // Return your concrete Event subclass here.
   onEventCreate: (event) {
-    return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
+    return Event(start: event.start,
+      end: event.end, title: 'New Event');
   },
 
   // Same as onEventCreate but includes gesture detail (position, renderBox).
   onEventCreateWithDetail: (event, detail) {
-    return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
+    return Event(start: event.start,
+      end: event.end, title: 'New Event');
   },
 
   // Called after a new event has been committed. Add it to your controller here.

@@ -36,8 +36,7 @@ class PeopleLayoutStrategy extends EventLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) =>
-      other is PeopleLayoutStrategy && listEquals(other.people, people);
+  bool operator ==(Object other) => other is PeopleLayoutStrategy && listEquals(other.people, people);
 
   @override
   int get hashCode => Object.hashAll(people);
@@ -59,19 +58,14 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
   });
 
   @override
-  List<CalendarEvent> sortEvents(Iterable<CalendarEvent> events) =>
-      events.toList();
+  List<CalendarEvent> sortEvents(Iterable<CalendarEvent> events) => events.toList();
 
   @override
-  List<VerticalLayoutData> sortVerticalLayoutData(
-    List<VerticalLayoutData> layoutData,
-  ) {
+  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
     // Sort the data from top to bottom.
     // If the top values are equal compare the bottom
     return layoutData..sort((a, b) {
-      return a.top.compareTo(b.top) == 0
-          ? b.bottom.compareTo(a.bottom)
-          : a.top.compareTo(b.top);
+      return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
     });
   }
 
@@ -105,29 +99,17 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
     for (final (i, person) in people.indexed) {
       final group = horizontalGroups[person] ?? [];
       final position = Offset(i * space.width, 0);
-      final rectForGroup = Rect.fromLTWH(
-        position.dx,
-        position.dy,
-        space.width,
-        space.height,
-      );
+      final rectForGroup = Rect.fromLTWH(position.dx, position.dy, space.width, space.height);
       performGroupLayout(group, rectForGroup);
     }
   }
 
   /// Performs the layout for a group of events.
-  void performGroupLayout(
-    List<HorizontalGroupData> horizontalGroups,
-    Rect rect,
-  ) {
+  void performGroupLayout(List<HorizontalGroupData> horizontalGroups, Rect rect) {
     for (var i = 0; i < horizontalGroups.length; i++) {
       final group = horizontalGroups.elementAt(i);
       final verticalLayoutData = group.verticalLayoutData
-        ..sort(
-          (a, b) => b.height.compareTo(a.height) == 0
-              ? b.top.compareTo(a.top)
-              : b.height.compareTo(a.height),
-        );
+        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : b.height.compareTo(a.height));
 
       final numberOfEvents = verticalLayoutData.length;
       final longest = findLongestChain(verticalLayoutData);
@@ -148,8 +130,7 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
         // Calculate the x offset of the tile.
         double tileXOffset;
         if (lastOverlapLeft != null) {
-          tileXOffset =
-              tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
+          tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
         } else {
           // Use the left edge of the rectangle as a base if there are no overlaps to the left.
           tileXOffset = rect.left + (childWidth * overlapsLeft.length);
@@ -157,9 +138,7 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
 
         // Find the overlaps to the right of the tile.
         final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
-        final overlapsRight = tilesToRight
-            .where((e) => e.overlaps(data))
-            .toList();
+        final overlapsRight = tilesToRight.where((e) => e.overlaps(data)).toList();
 
         // Calculate the width of the tile.
         var tileWidth = childWidth;
@@ -169,10 +148,7 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
         }
 
         // Layout the tile.
-        layoutChild(
-          id,
-          BoxConstraints.tightFor(width: tileWidth, height: data.height),
-        );
+        layoutChild(id, BoxConstraints.tightFor(width: tileWidth, height: data.height));
 
         tiles[id] = Offset(tileXOffset, data.top);
         tileWidths[id] = tileWidth;

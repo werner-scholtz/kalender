@@ -49,7 +49,8 @@ void main() {
     // Monday 00:00 -> Friday 00:00, a 4-day span inside the first visible week.
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 4))),
+        start: start,
+        end: start.add(const Duration(days: 4)),
       ),
     );
 
@@ -68,8 +69,8 @@ void main() {
   testWidgets('the spanning tile stays one tile and moves as the view scrolls', (tester) async {
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange:
-            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+        start: start.add(const Duration(days: 1)),
+        end: start.add(const Duration(days: 4)),
       ),
     );
 
@@ -95,7 +96,8 @@ void main() {
     final bigRange = KalenderDateTimeRange(start: DateTime(2018), end: DateTime(2036));
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: DateTime(2026, 7, 6), end: DateTime(2026, 7, 9)),
+        start: DateTime(2026, 7, 6),
+        end: DateTime(2026, 7, 9),
       ),
     );
 

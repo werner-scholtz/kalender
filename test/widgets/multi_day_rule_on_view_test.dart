@@ -27,10 +27,8 @@ void main() {
     // disagree about it and nothing else does.
     eventId = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start.add(const Duration(days: 1, hours: 23)),
-          end: start.add(const Duration(days: 2, hours: 1)),
-        ),
+        start: start.add(const Duration(days: 1, hours: 23)),
+        end: start.add(const Duration(days: 2, hours: 1)),
       ),
     );
   });
@@ -88,10 +86,8 @@ void main() {
     eventsController.clearEvents();
     final pinned = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start.add(const Duration(days: 1, hours: 23)),
-          end: start.add(const Duration(days: 2, hours: 1)),
-        ),
+        start: start.add(const Duration(days: 1, hours: 23)),
+        end: start.add(const Duration(days: 2, hours: 1)),
         multiDayRule: const MultiDayRule.calendarDays(),
       ),
     );

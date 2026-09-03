@@ -245,7 +245,8 @@ void main() {
 
       final id = eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
+          start: DateTime(2025, 1, 1, 1),
+          end: DateTime(2025, 1, 1, 12),
         ),
       );
       await tester.pumpAndSettle();
@@ -276,7 +277,8 @@ void main() {
 
       final id = eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
+          start: DateTime(2025, 1, 1, 1),
+          end: DateTime(2025, 1, 1, 12),
         ),
       );
       await tester.pumpAndSettle();
@@ -502,7 +504,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
+        CalendarEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
       );
       await tester.pumpAndSettle();
 
@@ -531,7 +533,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
+        CalendarEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
       );
       await tester.pumpAndSettle();
 
@@ -708,7 +710,8 @@ void main() {
 
       final id = eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
+          start: DateTime(2025, 1, 1, 1),
+          end: DateTime(2025, 1, 1, 12),
         ),
       );
       await tester.pumpAndSettle();
@@ -769,7 +772,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
+        CalendarEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
       );
       await tester.pumpAndSettle();
 

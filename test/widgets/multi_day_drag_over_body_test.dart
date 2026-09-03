@@ -25,10 +25,8 @@ void main() {
     // A two-day event starting on the Tuesday.
     eventId = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start.add(const Duration(days: 1, hours: 9)),
-          end: start.add(const Duration(days: 3, hours: 9)),
-        ),
+        start: start.add(const Duration(days: 1, hours: 9)),
+        end: start.add(const Duration(days: 3, hours: 9)),
       ),
     );
   });

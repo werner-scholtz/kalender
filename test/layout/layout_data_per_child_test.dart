@@ -13,10 +13,8 @@ void main() {
   CalendarEvent event({String? id, int hour = 9}) {
     return CalendarEvent(
       id: id,
-      dateTimeRange: KalenderDateTimeRange(
-        start: DateTime.utc(2024, 1, 1, hour),
-        end: DateTime.utc(2024, 1, 1, hour + 1),
-      ),
+      start: DateTime.utc(2024, 1, 1, hour),
+      end: DateTime.utc(2024, 1, 1, hour + 1),
     );
   }
 
@@ -79,15 +77,13 @@ void main() {
 class _ConstantHashEvent extends CalendarEvent {
   _ConstantHashEvent({required int hour})
       : super(
-          dateTimeRange: KalenderDateTimeRange(
-            start: DateTime.utc(2024, 1, 1, hour),
-            end: DateTime.utc(2024, 1, 1, hour + 1),
-          ),
+          start: DateTime.utc(2024, 1, 1, hour),
+          end: DateTime.utc(2024, 1, 1, hour + 1),
         );
 
   @override
-  _ConstantHashEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return _ConstantHashEvent(hour: dateTimeRange.start.toUtc().hour);
+  _ConstantHashEvent copyWithData({required DateTime start, required DateTime end}) {
+    return _ConstantHashEvent(hour: start.toUtc().hour);
   }
 
   @override
