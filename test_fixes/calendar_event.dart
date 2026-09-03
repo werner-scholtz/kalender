@@ -1,0 +1,6 @@
+// The input for `fix_calendar_event.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:kalender/kalender.dart';
+
+final range = KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
+final event = CalendarEvent(dateTimeRange: range);
