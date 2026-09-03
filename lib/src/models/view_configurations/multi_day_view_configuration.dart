@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
+import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
@@ -26,8 +27,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   @override
   final PageIndexCalculator pageIndexCalculator;
 
-  /// The [TimeOfDayRange] that can be displayed by [MultiDayBody] widgets using this configuration.
-  final TimeOfDayRange timeOfDayRange;
+  /// The [KalenderTimeRange] that can be displayed by [MultiDayBody] widgets using this configuration.
+  final KalenderTimeRange timeOfDayRange;
 
   /// The first day of the week.
   ///
@@ -38,7 +39,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   final int numberOfDays;
 
   /// The initial time of day that the calendar should display.
-  final TimeOfDay initialTimeOfDay;
+  final KalenderTime initialTimeOfDay;
 
   /// The initial heightPerMinute (zoom level).
   final double initialHeightPerMinute;
@@ -93,7 +94,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     KalenderDateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
+    KalenderTimeRange? timeOfDayRange,
     this.firstDayOfWeek = kDefaultFirstDayOfWeek,
     this.initialTimeOfDay = kDefaultInitialTimeOfDay,
     this.initialHeightPerMinute = kDefaultHeightPerMinute,
@@ -101,7 +102,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+  })  : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
         numberOfDays = 1,
         type = MultiDayViewType.singleDay,
         pageIndexCalculator = PageIndexCalculator.singleDay(displayRange ?? kDefaultRange());
@@ -121,7 +122,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     KalenderDateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
+    KalenderTimeRange? timeOfDayRange,
     this.firstDayOfWeek = kDefaultFirstDayOfWeek,
     this.numberOfDays = 7,
     this.initialTimeOfDay = kDefaultInitialTimeOfDay,
@@ -135,7 +136,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           'numberOfDays must be between 1 and 7 for a week view.\n'
           'Use MultiDayViewConfiguration.custom for a page of any other length.',
         ),
-        timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
         type = MultiDayViewType.week,
         pageIndexCalculator = PageIndexCalculator.week(
           displayRange ?? kDefaultRange(),
@@ -155,7 +156,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     KalenderDateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
+    KalenderTimeRange? timeOfDayRange,
     this.numberOfDays = 5,
     this.initialTimeOfDay = kDefaultInitialTimeOfDay,
     this.initialHeightPerMinute = kDefaultHeightPerMinute,
@@ -168,7 +169,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           'numberOfDays must be between 1 and 7 for a work week view.\n'
           'Use MultiDayViewConfiguration.custom for a page of any other length.',
         ),
-        timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
         firstDayOfWeek = kDefaultFirstDayOfWeek,
         type = MultiDayViewType.workWeek,
         pageIndexCalculator = PageIndexCalculator.workWeek(
@@ -185,7 +186,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     KalenderDateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
+    KalenderTimeRange? timeOfDayRange,
     required this.numberOfDays,
     this.firstDayOfWeek = kDefaultFirstDayOfWeek,
     this.initialTimeOfDay = kDefaultInitialTimeOfDay,
@@ -194,7 +195,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+  })  : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
         type = MultiDayViewType.custom,
         pageIndexCalculator = PageIndexCalculator.custom(displayRange ?? kDefaultRange(), numberOfDays);
 
@@ -207,7 +208,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     KalenderDateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
+    KalenderTimeRange? timeOfDayRange,
     required this.numberOfDays,
     this.initialTimeOfDay = kDefaultInitialTimeOfDay,
     this.initialHeightPerMinute = kDefaultHeightPerMinute,
@@ -215,7 +216,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+  })  : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
         firstDayOfWeek = kDefaultFirstDayOfWeek,
         type = MultiDayViewType.freeScroll,
         pageIndexCalculator = PageIndexCalculator.freeScroll(displayRange ?? kDefaultRange());
@@ -226,11 +227,11 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     DateTransition? dateTransition,
     DateResolver? dateResolver,
     NowCallback? nowCallback,
-    TimeOfDayRange? timeOfDayRange,
+    KalenderTimeRange? timeOfDayRange,
     KalenderDateTimeRange? displayRange,
     int? numberOfDays,
     int? firstDayOfWeek,
-    TimeOfDay? initialTimeOfDay,
+    KalenderTime? initialTimeOfDay,
     ScrollTransition? scrollTransition,
     ScrollResolver? scrollResolver,
     ZoomTransition? zoomTransition,

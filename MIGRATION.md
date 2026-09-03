@@ -104,6 +104,51 @@ MultiDayViewConfiguration.week(displayRange: someInternalRange)
 MultiDayViewConfiguration.week(displayRange: someInternalRange.forLocation(location: location))
 ```
 
+### `KalenderTime` replaces Material's `TimeOfDay`
+
+The same reasoning as `DateTimeRange`, and the same substitution. `dart fix` cannot
+do this one either.
+
+```dart
+// Before
+MultiDayViewConfiguration.week(initialTimeOfDay: const TimeOfDay(hour: 7, minute: 0))
+
+// After
+MultiDayViewConfiguration.week(initialTimeOfDay: const KalenderTime(hour: 7, minute: 0))
+```
+
+It carries `hour`, `minute`, `fromDateTime`, `now`, `replacing`, `hoursPerDay`,
+`minutesPerHour`, `isBefore`, `isAfter`, `isAtSameTimeAs` and `compareTo`.
+
+Two members are deliberately absent. `format(BuildContext)` reached
+`MaterialLocalizations`, and `DateTimeExtensions.timeLocalized` formats a time for a
+locale instead. The am/pm helpers `period`, `hourOfPeriod` and `periodOffset` are
+gone with the `DayPeriod` enum, so a page that needs them compares `hour` against 12.
+
+Calls into Material's own API still take Material's type, so convert at that
+boundary:
+
+```dart
+MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay(hour: t.hour, minute: t.minute))
+```
+
+### `TimeOfDayRange` is renamed to `KalenderTimeRange`
+
+It holds `KalenderTime` values now. Nothing else about it changes.
+
+```dart
+// Before
+TimeOfDayRange(start: TimeOfDay(hour: 8, minute: 0), end: TimeOfDay(hour: 18, minute: 0))
+
+// After
+KalenderTimeRange(start: KalenderTime(hour: 8, minute: 0), end: KalenderTime(hour: 18, minute: 0))
+```
+
+### `TimeOfDayExtension` is removed
+
+`toInternalDateTime` and `toDateTime` are methods on `KalenderTime`, so the calls
+are unchanged and only the type they are called on differs.
+
 ### `PageIndexCalculator` takes `start` and `end`
 
 Every subclass unpacked the range into two values and converted each separately, so

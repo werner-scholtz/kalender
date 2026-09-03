@@ -26,7 +26,7 @@ void main() {
       heightPerMinute: 1,
       date: date,
       location: null,
-      timeOfDayRange: TimeOfDayRange.allDay(),
+      timeOfDayRange: KalenderTimeRange.allDay(),
       minimumTileHeight: null,
       layoutCache: cache ?? EventLayoutDelegateCache(),
     );

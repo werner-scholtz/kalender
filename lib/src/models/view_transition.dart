@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 /// How the horizontal date is chosen when switching to a view.
@@ -45,7 +44,7 @@ typedef DateResolver = InternalDateTime Function(ViewTransitionContext transitio
 
 /// Resolves the initial time-of-day for the incoming multi-day view. Overrides
 /// [ScrollTransition]. Return `null` to use the view's `initialTimeOfDay`.
-typedef ScrollResolver = TimeOfDay? Function(ViewTransitionContext transition);
+typedef ScrollResolver = KalenderTime? Function(ViewTransitionContext transition);
 
 /// Resolves the initial zoom (`heightPerMinute`) for the incoming multi-day view.
 /// Overrides [ZoomTransition]. Return `null` to use `initialHeightPerMinute`.
@@ -61,7 +60,7 @@ class ViewSnapshot {
 
   /// The time-of-day at the top of the viewport, or `null` for views without a
   /// vertical scroll (month/schedule).
-  final TimeOfDay? timeOfDay;
+  final KalenderTime? timeOfDay;
 
   /// The zoom level, or `null` for non-multi-day views.
   final double? heightPerMinute;

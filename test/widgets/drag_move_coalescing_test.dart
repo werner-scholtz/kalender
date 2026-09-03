@@ -14,7 +14,7 @@ void main() {
 
   final start = DateTime(2025, 3, 24);
   final viewConfiguration = MultiDayViewConfiguration.singleDay(
-    initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
+    initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
     initialHeightPerMinute: 1,
     displayRange: KalenderDateTimeRange(start: start, end: DateTime(2025, 3, 31)),
     initialDateTime: start,

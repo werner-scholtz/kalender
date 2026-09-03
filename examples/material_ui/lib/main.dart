@@ -1,6 +1,3 @@
-// The calendar's public API still uses TimeOfDay from package:flutter/material.dart.
-// This import supplies it wherever kalender expects it.
-import 'package:flutter/material.dart' as legacy;
 import 'package:kalender/kalender.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -15,8 +12,8 @@ class MyApp extends StatelessWidget {
       title: 'Kalender on material_ui',
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
-      // The bridge maps the theme and installs the legacy localizations the
-      // calendar looks up. Without it the timeline throws.
+      // The calendar renders without the bridge, but its own Theme.of lookup
+      // falls back to ThemeData.fallback(), so it would not pick up this theme.
       // ignore: deprecated_member_use
       builder: (context, child) => MaterialUiCompatibilityBridge(child: child!),
       home: const HomePage(),
@@ -44,7 +41,7 @@ class _HomePageState extends State<HomePage> {
 
   late final viewConfiguration = MultiDayViewConfiguration.week(
     displayRange: displayRange,
-    initialTimeOfDay: const legacy.TimeOfDay(hour: 7, minute: 0),
+    initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
   );
 
   @override

@@ -39,7 +39,7 @@ Convert with `InternalDateTimeRange.fromDateTimeRange(range)`.
 | Notifier               | Type                                | Description                                            |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
 | `visibleDateTimeRange` | `ValueNotifier<KalenderDateTimeRange?>`     | The currently visible date range                       |
-| `visibleTimeOfDay`     | `ValueNotifier<TimeOfDay?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
+| `visibleTimeOfDay`     | `ValueNotifier<KalenderTime?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
 | `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
 | `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |
 

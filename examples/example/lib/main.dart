@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
   );
 
   // Without this the day opens at midnight, on hours no one has events in.
-  static const initialTimeOfDay = TimeOfDay(hour: 7, minute: 0);
+  static const initialTimeOfDay = KalenderTime(hour: 7, minute: 0);
 
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[

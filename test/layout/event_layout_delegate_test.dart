@@ -87,7 +87,7 @@ void main() {
             const EventLayoutStrategy.overlap().createDelegate(
               events: events,
               date: internalDate,
-              timeOfDayRange: TimeOfDayRange.allDay(),
+              timeOfDayRange: KalenderTimeRange.allDay(),
               heightPerMinute: heightPerMinute,
               minimumTileHeight: null,
               cache: null,
@@ -109,7 +109,7 @@ void main() {
             const EventLayoutStrategy.sideBySide().createDelegate(
               events: events,
               date: internalDate,
-              timeOfDayRange: TimeOfDayRange.allDay(),
+              timeOfDayRange: KalenderTimeRange.allDay(),
               heightPerMinute: heightPerMinute,
               minimumTileHeight: null,
               cache: null,

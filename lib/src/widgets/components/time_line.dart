@@ -11,10 +11,15 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// keeps a Material app's timeline byte for byte what it was. An app on the
 /// standalone `material_ui` package installs its own, not these, so there the
 /// format comes from intl and the calendar's locale.
-String _formatTime(BuildContext context, TimeOfDay time) {
+String _formatTime(BuildContext context, KalenderTime time) {
   final use24HourFormat = MediaQuery.alwaysUse24HourFormatOf(context);
   final material = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations);
-  if (material != null) return material.formatTimeOfDay(time, alwaysUse24HourFormat: use24HourFormat);
+  if (material != null) {
+    return material.formatTimeOfDay(
+      TimeOfDay(hour: time.hour, minute: time.minute),
+      alwaysUse24HourFormat: use24HourFormat,
+    );
+  }
 
   final locale = context.dependOnInheritedWidgetOfExactType<LocaleProvider>()?.locale;
   return time.toDateTime(DateTime.utc(2000)).timeLocalized(locale: locale, use24HourFormat: use24HourFormat);
@@ -33,7 +38,7 @@ String _formatTime(BuildContext context, TimeOfDay time) {
 typedef TimeLineBuilder = Widget Function(
   BuildContext context,
   double heightPerMinute,
-  TimeOfDayRange timeOfDayRange,
+  KalenderTimeRange timeOfDayRange,
   ValueNotifier<CalendarEvent?> eventBeingDragged,
   ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
 );
@@ -52,7 +57,7 @@ typedef TimeLineBuilder = Widget Function(
 /// See [defaultTimelineWidth] for the default implementation.
 typedef TimelineWidthBuilder = double Function(
   BuildContext context,
-  TimeOfDayRange timeOfDayRange,
+  KalenderTimeRange timeOfDayRange,
 );
 
 /// The default [TimelineWidthBuilder].
@@ -63,7 +68,7 @@ typedef TimelineWidthBuilder = double Function(
 /// gutter correct regardless of the locale's time format, the hour's digit
 /// count, and any custom [MultiDayBodyComponents.timelineStringBuilder]. Honors
 /// the ambient [MediaQueryData.textScaler] so it reserves enough room for scaled text.
-double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange) {
+double defaultTimelineWidth(BuildContext context, KalenderTimeRange timeOfDayRange) {
   final style = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
   if (style.width != null) return style.width!;
 
@@ -88,9 +93,9 @@ double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange)
   final minutes = hasCustomLabels ? customMinutes : defaultMinutes;
 
   var widest = 0.0;
-  for (var hour = 0; hour < TimeOfDay.hoursPerDay; hour++) {
+  for (var hour = 0; hour < KalenderTime.hoursPerDay; hour++) {
     for (final minute in minutes) {
-      final time = TimeOfDay(hour: hour, minute: minute);
+      final time = KalenderTime(hour: hour, minute: minute);
       final text = stringBuilder?.call(context, time) ?? _formatTime(context, time);
       painter.text = TextSpan(text: text, style: textStyle);
       painter.layout();
@@ -250,7 +255,7 @@ mixin TimeLineUtils {
   }
 
   /// The label shown for [time].
-  String timelineString(BuildContext context, TimeOfDay time) {
+  String timelineString(BuildContext context, KalenderTime time) {
     final stringBuilder = context.components.multiDayComponents.bodyComponents.timelineStringBuilder;
     return stringBuilder?.call(context, time) ?? _formatTime(context, time);
   }
@@ -270,7 +275,7 @@ mixin TimeLineUtils {
 
   /// The [Size] of the largest text.
   Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
-    const displayTime = TimeOfDay(hour: 23, minute: 59);
+    const displayTime = KalenderTime(hour: 23, minute: 59);
     final text = timelineString(context, displayTime);
     final textSize = _textSize(text, textStyle, textDirection(context));
     return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
@@ -291,7 +296,7 @@ mixin TimeLineUtils {
   Size itemSize(BuildContext context) => largestTextSize(context, textStyle(context), textPadding(context));
 
   /// Calculates the segments duration based on the [timeOfDayRange], [heightPerMinute], and [itemHeight].
-  int segmentDuration(TimeOfDayRange timeOfDayRange, double heightPerMinute, double itemHeight) {
+  int segmentDuration(KalenderTimeRange timeOfDayRange, double heightPerMinute, double itemHeight) {
     final totalHeight = timeOfDayRange.duration.inMinutes * heightPerMinute;
     final totalItems = (totalHeight / itemHeight).ceil();
     return switch (totalItems) {
@@ -305,8 +310,8 @@ mixin TimeLineUtils {
 
 /// A widget that displays a list of times based on the [timeOfDayRange] and [heightPerMinute].
 class TimeLine extends StatelessWidget with TimeLineUtils {
-  /// The [TimeOfDayRange] that will be used to display the timeline.
-  final TimeOfDayRange timeOfDayRange;
+  /// The [KalenderTimeRange] that will be used to display the timeline.
+  final KalenderTimeRange timeOfDayRange;
 
   /// The height per minute.
   final double heightPerMinute;
@@ -407,8 +412,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
                 start.difference(timeOfDayRange.start.toInternalDateTime(start)).inMinutes * heightPerMinute;
             final endTop = end.difference(timeOfDayRange.start.toInternalDateTime(end)).inMinutes * heightPerMinute;
 
-            final startTime = TimeOfDay.fromDateTime(start);
-            final endTime = TimeOfDay.fromDateTime(end);
+            final startTime = KalenderTime.fromDateTime(start);
+            final endTime = KalenderTime.fromDateTime(end);
             final startText = timelineString(context, startTime);
             final endText = timelineString(context, endTime);
 

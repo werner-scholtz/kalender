@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/kalender_time.dart';
 
 void main() {
   group('TimeOfDayExtension', () {
     group('toInternalDateTime', () {
       test('sets the correct hour and minute', () {
-        const timeOfDay = TimeOfDay(hour: 14, minute: 30);
+        const timeOfDay = KalenderTime(hour: 14, minute: 30);
         final input = InternalDateTime(2024, 6, 15, 9, 0);
         final result = timeOfDay.toInternalDateTime(input);
 
@@ -18,7 +18,7 @@ void main() {
       });
 
       test('zeroes out second, millisecond, and microsecond', () {
-        const timeOfDay = TimeOfDay(hour: 10, minute: 15);
+        const timeOfDay = KalenderTime(hour: 10, minute: 15);
         final input = InternalDateTime.fromDateTime(
           DateTime(2024, 6, 15, 9, 45, 30, 500, 250),
         );
@@ -32,7 +32,7 @@ void main() {
 
     group('toDateTime', () {
       test('sets the correct hour and minute', () {
-        const timeOfDay = TimeOfDay(hour: 8, minute: 0);
+        const timeOfDay = KalenderTime(hour: 8, minute: 0);
         final input = DateTime(2024, 6, 15, 22, 45);
         final result = timeOfDay.toDateTime(input);
 
@@ -44,7 +44,7 @@ void main() {
       });
 
       test('zeroes out second, millisecond, and microsecond', () {
-        const timeOfDay = TimeOfDay(hour: 12, minute: 30);
+        const timeOfDay = KalenderTime(hour: 12, minute: 30);
         final input = DateTime(2024, 6, 15, 9, 45, 30, 500, 250);
         final result = timeOfDay.toDateTime(input);
 
