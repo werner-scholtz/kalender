@@ -1,0 +1,39 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/508
+  - title: "Replace 'dateTimeRange' with 'start' and 'end'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'CalendarEvent'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'

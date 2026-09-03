@@ -1,0 +1,14 @@
+// The input for `fix_page_index_calculator.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:kalender/kalender.dart';
+
+final range = KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2026));
+
+final day = DayIndexCalculator(start: range.start, end: range.end);
+final week = WeekIndexCalculator(start: range.start, end: range.end, firstDayOfWeek: DateTime.monday, daysToDisplay: 7);
+final standardWeek = WeekIndexCalculator.week(start: range.start, end: range.end, firstDayOfWeek: DateTime.monday);
+final workWeek = WeekIndexCalculator.workWeek(start: range.start, end: range.end);
+final custom = CustomIndexCalculator(start: range.start, end: range.end, numberOfDays: 3);
+final month = MonthIndexCalculator(start: range.start, end: range.end, firstDayOfWeek: DateTime.monday);
+final schedule = ContinuousScheduleIndexCalculator(start: range.start, end: range.end);
+final paginated = PaginatedScheduleIndexCalculator(start: range.start, end: range.end);
