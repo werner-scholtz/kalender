@@ -30,7 +30,7 @@ class Event extends CalendarEvent {
   /// The id, the interaction config and the rule are restored by [CalendarEvent]
   /// afterwards, so they are deliberately not listed here.
   @override
-  Event copyWithData({required DateTimeRange dateTimeRange}) {
+  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
   }
 
@@ -38,7 +38,7 @@ class Event extends CalendarEvent {
   ///
   /// This is the demo's own method rather than an override, so it takes whatever
   /// parameters are useful here. [carryOver] keeps the copy's identity.
-  Event copyWith({DateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+  Event copyWith({KalenderDateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
     return carryOver(
       Event(
         dateTimeRange: dateTimeRange ?? this.dateTimeRange,

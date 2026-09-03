@@ -26,10 +26,12 @@ void main() {
     eventsController = DefaultEventsController();
     calendarController = CalendarController();
     eventId = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4))),
+      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4))),
     );
     otherId = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 10), end: DateTime(2025, 1, 1, 14))),
+      CalendarEvent(
+        dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 10), end: DateTime(2025, 1, 1, 14)),
+      ),
     );
   });
 

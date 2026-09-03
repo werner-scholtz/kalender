@@ -16,7 +16,7 @@ void main() {
 
     final now = InternalDateTime.fromDateTime(DateTime.now()).startOfWeek();
     final startOfWeek = DateTime(now.year, now.month, now.day);
-    final range = DateTimeRange(start: startOfWeek, end: startOfWeek.copyWith(day: startOfWeek.day + 2));
+    final range = KalenderDateTimeRange(start: startOfWeek, end: startOfWeek.copyWith(day: startOfWeek.day + 2));
     eventsController.addEvents([
       CalendarEvent(dateTimeRange: range),
       CalendarEvent(dateTimeRange: range),

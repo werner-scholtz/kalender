@@ -52,7 +52,7 @@ class Event extends CalendarEvent {
   // Rebuilds only what this class adds. The id, the interaction config and the
   // rule are restored by CalendarEvent afterwards.
   @override
-  Event copyWithData({required DateTimeRange dateTimeRange}) {
+  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return Event(dateTimeRange: dateTimeRange, title: title, color: color);
   }
 
@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final now = DateTime.now();
 
-  late final displayRange = DateTimeRange(
+  late final displayRange = KalenderDateTimeRange(
     start: now.copyWith(day: now.day - 365),
     end: now.copyWith(day: now.day + 365),
   );
@@ -110,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final today = DateTime(now.year, now.month, now.day);
     eventsController.addEvents([
       Event(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: today.add(const Duration(hours: 9)),
           end: today.add(const Duration(hours: 10, minutes: 30)),
         ),
@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.blue,
       ),
       Event(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: today.add(const Duration(hours: 13)),
           end: today.add(const Duration(hours: 14)),
         ),
@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.green,
       ),
       Event(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: today.add(const Duration(days: 1, hours: 10)),
           end: today.add(const Duration(days: 1, hours: 12)),
         ),
@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.orange,
       ),
       Event(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: today,
           end: today.add(const Duration(days: 3)),
         ),

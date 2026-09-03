@@ -55,12 +55,12 @@ void main() {
   initializeTimeZones();
 
   final harness = _DragUtilsHarness();
-  final range = DateTimeRange(start: DateTime.utc(2024, 1, 15, 10), end: DateTime.utc(2024, 1, 15, 12));
+  final range = InternalDateTimeRange(start: DateTime.utc(2024, 1, 15, 10), end: DateTime.utc(2024, 1, 15, 12));
 
   CalendarEvent eventWithId(String id) {
     return CalendarEvent(
       id: id,
-      dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
+      dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
     );
   }
 

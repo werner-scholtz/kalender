@@ -15,7 +15,7 @@ class _DayTileHarness extends StatelessWidget with DayEventTileUtils {
   final CalendarEvent event;
 
   @override
-  final DateTimeRange tileRange;
+  final KalenderDateTimeRange tileRange;
 
   @override
   Widget build(BuildContext context) => const SizedBox(width: 100, height: 600);
@@ -30,7 +30,7 @@ class _MultiDayTileHarness extends StatelessWidget with MultiDayEventTileUtils {
   final CalendarEvent event;
 
   @override
-  final DateTimeRange tileRange;
+  final KalenderDateTimeRange tileRange;
 
   @override
   Widget build(BuildContext context) => const SizedBox(width: 300, height: 50);
@@ -78,9 +78,9 @@ void main() {
 
   group('DayEventTileUtils', () {
     final event = CalendarEvent(
-      dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
+      dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
     );
-    final tileRange = DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16));
+    final tileRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16));
 
     testWidgets('internalTileRange converts the tile range using the location', (tester) async {
       final harness = _DayTileHarness(event: event, tileRange: tileRange);
@@ -113,13 +113,15 @@ void main() {
       // Within a +/-30min window of 09:00-10:00 (08:30-10:30).
       final nearbyId = eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 8), end: DateTime.utc(2024, 1, 15, 8, 45)),
+          dateTimeRange:
+              KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 8), end: DateTime.utc(2024, 1, 15, 8, 45)),
         ),
       );
       // Outside the window.
       eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 11), end: DateTime.utc(2024, 1, 15, 12)),
+          dateTimeRange:
+              KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 11), end: DateTime.utc(2024, 1, 15, 12)),
         ),
       );
 
@@ -150,9 +152,9 @@ void main() {
 
   group('MultiDayEventTileUtils', () {
     final event = CalendarEvent(
-      dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 17, 18)),
+      dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 17, 18)),
     );
-    final tileRange = DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 18));
+    final tileRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 18));
 
     testWidgets('dateFromPosition maps a horizontal offset to the right day', (tester) async {
       final harness = _MultiDayTileHarness(event: event, tileRange: tileRange);
@@ -192,7 +194,7 @@ void main() {
       // Event runs Jan 13 → Jan 20 but the tile only shows Jan 15 → Jan 18, so
       // the 300px width maps to the 3 visible days (Jan 15, 16, 17).
       final overflowing = CalendarEvent(
-        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 13, 9), end: DateTime.utc(2024, 1, 20, 18)),
+        dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 13, 9), end: DateTime.utc(2024, 1, 20, 18)),
       );
       final harness = _MultiDayTileHarness(event: overflowing, tileRange: tileRange);
       final context = await pumpHarness(tester, harness);
@@ -205,7 +207,7 @@ void main() {
       final selfId = eventsController.addEvent(event);
       final otherMultiDayId = eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 16), end: DateTime.utc(2024, 1, 18)),
+          dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 16), end: DateTime.utc(2024, 1, 18)),
         ),
       );
 

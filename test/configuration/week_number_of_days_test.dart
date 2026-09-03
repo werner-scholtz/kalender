@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart' show WeekDayHeaders;
@@ -11,7 +10,7 @@ import '../utilities.dart';
 /// dates of the page, so the two only line up if the page is that many days
 /// long. Covers issue #444.
 void main() {
-  final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
+  final displayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
   // Monday 14 April 2025.
   final monday = DateTime(2025, 4, 14);
@@ -97,7 +96,8 @@ void main() {
     test('daysToDisplay outside 1 to 7 is rejected', () {
       expect(
         () => WeekIndexCalculator(
-          dateTimeRange: displayRange,
+          start: displayRange.start,
+          end: displayRange.end,
           firstDayOfWeek: DateTime.monday,
           daysToDisplay: 8,
         ),

@@ -161,6 +161,6 @@ String _dateLabel(BuildContext context, DateTime date) => '';
 
 String _hiddenEventCount(BuildContext context, int numberOfHiddenEvents) => '';
 
-Widget _tile(BuildContext context, CalendarEvent event, DateTimeRange tileRange) => const SizedBox();
+Widget _tile(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) => const SizedBox();
 
 Widget _dropTarget(BuildContext context, CalendarEvent event) => const SizedBox();

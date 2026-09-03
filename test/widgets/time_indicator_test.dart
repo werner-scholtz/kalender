@@ -10,7 +10,7 @@ void main() {
     final key = UniqueKey();
     final now = InternalDateTime.fromDateTime(DateTime.now()).startOfWeek();
     final range = InternalDateTimeRange(start: now, end: now.endOfWeek());
-    final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range);
+    final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range.forLocation());
 
     for (final (index, date) in range.dates().map(InternalDateTime.fromDateTime).indexed) {
       testWidgets('for date index: ($index)', (tester) async {
@@ -24,7 +24,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
+                    visibleDateTimeRange: ValueNotifier(range),
                     visibleEvents: ValueNotifier(<CalendarEvent>{}),
                   ),
                   initialPage: 0,

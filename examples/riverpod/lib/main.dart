@@ -28,7 +28,7 @@ final eventsProvider = Provider<EventsController>((ref) => DefaultEventsControll
 /// The view configurations the user can pick from.
 final viewConfigurationsProvider = Provider<List<ViewConfiguration>>((ref) {
   final now = DateTime.now();
-  final displayRange = DateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
+  final displayRange = KalenderDateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
   return [
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),

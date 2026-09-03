@@ -16,7 +16,7 @@ void main() {
   final viewConfiguration = MultiDayViewConfiguration.singleDay(
     initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
     initialHeightPerMinute: 1,
-    displayRange: DateTimeRange(start: start, end: DateTime(2025, 3, 31)),
+    displayRange: KalenderDateTimeRange(start: start, end: DateTime(2025, 3, 31)),
     initialDateTime: start,
   );
 
@@ -25,7 +25,7 @@ void main() {
     calendarController = CalendarController();
     eventId = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(hour: 8)),
+        dateTimeRange: KalenderDateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(hour: 8)),
       ),
     );
   });

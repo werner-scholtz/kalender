@@ -35,12 +35,12 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.dateResolver,
     super.nowCallback,
     super.multiDayRule,
-    DateTimeRange? displayRange,
+    KalenderDateTimeRange? displayRange,
     this.firstDayOfWeek = kDefaultFirstDayOfWeek,
     this.showWeekNumbers = false,
-  }) : pageIndexCalculator = MonthIndexCalculator(
-          dateTimeRange: displayRange ?? kDefaultRange(),
-          firstDayOfWeek: firstDayOfWeek,
+  }) : pageIndexCalculator = MonthIndexCalculator.fromRange(
+          displayRange ?? kDefaultRange(),
+          firstDayOfWeek,
         );
 
   MonthViewConfiguration copyWith({
@@ -62,7 +62,7 @@ class MonthViewConfiguration extends ViewConfiguration {
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
       multiDayRule: multiDayRule ?? this.multiDayRule,
-      displayRange: pageIndexCalculator.dateTimeRange,
+      displayRange: KalenderDateTimeRange(start: pageIndexCalculator.start, end: pageIndexCalculator.end),
     );
   }
 

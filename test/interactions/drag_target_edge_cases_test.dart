@@ -49,7 +49,7 @@ final _restrictedRange = TimeOfDayRange(
 
 /// A single-day event (2 h) on Jan 6, 2025.
 CalendarEvent _singleDayEvent({DateTime? start, DateTime? end}) => CalendarEvent(
-      dateTimeRange: DateTimeRange(
+      dateTimeRange: KalenderDateTimeRange(
         start: start ?? DateTime(2025, 1, 6, 10, 0),
         end: end ?? DateTime(2025, 1, 6, 12, 0),
       ),
@@ -57,7 +57,7 @@ CalendarEvent _singleDayEvent({DateTime? start, DateTime? end}) => CalendarEvent
 
 /// A midnight-to-midnight event (always spans multiple days).
 CalendarEvent _multiDayEvent() => CalendarEvent(
-      dateTimeRange: DateTimeRange(
+      dateTimeRange: KalenderDateTimeRange(
         start: DateTime(2025, 1, 6, 0, 0),
         end: DateTime(2025, 1, 7, 0, 0),
       ),
@@ -284,7 +284,7 @@ void main() {
 
       // 10-hour event (> 8h 1min range duration) — still a single-day event
       final hugeEvent = CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: DateTime(2025, 1, 6, 8, 0),
           end: DateTime(2025, 1, 6, 18, 0),
         ),
@@ -716,7 +716,7 @@ void main() {
       final ec = DefaultEventsController();
       ec.addEvent(
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 1, 6, 10),
             end: DateTime(2025, 1, 6, 12),
           ),

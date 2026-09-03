@@ -9,7 +9,7 @@ import '../utilities.dart';
 // render, sit on the mirrored side, and scroll the right way.
 void main() {
   final start = DateTime(2025, 3, 24); // Monday
-  final displayRange = DateTimeRange(start: start, end: start.add(const Duration(days: 21)));
+  final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -48,7 +48,7 @@ void main() {
 
   testWidgets('RTL: a multi-day event renders as one spanning tile', (tester) async {
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(days: 4)))),
+      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 4)))),
     );
 
     await pump(tester, TextDirection.rtl);
@@ -62,7 +62,7 @@ void main() {
   testWidgets('RTL mirrors the tile position relative to LTR', (tester) async {
     // A 2-day event on the first two visible days.
     final event = CalendarEvent(
-      dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(days: 2))),
+      dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 2))),
     );
     final id = eventsController.addEvent(event);
 
@@ -86,7 +86,7 @@ void main() {
     final id = eventsController.addEvent(
       CalendarEvent(
         dateTimeRange:
-            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
       ),
     );
 

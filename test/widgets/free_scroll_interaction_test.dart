@@ -10,7 +10,7 @@ import '../utilities.dart';
 // across days.
 void main() {
   final start = DateTime(2025, 3, 24); // Monday
-  final displayRange = DateTimeRange(start: start, end: start.add(const Duration(days: 21)));
+  final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -93,7 +93,7 @@ void main() {
     final id = eventsController.addEvent(
       CalendarEvent(
         dateTimeRange:
-            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
       ),
     );
 
@@ -123,7 +123,7 @@ void main() {
     final id = eventsController.addEvent(
       CalendarEvent(
         dateTimeRange:
-            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
+            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
       ),
     );
 

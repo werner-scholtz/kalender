@@ -98,7 +98,7 @@ class MultiDayHeaderComponents {
   }
 
   /// Builds a week number, with [weekNumberBuilder] when set.
-  Widget buildWeekNumber(BuildContext context, DateTimeRange visibleDateTimeRange) {
+  Widget buildWeekNumber(BuildContext context, KalenderDateTimeRange visibleDateTimeRange) {
     return weekNumberBuilder?.call(context, visibleDateTimeRange) ??
         WeekNumber(visibleDateTimeRange: visibleDateTimeRange);
   }
@@ -226,7 +226,7 @@ class MultiDayBodyComponents {
     double heightPerMinute,
     TimeOfDayRange timeOfDayRange,
     ValueNotifier<CalendarEvent?> eventBeingDragged,
-    ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
+    ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
   ) {
     return timeline?.call(context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) ??
         TimeLine(

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' as legacy;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:material_ui/material_ui.dart';
@@ -51,7 +50,7 @@ class _CalendarState extends State<_Calendar> {
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: legacy.DateTimeRange(
+        displayRange: KalenderDateTimeRange(
           start: now.subtract(const Duration(days: 7)),
           end: now.add(const Duration(days: 7)),
         ),

@@ -1,5 +1,23 @@
 ## 0.30.0
 
+See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
+
+### Breaking Changes
+
+- `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
+- `InternalDateTimeRange` no longer extends `DateTimeRange`, and `forLocation` returns a `KalenderDateTimeRange`.
+- `InternalDateTimeRange.overlaps` takes an `InternalDateTimeRange`, and `InternalDateTimeRange.fromDateTimeRange` takes a `KalenderDateTimeRange`.
+- `PageIndexCalculator` and its subclasses take `start` and `end` rather than `dateTimeRange`.
+- `DragTargetUtils.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` take an `InternalDateTimeRange`.
+- `EventTileUtils.eventRangeOnDate` returns an `InternalDateTimeRange`.
+- `ResizeHandleDetails.dateTimeRange` is an `InternalDateTimeRange`.
+
+### Behavior Changes
+
+- The schedule view reports `onPageChanged` in the calendar's location, matching the multi-day and month views.
+- The schedule view's `monthItemBuilder` and `emptyItemBuilder` receive ranges in the calendar's location.
+- The timeline's drag tooltip tests visibility in the calendar's own time space rather than against converted values.
+
 ### Features
 
 - `DateTimeExtensions.timeLocalized` formats the time of day for a locale, with `use24HourFormat` to force `HH:mm`.

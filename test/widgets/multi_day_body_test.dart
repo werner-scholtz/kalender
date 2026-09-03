@@ -42,7 +42,7 @@ void main() {
     group('Gesture Tests', () {
       final start = DateTime(2025, 3, 24);
       final end = DateTime(2025, 3, 31);
-      final dateTimeRange = DateTimeRange(start: start, end: end);
+      final dateTimeRange = KalenderDateTimeRange(start: start, end: end);
 
       /// A list of different view configurations to test.
       final viewConfigurations = [
@@ -75,7 +75,7 @@ void main() {
       setUp(() {
         eventId = eventsController.addEvent(
           CalendarEvent(
-            dateTimeRange: DateTimeRange(
+            dateTimeRange: KalenderDateTimeRange(
               start: start.copyWith(hour: 6),
               end: start.copyWith(hour: 8),
             ),
@@ -191,7 +191,7 @@ void main() {
         final weekConfiguration = viewConfigurations[1];
         final id = eventsController.addEvent(
           CalendarEvent(
-            dateTimeRange: DateTimeRange(
+            dateTimeRange: KalenderDateTimeRange(
               start: start.copyWith(day: start.day + 2, hour: 10),
               end: start.copyWith(day: start.day + 2, hour: 12),
             ),
@@ -236,7 +236,7 @@ void main() {
     group('Imprecise Gesture Tests', () {
       final start = DateTime(2025, 3, 24);
       final end = DateTime(2025, 3, 31);
-      final dateTimeRange = DateTimeRange(start: start, end: end);
+      final dateTimeRange = KalenderDateTimeRange(start: start, end: end);
 
       final impreciseInteraction = CalendarInteraction(
         inputMode: InputMode.imprecise,
@@ -257,7 +257,7 @@ void main() {
       setUp(() {
         eventId = eventsController.addEvent(
           CalendarEvent(
-            dateTimeRange: DateTimeRange(
+            dateTimeRange: KalenderDateTimeRange(
               start: start.copyWith(hour: 6),
               end: start.copyWith(hour: 8),
             ),

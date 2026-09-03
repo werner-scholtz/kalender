@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
@@ -10,9 +9,9 @@ void main() {
   // Adding them as snap points produces 6 entries (start + end per event):
   //   10:00, 11:00, 11:00, 12:00, 12:00, 13:00
   final testEvents = [
-    CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2024, 1, 1, 10), end: DateTime(2024, 1, 1, 11))),
-    CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2024, 1, 1, 11), end: DateTime(2024, 1, 1, 12))),
-    CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2024, 1, 1, 12), end: DateTime(2024, 1, 1, 13))),
+    CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2024, 1, 1, 10), end: DateTime(2024, 1, 1, 11))),
+    CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2024, 1, 1, 11), end: DateTime(2024, 1, 1, 12))),
+    CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2024, 1, 1, 12), end: DateTime(2024, 1, 1, 13))),
   ];
 
   late MockSnapPoint points;

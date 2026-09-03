@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/extensions/internal_date_time_range.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
@@ -14,8 +15,8 @@ class ResizeHandleWidget extends StatefulWidget {
   /// The event associated with the resize handles.
   final CalendarEvent event;
 
-  /// The DateTimeRange that the current view is displaying.
-  final DateTimeRange dateTimeRange;
+  /// The InternalDateTimeRange that the current view is displaying.
+  final InternalDateTimeRange dateTimeRange;
 
   /// The axis along which the resize handles are positioned.
   final Axis axis;

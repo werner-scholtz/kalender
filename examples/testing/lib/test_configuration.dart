@@ -27,7 +27,7 @@ class TestConfiguration {
   static final initialDateTime = DateTime(2024, 6, 1);
   static final start = DateTime(2024, 1, 1);
   static final end = DateTime(2024, 12, 31);
-  static DateTimeRange get testRange => DateTimeRange(start: start, end: end);
+  static KalenderDateTimeRange get testRange => KalenderDateTimeRange(start: start, end: end);
 
   /// The events controller for the test.
   final eventsController = DefaultEventsController();
@@ -43,7 +43,7 @@ class TestConfiguration {
       for (var date in InternalDateTimeRange.fromDateTimeRange(testRange).dates()) ...[
         for (var timeOfDayRange in timeOfDayRanges)
           Event(
-            dateTimeRange: DateTimeRange(
+            dateTimeRange: KalenderDateTimeRange(
               start: timeOfDayRange.start.toInternalDateTime(date),
               end: timeOfDayRange.end.toInternalDateTime(date),
             ),
@@ -80,7 +80,7 @@ class Event extends CalendarEvent {
   final Color? color;
 
   @override
-  Event copyWithData({required DateTimeRange dateTimeRange}) {
+  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
@@ -6,7 +5,7 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 void main() {
   CalendarEvent makeEvent({String id = 'e1'}) => CalendarEvent(
         id: id,
-        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
+        dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
       );
 
   // ─── ResizeDirection ─────────────────────────────────────────────────────────
@@ -42,7 +41,7 @@ void main() {
 
     test('updateDateTimeRange returns a new Resize with the updated event and same direction', () {
       final original = Resize(event: makeEvent(id: 'keep-me'), direction: ResizeDirection.bottom);
-      final newRange = DateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 12));
+      final newRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 12));
 
       final updated = original.updateDateTimeRange(newRange);
 

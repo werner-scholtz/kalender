@@ -135,7 +135,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
                             displayEnd.minute,
                           );
                           if (newStart.isAfter(newEnd)) return;
-                          _updateEvent(DateTimeRange(start: newStart, end: newEnd));
+                          _updateEvent(KalenderDateTimeRange(start: newStart, end: newEnd));
                         },
                         onTimeTap: () async {
                           final time = await _showTimePicker(displayStart);
@@ -143,7 +143,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
                           final newStart =
                               _toUtc(displayStart.year, displayStart.month, displayStart.day, time.hour, time.minute);
                           if (newStart.isAfter(event.end)) return;
-                          _updateEvent(DateTimeRange(start: newStart, end: event.end));
+                          _updateEvent(KalenderDateTimeRange(start: newStart, end: event.end));
                         },
                       ),
                       const SizedBox(height: 4),
@@ -164,7 +164,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
                           if (date == null) return;
                           final newEnd = _toUtc(date.year, date.month, date.day, displayEnd.hour, displayEnd.minute);
                           if (newEnd.isBefore(event.start)) return;
-                          _updateEvent(DateTimeRange(start: event.start, end: newEnd));
+                          _updateEvent(KalenderDateTimeRange(start: event.start, end: newEnd));
                         },
                         onTimeTap: () async {
                           final time = await _showTimePicker(displayEnd);
@@ -172,7 +172,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
                           final newEnd =
                               _toUtc(displayEnd.year, displayEnd.month, displayEnd.day, time.hour, time.minute);
                           if (newEnd.isBefore(event.start)) return;
-                          _updateEvent(DateTimeRange(start: event.start, end: newEnd));
+                          _updateEvent(KalenderDateTimeRange(start: event.start, end: newEnd));
                         },
                       ),
                       const Spacer(),
@@ -225,7 +225,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
     return InternalDateTime(year, month, day, hour, minute).forLocation(location: _location).toUtc();
   }
 
-  void _updateEvent(DateTimeRange newRange) {
+  void _updateEvent(KalenderDateTimeRange newRange) {
     final updatedEvent = event.copyWith(dateTimeRange: newRange);
     widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
     setState(() => event = updatedEvent);

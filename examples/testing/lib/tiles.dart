@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:testing/test_configuration.dart';
 
 abstract class BaseEventTile extends StatelessWidget {
   final Event event;
-  final DateTimeRange tileRange;
+  final KalenderDateTimeRange tileRange;
   const BaseEventTile({
     super.key,
     required this.event,
@@ -29,7 +30,7 @@ abstract class BaseEventTile extends StatelessWidget {
 
 class EventTile extends BaseEventTile {
   const EventTile({super.key, required super.event, required super.tileRange});
-  static EventTile builder(Event event, DateTimeRange tileRange) {
+  static EventTile builder(Event event, KalenderDateTimeRange tileRange) {
     return EventTile(event: event, tileRange: tileRange);
   }
 
@@ -53,7 +54,7 @@ class MultiDayEventTile extends BaseEventTile {
     required super.event,
     required super.tileRange,
   });
-  static MultiDayEventTile builder(Event event, DateTimeRange tileRange) {
+  static MultiDayEventTile builder(Event event, KalenderDateTimeRange tileRange) {
     return MultiDayEventTile(event: event, tileRange: tileRange);
   }
 
@@ -86,7 +87,7 @@ class OverlayEventTile extends BaseEventTile {
     required super.tileRange,
   });
 
-  static OverlayEventTile builder(Event event, DateTimeRange tileRange) {
+  static OverlayEventTile builder(Event event, KalenderDateTimeRange tileRange) {
     return OverlayEventTile(event: event, tileRange: tileRange);
   }
 

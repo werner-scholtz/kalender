@@ -20,21 +20,21 @@ void main() {
     events = [
       // Event 0: 23:00 day before → 01:00 start day (2h, crosses midnight)
       CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: start.copyWith(hour: start.hour - 1),
           end: start.copyWith(hour: start.hour + 1),
         ),
       ),
       // Event 1: 00:00 → 02:00 on start day (2h)
       CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: start,
           end: start.copyWith(hour: start.hour + 2),
         ),
       ),
       // Event 2: 00:00 → 03:00 on next day (3h)
       CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: start.copyWith(day: start.day + 1),
           end: start.copyWith(day: start.day + 1, hour: start.hour + 3),
         ),
@@ -61,7 +61,7 @@ void main() {
     TileComponents? tileComponents,
     double width = 700,
   }) async {
-    final displayRange = range ?? InternalDateTimeRange.fromDateTimeRange(internalStart.startOfDay.weekRange());
+    final displayRange = range ?? internalStart.startOfDay.weekRange();
     final tiles = tileComponents ??
         TileComponents(
           tileBuilder: (context, event, tileRange) => Container(
@@ -153,7 +153,7 @@ void main() {
     testWidgets('renders a single event', (tester) async {
       eventsController.clearEvents();
       final singleEvent = CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: start,
           end: start.copyWith(hour: 4),
         ),
@@ -169,7 +169,7 @@ void main() {
     testWidgets('renders short event (15 min)', (tester) async {
       eventsController.clearEvents();
       final shortEvent = CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: start.copyWith(hour: 10),
           end: start.copyWith(hour: 10, minute: 15),
         ),
@@ -200,7 +200,7 @@ void main() {
 
       // Add a 4th event on the same day.
       final newEvent = CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: start.copyWith(hour: 5),
           end: start.copyWith(hour: 7),
         ),

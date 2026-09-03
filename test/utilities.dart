@@ -7,7 +7,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// A full-year display range for 2025, shared across multiple widget/interaction tests.
-final year2025DisplayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
+final year2025DisplayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
 /// Timezone names used in tests that exercise timezone-aware controllers.
 const locationsToTest = [
