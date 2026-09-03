@@ -26,11 +26,11 @@ class Event extends CalendarEvent {
   final Color? color;
 
   @override
-  Event copyWithData({required DateTimeRange dateTimeRange}) {
+  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
   }
 
-  Event copyWith({DateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+  Event copyWith({KalenderDateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
     return carryOver(
       Event(
         dateTimeRange: dateTimeRange ?? this.dateTimeRange,
@@ -73,6 +73,6 @@ final viewConfiguration = MultiDayViewConfiguration.week();
 
 final location = tz.getLocation('Etc/UTC');
 final range =
-    DateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
+    KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
 final event = CalendarEvent(dateTimeRange: range);
 const someId = 'an-event-id';

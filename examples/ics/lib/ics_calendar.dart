@@ -1,5 +1,6 @@
 import 'package:enough_icalendar/enough_icalendar.dart';
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:rrule/rrule.dart' as rr;
 
 import 'ics_event.dart';
@@ -66,7 +67,7 @@ bool _isDateValued(VEvent event, String name) {
 ///
 /// Recurring events are expanded lazily with the rrule package: only instances
 /// inside the window are produced, so a "repeat forever" rule stays cheap.
-List<IcsEvent> expandEvents(List<IcsSource> sources, DateTimeRange window) {
+List<IcsEvent> expandEvents(List<IcsSource> sources, KalenderDateTimeRange window) {
   final events = <IcsEvent>[];
   for (final source in sources) {
     final color = _colorFor(source.uid);
@@ -132,7 +133,7 @@ DateTimeProperty _dateProperty(String name, DateTime date) {
 
 IcsEvent _event(IcsSource source, DateTime start, DateTime end, Color color) {
   return IcsEvent(
-    dateTimeRange: DateTimeRange(start: start, end: end),
+    dateTimeRange: KalenderDateTimeRange(start: start, end: end),
     uid: source.uid,
     title: source.summary,
     description: source.description,

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
@@ -23,7 +22,7 @@ import 'package:meta/meta.dart';
 ///   final String title;
 ///
 ///   @override
-///   Event copyWithData({required DateTimeRange dateTimeRange}) {
+///   Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
 ///     return Event(dateTimeRange: dateTimeRange, title: title);
 ///   }
 ///
@@ -80,7 +79,7 @@ class CalendarEvent {
   /// [interaction] defaults to fully modifiable.
   CalendarEvent({
     String? id,
-    required DateTimeRange dateTimeRange,
+    required KalenderDateTimeRange dateTimeRange,
     EventInteraction? interaction,
     MultiDayRule? multiDayRule,
     bool isAllDay = false,
@@ -104,8 +103,8 @@ class CalendarEvent {
     return String.fromCharCodes(charCodes);
   }
 
-  /// The date range as a [DateTimeRange].
-  DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
+  /// The date range as a [KalenderDateTimeRange].
+  KalenderDateTimeRange get dateTimeRange => KalenderDateTimeRange(start: start, end: end);
 
   /// The start as an [InternalDateTime], adjusted for [location].
   InternalDateTime internalStart({Location? location}) => InternalDateTime.fromExternal(start, location: location);
@@ -144,7 +143,7 @@ class CalendarEvent {
   /// [CalendarEvent] holds, so a copy keeps its identity, its interaction
   /// config and its rule whatever the subclass returns.
   @nonVirtual
-  CalendarEvent withDateTimeRange(DateTimeRange dateTimeRange) {
+  CalendarEvent withDateTimeRange(KalenderDateTimeRange dateTimeRange) {
     final copy = copyWithData(dateTimeRange: dateTimeRange);
 
     assert(
@@ -166,7 +165,7 @@ class CalendarEvent {
   /// field added to [CalendarEvent] later from silently going missing.
   @protected
   @mustBeOverridden
-  CalendarEvent copyWithData({required DateTimeRange dateTimeRange}) {
+  CalendarEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return CalendarEvent(dateTimeRange: dateTimeRange);
   }
 

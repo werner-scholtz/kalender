@@ -27,7 +27,7 @@ All configurations accept:
 <!-- snippet: expression -->
 ```dart
 MultiDayViewConfiguration.week(
-  displayRange: DateTimeRange(
+  displayRange: KalenderDateTimeRange(
     start: DateTime(2024, 1, 1),
     end: DateTime(2025, 12, 31),
   ),

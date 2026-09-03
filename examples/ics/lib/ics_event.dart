@@ -23,7 +23,7 @@ class IcsEvent extends CalendarEvent {
   final Color color;
 
   @override
-  IcsEvent copyWithData({required DateTimeRange dateTimeRange}) {
+  IcsEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return IcsEvent(
       dateTimeRange: dateTimeRange,
       uid: uid,

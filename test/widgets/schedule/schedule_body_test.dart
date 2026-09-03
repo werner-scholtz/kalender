@@ -26,7 +26,7 @@ void main() {
 
   // A one-hour event at [hour] on [day].
   CalendarEvent eventAt(DateTime day, int hour) => CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: DateTime(day.year, day.month, day.day, hour),
           end: DateTime(day.year, day.month, day.day, hour + 1),
         ),
@@ -46,7 +46,7 @@ void main() {
       location: location,
       components: components,
       viewConfiguration: ScheduleViewConfiguration.continuous(
-        displayRange: DateTimeRange(start: DateTime(2025), end: DateTime(2026)),
+        displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026)),
         initialDateTime: initialDate,
         nowCallback: nowCallback,
       ),
@@ -247,6 +247,6 @@ void main() {
   });
 }
 
-Widget _customMonthItem(BuildContext context, DateTimeRange monthRange) => const Text('custom month');
+Widget _customMonthItem(BuildContext context, KalenderDateTimeRange monthRange) => const Text('custom month');
 
-Widget _customEmptyItem(BuildContext context, DateTimeRange tileRange) => const Text('custom empty');
+Widget _customEmptyItem(BuildContext context, KalenderDateTimeRange tileRange) => const Text('custom empty');

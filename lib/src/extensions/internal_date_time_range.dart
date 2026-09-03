@@ -1,28 +1,42 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// A [DateTimeRange] that uses [InternalDateTime] for timezone-safe display and layout.
+/// A range that uses [InternalDateTime] for timezone-safe display and layout.
 ///
 /// Both [start] and [end] are stored as [InternalDateTime] values, so all
 /// helpers on this range (dates, overlaps, week numbers, etc.) are DST-safe.
-/// Use [forLocation] to convert back to wall-clock [DateTimeRange].
-class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
+/// Use [forLocation] to convert back to a wall-clock [KalenderDateTimeRange].
+class InternalDateTimeRange {
   /// Creates a [InternalDateTimeRange] instance.
   InternalDateTimeRange({
     required DateTime start,
     required DateTime end,
-  }) : super(start: InternalDateTime.fromDateTime(start), end: InternalDateTime.fromDateTime(end));
+  })  : start = InternalDateTime.fromDateTime(start),
+        end = InternalDateTime.fromDateTime(end) {
+    assert(!this.start.isAfter(this.end));
+  }
 
-  /// Creates a [InternalDateTimeRange] from an existing [DateTimeRange].
-  InternalDateTimeRange.fromDateTimeRange(DateTimeRange dateTimeRange)
-      : super(
-          start: InternalDateTime.fromDateTime(dateTimeRange.start),
-          end: InternalDateTime.fromDateTime(dateTimeRange.end),
-        );
+  /// Creates a [InternalDateTimeRange] from an existing [KalenderDateTimeRange].
+  InternalDateTimeRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange)
+      : start = InternalDateTime.fromDateTime(dateTimeRange.start),
+        end = InternalDateTime.fromDateTime(dateTimeRange.end) {
+    assert(!start.isAfter(end));
+  }
 
-  /// Converts to a wall-clock [DateTimeRange] in the given [location] (or local if `null`).
-  DateTimeRange forLocation({Location? location}) {
-    return DateTimeRange(start: start.forLocation(location: location), end: end.forLocation(location: location));
+  /// The start of the range.
+  final InternalDateTime start;
+
+  /// The end of the range.
+  final InternalDateTime end;
+
+  /// The [Duration] between [start] and [end].
+  Duration get duration => end.difference(start);
+
+  /// Converts to a wall-clock [KalenderDateTimeRange] in the given [location] (or local if `null`).
+  KalenderDateTimeRange forLocation({Location? location}) {
+    return KalenderDateTimeRange(
+      start: start.forLocation(location: location),
+      end: end.forLocation(location: location),
+    );
   }
 
   /// Returns the list of calendar dates covered by this range (at midnight each).
@@ -89,7 +103,7 @@ class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
   ///
   /// Ranges that only touch at a boundary (e.g. one ends where the other starts)
   /// return `false` by default. Set [touching] to `true` to treat those as overlapping.
-  bool overlaps(DateTimeRange other, {bool touching = false}) {
+  bool overlaps(InternalDateTimeRange other, {bool touching = false}) {
     // Check if the ranges overlap.
     final overlap = start.isBefore(other.end) && end.isAfter(other.start);
     if (!touching) return overlap;
@@ -154,4 +168,16 @@ class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
       return (first, second);
     }
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is InternalDateTimeRange && other.start == start && other.end == end;
+  }
+
+  @override
+  int get hashCode => Object.hash(start, end);
+
+  @override
+  String toString() => '$start - $end';
 }

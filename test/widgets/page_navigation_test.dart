@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -17,7 +16,7 @@ void main() {
     late CalendarController calendarController;
 
     // A wide range so the target date is nowhere near the first/last page.
-    final wideRange = DateTimeRange(start: DateTime(2024), end: DateTime(2027));
+    final wideRange = KalenderDateTimeRange(start: DateTime(2024), end: DateTime(2027));
     // A Wednesday, comfortably inside the range.
     final target = DateTime(2025, 6, 18);
 

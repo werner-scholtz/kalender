@@ -21,7 +21,7 @@ class EventTile extends StatelessWidget {
 
   final CalendarEvent event;
 
-  static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) => EventTile(event: event);
+  static EventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) => EventTile(event: event);
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +109,7 @@ class ScheduleEventTile extends StatelessWidget {
 
   final CalendarEvent event;
 
-  static ScheduleEventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) => ScheduleEventTile(event: event);
+  static ScheduleEventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) => ScheduleEventTile(event: event);
 
   @override
   Widget build(BuildContext context) {

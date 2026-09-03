@@ -90,7 +90,7 @@ ScheduleTileComponents scheduleTileComponents(BuildContext context) {
   );
 }
 
-String _formatTileRange(BuildContext context, DateTimeRange tileRange) {
+String _formatTileRange(BuildContext context, KalenderDateTimeRange tileRange) {
   final localizations = MaterialLocalizations.of(context);
   final start = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(tileRange.start));
   final end = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(tileRange.end));

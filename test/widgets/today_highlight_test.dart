@@ -47,7 +47,7 @@ void main() {
               eventsController: eventsController,
               calendarController: calendarController,
               viewConfiguration: MonthViewConfiguration.singleMonth(
-                displayRange: DateTimeRange(
+                displayRange: KalenderDateTimeRange(
                   start: DateTime(month.year, month.month - 1),
                   end: DateTime(month.year, month.month + 2),
                 ),
@@ -103,7 +103,7 @@ void main() {
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: DateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
+              displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
               initialDateTime: DateTime(2025, 12),
             ),
             components: CalendarComponents(
@@ -142,7 +142,7 @@ void main() {
             calendarController: calendarController,
             location: newYork,
             viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: DateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
+              displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
               initialDateTime: DateTime(2025, 12),
             ),
             components: CalendarComponents(
@@ -171,7 +171,7 @@ void main() {
     // ── Multi-day (week) header ─────────────────────────────────────────────
     group('MultiDayView header', () {
       final monday = DateTime(2026, 4, 13);
-      final weekRange = DateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
+      final weekRange = KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
 
       Future<void> pumpWeek(
         WidgetTester tester, {

@@ -236,7 +236,7 @@ typedef OnEventCreated = void Function(CalendarEvent event);
 /// The callback for when a calendar page is changed.
 ///
 /// [dateTimeRange] is the range of dates that can be displayed in the new page.
-typedef OnPageChanged = void Function(DateTimeRange dateTimeRange);
+typedef OnPageChanged = void Function(KalenderDateTimeRange dateTimeRange);
 
 /// The callback for when the vertical scroll position of a multi-day view changes.
 ///
@@ -321,7 +321,7 @@ class DayDetail extends TapDetail {
 /// The detail for when a multi-day range is tapped.
 class MultiDayDetail extends TapDetail {
   /// The date range that was tapped.
-  final DateTimeRange dateTimeRange;
+  final KalenderDateTimeRange dateTimeRange;
 
   /// Creates a new [MultiDayDetail] with the given date range.
   const MultiDayDetail({required this.dateTimeRange, required super.renderBox, required super.localOffset});

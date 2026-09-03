@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -42,8 +41,8 @@ void main() {
     // ── fromDateTimeRange ────────────────────────────────────────────────
 
     group('fromDateTimeRange', () {
-      test('creates from a Flutter DateTimeRange', () {
-        final flutterRange = DateTimeRange(
+      test('creates from a Flutter KalenderDateTimeRange', () {
+        final flutterRange = KalenderDateTimeRange(
           start: DateTime(2024, 3, 1),
           end: DateTime(2024, 3, 31),
         );
@@ -60,7 +59,7 @@ void main() {
     // ── forLocation ──────────────────────────────────────────────────────
 
     group('forLocation', () {
-      test('returns a local DateTimeRange when location is null', () {
+      test('returns a local KalenderDateTimeRange when location is null', () {
         final range = InternalDateTimeRange(
           start: InternalDateTime(2024, 6, 15, 10, 0),
           end: InternalDateTime(2024, 6, 15, 18, 0),
@@ -73,7 +72,7 @@ void main() {
         expect(result.end.hour, 18);
       });
 
-      test('returns a TZDateTime DateTimeRange when location is provided', () {
+      test('returns a TZDateTime KalenderDateTimeRange when location is provided', () {
         final location = getLocation('America/New_York');
         final range = InternalDateTimeRange(
           start: InternalDateTime(2024, 6, 15, 10, 0),

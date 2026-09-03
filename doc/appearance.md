@@ -136,7 +136,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
     final CalendarEvent event;
 
     @override
-    final InternalDateTimeRange tileRange;
+    final KalenderDateTimeRange tileRange;
 
     const CustomDayEventTile({
       super.key,
@@ -174,10 +174,10 @@ For tiles that need to know the exact tapped time or find nearby events, use the
     }
 
     // Static factory. Pass directly to TileComponents.tileBuilder.
-    static Widget builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+    static Widget builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) =>
         CustomDayEventTile(
           event: event,
-          tileRange: InternalDateTimeRange.fromDateTimeRange(tileRange),
+          tileRange: tileRange,
         );
   }
 
@@ -195,7 +195,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
     final CalendarEvent event;
 
     @override
-    final InternalDateTimeRange tileRange;
+    final KalenderDateTimeRange tileRange;
 
     const CustomMultiDayEventTile({
       super.key,
@@ -231,10 +231,10 @@ For tiles that need to know the exact tapped time or find nearby events, use the
       );
     }
 
-    static Widget builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+    static Widget builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) =>
         CustomMultiDayEventTile(
           event: event,
-          tileRange: InternalDateTimeRange.fromDateTimeRange(tileRange),
+          tileRange: tileRange,
         );
   }
 

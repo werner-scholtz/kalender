@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -43,7 +42,7 @@ void main() {
     await pump(
       tester,
       MultiDayViewConfiguration.week(
-        displayRange: DateTimeRange(start: DateTime(2025, 6, 1), end: DateTime(2025, 6, 20)),
+        displayRange: KalenderDateTimeRange(start: DateTime(2025, 6, 1), end: DateTime(2025, 6, 20)),
         initialDateTime: DateTime(2025, 6, 1),
       ),
     );
@@ -59,7 +58,7 @@ void main() {
     await pump(
       tester,
       MonthViewConfiguration.singleMonth(
-        displayRange: DateTimeRange(start: DateTime(2025, 5, 10), end: DateTime(2025, 6, 20)),
+        displayRange: KalenderDateTimeRange(start: DateTime(2025, 5, 10), end: DateTime(2025, 6, 20)),
         initialDateTime: DateTime(2025, 5, 15),
       ),
     );
@@ -79,7 +78,7 @@ void main() {
       tester,
       MultiDayViewConfiguration.freeScroll(
         numberOfDays: 3,
-        displayRange: DateTimeRange(start: DateTime(2025, 6), end: DateTime(2025, 6, 8)),
+        displayRange: KalenderDateTimeRange(start: DateTime(2025, 6), end: DateTime(2025, 6, 8)),
         initialDateTime: DateTime(2025, 6),
       ),
     );
@@ -96,7 +95,7 @@ void main() {
     await pump(
       tester,
       ScheduleViewConfiguration.paginated(
-        displayRange: DateTimeRange(start: DateTime(2025, 6, 1), end: DateTime(2025, 6, 30)),
+        displayRange: KalenderDateTimeRange(start: DateTime(2025, 6, 1), end: DateTime(2025, 6, 30)),
         initialDateTime: DateTime(2025, 6, 1),
       ),
     );

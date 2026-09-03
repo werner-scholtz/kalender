@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
@@ -19,7 +20,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 /// **Note:** Internal calculations are performed in UTC. Use [InternalDateTime.forLocation]
 /// to convert results to the appropriate timezone.
 abstract class PageIndexCalculator {
-  /// The overall date range that this calculator operates within.
+  /// The start of the range this calculator operates within.
   ///
   /// This is provided by the user and defines the bounds for navigation and display.
   /// Note these bounds are not hard limits; the calendar may adjust them in certain circumstances.
@@ -27,14 +28,27 @@ abstract class PageIndexCalculator {
   /// - The month view may adjust to show complete months.
   ///
   /// see [internalRange] for the adjusted range used in calculations.
-  final DateTimeRange dateTimeRange;
+  final DateTime start;
 
-  /// Creates a [PageIndexCalculator] with the given [dateTimeRange].
-  const PageIndexCalculator({required this.dateTimeRange});
+  /// The end of the range this calculator operates within.
+  final DateTime end;
+
+  /// Creates a [PageIndexCalculator] covering [start] to [end].
+  const PageIndexCalculator({required this.start, required this.end});
+
+  /// [start] and [end] resolved into [location], before a view adjusts them to
+  /// its own page boundaries.
+  @protected
+  InternalDateTimeRange rawRange(Location? location) {
+    return InternalDateTimeRange(
+      start: InternalDateTime.fromExternal(start, location: location),
+      end: InternalDateTime.fromExternal(end, location: location),
+    );
+  }
 
   /// Creates a [PageIndexCalculator] for a single day [MultiDayViewConfiguration.singleDay].
-  factory PageIndexCalculator.singleDay(DateTimeRange dateTimeRange) {
-    return DayIndexCalculator(dateTimeRange: dateTimeRange);
+  factory PageIndexCalculator.singleDay(KalenderDateTimeRange dateTimeRange) {
+    return DayIndexCalculator(start: dateTimeRange.start, end: dateTimeRange.end);
   }
 
   /// Creates a [PageIndexCalculator] for a week [MultiDayViewConfiguration.week].
@@ -42,12 +56,13 @@ abstract class PageIndexCalculator {
   /// [daysToDisplay] shortens the page without changing the weekly pagination,
   /// so 6 shows Monday to Saturday on a week that still turns every 7 days.
   factory PageIndexCalculator.week(
-    DateTimeRange dateTimeRange,
+    KalenderDateTimeRange dateTimeRange,
     int firstDayOfWeek, {
     int daysToDisplay = DateTime.daysPerWeek,
   }) {
     return WeekIndexCalculator(
-      dateTimeRange: dateTimeRange,
+      start: dateTimeRange.start,
+      end: dateTimeRange.end,
       firstDayOfWeek: firstDayOfWeek,
       daysToDisplay: daysToDisplay,
     );
@@ -56,35 +71,41 @@ abstract class PageIndexCalculator {
   /// Creates a [PageIndexCalculator] for a work week [MultiDayViewConfiguration.workWeek].
   ///
   /// [daysToDisplay] shortens the page without changing the weekly pagination.
-  factory PageIndexCalculator.workWeek(DateTimeRange dateTimeRange, {int daysToDisplay = 5}) {
+  factory PageIndexCalculator.workWeek(KalenderDateTimeRange dateTimeRange, {int daysToDisplay = 5}) {
     return WeekIndexCalculator(
-      dateTimeRange: dateTimeRange,
+      start: dateTimeRange.start,
+      end: dateTimeRange.end,
       firstDayOfWeek: DateTime.monday,
       daysToDisplay: daysToDisplay,
     );
   }
 
+  /// Creates a [PageIndexCalculator] for a month [MonthViewConfiguration.singleMonth].
+  factory PageIndexCalculator.month(KalenderDateTimeRange dateTimeRange, int firstDayOfWeek) {
+    return MonthIndexCalculator.fromRange(dateTimeRange, firstDayOfWeek);
+  }
+
   /// Creates a [PageIndexCalculator] for a custom [MultiDayViewConfiguration.custom].
-  factory PageIndexCalculator.custom(DateTimeRange dateTimeRange, int numberOfDays) {
-    return CustomIndexCalculator(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
+  factory PageIndexCalculator.custom(KalenderDateTimeRange dateTimeRange, int numberOfDays) {
+    return CustomIndexCalculator(start: dateTimeRange.start, end: dateTimeRange.end, numberOfDays: numberOfDays);
   }
 
   /// Creates a [PageIndexCalculator] for a free scrolling [MultiDayViewConfiguration.freeScroll].
   ///
   /// The band scrolls continuously rather than paging, so an index is a day offset from the start of
   /// the range.
-  factory PageIndexCalculator.freeScroll(DateTimeRange dateTimeRange) {
-    return DayIndexCalculator(dateTimeRange: dateTimeRange);
+  factory PageIndexCalculator.freeScroll(KalenderDateTimeRange dateTimeRange) {
+    return DayIndexCalculator(start: dateTimeRange.start, end: dateTimeRange.end);
   }
 
   /// Creates a [PageIndexCalculator] for a schedule [ContinuousScheduleIndexCalculator].
-  factory PageIndexCalculator.scheduleContinuous(DateTimeRange dateTimeRange) {
-    return ContinuousScheduleIndexCalculator(dateTimeRange: dateTimeRange);
+  factory PageIndexCalculator.scheduleContinuous(KalenderDateTimeRange dateTimeRange) {
+    return ContinuousScheduleIndexCalculator(start: dateTimeRange.start, end: dateTimeRange.end);
   }
 
   /// Creates a [PageIndexCalculator] for a schedule [PaginatedScheduleIndexCalculator].
-  factory PageIndexCalculator.schedulePaginated(DateTimeRange dateTimeRange) {
-    return PaginatedScheduleIndexCalculator(dateTimeRange: dateTimeRange);
+  factory PageIndexCalculator.schedulePaginated(KalenderDateTimeRange dateTimeRange) {
+    return PaginatedScheduleIndexCalculator(start: dateTimeRange.start, end: dateTimeRange.end);
   }
 
   /// Calculates the VisibleDateRange from the [index].
@@ -105,12 +126,12 @@ abstract class PageIndexCalculator {
   /// therefore `numberOfPages - 1`.
   int numberOfPages(Location? location);
 
-  /// The adjusted [DateTimeRange] for a specific location.
+  /// The adjusted range for a specific location.
   ///
   /// This range is intended to be used for calculations only.
   InternalDateTimeRange internalRange(Location? location);
 
-  /// Returns the [DateTimeRange] that is displayed for the given [date].
+  /// Returns the range that is displayed for the given [date].
   InternalDateTimeRange dateTimeRangeFromDate(InternalDateTime date, Location? location) {
     final index = indexFromDate(date, location);
     final range = dateTimeRangeFromIndex(index, location);
@@ -120,8 +141,8 @@ abstract class PageIndexCalculator {
 
 /// Calculates page indices and date ranges for a single day view.
 class DayIndexCalculator extends PageIndexCalculator {
-  /// Creates a [DayIndexCalculator] with the given [dateTimeRange].
-  DayIndexCalculator({required super.dateTimeRange});
+  /// Creates a [DayIndexCalculator] covering [start] to [end].
+  DayIndexCalculator({required super.start, required super.end});
 
   @override
   InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
@@ -152,10 +173,7 @@ class DayIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final internalRange = InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(dateTimeRange.start, location: location),
-      end: InternalDateTime.fromExternal(dateTimeRange.end, location: location),
-    );
+    final internalRange = rawRange(location);
     final start = internalRange.start.startOfDay;
     final end = internalRange.end.isStartOfDay ? internalRange.end : internalRange.end.endOfDay;
     return InternalDateTimeRange(start: start, end: end);
@@ -163,10 +181,10 @@ class DayIndexCalculator extends PageIndexCalculator {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is DayIndexCalculator && other.dateTimeRange == dateTimeRange;
+      identical(this, other) || other is DayIndexCalculator && other.start == start && other.end == end;
 
   @override
-  int get hashCode => Object.hash(DayIndexCalculator, dateTimeRange);
+  int get hashCode => Object.hash(DayIndexCalculator, start, end);
 }
 
 /// Calculates page indices and date ranges for a week view.
@@ -181,9 +199,13 @@ class WeekIndexCalculator extends PageIndexCalculator {
   /// consecutive pages overlap.
   final int daysToDisplay;
 
-  /// Creates a [WeekIndexCalculator] with the given [dateTimeRange], [firstDayOfWeek], and [daysToDisplay].
-  WeekIndexCalculator({required super.dateTimeRange, required this.firstDayOfWeek, required this.daysToDisplay})
-      : assert(
+  /// Creates a [WeekIndexCalculator] covering [start] to [end], [firstDayOfWeek], and [daysToDisplay].
+  WeekIndexCalculator({
+    required super.start,
+    required super.end,
+    required this.firstDayOfWeek,
+    required this.daysToDisplay,
+  }) : assert(
           daysToDisplay >= 1 && daysToDisplay <= DateTime.daysPerWeek,
           'daysToDisplay must be between 1 and 7, because a week view pages by whole weeks.\n'
           'Use CustomIndexCalculator for a page that is longer than a week.',
@@ -191,12 +213,13 @@ class WeekIndexCalculator extends PageIndexCalculator {
 
   /// Creates a [WeekIndexCalculator] for a standard week view.
   WeekIndexCalculator.week({
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.firstDayOfWeek,
   }) : daysToDisplay = DateTime.daysPerWeek;
 
   /// Creates a [WeekIndexCalculator] for a work week view.
-  WeekIndexCalculator.workWeek({required super.dateTimeRange})
+  WeekIndexCalculator.workWeek({required super.start, required super.end})
       : firstDayOfWeek = DateTime.monday,
         daysToDisplay = 5;
 
@@ -245,10 +268,7 @@ class WeekIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final internalRange = InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(dateTimeRange.start, location: location),
-      end: InternalDateTime.fromExternal(dateTimeRange.end, location: location),
-    );
+    final internalRange = rawRange(location);
     final start = internalRange.start.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     final end = internalRange.end.endOfWeek(firstDayOfWeek: firstDayOfWeek);
     return InternalDateTimeRange(start: start, end: end);
@@ -258,12 +278,13 @@ class WeekIndexCalculator extends PageIndexCalculator {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WeekIndexCalculator &&
-          other.dateTimeRange == dateTimeRange &&
+          other.start == start &&
+          other.end == end &&
           other.firstDayOfWeek == firstDayOfWeek &&
           other.daysToDisplay == daysToDisplay;
 
   @override
-  int get hashCode => Object.hash(WeekIndexCalculator, dateTimeRange, firstDayOfWeek, daysToDisplay);
+  int get hashCode => Object.hash(WeekIndexCalculator, start, end, firstDayOfWeek, daysToDisplay);
 }
 
 /// Calculates page indices and date ranges for a custom multi-day view.
@@ -271,8 +292,8 @@ class CustomIndexCalculator extends PageIndexCalculator {
   /// The number of days in each page.
   final int numberOfDays;
 
-  /// Creates a [CustomIndexCalculator] with the given [dateTimeRange] and [numberOfDays].
-  CustomIndexCalculator({required super.dateTimeRange, required this.numberOfDays});
+  /// Creates a [CustomIndexCalculator] covering [start] to [end] and [numberOfDays].
+  CustomIndexCalculator({required super.start, required super.end, required this.numberOfDays});
 
   @override
   InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
@@ -300,10 +321,7 @@ class CustomIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final internalRange = InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(dateTimeRange.start, location: location),
-      end: InternalDateTime.fromExternal(dateTimeRange.end, location: location),
-    );
+    final internalRange = rawRange(location);
 
     final start = internalRange.start.startOfDay;
     final end =
@@ -321,10 +339,10 @@ class CustomIndexCalculator extends PageIndexCalculator {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CustomIndexCalculator && other.dateTimeRange == dateTimeRange && other.numberOfDays == numberOfDays;
+      other is CustomIndexCalculator && other.start == start && other.end == end && other.numberOfDays == numberOfDays;
 
   @override
-  int get hashCode => Object.hash(CustomIndexCalculator, dateTimeRange, numberOfDays);
+  int get hashCode => Object.hash(CustomIndexCalculator, start, end, numberOfDays);
 }
 
 /// Calculates page indices and date ranges for a month view.
@@ -335,8 +353,12 @@ class MonthIndexCalculator extends PageIndexCalculator {
   /// The value to shift the start of week by to get the first day of the week.
   final int firstDayOfWeek;
 
-  /// Creates a [MonthIndexCalculator] with the given [dateTimeRange] and [firstDayOfWeek].
-  MonthIndexCalculator({required super.dateTimeRange, required this.firstDayOfWeek});
+  /// Creates a [MonthIndexCalculator] covering [start] to [end] and [firstDayOfWeek].
+  MonthIndexCalculator({required super.start, required super.end, required this.firstDayOfWeek});
+
+  /// Creates a [MonthIndexCalculator] covering [dateTimeRange] and [firstDayOfWeek].
+  MonthIndexCalculator.fromRange(KalenderDateTimeRange dateTimeRange, this.firstDayOfWeek)
+      : super(start: dateTimeRange.start, end: dateTimeRange.end);
 
   /// The first day of the focused month shown on the page at [index].
   ///
@@ -383,10 +405,7 @@ class MonthIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final internalRange = InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(dateTimeRange.start, location: location),
-      end: InternalDateTime.fromExternal(dateTimeRange.end, location: location),
-    );
+    final internalRange = rawRange(location);
     final start = internalRange.start.startOfMonth;
     final end = internalRange.end.startOfMonth == internalRange.end
         ? internalRange.end.startOfMonth
@@ -397,16 +416,19 @@ class MonthIndexCalculator extends PageIndexCalculator {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MonthIndexCalculator && other.dateTimeRange == dateTimeRange && other.firstDayOfWeek == firstDayOfWeek;
+      other is MonthIndexCalculator &&
+          other.start == start &&
+          other.end == end &&
+          other.firstDayOfWeek == firstDayOfWeek;
 
   @override
-  int get hashCode => Object.hash(MonthIndexCalculator, dateTimeRange, firstDayOfWeek);
+  int get hashCode => Object.hash(MonthIndexCalculator, start, end, firstDayOfWeek);
 }
 
 /// Calculates page indices and date ranges for a continuous schedule view.
 class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
-  /// Creates a [ContinuousScheduleIndexCalculator] with the given [dateTimeRange].
-  ContinuousScheduleIndexCalculator({required super.dateTimeRange});
+  /// Creates a [ContinuousScheduleIndexCalculator] covering [start] to [end].
+  ContinuousScheduleIndexCalculator({required super.start, required super.end});
 
   @override
   InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) => internalRange(location);
@@ -419,10 +441,7 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final internalRange = InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(dateTimeRange.start, location: location),
-      end: InternalDateTime.fromExternal(dateTimeRange.end, location: location),
-    );
+    final internalRange = rawRange(location);
 
     final start = internalRange.start.startOfDay;
     final end =
@@ -432,15 +451,16 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is ContinuousScheduleIndexCalculator && other.dateTimeRange == dateTimeRange;
+      identical(this, other) || other is ContinuousScheduleIndexCalculator && other.start == start && other.end == end;
 
   @override
-  int get hashCode => Object.hash(ContinuousScheduleIndexCalculator, dateTimeRange);
+  int get hashCode => Object.hash(ContinuousScheduleIndexCalculator, start, end);
 }
 
 class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
   PaginatedScheduleIndexCalculator({
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
   });
 
   @override
@@ -467,10 +487,7 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final internalRange = InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(dateTimeRange.start, location: location),
-      end: InternalDateTime.fromExternal(dateTimeRange.end, location: location),
-    );
+    final internalRange = rawRange(location);
     final start = internalRange.start.startOfMonth;
     final end = internalRange.end.startOfMonth == internalRange.end
         ? internalRange.end.startOfMonth
@@ -480,8 +497,8 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is PaginatedScheduleIndexCalculator && other.dateTimeRange == dateTimeRange;
+      identical(this, other) || other is PaginatedScheduleIndexCalculator && other.start == start && other.end == end;
 
   @override
-  int get hashCode => Object.hash(PaginatedScheduleIndexCalculator, dateTimeRange);
+  int get hashCode => Object.hash(PaginatedScheduleIndexCalculator, start, end);
 }

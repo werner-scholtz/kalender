@@ -172,7 +172,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   /// Queries the events for this day from the controller.
   Iterable<CalendarEvent> _queryEvents() {
     return widget.eventsController.eventsFromDateTimeRange(
-      InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
+      widget.date.dayRange,
       multiDayRule: widget.viewConfiguration.multiDayRule,
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
@@ -288,7 +288,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     // The tile range is the same for every tile in this column, so compute it
     // once instead of allocating a new range per event.
-    final tileRange = InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange);
+    final tileRange = widget.date.dayRange;
     final eventsWidget = CustomMultiChildLayout(
       delegate: layoutStrategy.createDelegate(
         events: _events,

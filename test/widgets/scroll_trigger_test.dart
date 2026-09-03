@@ -41,7 +41,7 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: DateTimeRange(start: start, end: start.add(const Duration(days: 7))),
+          displayRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 7))),
           initialDateTime: start,
           initialTimeOfDay: TimeOfDay(hour: hour, minute: 0),
         ),
@@ -72,7 +72,9 @@ void main() {
     // to scroll down. The event sits just below the top edge, so it is visible.
     final eventStart = start.add(const Duration(hours: 1));
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1)))),
+      CalendarEvent(
+        dateTimeRange: KalenderDateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
+      ),
     );
 
     await pumpWeek(tester, 0);
@@ -94,7 +96,9 @@ void main() {
     // Start at midday so the morning is above and there is room to scroll up.
     final eventStart = start.add(const Duration(hours: 12));
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1)))),
+      CalendarEvent(
+        dateTimeRange: KalenderDateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
+      ),
     );
 
     await pumpWeek(tester, 12);

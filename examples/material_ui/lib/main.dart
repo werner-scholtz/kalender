@@ -1,5 +1,5 @@
-// The calendar's public API still uses the types from package:flutter/material.dart.
-// This import supplies DateTimeRange and TimeOfDay wherever kalender expects them.
+// The calendar's public API still uses TimeOfDay from package:flutter/material.dart.
+// This import supplies it wherever kalender expects it.
 import 'package:flutter/material.dart' as legacy;
 import 'package:kalender/kalender.dart';
 import 'package:material_ui/material_ui.dart';
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   final now = DateTime.now();
 
-  late final displayRange = legacy.DateTimeRange(
+  late final displayRange = KalenderDateTimeRange(
     start: now.subtract(const Duration(days: 365)),
     end: now.add(const Duration(days: 365)),
   );
@@ -53,13 +53,13 @@ class _HomePageState extends State<HomePage> {
     final today = DateTime(now.year, now.month, now.day);
     eventsController.addEvents([
       CalendarEvent(
-        dateTimeRange: legacy.DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: today.add(const Duration(hours: 9)),
           end: today.add(const Duration(hours: 10, minutes: 30)),
         ),
       ),
       CalendarEvent(
-        dateTimeRange: legacy.DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: today.add(const Duration(days: 1, hours: 13)),
           end: today.add(const Duration(days: 1, hours: 14)),
         ),

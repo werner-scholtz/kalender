@@ -249,13 +249,13 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     Offset feedbackWidgetOffset = Offset.zero,
   });
 
-  /// Calculate the [DateTimeRange] from the start [DateTime].
+  /// Calculate the [InternalDateTimeRange] from the start [DateTime].
   ///
-  /// Will return a [DateTimeRange] with an updated start [DateTime] and the same end [DateTime].
+  /// Will return a [InternalDateTimeRange] with an updated start [DateTime] and the same end [DateTime].
   /// - In the case where the new start [DateTime] is after the end [DateTime], the start and end [DateTime]s will be swapped.
-  /// - In the case where the [DateTime]s are the same, the original [DateTimeRange] will be returned.
+  /// - In the case where the [DateTime]s are the same, the original [InternalDateTimeRange] will be returned.
   InternalDateTimeRange calculateDateTimeRangeFromStart(
-    DateTimeRange dateTimeRange,
+    InternalDateTimeRange dateTimeRange,
     DateTime newStart,
   ) {
     if (newStart.isBefore(dateTimeRange.end)) {
@@ -267,13 +267,13 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     }
   }
 
-  /// Calculate the [DateTimeRange] from the end [DateTime].
+  /// Calculate the [InternalDateTimeRange] from the end [DateTime].
   ///
-  /// Will return a [DateTimeRange] with an updated end [DateTime] and the same start [DateTime].
+  /// Will return a [InternalDateTimeRange] with an updated end [DateTime] and the same start [DateTime].
   /// - In the case where the new end [DateTime] is before the start [DateTime], the start and end [DateTime]s will be swapped.
-  /// - In the case where the [DateTime]s are the same, the original [DateTimeRange] will be returned.
+  /// - In the case where the [DateTime]s are the same, the original [InternalDateTimeRange] will be returned.
   InternalDateTimeRange calculateDateTimeRangeFromEnd(
-    DateTimeRange dateTimeRange,
+    InternalDateTimeRange dateTimeRange,
     DateTime newEnd,
   ) {
     if (newEnd.isBefore(dateTimeRange.start)) {
@@ -285,14 +285,14 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     }
   }
 
-  /// Converts an [InternalDateTimeRange] to a [DateTimeRange] for the current location,
+  /// Converts an [InternalDateTimeRange] to a [KalenderDateTimeRange] for the current location,
   /// handling DST spring-forward gaps where start can get pushed past end.
-  DateTimeRange toLocationDateTimeRange(InternalDateTimeRange range) {
+  KalenderDateTimeRange toLocationDateTimeRange(InternalDateTimeRange range) {
     final location = context.location;
     var start = range.start.forLocation(location: location);
     var end = range.end.forLocation(location: location);
     if (start.isAfter(end)) (start, end) = (end, start);
-    return DateTimeRange(start: start, end: end);
+    return KalenderDateTimeRange(start: start, end: end);
   }
 
   /// Moves [event] to the date of [cursorDateTime], keeping its time of day and

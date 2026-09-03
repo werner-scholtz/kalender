@@ -77,7 +77,7 @@ List<CalendarEvent> generateEvents(BuildContext context) {
   Event timed(DateTime day, int hour, int minute, Duration duration, String title, Color color, {String? description}) {
     final start = DateTime(day.year, day.month, day.day, hour, minute);
     return Event(
-      dateTimeRange: DateTimeRange(start: start, end: start.add(duration)),
+      dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(duration)),
       title: title,
       description: description,
       color: color,
@@ -144,7 +144,7 @@ List<CalendarEvent> generateEvents(BuildContext context) {
     final start = today.add(Duration(days: startOffset));
     events.add(
       Event(
-        dateTimeRange: DateTimeRange(start: start, end: start.add(Duration(days: days))),
+        dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(Duration(days: days))),
         title: title,
         description: description,
         color: color,

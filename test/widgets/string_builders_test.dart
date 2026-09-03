@@ -141,7 +141,9 @@ void main() {
   group('ScheduleDate', () {
     testWidgets('the components string builder replaces the day name', (tester) async {
       final eventsController = DefaultEventsController()
-        ..addEvent(CalendarEvent(dateTimeRange: DateTimeRange(start: day, end: day.add(const Duration(hours: 1)))));
+        ..addEvent(
+          CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(hours: 1)))),
+        );
 
       await pumpView(
         tester,
@@ -166,7 +168,7 @@ void main() {
       final eventsController = DefaultEventsController();
       for (var i = 0; i < 8; i++) {
         eventsController.addEvent(
-          CalendarEvent(dateTimeRange: DateTimeRange(start: day, end: day.add(const Duration(days: 1)))),
+          CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1)))),
         );
       }
       return eventsController;

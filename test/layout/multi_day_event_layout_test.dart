@@ -134,10 +134,10 @@ void main() {
       // so the 26th is not included → 2 of the 7 visible columns).
       final events = [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 2)),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.copyWith(day: start.day + 2)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 2)),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.copyWith(day: start.day + 2)),
         ),
       ];
       eventsController.addEvents(events);
@@ -166,13 +166,13 @@ void main() {
     testWidgets('Basic', (tester) async {
       final events = [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 6))),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(hours: 6))),
         ),
       ];
       eventsController.addEvents(events);
@@ -200,7 +200,7 @@ void main() {
 
     testWidgets('Drop target layout uses the selected event span during horizontal resize', (tester) async {
       final storedEvent = CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: DateTime(2025, 3, 24),
           end: DateTime(2025, 3, 25),
         ),
@@ -226,7 +226,7 @@ void main() {
 
       controller.selectEvent(
         storedEvent.withDateTimeRange(
-          DateTimeRange(
+          KalenderDateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),
@@ -249,37 +249,37 @@ void main() {
 
       final events = [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 25),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 25),
             end: DateTime(2025, 3, 28),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 28),
             end: DateTime(2025, 3, 30),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
@@ -317,25 +317,25 @@ void main() {
       ///                 |------4----|
       final events = [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 25),
             end: DateTime(2025, 3, 28),
           ),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
@@ -377,16 +377,16 @@ void main() {
       ///   |-4-|
       final events = [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(day: start.day + 3)),
+          dateTimeRange: KalenderDateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(day: start.day + 3)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 6)),
+          dateTimeRange: KalenderDateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 6)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 7), end: start.copyWith(hour: 10)),
+          dateTimeRange: KalenderDateTimeRange(start: start.copyWith(hour: 7), end: start.copyWith(hour: 10)),
         ),
       ];
       eventsController.addEvents(events);
@@ -444,16 +444,16 @@ void main() {
       ///   |-4-|
       final events = [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 12)),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.copyWith(hour: 12)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 8)),
+          dateTimeRange: KalenderDateTimeRange(start: start, end: start.copyWith(hour: 8)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 4)),
+          dateTimeRange: KalenderDateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 4)),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 16)),
+          dateTimeRange: KalenderDateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 16)),
         ),
       ];
       eventsController.addEvents(events);

@@ -69,7 +69,7 @@ void main() {
       final eventsController = DefaultEventsController();
       for (var i = 0; i < eventCount; i++) {
         eventsController.addEvent(
-          CalendarEvent(dateTimeRange: DateTimeRange(start: day, end: day.add(const Duration(days: 1)))),
+          CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1)))),
         );
       }
 
