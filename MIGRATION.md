@@ -157,6 +157,54 @@ KalenderTimeRange(start: KalenderTime(hour: 8, minute: 0), end: KalenderTime(hou
 `toInternalDateTime` and `toDateTime` are methods on `KalenderTime`, so the calls
 are unchanged and only the type they are called on differs.
 
+### `CalendarEvent` takes `start` and `end`
+
+The event always stored two UTC instants. The constructor took a range and pulled
+it apart immediately, so it takes the two values now.
+
+```dart
+// Before
+CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: end))
+
+// After
+CalendarEvent(start: start, end: end)
+```
+
+`dateTimeRange` survives as a getter, so `event.dateTimeRange` still returns a
+`KalenderDateTimeRange`. `event.start` and `event.end` are usually what you want.
+
+**Every subclass changes by hand.** `copyWithData` carries `@mustBeOverridden`, and
+a fix rewrites call sites rather than the declarations in your own code, so the
+compiler points at each one:
+
+```dart
+// Before
+class Event extends CalendarEvent {
+  Event({super.id, required super.dateTimeRange, required this.title});
+  final String title;
+
+  @override
+  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
+    return Event(dateTimeRange: dateTimeRange, title: title);
+  }
+}
+
+// After
+class Event extends CalendarEvent {
+  Event({super.id, required super.start, required super.end, required this.title});
+  final String title;
+
+  @override
+  Event copyWithData({required DateTime start, required DateTime end}) {
+    return Event(start: start, end: end, title: title);
+  }
+}
+```
+
+`withDateTimeRange` is unchanged and still takes a `KalenderDateTimeRange`. It is
+`@nonVirtual`, so it is called rather than overridden, and every caller already
+holds a whole range.
+
 ### `PageIndexCalculator` takes `start` and `end`
 
 Every subclass unpacked the range into two values and converted each separately, so

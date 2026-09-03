@@ -14,7 +14,8 @@ import 'package:meta/meta.dart';
 /// class Event extends CalendarEvent {
 ///   Event({
 ///     super.id,
-///     required super.dateTimeRange,
+///     required super.start,
+///     required super.end,
 ///     required this.title,
 ///     super.interaction,
 ///     super.multiDayRule,
@@ -22,8 +23,8 @@ import 'package:meta/meta.dart';
 ///   final String title;
 ///
 ///   @override
-///   Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-///     return Event(dateTimeRange: dateTimeRange, title: title);
+///   Event copyWithData({required DateTime start, required DateTime end}) {
+///     return Event(start: start, end: end, title: title);
 ///   }
 ///
 ///   @override
@@ -75,17 +76,18 @@ class CalendarEvent {
 
   /// Creates a [CalendarEvent].
   ///
-  /// [dateTimeRange] is stored in UTC. A unique [id] is generated if omitted.
+  /// [start] and [end] are stored in UTC. A unique [id] is generated if omitted.
   /// [interaction] defaults to fully modifiable.
   CalendarEvent({
     String? id,
-    required KalenderDateTimeRange dateTimeRange,
+    required DateTime start,
+    required DateTime end,
     EventInteraction? interaction,
     MultiDayRule? multiDayRule,
     bool isAllDay = false,
   })  : id = id ?? _createUniqueId(),
-        start = dateTimeRange.start.toUtc(),
-        end = dateTimeRange.end.toUtc(),
+        start = start.toUtc(),
+        end = end.toUtc(),
         _multiDayRule = multiDayRule,
         _isAllDay = isAllDay,
         _interaction = interaction ?? EventInteraction.fromCanModify(true);
@@ -117,7 +119,7 @@ class CalendarEvent {
       InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
 
   /// Total duration (UTC-based).
-  Duration get duration => dateTimeRange.duration;
+  Duration get duration => end.difference(start);
 
   /// Whether this event belongs in the multi-day header lane rather than the
   /// day timeline, with calendar days measured in [location].
@@ -144,7 +146,7 @@ class CalendarEvent {
   /// config and its rule whatever the subclass returns.
   @nonVirtual
   CalendarEvent withDateTimeRange(KalenderDateTimeRange dateTimeRange) {
-    final copy = copyWithData(dateTimeRange: dateTimeRange);
+    final copy = copyWithData(start: dateTimeRange.start, end: dateTimeRange.end);
 
     assert(
       copy.runtimeType == runtimeType,
@@ -156,7 +158,7 @@ class CalendarEvent {
     return carryOver(copy);
   }
 
-  /// Rebuilds this event covering [dateTimeRange], keeping the data this
+  /// Rebuilds this event covering [start] to [end], keeping the data this
   /// subclass adds.
   ///
   /// Override this and return a new instance of your own type. Do not forward
@@ -165,8 +167,8 @@ class CalendarEvent {
   /// field added to [CalendarEvent] later from silently going missing.
   @protected
   @mustBeOverridden
-  CalendarEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return CalendarEvent(dateTimeRange: dateTimeRange);
+  CalendarEvent copyWithData({required DateTime start, required DateTime end}) {
+    return CalendarEvent(start: start, end: end);
   }
 
   /// Reapplies the state [CalendarEvent] holds to [copy], and returns it.
@@ -176,7 +178,7 @@ class CalendarEvent {
   ///
   /// ```dart
   /// Event copyWith({String? title}) {
-  ///   return carryOver(Event(dateTimeRange: dateTimeRange, title: title ?? this.title));
+  ///   return carryOver(Event(start: start, end: end, title: title ?? this.title));
   /// }
   /// ```
   @protected

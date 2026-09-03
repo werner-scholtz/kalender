@@ -25,7 +25,7 @@ void main() {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
       eventsController.addEvent(
-        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1)))),
+        CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
       );
     }
     addTearDown(eventsController.dispose);
@@ -155,7 +155,7 @@ void main() {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
       eventsController.addEvent(
-        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1)))),
+        CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
       );
     }
     addTearDown(eventsController.dispose);

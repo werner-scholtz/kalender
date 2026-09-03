@@ -26,10 +26,8 @@ void main() {
 
   // A one-hour event at [hour] on [day].
   CalendarEvent eventAt(DateTime day, int hour) => CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: DateTime(day.year, day.month, day.day, hour),
-          end: DateTime(day.year, day.month, day.day, hour + 1),
-        ),
+        start: DateTime(day.year, day.month, day.day, hour),
+        end: DateTime(day.year, day.month, day.day, hour + 1),
       );
 
   KalenderView buildSchedule({

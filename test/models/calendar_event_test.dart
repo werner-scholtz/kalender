@@ -14,7 +14,8 @@ void main() {
   CalendarEvent eventUtc(DateTime start, DateTime end, {String? id, EventInteraction? interaction}) {
     return CalendarEvent(
       id: id,
-      dateTimeRange: KalenderDateTimeRange(start: start, end: end),
+      start: start,
+      end: end,
       interaction: interaction,
     );
   }
@@ -25,8 +26,7 @@ void main() {
     test('start and end are stored in UTC', () {
       // A non-UTC (local) input must be normalised to UTC on construction.
       final local = DateTime(2024, 1, 15, 9);
-      final event =
-          CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: local, end: local.add(const Duration(hours: 1))));
+      final event = CalendarEvent(start: local, end: local.add(const Duration(hours: 1)));
       expect(event.start.isUtc, isTrue);
       expect(event.end.isUtc, isTrue);
       expect(event.start, equals(local.toUtc()));
@@ -235,7 +235,8 @@ void main() {
   group('MultiDayRule.calendarDays', () {
     CalendarEvent event(DateTime start, DateTime end) {
       return CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: start, end: end),
+        start: start,
+        end: end,
         multiDayRule: const MultiDayRule.calendarDays(),
       );
     }
@@ -269,7 +270,7 @@ void main() {
     final crossing = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
 
     test('an event with no rule of its own follows the one it is given', () {
-      final event = CalendarEvent(dateTimeRange: crossing);
+      final event = CalendarEvent(start: crossing.start, end: crossing.end);
       expect(event.multiDayRule, isNull, reason: 'unset means "use the calendar\'s rule"');
       expect(
         event.spansMultipleDays(location: utcLocation, defaultRule: const MultiDayRule.calendarDays()),
@@ -285,7 +286,8 @@ void main() {
     });
 
     test('an event override beats the calendar rule, in both directions', () {
-      final strict = CalendarEvent(dateTimeRange: crossing, multiDayRule: const MultiDayRule.calendarDays());
+      final strict =
+          CalendarEvent(start: crossing.start, end: crossing.end, multiDayRule: const MultiDayRule.calendarDays());
       expect(
         strict.spansMultipleDays(
           location: utcLocation,
@@ -296,7 +298,8 @@ void main() {
       );
 
       final loose = CalendarEvent(
-        dateTimeRange: crossing,
+        start: crossing.start,
+        end: crossing.end,
         multiDayRule: const MultiDayRule.minimumDuration(Duration(hours: 24)),
       );
       expect(
@@ -311,12 +314,12 @@ void main() {
     test('per event, via the constructor', () {
       final crossing = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
       expect(
-        CalendarEvent(dateTimeRange: crossing)
+        CalendarEvent(start: crossing.start, end: crossing.end)
             .spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule),
         isFalse,
       );
       expect(
-        CalendarEvent(dateTimeRange: crossing, multiDayRule: const MultiDayRule.calendarDays())
+        CalendarEvent(start: crossing.start, end: crossing.end, multiDayRule: const MultiDayRule.calendarDays())
             .spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule),
         isTrue,
       );
@@ -324,7 +327,8 @@ void main() {
 
     test('per app, via a subclass that fixes the rule', () {
       final event = _CalendarDayEvent(
-        dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1)),
+        start: DateTime.utc(2024, 1, 15, 23),
+        end: DateTime.utc(2024, 1, 16, 1),
       );
       expect(
         event.spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule),
@@ -335,12 +339,12 @@ void main() {
     test('fully custom, by overriding spansMultipleDays', () {
       final fullDay = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16));
       expect(
-        CalendarEvent(dateTimeRange: fullDay)
+        CalendarEvent(start: fullDay.start, end: fullDay.end)
             .spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule),
         isTrue,
       );
       expect(
-        _StrictMultiDayEvent(dateTimeRange: fullDay)
+        _StrictMultiDayEvent(start: fullDay.start, end: fullDay.end)
             .spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule),
         isFalse,
       );
@@ -349,7 +353,8 @@ void main() {
     test('copyWith carries the rule, and takes no parameter for it', () {
       // carryOver reapplies it, so a subclass never forwards it by hand.
       final event = CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
+        start: DateTime.utc(2024, 1, 15),
+        end: DateTime.utc(2024, 1, 16),
         multiDayRule: const MultiDayRule.calendarDays(),
       );
       expect(
@@ -362,7 +367,8 @@ void main() {
       // The pattern the Custom Events guide documents. copyWithData rebuilds
       // only the title, and carryOver puts the rule back.
       final event = _DataEvent(
-        dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
+        start: DateTime.utc(2024, 1, 15),
+        end: DateTime.utc(2024, 1, 16),
         title: 'Night shift',
         multiDayRule: const MultiDayRule.calendarDays(),
       );
@@ -376,8 +382,13 @@ void main() {
 
     test('the rule participates in layoutEquals, since it decides the lane', () {
       final range = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
-      final a = CalendarEvent(id: 'same', dateTimeRange: range);
-      final b = CalendarEvent(id: 'same', dateTimeRange: range, multiDayRule: const MultiDayRule.calendarDays());
+      final a = CalendarEvent(id: 'same', start: range.start, end: range.end);
+      final b = CalendarEvent(
+        id: 'same',
+        start: range.start,
+        end: range.end,
+        multiDayRule: const MultiDayRule.calendarDays(),
+      );
       expect(a.layoutEquals(b), isFalse);
       expect(a, isNot(equals(b)));
     });
@@ -387,7 +398,7 @@ void main() {
     final shortRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10));
 
     test('defaults to false and changes nothing', () {
-      final event = CalendarEvent(dateTimeRange: shortRange);
+      final event = CalendarEvent(start: shortRange.start, end: shortRange.end);
       expect(event.isAllDay, isFalse);
       expect(event.spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule), isFalse);
     });
@@ -396,14 +407,15 @@ void main() {
       // No MultiDayRule can express this: the event is under 24 hours and sits
       // inside one calendar day, so before the flag it needed an override of
       // spansMultipleDays.
-      final event = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      final event = CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true);
       expect(event.spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule), isTrue);
       expect(event.spansMultipleDays(location: utcLocation, defaultRule: const MultiDayRule.calendarDays()), isTrue);
     });
 
     test('outranks a per-event rule that says otherwise', () {
       final event = CalendarEvent(
-        dateTimeRange: shortRange,
+        start: shortRange.start,
+        end: shortRange.end,
         isAllDay: true,
         multiDayRule: const MultiDayRule.minimumDuration(Duration(days: 7)),
       );
@@ -411,12 +423,12 @@ void main() {
     });
 
     test('leaves the date range alone', () {
-      final event = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      final event = CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true);
       expect(event.dateTimeRange, equals(shortRange));
     });
 
     test('survives a drag', () {
-      final event = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      final event = CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true);
       final moved = event.withDateTimeRange(
         KalenderDateTimeRange(start: DateTime.utc(2024, 1, 16, 9), end: DateTime.utc(2024, 1, 16, 10)),
       );
@@ -424,8 +436,8 @@ void main() {
     });
 
     test('participates in layoutEquals, since it decides the lane', () {
-      final a = CalendarEvent(id: 'same', dateTimeRange: shortRange);
-      final b = CalendarEvent(id: 'same', dateTimeRange: shortRange, isAllDay: true);
+      final a = CalendarEvent(id: 'same', start: shortRange.start, end: shortRange.end);
+      final b = CalendarEvent(id: 'same', start: shortRange.start, end: shortRange.end, isAllDay: true);
       expect(a.layoutEquals(b), isFalse);
       expect(a, isNot(equals(b)));
     });
@@ -434,8 +446,8 @@ void main() {
       final controller = DefaultEventsController();
       addTearDown(controller.dispose);
 
-      final timed = CalendarEvent(dateTimeRange: shortRange);
-      final allDay = CalendarEvent(dateTimeRange: shortRange, isAllDay: true);
+      final timed = CalendarEvent(start: shortRange.start, end: shortRange.end);
+      final allDay = CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true);
       controller.addEvents([timed, allDay]);
 
       final day = InternalDateTimeRange(
@@ -485,18 +497,20 @@ void main() {
 
 /// Fixes the rule for a whole app in one place, the way a real subclass would.
 class _CalendarDayEvent extends CalendarEvent {
-  _CalendarDayEvent({required super.dateTimeRange}) : super(multiDayRule: const MultiDayRule.calendarDays());
+  _CalendarDayEvent({required super.start, required super.end})
+      : super(multiDayRule: const MultiDayRule.calendarDays());
 
   @override
-  _CalendarDayEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return _CalendarDayEvent(dateTimeRange: dateTimeRange);
+  _CalendarDayEvent copyWithData({required DateTime start, required DateTime end}) {
+    return _CalendarDayEvent(start: start, end: end);
   }
 }
 
 /// Attaches data the way the Custom Events guide shows, forwarding the rule.
 class _DataEvent extends CalendarEvent {
   _DataEvent({
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.title,
     super.multiDayRule,
   });
@@ -504,18 +518,18 @@ class _DataEvent extends CalendarEvent {
   final String title;
 
   @override
-  _DataEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return _DataEvent(dateTimeRange: dateTimeRange, title: title);
+  _DataEvent copyWithData({required DateTime start, required DateTime end}) {
+    return _DataEvent(start: start, end: end, title: title);
   }
 }
 
 /// Replaces the rule entirely with a strict "more than one calendar day".
 class _StrictMultiDayEvent extends CalendarEvent {
-  _StrictMultiDayEvent({required super.dateTimeRange});
+  _StrictMultiDayEvent({required super.start, required super.end});
 
   @override
-  _StrictMultiDayEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return _StrictMultiDayEvent(dateTimeRange: dateTimeRange);
+  _StrictMultiDayEvent copyWithData({required DateTime start, required DateTime end}) {
+    return _StrictMultiDayEvent(start: start, end: end);
   }
 
   @override

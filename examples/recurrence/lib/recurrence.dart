@@ -170,7 +170,7 @@ class Recurrence {
     final recurrences = type.generateDateTimeRanges(first, number);
     return recurrences.map(
       (recurrence) {
-        return RecurringCalendarEvent(dateTimeRange: recurrence, groupId: groupId);
+        return RecurringCalendarEvent(start: recurrence.start, end: recurrence.end, groupId: groupId);
       },
     ).toList();
   }

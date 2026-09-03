@@ -24,16 +24,12 @@ void main() {
 
     eventsController.addEvents([
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: startOfWeek,
-          end: startOfWeek.copyWith(day: startOfWeek.day + 2),
-        ),
+        start: startOfWeek,
+        end: startOfWeek.copyWith(day: startOfWeek.day + 2),
       ),
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: startOfWeek,
-          end: startOfWeek.copyWith(day: startOfWeek.day + 2),
-        ),
+        start: startOfWeek,
+        end: startOfWeek.copyWith(day: startOfWeek.day + 2),
       ),
     ]);
   });
@@ -147,7 +143,7 @@ void main() {
       final eventsController = DefaultEventsController();
       for (var i = 0; i < eventCount; i++) {
         eventsController.addEvent(
-          CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1)))),
+          CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
         );
       }
 

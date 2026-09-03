@@ -16,19 +16,15 @@ void main() {
   // full width.
   final events = [
     CalendarEvent(
-      dateTimeRange: KalenderDateTimeRange(
-        start: date.copyWith(hour: 1, minute: 29),
-        end: date.copyWith(hour: 1, minute: 30),
-      ),
+      start: date.copyWith(hour: 1, minute: 29),
+      end: date.copyWith(hour: 1, minute: 30),
     ),
     CalendarEvent(
-      dateTimeRange: KalenderDateTimeRange(
-        start: date.copyWith(hour: 1, minute: 30),
-        end: date.copyWith(hour: 1, minute: 59, second: 59, microsecond: 999999),
-      ),
+      start: date.copyWith(hour: 1, minute: 30),
+      end: date.copyWith(hour: 1, minute: 59, second: 59, microsecond: 999999),
     ),
-    CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: date.copyWith(hour: 2), end: date.copyWith(hour: 3))),
-    CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: date.copyWith(hour: 3), end: date.copyWith(hour: 4))),
+    CalendarEvent(start: date.copyWith(hour: 2), end: date.copyWith(hour: 3)),
+    CalendarEvent(start: date.copyWith(hour: 3), end: date.copyWith(hour: 4)),
   ];
 
   final heightPerMinutes = List.generate(100, (i) => 0.1 + i / 100);

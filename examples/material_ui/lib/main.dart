@@ -49,17 +49,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     final today = DateTime(now.year, now.month, now.day);
     eventsController.addEvents([
+      CalendarEvent(start: today.add(const Duration(hours: 9)), end: today.add(const Duration(hours: 10, minutes: 30))),
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: today.add(const Duration(hours: 9)),
-          end: today.add(const Duration(hours: 10, minutes: 30)),
-        ),
-      ),
-      CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: today.add(const Duration(days: 1, hours: 13)),
-          end: today.add(const Duration(days: 1, hours: 14)),
-        ),
+        start: today.add(const Duration(days: 1, hours: 13)),
+        end: today.add(const Duration(days: 1, hours: 14)),
       ),
     ]);
   }
@@ -78,9 +71,7 @@ class _HomePageState extends State<HomePage> {
       // KalenderThemeData cannot be registered on a material_ui ThemeData, so
       // app-wide styling goes through this widget instead.
       body: KalenderTheme(
-        data: const KalenderThemeData(
-          timeIndicatorStyle: TimeIndicatorStyle(lineColor: Color(0xFFE91E63)),
-        ),
+        data: const KalenderThemeData(timeIndicatorStyle: TimeIndicatorStyle(lineColor: Color(0xFFE91E63))),
         child: KalenderView(
           eventsController: eventsController,
           calendarController: calendarController,

@@ -133,7 +133,8 @@ DateTimeProperty _dateProperty(String name, DateTime date) {
 
 IcsEvent _event(IcsSource source, DateTime start, DateTime end, Color color) {
   return IcsEvent(
-    dateTimeRange: KalenderDateTimeRange(start: start, end: end),
+    start: start,
+    end: end,
     uid: source.uid,
     title: source.summary,
     description: source.description,
