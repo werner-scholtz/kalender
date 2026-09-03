@@ -1,19 +1,19 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/extensions/internal_date_time_range.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
-import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/controllers/kalender_controller.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// The tile widget that displays the user-defined event content.
 ///
 /// This widget manages the visual transition between normal and dragging states
 /// by switching between [tileBuilder] and [tileWhenDraggingBuilder] based on
-/// the current drag state from [CalendarController].
+/// the current drag state from [KalenderController].
 class Tile extends StatefulWidget {
   /// The event associated with the tile.
-  final CalendarEvent initialEvent;
+  final KalenderEvent initialEvent;
 
   /// The builder that builds the tile widget.
   final TileBuilder tileBuilder;
@@ -43,10 +43,10 @@ class Tile extends StatefulWidget {
 /// and rebuilds the widget accordingly.
 class _TileState extends State<Tile> {
   /// The current event associated with the tile.
-  late CalendarEvent _event = widget.initialEvent;
+  late KalenderEvent _event = widget.initialEvent;
 
   /// The calendar controller.
-  CalendarController? _controller;
+  KalenderController? _controller;
 
   /// The events controller.
   EventsController? _eventsController;

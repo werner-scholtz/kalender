@@ -15,7 +15,7 @@ import 'package:kalender/kalender.dart';
 typedef MultiDayOverlayPortalBuilder = Widget Function(
   BuildContext context, {
   required DateTime date,
-  required List<CalendarEvent> events,
+  required List<KalenderEvent> events,
   required int numberOfHiddenRows,
   required double tileHeight,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
@@ -29,7 +29,7 @@ class MultiDayOverlayPortal extends StatefulWidget {
   final InternalDateTime date;
 
   /// All the events that should be displayed for the given [date].
-  final List<CalendarEvent> events;
+  final List<KalenderEvent> events;
 
   /// The number of hidden rows.
   final int numberOfHiddenRows;

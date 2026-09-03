@@ -4,6 +4,9 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 
 ### Breaking Changes
 
+- `CalendarBody`, `CalendarCallbacks`, `CalendarComponents`, `CalendarController`, `CalendarEvent`, `CalendarHeader`, `CalendarInteraction` and `CalendarSnapping` are renamed to `Kalender*`.
+- The `CalendarLocale` extension on `BuildContext` is renamed to `KalenderLocale`. Its `calendarLocale` member is unchanged.
+- The deprecated `CalendarView` and `CalendarViewState` typedefs are removed.
 - `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
 - `KalenderTime` replaces Material's `TimeOfDay` in every public signature.
 - `TimeOfDayRange` is renamed to `KalenderTimeRange`, and holds `KalenderTime` values.
@@ -26,7 +29,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 
 - `DateTimeExtensions.timeLocalized` formats the time of day for a locale, with `use24HourFormat` to force `HH:mm`.
 - `package:kalender/material.dart` converts `KalenderDateTimeRange` and `KalenderTime` to and from Material's `DateTimeRange` and `TimeOfDay`.
-- `dart fix --apply` renames `TimeOfDayRange` to `KalenderTimeRange` and rewrites the `dateTimeRange` argument of `CalendarEvent` and the `PageIndexCalculator` subclasses into `start` and `end`.
+- `dart fix --apply` renames the eight `Calendar*` types to `Kalender*`, renames `TimeOfDayRange` to `KalenderTimeRange` and rewrites the `dateTimeRange` argument of `CalendarEvent` and the `PageIndexCalculator` subclasses into `start` and `end`.
 
 ### Fixes
 

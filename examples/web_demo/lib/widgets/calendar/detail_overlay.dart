@@ -30,7 +30,7 @@ class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTicke
   late final Animation<double> _scaleAnimation;
 
   /// The selected event and its render box.
-  CalendarEvent? selectedEvent;
+  KalenderEvent? selectedEvent;
   RenderBox? selectedRenderBox;
 
   @override
@@ -45,7 +45,7 @@ class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTicke
     _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(_curvedAnimation);
   }
 
-  void createOverlay(CalendarEvent event, RenderBox renderBox) {
+  void createOverlay(KalenderEvent event, RenderBox renderBox) {
     selectedEvent = event;
     selectedRenderBox = renderBox;
     controller.show();

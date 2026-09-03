@@ -8,10 +8,10 @@ import '../utilities.dart';
 /// [ResizeHandleStyle] sizes the area [DefaultResizeHandles] gives each handle.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   late String eventId;
 
-  CalendarInteraction interactionFor(InputMode mode) => CalendarInteraction(
+  KalenderInteraction interactionFor(InputMode mode) => KalenderInteraction(
         allowResizing: true,
         allowRescheduling: true,
         inputMode: mode,
@@ -19,9 +19,9 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     eventId = eventsController.addEvent(
-      CalendarEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
+      KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
     );
   });
 
@@ -40,7 +40,7 @@ void main() {
         initialHeightPerMinute: 1,
         initialDateTime: DateTime(2025, 1, 1),
       ),
-      body: CalendarBody(
+      body: KalenderBody(
         interaction: interactionFor(mode),
         multiDayTileComponents: TileComponents(
           tileBuilder: (context, event, tileRange) => const SizedBox.expand(),

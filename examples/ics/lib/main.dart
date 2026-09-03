@@ -29,7 +29,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   final now = DateTime.now();
   late final displayRange = KalenderDateTimeRange(
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _onEventTapped(CalendarEvent event) {
+  void _onEventTapped(KalenderEvent event) {
     if (event is! IcsEvent) return;
     calendarController.selectEvent(event);
     final message = event.description == null ? event.title : '${event.title} — ${event.description}';
@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
-        callbacks: CalendarCallbacks(onEventTapped: (event) => _onEventTapped(event)),
+        callbacks: KalenderCallbacks(onEventTapped: (event) => _onEventTapped(event)),
         header: Material(
           elevation: 2,
           child: Column(
@@ -156,11 +156,11 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              CalendarHeader(multiDayTileComponents: _tileComponents()),
+              KalenderHeader(multiDayTileComponents: _tileComponents()),
             ],
           ),
         ),
-        body: CalendarBody(
+        body: KalenderBody(
           multiDayTileComponents: _tileComponents(),
           monthTileComponents: _tileComponents(),
           scheduleTileComponents: _scheduleTileComponents(),

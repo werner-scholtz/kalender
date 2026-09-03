@@ -14,7 +14,7 @@ import '../utilities.dart';
 ///   * the indicator not showing up at all on the correct day.
 ///
 /// The isolated positioner widgets are already covered elsewhere; these tests
-/// exercise the layer users actually hit — a full `KalenderView` + `CalendarBody`
+/// exercise the layer users actually hit — a full `KalenderView` + `KalenderBody`
 /// where the real `TimeIndicator` is positioned by `TimeIndicatorPositioner`.
 ///
 /// A `nowCallback` fixes "today" so the assertions are deterministic regardless
@@ -23,11 +23,11 @@ import '../utilities.dart';
 /// made the original bug visible.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   // A known Monday and the week that starts on it.
@@ -44,7 +44,7 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: viewConfiguration,
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
 

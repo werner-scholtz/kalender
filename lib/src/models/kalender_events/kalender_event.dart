@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:kalender/kalender.dart' show EventInteraction;
-import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
+import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:meta/meta.dart';
 
@@ -11,7 +11,7 @@ import 'package:meta/meta.dart';
 /// Extend this class to attach custom data (title, color, etc.).
 ///
 /// ```dart
-/// class Event extends CalendarEvent {
+/// class Event extends KalenderEvent {
 ///   Event({
 ///     super.id,
 ///     required super.start,
@@ -40,7 +40,7 @@ import 'package:meta/meta.dart';
 /// [multiDayRule] and [isAllDay] are reapplied by [carryOver] afterwards, so a
 /// field added to this class later reaches every subclass without any of them
 /// changing.
-class CalendarEvent {
+class KalenderEvent {
   /// The start of the event in UTC.
   final DateTime start;
 
@@ -74,11 +74,11 @@ class CalendarEvent {
   bool get isAllDay => _isAllDay;
   bool _isAllDay;
 
-  /// Creates a [CalendarEvent].
+  /// Creates a [KalenderEvent].
   ///
   /// [start] and [end] are stored in UTC. A unique [id] is generated if omitted.
   /// [interaction] defaults to fully modifiable.
-  CalendarEvent({
+  KalenderEvent({
     String? id,
     required DateTime start,
     required DateTime end,
@@ -142,16 +142,16 @@ class CalendarEvent {
   ///
   /// The calendar calls this on every drag and resize. Override [copyWithData]
   /// rather than this: this calls it and then restores the state
-  /// [CalendarEvent] holds, so a copy keeps its identity, its interaction
+  /// [KalenderEvent] holds, so a copy keeps its identity, its interaction
   /// config and its rule whatever the subclass returns.
   @nonVirtual
-  CalendarEvent withDateTimeRange(KalenderDateTimeRange dateTimeRange) {
+  KalenderEvent withDateTimeRange(KalenderDateTimeRange dateTimeRange) {
     final copy = copyWithData(start: dateTimeRange.start, end: dateTimeRange.end);
 
     assert(
       copy.runtimeType == runtimeType,
       '$runtimeType.copyWithData returned a ${copy.runtimeType}. Override copyWithData to return your own '
-      'type, otherwise every drag and resize replaces the event with a plain CalendarEvent and the data '
+      'type, otherwise every drag and resize replaces the event with a plain KalenderEvent and the data '
       'your subclass adds is lost.',
     );
 
@@ -164,14 +164,14 @@ class CalendarEvent {
   /// Override this and return a new instance of your own type. Do not forward
   /// [id], [interaction], [multiDayRule] or [isAllDay]: [withDateTimeRange]
   /// restores them through [carryOver] once this returns, which is what keeps a
-  /// field added to [CalendarEvent] later from silently going missing.
+  /// field added to [KalenderEvent] later from silently going missing.
   @protected
   @mustBeOverridden
-  CalendarEvent copyWithData({required DateTime start, required DateTime end}) {
-    return CalendarEvent(start: start, end: end);
+  KalenderEvent copyWithData({required DateTime start, required DateTime end}) {
+    return KalenderEvent(start: start, end: end);
   }
 
-  /// Reapplies the state [CalendarEvent] holds to [copy], and returns it.
+  /// Reapplies the state [KalenderEvent] holds to [copy], and returns it.
   ///
   /// [withDateTimeRange] calls this on whatever [copyWithData] returned. Call it
   /// from a `copyWith` of your own so that copy keeps its identity too:
@@ -182,7 +182,7 @@ class CalendarEvent {
   /// }
   /// ```
   @protected
-  T carryOver<T extends CalendarEvent>(T copy) {
+  T carryOver<T extends KalenderEvent>(T copy) {
     copy.id = id;
     copy._interaction = _interaction;
     copy._multiDayRule = _multiDayRule;
@@ -192,14 +192,14 @@ class CalendarEvent {
 
   @override
   String toString() {
-    return 'CalendarEvent ($id):'
+    return 'KalenderEvent ($id):'
         '\nstart:  $start'
         '\nend: $end';
   }
 
   /// Check equality based on [layoutEquals].
   @override
-  bool operator ==(Object other) => other is CalendarEvent && layoutEquals(other);
+  bool operator ==(Object other) => other is KalenderEvent && layoutEquals(other);
 
   @override
   int get hashCode => Object.hash(id, start, end, interaction, multiDayRule, isAllDay);
@@ -211,7 +211,7 @@ class CalendarEvent {
   /// header or the day timeline.
   ///
   /// Override in subclasses that add properties affecting rendering.
-  bool layoutEquals(CalendarEvent other) {
+  bool layoutEquals(KalenderEvent other) {
     return id == other.id &&
         start == other.start &&
         end == other.end &&

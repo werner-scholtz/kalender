@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
-import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
+import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
@@ -49,7 +49,7 @@ abstract class ViewConfiguration {
   /// timeline.
   ///
   /// Applies to every event this view shows. An individual event can opt out
-  /// with [CalendarEvent.multiDayRule].
+  /// with [KalenderEvent.multiDayRule].
   final MultiDayRule multiDayRule;
 
   /// The selected date to start the view from.

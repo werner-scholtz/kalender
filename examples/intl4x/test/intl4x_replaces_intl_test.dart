@@ -12,14 +12,14 @@ import 'package:kalender/kalender.dart';
 /// whose day and month names did not come from intl.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     // The schedule draws a month heading and a day row only where events exist.
     eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: DateTime(2025, 1, 6, 9),
         end: DateTime(2025, 1, 6, 10),
       ),
@@ -31,7 +31,7 @@ void main() {
     calendarController.dispose();
   });
 
-  Widget schedule({CalendarComponents? components, Locale locale = const Locale('de')}) {
+  Widget schedule({KalenderComponents? components, Locale locale = const Locale('de')}) {
     final tiles = ScheduleTileComponents(tileBuilder: (context, event, range) => const SizedBox());
     return MaterialApp(
       home: Scaffold(
@@ -44,7 +44,7 @@ void main() {
             displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 3)),
             initialDateTime: DateTime(2025),
           ),
-          body: CalendarBody(scheduleTileComponents: tiles),
+          body: KalenderBody(scheduleTileComponents: tiles),
         ),
       ),
     );

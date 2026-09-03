@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions/internal_date_time_range.dart';
 import 'package:kalender/src/kalender_view.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/kalender_date_time_range.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time.dart';
-import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
+import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
 
-/// The [CalendarController] is used to controller a single [KalenderView].
+/// The [KalenderController] is used to controller a single [KalenderView].
 /// It provides some useful functions for navigating the [KalenderView].
 ///
-/// The [KalenderView] attaches itself to the [CalendarController] by calling [attach].
+/// The [KalenderView] attaches itself to the [KalenderController] by calling [attach].
 /// And detaches itself by calling [detach].
 ///
-class CalendarController extends ChangeNotifier with CalendarNavigationFunctions, NewEvent {
-  CalendarController() : id = DateTime.now().millisecondsSinceEpoch {
+class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
+  KalenderController() : id = DateTime.now().millisecondsSinceEpoch {
     _internalDateTimeRange.addListener(_updateVisibleDateTimeRange);
   }
 
   /// This controllers id.
   final int id;
 
-  /// This is a reference to the [ViewController] that is currently attached to this [CalendarController].
+  /// This is a reference to the [ViewController] that is currently attached to this [KalenderController].
   ViewController? _viewController;
   ViewController? get viewController => _viewController;
   bool get isAttached => _viewController != null;
@@ -40,8 +40,8 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
   /// The [KalenderDateTimeRange] that is currently visible for the current location of the calendar this controller is attached to.
   final visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
 
-  /// The [CalendarEvent]s that are currently visible.
-  final visibleEvents = ValueNotifier<Set<CalendarEvent>>({});
+  /// The [KalenderEvent]s that are currently visible.
+  final visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
 
   /// The [KalenderTime] currently aligned with the top of the visible viewport.
   ///
@@ -56,7 +56,7 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
   VoidCallback? _visibleTimeOfDayForwarder;
 
   /// The event currently being focused on.
-  final selectedEvent = ValueNotifier<CalendarEvent?>(null);
+  final selectedEvent = ValueNotifier<KalenderEvent?>(null);
   String? _selectedEventId;
   String? get selectedEventId => _selectedEventId;
 
@@ -68,13 +68,13 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
   ///
   /// [event] the event to focus on.
   /// [internal] leave false if not called from within the package.
-  void selectEvent(CalendarEvent event, {bool internal = false}) {
+  void selectEvent(KalenderEvent event, {bool internal = false}) {
     _selectedEventId = event.id;
     _internalFocus = internal;
     selectedEvent.value = event;
   }
 
-  void updateEvent(CalendarEvent event, {bool internal = false}) {
+  void updateEvent(KalenderEvent event, {bool internal = false}) {
     _internalFocus = internal;
     selectedEvent.value = event;
   }
@@ -90,7 +90,7 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
     return viewController == _viewController;
   }
 
-  /// Attach the [ViewController] to this [CalendarController].
+  /// Attach the [ViewController] to this [KalenderController].
   void attach(ViewController viewController) {
     if (isAttached) detach();
 
@@ -117,7 +117,7 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
     notifyListeners();
   }
 
-  /// Detach the [ViewController] from this [CalendarController].
+  /// Detach the [ViewController] from this [KalenderController].
   void detach() {
     _detachVisibleTimeOfDay();
     visibleTimeOfDay.value = null;
@@ -197,7 +197,7 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent event, {
+    KalenderEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// A custom event that extends [CalendarEvent] with a title and color.
-class Event extends CalendarEvent {
+/// A custom event that extends [KalenderEvent] with a title and color.
+class Event extends KalenderEvent {
   Event({
     super.id,
     required super.start,
@@ -51,7 +51,7 @@ class Event extends CalendarEvent {
   final Color? color;
 
   // Rebuilds only what this class adds. The id, the interaction config and the
-  // rule are restored by CalendarEvent afterwards.
+  // rule are restored by KalenderEvent afterwards.
   @override
   Event copyWithData({required DateTime start, required DateTime end}) {
     return Event(start: start, end: end, title: title, color: color);
@@ -73,7 +73,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   final now = DateTime.now();
 
@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventTapped: (event) => calendarController.selectEvent(event),
           onEventCreate: (event) {
             // Give newly created events a default title.
@@ -164,11 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               _calendarToolbar(),
-              const CalendarHeader(multiDayTileComponents: tileComponents),
+              const KalenderHeader(multiDayTileComponents: tileComponents),
             ],
           ),
         ),
-        body: const CalendarBody(
+        body: const KalenderBody(
           multiDayTileComponents: tileComponents,
           monthTileComponents: tileComponents,
           scheduleTileComponents: scheduleTileComponents,

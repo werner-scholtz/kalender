@@ -10,10 +10,10 @@ import '../utilities.dart';
 /// handle widgets from the context.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   late String eventId;
 
-  final interaction = CalendarInteraction(
+  final interaction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     inputMode: InputMode.precise,
@@ -21,9 +21,9 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     eventId = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: DateTime(2025, 1, 1, 1),
         end: DateTime(2025, 1, 1, 4),
       ),
@@ -48,7 +48,7 @@ void main() {
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
-          body: CalendarBody(interaction: interaction, multiDayTileComponents: tiles),
+          body: KalenderBody(interaction: interaction, multiDayTileComponents: tiles),
         ),
       ),
     );

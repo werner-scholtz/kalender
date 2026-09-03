@@ -8,7 +8,7 @@ import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/toolbar/chip_dropdown.dart';
 
 class NavigationHeader extends StatelessWidget {
-  final CalendarController controller;
+  final KalenderController controller;
   final List<ViewConfiguration> viewConfigurations;
   final ViewConfiguration viewConfiguration;
   final VoidCallback? onToggleConfig;
@@ -80,7 +80,7 @@ class NavigationHeader extends StatelessWidget {
 }
 
 class TodayButton extends StatelessWidget {
-  final CalendarController controller;
+  final KalenderController controller;
   final bool compact;
   const TodayButton({super.key, required this.controller, this.compact = false});
 
@@ -239,7 +239,7 @@ class ConfigToggle extends StatelessWidget {
 }
 
 class HeaderDateButton extends StatelessWidget {
-  final CalendarController controller;
+  final KalenderController controller;
   final bool compact;
   const HeaderDateButton({super.key, required this.controller, this.compact = false});
 

@@ -1,5 +1,5 @@
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 
 /// The rule a calendar uses when nothing overrides it: 24 hours or longer.
 const kDefaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
@@ -16,8 +16,8 @@ const kDefaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
 /// ```
 ///
 /// A single event can disagree with the rest through
-/// [CalendarEvent.multiDayRule]. For a rule none of these express, override
-/// [CalendarEvent.spansMultipleDays] rather than implementing this class.
+/// [KalenderEvent.multiDayRule]. For a rule none of these express, override
+/// [KalenderEvent.spansMultipleDays] rather than implementing this class.
 ///
 /// This is a class rather than a function so that it has value equality. View
 /// configurations are compared with `==` to decide whether the calendar needs
@@ -41,7 +41,7 @@ abstract class MultiDayRule {
   const factory MultiDayRule.calendarDays() = _CalendarDaysRule;
 
   /// Whether [event] is multi-day, with calendar days measured in [location].
-  bool isMultiDay(CalendarEvent event, {required Location? location});
+  bool isMultiDay(KalenderEvent event, {required Location? location});
 }
 
 class _MinimumDurationRule extends MultiDayRule {
@@ -50,7 +50,7 @@ class _MinimumDurationRule extends MultiDayRule {
   final Duration minimum;
 
   @override
-  bool isMultiDay(CalendarEvent event, {required Location? location}) => event.duration >= minimum;
+  bool isMultiDay(KalenderEvent event, {required Location? location}) => event.duration >= minimum;
 
   @override
   bool operator ==(Object other) => other is _MinimumDurationRule && other.minimum == minimum;
@@ -63,7 +63,7 @@ class _CalendarDaysRule extends MultiDayRule {
   const _CalendarDaysRule();
 
   @override
-  bool isMultiDay(CalendarEvent event, {required Location? location}) {
+  bool isMultiDay(KalenderEvent event, {required Location? location}) {
     final range = event.internalRange(location: location);
     if (range.dates().length > 1) return true;
 

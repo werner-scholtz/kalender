@@ -34,7 +34,7 @@ flutter build web --release --wasm --base-href /kalender/
 ### State ownership
 
 - `lib/providers.dart` defines lightweight `InheritedWidget` providers for app settings and the shared `EventsController`.
-- Each `Calendar` widget creates its own `CalendarScope`, which means each visible calendar instance gets its own `CalendarController`, `DemoConfiguration`, and timezone `Location` notifier.
+- Each `Calendar` widget creates its own `CalendarScope`, which means each visible calendar instance gets its own `KalenderController`, `DemoConfiguration`, and timezone `Location` notifier.
 - In desktop split view, both calendars share the same event store but do not share view/controller state unless you explicitly refactor them to do so.
 
 ### Demo configuration
@@ -45,14 +45,14 @@ flutter build web --release --wasm --base-href /kalender/
 
 ### UI composition
 
-- `lib/widgets/calendar/calendar.dart` is the main composition point for `KalenderView`, `CalendarHeader`, `CalendarBody`, overlay behavior, tile components, and the configuration panel.
+- `lib/widgets/calendar/calendar.dart` is the main composition point for `KalenderView`, `KalenderHeader`, `KalenderBody`, overlay behavior, tile components, and the configuration panel.
 - `lib/widgets/toolbar/` contains app-level controls such as theme, locale, text direction, warnings, and view type selection.
 - `lib/widgets/configuration/` contains the editors for runtime calendar customization.
 - `lib/widgets/calendar/` contains demo-specific calendar chrome and tile rendering; keep package internals in `kalender` and demo presentation concerns here.
 
 ### Models and demo data
 
-- `lib/models/event.dart` defines the demo event type by extending `CalendarEvent` with presentation fields like title, description, and color.
+- `lib/models/event.dart` defines the demo event type by extending `KalenderEvent` with presentation fields like title, description, and color.
 - `lib/utils.dart` seeds a large synthetic event list for the demo. Treat it as showcase data, not production logic.
 
 ### Timezone and localization

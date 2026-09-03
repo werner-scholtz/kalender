@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 
 mixin EventTileUtils {
-  /// The [CalendarEvent] that the tile is representing.
+  /// The [KalenderEvent] that the tile is representing.
   ///
   /// This is provided by a [TileComponents.tileBuilder] and represents
   /// the event data that this tile is displaying.
-  CalendarEvent get event;
+  KalenderEvent get event;
 
   /// The [KalenderDateTimeRange] that the tile is being displayed within.
   ///
@@ -44,7 +44,7 @@ mixin EventTileUtils {
 /// ```dart
 /// class DayEventTileExample extends StatelessWidget with DayEventTileUtils {
 ///   @override
-///   final CalendarEvent event;
+///   final KalenderEvent event;
 ///
 ///   @override
 ///   final KalenderDateTimeRange tileRange;
@@ -77,7 +77,7 @@ mixin EventTileUtils {
 // ignore: library_private_types_in_public_api
 mixin DayEventTileUtils implements EventTileUtils {
   @override
-  CalendarEvent get event;
+  KalenderEvent get event;
 
   @override
   KalenderDateTimeRange get tileRange;
@@ -103,7 +103,7 @@ mixin DayEventTileUtils implements EventTileUtils {
     return event.internalRange(location: location).dateTimeRangeOnDate(internalTileRange(context).start.startOfDay)!;
   }
 
-  /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
+  /// Fetches a list of [KalenderEvent]s that are chronologically close to the current [event].
   ///
   /// This is useful for finding events that are displayed near the current event.
   ///
@@ -122,7 +122,7 @@ mixin DayEventTileUtils implements EventTileUtils {
   ///   after: Duration(minutes: 30),
   /// );
   /// ```
-  List<CalendarEvent> nearbyEvents(
+  List<KalenderEvent> nearbyEvents(
     BuildContext context, {
     Duration before = Duration.zero,
     Duration after = Duration.zero,
@@ -184,7 +184,7 @@ mixin DayEventTileUtils implements EventTileUtils {
 /// ```dart
 /// class MultiDayEventTileExample extends StatelessWidget with MultiDayEventTileUtils {
 ///   @override
-///   final CalendarEvent event;
+///   final KalenderEvent event;
 ///
 ///   @override
 ///   final KalenderDateTimeRange tileRange;
@@ -217,7 +217,7 @@ mixin DayEventTileUtils implements EventTileUtils {
 // ignore: library_private_types_in_public_api
 mixin MultiDayEventTileUtils implements EventTileUtils {
   @override
-  CalendarEvent get event;
+  KalenderEvent get event;
 
   @override
   KalenderDateTimeRange get tileRange;
@@ -231,7 +231,7 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
     );
   }
 
-  /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
+  /// Fetches a list of [KalenderEvent]s that are chronologically close to the current [event].
   ///
   /// This method is optimized for multi-day events and can search across
   /// both single-day and multi-day events.
@@ -242,7 +242,7 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
   ///[includeMultiDayEvents] Whether to include other multi-day events (default: true)
   ///[includeDayEvents] Whether to include single-day events (default: true)
   ///[includeSelf] Whether to include the current event in results (default: false)
-  List<CalendarEvent> nearbyEvents(
+  List<KalenderEvent> nearbyEvents(
     BuildContext context, {
     Duration before = Duration.zero,
     Duration after = Duration.zero,

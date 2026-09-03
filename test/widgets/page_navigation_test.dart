@@ -13,7 +13,7 @@ import '../utilities.dart';
 void main() {
   group('Page navigation (preserved behaviour)', () {
     late DefaultEventsController eventsController;
-    late CalendarController calendarController;
+    late KalenderController calendarController;
 
     // A wide range so the target date is nowhere near the first/last page.
     final wideRange = KalenderDateTimeRange(start: DateTime(2024), end: DateTime(2027));
@@ -22,7 +22,7 @@ void main() {
 
     setUp(() {
       eventsController = DefaultEventsController();
-      calendarController = CalendarController();
+      calendarController = KalenderController();
     });
 
     Future<void> pump(WidgetTester tester, ViewConfiguration config) {
@@ -32,7 +32,7 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: config,
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
     }

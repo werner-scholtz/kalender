@@ -47,6 +47,33 @@ The sections below cover what is left after the fixes have run.
 
 ## v0.29.x → v0.30.0
 
+### The `Calendar*` types are renamed to `Kalender*`
+
+`dart fix` applies all of these. The package has been converging on `Kalender` as
+its ownership marker since `KalenderView`, and this release finishes it.
+
+| Before | After |
+| --- | --- |
+| `CalendarBody` | `KalenderBody` |
+| `CalendarCallbacks` | `KalenderCallbacks` |
+| `CalendarComponents` | `KalenderComponents` |
+| `CalendarController` | `KalenderController` |
+| `CalendarEvent` | `KalenderEvent` |
+| `CalendarHeader` | `KalenderHeader` |
+| `CalendarInteraction` | `KalenderInteraction` |
+| `CalendarSnapping` | `KalenderSnapping` |
+
+The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now. Its
+member is still `context.calendarLocale`, so code reading it is unaffected.
+
+Named parameters keep their names, so `KalenderView(calendarController: ...)` is
+unchanged.
+
+### `CalendarView` and `CalendarViewState` are removed
+
+Deprecated in 0.29.0 as the one-release window requires. `dart fix` has renamed
+them to `KalenderView` and `KalenderViewState` since 0.29.1, and still does.
+
 ### `KalenderDateTimeRange` replaces Material's `DateTimeRange`
 
 Material and Cupertino left the Flutter framework and became the `material_ui` and

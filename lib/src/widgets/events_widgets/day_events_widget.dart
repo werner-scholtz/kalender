@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
@@ -87,7 +87,7 @@ class DayEventsColumn extends StatefulWidget {
 
   /// The calendar controller, used to keep a selected (being dragged/resized)
   /// event built even when it scrolls out of view.
-  final CalendarController calendarController;
+  final KalenderController calendarController;
 
   /// Creates a new instance of the [DayEventsColumn] widget.
   const DayEventsColumn({
@@ -109,7 +109,7 @@ class DayEventsColumn extends StatefulWidget {
 
 class _DayEventsColumnState extends State<DayEventsColumn> {
   /// The events that are displayed on the day.
-  List<CalendarEvent> _events = [];
+  List<KalenderEvent> _events = [];
 
   /// The (top, bottom) pixel band of each event in [_events], used to decide
   /// which events fall inside the visible scroll window.
@@ -170,7 +170,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   }
 
   /// Queries the events for this day from the controller.
-  Iterable<CalendarEvent> _queryEvents() {
+  Iterable<KalenderEvent> _queryEvents() {
     return widget.eventsController.eventsFromDateTimeRange(
       widget.date.dayRange,
       multiDayRule: widget.viewConfiguration.multiDayRule,
@@ -203,7 +203,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   /// Computes the (top, bottom) pixel band of each event, matching the layout
   /// delegate's geometry so culling lines up with what is actually drawn.
-  List<(double, double)> _computeBands(List<CalendarEvent> events) {
+  List<(double, double)> _computeBands(List<KalenderEvent> events) {
     if (events.isEmpty) return const [];
     final delegate = widget.configuration.eventLayoutStrategy.createDelegate(
       events: const [],
@@ -260,7 +260,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   }
 
   /// Checks if the layout of the events has changed.
-  bool _needsLayout(List<CalendarEvent> sortedEvents) {
+  bool _needsLayout(List<KalenderEvent> sortedEvents) {
     if (sortedEvents.length != _events.length) return true;
     for (var i = 0; i < sortedEvents.length; i++) {
       if (!sortedEvents[i].layoutEquals(_events[i])) return true;
@@ -269,7 +269,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   }
 
   /// Sorts the events based on the layout strategy defined in the configuration.
-  List<CalendarEvent> _sort(Iterable<CalendarEvent> events) {
+  List<KalenderEvent> _sort(Iterable<KalenderEvent> events) {
     return widget.configuration.eventLayoutStrategy.createDelegate(
       events: const [],
       date: widget.date,
@@ -346,8 +346,8 @@ class DayDropTargetColumn extends StatefulWidget {
   final MultiDayViewConfiguration viewConfiguration;
   final MultiDayBodyConfiguration configuration;
   final InternalDateTime date;
-  final List<CalendarEvent> events;
-  final CalendarController controller;
+  final List<KalenderEvent> events;
+  final KalenderController controller;
   final EventLayoutDelegateCache cache;
   final Location? location;
   const DayDropTargetColumn({
@@ -367,7 +367,7 @@ class DayDropTargetColumn extends StatefulWidget {
 }
 
 class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
-  CalendarEvent? _selectedEvent;
+  KalenderEvent? _selectedEvent;
 
   @override
   void initState() {

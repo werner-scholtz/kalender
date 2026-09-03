@@ -1,15 +1,15 @@
 import 'package:flutter/widgets.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
+import 'package:kalender/src/models/kalender_interaction.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// A widget that makes the event tile draggable for rescheduling.
 class TileDraggable extends StatelessWidget {
   /// The event to be dragged.
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// The builder used to create the feedback tile.
   final FeedbackTileBuilder? feedbackTileBuilder;
@@ -80,7 +80,7 @@ class TileDraggable extends StatelessWidget {
 /// A widget that provides a feedback widget for event dragging.
 class FeedbackWidget extends StatefulWidget {
   /// The event being dragged.
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// The events controller, used to listen for updates to the event being dragged.
   ///
@@ -116,7 +116,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
   Size _size = const Size(0, 0);
 
   /// The current event associated with the feedback widget.
-  late CalendarEvent _event = widget.event;
+  late KalenderEvent _event = widget.event;
 
   @override
   void initState() {

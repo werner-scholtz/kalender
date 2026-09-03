@@ -2,8 +2,8 @@
 
 library;
 
-export 'package:kalender/src/calendar_body.dart';
-export 'package:kalender/src/calendar_header.dart';
+export 'package:kalender/src/kalender_body.dart';
+export 'package:kalender/src/kalender_header.dart';
 
 /// Widgets
 export 'package:kalender/src/kalender_view.dart';
@@ -20,13 +20,13 @@ export 'package:kalender/src/theme/kalender_theme.dart';
 
 /// Models
 export 'package:kalender/src/models/providers/kalender_scope.dart';
-export 'package:kalender/src/models/controllers/calendar_controller.dart';
+export 'package:kalender/src/models/controllers/kalender_controller.dart';
 export 'package:kalender/src/models/controllers/events_controller.dart';
 export 'package:kalender/src/models/view_configurations/view_configuration.dart';
-export 'package:kalender/src/models/calendar_callbacks.dart';
-export 'package:kalender/src/models/calendar_events/calendar_event.dart';
-export 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
-export 'package:kalender/src/models/calendar_interaction.dart';
+export 'package:kalender/src/models/kalender_callbacks.dart';
+export 'package:kalender/src/models/kalender_events/kalender_event.dart';
+export 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
+export 'package:kalender/src/models/kalender_interaction.dart';
 export 'package:kalender/src/models/controllers/view_controller.dart';
 export 'package:kalender/src/models/view_transition.dart';
 export 'package:kalender/src/models/navigation_triggers.dart';

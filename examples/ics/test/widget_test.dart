@@ -79,7 +79,7 @@ void main() {
       expect(source.end.difference(source.start), const Duration(days: 1));
     });
 
-    test('the flag reaches the CalendarEvent', () {
+    test('the flag reaches the KalenderEvent', () {
       final window = KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 31));
       final events = expandEvents(sources, window);
       expect(events.firstWhere((e) => e.uid == 'a@example.com').isAllDay, isTrue);

@@ -29,19 +29,19 @@ void main() {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
       eventsController.addEvent(
-        CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
+        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
       );
     }
 
     final view = KalenderView(
       eventsController: eventsController,
-      calendarController: CalendarController(),
+      calendarController: KalenderController(),
       viewConfiguration: MonthViewConfiguration.singleMonth(
         displayRange: year2025DisplayRange,
         initialDateTime: DateTime(2025, 1, 15),
         nowCallback: nowCallback,
       ),
-      body: const CalendarBody(),
+      body: const KalenderBody(),
     );
 
     await tester.pumpWidget(

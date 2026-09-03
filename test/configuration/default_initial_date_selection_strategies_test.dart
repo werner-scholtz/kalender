@@ -13,7 +13,7 @@ void main() {
   for (final location in locations) {
     // A full-year display range expressed in the target location.
     final range = KalenderDateTimeRange(start: TZDateTime(location, 2025), end: TZDateTime(location, 2026));
-    final visibleEvents = ValueNotifier(<CalendarEvent>{});
+    final visibleEvents = ValueNotifier(<KalenderEvent>{});
 
     // ── Controller builders ──────────────────────────────────────────────
     //

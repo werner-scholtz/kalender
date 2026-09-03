@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
-class CalendarHeader extends StatefulWidget {
-  /// The callbacks used by the [CalendarBody].
+class KalenderHeader extends StatefulWidget {
+  /// The callbacks used by the [KalenderBody].
   ///
-  /// This provides a way to override the [CalendarCallbacks] passed to the [KalenderView].
-  final CalendarCallbacks? callbacks;
+  /// This provides a way to override the [KalenderCallbacks] passed to the [KalenderView].
+  final KalenderCallbacks? callbacks;
 
   /// MultiDay
 
@@ -17,18 +17,18 @@ class CalendarHeader extends StatefulWidget {
   final TileComponents? multiDayTileComponents;
 
   /// The interaction notifier used by the [MultiDayHeader].
-  final CalendarInteraction? interaction;
+  final KalenderInteraction? interaction;
 
   /// Month
 
-  /// Creates a CalendarHeader widget.
+  /// Creates a KalenderHeader widget.
   ///
-  /// This creates the correct header based on the [ViewController] inside the [CalendarController]
+  /// This creates the correct header based on the [ViewController] inside the [KalenderController]
   /// - [MultiDayHeader]
   /// - [MonthHeader]
   /// - [ScheduleHeader]
   ///
-  const CalendarHeader({
+  const KalenderHeader({
     super.key,
     this.multiDayTileComponents,
     this.multiDayHeaderConfiguration,
@@ -37,28 +37,28 @@ class CalendarHeader extends StatefulWidget {
   });
 
   @override
-  State<CalendarHeader> createState() => _CalendarHeaderState();
+  State<KalenderHeader> createState() => _CalendarHeaderState();
 }
 
-class _CalendarHeaderState extends State<CalendarHeader> {
-  late CalendarCallbacks? _callbacks;
-  late ValueNotifier<CalendarInteraction> _interaction;
+class _CalendarHeaderState extends State<KalenderHeader> {
+  late KalenderCallbacks? _callbacks;
+  late ValueNotifier<KalenderInteraction> _interaction;
 
   @override
   void initState() {
     super.initState();
     _callbacks = widget.callbacks;
-    _interaction = ValueNotifier(widget.interaction ?? CalendarInteraction());
+    _interaction = ValueNotifier(widget.interaction ?? KalenderInteraction());
   }
 
   @override
-  void didUpdateWidget(covariant CalendarHeader oldWidget) {
+  void didUpdateWidget(covariant KalenderHeader oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.callbacks != widget.callbacks) {
       _callbacks = widget.callbacks;
     }
     if (oldWidget.interaction != widget.interaction) {
-      _interaction.value = widget.interaction ?? CalendarInteraction();
+      _interaction.value = widget.interaction ?? KalenderInteraction();
     }
   }
 
@@ -85,7 +85,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
         ScheduleViewController() => const ScheduleHeader(),
         _ => throw ErrorHint(
             'Unsupported ViewController type: ${viewController.runtimeType}. '
-            'Make sure to use the correct CalendarHeader for the ViewController.',
+            'Make sure to use the correct KalenderHeader for the ViewController.',
           )
       },
     );

@@ -86,7 +86,7 @@ class MultiDayRuleEditor extends StatelessWidget {
 }
 
 class InteractionEditorWidget extends StatelessWidget {
-  final ValueNotifier<CalendarInteraction> interaction;
+  final ValueNotifier<KalenderInteraction> interaction;
   const InteractionEditorWidget({super.key, required this.interaction});
 
   @override
@@ -118,7 +118,7 @@ class InteractionEditorWidget extends StatelessWidget {
 }
 
 class SnappingEditorWidget extends StatelessWidget {
-  final ValueNotifier<CalendarSnapping> snapping;
+  final ValueNotifier<KalenderSnapping> snapping;
   const SnappingEditorWidget({super.key, required this.snapping});
 
   @override

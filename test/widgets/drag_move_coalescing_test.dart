@@ -9,7 +9,7 @@ import '../utilities.dart';
 /// keeps only the newest and processes it once per frame.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   late String eventId;
 
   final start = DateTime(2025, 3, 24);
@@ -22,9 +22,9 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     eventId = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.copyWith(hour: 6),
         end: start.copyWith(hour: 8),
       ),
@@ -38,14 +38,14 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
-        callbacks: CalendarCallbacks(
+        callbacks: KalenderCallbacks(
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
             event: event,
             updatedEvent: updatedEvent,
           ),
         ),
-        body: CalendarBody(
-          interaction: CalendarInteraction(
+        body: KalenderBody(
+          interaction: KalenderInteraction(
             inputMode: InputMode.precise,
             createEventGesture: EventInteractionGesture.tap,
             modifyEventGesture: EventInteractionGesture.tap,

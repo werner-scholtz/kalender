@@ -1,0 +1,15 @@
+// The input for `fix_calendar_to_kalender.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:flutter/widgets.dart';
+import 'package:kalender/kalender.dart';
+
+KalenderBody? body;
+KalenderCallbacks? callbacks;
+KalenderComponents? components;
+KalenderController? controller;
+KalenderEvent? event;
+KalenderHeader? header;
+KalenderInteraction? interaction;
+KalenderSnapping? snapping;
+
+Locale? localeOf(BuildContext context) => context.calendarLocale;

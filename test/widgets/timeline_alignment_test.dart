@@ -13,18 +13,18 @@ import '../utilities.dart';
 /// must occupy the same horizontal span.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
   Future<void> pumpWeek(
     WidgetTester tester, {
-    CalendarComponents? components,
+    KalenderComponents? components,
     KalenderThemeData? theme,
     TextDirection textDirection = TextDirection.ltr,
     Locale? locale,
@@ -37,8 +37,8 @@ void main() {
       ),
       components: components,
       locale: locale,
-      header: CalendarHeader(multiDayTileComponents: tiles),
-      body: CalendarBody(multiDayTileComponents: tiles),
+      header: KalenderHeader(multiDayTileComponents: tiles),
+      body: KalenderBody(multiDayTileComponents: tiles),
     );
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -69,7 +69,7 @@ void main() {
 
   KalenderThemeData withTimelineStyle(TimelineStyle style) => KalenderThemeData(timelineStyle: style);
 
-  CalendarComponents withTimelineStringBuilder(TimeOfDayStringBuilder builder) => CalendarComponents(
+  KalenderComponents withTimelineStringBuilder(TimeOfDayStringBuilder builder) => KalenderComponents(
         multiDayComponents: MultiDayComponents(
           bodyComponents: MultiDayBodyComponents(timelineStringBuilder: builder),
         ),
@@ -121,7 +121,7 @@ void main() {
   testWidgets('custom timelineWidth builder drives the gutter and stays aligned', (tester) async {
     await pumpWeek(
       tester,
-      components: CalendarComponents(
+      components: KalenderComponents(
         multiDayComponents: MultiDayComponents(
           bodyComponents: MultiDayBodyComponents(timelineWidth: (context, timeOfDayRange) => 100),
         ),

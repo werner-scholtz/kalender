@@ -48,13 +48,13 @@ void main() {
   });
 
   testWidgets('a rule swapped in through copyWith re-sorts the events', (tester) async {
-    final calendarController = CalendarController();
+    final calendarController = KalenderController();
     final eventsController = DefaultEventsController();
 
     // Crosses midnight but lasts under 24 hours, the only shape the two rules
     // classify differently.
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: DateTime(2025, 1, 15, 22),
         end: DateTime(2025, 1, 16, 2),
       ),
@@ -69,8 +69,8 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: configuration,
-        header: const CalendarHeader(),
-        body: const CalendarBody(),
+        header: const KalenderHeader(),
+        body: const KalenderBody(),
       );
     }
 

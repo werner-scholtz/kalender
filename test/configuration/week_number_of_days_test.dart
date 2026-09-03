@@ -112,15 +112,15 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: CalendarController(),
+          calendarController: KalenderController(),
           viewConfiguration: MultiDayViewConfiguration.week(
             displayRange: displayRange,
             initialDateTime: monday,
             firstDayOfWeek: DateTime.monday,
             numberOfDays: numberOfDays,
           ),
-          header: const CalendarHeader(),
-          body: const CalendarBody(),
+          header: const KalenderHeader(),
+          body: const KalenderBody(),
         ),
       );
     }

@@ -48,7 +48,7 @@ MaterialApp(
 )
 ```
 
-It can be set either way: on a single `KalenderView` through `CalendarComponents`, or
+It can be set either way: on a single `KalenderView` through `KalenderComponents`, or
 once for the whole app through [`KalenderThemeData`](appearance.md#theming).
 
 ### Custom text
@@ -67,7 +67,7 @@ KalenderView(
   eventsController: eventsController,
   calendarController: calendarController,
   viewConfiguration: viewConfiguration,
-  components: CalendarComponents(
+  components: KalenderComponents(
     multiDayComponents: MultiDayComponents(
       headerComponents: MultiDayHeaderComponents(
         dayHeaderStringBuilder: (context, date) => DateFormat.E(context.calendarLocale?.toLanguageTag()).format(date),
@@ -103,7 +103,7 @@ MultiDayBodyComponents(
 
 ## Location
 
-`KalenderView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `CalendarEvent` constructor automatically converts `dateTimeRange` values to UTC, so events are always stored in UTC internally and converted to the given location for display.
+`KalenderView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `KalenderEvent` constructor automatically converts `dateTimeRange` values to UTC, so events are always stored in UTC internally and converted to the given location for display.
 
 <!-- snippet: expression -->
 ```dart
@@ -138,7 +138,7 @@ Changing `location` at runtime automatically updates visible date/time ranges. L
 
 ### Events from an external source
 
-When events come from an `.ics` file, a device calendar, or an API, map each source time to the exact instant it represents before building the `CalendarEvent`. The constructor stores the instant as UTC, so what matters is that the `DateTime` you pass points at the right moment.
+When events come from an `.ics` file, a device calendar, or an API, map each source time to the exact instant it represents before building the `KalenderEvent`. The constructor stores the instant as UTC, so what matters is that the `DateTime` you pass points at the right moment.
 
 - **UTC instant** (an `.ics` time ending in `Z`, or an epoch): pass it as-is.
 - **Zoned time** (an IANA `TZID`): build a `TZDateTime` in that zone so the instant is correct.
@@ -148,7 +148,7 @@ When events come from an `.ics` file, a device calendar, or an API, map each sou
   import 'package:timezone/timezone.dart' as tz;
 
   final start = tz.TZDateTime(tz.getLocation('Europe/London'), 2025, 1, 6, 9);
-  final event = CalendarEvent(
+  final event = KalenderEvent(
     start: start, end: start.add(const Duration(hours: 1)),
   );
   ```
