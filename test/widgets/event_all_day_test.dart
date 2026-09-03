@@ -9,7 +9,7 @@ import '../utilities.dart';
 /// the header whatever the view's rule says and whatever its duration is.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   final start = DateTime(2025, 1, 6); // A Monday.
 
@@ -20,7 +20,7 @@ void main() {
     end: start.add(const Duration(days: 1, hours: 10)),
   );
 
-  final interaction = CalendarInteraction(
+  final interaction = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -28,10 +28,10 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
-  Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule, {CalendarCallbacks? callbacks}) {
+  Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule, {KalenderCallbacks? callbacks}) {
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -44,14 +44,14 @@ void main() {
           initialDateTime: start,
           multiDayRule: rule,
         ),
-        header: CalendarHeader(interaction: interaction),
-        body: CalendarBody(interaction: interaction),
+        header: KalenderHeader(interaction: interaction),
+        body: KalenderBody(interaction: interaction),
       ),
     );
   }
 
   testWidgets('an hour-long all-day event renders in the header', (tester) async {
-    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
+    final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
 
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
 
@@ -60,7 +60,7 @@ void main() {
   });
 
   testWidgets('the same event without the flag stays in the body', (tester) async {
-    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end));
+    final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end));
 
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
 
@@ -70,7 +70,7 @@ void main() {
 
   testWidgets('the view rule cannot pull it back into the body', (tester) async {
     // A rule nothing satisfies. The flag still decides.
-    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
+    final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
 
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(days: 365)));
 
@@ -79,13 +79,13 @@ void main() {
   });
 
   testWidgets('rescheduling it in the header keeps it all-day', (tester) async {
-    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
+    final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
 
-    CalendarEvent? changed;
+    KalenderEvent? changed;
     await pumpWeek(
       tester,
       const MultiDayRule.minimumDuration(Duration(hours: 24)),
-      callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated),
+      callbacks: KalenderCallbacks(onEventChanged: (_, updated) => changed = updated),
     );
 
     final original = eventsController.byId(id)!;

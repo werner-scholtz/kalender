@@ -2,16 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 /// Until 0.26.0 a subclass overrode `copyWith` and had to forward by hand every
-/// field [CalendarEvent] carries but takes no parameter for, which was `id` and,
+/// field [KalenderEvent] carries but takes no parameter for, which was `id` and,
 /// from 0.24.0, `multiDayRule`. Forgetting one produced a copy the calendar read
 /// as a different event, or one that lost its rule, and adding a field to the
 /// base class broke every subclass at once without a compile error.
 ///
-/// A subclass now overrides [CalendarEvent.copyWithData] and rebuilds only what
+/// A subclass now overrides [KalenderEvent.copyWithData] and rebuilds only what
 /// it added. `withDateTimeRange` restores the base state afterwards.
 
 /// Rebuilds only its own field, as the documentation shows.
-class _Task extends CalendarEvent {
+class _Task extends KalenderEvent {
   _Task({
     required super.start,
     required super.end,
@@ -35,9 +35,9 @@ class _Task extends CalendarEvent {
 }
 
 /// Ignores the analyzer warning and writes no hook at all, so the base
-/// implementation returns a plain [CalendarEvent].
+/// implementation returns a plain [KalenderEvent].
 // ignore: missing_override_of_must_be_overridden
-class _NoHook extends CalendarEvent {
+class _NoHook extends KalenderEvent {
   _NoHook({required super.start, required super.end});
 }
 
@@ -47,7 +47,7 @@ void main() {
 
   group('withDateTimeRange', () {
     test('moves a base event and keeps its identity and rule', () {
-      final event = CalendarEvent(start: range.start, end: range.end, multiDayRule: const MultiDayRule.calendarDays());
+      final event = KalenderEvent(start: range.start, end: range.end, multiDayRule: const MultiDayRule.calendarDays());
       final copy = event.withDateTimeRange(moved);
 
       expect(copy.dateTimeRange, equals(moved));

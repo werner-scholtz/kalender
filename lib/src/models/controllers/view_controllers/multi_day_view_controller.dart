@@ -92,7 +92,7 @@ class MultiDayViewController extends ViewController {
   final ValueNotifier<KalenderTime?> visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
   @override
-  final ValueNotifier<Set<CalendarEvent>> visibleEvents;
+  final ValueNotifier<Set<KalenderEvent>> visibleEvents;
 
   void _offsetListener() =>
       pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
@@ -156,7 +156,7 @@ class MultiDayViewController extends ViewController {
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent event, {
+    KalenderEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

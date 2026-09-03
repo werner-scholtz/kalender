@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   final now = DateTime.now();
 
@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     final today = DateTime(now.year, now.month, now.day);
     eventsController.addEvents([
-      CalendarEvent(start: today.add(const Duration(hours: 9)), end: today.add(const Duration(hours: 10, minutes: 30))),
-      CalendarEvent(
+      KalenderEvent(start: today.add(const Duration(hours: 9)), end: today.add(const Duration(hours: 10, minutes: 30))),
+      KalenderEvent(
         start: today.add(const Duration(days: 1, hours: 13)),
         end: today.add(const Duration(days: 1, hours: 14)),
       ),
@@ -76,8 +76,8 @@ class _HomePageState extends State<HomePage> {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: viewConfiguration,
-          header: const CalendarHeader(),
-          body: const CalendarBody(),
+          header: const KalenderHeader(),
+          body: const KalenderBody(),
         ),
       ),
     );

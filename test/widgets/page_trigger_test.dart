@@ -15,18 +15,18 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 28)));
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final components = TileComponents(
     tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
   );
 
-  final precise = CalendarInteraction(
+  final precise = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -45,8 +45,8 @@ void main() {
           initialDateTime: start,
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         ),
-        header: CalendarHeader(multiDayTileComponents: components, interaction: precise),
-        body: CalendarBody(multiDayTileComponents: components, interaction: precise),
+        header: KalenderHeader(multiDayTileComponents: components, interaction: precise),
+        body: KalenderBody(multiDayTileComponents: components, interaction: precise),
       ),
     );
   }
@@ -54,7 +54,7 @@ void main() {
   testWidgets('dragging a header tile to the viewport edge advances the page', (tester) async {
     // A 2-day event in the first visible week, shown in the multi-day header.
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: start.add(const Duration(days: 1)),
         end: start.add(const Duration(days: 3)),
       ),
@@ -66,7 +66,7 @@ void main() {
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     expect(tile, findsOneWidget);
-    final headerRect = tester.getRect(find.byType(CalendarHeader));
+    final headerRect = tester.getRect(find.byType(KalenderHeader));
     final tileCenter = tester.getCenter(tile);
 
     // Start a reschedule drag and hold it over the right viewport edge. Move in
@@ -92,7 +92,7 @@ void main() {
     // A one-hour timed event, shown in the body.
     final eventStart = start.add(const Duration(days: 1, hours: 9));
     final id = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: eventStart,
         end: eventStart.add(const Duration(hours: 1)),
       ),
@@ -104,7 +104,7 @@ void main() {
 
     final tile = find.byKey(DayEventTile.tileKey(id));
     expect(tile, findsOneWidget);
-    final bodyRect = tester.getRect(find.byType(CalendarBody));
+    final bodyRect = tester.getRect(find.byType(KalenderBody));
     final tileCenter = tester.getCenter(tile);
 
     // Start a reschedule drag and hold it over the right viewport edge. Move in

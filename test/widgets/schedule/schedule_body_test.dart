@@ -17,15 +17,15 @@ import '../../utilities.dart';
 ///     nearest day, and `initialScrollIndex` polluted the date→index map.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   // A one-hour event at [hour] on [day].
-  CalendarEvent eventAt(DateTime day, int hour) => CalendarEvent(
+  KalenderEvent eventAt(DateTime day, int hour) => KalenderEvent(
         start: DateTime(day.year, day.month, day.day, hour),
         end: DateTime(day.year, day.month, day.day, hour + 1),
       );
@@ -36,7 +36,7 @@ void main() {
     NowCallback? nowCallback,
     DateTime? initialDate,
     Location? location,
-    CalendarComponents? components,
+    KalenderComponents? components,
   }) {
     return KalenderView(
       eventsController: eventsController,
@@ -48,7 +48,7 @@ void main() {
         initialDateTime: initialDate,
         nowCallback: nowCallback,
       ),
-      body: CalendarBody(
+      body: KalenderBody(
         scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay, leadingWidth: leadingWidth),
       ),
     );
@@ -217,7 +217,7 @@ void main() {
           emptyDay: EmptyDayBehavior.hide,
           initialDate: DateTime(2025, 1, 15),
           nowCallback: () => DateTime(2025, 1, 15, 10),
-          components: const CalendarComponents(
+          components: const KalenderComponents(
             scheduleComponents: ScheduleComponents(monthItemBuilder: _customMonthItem),
           ),
         ),
@@ -234,7 +234,7 @@ void main() {
           emptyDay: EmptyDayBehavior.showOnlyToday,
           initialDate: DateTime(2025, 1, 15),
           nowCallback: () => DateTime(2025, 1, 15, 10),
-          components: const CalendarComponents(
+          components: const KalenderComponents(
             scheduleComponents: ScheduleComponents(emptyItemBuilder: _customEmptyItem),
           ),
         ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [VerticalDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
 class VerticalDragTarget extends StatefulWidget {
-  final CalendarController controller;
+  final KalenderController controller;
   final MultiDayViewController viewController;
   final VerticalConfiguration configuration;
 
@@ -17,7 +17,7 @@ class VerticalDragTarget extends StatefulWidget {
   final double dayWidth;
   final double viewPortHeight;
 
-  final ValueNotifier<CalendarSnapping> snapping;
+  final ValueNotifier<KalenderSnapping> snapping;
 
   /// Creates a [VerticalDragTarget].
   const VerticalDragTarget({
@@ -35,13 +35,13 @@ class VerticalDragTarget extends StatefulWidget {
   State<VerticalDragTarget> createState() => _VerticalDragTargetState();
 
   /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
-  /// This can be overridden by providing a custom implementation via [CalendarCallbacks.onWillAcceptWithDetailsVertical].
+  /// This can be overridden by providing a custom implementation via [KalenderCallbacks.onWillAcceptWithDetailsVertical].
   ///
   /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
   /// The checks performed for each are detailed in the respective sections below.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
-    CalendarController controller,
+    KalenderController controller,
     VerticalConfiguration configuration,
   ) {
     final viewController = controller.viewController as MultiDayViewController;
@@ -76,14 +76,14 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   EventsController get eventsController => context.eventsController;
 
   @override
-  CalendarController get controller => widget.controller;
+  KalenderController get controller => widget.controller;
 
   // TODO: check if this is right, and null check does not break anything.
   @override
   List<InternalDateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
-  CalendarCallbacks? get callbacks => context.callbacks;
+  KalenderCallbacks? get callbacks => context.callbacks;
 
   @override
   double get dayWidth => widget.dayWidth;
@@ -100,7 +100,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   PageTriggerConfiguration get pageTrigger => bodyConfiguration.pageTriggerConfiguration;
   ScrollTriggerConfiguration get scrollTrigger => bodyConfiguration.scrollTriggerConfiguration;
 
-  CalendarSnapping get snapping => widget.snapping.value;
+  KalenderSnapping get snapping => widget.snapping.value;
   bool get snapToOtherEvents => snapping.snapToOtherEvents;
   int get snapIntervalMinutes => snapping.snapIntervalMinutes;
   bool get snapToTimeIndicator => snapping.snapToTimeIndicator;
@@ -288,9 +288,9 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     return InternalDateTime.fromDateTime(startOfDate.add(duration));
   }
 
-  /// Update the [CalendarEvent] based on the [Offset] delta.
+  /// Update the [KalenderEvent] based on the [Offset] delta.
   @override
-  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) {
     // A multi-day event is laid out in the header, so dragging it across the
     // body can only change which date it starts on. Updating it here is what
     // moves the header's drop target as the cursor crosses day columns.
@@ -351,9 +351,9 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     return updatedEvent;
   }
 
-  /// Update the [CalendarEvent] based on the [direction] and [cursorDateTime] delta.
+  /// Update the [KalenderEvent] based on the [direction] and [cursorDateTime] delta.
   @override
-  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
@@ -378,7 +378,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   }
 
   @override
-  CalendarEvent? createEvent(InternalDateTime cursorDateTime) {
+  KalenderEvent? createEvent(InternalDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 

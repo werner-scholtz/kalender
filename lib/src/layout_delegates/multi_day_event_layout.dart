@@ -35,7 +35,7 @@ abstract class MultiDayLayoutStrategy {
   /// The layout frame for [events] across [visibleDateTimeRange].
   MultiDayLayoutFrame generateFrame({
     required InternalDateTimeRange visibleDateTimeRange,
-    required List<CalendarEvent> events,
+    required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,
@@ -49,7 +49,7 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
   @override
   MultiDayLayoutFrame generateFrame({
     required InternalDateTimeRange visibleDateTimeRange,
-    required List<CalendarEvent> events,
+    required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,
@@ -101,11 +101,11 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 ///    - A map is maintained to track the number of rows required for each date.
 MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   required InternalDateTimeRange visibleDateTimeRange,
-  required List<CalendarEvent> events,
+  required List<KalenderEvent> events,
   required TextDirection textDirection,
   required Location? location,
   MultiDayLayoutFrameCache? cache,
-  int Function(CalendarEvent, CalendarEvent)? eventComparator,
+  int Function(KalenderEvent, KalenderEvent)? eventComparator,
 }) {
   // Check cache first if provided
   if (cache != null) {
@@ -283,7 +283,7 @@ class _FrameEntry {
     required this.durationMicroseconds,
   });
 
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// The event start as an [InternalDateTime].
   final InternalDateTime start;
@@ -326,7 +326,7 @@ class MultiDayLayoutFrameCache {
   void clearAll() => _cache.clear();
 }
 
-/// Frame containing all the data to layout the [CalendarEvent]s with [MultiDayLayout].
+/// Frame containing all the data to layout the [KalenderEvent]s with [MultiDayLayout].
 @immutable
 class MultiDayLayoutFrame {
   /// The range of dates that this frame is for.
@@ -335,7 +335,7 @@ class MultiDayLayoutFrame {
   final InternalDateTimeRange dateTimeRange;
 
   /// The sorted events for this frame that will be used to generate `MultiDayEventTile`s.
-  final List<CalendarEvent> events;
+  final List<KalenderEvent> events;
 
   /// The layout information for each event in this frame.
   final List<EventLayoutInformation> layoutInfo;
@@ -373,7 +373,7 @@ class MultiDayLayoutFrame {
   /// Returns the visible events and their layout information based on the provided max number of rows.
   ///
   /// If [maxNumberOfRows] is null, all events are returned.
-  (List<CalendarEvent> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
+  (List<KalenderEvent> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
     // If there is no max number of rows we return all the events.
     if (maxNumberOfRows == null) return (this.events, layoutInfo);
 
@@ -391,7 +391,7 @@ class MultiDayLayoutFrame {
   }
 
   /// Returns the events that should be displayed in the given column.
-  List<CalendarEvent> eventsForColumn(int column) {
+  List<KalenderEvent> eventsForColumn(int column) {
     return layoutInfo.where((info) => info.columns.contains(column)).map((info) {
       return events.firstWhere((event) => event.id == info.id);
     }).toList();

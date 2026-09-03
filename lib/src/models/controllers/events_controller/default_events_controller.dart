@@ -1,10 +1,10 @@
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller/default_event_store.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
+import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 
-/// The default [EventsController] for managing [CalendarEvent]s.
+/// The default [EventsController] for managing [KalenderEvent]s.
 class DefaultEventsController extends EventsController {
   final List<Location> locations;
 
@@ -16,30 +16,30 @@ class DefaultEventsController extends EventsController {
   late final eventStore = DefaultEventStore(locations: locations);
 
   @override
-  Iterable<CalendarEvent> get events => eventStore.events;
+  Iterable<KalenderEvent> get events => eventStore.events;
 
   @override
-  String addEvent(CalendarEvent event) {
+  String addEvent(KalenderEvent event) {
     final id = eventStore.addNewEvent(event);
     notifyListeners();
     return id;
   }
 
   @override
-  List<String> addEvents(List<CalendarEvent> events) {
+  List<String> addEvents(List<KalenderEvent> events) {
     final ids = events.map(eventStore.addNewEvent).toList();
     notifyListeners();
     return ids;
   }
 
   @override
-  void removeEvent(CalendarEvent event) {
+  void removeEvent(KalenderEvent event) {
     eventStore.removeEvent(event);
     notifyListeners();
   }
 
   @override
-  void removeEvents(List<CalendarEvent> events) {
+  void removeEvents(List<KalenderEvent> events) {
     eventStore.removeEvents(events);
     notifyListeners();
   }
@@ -51,7 +51,7 @@ class DefaultEventsController extends EventsController {
   }
 
   @override
-  void removeWhere(bool Function(String key, CalendarEvent element) test) {
+  void removeWhere(bool Function(String key, KalenderEvent element) test) {
     eventStore.removeWhere(test);
     notifyListeners();
   }
@@ -63,7 +63,7 @@ class DefaultEventsController extends EventsController {
   }
 
   @override
-  List<String> replaceEvents(List<CalendarEvent> events) {
+  List<String> replaceEvents(List<KalenderEvent> events) {
     eventStore.clear();
     final ids = events.map(eventStore.addNewEvent).toList();
     notifyListeners();
@@ -72,8 +72,8 @@ class DefaultEventsController extends EventsController {
 
   @override
   void updateEvent({
-    required CalendarEvent event,
-    required CalendarEvent updatedEvent,
+    required KalenderEvent event,
+    required KalenderEvent updatedEvent,
   }) {
     updatedEvent.id = event.id;
     eventStore.updateEvent(event, updatedEvent);
@@ -81,10 +81,10 @@ class DefaultEventsController extends EventsController {
   }
 
   @override
-  CalendarEvent? byId(String id) => eventStore.byId(id);
+  KalenderEvent? byId(String id) => eventStore.byId(id);
 
   @override
-  Iterable<CalendarEvent> eventsFromDateTimeRange(
+  Iterable<KalenderEvent> eventsFromDateTimeRange(
     InternalDateTimeRange dateTimeRange, {
     required MultiDayRule multiDayRule,
     bool includeMultiDayEvents = true,
@@ -105,9 +105,9 @@ class DefaultEventsController extends EventsController {
     }
   }
 
-  /// Finds all the [CalendarEvent]s that occur during the [dateTimeRange].
-  Iterable<CalendarEvent> _allEventsFromDateTimeRange(
-    Iterable<CalendarEvent> events,
+  /// Finds all the [KalenderEvent]s that occur during the [dateTimeRange].
+  Iterable<KalenderEvent> _allEventsFromDateTimeRange(
+    Iterable<KalenderEvent> events,
     InternalDateTimeRange dateTimeRange,
     Location? location,
   ) {
@@ -120,9 +120,9 @@ class DefaultEventsController extends EventsController {
     );
   }
 
-  /// Finds the [CalendarEvent]s longer than 1 day that occur during the [dateTimeRange].
-  Iterable<CalendarEvent> _multiDayEventsFromDateTimeRange(
-    Iterable<CalendarEvent> events,
+  /// Finds the [KalenderEvent]s longer than 1 day that occur during the [dateTimeRange].
+  Iterable<KalenderEvent> _multiDayEventsFromDateTimeRange(
+    Iterable<KalenderEvent> events,
     InternalDateTimeRange dateTimeRange,
     Location? location,
     MultiDayRule multiDayRule,
@@ -134,9 +134,9 @@ class DefaultEventsController extends EventsController {
     });
   }
 
-  /// Finds the [CalendarEvent]s that are shorter than 1 day that occur during the [dateTimeRange].
-  Iterable<CalendarEvent> _dayEventsFromDateTimeRange(
-    Iterable<CalendarEvent> events,
+  /// Finds the [KalenderEvent]s that are shorter than 1 day that occur during the [dateTimeRange].
+  Iterable<KalenderEvent> _dayEventsFromDateTimeRange(
+    Iterable<KalenderEvent> events,
     InternalDateTimeRange dateTimeRange,
     Location? location,
     MultiDayRule multiDayRule,
@@ -153,7 +153,7 @@ class DefaultEventsController extends EventsController {
   }
 
   /// Check if the event is touching the start of the day, and that is a zero duration event.
-  bool _checkTouching(CalendarEvent event, Location? location) {
+  bool _checkTouching(KalenderEvent event, Location? location) {
     final internalStart = event.internalStart(location: location);
     final internalEnd = event.internalEnd(location: location);
 

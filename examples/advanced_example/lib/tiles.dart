@@ -47,7 +47,7 @@ abstract class BaseEventTile extends StatelessWidget {
 
 class EventTile extends BaseEventTile {
   const EventTile({super.key, required super.event, required super.tileRange});
-  static EventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) {
+  static EventTile builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) {
     return EventTile(event: event as Event, tileRange: tileRange);
   }
 
@@ -67,7 +67,7 @@ class EventTile extends BaseEventTile {
 
 class MultiDayEventTile extends BaseEventTile {
   const MultiDayEventTile({super.key, required super.event, required super.tileRange});
-  static MultiDayEventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) {
+  static MultiDayEventTile builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) {
     return MultiDayEventTile(event: event as Event, tileRange: tileRange);
   }
 
@@ -95,7 +95,7 @@ class MultiDayEventTile extends BaseEventTile {
 class OverlayEventTile extends BaseEventTile {
   const OverlayEventTile({super.key, required super.event, required super.tileRange});
 
-  static OverlayEventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) {
+  static OverlayEventTile builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) {
     return OverlayEventTile(event: event as Event, tileRange: tileRange);
   }
 
@@ -127,7 +127,7 @@ class FeedbackTile extends StatelessWidget {
   final Event event;
   final Size dropTargetWidgetSize;
   const FeedbackTile({super.key, required this.event, required this.dropTargetWidgetSize});
-  static FeedbackTile builder(BuildContext context, CalendarEvent event, Size dropTargetWidgetSize) {
+  static FeedbackTile builder(BuildContext context, KalenderEvent event, Size dropTargetWidgetSize) {
     return FeedbackTile(event: event as Event, dropTargetWidgetSize: dropTargetWidgetSize);
   }
 
@@ -148,7 +148,7 @@ class FeedbackTile extends StatelessWidget {
 class DropTargetTile extends StatelessWidget {
   final Event event;
   const DropTargetTile({super.key, required this.event});
-  static DropTargetTile builder(BuildContext context, CalendarEvent event) {
+  static DropTargetTile builder(BuildContext context, KalenderEvent event) {
     return DropTargetTile(event: event as Event);
   }
 
@@ -166,7 +166,7 @@ class DropTargetTile extends StatelessWidget {
 class TileWhenDragging extends StatelessWidget {
   final Event event;
   const TileWhenDragging({super.key, required this.event});
-  static TileWhenDragging builder(BuildContext context, CalendarEvent event) {
+  static TileWhenDragging builder(BuildContext context, KalenderEvent event) {
     return TileWhenDragging(event: event as Event);
   }
 

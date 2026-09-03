@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
@@ -30,7 +30,7 @@ class MultiDayHeader extends StatelessWidget {
     final calendarController = context.calendarController;
     assert(
       calendarController.viewController is MultiDayViewController,
-      'The CalendarController\'s $ViewController needs to be a $MultiDayViewController',
+      'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
     );
 
     final viewController = calendarController.viewController as MultiDayViewController;
@@ -67,7 +67,7 @@ class MultiDayHeader extends StatelessWidget {
 class _SingleDayHeader extends StatelessWidget {
   final MultiDayViewController viewController;
   final HorizontalConfiguration configuration;
-  final CalendarComponents components;
+  final KalenderComponents components;
 
   const _SingleDayHeader({
     super.key,
@@ -141,7 +141,7 @@ class _SingleDayHeader extends StatelessWidget {
 class _MultiDayHeader extends StatelessWidget {
   final MultiDayViewController viewController;
   final HorizontalConfiguration configuration;
-  final CalendarComponents components;
+  final KalenderComponents components;
 
   const _MultiDayHeader({
     super.key,
@@ -223,7 +223,7 @@ class _MultiDayHeader extends StatelessWidget {
 class _FreeScrollHeader extends StatelessWidget {
   final MultiDayViewController viewController;
   final HorizontalConfiguration configuration;
-  final CalendarComponents components;
+  final KalenderComponents components;
 
   const _FreeScrollHeader({
     super.key,
@@ -271,7 +271,7 @@ class _FreeScrollHeader extends StatelessWidget {
 class _FreeScrollMultiDayBand extends StatefulWidget {
   final MultiDayViewController viewController;
   final HorizontalConfiguration configuration;
-  final CalendarComponents components;
+  final KalenderComponents components;
 
   const _FreeScrollMultiDayBand({
     required this.viewController,

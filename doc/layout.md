@@ -38,7 +38,7 @@ class MyLayoutDelegate extends EventLayoutDelegate {
   });
 
   @override
-  List<CalendarEvent> sortEvents(Iterable<CalendarEvent> events) =>
+  List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events) =>
       events.toList()..sort((a, b) => a.start.compareTo(b.start));
 
   @override
@@ -70,7 +70,7 @@ class MyLayoutStrategy extends EventLayoutStrategy {
 
   @override
   EventLayoutDelegate createDelegate({
-    required Iterable<CalendarEvent> events,
+    required Iterable<KalenderEvent> events,
     required InternalDateTime date,
     required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
@@ -99,7 +99,7 @@ class MyLayoutStrategy extends EventLayoutStrategy {
 
 <!-- snippet: continues -->
 ```dart
-final body = CalendarBody(
+final body = KalenderBody(
   multiDayBodyConfiguration: const MultiDayBodyConfiguration(
     eventLayoutStrategy: MyLayoutStrategy(),
   ),
@@ -124,7 +124,7 @@ class FrameSortedByEnd extends MultiDayLayoutStrategy {
   @override
   MultiDayLayoutFrame generateFrame({
     required InternalDateTimeRange visibleDateTimeRange,
-    required List<CalendarEvent> events,
+    required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,
@@ -149,7 +149,7 @@ class FrameSortedByEnd extends MultiDayLayoutStrategy {
 
 <!-- snippet: continues -->
 ```dart
-final monthBody = CalendarBody(
+final monthBody = KalenderBody(
   monthBodyConfiguration: MonthBodyConfiguration(
     multiDayLayoutStrategy: const FrameSortedByEnd(),
   ),

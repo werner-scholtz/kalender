@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
-typedef UpdatedEvent = (CalendarEvent, CalendarEvent);
+typedef UpdatedEvent = (KalenderEvent, KalenderEvent);
 
 /// Shared drag-target behaviour for the calendar's [DragTarget] states.
 ///
@@ -11,9 +11,9 @@ typedef UpdatedEvent = (CalendarEvent, CalendarEvent);
 /// before any deferred work, since reading [State.context] after disposal
 /// throws rather than returning null.
 mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
-  CalendarController get controller;
+  KalenderController get controller;
   EventsController get eventsController;
-  CalendarCallbacks? get callbacks;
+  KalenderCallbacks? get callbacks;
   double get dayWidth;
   List<DateTime> get visibleDates;
   bool get multiDayDragTarget;
@@ -25,7 +25,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   bool _moveScheduled = false;
 
   /// A copy of the event being created.
-  CalendarEvent? newEvent;
+  KalenderEvent? newEvent;
 
   /// Get the global position of the [DragTarget] widget.
   Offset? get dragTargetPosition {
@@ -41,8 +41,8 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Handle the [DragTarget.onWillAcceptWithDetails].
   bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details, {
-    required bool Function(CalendarEvent event, ResizeDirection direction) onResize,
-    required bool Function(CalendarEvent event) onReschedule,
+    required bool Function(KalenderEvent event, ResizeDirection direction) onResize,
+    required bool Function(KalenderEvent event) onReschedule,
   }) {
     return handleDragDetails(
       details,
@@ -186,17 +186,17 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   void _cancelPendingMove() => _pendingMove = null;
 
   /// Reschedule an event.
-  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime);
+  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime);
 
   /// Resize an event.
-  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, InternalDateTime cursorDateTime);
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime);
 
   /// Reschedule an event.
-  CalendarEvent? createEvent(InternalDateTime cursorDateTime) => newEvent ??= controller.newEvent;
+  KalenderEvent? createEvent(InternalDateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
   /// Resolves the latest version of the [event] from the [EventsController],
   /// falling back to the provided instance if not found.
-  CalendarEvent _resolveEvent(CalendarEvent event) {
+  KalenderEvent _resolveEvent(KalenderEvent event) {
     return eventsController.byId(event.id) ?? event;
   }
 
@@ -211,10 +211,10 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   static K handleDragDetails<K extends Object?, T extends Object?>(
     DragTargetDetails<Object?> details, {
     required K Function(int controllerId) onCreate,
-    required K Function(CalendarEvent event, ResizeDirection direction) onResize,
-    required K Function(CalendarEvent event) onReschedule,
+    required K Function(KalenderEvent event, ResizeDirection direction) onResize,
+    required K Function(KalenderEvent event) onReschedule,
     required K Function() onOther,
-    CalendarEvent Function(CalendarEvent event)? resolveEvent,
+    KalenderEvent Function(KalenderEvent event)? resolveEvent,
   }) {
     final data = details.data;
     if (data is Create) {
@@ -300,7 +300,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   ///
   /// Used where only the date can meaningfully change: the header, and a
   /// multi-day event dragged across the body.
-  CalendarEvent rescheduleToDate(CalendarEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent rescheduleToDate(KalenderEvent event, InternalDateTime cursorDateTime) {
     final start = event.internalStart(location: context.location);
     final newStart = cursorDateTime.copyWith(
       hour: start.hour,

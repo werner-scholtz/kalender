@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 
 /// The callbacks used by the [KalenderView].
 ///
 /// - These callbacks are used to notify the parent widget of events that occur in the [KalenderView].
-class CalendarCallbacks {
+class KalenderCallbacks {
   /// The callback for when an event is tapped.
   ///
   /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail], the [GestureDetector] is not enabled,
@@ -108,7 +108,7 @@ class CalendarCallbacks {
   final OnWillAcceptWithDetailsHorizontal? onWillAcceptWithDetailsHorizontal;
 
   /// Creates a set of callbacks for the [KalenderView].
-  const CalendarCallbacks({
+  const KalenderCallbacks({
     this.onEventTapped,
     this.onEventTappedWithDetail,
     this.onEventSecondaryTapped,
@@ -140,7 +140,7 @@ class CalendarCallbacks {
   bool get hasOnSecondaryTapped => onSecondaryTapped != null || onSecondaryTappedWithDetail != null;
   bool get hasOnScrollPositionChanged => onScrollPositionChanged != null;
 
-  CalendarCallbacks copyWith({
+  KalenderCallbacks copyWith({
     OnEventTapped? onEventTapped,
     OnEventTappedWithDetail? onEventTappedWithDetail,
     OnEventTapped? onEventSecondaryTapped,
@@ -161,7 +161,7 @@ class CalendarCallbacks {
     OnLongPressed? onSecondaryLongPressed,
     OnLongPressedWithDetail? onSecondaryLongPressedWithDetail,
   }) {
-    return CalendarCallbacks(
+    return KalenderCallbacks(
       onEventTapped: onEventTapped ?? this.onEventTapped,
       onEventTappedWithDetail: onEventTappedWithDetail ?? this.onEventTappedWithDetail,
       onEventSecondaryTapped: onEventSecondaryTapped ?? this.onEventSecondaryTapped,
@@ -192,7 +192,7 @@ class CalendarCallbacks {
 ///
 /// Use [OnEventTappedWithDetail] to also receive the tapped date and the
 /// [RenderBox] of the event tile.
-typedef OnEventTapped = void Function(CalendarEvent event);
+typedef OnEventTapped = void Function(KalenderEvent event);
 
 /// The callback for when an event is tapped.
 ///
@@ -201,37 +201,37 @@ typedef OnEventTapped = void Function(CalendarEvent event);
 /// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
 /// - [TapDetail.renderBox] is the [RenderBox] of the event tile.
 typedef OnEventTappedWithDetail = void Function(
-  CalendarEvent event,
+  KalenderEvent event,
   TapDetail detail,
 );
 
 /// The callback for when an event is about to be changed.
-typedef OnEventChange = void Function(CalendarEvent event);
+typedef OnEventChange = void Function(KalenderEvent event);
 
 /// The callback for when an event is changed.
 ///
 /// [event] is the original event.
 /// [updatedEvent] is the updated event.
-typedef OnEventChanged = void Function(CalendarEvent event, CalendarEvent updatedEvent);
+typedef OnEventChanged = void Function(KalenderEvent event, KalenderEvent updatedEvent);
 
 /// The call back for creating a new event.
 ///
 /// [event] is the event that will be created.
-typedef OnEventCreate = CalendarEvent? Function(CalendarEvent event);
+typedef OnEventCreate = KalenderEvent? Function(KalenderEvent event);
 
 /// The call back for creating a new event with details.
 ///
 /// [event] is the event that will be created.
 /// [detail] contains the details of the tap that created the event.
-typedef OnEventCreateWithDetail = CalendarEvent? Function(
-  CalendarEvent event,
+typedef OnEventCreateWithDetail = KalenderEvent? Function(
+  KalenderEvent event,
   TapDetail detail,
 );
 
 /// The callback for a new event has been created.
 ///
 /// [event] is the event that was created.
-typedef OnEventCreated = void Function(CalendarEvent event);
+typedef OnEventCreated = void Function(KalenderEvent event);
 
 /// The callback for when a calendar page is changed.
 ///
@@ -246,7 +246,7 @@ typedef OnScrollPositionChanged = void Function(KalenderTime visibleTimeOfDay);
 /// The callback for when a user taps on an empty space in the calendar.
 ///
 /// [date] is the DateTime that was tapped.
-/// If you need more details, use [CalendarCallbacks.onTappedWithDetail].
+/// If you need more details, use [KalenderCallbacks.onTappedWithDetail].
 typedef OnTapped = void Function(DateTime date);
 
 /// The callback for when a user taps on an empty space in the calendar with details.
@@ -257,7 +257,7 @@ typedef OnTappedWithDetail = void Function(TapDetail detail);
 /// The callback for when a user long presses on an empty space in the calendar.
 ///
 /// [date] is the DateTime that was long pressed.
-/// If you need more details, use [CalendarCallbacks.onLongPressedWithDetail].
+/// If you need more details, use [KalenderCallbacks.onLongPressedWithDetail].
 typedef OnLongPressed = void Function(DateTime date);
 
 /// The callback for when a user long presses on an empty space in the calendar with details.
@@ -274,7 +274,7 @@ typedef OnLongPressedWithDetail = void Function(TapDetail detail);
 /// See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
 typedef OnWillAcceptWithDetailsVertical = bool Function(
   DragTargetDetails<Object?> details,
-  CalendarController controller,
+  KalenderController controller,
   VerticalConfiguration configuration,
 );
 
@@ -289,7 +289,7 @@ typedef OnWillAcceptWithDetailsVertical = bool Function(
 /// See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
 typedef OnWillAcceptWithDetailsHorizontal = bool Function(
   DragTargetDetails<Object?> details,
-  CalendarController controller,
+  KalenderController controller,
   HorizontalConfiguration configuration,
 );
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
@@ -49,7 +49,7 @@ class MultiDayBody extends StatelessWidget {
 
     assert(
       controller.viewController is MultiDayViewController,
-      'The CalendarController\'s $ViewController needs to be a $MultiDayViewController',
+      'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
     );
 
     final viewController = controller.viewController as MultiDayViewController;
@@ -221,7 +221,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
     super.dispose();
   }
 
-  /// Forwards the multi-day view's visible time-of-day to the [CalendarCallbacks].
+  /// Forwards the multi-day view's visible time-of-day to the [KalenderCallbacks].
   void _onVisibleTimeOfDayChanged() {
     final visibleTimeOfDay = widget.viewController.visibleTimeOfDay.value;
     if (visibleTimeOfDay == null) return;

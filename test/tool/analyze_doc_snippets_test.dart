@@ -9,10 +9,10 @@ String block(String directive, String code) => '# Title\n\nSome prose.\n\n$direc
 void main() {
   group('parseSnippets', () {
     test('reads the directive and the code below it', () {
-      final snippets = parseSnippets(block('<!-- snippet: expression -->', 'CalendarBody()'), 'doc/a.md');
+      final snippets = parseSnippets(block('<!-- snippet: expression -->', 'KalenderBody()'), 'doc/a.md');
       expect(snippets, hasLength(1));
       expect(snippets.single.kind, SnippetKind.expression);
-      expect(snippets.single.code, 'CalendarBody()');
+      expect(snippets.single.code, 'KalenderBody()');
       expect(snippets.single.path, 'doc/a.md');
     });
 
@@ -47,9 +47,9 @@ void main() {
 
     test('an indented block, as inside a details element, is dedented', () {
       const markdown =
-          '<details>\n\n  <!-- snippet: expression -->\n  ```dart\n  CalendarBody(\n    x: 1,\n  )\n  ```\n';
+          '<details>\n\n  <!-- snippet: expression -->\n  ```dart\n  KalenderBody(\n    x: 1,\n  )\n  ```\n';
       final snippets = parseSnippets(markdown, 'doc/a.md');
-      expect(snippets.single.code, 'CalendarBody(\n  x: 1,\n)');
+      expect(snippets.single.code, 'KalenderBody(\n  x: 1,\n)');
     });
 
     test('a blank line between the directive and the fence is allowed', () {
@@ -92,8 +92,8 @@ void main() {
         generateUnit(groupSnippets(parseSnippets(block(directive, code), 'doc/a.md')).single, 0);
 
     test('an expression becomes a variable initializer', () {
-      final unit = unitFor('<!-- snippet: expression -->', 'CalendarBody()');
-      expect(unit.source, contains('final Object? _snippet0 =\nCalendarBody()\n;'));
+      final unit = unitFor('<!-- snippet: expression -->', 'KalenderBody()');
+      expect(unit.source, contains('final Object? _snippet0 =\nKalenderBody()\n;'));
     });
 
     test('statements become an async function body', () {

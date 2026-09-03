@@ -1,8 +1,8 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// The widget used for the MultiDayHeader.
 ///

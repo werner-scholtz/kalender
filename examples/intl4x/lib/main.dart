@@ -37,8 +37,8 @@ String _month(BuildContext context, DateTime date) {
 }
 
 /// Every builder kalender would otherwise answer with intl.
-CalendarComponents intl4xComponents() {
-  return CalendarComponents(
+KalenderComponents intl4xComponents() {
+  return KalenderComponents(
     overlayBuilders: OverlayBuilders(
       multiDayPortalOverlayButtonStringBuilder: (context, hidden) {
         return '+${intl4x.NumberFormat(locale: _localeOf(context)).format(hidden)}';
@@ -66,7 +66,7 @@ class IntlFourXApp extends StatefulWidget {
 
 class _IntlFourXAppState extends State<IntlFourXApp> {
   final _eventsController = DefaultEventsController();
-  final _calendarController = CalendarController();
+  final _calendarController = KalenderController();
   var _locale = _locales.first;
 
   @override
@@ -74,7 +74,7 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
     super.initState();
     final today = DateTime.now();
     _eventsController.addEvents([
-      CalendarEvent(
+      KalenderEvent(
         start: DateTime(today.year, today.month, today.day, 9),
         end: DateTime(today.year, today.month, today.day, 11),
       ),
@@ -128,8 +128,8 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
               end: DateTime.now().add(const Duration(days: 180)),
             ),
           ),
-          header: CalendarHeader(multiDayTileComponents: tiles),
-          body: CalendarBody(multiDayTileComponents: tiles),
+          header: KalenderHeader(multiDayTileComponents: tiles),
+          body: KalenderBody(multiDayTileComponents: tiles),
         ),
       ),
     );

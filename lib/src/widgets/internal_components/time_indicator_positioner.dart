@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// A widget that positions a time indicator to follow the current page position.
 ///

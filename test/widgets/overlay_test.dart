@@ -9,9 +9,9 @@ import '../utilities.dart';
 
 void main() {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
   final viewConfiguration = MultiDayViewConfiguration.week();
-  final preciseInteraction = CalendarInteraction(
+  final preciseInteraction = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
     modifyEventGesture: EventInteractionGesture.tap,
@@ -23,11 +23,11 @@ void main() {
     final startOfWeek = DateTime(now.year, now.month, now.day);
 
     eventsController.addEvents([
-      CalendarEvent(
+      KalenderEvent(
         start: startOfWeek,
         end: startOfWeek.copyWith(day: startOfWeek.day + 2),
       ),
-      CalendarEvent(
+      KalenderEvent(
         start: startOfWeek,
         end: startOfWeek.copyWith(day: startOfWeek.day + 2),
       ),
@@ -53,11 +53,11 @@ void main() {
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: viewConfiguration,
-            header: CalendarHeader(
+            header: KalenderHeader(
               multiDayHeaderConfiguration: headerConfiguration,
               interaction: preciseInteraction,
             ),
-            body: CalendarBody(interaction: preciseInteraction),
+            body: KalenderBody(interaction: preciseInteraction),
           ),
         );
 
@@ -143,7 +143,7 @@ void main() {
       final eventsController = DefaultEventsController();
       for (var i = 0; i < eventCount; i++) {
         eventsController.addEvent(
-          CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
+          KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
         );
       }
 
@@ -151,12 +151,12 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: CalendarController(),
+          calendarController: KalenderController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 15),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
 

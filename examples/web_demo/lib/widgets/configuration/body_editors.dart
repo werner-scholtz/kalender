@@ -9,8 +9,8 @@ class MultiDayBodyEditor extends StatelessWidget {
   const MultiDayBodyEditor({super.key, required this.demoConfiguration});
 
   MultiDayBodyConfiguration get configuration => demoConfiguration.multiDayBodyConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionBody;
-  ValueNotifier<CalendarSnapping> get snapping => demoConfiguration.snapping;
+  ValueNotifier<KalenderInteraction> get interaction => demoConfiguration.interactionBody;
+  ValueNotifier<KalenderSnapping> get snapping => demoConfiguration.snapping;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class MonthBodyEditor extends StatelessWidget {
   const MonthBodyEditor({super.key, required this.demoConfiguration});
 
   MonthBodyConfiguration get configuration => demoConfiguration.monthBodyConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionBody;
+  ValueNotifier<KalenderInteraction> get interaction => demoConfiguration.interactionBody;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +126,7 @@ class ScheduleBodyEditor extends StatelessWidget {
   const ScheduleBodyEditor({super.key, required this.demoConfiguration});
 
   ScheduleBodyConfiguration get configuration => demoConfiguration.scheduleBodyConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionBody;
+  ValueNotifier<KalenderInteraction> get interaction => demoConfiguration.interactionBody;
 
   @override
   Widget build(BuildContext context) {

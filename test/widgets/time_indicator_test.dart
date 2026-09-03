@@ -25,7 +25,7 @@ void main() {
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
                     visibleDateTimeRange: ValueNotifier(range),
-                    visibleEvents: ValueNotifier(<CalendarEvent>{}),
+                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
                   ),
                   initialPage: 0,
                   dateOverride: date,

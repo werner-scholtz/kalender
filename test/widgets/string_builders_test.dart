@@ -16,7 +16,7 @@ void main() {
   Future<void> pumpView(
     WidgetTester tester, {
     required ViewConfiguration viewConfiguration,
-    CalendarComponents? components,
+    KalenderComponents? components,
     EventsController? eventsController,
     Widget? header,
     Widget? body,
@@ -25,7 +25,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController ?? DefaultEventsController(),
-        calendarController: CalendarController(),
+        calendarController: KalenderController(),
         viewConfiguration: viewConfiguration,
         components: components,
         header: header,
@@ -34,7 +34,7 @@ void main() {
     );
   }
 
-  Future<void> pumpWeek(WidgetTester tester, CalendarComponents components) {
+  Future<void> pumpWeek(WidgetTester tester, KalenderComponents components) {
     return pumpView(
       tester,
       viewConfiguration: MultiDayViewConfiguration.week(
@@ -42,12 +42,12 @@ void main() {
         initialDateTime: day,
       ),
       components: components,
-      header: CalendarHeader(multiDayTileComponents: tiles),
-      body: CalendarBody(multiDayTileComponents: tiles),
+      header: KalenderHeader(multiDayTileComponents: tiles),
+      body: KalenderBody(multiDayTileComponents: tiles),
     );
   }
 
-  Future<void> pumpMonth(WidgetTester tester, CalendarComponents components) {
+  Future<void> pumpMonth(WidgetTester tester, KalenderComponents components) {
     return pumpView(
       tester,
       viewConfiguration: MonthViewConfiguration.singleMonth(
@@ -55,8 +55,8 @@ void main() {
         initialDateTime: day,
       ),
       components: components,
-      header: CalendarHeader(multiDayTileComponents: tiles),
-      body: CalendarBody(multiDayTileComponents: tiles),
+      header: KalenderHeader(multiDayTileComponents: tiles),
+      body: KalenderBody(multiDayTileComponents: tiles),
     );
   }
 
@@ -64,7 +64,7 @@ void main() {
     testWidgets('the components string builders replace the day name and the day number', (tester) async {
       await pumpWeek(
         tester,
-        CalendarComponents(
+        KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
               dayHeaderStringBuilder: (context, date) => 'name',
@@ -84,7 +84,7 @@ void main() {
 
       await pumpWeek(
         tester,
-        CalendarComponents(
+        KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
               dayHeaderStringBuilder: (context, date) {
@@ -109,7 +109,7 @@ void main() {
     testWidgets('the components string builder replaces the day name', (tester) async {
       await pumpMonth(
         tester,
-        CalendarComponents(
+        KalenderComponents(
           monthComponents: MonthComponents(
             headerComponents: MonthHeaderComponents(weekDayHeaderStringBuilder: (context, date) => 'wd'),
           ),
@@ -126,7 +126,7 @@ void main() {
     testWidgets('the components string builder replaces the day number', (tester) async {
       await pumpMonth(
         tester,
-        CalendarComponents(
+        KalenderComponents(
           monthComponents: MonthComponents(
             bodyComponents: MonthBodyComponents(monthDayHeaderStringBuilder: (context, date) => 'md'),
           ),
@@ -142,7 +142,7 @@ void main() {
     testWidgets('the components string builder replaces the day name', (tester) async {
       final eventsController = DefaultEventsController()
         ..addEvent(
-          CalendarEvent(start: day, end: day.add(const Duration(hours: 1))),
+          KalenderEvent(start: day, end: day.add(const Duration(hours: 1))),
         );
 
       await pumpView(
@@ -152,10 +152,10 @@ void main() {
           initialDateTime: day,
         ),
         eventsController: eventsController,
-        components: CalendarComponents(
+        components: KalenderComponents(
           scheduleComponents: ScheduleComponents(leadingDateStringBuilder: (context, date) => 'sd'),
         ),
-        body: CalendarBody(scheduleTileComponents: scheduleTiles),
+        body: KalenderBody(scheduleTileComponents: scheduleTiles),
       );
 
       expect(find.text('sd'), findsWidgets);
@@ -168,7 +168,7 @@ void main() {
       final eventsController = DefaultEventsController();
       for (var i = 0; i < 8; i++) {
         eventsController.addEvent(
-          CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
+          KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
         );
       }
       return eventsController;
@@ -176,7 +176,7 @@ void main() {
 
     Future<void> pumpOverflowingWeek(
       WidgetTester tester, {
-      CalendarComponents? components,
+      KalenderComponents? components,
       TextDirection textDirection = TextDirection.ltr,
     }) {
       return pumpAndSettleWithMaterialApp(
@@ -185,13 +185,13 @@ void main() {
           textDirection: textDirection,
           child: KalenderView(
             eventsController: controllerWithOverflowOn(day),
-            calendarController: CalendarController(),
+            calendarController: KalenderController(),
             viewConfiguration: MultiDayViewConfiguration.week(
               displayRange: year2025DisplayRange,
               initialDateTime: day,
             ),
             components: components,
-            header: const CalendarHeader(
+            header: const KalenderHeader(
               multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
             ),
           ),

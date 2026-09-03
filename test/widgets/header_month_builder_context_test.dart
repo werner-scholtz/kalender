@@ -8,11 +8,11 @@ import '../utilities.dart';
 /// their own styles from it.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
@@ -20,7 +20,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester,
     ViewConfiguration viewConfiguration, {
-    CalendarComponents? components,
+    KalenderComponents? components,
     KalenderThemeData? theme,
   }) async {
     final view = KalenderView(
@@ -28,8 +28,8 @@ void main() {
       calendarController: calendarController,
       viewConfiguration: viewConfiguration,
       components: components,
-      header: CalendarHeader(multiDayTileComponents: tiles),
-      body: CalendarBody(multiDayTileComponents: tiles),
+      header: KalenderHeader(multiDayTileComponents: tiles),
+      body: KalenderBody(multiDayTileComponents: tiles),
     );
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -46,7 +46,7 @@ void main() {
       tester,
       week,
       theme: const KalenderThemeData(dayHeaderStyle: DayHeaderStyle(textStyle: TextStyle(fontSize: 42))),
-      components: CalendarComponents(
+      components: KalenderComponents(
         multiDayComponents: MultiDayComponents(
           headerComponents: MultiDayHeaderComponents(
             dayHeaderBuilder: (context, date) => _Probe(KalenderTheme.of(context).dayHeaderStyle?.textStyle?.fontSize),
@@ -63,7 +63,7 @@ void main() {
       tester,
       month,
       theme: const KalenderThemeData(weekDayHeaderStyle: WeekDayHeaderStyle(textStyle: TextStyle(fontSize: 21))),
-      components: CalendarComponents(
+      components: KalenderComponents(
         monthComponents: MonthComponents(
           headerComponents: MonthHeaderComponents(
             weekDayHeaderBuilder: (context, date) =>
@@ -81,7 +81,7 @@ void main() {
       tester,
       month,
       theme: const KalenderThemeData(monthGridStyle: MonthGridStyle(thickness: 7)),
-      components: CalendarComponents(
+      components: KalenderComponents(
         monthComponents: MonthComponents(
           bodyComponents: MonthBodyComponents(
             monthGridBuilder: (context, numberOfRows) =>
@@ -100,7 +100,7 @@ void main() {
     await pump(
       tester,
       MonthViewConfiguration.singleMonth(displayRange: displayRange, showWeekNumbers: true),
-      components: CalendarComponents(
+      components: KalenderComponents(
         monthComponents: MonthComponents(
           bodyComponents: MonthBodyComponents(
             weekNumberBuilder: (context, range) =>
@@ -116,7 +116,7 @@ void main() {
   });
 
   testWidgets('null builders render the package defaults', (tester) async {
-    await pump(tester, month, components: const CalendarComponents());
+    await pump(tester, month, components: const KalenderComponents());
 
     expect(find.byType(MonthGrid), findsOneWidget);
     expect(find.byType(MonthDayHeader), findsWidgets);

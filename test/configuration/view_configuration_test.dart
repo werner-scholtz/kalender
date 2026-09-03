@@ -60,7 +60,7 @@ void main() {
       final key = start.copyWith(year: start.year, month: start.month, day: start.day + i);
       final end = key.copyWith(hour: start.hour + 1);
       final value = eventsController.addEvent(
-        CalendarEvent(start: key, end: end),
+        KalenderEvent(start: key, end: end),
       );
       return MapEntry<DateTime, String>(key, value);
     },
@@ -73,7 +73,7 @@ void main() {
   final middleEvent = eventsController.byId(eventsMap[initialDate.forLocation()]!)!;
   final eventsToTest = [firstEvent, lastEvent, middleEvent];
 
-  final controller = CalendarController();
+  final controller = KalenderController();
   final jumpToDate = controller.jumpToDate;
   final animateToDate = controller.animateToDate;
   final animateToDateTime = controller.animateToDateTime;
@@ -340,7 +340,7 @@ void main() {
       final viewController = ContinuousScheduleViewController(
         viewConfiguration: viewConfiguration,
         visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
-        visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
+        visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );
 
@@ -398,7 +398,7 @@ void main() {
       final viewController = PaginatedScheduleViewController(
         viewConfiguration: viewConfiguration,
         visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
-        visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
+        visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );
 
@@ -455,7 +455,7 @@ void main() {
 extension ViewControllerUtilities on WidgetTester {
   Future<void> pumpCalendarView({
     required DefaultEventsController eventsController,
-    required CalendarController controller,
+    required KalenderController controller,
     required ViewConfiguration viewConfiguration,
     required TileComponents components,
     required ScheduleTileComponents scheduleComponents,
@@ -466,7 +466,7 @@ extension ViewControllerUtilities on WidgetTester {
         eventsController: eventsController,
         calendarController: controller,
         viewConfiguration: viewConfiguration,
-        body: CalendarBody(
+        body: KalenderBody(
           multiDayTileComponents: components,
           monthTileComponents: components,
           scheduleTileComponents: scheduleComponents,
@@ -479,8 +479,8 @@ extension ViewControllerUtilities on WidgetTester {
 
   /// Test event visibility in the widget tree after jumping to a specific date.
   Future<void> testAnimateToCalendarEvent(
-    CalendarController controller,
-    CalendarEvent event,
+    KalenderController controller,
+    KalenderEvent event,
   ) async {
     controller.animateToEvent(event);
     await pumpAndSettle();
@@ -496,12 +496,12 @@ extension ViewControllerUtilities on WidgetTester {
     );
   }
 
-  /// Test that a function call changes the visible range start of the [CalendarController] to the given dateTime.
+  /// Test that a function call changes the visible range start of the [KalenderController] to the given dateTime.
   Future<void> testDateFunctionExact({
-    required CalendarController controller,
+    required KalenderController controller,
     required InternalDateTime dateTime,
     required void Function(DateTime dateTime) function,
-    CalendarEvent? event,
+    KalenderEvent? event,
   }) async {
     // Call the function with the dateTime.
     function.call(dateTime);
@@ -524,12 +524,12 @@ extension ViewControllerUtilities on WidgetTester {
     }
   }
 
-  /// Test that a function call includes the given dateTime in the visible range of the [CalendarController].
+  /// Test that a function call includes the given dateTime in the visible range of the [KalenderController].
   Future<void> testDateFunctionCallWithin({
-    required CalendarController controller,
+    required KalenderController controller,
     required InternalDateTime dateTime,
     required void Function(DateTime dateTime) function,
-    CalendarEvent? event,
+    KalenderEvent? event,
   }) async {
     // Test the end date.
     function.call(dateTime);

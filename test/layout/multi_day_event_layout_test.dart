@@ -28,7 +28,7 @@ void main() {
     // Per-test state – recreated in setUp so tests are fully isolated.
     // -----------------------------------------------------------------------
     late DefaultEventsController eventsController;
-    late CalendarController controller;
+    late KalenderController controller;
 
     final tileComponents = TileComponents(
       tileBuilder: (context, event, tileRange) => Container(
@@ -44,7 +44,7 @@ void main() {
 
     setUp(() {
       eventsController = DefaultEventsController();
-      controller = CalendarController();
+      controller = KalenderController();
     });
 
     // -----------------------------------------------------------------------
@@ -133,11 +133,11 @@ void main() {
       // Two events spanning days 24-25 only (end = midnight of the 26th = startOfDay,
       // so the 26th is not included → 2 of the 7 visible columns).
       final events = [
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.copyWith(day: start.day + 2),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.copyWith(day: start.day + 2),
         ),
@@ -167,15 +167,15 @@ void main() {
 
     testWidgets('Basic', (tester) async {
       final events = [
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.copyWith(day: start.day + 3),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.copyWith(day: start.day + 3),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.add(const Duration(hours: 6)),
         ),
@@ -204,7 +204,7 @@ void main() {
     });
 
     testWidgets('Drop target layout uses the selected event span during horizontal resize', (tester) async {
-      final storedEvent = CalendarEvent(
+      final storedEvent = KalenderEvent(
         start: DateTime(2025, 3, 24),
         end: DateTime(2025, 3, 25),
       );
@@ -251,27 +251,27 @@ void main() {
       ///                  |-----6----|
 
       final events = [
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 24),
           end: DateTime(2025, 3, 27),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 27),
           end: DateTime(2025, 3, 30),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 24),
           end: DateTime(2025, 3, 25),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 25),
           end: DateTime(2025, 3, 28),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 28),
           end: DateTime(2025, 3, 30),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 27),
           end: DateTime(2025, 3, 30),
         ),
@@ -307,19 +307,19 @@ void main() {
       /// _______________________________
       ///                 |------4----|
       final events = [
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 24),
           end: DateTime(2025, 3, 27),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 27),
           end: DateTime(2025, 3, 30),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 25),
           end: DateTime(2025, 3, 28),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 3, 27),
           end: DateTime(2025, 3, 30),
         ),
@@ -359,26 +359,26 @@ void main() {
       /// _______________________________
       ///   |-4-|
       final events = [
-        CalendarEvent(
+        KalenderEvent(
           start: start.copyWith(hour: 6),
           end: start.copyWith(day: start.day + 3),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.copyWith(day: start.day + 3),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start.copyWith(hour: 3),
           end: start.copyWith(hour: 6),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start.copyWith(hour: 7),
           end: start.copyWith(hour: 10),
         ),
       ];
       eventsController.addEvents(events);
 
-      int startTimeComparator(CalendarEvent a, CalendarEvent b) => a.start.compareTo(b.start);
+      int startTimeComparator(KalenderEvent a, KalenderEvent b) => a.start.compareTo(b.start);
 
       await tester.pumpWidget(
         buildLayoutWidget(
@@ -430,26 +430,26 @@ void main() {
       /// _______________________________
       ///   |-4-|
       final events = [
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.copyWith(hour: 12),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start,
           end: start.copyWith(hour: 8),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start.copyWith(hour: 3),
           end: start.copyWith(hour: 4),
         ),
-        CalendarEvent(
+        KalenderEvent(
           start: start.copyWith(hour: 3),
           end: start.copyWith(hour: 16),
         ),
       ];
       eventsController.addEvents(events);
 
-      int endTimeComparator(CalendarEvent a, CalendarEvent b) => a.end.compareTo(b.end);
+      int endTimeComparator(KalenderEvent a, KalenderEvent b) => a.end.compareTo(b.end);
 
       await tester.pumpWidget(
         buildLayoutWidget(
@@ -497,12 +497,12 @@ void main() {
 class _ComparatorStrategy extends MultiDayLayoutStrategy {
   const _ComparatorStrategy(this.comparator);
 
-  final int Function(CalendarEvent, CalendarEvent) comparator;
+  final int Function(KalenderEvent, KalenderEvent) comparator;
 
   @override
   MultiDayLayoutFrame generateFrame({
     required InternalDateTimeRange visibleDateTimeRange,
-    required List<CalendarEvent> events,
+    required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,

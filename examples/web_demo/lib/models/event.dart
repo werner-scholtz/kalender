@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// A Basic [Event] model that extends [CalendarEvent].
+/// A Basic [Event] model that extends [KalenderEvent].
 ///
 /// It contains the [title], [description], and [color] of the event.
-class Event extends CalendarEvent {
+class Event extends KalenderEvent {
   /// Creates an [Event].
   Event({
     super.id,
@@ -28,7 +28,7 @@ class Event extends CalendarEvent {
 
   /// Rebuilds the fields this class adds, for a drag or a resize.
   ///
-  /// The id, the interaction config and the rule are restored by [CalendarEvent]
+  /// The id, the interaction config and the rule are restored by [KalenderEvent]
   /// afterwards, so they are deliberately not listed here.
   @override
   Event copyWithData({required DateTime start, required DateTime end}) {

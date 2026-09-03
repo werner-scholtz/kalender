@@ -3,7 +3,7 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// The label for [time].
 ///
@@ -39,7 +39,7 @@ typedef TimeLineBuilder = Widget Function(
   BuildContext context,
   double heightPerMinute,
   KalenderTimeRange timeOfDayRange,
-  ValueNotifier<CalendarEvent?> eventBeingDragged,
+  ValueNotifier<KalenderEvent?> eventBeingDragged,
   ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
 );
 
@@ -49,7 +49,7 @@ typedef TimeLineBuilder = Widget Function(
 /// all read the result, so their day columns stay aligned. It is not called for
 /// a view that draws no timeline.
 ///
-/// It runs above `CalendarHeader` and `CalendarBody`, so the context resolves
+/// It runs above `KalenderHeader` and `KalenderBody`, so the context resolves
 /// [KalenderTheme] and every [KalenderScope] accessor except the four those two
 /// install: `interactionOf`, `snappingOf`, `tileComponentsOf` and
 /// `heightPerMinuteOf`.
@@ -320,7 +320,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   final TimelineStyle? style;
 
   /// The [ValueNotifier] that contains the event being dragged.
-  final ValueNotifier<CalendarEvent?> eventBeingDragged;
+  final ValueNotifier<KalenderEvent?> eventBeingDragged;
 
   /// The visibleDataTimeRange.
   final ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange;

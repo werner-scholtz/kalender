@@ -11,11 +11,11 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final components = TileComponents(
@@ -36,8 +36,8 @@ void main() {
           initialDateTime: start,
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         ),
-        header: CalendarHeader(multiDayTileComponents: components, multiDayHeaderConfiguration: headerConfiguration),
-        body: CalendarBody(multiDayTileComponents: components),
+        header: KalenderHeader(multiDayTileComponents: components, multiDayHeaderConfiguration: headerConfiguration),
+        body: KalenderBody(multiDayTileComponents: components),
       ),
     );
   }
@@ -46,8 +46,8 @@ void main() {
     // Two overlapping 2-day events. With a one-row limit the second overflows,
     // so Mon and Tue each get a "+N more" portal.
     eventsController.addEvents([
-      CalendarEvent(start: start, end: start.add(const Duration(days: 2))),
-      CalendarEvent(start: start, end: start.add(const Duration(days: 2))),
+      KalenderEvent(start: start, end: start.add(const Duration(days: 2))),
+      KalenderEvent(start: start, end: start.add(const Duration(days: 2))),
     ]);
 
     await pumpFreeScroll(tester);

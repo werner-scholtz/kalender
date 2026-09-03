@@ -14,9 +14,9 @@ events.
   produced only for the calendar's visible window, so a "repeat forever" rule stays
   cheap. The window is refreshed as you navigate.
 - **All-day events.** RFC 5545 encodes all-day as a date-valued `DTSTART`
-  (`DTSTART;VALUE=DATE:20250110`), which becomes `CalendarEvent.isAllDay` so the
+  (`DTSTART;VALUE=DATE:20250110`), which becomes `KalenderEvent.isAllDay` so the
   occurrence renders in the multi-day header.
-- **Display.** Each occurrence becomes an `IcsEvent` (a `CalendarEvent` subclass
+- **Display.** Each occurrence becomes an `IcsEvent` (a `KalenderEvent` subclass
   carrying the title, description, color, and source `uid`).
 - **Export.** The master events are serialized back to `.ics` text with
   `enough_icalendar`, recurrence rules included, and shown in a dialog.

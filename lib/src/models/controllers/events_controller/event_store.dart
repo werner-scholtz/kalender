@@ -1,32 +1,32 @@
 import 'package:kalender/kalender.dart';
 
-/// A class that maps [CalendarEvent]s to dates.
+/// A class that maps [KalenderEvent]s to dates.
 ///
-/// This class is used to store [CalendarEvent]s and retrieve them based on the date.
+/// This class is used to store [KalenderEvent]s and retrieve them based on the date.
 abstract class EventStore {
-  /// A iterable of all [CalendarEvent]s in the store.
-  Iterable<CalendarEvent> get events;
+  /// A iterable of all [KalenderEvent]s in the store.
+  Iterable<KalenderEvent> get events;
 
-  /// Retrieve a [CalendarEvent] by it's id if it exists.
-  CalendarEvent? byId(String id);
+  /// Retrieve a [KalenderEvent] by it's id if it exists.
+  KalenderEvent? byId(String id);
 
   /// Add a new [event] to the map.
-  String addNewEvent(CalendarEvent event);
+  String addNewEvent(KalenderEvent event);
 
   /// Update an [event] in the map with the [updatedEvent].
-  void updateEvent(CalendarEvent event, CalendarEvent updatedEvent);
+  void updateEvent(KalenderEvent event, KalenderEvent updatedEvent);
 
   /// Remove the [event].
-  void removeEvent(CalendarEvent event);
+  void removeEvent(KalenderEvent event);
 
-  /// Remove a list of [CalendarEvent]s.
-  void removeEvents(List<CalendarEvent> events);
+  /// Remove a list of [KalenderEvent]s.
+  void removeEvents(List<KalenderEvent> events);
 
   /// Remove an event by its id.
   void removeById(String id);
 
   /// Remove events where where [test] returns true.
-  void removeWhere(bool Function(String key, CalendarEvent element) test);
+  void removeWhere(bool Function(String key, KalenderEvent element) test);
 
   /// Clear all events.
   void clear();

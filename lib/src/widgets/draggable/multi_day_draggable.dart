@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 class MultiDayDraggable extends StatefulWidget {
@@ -13,10 +13,10 @@ class MultiDayDraggable extends StatefulWidget {
 
 class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggableWidget {
   @override
-  CalendarCallbacks? get callbacks => context.callbacks;
+  KalenderCallbacks? get callbacks => context.callbacks;
 
   @override
-  CalendarController get controller => context.calendarController;
+  KalenderController get controller => context.calendarController;
 
   @override
   Widget build(BuildContext context) {

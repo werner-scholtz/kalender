@@ -19,7 +19,7 @@ void main() {
     await pumpAndSettleWithMaterialApp(
       tester,
       TestProvider(
-        calendarController: CalendarController(),
+        calendarController: KalenderController(),
         eventsController: DefaultEventsController(),
         tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
         locale: locale,
@@ -54,7 +54,7 @@ void main() {
     await pumpAndSettleWithMaterialApp(
       tester,
       TestProvider(
-        calendarController: CalendarController(),
+        calendarController: KalenderController(),
         eventsController: DefaultEventsController(),
         tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
         locale: const Locale('de'),

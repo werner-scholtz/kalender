@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/kalender_time.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// Builds the text displayed for [date].
 ///
 /// The [date] is a wall-clock [DateTime] in the calendar's configured location.
 /// Read the calendar's locale from the [context] with
-/// [CalendarLocale.calendarLocale].
+/// [KalenderLocale.calendarLocale].
 typedef DateStringBuilder = String Function(BuildContext context, DateTime date);
 
 /// Builds the text displayed for [time].
 ///
 /// Read the calendar's locale from the [context] with
-/// [CalendarLocale.calendarLocale].
+/// [KalenderLocale.calendarLocale].
 typedef TimeOfDayStringBuilder = String Function(BuildContext context, KalenderTime time);
 
 /// Builds the text displayed on the overlay button that opens the hidden events.
 ///
 /// Read the calendar's locale from the [context] with
-/// [CalendarLocale.calendarLocale].
+/// [KalenderLocale.calendarLocale].
 typedef HiddenEventCountStringBuilder = String Function(BuildContext context, int numberOfHiddenEvents);
 
 /// Gives a string builder access to the locale of the calendar it is building for.
-extension CalendarLocale on BuildContext {
+extension KalenderLocale on BuildContext {
   /// The locale of the enclosing calendar, as passed to `KalenderView.locale`.
   ///
   /// This is the locale the calendar formats its own dates and times with, which

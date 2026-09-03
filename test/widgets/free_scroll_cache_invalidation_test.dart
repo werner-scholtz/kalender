@@ -19,11 +19,11 @@ void main() {
   final initial = DateTime(2026, 7, 10);
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   final components = TileComponents(
@@ -42,8 +42,8 @@ void main() {
           initialDateTime: initial,
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         ),
-        header: CalendarHeader(multiDayTileComponents: components),
-        body: CalendarBody(multiDayTileComponents: components),
+        header: KalenderHeader(multiDayTileComponents: components),
+        body: KalenderBody(multiDayTileComponents: components),
       ),
     );
   }
@@ -65,7 +65,7 @@ void main() {
 
     // A three-day event starting on the initial leading day.
     final id = eventsController.addEvent(
-      CalendarEvent(start: initial, end: initial.add(const Duration(days: 3))),
+      KalenderEvent(start: initial, end: initial.add(const Duration(days: 3))),
     );
     await tester.pumpAndSettle();
 

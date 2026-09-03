@@ -25,12 +25,12 @@ void main() {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
       eventsController.addEvent(
-        CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
+        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
       );
     }
     addTearDown(eventsController.dispose);
 
-    final calendarController = CalendarController();
+    final calendarController = KalenderController();
     addTearDown(calendarController.dispose);
 
     final view = KalenderView(
@@ -40,10 +40,10 @@ void main() {
         displayRange: year2025DisplayRange,
         initialDateTime: DateTime(2025, 1, 15),
       ),
-      components: CalendarComponents(
+      components: KalenderComponents(
         overlayBuilders: overlayBuilders ?? OverlayBuilders(multiDayOverlayPortalBuilder: portalBuilder),
       ),
-      body: const CalendarBody(),
+      body: const KalenderBody(),
     );
 
     await pumpAndSettleWithMaterialApp(
@@ -155,12 +155,12 @@ void main() {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
       eventsController.addEvent(
-        CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
+        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
       );
     }
     addTearDown(eventsController.dispose);
 
-    final calendarController = CalendarController();
+    final calendarController = KalenderController();
     addTearDown(calendarController.dispose);
 
     final dpi = tester.view.devicePixelRatio;
@@ -178,7 +178,7 @@ void main() {
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 15),
           ),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       ),
     );

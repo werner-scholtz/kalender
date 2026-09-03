@@ -7,11 +7,11 @@ import '../utilities.dart';
 /// [KalenderScope] reads the state of the calendar a widget is built inside.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   tearDown(() {
@@ -29,15 +29,15 @@ void main() {
         calendarController: calendarController,
         locale: const Locale('de'),
         viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
-        components: CalendarComponents(
+        components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
               dayHeaderStringBuilder: (context, date) => read(context),
             ),
           ),
         ),
-        header: CalendarHeader(multiDayTileComponents: tiles),
-        body: CalendarBody(multiDayTileComponents: tiles),
+        header: KalenderHeader(multiDayTileComponents: tiles),
+        body: KalenderBody(multiDayTileComponents: tiles),
       ),
     );
   }
@@ -64,20 +64,20 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
-        components: CalendarComponents(
+        components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
               dayHeaderStringBuilder: (context, date) => '${KalenderScope.interactionOf(context).allowResizing}',
             ),
           ),
         ),
-        header: CalendarHeader(
+        header: KalenderHeader(
           multiDayTileComponents: tiles,
-          interaction: CalendarInteraction(allowResizing: false),
+          interaction: KalenderInteraction(allowResizing: false),
         ),
-        body: CalendarBody(
+        body: KalenderBody(
           multiDayTileComponents: tiles,
-          interaction: CalendarInteraction(allowResizing: true),
+          interaction: KalenderInteraction(allowResizing: true),
         ),
       ),
     );

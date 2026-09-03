@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// A full-year display range for 2025, shared across multiple widget/interaction tests.
 final year2025DisplayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
@@ -100,13 +100,13 @@ Future<void> pumpAndSettleWithMaterialApp(
 
 class TestProvider extends StatelessWidget {
   final Widget child;
-  final CalendarController calendarController;
+  final KalenderController calendarController;
   final EventsController eventsController;
-  final CalendarCallbacks? callbacks;
-  final CalendarComponents? components;
+  final KalenderCallbacks? callbacks;
+  final KalenderComponents? components;
   final TileComponents tileComponents;
-  final ValueNotifier<CalendarInteraction>? interaction;
-  final ValueNotifier<CalendarSnapping>? snapping;
+  final ValueNotifier<KalenderInteraction>? interaction;
+  final ValueNotifier<KalenderSnapping>? snapping;
   final ValueNotifier<double>? heightPerMinute;
   final Locale? locale;
   final Location? location;
@@ -130,20 +130,20 @@ class TestProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return EventsControllerProvider(
       eventsController: eventsController,
-      child: CalendarControllerProvider(
+      child: KalenderControllerProvider(
         notifier: calendarController,
         child: Callbacks(
           callbacks: null,
           child: Components(
-            components: components ?? const CalendarComponents(),
+            components: components ?? const KalenderComponents(),
             child: Interaction(
-              notifier: interaction ?? ValueNotifier(CalendarInteraction()),
+              notifier: interaction ?? ValueNotifier(KalenderInteraction()),
               child: Snapping(
-                notifier: snapping ?? ValueNotifier(const CalendarSnapping()),
+                notifier: snapping ?? ValueNotifier(const KalenderSnapping()),
                 child: HeightPerMinute(
                   notifier: heightPerMinute ?? ValueNotifier(0.7),
                   child: Callbacks(
-                    callbacks: callbacks ?? const CalendarCallbacks(),
+                    callbacks: callbacks ?? const KalenderCallbacks(),
                     child: TileComponentProvider(
                       tileComponents: tileComponents,
                       child: LocaleProvider(

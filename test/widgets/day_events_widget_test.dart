@@ -10,33 +10,33 @@ void main() {
   final internalStart = InternalDateTime.fromDateTime(start);
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   late MultiDayViewController viewController;
 
   /// Standard test events: two overlapping same-day events + one next-day event.
-  late List<CalendarEvent> events;
+  late List<KalenderEvent> events;
 
   setUp(() {
     events = [
       // Event 0: 23:00 day before → 01:00 start day (2h, crosses midnight)
-      CalendarEvent(
+      KalenderEvent(
         start: start.copyWith(hour: start.hour - 1),
         end: start.copyWith(hour: start.hour + 1),
       ),
       // Event 1: 00:00 → 02:00 on start day (2h)
-      CalendarEvent(
+      KalenderEvent(
         start: start,
         end: start.copyWith(hour: start.hour + 2),
       ),
       // Event 2: 00:00 → 03:00 on next day (3h)
-      CalendarEvent(
+      KalenderEvent(
         start: start.copyWith(day: start.day + 1),
         end: start.copyWith(day: start.day + 1, hour: start.hour + 3),
       ),
     ];
 
     eventsController = DefaultEventsController()..addEvents(events);
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
       visibleDateTimeRange: ValueNotifier(
@@ -146,7 +146,7 @@ void main() {
 
     testWidgets('renders a single event', (tester) async {
       eventsController.clearEvents();
-      final singleEvent = CalendarEvent(
+      final singleEvent = KalenderEvent(
         start: start,
         end: start.copyWith(hour: 4),
       );
@@ -160,7 +160,7 @@ void main() {
 
     testWidgets('renders short event (15 min)', (tester) async {
       eventsController.clearEvents();
-      final shortEvent = CalendarEvent(
+      final shortEvent = KalenderEvent(
         start: start.copyWith(hour: 10),
         end: start.copyWith(hour: 10, minute: 15),
       );
@@ -189,7 +189,7 @@ void main() {
       expect(eventFinder(2), findsOneWidget);
 
       // Add a 4th event on the same day.
-      final newEvent = CalendarEvent(
+      final newEvent = KalenderEvent(
         start: start.copyWith(hour: 5),
         end: start.copyWith(hour: 7),
       );

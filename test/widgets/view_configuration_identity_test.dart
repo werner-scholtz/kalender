@@ -6,11 +6,11 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   tearDown(() {
@@ -51,8 +51,8 @@ void main() {
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: configuration,
-      header: const CalendarHeader(),
-      body: const CalendarBody(),
+      header: const KalenderHeader(),
+      body: const KalenderBody(),
     );
   }
 

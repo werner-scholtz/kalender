@@ -12,13 +12,13 @@ import '../utilities.dart';
 /// which used to throw `No MaterialLocalizations found`. See issue #491.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUpAll(initializeDateFormatting);
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   tearDown(() {
@@ -43,7 +43,7 @@ void main() {
         calendarController: calendarController,
         locale: locale,
         viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
-        body: CalendarBody(multiDayTileComponents: tiles),
+        body: KalenderBody(multiDayTileComponents: tiles),
       );
 
   String labelAt(WidgetTester tester, int hour) {

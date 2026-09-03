@@ -10,16 +10,16 @@ void main() {
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
   /// Builds a week view whose header overflows, then opens the overlay.
-  Future<CalendarController> pumpAndOpenOverlay(WidgetTester tester, TileComponents tileComponents) async {
+  Future<KalenderController> pumpAndOpenOverlay(WidgetTester tester, TileComponents tileComponents) async {
     final eventsController = DefaultEventsController();
-    final calendarController = CalendarController();
+    final calendarController = KalenderController();
 
     final now = InternalDateTime.fromDateTime(DateTime.now()).startOfWeek();
     final startOfWeek = DateTime(now.year, now.month, now.day);
     final range = KalenderDateTimeRange(start: startOfWeek, end: startOfWeek.copyWith(day: startOfWeek.day + 2));
     eventsController.addEvents([
-      CalendarEvent(start: range.start, end: range.end),
-      CalendarEvent(start: range.start, end: range.end),
+      KalenderEvent(start: range.start, end: range.end),
+      KalenderEvent(start: range.start, end: range.end),
     ]);
 
     final dpi = tester.view.devicePixelRatio;
@@ -32,11 +32,11 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.week(),
-        header: CalendarHeader(
+        header: KalenderHeader(
           multiDayHeaderConfiguration: headerConfiguration,
           multiDayTileComponents: tileComponents,
         ),
-        body: CalendarBody(multiDayTileComponents: tileComponents),
+        body: KalenderBody(multiDayTileComponents: tileComponents),
       ),
     );
 

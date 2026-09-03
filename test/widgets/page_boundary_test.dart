@@ -11,11 +11,11 @@ import '../utilities.dart';
 /// they fail on the old behaviour and pass once the off-by-one is fixed.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   Future<void> pump(WidgetTester tester, ViewConfiguration config) {
@@ -25,7 +25,7 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: config,
-        body: const CalendarBody(),
+        body: const KalenderBody(),
       ),
     );
   }

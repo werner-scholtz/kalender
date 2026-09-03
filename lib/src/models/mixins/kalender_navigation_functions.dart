@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 
-mixin CalendarNavigationFunctions {
+mixin KalenderNavigationFunctions {
   /// Jump to the given [DateTime].
   void jumpToPage(int page);
 
@@ -62,9 +62,9 @@ mixin CalendarNavigationFunctions {
     Curve? scrollCurve,
   });
 
-  /// Animate to the given [CalendarEvent].
+  /// Animate to the given [KalenderEvent].
   ///
-  /// [event] the [CalendarEvent] to animate to.
+  /// [event] the [KalenderEvent] to animate to.
   ///
   /// [pageDuration] the [Duration] of the page animation.
   ///
@@ -76,7 +76,7 @@ mixin CalendarNavigationFunctions {
   ///
   /// [centerEvent] center the event on the viewport.
   Future<void> animateToEvent(
-    CalendarEvent event, {
+    KalenderEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

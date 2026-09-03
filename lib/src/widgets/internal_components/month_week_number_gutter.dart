@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// The month grid puts the week number at the top of its row rather than
 /// centring it, which is where every other week number sits.

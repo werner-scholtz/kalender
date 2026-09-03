@@ -12,11 +12,11 @@ import '../utilities.dart';
 /// Making either field private, or dropping the export, breaks these tests.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   late String eventId;
   late String otherId;
 
-  final interaction = CalendarInteraction(
+  final interaction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     inputMode: InputMode.precise,
@@ -24,12 +24,12 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     eventId = eventsController.addEvent(
-      CalendarEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
+      KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
     );
     otherId = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: DateTime(2025, 1, 1, 10),
         end: DateTime(2025, 1, 1, 14),
       ),
@@ -53,7 +53,7 @@ void main() {
           initialHeightPerMinute: 1,
           initialDateTime: DateTime(2025, 1, 1),
         ),
-        body: CalendarBody(
+        body: KalenderBody(
           interaction: interaction,
           multiDayTileComponents: TileComponents(
             tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
