@@ -4,6 +4,7 @@ import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/kalender_date_time_range.dart';
+import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
 
@@ -42,16 +43,16 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<Set<CalendarEvent>>({});
 
-  /// The [TimeOfDay] currently aligned with the top of the visible viewport.
+  /// The [KalenderTime] currently aligned with the top of the visible viewport.
   ///
   /// This reflects the vertical scroll position of a multi-day view (day/week/etc)
   /// and updates as the user scrolls or zooms. It is `null` when the attached view
   /// has no vertical scroll (e.g. month or schedule views).
-  final visibleTimeOfDay = ValueNotifier<TimeOfDay?>(null);
+  final visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
   /// The multi-day view's [MultiDayViewController.visibleTimeOfDay] source that is
   /// currently being forwarded into [visibleTimeOfDay], and its listener.
-  ValueNotifier<TimeOfDay?>? _visibleTimeOfDaySource;
+  ValueNotifier<KalenderTime?>? _visibleTimeOfDaySource;
   VoidCallback? _visibleTimeOfDayForwarder;
 
   /// The event currently being focused on.

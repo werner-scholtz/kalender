@@ -283,22 +283,22 @@ Widget _dayCell(BuildContext context, MonthDayCellDetails details) => const Size
 Widget _weekNumber(BuildContext context, KalenderDateTimeRange range) => const SizedBox();
 Widget _horizontalTrigger(BuildContext context, double pageWidth) => const SizedBox();
 Widget _verticalTrigger(BuildContext context, double viewPortHeight) => const SizedBox();
-Widget _hourLines(BuildContext context, double heightPerMinute, TimeOfDayRange range) => const SizedBox();
+Widget _hourLines(BuildContext context, double heightPerMinute, KalenderTimeRange range) => const SizedBox();
 
 Widget _timeline(
   BuildContext context,
   double heightPerMinute,
-  TimeOfDayRange range,
+  KalenderTimeRange range,
   ValueNotifier<CalendarEvent?> eventBeingDragged,
   ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
 ) =>
     const SizedBox();
 
-String _timeString(BuildContext context, TimeOfDay time) => '';
-double _timelineWidth(BuildContext context, TimeOfDayRange range) => 56;
+String _timeString(BuildContext context, KalenderTime time) => '';
+double _timelineWidth(BuildContext context, KalenderTimeRange range) => 56;
 Widget _daySeparator(BuildContext context) => const SizedBox();
 
-Widget _timeIndicator(BuildContext context, TimeOfDayRange range, double heightPerMinute, Location? location) =>
+Widget _timeIndicator(BuildContext context, KalenderTimeRange range, double heightPerMinute, Location? location) =>
     const SizedBox();
 
 Widget _scheduleDate(BuildContext context, InternalDateTime date) => const SizedBox();

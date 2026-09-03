@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/models/kalender_time_range.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 export 'package:kalender/src/models/calendar_events/calendar_event.dart';
-export 'package:kalender/src/models/time_of_day_range.dart';
+export 'package:kalender/src/models/kalender_time_range.dart';
 
 /// Decides how tiles that overlap in time share a day column.
 ///
@@ -35,7 +35,7 @@ abstract class EventLayoutStrategy {
   EventLayoutDelegate createDelegate({
     required Iterable<CalendarEvent> events,
     required InternalDateTime date,
-    required TimeOfDayRange timeOfDayRange,
+    required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
     required EventLayoutDelegateCache? cache,
@@ -51,7 +51,7 @@ class OverlapLayoutStrategy extends EventLayoutStrategy {
   EventLayoutDelegate createDelegate({
     required Iterable<CalendarEvent> events,
     required InternalDateTime date,
-    required TimeOfDayRange timeOfDayRange,
+    required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
     required EventLayoutDelegateCache? cache,
@@ -83,7 +83,7 @@ class SideBySideLayoutStrategy extends EventLayoutStrategy {
   EventLayoutDelegate createDelegate({
     required Iterable<CalendarEvent> events,
     required InternalDateTime date,
-    required TimeOfDayRange timeOfDayRange,
+    required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
     required EventLayoutDelegateCache? cache,
@@ -116,17 +116,22 @@ class EventLayoutDelegateCache {
   final Map<String, Map<int, VerticalLayoutData>> _dateCache = {};
 
   /// Generates a cache key based on the [date], [heightPerMinute], and [timeRange].
-  String _generateCacheKey(DateTime date, double heightPerMinute, TimeOfDayRange timeRange) {
+  String _generateCacheKey(DateTime date, double heightPerMinute, KalenderTimeRange timeRange) {
     return '${date.millisecondsSinceEpoch}_${heightPerMinute}_${timeRange.hashCode}';
   }
 
   /// Caches the vertical layout data for the given [date], [heightPerMinute], and [timeOfDayRange].
-  Map<int, VerticalLayoutData>? getCache(DateTime date, double heightPerMinute, TimeOfDayRange timeOfDayRange) {
+  Map<int, VerticalLayoutData>? getCache(DateTime date, double heightPerMinute, KalenderTimeRange timeOfDayRange) {
     final key = _generateCacheKey(date, heightPerMinute, timeOfDayRange);
     return _dateCache[key];
   }
 
-  void setCache(DateTime date, double heightPerMinute, TimeOfDayRange timeRange, Map<int, VerticalLayoutData> cache) {
+  void setCache(
+    DateTime date,
+    double heightPerMinute,
+    KalenderTimeRange timeRange,
+    Map<int, VerticalLayoutData> cache,
+  ) {
     final key = _generateCacheKey(date, heightPerMinute, timeRange);
     _dateCache[key] = cache;
   }
@@ -163,7 +168,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   final Location? location;
 
   /// The time of day range for which the events are laid out.
-  final TimeOfDayRange timeOfDayRange;
+  final KalenderTimeRange timeOfDayRange;
 
   /// The list of events that will be laid out. (The order of these events are the same as the widget's)
   final Iterable<CalendarEvent> events;
@@ -213,7 +218,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   ///
   /// [event] - The event to calculate the distance from.
   ///
-  /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
+  /// * Note: this takes into account the [KalenderTimeRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent event) {
     final eventStart = event.internalRange(location: location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
     return _offsetFromDayStart(eventStart);

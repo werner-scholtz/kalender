@@ -7,9 +7,9 @@ import '../utilities.dart';
 /// Regression coverage for #472: the timeline labels are positioned by the
 /// segments before them, not by a multiple of their own height.
 ///
-/// [TimeOfDayRange.splitIntoSegments] gives the last segment whatever is left of
+/// [KalenderTimeRange.splitIntoSegments] gives the last segment whatever is left of
 /// the range, so it is shorter than the rest unless the range divides evenly.
-/// [TimeOfDayRange.allDay] is one that does, which is why the default range was
+/// [KalenderTimeRange.allDay] is one that does, which is why the default range was
 /// unaffected.
 void main() {
   late DefaultEventsController eventsController;
@@ -25,7 +25,7 @@ void main() {
     calendarController.dispose();
   });
 
-  Future<void> pumpDay(WidgetTester tester, TimeOfDayRange timeOfDayRange) {
+  Future<void> pumpDay(WidgetTester tester, KalenderTimeRange timeOfDayRange) {
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -47,8 +47,8 @@ void main() {
   /// The vertical position of every timeline label, in the order it is drawn.
   List<double> labelPositions(WidgetTester tester) {
     final positions = <double>[];
-    for (var hour = 0; hour < TimeOfDay.hoursPerDay; hour++) {
-      for (var minute = 0; minute < TimeOfDay.minutesPerHour; minute += 5) {
+    for (var hour = 0; hour < KalenderTime.hoursPerDay; hour++) {
+      for (var minute = 0; minute < KalenderTime.minutesPerHour; minute += 5) {
         final finder = find.byKey(TimeLine.getTimeKey(hour, minute));
         if (finder.evaluate().isEmpty) continue;
         positions.add(tester.getTopLeft(finder).dy);
@@ -74,7 +74,7 @@ void main() {
   }
 
   testWidgets('the all day range labels are evenly spaced', (tester) async {
-    await pumpDay(tester, TimeOfDayRange.allDay());
+    await pumpDay(tester, KalenderTimeRange.allDay());
     expectEvenlySpaced(tester);
   });
 
@@ -83,7 +83,7 @@ void main() {
     // land at the top of the timeline.
     await pumpDay(
       tester,
-      TimeOfDayRange(start: const TimeOfDay(hour: 9, minute: 0), end: const TimeOfDay(hour: 18, minute: 0)),
+      KalenderTimeRange(start: const KalenderTime(hour: 9, minute: 0), end: const KalenderTime(hour: 18, minute: 0)),
     );
     expectEvenlySpaced(tester);
   });
@@ -93,15 +93,15 @@ void main() {
     // without producing the one minute segment above.
     await pumpDay(
       tester,
-      TimeOfDayRange(start: const TimeOfDay(hour: 9, minute: 0), end: const TimeOfDay(hour: 17, minute: 30)),
+      KalenderTimeRange(start: const KalenderTime(hour: 9, minute: 0), end: const KalenderTime(hour: 17, minute: 30)),
     );
     expectEvenlySpaced(tester);
   });
 
   testWidgets('the labels line up with the hour lines', (tester) async {
-    final range = TimeOfDayRange(
-      start: const TimeOfDay(hour: 9, minute: 0),
-      end: const TimeOfDay(hour: 18, minute: 0),
+    final range = KalenderTimeRange(
+      start: const KalenderTime(hour: 9, minute: 0),
+      end: const KalenderTime(hour: 18, minute: 0),
     );
     await pumpDay(tester, range);
 

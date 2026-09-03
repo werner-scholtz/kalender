@@ -144,7 +144,7 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
       heightPerMinute: 1.0,
       date: InternalDateTime(2024, 1, 1),
       location: null,
-      timeOfDayRange: TimeOfDayRange.allDay(),
+      timeOfDayRange: KalenderTimeRange.allDay(),
       minimumTileHeight: null,
       layoutCache: EventLayoutDelegateCache(),
     );

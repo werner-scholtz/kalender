@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// Builds the text displayed for [date].
@@ -12,7 +13,7 @@ typedef DateStringBuilder = String Function(BuildContext context, DateTime date)
 ///
 /// Read the calendar's locale from the [context] with
 /// [CalendarLocale.calendarLocale].
-typedef TimeOfDayStringBuilder = String Function(BuildContext context, TimeOfDay time);
+typedef TimeOfDayStringBuilder = String Function(BuildContext context, KalenderTime time);
 
 /// Builds the text displayed on the overlay button that opens the hidden events.
 ///

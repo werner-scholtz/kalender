@@ -47,24 +47,24 @@ void main() {
       /// A list of different view configurations to test.
       final viewConfigurations = [
         MultiDayViewConfiguration.singleDay(
-          initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
           initialDateTime: start,
         ),
         MultiDayViewConfiguration.week(
-          initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
           initialDateTime: start,
         ),
         MultiDayViewConfiguration.week(
           firstDayOfWeek: DateTime.monday,
-          timeOfDayRange: TimeOfDayRange(
-            start: const TimeOfDay(hour: 5, minute: 0),
-            end: const TimeOfDay(hour: 23, minute: 59),
+          timeOfDayRange: KalenderTimeRange(
+            start: const KalenderTime(hour: 5, minute: 0),
+            end: const KalenderTime(hour: 23, minute: 59),
           ),
-          initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
           initialDateTime: start,
@@ -246,7 +246,7 @@ void main() {
 
       final impreciseViewConfigurations = [
         MultiDayViewConfiguration.singleDay(
-          initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
           initialDateTime: start,

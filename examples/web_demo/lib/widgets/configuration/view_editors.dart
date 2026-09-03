@@ -69,12 +69,12 @@ class MultiDayViewEditor extends StatelessWidget {
         Row(
           children: [
             Flexible(
-              child: DropDownEditor<TimeOfDay>(
+              child: DropDownEditor<KalenderTime>(
                 label: context.l10n.startTime,
                 value: viewConfiguration.timeOfDayRange.start,
                 items: List.generate(
                   viewConfiguration.timeOfDayRange.end.hour,
-                  (index) => TimeOfDay(hour: index, minute: 0),
+                  (index) => KalenderTime(hour: index, minute: 0),
                 ),
                 onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
                   initialTimeOfDay: value,
@@ -83,7 +83,7 @@ class MultiDayViewEditor extends StatelessWidget {
               ),
             ),
             Flexible(
-              child: DropDownEditor<TimeOfDay>(
+              child: DropDownEditor<KalenderTime>(
                 label: context.l10n.endTime,
                 value: viewConfiguration.timeOfDayRange.end,
                 items: List.generate(
@@ -95,7 +95,7 @@ class MultiDayViewEditor extends StatelessWidget {
                       value = 23;
                       minute = 59;
                     }
-                    return TimeOfDay(hour: value, minute: minute);
+                    return KalenderTime(hour: value, minute: minute);
                   },
                 ),
                 onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(

@@ -46,7 +46,7 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(
-          initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1))),
           initialDateTime: day,

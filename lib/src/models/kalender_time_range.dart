@@ -1,46 +1,46 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/src/models/kalender_date_time_range.dart';
+import 'package:kalender/src/models/kalender_time.dart';
 
-/// Encapsulates a start and end [TimeOfDay] that represents a day time range.
+/// Encapsulates a start and end [KalenderTime] that represents a day time range.
 ///
 /// - The range includes the [start] and [end] times.
 /// - The [start] time must be before to the [end] time.
-class TimeOfDayRange {
-  TimeOfDayRange({
+class KalenderTimeRange {
+  KalenderTimeRange({
     required this.start,
     required this.end,
   })  : assert(start.hour <= end.hour),
         assert(start.hour == end.hour ? start.minute <= end.minute : true);
 
-  /// Creates a [TimeOfDayRange] that represents an entire day.
-  factory TimeOfDayRange.allDay() {
-    return TimeOfDayRange(
-      start: const TimeOfDay(hour: 0, minute: 0),
-      end: const TimeOfDay(hour: 23, minute: 59),
+  /// Creates a [KalenderTimeRange] that represents an entire day.
+  factory KalenderTimeRange.allDay() {
+    return KalenderTimeRange(
+      start: const KalenderTime(hour: 0, minute: 0),
+      end: const KalenderTime(hour: 23, minute: 59),
     );
   }
 
-  /// Creates a [TimeOfDayRange] that represents the given [hour].
-  factory TimeOfDayRange.forHour(int hour) {
-    return TimeOfDayRange(
-      start: TimeOfDay(hour: hour, minute: 0),
-      end: TimeOfDay(hour: hour, minute: 59),
+  /// Creates a [KalenderTimeRange] that represents the given [hour].
+  factory KalenderTimeRange.forHour(int hour) {
+    return KalenderTimeRange(
+      start: KalenderTime(hour: hour, minute: 0),
+      end: KalenderTime(hour: hour, minute: 59),
     );
   }
 
-  /// Creates a [TimeOfDayRange] from the given [KalenderDateTimeRange].
-  factory TimeOfDayRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange) {
-    return TimeOfDayRange(
-      start: TimeOfDay.fromDateTime(dateTimeRange.start),
-      end: TimeOfDay.fromDateTime(dateTimeRange.end),
+  /// Creates a [KalenderTimeRange] from the given [KalenderDateTimeRange].
+  factory KalenderTimeRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange) {
+    return KalenderTimeRange(
+      start: KalenderTime.fromDateTime(dateTimeRange.start),
+      end: KalenderTime.fromDateTime(dateTimeRange.end),
     );
   }
 
   /// The start time of the range.
-  final TimeOfDay start;
+  final KalenderTime start;
 
   /// The end time of the range.
-  final TimeOfDay end;
+  final KalenderTime end;
 
   /// Whether this range runs from 00:00 to 23:59.
   bool get coversWholeDay => start.hour == 0 && end.hour == 23 && end.minute == 59;
@@ -54,15 +54,15 @@ class TimeOfDayRange {
     );
   }
 
-  /// Generates a list of [TimeOfDayRange] segments from the current [TimeOfDayRange].
+  /// Generates a list of [KalenderTimeRange] segments from the current [KalenderTimeRange].
   ///
-  /// The list of [TimeOfDayRange] is generated based on the provided [segmentLength] in minutes.
+  /// The list of [KalenderTimeRange] is generated based on the provided [segmentLength] in minutes.
   ///
   /// The last segment might not be of the same length as [segmentLength].
   ///
   /// Example:
   /// ```dart
-  /// final range = TimeOfDayRange(start: TimeOfDay(hour: 10, minute: 0), end: TimeOfDay(hour: 11, minute: 30));
+  /// final range = KalenderTimeRange(start: KalenderTime(hour: 10, minute: 0), end: KalenderTime(hour: 11, minute: 30));
   /// final segments = range.splitIntoSegments(30);
   /// print(segments);
   /// ```
@@ -72,14 +72,14 @@ class TimeOfDayRange {
   /// ```
   ///
   /// The segments are inclusive of the start and end times.
-  List<TimeOfDayRange> splitIntoSegments(int segmentLength) {
-    final segments = <TimeOfDayRange>[];
+  List<KalenderTimeRange> splitIntoSegments(int segmentLength) {
+    final segments = <KalenderTimeRange>[];
     final rangeStartMinutes = start.hour * 60 + start.minute;
     final rangeEndMinutes = end.hour * 60 + end.minute;
 
     var currentMinutes = rangeStartMinutes;
     while (currentMinutes <= rangeEndMinutes) {
-      final startOfSegment = TimeOfDay(
+      final startOfSegment = KalenderTime(
         hour: currentMinutes ~/ 60,
         minute: currentMinutes % 60,
       );
@@ -89,12 +89,12 @@ class TimeOfDayRange {
         endOfSegmentMinutes = rangeEndMinutes;
       }
 
-      final endOfSegment = TimeOfDay(
+      final endOfSegment = KalenderTime(
         hour: endOfSegmentMinutes ~/ 60,
         minute: endOfSegmentMinutes % 60,
       );
 
-      segments.add(TimeOfDayRange(start: startOfSegment, end: endOfSegment));
+      segments.add(KalenderTimeRange(start: startOfSegment, end: endOfSegment));
       currentMinutes += segmentLength;
     }
     return segments;
@@ -103,7 +103,7 @@ class TimeOfDayRange {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is TimeOfDayRange && other.start == start && other.end == end;
+    return other is KalenderTimeRange && other.start == start && other.end == end;
   }
 
   @override

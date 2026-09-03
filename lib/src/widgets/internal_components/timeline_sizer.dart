@@ -17,8 +17,8 @@ class TimelineSizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    final width =
-        GutterWidths.maybeOf(context)?.timeline ?? bodyComponents.buildTimelineWidth(context, TimeOfDayRange.allDay());
+    final width = GutterWidths.maybeOf(context)?.timeline ??
+        bodyComponents.buildTimelineWidth(context, KalenderTimeRange.allDay());
 
     return SizedBox(width: width, child: child);
   }

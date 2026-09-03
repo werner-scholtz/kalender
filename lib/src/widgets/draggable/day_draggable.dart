@@ -9,7 +9,7 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 ///
 class DayDraggable extends StatefulWidget {
   final InternalDateTimeRange visibleDateTimeRange;
-  final TimeOfDayRange timeOfDayRange;
+  final KalenderTimeRange timeOfDayRange;
   final double pageHeight;
 
   const DayDraggable({
