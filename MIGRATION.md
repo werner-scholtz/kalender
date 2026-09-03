@@ -126,11 +126,19 @@ locale instead. The am/pm helpers `period`, `hourOfPeriod` and `periodOffset` ar
 gone with the `DayPeriod` enum, so a page that needs them compares `hour` against 12.
 
 Calls into Material's own API still take Material's type, so convert at that
-boundary:
+boundary. `package:kalender/material.dart` carries the conversions both ways, for
+the time and the range:
 
 ```dart
-MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay(hour: t.hour, minute: t.minute))
+import 'package:kalender/material.dart';
+
+final picked = await showTimePicker(context: context, initialTime: time.toTimeOfDay());
+final time = picked?.toKalenderTime();
 ```
+
+It is a separate entry point, so importing `package:kalender/kalender.dart` alone
+still names no Material type. `toDateTimeRange` and `toKalenderDateTimeRange` do
+the same for the range.
 
 ### `TimeOfDayRange` is renamed to `KalenderTimeRange`
 
