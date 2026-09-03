@@ -25,14 +25,14 @@ void main() {
       );
 
   MultiDayViewConfiguration weekWith({
-    TimeOfDay? initialTimeOfDay,
+    KalenderTime? initialTimeOfDay,
     double? initialHeightPerMinute,
     NowCallback? nowCallback,
   }) =>
       MultiDayViewConfiguration.week(
         displayRange: year2025DisplayRange,
         initialDateTime: DateTime(2025, 1, 13),
-        initialTimeOfDay: initialTimeOfDay ?? const TimeOfDay(hour: 0, minute: 0),
+        initialTimeOfDay: initialTimeOfDay ?? const KalenderTime(hour: 0, minute: 0),
         initialHeightPerMinute: initialHeightPerMinute ?? 0.7,
         nowCallback: nowCallback,
       );
@@ -74,7 +74,7 @@ void main() {
     // Each of these is read when the view controller is created, so a change to
     // one has to recreate it.
     test('initialTimeOfDay', () {
-      expect(week(), isNot(equals(weekWith(initialTimeOfDay: const TimeOfDay(hour: 15, minute: 0)))));
+      expect(week(), isNot(equals(weekWith(initialTimeOfDay: const KalenderTime(hour: 15, minute: 0)))));
     });
 
     test('initialHeightPerMinute', () {

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 class DemoConfiguration extends ChangeNotifier {
@@ -18,10 +17,10 @@ class DemoConfiguration extends ChangeNotifier {
     end: DateTime(DateTime.now().year + 10),
   );
 
-  TimeOfDay get _initialTimeOfDay {
-    final now = TimeOfDay.now();
+  KalenderTime get _initialTimeOfDay {
+    final now = KalenderTime.now();
     final hour = now.hour == 2 ? 1 : (now.hour - 2);
-    return TimeOfDay(hour: hour, minute: 0);
+    return KalenderTime(hour: hour, minute: 0);
   }
 
   /// The available view configurations of the calendar.

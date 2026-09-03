@@ -605,7 +605,7 @@ void main() {
 
       // Returning to Day restores Day's own 03:00, not Week's 05:00.
       await pumpCalendarView(tester, config: day, withBody: true);
-      expect(calendarController.visibleTimeOfDay.value, equals(const TimeOfDay(hour: 3, minute: 0)));
+      expect(calendarController.visibleTimeOfDay.value, equals(const KalenderTime(hour: 3, minute: 0)));
     });
 
     testWidgets('ZoomTransition.reset returns to initialHeightPerMinute on switch', (tester) async {
@@ -653,7 +653,7 @@ void main() {
     });
 
     testWidgets('scrollResolver overrides the scroll transition', (tester) async {
-      TimeOfDay fixedNine(ViewTransitionContext transition) => const TimeOfDay(hour: 9, minute: 0);
+      KalenderTime fixedNine(ViewTransitionContext transition) => const KalenderTime(hour: 9, minute: 0);
       await pumpCalendarView(tester, config: week(scrollResolver: fixedNine), withBody: true);
 
       await pumpCalendarView(tester, config: month(), withBody: true);
@@ -661,12 +661,12 @@ void main() {
 
       // 09:00 * kDefaultHeightPerMinute (0.7) = 540 * 0.7 = 378px.
       expect(multiDay().scrollController.offset, closeTo(540 * 0.7, 1.0));
-      expect(calendarController.visibleTimeOfDay.value, equals(const TimeOfDay(hour: 9, minute: 0)));
+      expect(calendarController.visibleTimeOfDay.value, equals(const KalenderTime(hour: 9, minute: 0)));
     });
 
     testWidgets('visibleTimeOfDay is non-null in multi-day and null in month; onScrollPositionChanged fires',
         (tester) async {
-      final reported = <TimeOfDay>[];
+      final reported = <KalenderTime>[];
       await pumpAndSettleWithMaterialApp(
         tester,
         KalenderView(
@@ -682,7 +682,7 @@ void main() {
 
       multiDay().scrollController.jumpTo(120 * 0.7); // 02:00
       await tester.pump();
-      expect(reported.last, equals(const TimeOfDay(hour: 2, minute: 0)));
+      expect(reported.last, equals(const KalenderTime(hour: 2, minute: 0)));
 
       await pumpAndSettleWithMaterialApp(
         tester,

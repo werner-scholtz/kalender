@@ -273,7 +273,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     return widget.configuration.eventLayoutStrategy.createDelegate(
       events: const [],
       date: widget.date,
-      timeOfDayRange: TimeOfDayRange.allDay(),
+      timeOfDayRange: KalenderTimeRange.allDay(),
       heightPerMinute: 0,
       minimumTileHeight: widget.configuration.minimumTileHeight,
       cache: widget.cache,

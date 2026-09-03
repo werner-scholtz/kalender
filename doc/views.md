@@ -48,7 +48,7 @@ Displays one or more days with time on the vertical axis.
 
 These views also control which hours exist, where the day opens vertically, and how tall an hour is:
 
-- `timeOfDayRange`: the hours the body lays out. Defaults to `TimeOfDayRange.allDay()`, which is 00:00 to 23:59. Narrowing it makes the page shorter, so there is less to scroll through at the same zoom. Positions are measured from `start`, so an event falling outside the range is drawn outside the page and clipped. Narrow it only when events cannot fall outside it.
+- `timeOfDayRange`: the hours the body lays out. Defaults to `KalenderTimeRange.allDay()`, which is 00:00 to 23:59. Narrowing it makes the page shorter, so there is less to scroll through at the same zoom. Positions are measured from `start`, so an event falling outside the range is drawn outside the page and clipped. Narrow it only when events cannot fall outside it.
 - `initialTimeOfDay`: the time at the top of the viewport on first render. Defaults to midnight, so set it to the hour your users actually start at or the calendar opens on empty overnight hours. The offset is measured from `timeOfDayRange.start`, so keep this value inside the range.
 - `initialHeightPerMinute`: the starting zoom, in logical pixels per minute. Defaults to `0.7`, giving a 42 pixel hour. Change it later through the controller, see [Zoom](interaction.md#zoom).
 - `firstDayOfWeek`: which day a week starts on, as `DateTime.monday` through `DateTime.sunday`. Defaults to `DateTime.monday`. Applies to `week`, `singleDay` and `custom`. `workWeek` and `freeScroll` fix it themselves.
@@ -58,11 +58,11 @@ These views also control which hours exist, where the day opens vertically, and 
 ```dart
 MultiDayViewConfiguration.week(
   // Working hours only. The timeline runs 08:00 to 18:00 and nothing else exists.
-  timeOfDayRange: TimeOfDayRange(
-    start: const TimeOfDay(hour: 8, minute: 0),
-    end: const TimeOfDay(hour: 18, minute: 0),
+  timeOfDayRange: KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 18, minute: 0),
   ),
-  initialTimeOfDay: const TimeOfDay(hour: 8, minute: 0),
+  initialTimeOfDay: const KalenderTime(hour: 8, minute: 0),
   initialHeightPerMinute: 0.7,
   firstDayOfWeek: DateTime.sunday,
 )

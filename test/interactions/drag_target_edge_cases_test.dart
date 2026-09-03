@@ -22,7 +22,7 @@ final _weekInitialDate = DateTime(2025, 1, 6);
 Future<dynamic> _pumpWeekView(
   WidgetTester tester, {
   EventsController? eventsController,
-  TimeOfDayRange? timeOfDayRange,
+  KalenderTimeRange? timeOfDayRange,
 }) async {
   await pumpAndSettleWithMaterialApp(
     tester,
@@ -33,7 +33,7 @@ Future<dynamic> _pumpWeekView(
         displayRange: year2025DisplayRange,
         initialDateTime: _weekInitialDate,
         timeOfDayRange: timeOfDayRange,
-        initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
       ),
       body: const CalendarBody(),
     ),
@@ -42,9 +42,9 @@ Future<dynamic> _pumpWeekView(
 }
 
 /// Restricted time range 09:00–17:00 for boundary-clamping tests.
-final _restrictedRange = TimeOfDayRange(
-  start: const TimeOfDay(hour: 9, minute: 0),
-  end: const TimeOfDay(hour: 17, minute: 0),
+final _restrictedRange = KalenderTimeRange(
+  start: const KalenderTime(hour: 9, minute: 0),
+  end: const KalenderTime(hour: 17, minute: 0),
 );
 
 /// A single-day event (2 h) on Jan 6, 2025.

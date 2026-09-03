@@ -1,5 +1,4 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
@@ -78,7 +77,7 @@ void main() {
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: year2025DisplayRange,
-            initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
           header: CalendarHeader(interaction: interaction),
@@ -118,7 +117,7 @@ void main() {
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: year2025DisplayRange,
-            initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
           header: CalendarHeader(interaction: impreciseInteraction),
@@ -147,7 +146,7 @@ void main() {
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: year2025DisplayRange,
-            initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
           header: CalendarHeader(interaction: autoInteraction),

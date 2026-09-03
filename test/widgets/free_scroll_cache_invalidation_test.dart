@@ -40,7 +40,7 @@ void main() {
           numberOfDays: 3,
           displayRange: displayRange,
           initialDateTime: initial,
-          initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         ),
         header: CalendarHeader(multiDayTileComponents: components),
         body: CalendarBody(multiDayTileComponents: components),

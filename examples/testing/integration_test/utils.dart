@@ -56,6 +56,6 @@ extension ViewUtils on Views {
 }
 
 extension ScenarioUtils on Scenario {
-  List<TimeOfDayRange> get eventRanges =>
+  List<KalenderTimeRange> get eventRanges =>
       timeOfDayRanges.take(numberOfEvents).toList();
 }

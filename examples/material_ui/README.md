@@ -11,7 +11,7 @@ is fixed in the package, the other two are not.
 
 ## 1. The timeline used to throw at runtime
 
-Fixed. `TimeOfDay.format` resolved `MaterialLocalizations`, which a `material_ui`
+Fixed. `KalenderTime.format` resolved `MaterialLocalizations`, which a `material_ui`
 `MaterialApp` does not install, so the calendar threw:
 
 ```
@@ -25,13 +25,13 @@ An app that does install them keeps the labels it had.
 `MaterialUiCompatibilityBridge` is still worth having for the theme, see 3 below,
 but the calendar renders without it.
 
-## 2. `DateTimeRange` and `TimeOfDay` do not compile
+## 2. `DateTimeRange` and `KalenderTime` do not compile
 
 Both are Material classes, so `material_ui` defines its own copies:
 
 ```
-The argument type 'TimeOfDay (where TimeOfDay is defined in material_ui-1.1.0/lib/src/time.dart)'
-can't be assigned to the parameter type 'TimeOfDay (where TimeOfDay is defined in
+The argument type 'KalenderTime (where KalenderTime is defined in material_ui-1.1.0/lib/src/time.dart)'
+can't be assigned to the parameter type 'KalenderTime (where KalenderTime is defined in
 flutter/lib/src/material/time.dart)'.
 ```
 

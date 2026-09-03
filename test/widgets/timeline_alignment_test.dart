@@ -99,7 +99,7 @@ void main() {
     // only 23:59 (which here returns the short 'x') would under-size the gutter
     // and clip the noon label. Measuring all labels must accommodate it.
     const wide = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'; // 40 chars
-    String labels(BuildContext context, TimeOfDay time) => time.hour == 12 ? wide : 'x';
+    String labels(BuildContext context, KalenderTime time) => time.hour == 12 ? wide : 'x';
 
     await pumpWeek(tester, components: withTimelineStringBuilder(labels));
 

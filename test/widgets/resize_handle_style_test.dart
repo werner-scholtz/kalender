@@ -36,7 +36,7 @@ void main() {
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.singleDay(
         displayRange: year2025DisplayRange,
-        initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         initialHeightPerMinute: 1,
         initialDateTime: DateTime(2025, 1, 1),
       ),

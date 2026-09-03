@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
@@ -44,7 +43,7 @@ void main() {
         calendarController: calendarController,
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: year2025DisplayRange,
-          initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
           initialDateTime: start,
           multiDayRule: rule,
         ),

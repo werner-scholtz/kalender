@@ -281,7 +281,7 @@ void _record(String name, void Function(BuildContext) read, BuildContext context
   }
 }
 
-double _readsCalendarState(BuildContext context, TimeOfDayRange range) {
+double _readsCalendarState(BuildContext context, KalenderTimeRange range) {
   _widthBuilderCalls++;
   _record('eventsControllerOf', KalenderScope.eventsControllerOf, context);
   _record('calendarControllerOf', KalenderScope.calendarControllerOf, context);
@@ -299,7 +299,7 @@ double _readsCalendarState(BuildContext context, TimeOfDayRange range) {
 
 int _timelineWidthCalls = 0;
 
-double _countingTimelineWidth(BuildContext context, TimeOfDayRange range) {
+double _countingTimelineWidth(BuildContext context, KalenderTimeRange range) {
   _timelineWidthCalls++;
   return 120;
 }
