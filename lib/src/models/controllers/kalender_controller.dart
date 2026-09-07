@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/src/extensions/internal_date_time_range.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';

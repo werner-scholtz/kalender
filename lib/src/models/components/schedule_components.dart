@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
 import 'package:kalender/src/widgets/components/schedule_date.dart';
@@ -26,7 +26,7 @@ class ScheduleComponents {
 
   /// A function that builds the month heading row.
   ///
-  /// When null a [ListTile] shows the month name in the calendar's locale.
+  /// When null a `ListTile` shows the month name in the calendar's locale.
   final MonthItemBuilder? monthItemBuilder;
 
   const ScheduleComponents({
