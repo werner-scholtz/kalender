@@ -8,7 +8,7 @@ import '../utilities.dart';
 /// [ResizeHandleStyle] sizes the area [DefaultResizeHandles] gives each handle.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late String eventId;
 
   KalenderInteraction interactionFor(InputMode mode) => KalenderInteraction(
@@ -19,7 +19,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     eventId = eventsController.addEvent(
       KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
     );
@@ -27,13 +27,13 @@ void main() {
 
   tearDown(() {
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
   });
 
   Future<void> pumpDay(WidgetTester tester, {ResizeHandleStyle? style, InputMode mode = InputMode.precise}) {
     final view = KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: MultiDayViewConfiguration.singleDay(
         displayRange: year2025DisplayRange,
         initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
@@ -84,7 +84,7 @@ void main() {
 
   /// Imprecise input shows the handles on selection rather than on hover.
   Future<void> select(WidgetTester tester) async {
-    calendarController.selectEvent(eventsController.events.firstWhere((event) => event.id == eventId));
+    kalenderController.selectEvent(eventsController.events.firstWhere((event) => event.id == eventId));
     await tester.pumpAndSettle();
   }
 

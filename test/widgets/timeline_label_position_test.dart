@@ -13,16 +13,16 @@ import '../utilities.dart';
 /// unaffected.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   tearDown(() {
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
   });
 
   Future<void> pumpDay(WidgetTester tester, KalenderTimeRange timeOfDayRange) {
@@ -30,7 +30,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(
           displayRange: year2025DisplayRange,
           timeOfDayRange: timeOfDayRange,

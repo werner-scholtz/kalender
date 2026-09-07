@@ -7,22 +7,22 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   tearDown(() {
-    calendarController.dispose();
+    kalenderController.dispose();
     eventsController.dispose();
   });
 
   Widget buildCalendar(KalenderSnapping snapping) {
     return KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: year2025DisplayRange,
         initialDateTime: DateTime(2025, 1, 1),

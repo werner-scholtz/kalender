@@ -35,7 +35,7 @@ void main() {
 
     final view = KalenderView(
       eventsController: eventsController,
-      calendarController: KalenderController(),
+      kalenderController: KalenderController(),
       viewConfiguration: MonthViewConfiguration.singleMonth(
         displayRange: year2025DisplayRange,
         initialDateTime: DateTime(2025, 1, 15),

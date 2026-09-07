@@ -10,7 +10,7 @@ import '../utilities.dart';
 /// handle widgets from the context.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late String eventId;
 
   final interaction = KalenderInteraction(
@@ -21,7 +21,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     eventId = eventsController.addEvent(
       KalenderEvent(
         start: DateTime(2025, 1, 1, 1),
@@ -32,7 +32,7 @@ void main() {
 
   tearDown(() {
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
   });
 
   Future<void> pumpDay(WidgetTester tester, TileComponents tiles) {
@@ -42,7 +42,7 @@ void main() {
         data: const KalenderThemeData(daySeparatorStyle: DaySeparatorStyle(color: Color(0xFF00FF00))),
         child: KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: year2025DisplayRange,
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),

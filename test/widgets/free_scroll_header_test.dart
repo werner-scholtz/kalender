@@ -12,7 +12,7 @@ import '../utilities.dart';
 //    day (#283).
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late KalenderCallbacks callbacks;
 
   final tileComponents = TileComponents(
@@ -21,7 +21,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     callbacks = KalenderCallbacks(
       onEventCreated: eventsController.addEvent,
       onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
@@ -47,7 +47,7 @@ void main() {
 
   Widget freeScrollView({DateTime? initialDate}) => KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
           numberOfDays: 3,
           initialDateTime: initialDate,
@@ -89,7 +89,7 @@ void main() {
     // view, regardless of whether it is the leading day.
     Future<double> pumpAndMeasureHeader(WidgetTester tester, DateTime initialDate) async {
       eventsController = DefaultEventsController();
-      calendarController = KalenderController();
+      kalenderController = KalenderController();
       addTwoRowDay();
       await pumpAndSettleWithMaterialApp(tester, freeScrollView(initialDate: initialDate));
       return tester.getSize(find.byType(KalenderHeader)).height;

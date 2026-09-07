@@ -512,7 +512,7 @@ class MultiDayOverlay extends StatelessWidget {
                                   ],
                                 ),
                                 ValueListenableBuilder<KalenderEvent?>(
-                                  valueListenable: context.calendarController.selectedEvent,
+                                  valueListenable: context.kalenderController.selectedEvent,
                                   builder: (context, selectedEvent, child) {
                                     if (selectedEvent == null) return const SizedBox();
                                     if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();

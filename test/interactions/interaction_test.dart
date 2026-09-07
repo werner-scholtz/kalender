@@ -9,7 +9,7 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   final interaction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
@@ -44,7 +44,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
 
     dayEventID = eventsController.addEvent(
       KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
@@ -76,7 +76,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: year2025DisplayRange,
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
@@ -91,7 +91,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025),
@@ -105,7 +105,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
           header: KalenderHeader(interaction: interaction),
           body: KalenderBody(interaction: interaction),
@@ -116,7 +116,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: year2025DisplayRange,
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
@@ -131,7 +131,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025),
@@ -145,7 +145,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: year2025DisplayRange,
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
@@ -304,7 +304,7 @@ void main() {
 
       // Select the day event to trigger handle visibility.
       final dayEvent = eventsController.events.firstWhere((e) => e.id == dayEventID);
-      calendarController.selectEvent(dayEvent);
+      kalenderController.selectEvent(dayEvent);
       await tester.pumpAndSettle();
 
       // Vertical resize handles should now be visible.
@@ -313,7 +313,7 @@ void main() {
 
       // Horizontal resize handles (multi-day header) should be hidden in imprecise mode.
       final multiDayEvent = eventsController.events.firstWhere((e) => e.id == multiDayEventID);
-      calendarController.selectEvent(multiDayEvent);
+      kalenderController.selectEvent(multiDayEvent);
       await tester.pumpAndSettle();
       expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
       expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
@@ -325,7 +325,7 @@ void main() {
 
       // Select the custom day event (allowStartResize: false, allowEndResize: true).
       final customDayEvent = eventsController.events.firstWhere((e) => e.id == customDayEventID);
-      calendarController.selectEvent(customDayEvent);
+      kalenderController.selectEvent(customDayEvent);
       await tester.pumpAndSettle();
 
       expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
@@ -345,7 +345,7 @@ void main() {
 
       // Select the multi-day event.
       final multiDayEvent = eventsController.events.firstWhere((e) => e.id == multiDayEventID);
-      calendarController.selectEvent(multiDayEvent);
+      kalenderController.selectEvent(multiDayEvent);
       await tester.pumpAndSettle();
 
       // Horizontal resize handles should be hidden in imprecise mode by default.

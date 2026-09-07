@@ -22,10 +22,10 @@ class MonthBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController;
+    final kalenderController = context.kalenderController;
 
     assert(
-      calendarController.viewController is MonthViewController,
+      kalenderController.viewController is MonthViewController,
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
@@ -33,7 +33,7 @@ class MonthBody extends StatelessWidget {
       debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
     }
 
-    final viewController = calendarController.viewController as MonthViewController;
+    final viewController = kalenderController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final showWeekNumbers = viewConfiguration.showWeekNumbers;
     final configuration = this.configuration ?? const MonthBodyConfiguration();
@@ -52,7 +52,7 @@ class MonthBody extends StatelessWidget {
       itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
-        final controller = context.calendarController;
+        final controller = context.kalenderController;
         controller.internalDateTimeRange.value = visibleRange;
         context.callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },

@@ -14,11 +14,11 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   final components = TileComponents(
@@ -30,7 +30,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
           numberOfDays: 7,
           displayRange: displayRange,
@@ -43,7 +43,7 @@ void main() {
     );
   }
 
-  MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;
+  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   testWidgets('a multi-day event renders as one continuous spanning tile', (tester) async {
     // Monday 00:00 -> Friday 00:00, a 4-day span inside the first visible week.
@@ -105,7 +105,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
           numberOfDays: 3,
           displayRange: bigRange,

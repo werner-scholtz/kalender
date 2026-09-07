@@ -9,7 +9,7 @@ import '../utilities.dart';
 /// keeps only the newest and processes it once per frame.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late String eventId;
 
   final start = DateTime(2025, 3, 24);
@@ -22,7 +22,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     eventId = eventsController.addEvent(
       KalenderEvent(
         start: start.copyWith(hour: 6),
@@ -36,7 +36,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
@@ -76,7 +76,7 @@ void main() {
     final gesture = await beginDrag(tester);
 
     var updates = 0;
-    calendarController.selectedEvent.addListener(() => updates++);
+    kalenderController.selectedEvent.addListener(() => updates++);
 
     // Three moves with no frame between them.
     await gesture.moveBy(const Offset(0, 20));
@@ -95,13 +95,13 @@ void main() {
     await pumpCalendar(tester);
     final gesture = await beginDrag(tester);
 
-    final afterFirstMove = calendarController.selectedEvent.value!.start;
+    final afterFirstMove = kalenderController.selectedEvent.value!.start;
 
     await gesture.moveBy(const Offset(0, 30));
     await gesture.moveBy(const Offset(0, 30));
     await tester.pump();
 
-    final coalesced = calendarController.selectedEvent.value!.start;
+    final coalesced = kalenderController.selectedEvent.value!.start;
     final movedBy = coalesced.difference(afterFirstMove);
 
     // 60 logical pixels at 1 minute per pixel. Had the first move won, this
@@ -122,7 +122,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      calendarController.selectedEvent.value,
+      kalenderController.selectedEvent.value,
       isNull,
       reason: 'a pending move must not reselect the event after the drop deselected it',
     );

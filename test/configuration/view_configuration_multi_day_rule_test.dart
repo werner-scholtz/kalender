@@ -48,7 +48,7 @@ void main() {
   });
 
   testWidgets('a rule swapped in through copyWith re-sorts the events', (tester) async {
-    final calendarController = KalenderController();
+    final kalenderController = KalenderController();
     final eventsController = DefaultEventsController();
 
     // Crosses midnight but lasts under 24 hours, the only shape the two rules
@@ -67,7 +67,7 @@ void main() {
     Widget build(MultiDayViewConfiguration configuration) {
       return KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: configuration,
         header: const KalenderHeader(),
         body: const KalenderBody(),

@@ -26,10 +26,10 @@ abstract final class KalenderScope {
   }
 
   /// The [KalenderController] driving the calendar.
-  static KalenderController calendarControllerOf(BuildContext context) => KalenderControllerProvider.of(context);
+  static KalenderController kalenderControllerOf(BuildContext context) => KalenderControllerProvider.of(context);
 
   /// The [KalenderController] driving the calendar, or null outside a [KalenderView].
-  static KalenderController? maybeCalendarControllerOf(BuildContext context) {
+  static KalenderController? maybeKalenderControllerOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<KalenderControllerProvider>()?.notifier;
   }
 

@@ -100,7 +100,7 @@ Future<void> pumpAndSettleWithMaterialApp(
 
 class TestProvider extends StatelessWidget {
   final Widget child;
-  final KalenderController calendarController;
+  final KalenderController kalenderController;
   final EventsController eventsController;
   final KalenderCallbacks? callbacks;
   final KalenderComponents? components;
@@ -114,7 +114,7 @@ class TestProvider extends StatelessWidget {
   const TestProvider({
     super.key,
     required this.child,
-    required this.calendarController,
+    required this.kalenderController,
     required this.eventsController,
     required this.tileComponents,
     this.callbacks,
@@ -131,7 +131,7 @@ class TestProvider extends StatelessWidget {
     return EventsControllerProvider(
       eventsController: eventsController,
       child: KalenderControllerProvider(
-        notifier: calendarController,
+        notifier: kalenderController,
         child: Callbacks(
           callbacks: null,
           child: Components(

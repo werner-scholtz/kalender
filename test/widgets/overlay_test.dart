@@ -9,7 +9,7 @@ import '../utilities.dart';
 
 void main() {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
   final viewConfiguration = MultiDayViewConfiguration.week();
   final preciseInteraction = KalenderInteraction(
     inputMode: InputMode.precise,
@@ -51,7 +51,7 @@ void main() {
           tester,
           KalenderView(
             eventsController: eventsController,
-            calendarController: calendarController,
+            kalenderController: kalenderController,
             viewConfiguration: viewConfiguration,
             header: KalenderHeader(
               multiDayHeaderConfiguration: headerConfiguration,
@@ -66,7 +66,7 @@ void main() {
         expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(2));
 
         // Check that the overlay always renders within the calendar view bounds.
-        final visibleDates = calendarController.internalDateTimeRange.value!.dates();
+        final visibleDates = kalenderController.internalDateTimeRange.value!.dates();
         final datesToTest = [visibleDates[0], visibleDates[1]];
         for (final date in datesToTest) {
           final button = find.byKey(MultiDayPortalOverlayButton.getKey(date));
@@ -151,7 +151,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: KalenderController(),
+          kalenderController: KalenderController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 15),

@@ -28,7 +28,7 @@ Future<dynamic> _pumpWeekView(
     tester,
     KalenderView(
       eventsController: eventsController ?? DefaultEventsController(),
-      calendarController: KalenderController(),
+      kalenderController: KalenderController(),
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: year2025DisplayRange,
         initialDateTime: _weekInitialDate,
@@ -190,7 +190,7 @@ void main() {
   group('VerticalDragTarget.onWillAcceptWithDetails', () {
     KalenderView weekCalendarView(KalenderController controller) => KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: controller,
+          kalenderController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
             displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
@@ -267,7 +267,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: controller,
+          kalenderController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
             displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
@@ -434,7 +434,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: KalenderController(),
+          kalenderController: KalenderController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
@@ -509,7 +509,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: ec ?? DefaultEventsController(),
-          calendarController: KalenderController(),
+          kalenderController: KalenderController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
@@ -617,7 +617,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: ec,
-          calendarController: controller,
+          kalenderController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
             displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
@@ -669,7 +669,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: ec,
-          calendarController: controller,
+          kalenderController: controller,
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
@@ -719,7 +719,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: ec,
-          calendarController: KalenderController(),
+          kalenderController: KalenderController(),
           viewConfiguration: ScheduleViewConfiguration.continuous(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 6),
@@ -736,7 +736,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: KalenderController(),
+          kalenderController: KalenderController(),
           viewConfiguration: ScheduleViewConfiguration.paginated(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 6),

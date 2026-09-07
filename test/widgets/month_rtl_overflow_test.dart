@@ -79,7 +79,7 @@ void main() {
           textDirection: textDirection,
           child: KalenderView(
             eventsController: eventsController,
-            calendarController: KalenderController(),
+            kalenderController: KalenderController(),
             viewConfiguration: MonthViewConfiguration.singleMonth(
               displayRange: year2025DisplayRange,
               initialDateTime: DateTime(2025, 1, 15),

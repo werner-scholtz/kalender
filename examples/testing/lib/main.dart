@@ -34,18 +34,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late final TestConfiguration config = widget.config ?? TestConfiguration.week();
   EventsController get eventsController => config.eventsController;
-  KalenderController get calendarController => config.calendarController;
+  KalenderController get kalenderController => config.kalenderController;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: KalenderView(
         eventsController: config.eventsController,
-        calendarController: config.calendarController,
+        kalenderController: config.kalenderController,
         viewConfiguration: config.viewConfiguration,
         components: KalenderComponents(),
         callbacks: KalenderCallbacks(
-          onEventTapped: (event) => calendarController.selectEvent(event),
+          onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) =>

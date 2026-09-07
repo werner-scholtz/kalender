@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final now = DateTime.now();
   late final displayRange =
       KalenderDateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
   final controller = RecurrenceController();
   late ViewConfiguration viewConfiguration = MultiDayViewConfiguration.week(
     displayRange: displayRange,
@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: KalenderView(
         eventsController: controller.controller,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => _onEventTapped(event),
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
           elevation: 2,
           child: Column(
             children: [
-              CalendarToolBar(calendarController: calendarController),
+              CalendarToolBar(kalenderController: kalenderController),
               KalenderHeader(multiDayTileComponents: tileComponents(context, body: false)),
             ],
           ),
@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onEventTapped(KalenderEvent event) async {
-    calendarController.selectEvent(event);
+    kalenderController.selectEvent(event);
 
     final group = event is RecurringCalendarEvent ? controller.groupFor(event) : null;
     final result = await _showDialog(event, existingGroup: group);
@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
       controller.deleteGroup(group.id);
     }
 
-    calendarController.deselectEvent();
+    kalenderController.deselectEvent();
   }
 
   Future<RecurrenceDialogResult?> _showDialog(

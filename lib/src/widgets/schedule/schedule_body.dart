@@ -28,12 +28,12 @@ class ScheduleBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController;
+    final kalenderController = context.kalenderController;
     assert(
-      calendarController.viewController is ScheduleViewController,
+      kalenderController.viewController is ScheduleViewController,
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
-    final viewController = calendarController.viewController as ScheduleViewController;
+    final viewController = kalenderController.viewController as ScheduleViewController;
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
     if (viewController is ContinuousScheduleViewController) {
       return SchedulePositionList(
@@ -171,7 +171,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   // Convenience getters for accessing widget properties
   ScheduleViewController get viewController => widget.viewController;
   EventsController get eventsController => widget.eventsController;
-  KalenderController get calendarController => context.calendarController;
+  KalenderController get kalenderController => context.kalenderController;
   KalenderCallbacks? get callbacks => context.callbacks;
   ScheduleComponents get components => context.components.scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
@@ -335,7 +335,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        calendarController.internalDateTimeRange.value = InternalDateTimeRange(start: start, end: end);
+        kalenderController.internalDateTimeRange.value = InternalDateTimeRange(start: start, end: end);
       }
 
       // Update the visible events based on the current item positions.
@@ -434,7 +434,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             builder: (context, constraints) {
               return ScheduleDragTarget(
                 eventsController: eventsController,
-                calendarController: calendarController,
+                kalenderController: kalenderController,
                 callbacks: callbacks,
                 viewController: viewController,
                 constraints: constraints,

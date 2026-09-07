@@ -57,16 +57,16 @@ class HomeScreen extends ConsumerWidget {
     // The controllers never change, so read them; watch only the selected view
     // configuration, which the calendar needs to rebuild.
     final eventsController = ref.read(eventsProvider);
-    final calendarController = ref.read(calendarControllerProvider);
+    final kalenderController = ref.read(calendarControllerProvider);
     final selected = ref.watch(selectedViewProvider);
 
     return Scaffold(
       body: KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: selected,
         callbacks: KalenderCallbacks(
-          onEventTapped: (event) => calendarController.selectEvent(event),
+          onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(

@@ -8,7 +8,7 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   final interaction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
@@ -28,7 +28,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   /// Helper to pump a MultiDayView (single day) with the given callbacks.
@@ -40,7 +40,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(
           displayRange: year2025DisplayRange,
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
@@ -62,7 +62,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: year2025DisplayRange,
           initialDateTime: DateTime(2025, 1, 1),
@@ -316,7 +316,7 @@ void main() {
       expect(changedRange, isNull);
 
       // Use jumpToDate instead of animateToNextPage to avoid animation that never settles.
-      calendarController.jumpToDate(DateTime(2025, 1, 2));
+      kalenderController.jumpToDate(DateTime(2025, 1, 2));
       await tester.pumpAndSettle();
 
       expect(changedRange, isNotNull);
@@ -566,7 +566,7 @@ void main() {
       expect(changedRange, isNull);
 
       // Use jumpToDate instead of animateToNextPage to avoid animation that never settles.
-      calendarController.jumpToDate(DateTime(2025, 2, 1));
+      kalenderController.jumpToDate(DateTime(2025, 2, 1));
       await tester.pumpAndSettle();
 
       expect(changedRange, isNotNull);
@@ -633,7 +633,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(
           displayRange: year2025DisplayRange,
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
@@ -654,7 +654,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: year2025DisplayRange,
           initialDateTime: DateTime(2025, 1, 1),

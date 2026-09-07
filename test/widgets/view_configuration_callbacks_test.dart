@@ -14,22 +14,22 @@ DateTime nowTuesday() => DateTime(2025, 1, 14, 14, 30);
 
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   tearDown(() {
-    calendarController.dispose();
+    kalenderController.dispose();
     eventsController.dispose();
   });
 
   Widget build(ViewConfiguration configuration) {
     return KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: configuration,
       header: const KalenderHeader(),
       body: const KalenderBody(),
@@ -55,7 +55,7 @@ void main() {
   /// trailing days of the previous month, so the range's own start does not
   /// name the month on screen.
   bool visibleRangeCovers(DateTime date) {
-    final range = calendarController.visibleDateTimeRange.value!;
+    final range = kalenderController.visibleDateTimeRange.value!;
     return !date.isBefore(range.start) && date.isBefore(range.end);
   }
 
@@ -80,13 +80,13 @@ void main() {
 
     testWidgets('changing only the resolver, with no view switch, does nothing', (tester) async {
       await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToMarch)));
-      final before = calendarController.visibleDateTimeRange.value;
+      final before = kalenderController.visibleDateTimeRange.value;
 
       // The same configuration with a different resolver. A resolver only runs
       // at a view switch, and there is no switch here.
       await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToAugust)));
 
-      expect(calendarController.visibleDateTimeRange.value, equals(before));
+      expect(kalenderController.visibleDateTimeRange.value, equals(before));
     });
   });
 

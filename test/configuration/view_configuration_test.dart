@@ -464,7 +464,7 @@ extension ViewControllerUtilities on WidgetTester {
       this,
       KalenderView(
         eventsController: eventsController,
-        calendarController: controller,
+        kalenderController: controller,
         viewConfiguration: viewConfiguration,
         body: KalenderBody(
           multiDayTileComponents: components,

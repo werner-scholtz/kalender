@@ -67,7 +67,7 @@ void main() {
 
       return wrapWithMaterialApp(
         TestProvider(
-          calendarController: controller,
+          kalenderController: controller,
           eventsController: eventsController,
           tileComponents: tileComponents,
           child: sizedBoxWrapper ?? inner,
@@ -83,7 +83,7 @@ void main() {
     }) {
       return wrapWithMaterialApp(
         TestProvider(
-          calendarController: controller,
+          kalenderController: controller,
           eventsController: eventsController,
           tileComponents: tileComponents,
           child: SizedBox(

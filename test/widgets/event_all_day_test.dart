@@ -9,7 +9,7 @@ import '../utilities.dart';
 /// the header whatever the view's rule says and whatever its duration is.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   final start = DateTime(2025, 1, 6); // A Monday.
 
@@ -28,7 +28,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule, {KalenderCallbacks? callbacks}) {
@@ -36,7 +36,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         callbacks: callbacks,
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: year2025DisplayRange,

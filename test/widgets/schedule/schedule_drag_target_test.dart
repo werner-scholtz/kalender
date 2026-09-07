@@ -11,7 +11,7 @@ import '../../utilities.dart';
 /// grid, so a drop carries a day and no time of day.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   final displayRange = KalenderDateTimeRange(start: DateTime(2025, 6), end: DateTime(2025, 7));
 
@@ -24,7 +24,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   String addEvent(DateTime start, Duration duration) {
@@ -40,7 +40,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         callbacks: callbacks,
         viewConfiguration: paginated
             ? ScheduleViewConfiguration.paginated(displayRange: displayRange, initialDateTime: DateTime(2025, 6, 2))
@@ -53,7 +53,7 @@ void main() {
     );
   }
 
-  ScheduleViewController schedule() => calendarController.viewController! as ScheduleViewController;
+  ScheduleViewController schedule() => kalenderController.viewController! as ScheduleViewController;
 
   /// Picks [tile] up and moves it down by [dy] without releasing.
   Future<TestGesture> dragDownBy(WidgetTester tester, Finder tile, double dy) async {
@@ -72,7 +72,7 @@ void main() {
     final original = eventsController.byId(id)!;
     final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)), 120);
 
-    final preview = calendarController.selectedEvent.value;
+    final preview = kalenderController.selectedEvent.value;
     expect(preview, isNotNull, reason: 'the schedule should preview a reschedule while the drag is held');
     expect(preview!.start.isAfter(original.start), isTrue, reason: 'the preview should follow the cursor down');
 
@@ -202,7 +202,7 @@ void main() {
       // trigger band and entering it registers.
       final id = addEvent(DateTime(2025, 6, 17, 9), const Duration(hours: 1));
       await pumpSchedule(tester);
-      calendarController.jumpToDate(DateTime(2025, 6, 15));
+      kalenderController.jumpToDate(DateTime(2025, 6, 15));
       await tester.pumpAndSettle();
 
       final before = firstVisibleIndex();

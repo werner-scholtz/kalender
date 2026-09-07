@@ -92,12 +92,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 class ZoomableCalendar extends StatelessWidget {
-  final KalenderController calendarController;
+  final KalenderController kalenderController;
   final Widget child;
 
   const ZoomableCalendar({
     super.key,
-    required this.calendarController,
+    required this.kalenderController,
     required this.child,
   });
 
@@ -108,7 +108,7 @@ class ZoomableCalendar extends StatelessWidget {
         if (!HardwareKeyboard.instance.isControlPressed) return;
         if (event is! PointerScrollEvent) return;
 
-        final viewController = calendarController.viewController;
+        final viewController = kalenderController.viewController;
         if (viewController is! MultiDayViewController) return;
 
         final heightPerMinute = viewController.heightPerMinute;

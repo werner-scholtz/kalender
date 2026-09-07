@@ -11,11 +11,11 @@ import '../utilities.dart';
 /// they fail on the old behaviour and pass once the off-by-one is fixed.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   Future<void> pump(WidgetTester tester, ViewConfiguration config) {
@@ -23,7 +23,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: config,
         body: const KalenderBody(),
       ),
@@ -31,7 +31,7 @@ void main() {
   }
 
   bool visibleRangeContains(DateTime date) {
-    final range = calendarController.internalDateTimeRange.value!;
+    final range = kalenderController.internalDateTimeRange.value!;
     return range.dates().any((d) => d.year == date.year && d.month == date.month && d.day == date.day);
   }
 
@@ -47,7 +47,7 @@ void main() {
       ),
     );
 
-    calendarController.jumpToDate(lastWeekDate);
+    kalenderController.jumpToDate(lastWeekDate);
     await tester.pumpAndSettle();
 
     expect(visibleRangeContains(lastWeekDate), isTrue, reason: 'The last week of the range should be reachable');
@@ -63,10 +63,10 @@ void main() {
       ),
     );
 
-    calendarController.jumpToDate(DateTime(2025, 6, 15));
+    kalenderController.jumpToDate(DateTime(2025, 6, 15));
     await tester.pumpAndSettle();
 
-    final range = calendarController.internalDateTimeRange.value!;
+    final range = kalenderController.internalDateTimeRange.value!;
     expect(range.dominantMonthDate.month, 6, reason: 'The last month of the range should be reachable');
   });
 
@@ -83,7 +83,7 @@ void main() {
       ),
     );
 
-    final viewController = calendarController.viewController! as MultiDayViewController;
+    final viewController = kalenderController.viewController! as MultiDayViewController;
     expect(viewController.numberOfPages, 7, reason: 'one column per day in the range, and no more');
 
     final last = viewController.viewConfiguration.pageIndexCalculator

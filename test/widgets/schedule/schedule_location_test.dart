@@ -19,11 +19,11 @@ void main() {
   final tokyo = getLocation('Asia/Tokyo');
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   KalenderEvent eventAt(DateTime day, int hour) => KalenderEvent(
@@ -39,7 +39,7 @@ void main() {
   }) {
     return KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       location: tokyo,
       components: components,
       callbacks: callbacks,
@@ -132,7 +132,7 @@ void main() {
       ),
     );
 
-    calendarController.jumpToDate(DateTime(2025, 2, 10));
+    kalenderController.jumpToDate(DateTime(2025, 2, 10));
     await tester.pumpAndSettle();
 
     expect(changedRange, isNotNull);

@@ -7,7 +7,7 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late KalenderCallbacks callbacks;
 
   final preciseInteraction = KalenderInteraction(
@@ -31,7 +31,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     callbacks = KalenderCallbacks(
       onEventCreated: eventsController.addEvent,
       onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
@@ -89,7 +89,7 @@ void main() {
             tester,
             KalenderView(
               eventsController: eventsController,
-              calendarController: calendarController,
+              kalenderController: kalenderController,
               viewConfiguration: viewConfiguration,
               callbacks: callbacks,
               body: KalenderBody(
@@ -267,7 +267,7 @@ void main() {
             tester,
             KalenderView(
               eventsController: eventsController,
-              calendarController: calendarController,
+              kalenderController: kalenderController,
               viewConfiguration: viewConfiguration,
               callbacks: callbacks,
               body: KalenderBody(
@@ -295,7 +295,7 @@ void main() {
 
           // Select event to show resize handles.
           final event = eventsController.events.firstWhere((e) => e.id == eventId);
-          calendarController.selectEvent(event);
+          kalenderController.selectEvent(event);
           await tester.pumpAndSettle();
 
           final bottomResizeHandle = find.descendant(
@@ -361,7 +361,7 @@ void main() {
             tester,
             KalenderView(
               eventsController: eventsController,
-              calendarController: calendarController,
+              kalenderController: kalenderController,
               viewConfiguration: viewConfiguration,
               callbacks: callbacks,
               body: KalenderBody(

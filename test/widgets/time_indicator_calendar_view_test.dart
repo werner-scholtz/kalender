@@ -23,11 +23,11 @@ import '../utilities.dart';
 /// made the original bug visible.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   // A known Monday and the week that starts on it.
@@ -42,7 +42,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: viewConfiguration,
           body: const KalenderBody(),
         ),

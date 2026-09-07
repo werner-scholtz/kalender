@@ -71,11 +71,11 @@ class MyCalendar extends StatefulWidget {
 
 class _MyCalendarState extends State<MyCalendar> {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
 
   @override
   void dispose() {
-    calendarController.dispose();
+    kalenderController.dispose();
     eventsController.dispose();
     super.dispose();
   }
@@ -105,11 +105,11 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
 
   @override
   void dispose() {
-    calendarController.dispose();
+    kalenderController.dispose();
     eventsController.dispose();
     super.dispose();
   }
@@ -130,22 +130,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
             // The visible range drives the label, so it follows every scroll,
             // page change and view switch without any extra wiring.
             ValueListenableBuilder(
-              valueListenable: calendarController.visibleDateTimeRange,
+              valueListenable: kalenderController.visibleDateTimeRange,
               builder: (context, range, child) {
                 if (range == null) return const SizedBox.shrink();
                 return Text('${range.start.monthNameLocalized()} ${range.start.year}');
               },
             ),
             IconButton(
-              onPressed: calendarController.animateToPreviousPage,
+              onPressed: kalenderController.animateToPreviousPage,
               icon: const Icon(Icons.chevron_left),
             ),
             IconButton(
-              onPressed: calendarController.animateToNextPage,
+              onPressed: kalenderController.animateToNextPage,
               icon: const Icon(Icons.chevron_right),
             ),
             IconButton(
-              onPressed: () => calendarController.animateToDate(DateTime.now()),
+              onPressed: () => kalenderController.animateToDate(DateTime.now()),
               icon: const Icon(Icons.today),
             ),
             const Spacer(),
@@ -165,7 +165,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         Expanded(
           child: KalenderView(
             eventsController: eventsController,
-            calendarController: calendarController,
+            kalenderController: kalenderController,
             viewConfiguration: viewConfiguration,
             header: KalenderHeader(),
             body: KalenderBody(),

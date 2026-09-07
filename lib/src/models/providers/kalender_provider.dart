@@ -186,7 +186,7 @@ extension ProviderContext on BuildContext {
   EventsController get eventsController => EventsControllerProvider.of(this);
 
   /// Retrieve the [KalenderController].
-  KalenderController get calendarController => KalenderControllerProvider.of(this);
+  KalenderController get kalenderController => KalenderControllerProvider.of(this);
 
   /// Retrieve the [KalenderComponents].
   KalenderComponents get components => Components.of(this);
@@ -221,7 +221,7 @@ extension ProviderContext on BuildContext {
   /// Comes from the current view's [ViewConfiguration.multiDayRule], falling
   /// back to [kDefaultMultiDayRule] before a view is attached.
   MultiDayRule get multiDayRule =>
-      calendarController.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
+      kalenderController.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
 
   Location? get location => LocationProvider.of(this);
   ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
@@ -230,7 +230,7 @@ extension ProviderContext on BuildContext {
   /// Whether [date] is today, honouring the view's `nowCallback` when set and
   /// otherwise the calendar's [location].
   bool isToday(InternalDateTime date) {
-    final now = calendarController.viewController?.viewConfiguration.nowCallback?.call();
+    final now = kalenderController.viewController?.viewConfiguration.nowCallback?.call();
     return now != null ? date.isToday(now: now) : date.isToday(location: location);
   }
 }

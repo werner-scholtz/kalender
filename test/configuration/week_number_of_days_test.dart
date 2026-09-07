@@ -112,7 +112,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          calendarController: KalenderController(),
+          kalenderController: KalenderController(),
           viewConfiguration: MultiDayViewConfiguration.week(
             displayRange: displayRange,
             initialDateTime: monday,

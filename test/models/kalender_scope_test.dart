@@ -7,16 +7,16 @@ import '../utilities.dart';
 /// [KalenderScope] reads the state of the calendar a widget is built inside.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   tearDown(() {
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
   });
 
   /// Pumps a calendar whose day header runs [read] and renders what it returns.
@@ -26,7 +26,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         locale: const Locale('de'),
         viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: KalenderComponents(
@@ -45,8 +45,8 @@ void main() {
   testWidgets('reads the controllers the calendar was given', (tester) async {
     await pumpReading(tester, (context) {
       final events = KalenderScope.eventsControllerOf(context);
-      final calendar = KalenderScope.calendarControllerOf(context);
-      return '${identical(events, eventsController)}/${identical(calendar, calendarController)}';
+      final calendar = KalenderScope.kalenderControllerOf(context);
+      return '${identical(events, eventsController)}/${identical(calendar, kalenderController)}';
     });
     expect(find.text('true/true'), findsWidgets);
   });
@@ -62,7 +62,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
@@ -95,7 +95,7 @@ void main() {
       tester,
       Builder(
         builder: (context) => Text(
-          '${KalenderScope.maybeEventsControllerOf(context)}/${KalenderScope.maybeCalendarControllerOf(context)}',
+          '${KalenderScope.maybeEventsControllerOf(context)}/${KalenderScope.maybeKalenderControllerOf(context)}',
           textDirection: TextDirection.ltr,
         ),
       ),

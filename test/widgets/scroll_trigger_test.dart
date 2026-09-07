@@ -13,11 +13,11 @@ void main() {
   final start = DateTime(2025, 3, 24); // Monday
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   final components = TileComponents(
@@ -30,7 +30,7 @@ void main() {
     modifyEventGesture: EventInteractionGesture.tap,
   );
 
-  MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;
+  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   // Align the top of the viewport with [hour] so each test starts with room to
   // scroll in the direction it drags.
@@ -39,7 +39,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 7))),
           initialDateTime: start,

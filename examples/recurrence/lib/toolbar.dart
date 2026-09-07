@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 class CalendarToolBar extends StatelessWidget {
-  final KalenderController calendarController;
-  const CalendarToolBar({required this.calendarController, super.key});
+  final KalenderController kalenderController;
+  const CalendarToolBar({required this.kalenderController, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class CalendarToolBar extends StatelessWidget {
         spacing: 4,
         children: [
           ValueListenableBuilder(
-            valueListenable: calendarController.internalDateTimeRange,
+            valueListenable: kalenderController.internalDateTimeRange,
             builder: (context, value, child) {
               if (value == null) return const SizedBox.shrink();
               final localRange = value.forLocation();
@@ -25,7 +25,7 @@ class CalendarToolBar extends StatelessWidget {
               final String month;
               final int year;
 
-              if (calendarController.viewController?.viewConfiguration is MonthViewConfiguration) {
+              if (kalenderController.viewController?.viewConfiguration is MonthViewConfiguration) {
                 final dominantMonthDate = InternalDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
                 year = dominantMonthDate.year;
                 month = dominantMonthDate.monthNameLocalized();
@@ -35,7 +35,7 @@ class CalendarToolBar extends StatelessWidget {
               }
 
               return FilledButton.tonal(
-                onPressed: () => calendarController.animateToDate(DateTime.now()),
+                onPressed: () => kalenderController.animateToDate(DateTime.now()),
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(150, kMinInteractiveDimension),
                 ),
@@ -45,16 +45,16 @@ class CalendarToolBar extends StatelessWidget {
           ),
           if (isDesktop)
             IconButton.filledTonal(
-              onPressed: () => calendarController.animateToPreviousPage(),
+              onPressed: () => kalenderController.animateToPreviousPage(),
               icon: const Icon(Icons.chevron_left),
             ),
           if (isDesktop)
             IconButton.filledTonal(
-              onPressed: () => calendarController.animateToNextPage(),
+              onPressed: () => kalenderController.animateToNextPage(),
               icon: const Icon(Icons.chevron_right),
             ),
           IconButton.filledTonal(
-            onPressed: () => calendarController.animateToDate(DateTime.now()),
+            onPressed: () => kalenderController.animateToDate(DateTime.now()),
             icon: const Icon(Icons.today),
           ),
         ],

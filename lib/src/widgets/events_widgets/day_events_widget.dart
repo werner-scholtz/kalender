@@ -45,7 +45,7 @@ class MultiDayEventsRow extends StatelessWidget {
                 cache: viewController.cache,
                 heightPerMinute: context.heightPerMinute,
                 scrollController: viewController.scrollController,
-                calendarController: context.calendarController,
+                kalenderController: context.kalenderController,
               ),
             ),
           ),
@@ -87,7 +87,7 @@ class DayEventsColumn extends StatefulWidget {
 
   /// The calendar controller, used to keep a selected (being dragged/resized)
   /// event built even when it scrolls out of view.
-  final KalenderController calendarController;
+  final KalenderController kalenderController;
 
   /// Creates a new instance of the [DayEventsColumn] widget.
   const DayEventsColumn({
@@ -100,7 +100,7 @@ class DayEventsColumn extends StatefulWidget {
     required this.cache,
     required this.heightPerMinute,
     required this.scrollController,
-    required this.calendarController,
+    required this.kalenderController,
   });
 
   @override
@@ -127,7 +127,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     _visibleIndices = _computeVisibleIndices();
     widget.eventsController.addListener(_update);
     widget.scrollController.addListener(_onViewportChanged);
-    widget.calendarController.selectedEvent.addListener(_onViewportChanged);
+    widget.kalenderController.selectedEvent.addListener(_onViewportChanged);
     // The scroll view may not be attached on the first build, in which case
     // everything is built. Re-cull once it is attached.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -143,9 +143,9 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
       oldWidget.scrollController.removeListener(_onViewportChanged);
       widget.scrollController.addListener(_onViewportChanged);
     }
-    if (oldWidget.calendarController != widget.calendarController) {
-      oldWidget.calendarController.selectedEvent.removeListener(_onViewportChanged);
-      widget.calendarController.selectedEvent.addListener(_onViewportChanged);
+    if (oldWidget.kalenderController != widget.kalenderController) {
+      oldWidget.kalenderController.selectedEvent.removeListener(_onViewportChanged);
+      widget.kalenderController.selectedEvent.addListener(_onViewportChanged);
     }
 
     final didUpdateLocation = oldWidget.location != widget.location;
@@ -165,7 +165,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   void dispose() {
     widget.eventsController.removeListener(_update);
     widget.scrollController.removeListener(_onViewportChanged);
-    widget.calendarController.selectedEvent.removeListener(_onViewportChanged);
+    widget.kalenderController.selectedEvent.removeListener(_onViewportChanged);
     super.dispose();
   }
 
@@ -250,7 +250,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
     // Keep a selected (being dragged/resized) event built even when it scrolls
     // out of view, so the interaction is not interrupted.
-    final selectedId = widget.calendarController.selectedEventId;
+    final selectedId = widget.kalenderController.selectedEventId;
     if (selectedId != null) {
       final index = _events.indexWhere((event) => event.id == selectedId);
       if (index != -1) visible.add(index);
@@ -283,7 +283,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.calendarController;
+    final controller = context.kalenderController;
 
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     // The tile range is the same for every tile in this column, so compute it
@@ -421,7 +421,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
   @override
   Widget build(BuildContext context) {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
-    final controller = context.calendarController;
+    final controller = context.kalenderController;
 
     // If there is no event being dragged, return an empty widget.
     final event = _selectedEvent;

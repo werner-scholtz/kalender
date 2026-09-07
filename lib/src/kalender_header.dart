@@ -70,7 +70,7 @@ class _CalendarHeaderState extends State<KalenderHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = context.calendarController.viewController;
+    final viewController = context.kalenderController.viewController;
     return Callbacks(
       callbacks: _callbacks ?? context.callbacks,
       child: switch (viewController) {

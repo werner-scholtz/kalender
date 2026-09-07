@@ -9,7 +9,7 @@ import '../utilities.dart';
 /// between the header and the body without the events themselves changing.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late String eventId;
 
   final start = DateTime(2025, 1, 6); // A Monday.
@@ -22,7 +22,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     // 23:00 to 01:00. Two calendar days, two hours long, so the two rules
     // disagree about it and nothing else does.
     eventId = eventsController.addEvent(
@@ -38,7 +38,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: year2025DisplayRange,
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),

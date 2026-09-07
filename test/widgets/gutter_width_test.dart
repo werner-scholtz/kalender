@@ -14,15 +14,15 @@ import '../utilities.dart';
 /// the way it does for every other style.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   tearDown(() {
-    calendarController.dispose();
+    kalenderController.dispose();
     eventsController.dispose();
   });
 
@@ -32,7 +32,7 @@ void main() {
   Widget splitTheme(ViewConfiguration configuration, KalenderThemeData bodyTheme) {
     return KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: configuration,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderTheme(data: bodyTheme, child: KalenderBody(multiDayTileComponents: tiles)),
@@ -42,7 +42,7 @@ void main() {
   Widget plain(ViewConfiguration configuration, {KalenderThemeData? theme}) {
     final view = KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: configuration,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),
@@ -81,7 +81,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: month(),
           components: const KalenderComponents(
             monthComponents: MonthComponents(
@@ -173,7 +173,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: week(),
           components: const KalenderComponents(
             multiDayComponents: MultiDayComponents(
@@ -215,7 +215,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: month(),
           components: const KalenderComponents(
             multiDayComponents: MultiDayComponents(
@@ -240,7 +240,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: week(),
         components: const KalenderComponents(
           multiDayComponents: MultiDayComponents(
@@ -255,7 +255,7 @@ void main() {
     expect(_widthBuilderCalls, 1);
     expect(_resolved, {
       'eventsControllerOf': true,
-      'calendarControllerOf': true,
+      'kalenderControllerOf': true,
       'localeOf': true,
       'locationOf': true,
       'componentsOf': true,
@@ -284,7 +284,7 @@ void _record(String name, void Function(BuildContext) read, BuildContext context
 double _readsCalendarState(BuildContext context, KalenderTimeRange range) {
   _widthBuilderCalls++;
   _record('eventsControllerOf', KalenderScope.eventsControllerOf, context);
-  _record('calendarControllerOf', KalenderScope.calendarControllerOf, context);
+  _record('kalenderControllerOf', KalenderScope.kalenderControllerOf, context);
   _record('localeOf', KalenderScope.localeOf, context);
   _record('locationOf', KalenderScope.locationOf, context);
   _record('componentsOf', KalenderScope.componentsOf, context);

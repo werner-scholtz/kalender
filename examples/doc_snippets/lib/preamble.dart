@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
 }
 
 final eventsController = DefaultEventsController();
-final calendarController = KalenderController();
+final kalenderController = KalenderController();
 final viewConfiguration = MultiDayViewConfiguration.week();
 
 final location = tz.getLocation('Etc/UTC');

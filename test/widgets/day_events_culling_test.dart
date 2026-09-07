@@ -15,11 +15,11 @@ void main() {
   final day = DateTime(2025, 3, 24);
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   // Adds one event on [day], starting at [hour] for [durationHours]. The view
@@ -42,7 +42,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.singleDay(
           initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
           initialHeightPerMinute: 1,
@@ -55,7 +55,7 @@ void main() {
   }
 
   ScrollPosition bodyScrollPosition() {
-    final viewController = calendarController.viewController as MultiDayViewController;
+    final viewController = kalenderController.viewController as MultiDayViewController;
     return viewController.scrollController.position;
   }
 

@@ -1,0 +1,53 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/512
+  - title: "Rename to 'kalenderController'"
+    date: 2026-09-07
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'KalenderView'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'calendarController'
+        newName: 'kalenderController'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/512
+  - title: "Rename to 'kalenderController'"
+    date: 2026-09-07
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'calendarController'
+      inClass: 'KalenderView'
+    changes:
+      - kind: 'rename'
+        newName: 'kalenderController'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/512
+  - title: "Rename to 'kalenderControllerOf'"
+    date: 2026-09-07
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'calendarControllerOf'
+      inClass: 'KalenderScope'
+    changes:
+      - kind: 'rename'
+        newName: 'kalenderControllerOf'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/512
+  - title: "Rename to 'maybeKalenderControllerOf'"
+    date: 2026-09-07
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'maybeCalendarControllerOf'
+      inClass: 'KalenderScope'
+    changes:
+      - kind: 'rename'
+        newName: 'maybeKalenderControllerOf'
