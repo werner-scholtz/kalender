@@ -21,6 +21,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 ### Features
 
 - `DateTimeExtensions.timeLocalized` formats the time of day for a locale, with `use24HourFormat` to force `HH:mm`.
+- `PageIndexCalculator.month` and `MonthIndexCalculator.fromRange` build a month calculator from a range.
 
 ### Fixes
 
