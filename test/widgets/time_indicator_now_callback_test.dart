@@ -32,7 +32,7 @@ void main() {
                     TimeIndicatorPositioner(
                       viewController: MultiDayViewController(
                         viewConfiguration: viewConfiguration,
-                        visibleDateTimeRange: ValueNotifier(range),
+                        internalVisibleRange: ValueNotifier(range),
                         visibleEvents: ValueNotifier(<KalenderEvent>{}),
                       ),
                       initialPage: 0,
@@ -69,7 +69,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(range),
+                    internalVisibleRange: ValueNotifier(range),
                     visibleEvents: ValueNotifier(<KalenderEvent>{}),
                   ),
                   initialPage: 0,
@@ -110,7 +110,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(todayRange),
+                    internalVisibleRange: ValueNotifier(todayRange),
                     visibleEvents: ValueNotifier(<KalenderEvent>{}),
                   ),
                   initialPage: 0,
@@ -143,7 +143,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(range),
+                    internalVisibleRange: ValueNotifier(range),
                     visibleEvents: ValueNotifier(<KalenderEvent>{}),
                     initialDate: monday,
                   ),

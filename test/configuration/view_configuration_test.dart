@@ -28,7 +28,7 @@ import '../utilities.dart';
 /// - [ViewController.animateToDate]
 /// - [ViewController.animateToDateTime]
 /// - [ViewController.animateToEvent]
-/// - [ViewController.visibleDateTimeRange]
+/// - [ViewController.internalVisibleRange]
 /// - [ViewController.visibleEvents]
 ///
 void main() {
@@ -339,7 +339,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = ContinuousScheduleViewController(
         viewConfiguration: viewConfiguration,
-        visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
+        internalVisibleRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );
@@ -397,7 +397,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = PaginatedScheduleViewController(
         viewConfiguration: viewConfiguration,
-        visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
+        internalVisibleRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );

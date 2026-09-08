@@ -39,7 +39,7 @@ void main() {
     kalenderController = KalenderController();
     viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
-      visibleDateTimeRange: ValueNotifier(
+      internalVisibleRange: ValueNotifier(
         InternalDateTimeRange(start: internalStart.startOfDay, end: internalStart.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),

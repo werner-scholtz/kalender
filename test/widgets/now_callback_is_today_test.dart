@@ -35,7 +35,7 @@ void main() {
     final eventsController = DefaultEventsController();
     final viewController = MultiDayViewController(
       viewConfiguration: viewConfiguration,
-      visibleDateTimeRange: ValueNotifier(
+      internalVisibleRange: ValueNotifier(
         InternalDateTimeRange(start: monday, end: monday.endOfWeek()),
       ),
       visibleEvents: ValueNotifier(<KalenderEvent>{}),

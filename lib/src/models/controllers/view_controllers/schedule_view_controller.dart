@@ -18,7 +18,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   ScheduleViewController({
     super.location,
     required this.viewConfiguration,
-    required super.visibleDateTimeRange,
+    required super.internalVisibleRange,
     required this.visibleEvents,
     required this.initialDate,
   }) {
@@ -93,11 +93,11 @@ class ContinuousScheduleViewController extends ScheduleViewController {
   ContinuousScheduleViewController({
     super.location,
     required super.viewConfiguration,
-    required super.visibleDateTimeRange,
+    required super.internalVisibleRange,
     required super.visibleEvents,
     required super.initialDate,
   }) {
-    visibleDateTimeRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
+    internalVisibleRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
     visibleEvents.value = {};
   }
 
@@ -180,11 +180,11 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   PaginatedScheduleViewController({
     super.location,
     required super.viewConfiguration,
-    required super.visibleDateTimeRange,
+    required super.internalVisibleRange,
     required super.visibleEvents,
     required super.initialDate,
   }) {
-    visibleDateTimeRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
+    internalVisibleRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
     visibleEvents.value = {};
     pageController = PageController(initialPage: currentPage);
   }

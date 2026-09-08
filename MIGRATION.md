@@ -67,13 +67,20 @@ The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now.
 
 ### The members that named the controller follow their type
 
-`dart fix` applies all three.
+`dart fix` applies all four.
 
 | Before | After |
 | --- | --- |
 | `KalenderView(calendarController: ...)` | `KalenderView(kalenderController: ...)` |
 | `KalenderScope.calendarControllerOf` | `KalenderScope.kalenderControllerOf` |
 | `KalenderScope.maybeCalendarControllerOf` | `KalenderScope.maybeKalenderControllerOf` |
+| `ViewController.visibleDateTimeRange` | `ViewController.internalVisibleRange` |
+
+`ViewController`'s is the one that was not only a naming question.
+`KalenderController.visibleDateTimeRange` is a `KalenderDateTimeRange` and
+`ViewController`'s was an `InternalDateTimeRange`, so one name meant two types
+across the public API. A member carrying the internal layout space says
+`internal` in its name now.
 
 `MultiDayRule.calendarDays` is unchanged. A calendar day is a unit of time, not a
 reference to the type.

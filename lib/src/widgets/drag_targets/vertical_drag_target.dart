@@ -80,7 +80,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   // TODO: check if this is right, and null check does not break anything.
   @override
-  List<InternalDateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
+  List<InternalDateTime> get visibleDates => viewController.internalVisibleRange.value!.dates();
 
   @override
   KalenderCallbacks? get callbacks => context.callbacks;

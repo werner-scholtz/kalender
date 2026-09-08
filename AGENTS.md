@@ -153,6 +153,21 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 - The `timezone` package provides `Location` objects for timezone-aware logic.
 - `DateTimeExtensions` (public) provide localized day/month names via `intl`.
 
+#### Naming the two range spaces
+
+Two range types exist and they are not interchangeable. `KalenderDateTimeRange`
+holds instants and is what an app hands in and reads back.
+`InternalDateTimeRange` holds unzoned calendar positions and carries the date
+arithmetic, so a day step stays a day step across a DST transition.
+
+**A member carrying the internal space says `internal` in its name. A member
+without it carries `KalenderDateTimeRange`.** `KalenderEvent` sets the pattern:
+`dateTimeRange`, `start` and `end` are the boundary, `internalRange()`,
+`internalStart()` and `internalEnd()` are the layout space.
+
+Apply this to anything new. The existing surface does not follow it everywhere,
+which is recorded in ROADMAP.md under the next breaking window.
+
 ### Layout Delegates
 
 - `EventLayoutStrategy` is an abstract class whose `createDelegate` returns an `EventLayoutDelegate`.

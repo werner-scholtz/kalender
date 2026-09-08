@@ -29,6 +29,8 @@ class KalenderTimeRange {
   }
 
   /// Creates a [KalenderTimeRange] from the given [KalenderDateTimeRange].
+  ///
+  /// Takes the hour and minute of each end. Seconds and below are dropped.
   factory KalenderTimeRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange) {
     return KalenderTimeRange(
       start: KalenderTime.fromDateTime(dateTimeRange.start),

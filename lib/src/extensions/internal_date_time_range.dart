@@ -5,6 +5,12 @@ import 'package:kalender/kalender.dart';
 /// Both [start] and [end] are stored as [InternalDateTime] values, so all
 /// helpers on this range (dates, overlaps, week numbers, etc.) are DST-safe.
 /// Use [forLocation] to convert back to a wall-clock [KalenderDateTimeRange].
+///
+/// This is deliberately a separate type from [KalenderDateTimeRange] rather than
+/// a set of helpers on it. Its ends are calendar positions, not instants, so
+/// stepping a day moves a day even across a DST transition, where adding 24
+/// hours to a real instant does not. [dates], [overlaps] and [weekNumbers] are
+/// only correct on that footing.
 class InternalDateTimeRange {
   /// Creates a [InternalDateTimeRange] instance.
   InternalDateTimeRange({

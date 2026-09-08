@@ -51,3 +51,14 @@ transforms:
     changes:
       - kind: 'rename'
         newName: 'maybeKalenderControllerOf'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/512
+  - title: "Rename to 'internalVisibleRange'"
+    date: 2026-09-08
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'visibleDateTimeRange'
+      inClass: 'ViewController'
+    changes:
+      - kind: 'rename'
+        newName: 'internalVisibleRange'

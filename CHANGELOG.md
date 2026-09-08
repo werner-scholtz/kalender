@@ -8,6 +8,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - The `CalendarLocale` extension on `BuildContext` is renamed to `KalenderLocale`.
 - `KalenderView.calendarController` is renamed to `kalenderController`.
 - `KalenderScope.calendarControllerOf` and `maybeCalendarControllerOf` are renamed to `kalenderControllerOf` and `maybeKalenderControllerOf`.
+- `ViewController.visibleDateTimeRange` is renamed to `internalVisibleRange`.
 - The deprecated `CalendarView` and `CalendarViewState` typedefs are removed.
 - `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
 - `KalenderTime` replaces Material's `TimeOfDay` in every public signature.
@@ -38,7 +39,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `DateTimeExtensions.timeLocalized` formats the time of day for a locale, with `use24HourFormat` to force `HH:mm`.
 - `PageIndexCalculator.month` and `MonthIndexCalculator.fromRange` build a month calculator from a range.
 - `package:kalender/material.dart` converts `KalenderDateTimeRange` and `KalenderTime` to and from Material's `DateTimeRange` and `TimeOfDay`.
-- `dart fix --apply` renames the eight `Calendar*` types to `Kalender*`, renames `TimeOfDayRange` and `TimeOfDayStringBuilder` to `KalenderTimeRange` and `KalenderTimeStringBuilder`, renames `calendarController` to `kalenderController` and the two `KalenderScope` controller accessors to match, and rewrites the `dateTimeRange` argument of `CalendarEvent` and the `PageIndexCalculator` subclasses into `start` and `end`.
+- `dart fix --apply` renames the eight `Calendar*` types to `Kalender*`, renames `TimeOfDayRange` and `TimeOfDayStringBuilder` to `KalenderTimeRange` and `KalenderTimeStringBuilder`, renames `calendarController` to `kalenderController`, the two `KalenderScope` controller accessors and `ViewController.visibleDateTimeRange` to match, and rewrites the `dateTimeRange` argument of `CalendarEvent` and the `PageIndexCalculator` subclasses into `start` and `end`.
 
 ### Fixes
 

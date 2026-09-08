@@ -2,6 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/kalender_extensions.dart';
 
 Widget build(BuildContext context, KalenderController c, EventsController e) =>
     KalenderView(kalenderController: c, eventsController: e);
@@ -9,3 +10,4 @@ Widget build(BuildContext context, KalenderController c, EventsController e) =>
 KalenderController field(KalenderView view) => view.kalenderController;
 KalenderController of(BuildContext context) => KalenderScope.kalenderControllerOf(context);
 KalenderController? maybe(BuildContext context) => KalenderScope.maybeKalenderControllerOf(context);
+InternalDateTimeRange? visible(ViewController c) => c.internalVisibleRange.value;
