@@ -7,11 +7,11 @@ Runs the calendar inside an app that has migrated to the standalone
 The package still imports `package:flutter/material.dart`. Those are two
 separate sets of classes with the same names, so an app on `material_ui` hits
 three problems. This example shows each one and what to do about it. The first
-is fixed in the package, the other two are not.
+two are fixed in the package, the third is not.
 
 ## 1. The timeline used to throw at runtime
 
-Fixed. `KalenderTime.format` resolved `MaterialLocalizations`, which a `material_ui`
+Fixed. `TimeOfDay.format` resolved `MaterialLocalizations`, which a `material_ui`
 `MaterialApp` does not install, so the calendar threw:
 
 ```
@@ -25,19 +25,21 @@ An app that does install them keeps the labels it had.
 `MaterialUiCompatibilityBridge` is still worth having for the theme, see 3 below,
 but the calendar renders without it.
 
-## 2. `DateTimeRange` and `KalenderTime` do not compile
+## 2. `DateTimeRange` and `TimeOfDay` do not compile
 
-Both are Material classes, so `material_ui` defines its own copies:
+Fixed. Both are Material classes, so `material_ui` defines its own copies, and
+the calendar's API asked for the ones in `package:flutter/material.dart`:
 
 ```
-The argument type 'KalenderTime (where KalenderTime is defined in material_ui-1.1.0/lib/src/time.dart)'
-can't be assigned to the parameter type 'KalenderTime (where KalenderTime is defined in
+The argument type 'TimeOfDay (where TimeOfDay is defined in material_ui-1.1.0/lib/src/time.dart)'
+can't be assigned to the parameter type 'TimeOfDay (where TimeOfDay is defined in
 flutter/lib/src/material/time.dart)'.
 ```
 
-The bridge does not help here, it only works at runtime. Import
-`package:flutter/material.dart` under a prefix and use those types wherever the
-calendar's API asks for them.
+The calendar now uses `KalenderDateTimeRange` and `KalenderTime`, so no kalender
+signature names a Material type and nothing here needs a prefix import. Import
+`package:kalender/material.dart` for the conversions where you do hand values to
+a Material API.
 
 ## 3. `KalenderThemeData` cannot be a theme extension
 

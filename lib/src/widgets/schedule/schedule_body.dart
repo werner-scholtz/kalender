@@ -258,10 +258,9 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     var hasAddedMonth = false;
 
     for (final date in dates) {
-      final internalDate = InternalDateTime.fromDateTime(date);
       // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsFromDateTimeRange(
-        internalDate.dayRange,
+        date.dayRange,
         multiDayRule: widget.viewController.viewConfiguration.multiDayRule,
         location: widget.location,
       );
@@ -281,7 +280,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
           case EmptyDayBehavior.showOnlyToday:
             final now = widget.viewController.viewConfiguration.nowCallback?.call();
-            if (internalDate.isToday(location: widget.location, now: now)) {
+            if (date.isToday(location: widget.location, now: now)) {
               viewController.addItem(item: EmptyItem(), date: date, isFirst: true);
             }
             continue;
@@ -377,13 +376,13 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             final leadingWidth = widget.configuration.leadingWidth;
             Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
 
-            late final leading = components.buildLeadingDate(context, InternalDateTime.fromDateTime(date));
+            late final leading = components.buildLeadingDate(context, date);
 
             if (item is MonthItem) {
               final locale = context.locale;
               return components.monthItemBuilder?.call(
                     context,
-                    InternalDateTime.fromDateTime(date).monthRange.forLocation(location: context.location),
+                    date.monthRange.forLocation(location: context.location),
                   ) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
@@ -392,7 +391,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                 leading: leadingSlot(leading),
                 title: components.emptyItemBuilder?.call(
                   context,
-                  InternalDateTime.fromDateTime(date).dayRange.forLocation(location: context.location),
+                  date.dayRange.forLocation(location: context.location),
                 ),
               );
               return components.buildScheduleTileHighlight(

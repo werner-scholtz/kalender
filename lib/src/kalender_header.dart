@@ -37,10 +37,10 @@ class KalenderHeader extends StatefulWidget {
   });
 
   @override
-  State<KalenderHeader> createState() => _CalendarHeaderState();
+  State<KalenderHeader> createState() => _KalenderHeaderState();
 }
 
-class _CalendarHeaderState extends State<KalenderHeader> {
+class _KalenderHeaderState extends State<KalenderHeader> {
   late KalenderCallbacks? _callbacks;
   late ValueNotifier<KalenderInteraction> _interaction;
 

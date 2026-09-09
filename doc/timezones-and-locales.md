@@ -87,9 +87,10 @@ on `MonthHeaderComponents`, `leadingDateStringBuilder` on `ScheduleComponents`, 
 `multiDayPortalOverlayButtonStringBuilder` on `OverlayBuilders`.
 
 The times down the side of a multi-day view are the one case where the default
-does not come from the calendar's `locale`. They use Flutter's `KalenderTime.format`,
-so they follow the device's 12-hour or 24-hour setting. Fix the format with
-`timelineStringBuilder`:
+does not always come from the calendar's `locale`. `MaterialLocalizations`
+formats them where the app installs them, so they follow the device's 12-hour or
+24-hour setting. Without those localizations they fall back to intl against the
+calendar's `locale`. Fix the format with `timelineStringBuilder`:
 
 <!-- snippet: expression -->
 ```dart

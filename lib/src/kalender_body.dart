@@ -54,10 +54,10 @@ class KalenderBody extends StatefulWidget {
   });
 
   @override
-  State<KalenderBody> createState() => _CalendarBodyState();
+  State<KalenderBody> createState() => _KalenderBodyState();
 }
 
-class _CalendarBodyState extends State<KalenderBody> {
+class _KalenderBodyState extends State<KalenderBody> {
   late KalenderCallbacks? _callbacks;
   late ValueNotifier<KalenderInteraction> _interaction;
   late ValueNotifier<KalenderSnapping> _snapping;

@@ -91,7 +91,7 @@ mixin DayEventTileUtils implements EventTileUtils {
     );
   }
 
-  /// Get the [KalenderDateTimeRange] of the event clipped to the current display date.
+  /// Get the [InternalDateTimeRange] of the event clipped to the current display date.
   ///
   /// This returns the portion of the event that falls within the current
   /// tile's date, which is useful for events that span multiple days but
