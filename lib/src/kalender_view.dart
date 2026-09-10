@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
@@ -25,7 +25,7 @@ class KalenderView extends StatefulWidget {
   /// - [ScheduleComponents]
   ///
   /// Styles live on [KalenderThemeData] rather than here. Register one on
-  /// [ThemeData.extensions], or wrap a calendar in a [KalenderTheme] to scope it.
+  /// `ThemeData.extensions`, or wrap a calendar in a [KalenderTheme] to scope it.
   final KalenderComponents? components;
 
   /// The header widget that will be displayed above the body.

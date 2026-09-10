@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';

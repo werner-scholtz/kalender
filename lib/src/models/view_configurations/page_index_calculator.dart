@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';

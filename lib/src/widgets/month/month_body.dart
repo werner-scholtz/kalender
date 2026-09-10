@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/month_week_number_layout_delegate.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
 /// Assigns each event in the multi-day lane a row and a span of columns.
