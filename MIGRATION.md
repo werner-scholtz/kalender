@@ -84,6 +84,17 @@ Event copyWithData({required DateTimeRange dateTimeRange}) => ...
 Event copyWithData({required KalenderDateTimeRange dateTimeRange}) => ...
 ```
 
+A range handed back by a Material API is converted rather than rewritten.
+`package:kalender/material.dart` carries `toKalenderDateTimeRange` for that
+direction, and `toDateTimeRange` for the other:
+
+```dart
+import 'package:kalender/material.dart';
+
+final picked = await showDateRangePicker(context: context, firstDate: first, lastDate: last);
+final range = picked?.toKalenderDateTimeRange();
+```
+
 ### `InternalDateTimeRange` is its own class
 
 It used to extend `DateTimeRange`, which is how it reached Material. It now carries
@@ -126,11 +137,18 @@ locale instead. The am/pm helpers `period`, `hourOfPeriod` and `periodOffset` ar
 gone with the `DayPeriod` enum, so a page that needs them compares `hour` against 12.
 
 Calls into Material's own API still take Material's type, so convert at that
-boundary:
+boundary. `package:kalender/material.dart` carries the conversions both ways, for
+the time and the range:
 
 ```dart
-MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay(hour: t.hour, minute: t.minute))
+import 'package:kalender/material.dart';
+
+final picked = await showTimePicker(context: context, initialTime: time.toTimeOfDay());
+final time = picked?.toKalenderTime();
 ```
+
+It is a separate entry point, so importing `package:kalender/kalender.dart` alone
+still names no Material type.
 
 ### `TimeOfDayRange` is renamed to `KalenderTimeRange`
 
