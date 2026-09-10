@@ -84,6 +84,17 @@ Event copyWithData({required DateTimeRange dateTimeRange}) => ...
 Event copyWithData({required KalenderDateTimeRange dateTimeRange}) => ...
 ```
 
+A range handed back by a Material API is converted rather than rewritten.
+`package:kalender/material.dart` carries `toKalenderDateTimeRange` for that
+direction, and `toDateTimeRange` for the other:
+
+```dart
+import 'package:kalender/material.dart';
+
+final picked = await showDateRangePicker(context: context, firstDate: first, lastDate: last);
+final range = picked?.toKalenderDateTimeRange();
+```
+
 ### `InternalDateTimeRange` is its own class
 
 It used to extend `DateTimeRange`, which is how it reached Material. It now carries
@@ -137,8 +148,7 @@ final time = picked?.toKalenderTime();
 ```
 
 It is a separate entry point, so importing `package:kalender/kalender.dart` alone
-still names no Material type. `toDateTimeRange` and `toKalenderDateTimeRange` do
-the same for the range.
+still names no Material type.
 
 ### `TimeOfDayRange` is renamed to `KalenderTimeRange`
 
