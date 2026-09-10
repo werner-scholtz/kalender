@@ -17,11 +17,11 @@ import '../../utilities.dart';
 ///     nearest day, and `initialScrollIndex` polluted the date→index map.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   // A one-hour event at [hour] on [day].
@@ -40,7 +40,7 @@ void main() {
   }) {
     return KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       location: location,
       components: components,
       viewConfiguration: ScheduleViewConfiguration.continuous(
@@ -54,7 +54,7 @@ void main() {
     );
   }
 
-  ScheduleViewController schedule() => calendarController.viewController as ScheduleViewController;
+  ScheduleViewController schedule() => kalenderController.viewController as ScheduleViewController;
 
   double tileLeft(WidgetTester tester, String id) => tester.getTopLeft(find.byKey(ScheduleEventTile.tileKey(id))).dx;
 

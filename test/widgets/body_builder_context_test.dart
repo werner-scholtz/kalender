@@ -8,11 +8,11 @@ import '../utilities.dart';
 /// styles from it, all of them from the nearest [KalenderTheme].
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
@@ -24,7 +24,7 @@ void main() {
   }) async {
     final view = KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
       ),

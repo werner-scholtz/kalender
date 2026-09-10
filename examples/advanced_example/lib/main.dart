@@ -96,7 +96,7 @@ const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Pers
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
   late MultiDayViewConfiguration _viewConfiguration = _viewConfigurations.first;
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 2),
@@ -108,11 +108,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: _viewConfiguration,
         components: KalenderComponents(),
         callbacks: KalenderCallbacks(
-          onEventTapped: (event) => calendarController.selectEvent(event),
+          onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreateWithDetail: Event.fromDetail,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) =>
@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         body: ZoomDetector(
-          controller: calendarController,
+          controller: kalenderController,
           child: KalenderBody(
             multiDayTileComponents: tileComponents,
             monthTileComponents: multiDayTileComponents,

@@ -63,7 +63,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   EventsController get eventsController => context.eventsController;
   @override
-  KalenderController get controller => context.calendarController;
+  KalenderController get controller => context.kalenderController;
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
   @override

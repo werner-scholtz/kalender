@@ -13,7 +13,7 @@ import '../utilities.dart';
 void main() {
   group('Page navigation (preserved behaviour)', () {
     late DefaultEventsController eventsController;
-    late KalenderController calendarController;
+    late KalenderController kalenderController;
 
     // A wide range so the target date is nowhere near the first/last page.
     final wideRange = KalenderDateTimeRange(start: DateTime(2024), end: DateTime(2027));
@@ -22,7 +22,7 @@ void main() {
 
     setUp(() {
       eventsController = DefaultEventsController();
-      calendarController = KalenderController();
+      kalenderController = KalenderController();
     });
 
     Future<void> pump(WidgetTester tester, ViewConfiguration config) {
@@ -30,7 +30,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: config,
           body: const KalenderBody(),
         ),
@@ -38,7 +38,7 @@ void main() {
     }
 
     bool visibleRangeContains(DateTime date) {
-      final range = calendarController.internalDateTimeRange.value!;
+      final range = kalenderController.internalDateTimeRange.value!;
       return range.dates().any((d) => d.year == date.year && d.month == date.month && d.day == date.day);
     }
 
@@ -47,7 +47,7 @@ void main() {
         tester,
         MultiDayViewConfiguration.singleDay(displayRange: wideRange, initialDateTime: DateTime(2024, 1, 1)),
       );
-      calendarController.jumpToDate(target);
+      kalenderController.jumpToDate(target);
       await tester.pumpAndSettle();
       expect(visibleRangeContains(target), isTrue);
     });
@@ -57,7 +57,7 @@ void main() {
         tester,
         MultiDayViewConfiguration.week(displayRange: wideRange, initialDateTime: DateTime(2024, 1, 1)),
       );
-      calendarController.jumpToDate(target);
+      kalenderController.jumpToDate(target);
       await tester.pumpAndSettle();
       expect(visibleRangeContains(target), isTrue);
     });
@@ -67,9 +67,9 @@ void main() {
         tester,
         MonthViewConfiguration.singleMonth(displayRange: wideRange, initialDateTime: DateTime(2024, 1, 1)),
       );
-      calendarController.jumpToDate(target);
+      kalenderController.jumpToDate(target);
       await tester.pumpAndSettle();
-      final range = calendarController.internalDateTimeRange.value!;
+      final range = kalenderController.internalDateTimeRange.value!;
       expect(range.dominantMonthDate.year, target.year);
       expect(range.dominantMonthDate.month, target.month);
     });

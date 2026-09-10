@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
 
   final now = DateTime.now();
 
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
     super.dispose();
   }
 
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         data: const KalenderThemeData(timeIndicatorStyle: TimeIndicatorStyle(lineColor: Color(0xFFE91E63))),
         child: KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: viewConfiguration,
           header: const KalenderHeader(),
           body: const KalenderBody(),

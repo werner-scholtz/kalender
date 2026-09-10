@@ -10,21 +10,21 @@ class MonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController;
+    final kalenderController = context.kalenderController;
 
     assert(
-      calendarController.viewController is MonthViewController,
+      kalenderController.viewController is MonthViewController,
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
-    // final viewController = calendarController.viewController as MonthViewController;
-    final viewController = calendarController.viewController as MonthViewController;
+    // final viewController = kalenderController.viewController as MonthViewController;
+    final viewController = kalenderController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
     final components = calendarComponents.monthComponents.headerComponents;
 
     return ValueListenableBuilder(
-      valueListenable: calendarController.visibleDateTimeRange,
+      valueListenable: kalenderController.visibleDateTimeRange,
       builder: (context, visibleDateTimeRange, child) {
         if (visibleDateTimeRange == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MonthHeader.');

@@ -13,11 +13,11 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   final components = TileComponents(
@@ -30,14 +30,14 @@ void main() {
     modifyEventGesture: EventInteractionGesture.tap,
   );
 
-  MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;
+  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   Future<void> pumpFreeScroll(WidgetTester tester, KalenderCallbacks callbacks) {
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
           numberOfDays: 7,
           displayRange: displayRange,

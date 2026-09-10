@@ -24,7 +24,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(range),
+                    internalVisibleRange: ValueNotifier(range),
                     visibleEvents: ValueNotifier(<KalenderEvent>{}),
                   ),
                   initialPage: 0,

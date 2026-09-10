@@ -25,7 +25,7 @@ The function comes from `date_symbol_data_local.dart`, not from `intl.dart`. The
 KalenderView(
   locale: const Locale('af', 'ZA'),
   eventsController: eventsController,
-  calendarController: calendarController,
+  kalenderController: kalenderController,
   viewConfiguration: viewConfiguration,
 )
 ```
@@ -55,7 +55,7 @@ once for the whole app through [`KalenderThemeData`](appearance.md#theming).
 
 Every string the calendar writes can be replaced with a string builder on the
 matching `*Components` class. Each one receives the `BuildContext`, so it can read
-the calendar's own locale with `context.calendarLocale`, which is not necessarily
+the calendar's own locale with `context.kalenderLocale`, which is not necessarily
 the app's locale. intl takes a string, so pass `toLanguageTag()`:
 
 <!-- snippet: expression -->
@@ -65,12 +65,12 @@ import 'package:intl/intl.dart';
 KalenderView(
   locale: const Locale('af', 'ZA'),
   eventsController: eventsController,
-  calendarController: calendarController,
+  kalenderController: kalenderController,
   viewConfiguration: viewConfiguration,
   components: KalenderComponents(
     multiDayComponents: MultiDayComponents(
       headerComponents: MultiDayHeaderComponents(
-        dayHeaderStringBuilder: (context, date) => DateFormat.E(context.calendarLocale?.toLanguageTag()).format(date),
+        dayHeaderStringBuilder: (context, date) => DateFormat.E(context.kalenderLocale?.toLanguageTag()).format(date),
       ),
     ),
     overlayBuilders: OverlayBuilders(
@@ -87,9 +87,10 @@ on `MonthHeaderComponents`, `leadingDateStringBuilder` on `ScheduleComponents`, 
 `multiDayPortalOverlayButtonStringBuilder` on `OverlayBuilders`.
 
 The times down the side of a multi-day view are the one case where the default
-does not come from the calendar's `locale`. They use Flutter's `KalenderTime.format`,
-so they follow the device's 12-hour or 24-hour setting. Fix the format with
-`timelineStringBuilder`:
+does not always come from the calendar's `locale`. `MaterialLocalizations`
+formats them where the app installs them, so they follow the device's 12-hour or
+24-hour setting. Without those localizations they fall back to intl against the
+calendar's `locale`. Fix the format with `timelineStringBuilder`:
 
 <!-- snippet: expression -->
 ```dart
@@ -112,7 +113,7 @@ import 'package:timezone/timezone.dart' as tz;
 KalenderView(
   location: tz.getLocation('America/New_York'),
   eventsController: eventsController,
-  calendarController: calendarController,
+  kalenderController: kalenderController,
   viewConfiguration: viewConfiguration,
 )
 ```

@@ -9,7 +9,7 @@ class KalenderView extends StatefulWidget {
   final EventsController eventsController;
 
   /// The [KalenderController] that is used to control the calendar view.
-  final KalenderController calendarController;
+  final KalenderController kalenderController;
 
   /// The [ViewConfiguration] that will be used to render the calendar view.
   final ViewConfiguration viewConfiguration;
@@ -47,11 +47,11 @@ class KalenderView extends StatefulWidget {
   /// Creates a [KalenderView] widget.
   ///
   /// This widget creates a [ViewController] based on the [viewConfiguration].
-  /// It then attaches the [ViewController] to the [calendarController].
+  /// It then attaches the [ViewController] to the [kalenderController].
   const KalenderView({
     super.key,
     required this.eventsController,
-    required this.calendarController,
+    required this.kalenderController,
     required this.viewConfiguration,
     this.callbacks,
     this.components,
@@ -91,7 +91,7 @@ class KalenderViewState extends State<KalenderView> {
     _viewController = _createViewController(initialDate: initialDate);
 
     // Attach the view controller when the widget is initialized.
-    widget.calendarController.attach(_viewController);
+    widget.kalenderController.attach(_viewController);
   }
 
   @override
@@ -110,10 +110,10 @@ class KalenderViewState extends State<KalenderView> {
 
     // Move the view controller across when the calendar controller is swapped,
     // so the new one drives this view and the old one stops.
-    final didChangeCalendarController = widget.calendarController != oldWidget.calendarController;
-    if (didChangeCalendarController) {
-      oldWidget.calendarController.detach();
-      widget.calendarController.attach(_viewController);
+    final didChangeKalenderController = widget.kalenderController != oldWidget.kalenderController;
+    if (didChangeKalenderController) {
+      oldWidget.kalenderController.detach();
+      widget.kalenderController.attach(_viewController);
     }
 
     final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
@@ -157,13 +157,13 @@ class KalenderViewState extends State<KalenderView> {
       );
 
       // Dispose the old view controller if it exists.
-      widget.calendarController.viewController?.dispose();
+      widget.kalenderController.viewController?.dispose();
 
       // Attach the new view controller.
-      widget.calendarController.attach(_viewController);
+      widget.kalenderController.attach(_viewController);
     }
 
-    if (didChangeViewConfiguration || didChangeLocation || didChangeLocale || didChangeCalendarController) {
+    if (didChangeViewConfiguration || didChangeLocation || didChangeLocale || didChangeKalenderController) {
       setState(() {});
     }
   }
@@ -172,27 +172,27 @@ class KalenderViewState extends State<KalenderView> {
   void deactivate() {
     super.deactivate();
     // Detach the view controller when the widget is deactivated.
-    widget.calendarController.detach();
+    widget.kalenderController.detach();
   }
 
   @override
   void activate() {
     super.activate();
     // Reattach the view controller when the widget is reactivated.
-    widget.calendarController.attach(_viewController);
+    widget.kalenderController.attach(_viewController);
   }
 
   @override
   void dispose() {
     // Dispose the view controller when the widget is disposed.
-    widget.calendarController.viewController?.dispose();
+    widget.kalenderController.viewController?.dispose();
     _location.dispose();
     super.dispose();
   }
 
   /// Snapshot the outgoing view's current state, keyed by its config `name`.
   void _snapshotOutgoingView(ViewController controller) {
-    final range = controller.visibleDateTimeRange.value;
+    final range = controller.internalVisibleRange.value;
     if (range == null) return;
 
     final config = controller.viewConfiguration;
@@ -247,8 +247,8 @@ class KalenderViewState extends State<KalenderView> {
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController(
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
-          visibleEvents: widget.calendarController.visibleEvents,
+          internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+          visibleEvents: widget.kalenderController.visibleEvents,
           initialDate: initialDate,
           initialTimeOfDayOverride: initialTimeOfDay,
           initialHeightPerMinute: initialHeightPerMinute,
@@ -256,23 +256,23 @@ class KalenderViewState extends State<KalenderView> {
         ),
       const (MonthViewConfiguration) => MonthViewController(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
-          visibleEvents: widget.calendarController.visibleEvents,
+          internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+          visibleEvents: widget.kalenderController.visibleEvents,
           initialDate: initialDate,
           location: widget.location,
         ),
       const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
           ScheduleViewType.continuous => ContinuousScheduleViewController(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
-              visibleEvents: widget.calendarController.visibleEvents,
+              internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+              visibleEvents: widget.kalenderController.visibleEvents,
               initialDate: initialDate,
               location: widget.location,
             ),
           ScheduleViewType.paginated => PaginatedScheduleViewController(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
-              visibleEvents: widget.calendarController.visibleEvents,
+              internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+              visibleEvents: widget.kalenderController.visibleEvents,
               initialDate: initialDate,
               location: widget.location,
             ),
@@ -304,7 +304,7 @@ class KalenderViewState extends State<KalenderView> {
             child: EventsControllerProvider(
               eventsController: widget.eventsController,
               child: KalenderControllerProvider(
-                notifier: widget.calendarController,
+                notifier: widget.kalenderController,
                 // Below every provider a width builder may read, and above both
                 // halves so they cannot be given different widths.
                 child: Builder(

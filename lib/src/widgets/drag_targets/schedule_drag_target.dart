@@ -11,7 +11,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 /// The [ScheduleDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
 class ScheduleDragTarget extends StatefulWidget {
   final EventsController eventsController;
-  final KalenderController calendarController;
+  final KalenderController kalenderController;
   final KalenderCallbacks? callbacks;
   final ScheduleViewController viewController;
   final BoxConstraints constraints;
@@ -29,7 +29,7 @@ class ScheduleDragTarget extends StatefulWidget {
   const ScheduleDragTarget({
     super.key,
     required this.eventsController,
-    required this.calendarController,
+    required this.kalenderController,
     required this.callbacks,
     required this.viewController,
     required this.constraints,
@@ -57,7 +57,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   EventsController get eventsController => widget.eventsController;
 
   @override
-  KalenderController get controller => widget.calendarController;
+  KalenderController get controller => widget.kalenderController;
 
   @override
   KalenderCallbacks? get callbacks => widget.callbacks;

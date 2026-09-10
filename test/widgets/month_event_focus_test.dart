@@ -9,7 +9,7 @@ void main() {
   // row must project the focus/drop-target onto that same row, not the first.
   testWidgets('#233 selected event focus lands on the event row', (tester) async {
     final eventsController = DefaultEventsController();
-    final calendarController = KalenderController();
+    final kalenderController = KalenderController();
 
     // Two events covering the same days (Tue–Thu of the first full week) so they
     // stack: one on row 0, one on row 1.
@@ -28,7 +28,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
           initialDateTime: DateTime(2025, 1),
@@ -44,7 +44,7 @@ void main() {
     // Selecting either event must project the focus onto that event's own row —
     // the bug in #233 was that it always landed on the first row.
     Future<double> dropTopFor(KalenderEvent event) async {
-      calendarController.selectEvent(event);
+      kalenderController.selectEvent(event);
       await tester.pumpAndSettle();
       return tester.getRect(find.byKey(ValueKey('drop-${event.id}'))).top;
     }

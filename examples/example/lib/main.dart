@@ -73,7 +73,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
 
   final now = DateTime.now();
 
@@ -142,10 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(
-          onEventTapped: (event) => calendarController.selectEvent(event),
+          onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreate: (event) {
             // Give newly created events a default title.
             return Event(start: event.start, end: event.end, title: 'New Event');
@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           // Month/year label that navigates to today on tap.
           ValueListenableBuilder(
-            valueListenable: calendarController.internalDateTimeRange,
+            valueListenable: kalenderController.internalDateTimeRange,
             builder: (context, value, child) {
               if (value == null) return const SizedBox.shrink();
               final localRange = value.forLocation();
@@ -210,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }
 
               return FilledButton.tonal(
-                onPressed: () => calendarController.animateToDate(DateTime.now()),
+                onPressed: () => kalenderController.animateToDate(DateTime.now()),
                 style: FilledButton.styleFrom(minimumSize: const Size(150, kMinInteractiveDimension)),
                 child: Text('$month $year'),
               );
@@ -219,16 +219,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
           if (_isDesktop) ...[
             IconButton.filledTonal(
-              onPressed: () => calendarController.animateToPreviousPage(),
+              onPressed: () => kalenderController.animateToPreviousPage(),
               icon: const Icon(Icons.chevron_left),
             ),
             IconButton.filledTonal(
-              onPressed: () => calendarController.animateToNextPage(),
+              onPressed: () => kalenderController.animateToNextPage(),
               icon: const Icon(Icons.chevron_right),
             ),
           ],
           IconButton.filledTonal(
-            onPressed: () => calendarController.animateToDate(DateTime.now()),
+            onPressed: () => kalenderController.animateToDate(DateTime.now()),
             icon: const Icon(Icons.today),
           ),
           const Spacer(),

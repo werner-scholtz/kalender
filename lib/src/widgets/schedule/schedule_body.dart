@@ -28,12 +28,12 @@ class ScheduleBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController;
+    final kalenderController = context.kalenderController;
     assert(
-      calendarController.viewController is ScheduleViewController,
+      kalenderController.viewController is ScheduleViewController,
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
-    final viewController = calendarController.viewController as ScheduleViewController;
+    final viewController = kalenderController.viewController as ScheduleViewController;
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
     if (viewController is ContinuousScheduleViewController) {
       return SchedulePositionList(
@@ -171,7 +171,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   // Convenience getters for accessing widget properties
   ScheduleViewController get viewController => widget.viewController;
   EventsController get eventsController => widget.eventsController;
-  KalenderController get calendarController => context.calendarController;
+  KalenderController get kalenderController => context.kalenderController;
   KalenderCallbacks? get callbacks => context.callbacks;
   ScheduleComponents get components => context.components.scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
@@ -258,10 +258,9 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     var hasAddedMonth = false;
 
     for (final date in dates) {
-      final internalDate = InternalDateTime.fromDateTime(date);
       // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsFromDateTimeRange(
-        internalDate.dayRange,
+        date.dayRange,
         multiDayRule: widget.viewController.viewConfiguration.multiDayRule,
         location: widget.location,
       );
@@ -281,7 +280,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
           case EmptyDayBehavior.showOnlyToday:
             final now = widget.viewController.viewConfiguration.nowCallback?.call();
-            if (internalDate.isToday(location: widget.location, now: now)) {
+            if (date.isToday(location: widget.location, now: now)) {
               viewController.addItem(item: EmptyItem(), date: date, isFirst: true);
             }
             continue;
@@ -335,7 +334,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        calendarController.internalDateTimeRange.value = InternalDateTimeRange(start: start, end: end);
+        kalenderController.internalDateTimeRange.value = InternalDateTimeRange(start: start, end: end);
       }
 
       // Update the visible events based on the current item positions.
@@ -377,13 +376,13 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             final leadingWidth = widget.configuration.leadingWidth;
             Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
 
-            late final leading = components.buildLeadingDate(context, InternalDateTime.fromDateTime(date));
+            late final leading = components.buildLeadingDate(context, date);
 
             if (item is MonthItem) {
               final locale = context.locale;
               return components.monthItemBuilder?.call(
                     context,
-                    InternalDateTime.fromDateTime(date).monthRange.forLocation(location: context.location),
+                    date.monthRange.forLocation(location: context.location),
                   ) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
@@ -392,7 +391,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                 leading: leadingSlot(leading),
                 title: components.emptyItemBuilder?.call(
                   context,
-                  InternalDateTime.fromDateTime(date).dayRange.forLocation(location: context.location),
+                  date.dayRange.forLocation(location: context.location),
                 ),
               );
               return components.buildScheduleTileHighlight(
@@ -434,7 +433,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             builder: (context, constraints) {
               return ScheduleDragTarget(
                 eventsController: eventsController,
-                calendarController: calendarController,
+                kalenderController: kalenderController,
                 callbacks: callbacks,
                 viewController: viewController,
                 constraints: constraints,

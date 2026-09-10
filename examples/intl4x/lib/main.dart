@@ -16,8 +16,8 @@ const _locales = [Locale('en'), Locale('de'), Locale('fr'), Locale('pt', 'BR'), 
 /// Reads the calendar's locale and hands intl4x its own type. `toLanguageTag`
 /// gives the `pt-BR` form intl4x parses, where `toString` gives `pt_BR`.
 intl4x.Locale _localeOf(BuildContext context) {
-  final calendarLocale = context.calendarLocale;
-  return intl4x.Locale.parse(calendarLocale?.toLanguageTag() ?? 'en');
+  final kalenderLocale = context.kalenderLocale;
+  return intl4x.Locale.parse(kalenderLocale?.toLanguageTag() ?? 'en');
 }
 
 /// intl4x has no weekday-only formatter. `DateTimeFormat.yearMonthDayWeekday`
@@ -119,7 +119,7 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
         ),
         body: KalenderView(
           eventsController: _eventsController,
-          calendarController: _calendarController,
+          kalenderController: _calendarController,
           locale: _locale,
           components: intl4xComponents(),
           viewConfiguration: MultiDayViewConfiguration.week(

@@ -5,7 +5,10 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 ### Breaking Changes
 
 - `CalendarBody`, `CalendarCallbacks`, `CalendarComponents`, `CalendarController`, `CalendarEvent`, `CalendarHeader`, `CalendarInteraction` and `CalendarSnapping` are renamed to `Kalender*`.
-- The `CalendarLocale` extension on `BuildContext` is renamed to `KalenderLocale`. Its `calendarLocale` member is unchanged.
+- The `CalendarLocale` extension on `BuildContext` is renamed to `KalenderLocale`.
+- `KalenderView.calendarController` is renamed to `kalenderController`.
+- `KalenderScope.calendarControllerOf` and `maybeCalendarControllerOf` are renamed to `kalenderControllerOf` and `maybeKalenderControllerOf`.
+- `ViewController.visibleDateTimeRange` is renamed to `internalVisibleRange`.
 - The deprecated `CalendarView` and `CalendarViewState` typedefs are removed.
 - `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
 - `KalenderTime` replaces Material's `TimeOfDay` in every public signature.
@@ -27,12 +30,16 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - The timeline's drag tooltip tests visibility in the calendar's own time space rather than against converted values.
 - `KalenderTime` asserts that its `hour` and `minute` are within a day, matching `replacing`.
 
+### Deprecations
+
+- `BuildContext.calendarLocale` is renamed to `kalenderLocale`. The old name is a deprecated getter, removed in 0.31.0.
+
 ### Features
 
 - `DateTimeExtensions.timeLocalized` formats the time of day for a locale, with `use24HourFormat` to force `HH:mm`.
 - `PageIndexCalculator.month` and `MonthIndexCalculator.fromRange` build a month calculator from a range.
 - `package:kalender/material.dart` converts `KalenderDateTimeRange` and `KalenderTime` to and from Material's `DateTimeRange` and `TimeOfDay`.
-- `dart fix --apply` renames the eight `Calendar*` types to `Kalender*`, renames `TimeOfDayRange` and `TimeOfDayStringBuilder` to `KalenderTimeRange` and `KalenderTimeStringBuilder`, and rewrites the `dateTimeRange` argument of `CalendarEvent` and the `PageIndexCalculator` subclasses into `start` and `end`.
+- `dart fix --apply` renames the eight `Calendar*` types to `Kalender*`, renames `TimeOfDayRange` and `TimeOfDayStringBuilder` to `KalenderTimeRange` and `KalenderTimeStringBuilder`, renames `calendarController` to `kalenderController`, the two `KalenderScope` controller accessors and `ViewController.visibleDateTimeRange` to match, and rewrites the `dateTimeRange` argument of `CalendarEvent` and the `PageIndexCalculator` subclasses into `start` and `end`.
 
 ### Fixes
 

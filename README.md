@@ -96,11 +96,11 @@ class MyCalendar extends StatefulWidget {
 
 class _MyCalendarState extends State<MyCalendar> {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
 
   @override
   void dispose() {
-    calendarController.dispose();
+    kalenderController.dispose();
     eventsController.dispose();
     super.dispose();
   }
@@ -109,7 +109,7 @@ class _MyCalendarState extends State<MyCalendar> {
   Widget build(BuildContext context) {
     return KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: MultiDayViewConfiguration.week(
         // Without this the day opens at midnight.
         initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),

@@ -12,11 +12,11 @@ import 'package:kalender/kalender.dart';
 /// whose day and month names did not come from intl.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     // The schedule draws a month heading and a day row only where events exist.
     eventsController.addEvent(
       KalenderEvent(
@@ -28,7 +28,7 @@ void main() {
 
   tearDown(() {
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
   });
 
   Widget schedule({KalenderComponents? components, Locale locale = const Locale('de')}) {
@@ -37,7 +37,7 @@ void main() {
       home: Scaffold(
         body: KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           locale: locale,
           components: components,
           viewConfiguration: ScheduleViewConfiguration.continuous(

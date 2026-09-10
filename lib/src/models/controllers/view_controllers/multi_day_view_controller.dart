@@ -5,7 +5,7 @@ import 'package:linked_pageview/linked_pageview.dart';
 class MultiDayViewController extends ViewController {
   MultiDayViewController({
     required this.viewConfiguration,
-    required super.visibleDateTimeRange,
+    required super.internalVisibleRange,
     required this.visibleEvents,
     InternalDateTime? initialDate,
     KalenderTime? initialTimeOfDayOverride,
@@ -27,12 +27,12 @@ class MultiDayViewController extends ViewController {
     final range = pageIndexCalculator.dateTimeRangeFromIndex(initialPage, location);
 
     if (type == MultiDayViewType.freeScroll) {
-      visibleDateTimeRange.value = InternalDateTimeRange(
+      internalVisibleRange.value = InternalDateTimeRange(
         start: range.start,
         end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
       );
     } else {
-      visibleDateTimeRange.value = range;
+      internalVisibleRange.value = range;
     }
 
     // Align the top of the viewport with the initial time-of-day. The override

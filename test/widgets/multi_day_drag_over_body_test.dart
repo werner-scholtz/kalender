@@ -8,7 +8,7 @@ import '../utilities.dart';
 /// the body. The header's drop target should keep following the cursor's day.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late String eventId;
 
   final start = DateTime(2025, 1, 6); // A Monday.
@@ -21,7 +21,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     // A two-day event starting on the Tuesday.
     eventId = eventsController.addEvent(
       KalenderEvent(
@@ -36,7 +36,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         callbacks: callbacks,
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: year2025DisplayRange,
@@ -68,7 +68,7 @@ void main() {
     await gesture.moveBy(Offset(dayWidth * 2, 0));
     await tester.pumpAndSettle();
 
-    final preview = calendarController.selectedEvent.value;
+    final preview = kalenderController.selectedEvent.value;
     expect(preview, isNotNull, reason: 'the body should keep previewing a multi-day drag');
     expect(
       preview!.start.day,
@@ -91,7 +91,7 @@ void main() {
     await gesture.moveBy(Offset(dayWidth, 250));
     await tester.pumpAndSettle();
 
-    final preview = calendarController.selectedEvent.value!;
+    final preview = kalenderController.selectedEvent.value!;
     expect(
       preview.start.day,
       isNot(equals(original.start.day)),

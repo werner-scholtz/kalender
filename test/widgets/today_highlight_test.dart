@@ -21,11 +21,11 @@ import '../utilities.dart';
 /// non-UTC / near-midnight condition that made the original bug visible.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   Finder todayNumber(Key todayKey, int day) => find.descendant(
@@ -45,7 +45,7 @@ void main() {
             tester,
             KalenderView(
               eventsController: eventsController,
-              calendarController: calendarController,
+              kalenderController: kalenderController,
               viewConfiguration: MonthViewConfiguration.singleMonth(
                 displayRange: KalenderDateTimeRange(
                   start: DateTime(month.year, month.month - 1),
@@ -101,7 +101,7 @@ void main() {
           tester,
           KalenderView(
             eventsController: eventsController,
-            calendarController: calendarController,
+            kalenderController: kalenderController,
             viewConfiguration: MonthViewConfiguration.singleMonth(
               displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
               initialDateTime: DateTime(2025, 12),
@@ -139,7 +139,7 @@ void main() {
           tester,
           KalenderView(
             eventsController: eventsController,
-            calendarController: calendarController,
+            kalenderController: kalenderController,
             location: newYork,
             viewConfiguration: MonthViewConfiguration.singleMonth(
               displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
@@ -181,7 +181,7 @@ void main() {
             tester,
             KalenderView(
               eventsController: eventsController,
-              calendarController: calendarController,
+              kalenderController: kalenderController,
               viewConfiguration: MultiDayViewConfiguration.week(
                 displayRange: weekRange,
                 initialDateTime: monday,

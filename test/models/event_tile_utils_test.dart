@@ -44,16 +44,16 @@ void main() {
   final utcLocation = getLocation('Etc/UTC');
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController(locations: [utcLocation]);
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   tearDown(() {
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
   });
 
   Future<BuildContext> pumpHarness(WidgetTester tester, Widget harness) async {
@@ -61,7 +61,7 @@ void main() {
     await tester.pumpWidget(
       wrapWithMaterialApp(
         TestProvider(
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           eventsController: eventsController,
           tileComponents: TileComponents(tileBuilder: (context, event, range) => const SizedBox()),
           location: utcLocation,

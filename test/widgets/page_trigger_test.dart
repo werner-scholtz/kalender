@@ -15,11 +15,11 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 28)));
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   final components = TileComponents(
@@ -32,14 +32,14 @@ void main() {
     modifyEventGesture: EventInteractionGesture.tap,
   );
 
-  MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;
+  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   Future<void> pumpWeek(WidgetTester tester) {
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: displayRange,
           initialDateTime: start,

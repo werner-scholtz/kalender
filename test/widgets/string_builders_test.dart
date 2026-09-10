@@ -25,7 +25,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController ?? DefaultEventsController(),
-        calendarController: KalenderController(),
+        kalenderController: KalenderController(),
         viewConfiguration: viewConfiguration,
         components: components,
         header: header,
@@ -185,7 +185,7 @@ void main() {
           textDirection: textDirection,
           child: KalenderView(
             eventsController: controllerWithOverflowOn(day),
-            calendarController: KalenderController(),
+            kalenderController: KalenderController(),
             viewConfiguration: MultiDayViewConfiguration.week(
               displayRange: year2025DisplayRange,
               initialDateTime: day,

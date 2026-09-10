@@ -28,7 +28,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   KalenderCallbacks? get callbacks => context.callbacks;
 
   @override
-  KalenderController get controller => context.calendarController;
+  KalenderController get controller => context.kalenderController;
 
   @override
   Widget build(BuildContext context) {

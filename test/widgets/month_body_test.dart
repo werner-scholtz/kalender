@@ -24,14 +24,14 @@ void _expectMonthRows(WidgetTester tester, int expectedRows) {
 void main() {
   group('MonthBody Tests', () {
     late DefaultEventsController eventsController;
-    late KalenderController calendarController;
+    late KalenderController kalenderController;
 
     // Wide enough to cover every test month.
     final displayRange = KalenderDateTimeRange(start: DateTime(2023), end: DateTime(2026));
 
     setUp(() {
       eventsController = DefaultEventsController();
-      calendarController = KalenderController();
+      kalenderController = KalenderController();
     });
 
     // All cases use firstDayOfWeek = DateTime.monday (the default).
@@ -44,7 +44,7 @@ void main() {
     }) {
       final view = KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: displayRange,
           initialDateTime: initialDateTime,
@@ -180,7 +180,7 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: KalenderDateTimeRange(start: DateTime(2026, 5), end: DateTime(2026, 5, 31)),
             initialDateTime: DateTime(2026, 5),
@@ -361,7 +361,7 @@ void main() {
           tester,
           KalenderView(
             eventsController: eventsController,
-            calendarController: calendarController,
+            kalenderController: kalenderController,
             viewConfiguration: MonthViewConfiguration.singleMonth(
               displayRange: displayRange,
               initialDateTime: initialDateTime,
@@ -422,7 +422,7 @@ void main() {
             tester,
             KalenderView(
               eventsController: eventsController,
-              calendarController: calendarController,
+              kalenderController: kalenderController,
               viewConfiguration: MonthViewConfiguration.singleMonth(
                 displayRange: displayRange,
                 initialDateTime: initialDateTime,

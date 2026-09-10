@@ -61,7 +61,7 @@ void main() {
       final eventsController = controllerWithOverflowOn(DateTime.utc(2025, 1, 29));
       final view = KalenderView(
         eventsController: eventsController,
-        calendarController: KalenderController(),
+        kalenderController: KalenderController(),
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: year2025DisplayRange,
           initialDateTime: DateTime(2025, 1, 15),
@@ -115,7 +115,7 @@ void main() {
       final day = DateTime.utc(2025, 1, 15);
       final view = KalenderView(
         eventsController: controllerWithOverflowOn(day),
-        calendarController: KalenderController(),
+        kalenderController: KalenderController(),
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: year2025DisplayRange,
           initialDateTime: day,

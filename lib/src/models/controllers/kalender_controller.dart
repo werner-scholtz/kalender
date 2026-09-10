@@ -95,7 +95,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     if (isAttached) detach();
 
     _viewController = viewController;
-    final visibleRange = viewController.visibleDateTimeRange.value!;
+    final visibleRange = viewController.internalVisibleRange.value!;
     _internalDateTimeRange.value = visibleRange;
     final newRange = visibleRange.forLocation(location: viewController.location);
     visibleDateTimeRange.value = null;

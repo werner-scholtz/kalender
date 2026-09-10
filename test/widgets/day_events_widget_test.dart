@@ -10,7 +10,7 @@ void main() {
   final internalStart = InternalDateTime.fromDateTime(start);
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late MultiDayViewController viewController;
 
   /// Standard test events: two overlapping same-day events + one next-day event.
@@ -36,15 +36,15 @@ void main() {
     ];
 
     eventsController = DefaultEventsController()..addEvents(events);
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
-      visibleDateTimeRange: ValueNotifier(
+      internalVisibleRange: ValueNotifier(
         InternalDateTimeRange(start: internalStart.startOfDay, end: internalStart.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),
     );
-    calendarController.attach(viewController);
+    kalenderController.attach(viewController);
   });
 
   /// Helper to pump a [MultiDayEventsRow] inside the required providers.
@@ -67,7 +67,7 @@ void main() {
     await tester.pumpWidget(
       wrapWithMaterialApp(
         TestProvider(
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           eventsController: eventsController,
           tileComponents: tiles,
           child: SizedBox(

@@ -12,7 +12,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | Path | Purpose |
 |------|---------|
 | `lib/kalender.dart` | Main barrel export: organized by category (Widgets, Enumerations, Layout, Models, Components, Utils) |
-| `lib/kalender_extensions.dart` | Public extension APIs: `DateTimeExtensions`, `InternalDateTime`, `InternalDateTimeRange`, `TimeOfDay` |
+| `lib/kalender_extensions.dart` | Public extension APIs: `DateTimeExtensions`, `InternalDateTime`, `InternalDateTimeRange`, `KalenderDateTimeRange` |
 | `lib/src/` | All implementation code |
 | `lib/src/models/` | Core data structures: controllers, events, view configurations, providers, components, mixins |
 | `lib/src/models/controllers/` | `KalenderController` (ChangeNotifier), `EventsController` (abstract), `ViewController` (abstract), view-specific controllers |
@@ -23,7 +23,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/src/models/kalender_events/` | `KalenderEvent` base class (extensible via subclassing) |
 | `lib/src/widgets/` | UI widgets by view (`month/`, `multi_day/`, `schedule/`) plus shared (`components/`, `event_tiles/`, `draggable/`, `drag_targets/`) |
 | `lib/src/layout_delegates/` | Event layout/positioning strategies (`EventLayoutStrategy`, `MultiDayLayoutStrategy`) with caching |
-| `lib/src/extensions/` | Internal DateTime/TimeOfDay utilities (DST-safe wall-clock arithmetic) |
+| `lib/src/extensions/` | Internal DateTime utilities (DST-safe wall-clock arithmetic) |
 | `lib/src/kalender_body.dart` | Top-level body widget that delegates to the correct view |
 | `lib/src/kalender_header.dart` | Top-level header widget |
 | `lib/src/kalender_view.dart` | Main KalenderView orchestrator widget |
@@ -153,6 +153,21 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 - The `timezone` package provides `Location` objects for timezone-aware logic.
 - `DateTimeExtensions` (public) provide localized day/month names via `intl`.
 
+#### Naming the two range spaces
+
+Two range types exist and they are not interchangeable. `KalenderDateTimeRange`
+holds instants and is what an app hands in and reads back.
+`InternalDateTimeRange` holds unzoned calendar positions and carries the date
+arithmetic, so a day step stays a day step across a DST transition.
+
+**A member carrying the internal space says `internal` in its name. A member
+without it carries `KalenderDateTimeRange`.** `KalenderEvent` sets the pattern:
+`dateTimeRange`, `start` and `end` are the boundary, `internalRange()`,
+`internalStart()` and `internalEnd()` are the layout space.
+
+Apply this to anything new. The existing surface does not follow it everywhere,
+which is recorded in ROADMAP.md under the next breaking window.
+
 ### Layout Delegates
 
 - `EventLayoutStrategy` is an abstract class whose `createDelegate` returns an `EventLayoutDelegate`.
@@ -190,7 +205,7 @@ Mixins `DayEventTileUtils` and `MultiDayEventTileUtils` provide helper methods f
 ### Error Handling
 
 - **Asserts** for provider lookups ("No XyzProvider found"): these are development-time checks.
-- **Input validation** via asserts (e.g. `TimeOfDayRange` start ≤ end).
+- **Input validation** via asserts (e.g. `KalenderTimeRange` start ≤ end).
 - No custom exception classes (pre-1.0 assert-based approach).
 
 ## Versioning & Migration

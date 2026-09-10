@@ -48,20 +48,20 @@ void main() {
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
             final current = TestConfiguration.initialDateTime;
-            config.calendarController.jumpToDate(current);
+            config.kalenderController.jumpToDate(current);
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
             await binding.traceAction(() async {
               await tester.pumpAndSettle(Duration(milliseconds: 250));
-              config.calendarController.animateToDate(current.copyWith(day: current.day - 7));
+              config.kalenderController.animateToDate(current.copyWith(day: current.day - 7));
               await tester.pumpAndSettle(Duration(milliseconds: 250));
-              config.calendarController.animateToDate(current);
+              config.kalenderController.animateToDate(current);
               await tester.pumpAndSettle(Duration(milliseconds: 250));
-              config.calendarController.animateToDate(current.copyWith(day: current.day + 7));
+              config.kalenderController.animateToDate(current.copyWith(day: current.day + 7));
               await tester.pumpAndSettle(Duration(milliseconds: 250));
-              config.calendarController.animateToDate(current.copyWith(day: current.day + 14));
+              config.kalenderController.animateToDate(current.copyWith(day: current.day + 14));
               await tester.pumpAndSettle(Duration(milliseconds: 250));
-              config.calendarController.animateToDate(current);
+              config.kalenderController.animateToDate(current);
               await tester.pumpAndSettle(Duration(milliseconds: 250));
             }, reportKey: scenario.getReportKey(view, ReportKeys.navigation, run));
           });
@@ -70,7 +70,7 @@ void main() {
           testWidgets('${scenario.name} Scrolling', skip: view != Views.week, (tester) async {
             await tester.pumpWidget(MyApp(config: config));
             await tester.pumpAndSettle(Duration(milliseconds: 100));
-            config.calendarController.jumpToDate(TestConfiguration.initialDateTime);
+            config.kalenderController.jumpToDate(TestConfiguration.initialDateTime);
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
             final scrollable = find.descendant(

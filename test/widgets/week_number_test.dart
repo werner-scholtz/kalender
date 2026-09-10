@@ -11,13 +11,13 @@ import '../utilities.dart';
 /// that string wraps, and the wrapped lines have to stay centred.
 void main() {
   group('WeekNumber label', () {
-    late KalenderController calendarController;
+    late KalenderController kalenderController;
     late DefaultEventsController eventsController;
 
     setUpAll(tz.initializeTimeZones);
 
     setUp(() {
-      calendarController = KalenderController();
+      kalenderController = KalenderController();
       eventsController = DefaultEventsController();
     });
 
@@ -27,7 +27,7 @@ void main() {
       return pumpAndSettleWithMaterialApp(
         tester,
         TestProvider(
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           eventsController: eventsController,
           tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
           location: getLocation('Etc/UTC'),

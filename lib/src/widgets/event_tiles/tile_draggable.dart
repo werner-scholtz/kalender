@@ -69,7 +69,7 @@ class TileDraggable extends StatelessWidget {
       dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
       onDragStarted: () {
         dismissOverlay?.call();
-        context.calendarController.selectEvent(event, internal: true);
+        context.kalenderController.selectEvent(event, internal: true);
         context.callbacks?.onEventChange?.call(event);
       },
       child: child,

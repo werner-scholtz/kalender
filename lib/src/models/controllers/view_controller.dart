@@ -15,10 +15,14 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// The location of the current view.
   Location? location;
 
-  /// The [InternalDateTimeRange] that is currently visible.
-  final ValueNotifier<InternalDateTimeRange?> visibleDateTimeRange;
+  /// The range currently visible, in the calendar's internal layout space.
+  ///
+  /// This is the unzoned counterpart of [KalenderController.visibleDateTimeRange],
+  /// which carries the same range as a [KalenderDateTimeRange] for an app to read.
+  /// Call [InternalDateTimeRange.forLocation] to cross between them.
+  final ValueNotifier<InternalDateTimeRange?> internalVisibleRange;
 
-  ViewController({this.location, required this.visibleDateTimeRange});
+  ViewController({this.location, required this.internalVisibleRange});
 
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;

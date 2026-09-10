@@ -27,13 +27,13 @@ class MultiDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController;
+    final kalenderController = context.kalenderController;
     assert(
-      calendarController.viewController is MultiDayViewController,
+      kalenderController.viewController is MultiDayViewController,
       'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
     );
 
-    final viewController = calendarController.viewController as MultiDayViewController;
+    final viewController = kalenderController.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = configuration ?? const MultiDayHeaderConfiguration();
     final components = context.components;
@@ -83,7 +83,7 @@ class _SingleDayHeader extends StatelessWidget {
 
     final headerComponents = components.multiDayComponents.headerComponents;
     final dayHeaderWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController.internalDateTimeRange,
+      valueListenable: context.kalenderController.internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -156,7 +156,7 @@ class _MultiDayHeader extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController.internalDateTimeRange,
+      valueListenable: context.kalenderController.internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -236,7 +236,7 @@ class _FreeScrollHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController.internalDateTimeRange,
+      valueListenable: context.kalenderController.internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) return const SizedBox.shrink();
         return headerComponents.buildWeekNumber(context, value.forLocation(location: context.location));

@@ -278,7 +278,7 @@ KalenderTheme(
   ),
   child: KalenderView(
     eventsController: DefaultEventsController(),
-    calendarController: KalenderController(),
+    kalenderController: KalenderController(),
     viewConfiguration: MultiDayViewConfiguration.week(),
     body: KalenderBody(),
   ),

@@ -31,20 +31,20 @@ void main() {
     required MultiDayViewConfiguration viewConfiguration,
     Location? location,
   }) {
-    final calendarController = KalenderController();
+    final kalenderController = KalenderController();
     final eventsController = DefaultEventsController();
     final viewController = MultiDayViewController(
       viewConfiguration: viewConfiguration,
-      visibleDateTimeRange: ValueNotifier(
+      internalVisibleRange: ValueNotifier(
         InternalDateTimeRange(start: monday, end: monday.endOfWeek()),
       ),
       visibleEvents: ValueNotifier(<KalenderEvent>{}),
       location: location,
     );
-    calendarController.attach(viewController);
+    kalenderController.attach(viewController);
 
     return TestProvider(
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       eventsController: eventsController,
       tileComponents: TileComponents.defaultComponents(),
       location: location,

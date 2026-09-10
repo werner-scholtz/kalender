@@ -9,12 +9,12 @@ void main() {
   final day = DateTime.utc(2025, 1, 29);
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
   late MonthViewConfiguration configuration;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
     configuration = MonthViewConfiguration.singleMonth(
       displayRange: year2025DisplayRange,
       initialDateTime: DateTime(2025, 1, 15),
@@ -27,7 +27,7 @@ void main() {
   });
 
   tearDown(() {
-    calendarController.dispose();
+    kalenderController.dispose();
     eventsController.dispose();
   });
 
@@ -39,7 +39,7 @@ void main() {
       textDirection: textDirection,
       child: KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: configuration,
         body: const KalenderBody(),
       ),

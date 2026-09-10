@@ -63,11 +63,43 @@ its ownership marker since `KalenderView`, and this release finishes it.
 | `CalendarInteraction` | `KalenderInteraction` |
 | `CalendarSnapping` | `KalenderSnapping` |
 
-The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now. Its
-member is still `context.calendarLocale`, so code reading it is unaffected.
+The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now.
 
-Named parameters keep their names, so `KalenderView(calendarController: ...)` is
-unchanged.
+### The members that named the controller follow their type
+
+`dart fix` applies all four.
+
+| Before | After |
+| --- | --- |
+| `KalenderView(calendarController: ...)` | `KalenderView(kalenderController: ...)` |
+| `KalenderScope.calendarControllerOf` | `KalenderScope.kalenderControllerOf` |
+| `KalenderScope.maybeCalendarControllerOf` | `KalenderScope.maybeKalenderControllerOf` |
+| `ViewController.visibleDateTimeRange` | `ViewController.internalVisibleRange` |
+
+`ViewController`'s is the one that was not only a naming question.
+`KalenderController.visibleDateTimeRange` is a `KalenderDateTimeRange` and
+`ViewController`'s was an `InternalDateTimeRange`, so one name meant two types
+across the public API. A member carrying the internal layout space says
+`internal` in its name now.
+
+`MultiDayRule.calendarDays` is unchanged. A calendar day is a unit of time, not a
+reference to the type.
+
+### `context.calendarLocale` is `context.kalenderLocale`
+
+The one rename in this release `dart fix` cannot apply. A data-driven fix matches
+an extension member only where the extension is named explicitly, and nobody writes
+`KalenderLocale(context).calendarLocale`. The old name is a deprecated getter that
+forwards to the new one, so the analyzer points at every call site, and it is
+removed in 0.31.0.
+
+```dart
+// Before
+final locale = context.calendarLocale;
+
+// After
+final locale = context.kalenderLocale;
+```
 
 ### `CalendarView` and `CalendarViewState` are removed
 

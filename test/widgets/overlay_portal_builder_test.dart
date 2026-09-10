@@ -30,12 +30,12 @@ void main() {
     }
     addTearDown(eventsController.dispose);
 
-    final calendarController = KalenderController();
-    addTearDown(calendarController.dispose);
+    final kalenderController = KalenderController();
+    addTearDown(kalenderController.dispose);
 
     final view = KalenderView(
       eventsController: eventsController,
-      calendarController: calendarController,
+      kalenderController: kalenderController,
       viewConfiguration: MonthViewConfiguration.singleMonth(
         displayRange: year2025DisplayRange,
         initialDateTime: DateTime(2025, 1, 15),
@@ -160,8 +160,8 @@ void main() {
     }
     addTearDown(eventsController.dispose);
 
-    final calendarController = KalenderController();
-    addTearDown(calendarController.dispose);
+    final kalenderController = KalenderController();
+    addTearDown(kalenderController.dispose);
 
     final dpi = tester.view.devicePixelRatio;
     tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
@@ -173,7 +173,7 @@ void main() {
         data: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
         child: KalenderView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          kalenderController: kalenderController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 15),

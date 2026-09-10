@@ -29,7 +29,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = KalenderController();
+  final kalenderController = KalenderController();
 
   final now = DateTime.now();
   late final displayRange = KalenderDateTimeRange(
@@ -52,15 +52,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    calendarController.visibleDateTimeRange.addListener(_onVisibleRangeChanged);
+    kalenderController.visibleDateTimeRange.addListener(_onVisibleRangeChanged);
     _loadSample();
   }
 
   @override
   void dispose() {
-    calendarController.visibleDateTimeRange.removeListener(_onVisibleRangeChanged);
+    kalenderController.visibleDateTimeRange.removeListener(_onVisibleRangeChanged);
     eventsController.dispose();
-    calendarController.dispose();
+    kalenderController.dispose();
     super.dispose();
   }
 
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onVisibleRangeChanged() {
-    final visible = calendarController.visibleDateTimeRange.value;
+    final visible = kalenderController.visibleDateTimeRange.value;
     if (visible == null || _sources.isEmpty) return;
     final covered = _covered;
     if (covered != null && !visible.start.isBefore(covered.start) && !visible.end.isAfter(covered.end)) {
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onEventTapped(KalenderEvent event) {
     if (event is! IcsEvent) return;
-    calendarController.selectEvent(event);
+    kalenderController.selectEvent(event);
     final message = event.description == null ? event.title : '${event.title} — ${event.description}';
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(onEventTapped: (event) => _onEventTapped(event)),
         header: Material(

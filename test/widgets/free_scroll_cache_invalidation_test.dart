@@ -19,11 +19,11 @@ void main() {
   final initial = DateTime(2026, 7, 10);
 
   late DefaultEventsController eventsController;
-  late KalenderController calendarController;
+  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = KalenderController();
+    kalenderController = KalenderController();
   });
 
   final components = TileComponents(
@@ -35,7 +35,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        calendarController: calendarController,
+        kalenderController: kalenderController,
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
           numberOfDays: 3,
           displayRange: displayRange,
@@ -48,7 +48,7 @@ void main() {
     );
   }
 
-  MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;
+  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   testWidgets('multi-day event stays visible when scrolling back to windows cached before it existed', (tester) async {
     await pumpFreeScroll(tester);
