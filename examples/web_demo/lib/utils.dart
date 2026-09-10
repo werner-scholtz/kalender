@@ -63,7 +63,7 @@ const _weekendTitles = [
 /// weekday standup, a weekly meeting rhythm, personal blocks, sprinkled one-off
 /// items, a few empty days, and a handful of multi-day events gives the views
 /// (the schedule especially) something structured to show.
-List<CalendarEvent> generateEvents(BuildContext context) {
+List<KalenderEvent> generateEvents(BuildContext context) {
   final random = Random(2024);
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
@@ -72,7 +72,7 @@ List<CalendarEvent> generateEvents(BuildContext context) {
   const daysBefore = 45;
   const daysAfter = 120;
 
-  final events = <CalendarEvent>[];
+  final events = <KalenderEvent>[];
 
   Event timed(DateTime day, int hour, int minute, Duration duration, String title, Color color, {String? description}) {
     final start = DateTime(day.year, day.month, day.day, hour, minute);
@@ -175,7 +175,7 @@ extension BuildContextExtension on BuildContext {
   TextTheme get textTheme => theme.textTheme;
   ValueNotifier<Location?> get location => DemoScope.locationOf(this);
   DemoConfiguration get configuration => DemoScope.configurationOf(this);
-  CalendarController get controller => DemoScope.controllerOf(this);
+  KalenderController get controller => DemoScope.controllerOf(this);
 }
 
 final isTouch = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;

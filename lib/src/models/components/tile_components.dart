@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart'
     show
-        CalendarEvent,
+        KalenderEvent,
         MultiDayBody,
         MonthBody,
         ScheduleBody,
@@ -170,7 +170,7 @@ class ScheduleTileComponents extends TileComponents {
 /// The values are local [DateTime]s (or `TZDateTime`s when a timezone location is set).
 typedef TileBuilder = Widget Function(
   BuildContext context,
-  CalendarEvent event,
+  KalenderEvent event,
   KalenderDateTimeRange tileRange,
 );
 
@@ -179,7 +179,7 @@ typedef TileBuilder = Widget Function(
 /// [event] is the event that the tile will be built for.
 typedef TileWhenDraggingBuilder = Widget Function(
   BuildContext context,
-  CalendarEvent event,
+  KalenderEvent event,
 );
 
 /// The builder for the feedback tile. (When dragging)
@@ -188,7 +188,7 @@ typedef TileWhenDraggingBuilder = Widget Function(
 /// [dropTargetWidgetSize] is the size of the drop target widget.
 typedef FeedbackTileBuilder = Widget Function(
   BuildContext context,
-  CalendarEvent event,
+  KalenderEvent event,
   Size dropTargetWidgetSize,
 );
 
@@ -197,5 +197,5 @@ typedef FeedbackTileBuilder = Widget Function(
 /// [event] is the event that the tile will be built for.
 typedef TileDropTargetBuilder = Widget Function(
   BuildContext context,
-  CalendarEvent event,
+  KalenderEvent event,
 );

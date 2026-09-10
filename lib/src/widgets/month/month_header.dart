@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
 
 /// The month header is a simple widget that just displays the day names.
@@ -14,7 +14,7 @@ class MonthHeader extends StatelessWidget {
 
     assert(
       calendarController.viewController is MonthViewController,
-      'The CalendarController\'s $ViewController needs to be a $MonthViewController',
+      'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
     // final viewController = calendarController.viewController as MonthViewController;

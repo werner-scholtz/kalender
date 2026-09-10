@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
@@ -12,7 +12,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// It fetches the events that need to be rendered from the [EventsController],
 /// the [EventsController] is also listened to in-case events are added or updated.
 ///
-/// This widget also takes responsibility for updating the [CalendarController.visibleEvents],
+/// This widget also takes responsibility for updating the [KalenderController.visibleEvents],
 /// unlike the DayEventsWidget that can clear the visibleEvents it only adds the events that are visible.
 ///
 /// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
@@ -58,7 +58,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   ValueNotifier<Location?>? _locationNotifier;
 
   /// The list of visible events.
-  List<CalendarEvent> _events = [];
+  List<KalenderEvent> _events = [];
 
   @override
   void initState() {
@@ -101,7 +101,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   }
 
   /// Checks if the layout of the events has changed.
-  bool _needsLayout(List<CalendarEvent> sortedEvents) {
+  bool _needsLayout(List<KalenderEvent> sortedEvents) {
     if (sortedEvents.length != _events.length) return true;
     for (var i = 0; i < sortedEvents.length; i++) {
       if (!sortedEvents[i].layoutEquals(_events[i])) return true;
@@ -155,7 +155,7 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
   /// The list of events that will be laid out.
   ///
   /// * Note: not all of these events will necessarily be visible,
-  final List<CalendarEvent> events;
+  final List<KalenderEvent> events;
 
   /// The directionality of the widget.
   final TextDirection textDirection;
@@ -402,7 +402,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// The function that builds the overlay event tile for the event.
   MultiDayEventOverlayTile _overlayEventTileBuilder(
     BuildContext context,
-    CalendarEvent event,
+    KalenderEvent event,
     InternalDateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,
   ) {

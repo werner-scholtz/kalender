@@ -11,11 +11,11 @@ import '../../utilities.dart';
 /// grid, so a drop carries a day and no time of day.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   final displayRange = KalenderDateTimeRange(start: DateTime(2025, 6), end: DateTime(2025, 7));
 
-  final interaction = CalendarInteraction(
+  final interaction = KalenderInteraction(
     allowRescheduling: true,
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
@@ -24,16 +24,16 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   String addEvent(DateTime start, Duration duration) {
-    return eventsController.addEvent(CalendarEvent(start: start, end: start.add(duration)));
+    return eventsController.addEvent(KalenderEvent(start: start, end: start.add(duration)));
   }
 
   Future<void> pumpSchedule(
     WidgetTester tester, {
-    CalendarCallbacks? callbacks,
+    KalenderCallbacks? callbacks,
     bool paginated = false,
   }) {
     return pumpAndSettleWithMaterialApp(
@@ -45,7 +45,7 @@ void main() {
         viewConfiguration: paginated
             ? ScheduleViewConfiguration.paginated(displayRange: displayRange, initialDateTime: DateTime(2025, 6, 2))
             : ScheduleViewConfiguration.continuous(displayRange: displayRange, initialDateTime: DateTime(2025, 6, 2)),
-        body: CalendarBody(
+        body: KalenderBody(
           interaction: interaction,
           scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
         ),
@@ -97,9 +97,9 @@ void main() {
   });
 
   testWidgets('dropping commits the new date', (tester) async {
-    CalendarEvent? changed;
+    KalenderEvent? changed;
     final id = addEvent(DateTime(2025, 6, 2, 9), const Duration(hours: 1));
-    await pumpSchedule(tester, callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated));
+    await pumpSchedule(tester, callbacks: KalenderCallbacks(onEventChanged: (_, updated) => changed = updated));
 
     final originalStart = eventsController.byId(id)!.start;
     final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)), 120);
@@ -113,9 +113,9 @@ void main() {
   testWidgets('a drop keeps the time of day of the event', (tester) async {
     // The schedule view has no time axis, so a drop carries only a date. The
     // event takes that date and keeps 09:00, the way the multi-day header does.
-    CalendarEvent? changed;
+    KalenderEvent? changed;
     final id = addEvent(DateTime(2025, 6, 2, 9), const Duration(hours: 1));
-    await pumpSchedule(tester, callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated));
+    await pumpSchedule(tester, callbacks: KalenderCallbacks(onEventChanged: (_, updated) => changed = updated));
 
     final original = eventsController.byId(id)!;
     final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)), 120);
@@ -131,9 +131,9 @@ void main() {
   });
 
   testWidgets('a multi-day event keeps its duration across a drop', (tester) async {
-    CalendarEvent? changed;
+    KalenderEvent? changed;
     final id = addEvent(DateTime(2025, 6, 2, 9), const Duration(days: 2));
-    await pumpSchedule(tester, callbacks: CalendarCallbacks(onEventChanged: (_, updated) => changed = updated));
+    await pumpSchedule(tester, callbacks: KalenderCallbacks(onEventChanged: (_, updated) => changed = updated));
 
     final original = eventsController.byId(id)!;
     final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)).first, 120);

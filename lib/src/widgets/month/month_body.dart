@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/month_week_number_layout_delegate.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
@@ -26,7 +26,7 @@ class MonthBody extends StatelessWidget {
 
     assert(
       calendarController.viewController is MonthViewController,
-      'The CalendarController\'s $ViewController needs to be a $MonthViewController',
+      'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
     if (this.configuration != null && this.configuration is! MonthBodyConfiguration) {

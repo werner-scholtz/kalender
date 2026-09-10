@@ -107,7 +107,7 @@ void main() {
   const month = MonthComponents(bodyComponents: monthBody, headerComponents: monthHeader);
   const multiDay = MultiDayComponents(headerComponents: multiDayHeader, bodyComponents: multiDayBody);
 
-  const calendar = CalendarComponents(
+  const calendar = KalenderComponents(
     monthComponents: month,
     multiDayComponents: multiDay,
     scheduleComponents: schedule,
@@ -234,15 +234,15 @@ void main() {
   );
 
   checkClass(
-    'CalendarComponents',
+    'KalenderComponents',
     full: calendar,
-    empty: const CalendarComponents(),
+    empty: const KalenderComponents(),
     copyWithNothing: calendar.copyWith,
     mutations: {
-      'monthComponents': () => const CalendarComponents().copyWith(monthComponents: month),
-      'multiDayComponents': () => const CalendarComponents().copyWith(multiDayComponents: multiDay),
-      'scheduleComponents': () => const CalendarComponents().copyWith(scheduleComponents: schedule),
-      'overlayBuilders': () => const CalendarComponents().copyWith(overlayBuilders: overlayBuilders),
+      'monthComponents': () => const KalenderComponents().copyWith(monthComponents: month),
+      'multiDayComponents': () => const KalenderComponents().copyWith(multiDayComponents: multiDay),
+      'scheduleComponents': () => const KalenderComponents().copyWith(scheduleComponents: schedule),
+      'overlayBuilders': () => const KalenderComponents().copyWith(overlayBuilders: overlayBuilders),
     },
   );
 }
@@ -253,7 +253,7 @@ void main() {
 Widget _overlay(
   BuildContext context, {
   required DateTime date,
-  required List<CalendarEvent> events,
+  required List<KalenderEvent> events,
   required double tileHeight,
   required OverlayPortalController portalController,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
@@ -265,7 +265,7 @@ Widget _overlay(
 Widget _overlayPortal(
   BuildContext context, {
   required DateTime date,
-  required List<CalendarEvent> events,
+  required List<KalenderEvent> events,
   required int numberOfHiddenRows,
   required double tileHeight,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
@@ -289,7 +289,7 @@ Widget _timeline(
   BuildContext context,
   double heightPerMinute,
   KalenderTimeRange range,
-  ValueNotifier<CalendarEvent?> eventBeingDragged,
+  ValueNotifier<KalenderEvent?> eventBeingDragged,
   ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
 ) =>
     const SizedBox();

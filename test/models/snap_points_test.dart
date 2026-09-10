@@ -9,9 +9,9 @@ void main() {
   // Adding them as snap points produces 6 entries (start + end per event):
   //   10:00, 11:00, 11:00, 12:00, 12:00, 13:00
   final testEvents = [
-    CalendarEvent(start: DateTime(2024, 1, 1, 10), end: DateTime(2024, 1, 1, 11)),
-    CalendarEvent(start: DateTime(2024, 1, 1, 11), end: DateTime(2024, 1, 1, 12)),
-    CalendarEvent(start: DateTime(2024, 1, 1, 12), end: DateTime(2024, 1, 1, 13)),
+    KalenderEvent(start: DateTime(2024, 1, 1, 10), end: DateTime(2024, 1, 1, 11)),
+    KalenderEvent(start: DateTime(2024, 1, 1, 11), end: DateTime(2024, 1, 1, 12)),
+    KalenderEvent(start: DateTime(2024, 1, 1, 12), end: DateTime(2024, 1, 1, 13)),
   ];
 
   late MockSnapPoint points;

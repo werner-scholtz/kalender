@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:kalender/src/models/calendar_callbacks.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/kalender_callbacks.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 class ScheduleEventTile extends EventTile {

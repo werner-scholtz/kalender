@@ -10,17 +10,17 @@ Reacting to what they did is separate, see
 
 ## Interaction & Snapping
 
-`interaction` sets what the user may do. `CalendarHeader` and `CalendarBody` both
+`interaction` sets what the user may do. `KalenderHeader` and `KalenderBody` both
 accept it, so a calendar can allow different things in its header than in its
-body. `snapping` is accepted by `CalendarBody` only, and only the multi-day body
+body. `snapping` is accepted by `KalenderBody` only, and only the multi-day body
 reads it.
 
 Both blocks below show every option **at its default value**.
 
 <!-- snippet: expression -->
 ```dart
-CalendarBody(
-  interaction: CalendarInteraction(
+KalenderBody(
+  interaction: KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
@@ -36,7 +36,7 @@ CalendarBody(
     // Opt in to horizontal resize handles in imprecise/touch mode.
     allowHorizontalImpreciseResize: false,
   ),
-  snapping: CalendarSnapping(
+  snapping: KalenderSnapping(
     snapIntervalMinutes: 10,
     snapToTimeIndicator: true,
     snapToOtherEvents: true,
@@ -56,13 +56,13 @@ For anything else, extend `EventSnapStrategy` and override `snap`. Compare on `r
 
 ## Locking a single event
 
-`CalendarInteraction` applies to the whole calendar. To hold one event in place
+`KalenderInteraction` applies to the whole calendar. To hold one event in place
 while the rest stay editable, give it an `EventInteraction`. Anything the event
 forbids stays forbidden even where the calendar allows it.
 
 <!-- snippet: expression -->
 ```dart
-CalendarEvent(
+KalenderEvent(
   start: range.start,
   end: range.end,
   // Movable, but its start and end are fixed.
@@ -92,7 +92,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 class ZoomableCalendar extends StatelessWidget {
-  final CalendarController calendarController;
+  final KalenderController calendarController;
   final Widget child;
 
   const ZoomableCalendar({

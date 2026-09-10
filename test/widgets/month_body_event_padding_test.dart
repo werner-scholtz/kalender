@@ -34,10 +34,10 @@ void main() {
     testWidgets('applies the configured eventPadding to month event tiles', (tester) async {
       const padding = EdgeInsets.fromLTRB(11, 12, 13, 14);
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController();
+      final calendarController = KalenderController();
 
       eventsController.addEvent(
-        CalendarEvent(
+        KalenderEvent(
           start: DateTime(2025, 1, 15, 9),
           end: DateTime(2025, 1, 15, 10),
         ),
@@ -52,7 +52,7 @@ void main() {
             displayRange: KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
             initialDateTime: DateTime(2025, 1),
           ),
-          body: const CalendarBody(
+          body: const KalenderBody(
             monthBodyConfiguration: MonthBodyConfiguration(eventPadding: padding),
           ),
         ),

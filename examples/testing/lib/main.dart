@@ -34,7 +34,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late final TestConfiguration config = widget.config ?? TestConfiguration.week();
   EventsController get eventsController => config.eventsController;
-  CalendarController get calendarController => config.calendarController;
+  KalenderController get calendarController => config.calendarController;
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +43,16 @@ class _HomeState extends State<Home> {
         eventsController: config.eventsController,
         calendarController: config.calendarController,
         viewConfiguration: config.viewConfiguration,
-        components: CalendarComponents(),
-        callbacks: CalendarCallbacks(
+        components: KalenderComponents(),
+        callbacks: KalenderCallbacks(
           onEventTapped: (event) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) =>
               eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
-        header: CalendarHeader(multiDayTileComponents: _multiDayTileComponents),
-        body: CalendarBody(
+        header: KalenderHeader(multiDayTileComponents: _multiDayTileComponents),
+        body: KalenderBody(
           multiDayTileComponents: _tileComponents,
           monthTileComponents: _multiDayTileComponents,
           scheduleTileComponents: _scheduleTileComponents,

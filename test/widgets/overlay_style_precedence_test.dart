@@ -5,7 +5,7 @@ import 'package:kalender/kalender.dart';
 import '../utilities.dart';
 
 // Overlay builders still resolve most-specific-first: a per-view
-// OverlayBuilders wins over the global CalendarComponents.overlayBuilders. The
+// OverlayBuilders wins over the global KalenderComponents.overlayBuilders. The
 // month body used to resolve them the wrong way round.
 //
 // Overlay styles have no precedence left to test. The per-view and global style
@@ -45,7 +45,7 @@ void main() {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
       eventsController.addEvent(
-        CalendarEvent(start: day, end: day.add(const Duration(days: 1))),
+        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
       );
     }
     return eventsController;
@@ -54,20 +54,20 @@ void main() {
   group('Month body overlay resolution', () {
     Future<void> pumpMonthView(
       WidgetTester tester, {
-      CalendarComponents? components,
+      KalenderComponents? components,
       KalenderThemeData? theme,
     }) {
       // 29 Jan 2025 sits in the last row of a 5-row January.
       final eventsController = controllerWithOverflowOn(DateTime.utc(2025, 1, 29));
       final view = KalenderView(
         eventsController: eventsController,
-        calendarController: CalendarController(),
+        calendarController: KalenderController(),
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: year2025DisplayRange,
           initialDateTime: DateTime(2025, 1, 15),
         ),
         components: components,
-        body: const CalendarBody(),
+        body: const KalenderBody(),
       );
 
       return pumpAndSettleWithMaterialApp(
@@ -85,7 +85,7 @@ void main() {
     testWidgets('the month body builders win over the global builders', (tester) async {
       await pumpMonthView(
         tester,
-        components: CalendarComponents(
+        components: KalenderComponents(
           overlayBuilders: buildersLabelled('global'),
           monthComponents: MonthComponents(
             bodyComponents: MonthBodyComponents(overlayBuilders: buildersLabelled('specific')),
@@ -100,7 +100,7 @@ void main() {
     // OverlayBuilders, and the month body resolves it with `?? global`, so the
     // empty default always shadowed the global builders.
     testWidgets('the global builders are used when the month body sets none', (tester) async {
-      await pumpMonthView(tester, components: CalendarComponents(overlayBuilders: buildersLabelled('global')));
+      await pumpMonthView(tester, components: KalenderComponents(overlayBuilders: buildersLabelled('global')));
 
       expect(buttonLabels(tester), {'global'}, reason: 'the global builder should still apply as a fallback');
     });
@@ -109,19 +109,19 @@ void main() {
   group('Multi-day header overlay resolution', () {
     Future<void> pumpWeekView(
       WidgetTester tester, {
-      CalendarComponents? components,
+      KalenderComponents? components,
       KalenderThemeData? theme,
     }) {
       final day = DateTime.utc(2025, 1, 15);
       final view = KalenderView(
         eventsController: controllerWithOverflowOn(day),
-        calendarController: CalendarController(),
+        calendarController: KalenderController(),
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: year2025DisplayRange,
           initialDateTime: day,
         ),
         components: components,
-        header: const CalendarHeader(
+        header: const KalenderHeader(
           multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
         ),
       );
@@ -141,7 +141,7 @@ void main() {
     testWidgets('the header builders win over the global builders', (tester) async {
       await pumpWeekView(
         tester,
-        components: CalendarComponents(
+        components: KalenderComponents(
           overlayBuilders: buildersLabelled('global'),
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(overlayBuilders: buildersLabelled('specific')),

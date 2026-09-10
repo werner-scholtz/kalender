@@ -27,13 +27,13 @@ class TestConfiguration {
   final eventsController = DefaultEventsController();
 
   /// The calendar controller for the test.
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
-  static List<CalendarEvent> generate(List<KalenderTimeRange> timeOfDayRanges) {
+  static List<KalenderEvent> generate(List<KalenderTimeRange> timeOfDayRanges) {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
 
     // Loop through the test range and create events.
-    final events = <CalendarEvent>[
+    final events = <KalenderEvent>[
       for (var date in InternalDateTimeRange.fromDateTimeRange(testRange).dates()) ...[
         for (var timeOfDayRange in timeOfDayRanges)
           Event(
@@ -51,7 +51,7 @@ class TestConfiguration {
 }
 
 /// Represents an event with a title and color.
-class Event extends CalendarEvent {
+class Event extends KalenderEvent {
   Event({
     super.id,
     required super.start,

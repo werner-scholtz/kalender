@@ -11,7 +11,7 @@ class RecurrenceController {
   String get _nextGroupId => 'group_${_groupCounter++}';
 
   /// Add a recurring event.
-  void addEvent(CalendarEvent event, Recurrence recurrence) {
+  void addEvent(KalenderEvent event, Recurrence recurrence) {
     final groupId = _nextGroupId;
 
     // Generate events for the recurrences.
@@ -25,8 +25,8 @@ class RecurrenceController {
   }
 
   void updateEvent(
-    CalendarEvent event,
-    CalendarEvent updatedEvent,
+    KalenderEvent event,
+    KalenderEvent updatedEvent,
   ) {
     // Get the groupId of the event.
     final groupId = (event as RecurringCalendarEvent).groupId;
@@ -47,7 +47,7 @@ class RecurrenceController {
   }
 
   /// Look up the [RecurrenceGroup] for a given event, or `null` if it's not a recurring event.
-  RecurrenceGroup? groupFor(CalendarEvent event) {
+  RecurrenceGroup? groupFor(KalenderEvent event) {
     if (event is! RecurringCalendarEvent) return null;
     return groups[event.groupId];
   }
@@ -176,7 +176,7 @@ class Recurrence {
   }
 
   /// Update this recurrence when an event is updated.
-  Recurrence updateWithEvent(CalendarEvent event, CalendarEvent updatedEvent) {
+  Recurrence updateWithEvent(KalenderEvent event, KalenderEvent updatedEvent) {
     final (deltaStart, deltaEnd) = Recurrence._calculateDelta(event, updatedEvent);
     return Recurrence(
       first: KalenderDateTimeRange(
@@ -189,11 +189,11 @@ class Recurrence {
   }
 
   /// Update an existing group of events.
-  List<(CalendarEvent, RecurringCalendarEvent)> updateEvents(String groupId, List<RecurringCalendarEvent> events) {
+  List<(KalenderEvent, RecurringCalendarEvent)> updateEvents(String groupId, List<RecurringCalendarEvent> events) {
     final recurrences = type.generateDateTimeRanges(first, number);
     assert(recurrences.length == events.length);
 
-    final results = <(CalendarEvent, RecurringCalendarEvent)>[];
+    final results = <(KalenderEvent, RecurringCalendarEvent)>[];
     for (var (index, event) in events.indexed) {
       final updatedEvent = event.withDateTimeRange(recurrences[index]) as RecurringCalendarEvent;
       results.add((event, updatedEvent));
@@ -203,7 +203,7 @@ class Recurrence {
   }
 
   /// Calculate the change in start and end DateTimes.
-  static (Duration start, Duration end) _calculateDelta(CalendarEvent event, CalendarEvent updatedEvent) {
+  static (Duration start, Duration end) _calculateDelta(KalenderEvent event, KalenderEvent updatedEvent) {
     final deltaStart = updatedEvent.internalStart().difference(event.internalStart());
     final deltaEnd = updatedEvent.internalEnd().difference(event.internalEnd());
     return (deltaStart, deltaEnd);

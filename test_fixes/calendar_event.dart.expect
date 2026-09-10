@@ -3,4 +3,4 @@
 import 'package:kalender/kalender.dart';
 
 final range = KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
-final event = CalendarEvent(start: range.start, end: range.end);
+final event = KalenderEvent(start: range.start, end: range.end);

@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 /// A calendar event that carries the data mapped from an `.ics` VEVENT.
 ///
 /// One recurring VEVENT expands into many [IcsEvent]s that share a [uid].
-class IcsEvent extends CalendarEvent {
+class IcsEvent extends KalenderEvent {
   IcsEvent({
     super.id,
     required super.start,

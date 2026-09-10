@@ -12,7 +12,7 @@ void main() {
   test('MultiDayOverlayEventTileBuilder can be implemented', () {
     MultiDayEventOverlayTile build(
       BuildContext context,
-      CalendarEvent event,
+      KalenderEvent event,
       InternalDateTimeRange internalRange,
       VoidCallback dismissOverlay,
     ) {
@@ -34,8 +34,8 @@ void main() {
   test('ResizeHandleDetails builds a nameable ResizeDetector', () {
     final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 1, 2));
     final details = ResizeHandleDetails(
-      event: CalendarEvent(start: range.start, end: range.end),
-      interaction: CalendarInteraction(),
+      event: KalenderEvent(start: range.start, end: range.end),
+      interaction: KalenderInteraction(),
       dateTimeRange: InternalDateTimeRange.fromDateTimeRange(range),
       size: const Size(100, 100),
       axis: Axis.vertical,

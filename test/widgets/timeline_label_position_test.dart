@@ -13,11 +13,11 @@ import '../utilities.dart';
 /// unaffected.
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   tearDown(() {
@@ -37,7 +37,7 @@ void main() {
           initialTimeOfDay: timeOfDayRange.start,
           initialDateTime: DateTime(2025),
         ),
-        body: CalendarBody(
+        body: KalenderBody(
           multiDayTileComponents: TileComponents(tileBuilder: (context, event, range) => const SizedBox()),
         ),
       ),

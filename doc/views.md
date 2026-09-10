@@ -100,7 +100,7 @@ Presents events in a chronological scrollable list.
 
 ## Per-view configuration
 
-`CalendarHeader` and `CalendarBody` accept view-specific configuration objects:
+`KalenderHeader` and `KalenderBody` accept view-specific configuration objects:
 
 | View     | Header config class           | Body config class           |
 | -------- | ----------------------------- | --------------------------- |
@@ -108,7 +108,7 @@ Presents events in a chronological scrollable list.
 | Month    | None                          | `MonthBodyConfiguration`    |
 | Schedule | None                          | `ScheduleBodyConfiguration` |
 
-Both also accept `interaction`. `CalendarBody` additionally accepts `snapping`, which the header has no equivalent of. Both are covered in [Interaction](interaction.md).
+Both also accept `interaction`. `KalenderBody` additionally accepts `snapping`, which the header has no equivalent of. Both are covered in [Interaction](interaction.md).
 
 Each configuration class has defaults that suit most apps. The references below
 spell every option out **at its default value**, so a block copied whole leaves
@@ -119,7 +119,7 @@ the calendar exactly as it was. Change only the lines you care about.
 
   <!-- snippet: expression -->
   ```dart
-  CalendarHeader(
+  KalenderHeader(
     multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
       showTiles: true,
       allowSingleDayEvents: false,
@@ -140,7 +140,7 @@ the calendar exactly as it was. Change only the lines you care about.
 
   <!-- snippet: expression -->
   ```dart
-  CalendarBody(
+  KalenderBody(
     multiDayBodyConfiguration: MultiDayBodyConfiguration(
       showMultiDayEvents: false,
       horizontalPadding: EdgeInsets.only(left: 0, right: 4),
@@ -164,7 +164,7 @@ the calendar exactly as it was. Change only the lines you care about.
 
   <!-- snippet: expression -->
   ```dart
-  CalendarBody(
+  KalenderBody(
     monthBodyConfiguration: MonthBodyConfiguration(
       tileHeight: 24,
       eventPadding: EdgeInsets.only(left: 0, right: 4, bottom: 2),
@@ -181,7 +181,7 @@ the calendar exactly as it was. Change only the lines you care about.
 
   <!-- snippet: expression -->
   ```dart
-  CalendarBody(
+  KalenderBody(
     scheduleBodyConfiguration: ScheduleBodyConfiguration(
       emptyDay: EmptyDayBehavior.showOnlyToday,
       leadingWidth: 56,

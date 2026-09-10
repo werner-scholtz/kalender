@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -31,7 +31,7 @@ class ScheduleBody extends StatelessWidget {
     final calendarController = context.calendarController;
     assert(
       calendarController.viewController is ScheduleViewController,
-      'The CalendarController\'s $ViewController needs to be a $MonthViewController',
+      'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
     final viewController = calendarController.viewController as ScheduleViewController;
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
@@ -171,8 +171,8 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   // Convenience getters for accessing widget properties
   ScheduleViewController get viewController => widget.viewController;
   EventsController get eventsController => widget.eventsController;
-  CalendarController get calendarController => context.calendarController;
-  CalendarCallbacks? get callbacks => context.callbacks;
+  KalenderController get calendarController => context.calendarController;
+  KalenderCallbacks? get callbacks => context.callbacks;
   ScheduleComponents get components => context.components.scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
@@ -351,7 +351,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       // notify listeners on every frame even when the visible events are the
       // same, causing needless rebuilds during a scroll or page change.
       final visibleEvents = events.nonNulls.toSet();
-      if (!const SetEquality<CalendarEvent>().equals(viewController.visibleEvents.value, visibleEvents)) {
+      if (!const SetEquality<KalenderEvent>().equals(viewController.visibleEvents.value, visibleEvents)) {
         viewController.visibleEvents.value = visibleEvents;
       }
     }

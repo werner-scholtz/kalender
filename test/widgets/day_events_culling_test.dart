@@ -15,11 +15,11 @@ void main() {
   final day = DateTime(2025, 3, 24);
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
   // Adds one event on [day], starting at [hour] for [durationHours]. The view
@@ -27,7 +27,7 @@ void main() {
   // pixel is hour * 60.
   String addEvent(int hour, {int durationHours = 1}) {
     return eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: day.copyWith(hour: hour),
         end: day.copyWith(hour: hour + durationHours),
       ),
@@ -49,7 +49,7 @@ void main() {
           displayRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1))),
           initialDateTime: day,
         ),
-        body: CalendarBody(multiDayTileComponents: components),
+        body: KalenderBody(multiDayTileComponents: components),
       ),
     );
   }

@@ -16,3 +16,13 @@ transforms:
     changes:
       - kind: 'rename'
         newName: 'KalenderTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
+  - title: "Rename to 'KalenderTimeStringBuilder'"
+    date: 2026-09-07
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      typedef: 'TimeOfDayStringBuilder'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderTimeStringBuilder'

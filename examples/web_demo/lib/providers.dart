@@ -57,14 +57,14 @@ class EventsControllerProvider extends InheritedWidget {
 // ---------------------------------------------------------------------------
 
 class DemoScope extends InheritedWidget {
-  final CalendarController controller;
+  final KalenderController controller;
   final DemoConfiguration configuration;
   final ValueNotifier<Location?> location;
 
   DemoScope({
     required super.child,
     super.key,
-  })  : controller = CalendarController(),
+  })  : controller = KalenderController(),
         configuration = DemoConfiguration(),
         location = ValueNotifier<Location?>(null);
 
@@ -74,7 +74,7 @@ class DemoScope extends InheritedWidget {
     return result!;
   }
 
-  static CalendarController controllerOf(BuildContext context) => _of(context).controller;
+  static KalenderController controllerOf(BuildContext context) => _of(context).controller;
   static DemoConfiguration configurationOf(BuildContext context) => _of(context).configuration;
   static ValueNotifier<Location?> locationOf(BuildContext context) => _of(context).location;
 

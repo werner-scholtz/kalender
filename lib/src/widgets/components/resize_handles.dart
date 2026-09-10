@@ -2,12 +2,11 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/kalender_interaction.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 
@@ -23,10 +22,10 @@ typedef ResizeHandlePositioner = Widget Function(
 /// What a [ResizeHandlePositioner] needs to lay out the resize handles of one event tile.
 class ResizeHandleDetails {
   /// The event associated with the resize handles.
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// The global interaction settings for the calendar.
-  final CalendarInteraction interaction;
+  final KalenderInteraction interaction;
 
   /// The InternalDateTimeRange that the current view is displaying.
   final InternalDateTimeRange dateTimeRange;

@@ -88,8 +88,8 @@ void main() {
       expect(build().hashCode, equals(build().hashCode));
     });
 
-    test('CalendarSnapping with a snap strategy is equal', () {
-      CalendarSnapping build() => const CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none());
+    test('KalenderSnapping with a snap strategy is equal', () {
+      KalenderSnapping build() => const KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none());
 
       expect(build(), equals(build()));
       expect(build().hashCode, equals(build().hashCode));
@@ -114,8 +114,8 @@ void main() {
 
     test('eventSnapStrategy', () {
       expect(
-        const CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none()),
-        isNot(equals(const CalendarSnapping())),
+        const KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none()),
+        isNot(equals(const KalenderSnapping())),
       );
     });
   });
@@ -129,7 +129,7 @@ class _ReverseStrategy extends MultiDayLayoutStrategy {
   @override
   MultiDayLayoutFrame generateFrame({
     required InternalDateTimeRange visibleDateTimeRange,
-    required List<CalendarEvent> events,
+    required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,

@@ -10,7 +10,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   final ScheduleViewConfiguration viewConfiguration;
 
   @override
-  late final ValueNotifier<Set<CalendarEvent>> visibleEvents;
+  late final ValueNotifier<Set<KalenderEvent>> visibleEvents;
 
   /// The initial date to display in the schedule view.
   final InternalDateTime initialDate;
@@ -120,7 +120,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent event, {
+    KalenderEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,
@@ -227,7 +227,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent event, {
+    KalenderEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

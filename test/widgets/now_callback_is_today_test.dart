@@ -31,14 +31,14 @@ void main() {
     required MultiDayViewConfiguration viewConfiguration,
     Location? location,
   }) {
-    final calendarController = CalendarController();
+    final calendarController = KalenderController();
     final eventsController = DefaultEventsController();
     final viewController = MultiDayViewController(
       viewConfiguration: viewConfiguration,
       visibleDateTimeRange: ValueNotifier(
         InternalDateTimeRange(start: monday, end: monday.endOfWeek()),
       ),
-      visibleEvents: ValueNotifier(<CalendarEvent>{}),
+      visibleEvents: ValueNotifier(<KalenderEvent>{}),
       location: location,
     );
     calendarController.attach(viewController);

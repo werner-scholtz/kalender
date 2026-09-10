@@ -17,7 +17,7 @@ class RecurrenceDialogDelete extends RecurrenceDialogResult {}
 
 class RecurrenceDialog extends StatefulWidget {
   /// The event being created or edited.
-  final CalendarEvent event;
+  final KalenderEvent event;
 
   /// If non-null, we're editing an existing recurrence group.
   final RecurrenceGroup? existingGroup;

@@ -1,59 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// Exercises `==` / `hashCode` on the containers reached through
-/// [CalendarComponents], and the rebuild behaviour that depends on them.
+/// [KalenderComponents], and the rebuild behaviour that depends on them.
 void main() {
-  group('CalendarComponents equality', () {
+  group('KalenderComponents equality', () {
     test('containers built with the same arguments are equal', () {
-      expect(const CalendarComponents(), equals(const CalendarComponents()));
-      expect(const CalendarComponents().hashCode, equals(const CalendarComponents().hashCode));
+      expect(const KalenderComponents(), equals(const KalenderComponents()));
+      expect(const KalenderComponents().hashCode, equals(const KalenderComponents().hashCode));
     });
 
     test('equality reads the fields rather than the identity', () {
       // Built without const, so the comparison cannot return on identical().
       // ignore: prefer_const_constructors
-      final a = CalendarComponents(monthComponents: const MonthComponents());
+      final a = KalenderComponents(monthComponents: const MonthComponents());
       // ignore: prefer_const_constructors
-      final b = CalendarComponents(monthComponents: const MonthComponents());
+      final b = KalenderComponents(monthComponents: const MonthComponents());
       expect(identical(a, b), isFalse);
       expect(a, equals(b));
       expect(a.hashCode, equals(b.hashCode));
     });
 
-    for (final entry in <String, CalendarComponents>{
-      'overlayBuilders': const CalendarComponents(
+    for (final entry in <String, KalenderComponents>{
+      'overlayBuilders': const KalenderComponents(
         overlayBuilders: OverlayBuilders(multiDayPortalOverlayButtonStringBuilder: _hiddenEventCount),
       ),
-      'multiDayComponents': const CalendarComponents(
+      'multiDayComponents': const KalenderComponents(
         multiDayComponents: MultiDayComponents(
           headerComponents: MultiDayHeaderComponents(dayHeaderStringBuilder: _dateLabel),
         ),
       ),
-      'monthComponents': const CalendarComponents(
+      'monthComponents': const KalenderComponents(
         monthComponents: MonthComponents(
           headerComponents: MonthHeaderComponents(weekDayHeaderStringBuilder: _dateLabel),
         ),
       ),
-      'scheduleComponents': const CalendarComponents(
+      'scheduleComponents': const KalenderComponents(
         scheduleComponents: ScheduleComponents(leadingDateStringBuilder: _dateLabel),
       ),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
-        expect(entry.value, isNot(equals(const CalendarComponents())));
+        expect(entry.value, isNot(equals(const KalenderComponents())));
       });
     }
 
     test('a builder held as a top-level function stays equal across instances', () {
-      const a = CalendarComponents(
+      const a = KalenderComponents(
         scheduleComponents: ScheduleComponents(leadingDateStringBuilder: _dateLabel),
       );
       // Built without const so this is a separate instance, which is what a
       // consumer constructing their components inside build() ends up with.
       // ignore: prefer_const_constructors
-      final b = CalendarComponents(
+      final b = KalenderComponents(
         scheduleComponents: const ScheduleComponents(leadingDateStringBuilder: _dateLabel),
       );
       expect(a, equals(b));
@@ -113,7 +113,7 @@ void main() {
               rebuild = setState;
               return KalenderView(
                 eventsController: DefaultEventsController(),
-                calendarController: CalendarController(),
+                calendarController: KalenderController(),
                 viewConfiguration: MultiDayViewConfiguration.week(),
                 body: const _Dependent(),
               );
@@ -161,6 +161,6 @@ String _dateLabel(BuildContext context, DateTime date) => '';
 
 String _hiddenEventCount(BuildContext context, int numberOfHiddenEvents) => '';
 
-Widget _tile(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) => const SizedBox();
+Widget _tile(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) => const SizedBox();
 
-Widget _dropTarget(BuildContext context, CalendarEvent event) => const SizedBox();
+Widget _dropTarget(BuildContext context, KalenderEvent event) => const SizedBox();

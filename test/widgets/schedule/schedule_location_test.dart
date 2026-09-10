@@ -19,14 +19,14 @@ void main() {
   final tokyo = getLocation('Asia/Tokyo');
 
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
   });
 
-  CalendarEvent eventAt(DateTime day, int hour) => CalendarEvent(
+  KalenderEvent eventAt(DateTime day, int hour) => KalenderEvent(
         start: TZDateTime(tokyo, day.year, day.month, day.day, hour),
         end: TZDateTime(tokyo, day.year, day.month, day.day, hour + 1),
       );
@@ -34,8 +34,8 @@ void main() {
   KalenderView buildSchedule({
     required ScheduleViewConfiguration configuration,
     EmptyDayBehavior emptyDay = EmptyDayBehavior.hide,
-    CalendarComponents? components,
-    CalendarCallbacks? callbacks,
+    KalenderComponents? components,
+    KalenderCallbacks? callbacks,
   }) {
     return KalenderView(
       eventsController: eventsController,
@@ -44,7 +44,7 @@ void main() {
       components: components,
       callbacks: callbacks,
       viewConfiguration: configuration,
-      body: CalendarBody(
+      body: KalenderBody(
         scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay),
       ),
     );
@@ -67,7 +67,7 @@ void main() {
       tester,
       buildSchedule(
         configuration: continuous(initialDate: DateTime(2025, 1, 15)),
-        components: CalendarComponents(
+        components: KalenderComponents(
           scheduleComponents: ScheduleComponents(
             monthItemBuilder: (context, monthRange) {
               ranges.add(monthRange);
@@ -98,7 +98,7 @@ void main() {
           initialDate: DateTime(2025, 1, 15),
           nowCallback: () => TZDateTime(tokyo, 2025, 1, 15, 10),
         ),
-        components: CalendarComponents(
+        components: KalenderComponents(
           scheduleComponents: ScheduleComponents(
             emptyItemBuilder: (context, tileRange) {
               ranges.add(tileRange);
@@ -128,7 +128,7 @@ void main() {
           displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 4)),
           initialDateTime: DateTime(2025, 1, 15),
         ),
-        callbacks: CalendarCallbacks(onPageChanged: (range) => changedRange = range),
+        callbacks: KalenderCallbacks(onPageChanged: (range) => changedRange = range),
       ),
     );
 

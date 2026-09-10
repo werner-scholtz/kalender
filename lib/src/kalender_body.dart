@@ -1,13 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
-class CalendarBody extends StatefulWidget {
-  /// The callbacks used by the [CalendarBody].
+class KalenderBody extends StatefulWidget {
+  /// The callbacks used by the [KalenderBody].
   ///
-  /// This provides a way to override the [CalendarCallbacks] passed to the [KalenderView].
-  final CalendarCallbacks? callbacks;
+  /// This provides a way to override the [KalenderCallbacks] passed to the [KalenderView].
+  final KalenderCallbacks? callbacks;
 
   /// The tile components used by the [MultiDayBody].
   final TileComponents? multiDayTileComponents;
@@ -27,20 +27,20 @@ class CalendarBody extends StatefulWidget {
   /// The configuration used by the schedule body.
   final ScheduleBodyConfiguration? scheduleBodyConfiguration;
 
-  /// The [CalendarInteraction] that will be used by the [CalendarBody].
-  final CalendarInteraction? interaction;
+  /// The [KalenderInteraction] that will be used by the [KalenderBody].
+  final KalenderInteraction? interaction;
 
-  /// The snapping that will be used by the [CalendarBody].
-  final CalendarSnapping? snapping;
+  /// The snapping that will be used by the [KalenderBody].
+  final KalenderSnapping? snapping;
 
-  /// Creates a CalendarBody widget.
+  /// Creates a KalenderBody widget.
   ///
-  /// This creates the correct body based on the [ViewController] inside the [CalendarController]
+  /// This creates the correct body based on the [ViewController] inside the [KalenderController]
   /// - [MultiDayBody]
   /// - [MonthBody]
   /// - [ScheduleBody]
   ///
-  const CalendarBody({
+  const KalenderBody({
     super.key,
     this.callbacks,
     this.interaction,
@@ -54,33 +54,33 @@ class CalendarBody extends StatefulWidget {
   });
 
   @override
-  State<CalendarBody> createState() => _CalendarBodyState();
+  State<KalenderBody> createState() => _CalendarBodyState();
 }
 
-class _CalendarBodyState extends State<CalendarBody> {
-  late CalendarCallbacks? _callbacks;
-  late ValueNotifier<CalendarInteraction> _interaction;
-  late ValueNotifier<CalendarSnapping> _snapping;
+class _CalendarBodyState extends State<KalenderBody> {
+  late KalenderCallbacks? _callbacks;
+  late ValueNotifier<KalenderInteraction> _interaction;
+  late ValueNotifier<KalenderSnapping> _snapping;
 
   @override
   void initState() {
     super.initState();
     _callbacks = widget.callbacks;
-    _interaction = ValueNotifier(widget.interaction ?? CalendarInteraction());
-    _snapping = ValueNotifier(widget.snapping ?? const CalendarSnapping());
+    _interaction = ValueNotifier(widget.interaction ?? KalenderInteraction());
+    _snapping = ValueNotifier(widget.snapping ?? const KalenderSnapping());
   }
 
   @override
-  void didUpdateWidget(covariant CalendarBody oldWidget) {
+  void didUpdateWidget(covariant KalenderBody oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.callbacks != widget.callbacks) {
       _callbacks = widget.callbacks;
     }
     if (oldWidget.interaction != widget.interaction) {
-      _interaction.value = widget.interaction ?? CalendarInteraction();
+      _interaction.value = widget.interaction ?? KalenderInteraction();
     }
     if (oldWidget.snapping != widget.snapping) {
-      _snapping.value = widget.snapping ?? const CalendarSnapping();
+      _snapping.value = widget.snapping ?? const KalenderSnapping();
     }
   }
 
@@ -119,7 +119,7 @@ class _CalendarBodyState extends State<CalendarBody> {
             ),
           _ => throw ErrorHint(
               'Unsupported ViewController type: ${viewController.runtimeType}. '
-              'Make sure to use the correct CalendarBody for the ViewController.',
+              'Make sure to use the correct KalenderBody for the ViewController.',
             ),
         },
       ),

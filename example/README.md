@@ -1,6 +1,6 @@
 # Example
 
-A complete calendar, using only the base `CalendarEvent` class with no custom fields.
+A complete calendar, using only the base `KalenderEvent` class with no custom fields.
 Tapping an empty slot creates an event, and events can be dragged and resized.
 
 <!-- snippet: file -->
@@ -32,7 +32,7 @@ class MyCalendar extends StatefulWidget {
 
 class _MyCalendarState extends State<MyCalendar> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   @override
   void dispose() {
@@ -50,11 +50,11 @@ class _MyCalendarState extends State<MyCalendar> {
         // Without this the day opens at midnight.
         initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
       ),
-      callbacks: CalendarCallbacks(
+      callbacks: KalenderCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),
       ),
-      header: CalendarHeader(),
-      body: CalendarBody(),
+      header: KalenderHeader(),
+      body: KalenderBody(),
     );
   }
 }
@@ -62,7 +62,7 @@ class _MyCalendarState extends State<MyCalendar> {
 
 For a real app you almost always want custom fields on your events. The
 [Events guide](https://github.com/werner-scholtz/kalender/blob/main/doc/events.md#custom-events)
-covers subclassing `CalendarEvent`, and the
+covers subclassing `KalenderEvent`, and the
 [documentation index](https://github.com/werner-scholtz/kalender/blob/main/doc/README.md)
 lists the rest.
 

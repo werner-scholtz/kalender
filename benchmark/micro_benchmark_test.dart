@@ -74,7 +74,7 @@ class _MultiDayFrameBenchmark extends _KalenderBenchmark {
   final int eventCount;
   final int days;
   late InternalDateTimeRange range;
-  late List<CalendarEvent> events;
+  late List<KalenderEvent> events;
 
   @override
   void setup() {
@@ -106,7 +106,7 @@ class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
   final int eventsPerDay;
   final int days;
   late InternalDateTimeRange range;
-  late List<CalendarEvent> events;
+  late List<KalenderEvent> events;
 
   @override
   void setup() {

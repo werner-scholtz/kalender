@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// Reads the state of the [KalenderView] a widget is built inside.
 ///
@@ -12,7 +12,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// Every accessor returns the nearest value. Most of these exist once per
 /// calendar, but [interactionOf], [callbacksOf], [componentsOf] and
 /// [tileComponentsOf] can differ between the header and the body, since
-/// [CalendarHeader] and [CalendarBody] each take their own.
+/// [KalenderHeader] and [KalenderBody] each take their own.
 ///
 /// The `of` form throws where there is no [KalenderView] above the context. The
 /// `maybeOf` form returns null there instead.
@@ -25,12 +25,12 @@ abstract final class KalenderScope {
     return context.dependOnInheritedWidgetOfExactType<EventsControllerProvider>()?.eventsController;
   }
 
-  /// The [CalendarController] driving the calendar.
-  static CalendarController calendarControllerOf(BuildContext context) => CalendarControllerProvider.of(context);
+  /// The [KalenderController] driving the calendar.
+  static KalenderController calendarControllerOf(BuildContext context) => KalenderControllerProvider.of(context);
 
-  /// The [CalendarController] driving the calendar, or null outside a [KalenderView].
-  static CalendarController? maybeCalendarControllerOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CalendarControllerProvider>()?.notifier;
+  /// The [KalenderController] driving the calendar, or null outside a [KalenderView].
+  static KalenderController? maybeCalendarControllerOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<KalenderControllerProvider>()?.notifier;
   }
 
   /// The locale the calendar formats its own dates and times with.
@@ -44,19 +44,19 @@ abstract final class KalenderScope {
   static Location? locationOf(BuildContext context) => LocationProvider.of(context);
 
   /// The components the calendar builds with.
-  static CalendarComponents componentsOf(BuildContext context) => Components.of(context);
+  static KalenderComponents componentsOf(BuildContext context) => Components.of(context);
 
   /// The callbacks the calendar reports to, or null when it has none.
-  static CalendarCallbacks? callbacksOf(BuildContext context) => Callbacks.of(context);
+  static KalenderCallbacks? callbacksOf(BuildContext context) => Callbacks.of(context);
 
   /// What the calendar allows at this point in the tree.
   ///
-  /// [CalendarHeader] and [CalendarBody] each take their own, so this is the
+  /// [KalenderHeader] and [KalenderBody] each take their own, so this is the
   /// nearest one rather than the calendar's.
-  static CalendarInteraction interactionOf(BuildContext context) => Interaction.of(context);
+  static KalenderInteraction interactionOf(BuildContext context) => Interaction.of(context);
 
   /// How a dragged event snaps at this point in the tree.
-  static CalendarSnapping snappingOf(BuildContext context) => Snapping.of(context);
+  static KalenderSnapping snappingOf(BuildContext context) => Snapping.of(context);
 
   /// The tile components in use at this point in the tree.
   ///

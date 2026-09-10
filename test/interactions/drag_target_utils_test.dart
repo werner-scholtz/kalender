@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:timezone/data/latest_10y.dart';
 
 class _HarnessWidget extends StatefulWidget {
@@ -16,16 +16,16 @@ class _HarnessWidget extends StatefulWidget {
 /// [State.mounted] is false. Only the helpers that touch neither may be called
 /// against this harness.
 class _DragUtilsHarness extends State<_HarnessWidget> with DragTargetUtilities<_HarnessWidget> {
-  _DragUtilsHarness({CalendarController? controller}) : controller = controller ?? CalendarController();
+  _DragUtilsHarness({KalenderController? controller}) : controller = controller ?? KalenderController();
 
   @override
-  final CalendarController controller;
+  final KalenderController controller;
 
   @override
   EventsController get eventsController => throw UnimplementedError();
 
   @override
-  CalendarCallbacks? get callbacks => null;
+  KalenderCallbacks? get callbacks => null;
 
   @override
   double get dayWidth => 0;
@@ -37,10 +37,10 @@ class _DragUtilsHarness extends State<_HarnessWidget> with DragTargetUtilities<_
   bool get multiDayDragTarget => false;
 
   @override
-  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) => throw UnimplementedError();
+  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) => throw UnimplementedError();
 
   @override
-  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) =>
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) =>
       throw UnimplementedError();
 
   @override
@@ -57,8 +57,8 @@ void main() {
   final harness = _DragUtilsHarness();
   final range = InternalDateTimeRange(start: DateTime.utc(2024, 1, 15, 10), end: DateTime.utc(2024, 1, 15, 12));
 
-  CalendarEvent eventWithId(String id) {
-    return CalendarEvent(
+  KalenderEvent eventWithId(String id) {
+    return KalenderEvent(
       id: id,
       start: DateTime.utc(2024, 1, 15, 9),
       end: DateTime.utc(2024, 1, 15, 10),
@@ -112,7 +112,7 @@ void main() {
   // ─── handleDragDetails (static dispatcher) ───────────────────────────────────
 
   group('handleDragDetails', () {
-    String dispatch(Object? data, {CalendarEvent Function(CalendarEvent)? resolveEvent}) {
+    String dispatch(Object? data, {KalenderEvent Function(KalenderEvent)? resolveEvent}) {
       return DragTargetUtilities.handleDragDetails<String, Object?>(
         DragTargetDetails(data: data, offset: Offset.zero),
         onCreate: (controllerId) => 'create:$controllerId',
@@ -144,7 +144,7 @@ void main() {
     test('applies resolveEvent to the latest event for Resize/Reschedule', () {
       // resolveEvent swaps the stale event for the "live" one looked up by id.
       final live = eventWithId('live');
-      CalendarEvent resolve(CalendarEvent _) => live;
+      KalenderEvent resolve(KalenderEvent _) => live;
 
       expect(
         dispatch(Resize(event: eventWithId('stale'), direction: ResizeDirection.top), resolveEvent: resolve),

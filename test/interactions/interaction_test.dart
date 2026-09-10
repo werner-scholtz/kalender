@@ -9,8 +9,8 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late CalendarController calendarController;
-  final interaction = CalendarInteraction(
+  late KalenderController calendarController;
+  final interaction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
@@ -19,7 +19,7 @@ void main() {
     modifyEventGesture: EventInteractionGesture.tap,
   );
 
-  final impreciseInteraction = CalendarInteraction(
+  final impreciseInteraction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
@@ -28,7 +28,7 @@ void main() {
     modifyEventGesture: EventInteractionGesture.longPress,
   );
 
-  final autoInteraction = CalendarInteraction(
+  final autoInteraction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
@@ -44,23 +44,23 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
 
     dayEventID = eventsController.addEvent(
-      CalendarEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
+      KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
     );
     multiDayEventID = eventsController.addEvent(
-      CalendarEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)),
+      KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)),
     );
     customDayEventID = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: DateTime(2025, 1, 1, 1),
         end: DateTime(2025, 1, 1, 23),
         interaction: EventInteraction(allowEndResize: true, allowStartResize: false, allowRescheduling: false),
       ),
     );
     customMultiDayEventID = eventsController.addEvent(
-      CalendarEvent(
+      KalenderEvent(
         start: DateTime(2025, 1, 1),
         end: DateTime(2025, 1, 2),
         interaction: EventInteraction(allowEndResize: true, allowStartResize: false, allowRescheduling: false),
@@ -82,8 +82,8 @@ void main() {
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
-          header: CalendarHeader(interaction: interaction),
-          body: CalendarBody(interaction: interaction),
+          header: KalenderHeader(interaction: interaction),
+          body: KalenderBody(interaction: interaction),
         ),
       );
 
@@ -96,8 +96,8 @@ void main() {
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025),
           ),
-          header: CalendarHeader(interaction: interaction),
-          body: CalendarBody(interaction: interaction),
+          header: KalenderHeader(interaction: interaction),
+          body: KalenderBody(interaction: interaction),
         ),
       );
 
@@ -107,8 +107,8 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
-          header: CalendarHeader(interaction: interaction),
-          body: CalendarBody(interaction: interaction),
+          header: KalenderHeader(interaction: interaction),
+          body: KalenderBody(interaction: interaction),
         ),
       );
 
@@ -122,8 +122,8 @@ void main() {
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
-          header: CalendarHeader(interaction: impreciseInteraction),
-          body: CalendarBody(interaction: impreciseInteraction),
+          header: KalenderHeader(interaction: impreciseInteraction),
+          body: KalenderBody(interaction: impreciseInteraction),
         ),
       );
 
@@ -136,8 +136,8 @@ void main() {
             displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025),
           ),
-          header: CalendarHeader(interaction: impreciseInteraction),
-          body: CalendarBody(interaction: impreciseInteraction),
+          header: KalenderHeader(interaction: impreciseInteraction),
+          body: KalenderBody(interaction: impreciseInteraction),
         ),
       );
 
@@ -151,8 +151,8 @@ void main() {
             initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
-          header: CalendarHeader(interaction: autoInteraction),
-          body: CalendarBody(interaction: autoInteraction),
+          header: KalenderHeader(interaction: autoInteraction),
+          body: KalenderBody(interaction: autoInteraction),
         ),
       );
 

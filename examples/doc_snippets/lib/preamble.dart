@@ -9,7 +9,7 @@ import 'package:kalender/kalender.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 /// The custom event subclass the guides build on, as defined in doc/events.md.
-class Event extends CalendarEvent {
+class Event extends KalenderEvent {
   Event({
     super.id,
     required super.start,
@@ -70,10 +70,10 @@ class MyApp extends StatelessWidget {
 }
 
 final eventsController = DefaultEventsController();
-final calendarController = CalendarController();
+final calendarController = KalenderController();
 final viewConfiguration = MultiDayViewConfiguration.week();
 
 final location = tz.getLocation('Etc/UTC');
 final range = KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
-final event = CalendarEvent(start: range.start, end: range.end);
+final event = KalenderEvent(start: range.start, end: range.end);
 const someId = 'an-event-id';

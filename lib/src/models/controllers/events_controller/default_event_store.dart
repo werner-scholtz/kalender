@@ -1,6 +1,6 @@
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/events_controller/event_store.dart';
+import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:timezone/timezone.dart';
 
 /// Maps timezone location names to their respective date-to-event-ID indexes.
@@ -36,7 +36,7 @@ typedef LocationDateIdMap = Map<String, DateToEventIds>;
 /// ```
 typedef DateToEventIds = Map<String, Set<String>>;
 
-/// Maps unique event IDs to their corresponding [CalendarEvent] instances.
+/// Maps unique event IDs to their corresponding [KalenderEvent] instances.
 ///
 /// This serves as the primary storage for calendar events, providing
 /// O(1) lookup by event ID. Used in conjunction with [DateToEventIds]
@@ -45,13 +45,13 @@ typedef DateToEventIds = Map<String, Set<String>>;
 /// Example:
 /// ```dart
 /// {
-///   101: CalendarEvent(data: 'Meeting', ...),
-///   102: CalendarEvent(data: 'Lunch', ...),
+///   101: KalenderEvent(data: 'Meeting', ...),
+///   102: KalenderEvent(data: 'Lunch', ...),
 /// }
 /// ```
-typedef EventIdToEvent = Map<String, CalendarEvent>;
+typedef EventIdToEvent = Map<String, KalenderEvent>;
 
-/// The default class for storing [CalendarEvent]s.
+/// The default class for storing [KalenderEvent]s.
 class DefaultEventStore extends EventStore {
   /// Predefined locations for optimizations.
   ///
@@ -82,10 +82,10 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  Iterable<CalendarEvent> get events => idEvent.values;
+  Iterable<KalenderEvent> get events => idEvent.values;
 
   @override
-  CalendarEvent? byId(String id) => idEvent[id];
+  KalenderEvent? byId(String id) => idEvent[id];
 
   /// Clear the [locationDateIdMap] and [idEvent] maps.
   @override
@@ -101,7 +101,7 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  String addNewEvent(CalendarEvent event) {
+  String addNewEvent(KalenderEvent event) {
     addEvent(event);
     return event.id;
   }
@@ -115,7 +115,7 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  void removeEvent(CalendarEvent event) {
+  void removeEvent(KalenderEvent event) {
     final id = event.id;
     assert(idEvent[id] != null, 'The event: $event cannot be removed as it does not exist in the map.');
     idEvent.remove(id);
@@ -133,16 +133,16 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  void removeEvents(List<CalendarEvent> events) => events.forEach(removeEvent);
+  void removeEvents(List<KalenderEvent> events) => events.forEach(removeEvent);
 
   @override
-  void updateEvent(CalendarEvent event, CalendarEvent updatedEvent) {
+  void updateEvent(KalenderEvent event, KalenderEvent updatedEvent) {
     removeEvent(event);
     addEvent(updatedEvent);
   }
 
   @override
-  void removeWhere(bool Function(String key, CalendarEvent element) test) {
+  void removeWhere(bool Function(String key, KalenderEvent element) test) {
     // Collect the events to remove first, before modifying idEvent, so that
     // removeEvent can still look them up while cleaning up locationDateIdMap.
     final eventsToRemove =
@@ -174,7 +174,7 @@ class DefaultEventStore extends EventStore {
   }
 
   /// Add an [event] to the map.
-  void addEvent(CalendarEvent event) {
+  void addEvent(KalenderEvent event) {
     final id = event.id;
     idEvent[id] = event;
 
@@ -213,7 +213,7 @@ class DefaultEventStore extends EventStore {
   }
 
   /// Add an [event] to the specified [location] in the [locationDateIdMap].
-  void addEventToLocation(Location? location, CalendarEvent event) {
+  void addEventToLocation(Location? location, KalenderEvent event) {
     final locationString = location?.name ?? defaultLocation;
     final dates = event.internalRange(location: location).dates();
     for (final date in dates) {

@@ -6,13 +6,13 @@ void main() {
   testWidgets('the calendar renders without the bridge', (tester) async {
     await tester.pumpWidget(_app(bridge: false));
     expect(tester.takeException(), isNull);
-    expect(find.byType(CalendarBody), findsOneWidget);
+    expect(find.byType(KalenderBody), findsOneWidget);
   });
 
   testWidgets('with the bridge the calendar renders', (tester) async {
     await tester.pumpWidget(_app(bridge: true));
     expect(tester.takeException(), isNull);
-    expect(find.byType(CalendarBody), findsOneWidget);
+    expect(find.byType(KalenderBody), findsOneWidget);
   });
 }
 
@@ -34,7 +34,7 @@ class _Calendar extends StatefulWidget {
 
 class _CalendarState extends State<_Calendar> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController();
+  final calendarController = KalenderController();
 
   @override
   void dispose() {
@@ -55,7 +55,7 @@ class _CalendarState extends State<_Calendar> {
           end: now.add(const Duration(days: 7)),
         ),
       ),
-      body: const CalendarBody(),
+      body: const KalenderBody(),
     );
   }
 }

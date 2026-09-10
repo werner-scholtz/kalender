@@ -11,7 +11,7 @@ import 'package:kalender/kalender.dart';
 ///
 /// An inline builder works just as well. This is a readability choice.
 
-Color eventColor(BuildContext context, CalendarEvent event) =>
+Color eventColor(BuildContext context, KalenderEvent event) =>
     (event is Event ? event.color : null) ?? Theme.of(context).colorScheme.primaryContainer;
 
 BorderRadius get _radius => BorderRadius.circular(8);
@@ -19,9 +19,9 @@ BorderRadius get _radius => BorderRadius.circular(8);
 class EventTile extends StatelessWidget {
   const EventTile({super.key, required this.event});
 
-  final CalendarEvent event;
+  final KalenderEvent event;
 
-  static EventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) =>
+  static EventTile builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) =>
       EventTile(event: event);
 
   @override
@@ -42,7 +42,7 @@ class EventTile extends StatelessWidget {
 class DropTargetTile extends StatelessWidget {
   const DropTargetTile({super.key});
 
-  static DropTargetTile builder(BuildContext context, CalendarEvent event) => const DropTargetTile();
+  static DropTargetTile builder(BuildContext context, KalenderEvent event) => const DropTargetTile();
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +58,10 @@ class DropTargetTile extends StatelessWidget {
 class FeedbackTile extends StatelessWidget {
   const FeedbackTile({super.key, required this.event, required this.size});
 
-  final CalendarEvent event;
+  final KalenderEvent event;
   final Size size;
 
-  static FeedbackTile builder(BuildContext context, CalendarEvent event, Size dropTargetWidgetSize) =>
+  static FeedbackTile builder(BuildContext context, KalenderEvent event, Size dropTargetWidgetSize) =>
       FeedbackTile(event: event, size: dropTargetWidgetSize);
 
   @override
@@ -78,9 +78,9 @@ class FeedbackTile extends StatelessWidget {
 class TileWhenDragging extends StatelessWidget {
   const TileWhenDragging({super.key, required this.event});
 
-  final CalendarEvent event;
+  final KalenderEvent event;
 
-  static TileWhenDragging builder(BuildContext context, CalendarEvent event) => TileWhenDragging(event: event);
+  static TileWhenDragging builder(BuildContext context, KalenderEvent event) => TileWhenDragging(event: event);
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +108,9 @@ class ResizeHandle extends StatelessWidget {
 class ScheduleEventTile extends StatelessWidget {
   const ScheduleEventTile({super.key, required this.event});
 
-  final CalendarEvent event;
+  final KalenderEvent event;
 
-  static ScheduleEventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) =>
+  static ScheduleEventTile builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) =>
       ScheduleEventTile(event: event);
 
   @override

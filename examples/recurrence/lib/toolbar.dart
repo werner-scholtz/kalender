@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 class CalendarToolBar extends StatelessWidget {
-  final CalendarController calendarController;
+  final KalenderController calendarController;
   const CalendarToolBar({required this.calendarController, super.key});
 
   @override

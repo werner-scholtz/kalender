@@ -6,7 +6,7 @@ import '../utilities.dart';
 
 void main() {
   late EventsController eventsController;
-  late CalendarController calendarController;
+  late KalenderController calendarController;
   final calendarRange = KalenderDateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
 
   /// Shared key so didUpdateWidget fires instead of full rebuild.
@@ -14,7 +14,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    calendarController = CalendarController();
+    calendarController = KalenderController();
     calendarViewKey = GlobalKey();
   });
 
@@ -31,7 +31,7 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: config,
-        body: withBody ? const CalendarBody() : null,
+        body: withBody ? const KalenderBody() : null,
       ),
     );
   }
@@ -674,8 +674,8 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: week(),
-          callbacks: CalendarCallbacks(onScrollPositionChanged: reported.add),
-          body: const CalendarBody(),
+          callbacks: KalenderCallbacks(onScrollPositionChanged: reported.add),
+          body: const KalenderBody(),
         ),
       );
       expect(calendarController.visibleTimeOfDay.value, isNotNull);
@@ -691,7 +691,7 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: month(),
-          body: const CalendarBody(),
+          body: const KalenderBody(),
         ),
       );
       expect(calendarController.visibleTimeOfDay.value, isNull);

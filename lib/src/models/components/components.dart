@@ -14,7 +14,7 @@ import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.
 /// Provide your own widgets with [multiDayComponents], [monthComponents] and
 /// [scheduleComponents]. Styling goes through [KalenderThemeData] for the whole
 /// app, or a [KalenderTheme] to scope one calendar.
-class CalendarComponents {
+class KalenderComponents {
   /// Components used to override the default month components
   final MonthComponents monthComponents;
 
@@ -29,7 +29,7 @@ class CalendarComponents {
   /// If a more specific builder is provided in [multiDayComponents] or [monthComponents], that will be used instead.
   final OverlayBuilders? overlayBuilders;
 
-  const CalendarComponents({
+  const KalenderComponents({
     this.monthComponents = const MonthComponents(),
     this.multiDayComponents = const MultiDayComponents(),
     this.scheduleComponents = const ScheduleComponents(),
@@ -37,13 +37,13 @@ class CalendarComponents {
   });
 
   /// Creates a copy of this with the given fields replaced.
-  CalendarComponents copyWith({
+  KalenderComponents copyWith({
     MonthComponents? monthComponents,
     MultiDayComponents? multiDayComponents,
     ScheduleComponents? scheduleComponents,
     OverlayBuilders? overlayBuilders,
   }) {
-    return CalendarComponents(
+    return KalenderComponents(
       monthComponents: monthComponents ?? this.monthComponents,
       multiDayComponents: multiDayComponents ?? this.multiDayComponents,
       scheduleComponents: scheduleComponents ?? this.scheduleComponents,
@@ -55,7 +55,7 @@ class CalendarComponents {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is CalendarComponents &&
+    return other is KalenderComponents &&
         other.monthComponents == monthComponents &&
         other.multiDayComponents == multiDayComponents &&
         other.scheduleComponents == scheduleComponents &&
