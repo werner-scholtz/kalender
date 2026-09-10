@@ -43,7 +43,7 @@ void main() {
         viewConfiguration: MultiDayViewConfiguration.week(
           displayRange: displayRange,
           initialDateTime: start,
-          initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         ),
         header: CalendarHeader(multiDayTileComponents: components, interaction: precise),
         body: CalendarBody(multiDayTileComponents: components, interaction: precise),

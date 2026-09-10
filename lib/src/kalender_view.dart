@@ -140,7 +140,7 @@ class KalenderViewState extends State<KalenderView> {
           : (newConfig.dateResolver?.call(context) ?? _resolveDate(newConfig.dateTransition, context));
 
       // Resolve the vertical state (multi-day views only): resolver wins, else enum.
-      TimeOfDay? initialTimeOfDay;
+      KalenderTime? initialTimeOfDay;
       double? initialHeightPerMinute;
       if (newConfig is MultiDayViewConfiguration) {
         initialTimeOfDay =
@@ -218,7 +218,7 @@ class KalenderViewState extends State<KalenderView> {
     };
   }
 
-  TimeOfDay? _resolveScroll(ScrollTransition transition, ViewTransitionContext context) {
+  KalenderTime? _resolveScroll(ScrollTransition transition, ViewTransitionContext context) {
     return switch (transition) {
       ScrollTransition.preserve => _lastMultiDaySnapshot?.timeOfDay,
       ScrollTransition.reset => null,
@@ -239,7 +239,7 @@ class KalenderViewState extends State<KalenderView> {
   /// Create the [ViewController] based on the [ViewConfiguration].
   ViewController _createViewController({
     required InternalDateTime initialDate,
-    TimeOfDay? initialTimeOfDay,
+    KalenderTime? initialTimeOfDay,
     double? initialHeightPerMinute,
   }) {
     final viewConfiguration = widget.viewConfiguration;

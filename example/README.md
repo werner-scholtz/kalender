@@ -48,7 +48,7 @@ class _MyCalendarState extends State<MyCalendar> {
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.week(
         // Without this the day opens at midnight.
-        initialTimeOfDay: const TimeOfDay(hour: 7, minute: 0),
+        initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
       ),
       callbacks: CalendarCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),

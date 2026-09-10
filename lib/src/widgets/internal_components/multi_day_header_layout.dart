@@ -37,7 +37,7 @@ class MultiDayHeaderWidget extends StatelessWidget {
     } else {
       final bodyComponents = context.components.multiDayComponents.bodyComponents;
       timelineWidth = GutterWidths.maybeOf(context)?.timeline ??
-          bodyComponents.buildTimelineWidth(context, TimeOfDayRange.allDay());
+          bodyComponents.buildTimelineWidth(context, KalenderTimeRange.allDay());
     }
 
     return _MultiDayHeaderWidget(

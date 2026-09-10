@@ -14,7 +14,7 @@ import 'package:kalender/kalender.dart';
 /// Resolve the style with [KalenderTheme].
 typedef TimeIndicatorBuilder = Widget Function(
   BuildContext context,
-  TimeOfDayRange timeOfDayRange,
+  KalenderTimeRange timeOfDayRange,
   double heightPerMinute,
   Location? location,
 );
@@ -104,8 +104,8 @@ class TimeIndicatorStyle with Diagnosticable {
 
 /// A widget that displays the current time as a line and a circle.
 class TimeIndicator extends StatefulWidget {
-  /// The [TimeOfDayRange] that will be used to display the hour lines.
-  final TimeOfDayRange timeOfDayRange;
+  /// The [KalenderTimeRange] that will be used to display the hour lines.
+  final KalenderTimeRange timeOfDayRange;
 
   /// The height per minute.
   final double heightPerMinute;

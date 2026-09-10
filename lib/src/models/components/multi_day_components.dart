@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/models/kalender_time_range.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
@@ -168,7 +168,7 @@ class MultiDayBodyComponents {
 
   /// Builds the labels displayed by the timeline.
   ///
-  /// Defaults to [TimeOfDay.format] in the calendar's locale. The gutter width
+  /// Defaults to the localized time of day in the calendar's locale. The gutter width
   /// measures every label this can produce, so a builder whose output varies per
   /// minute still gets a gutter wide enough for it.
   final TimeOfDayStringBuilder? timelineStringBuilder;
@@ -215,7 +215,7 @@ class MultiDayBodyComponents {
   });
 
   /// Builds the hour lines, with [hourLines] when set.
-  Widget buildHourLines(BuildContext context, double heightPerMinute, TimeOfDayRange timeOfDayRange) {
+  Widget buildHourLines(BuildContext context, double heightPerMinute, KalenderTimeRange timeOfDayRange) {
     return hourLines?.call(context, heightPerMinute, timeOfDayRange) ??
         HourLines(heightPerMinute: heightPerMinute, timeOfDayRange: timeOfDayRange);
   }
@@ -224,7 +224,7 @@ class MultiDayBodyComponents {
   Widget buildTimeline(
     BuildContext context,
     double heightPerMinute,
-    TimeOfDayRange timeOfDayRange,
+    KalenderTimeRange timeOfDayRange,
     ValueNotifier<CalendarEvent?> eventBeingDragged,
     ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
   ) {
@@ -238,7 +238,7 @@ class MultiDayBodyComponents {
   }
 
   /// Resolves the gutter width, with [timelineWidth] when set.
-  double buildTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange) {
+  double buildTimelineWidth(BuildContext context, KalenderTimeRange timeOfDayRange) {
     return timelineWidth?.call(context, timeOfDayRange) ?? defaultTimelineWidth(context, timeOfDayRange);
   }
 
@@ -253,7 +253,7 @@ class MultiDayBodyComponents {
   /// [timeIndicator] decides for itself what the current time is.
   Widget buildTimeIndicator(
     BuildContext context,
-    TimeOfDayRange timeOfDayRange,
+    KalenderTimeRange timeOfDayRange,
     double heightPerMinute,
     Location? location, {
     NowCallback? nowCallback,

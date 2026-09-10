@@ -59,7 +59,7 @@ class CalendarCallbacks {
 
   /// The callback for when the vertical scroll position of a multi-day view changes.
   ///
-  /// The provided [TimeOfDay] is the time currently aligned with the top of the
+  /// The provided [KalenderTime] is the time currently aligned with the top of the
   /// visible viewport. Only fires for views with vertical scroll (day/week/etc).
   final OnScrollPositionChanged? onScrollPositionChanged;
 
@@ -241,7 +241,7 @@ typedef OnPageChanged = void Function(KalenderDateTimeRange dateTimeRange);
 /// The callback for when the vertical scroll position of a multi-day view changes.
 ///
 /// [visibleTimeOfDay] is the time currently aligned with the top of the viewport.
-typedef OnScrollPositionChanged = void Function(TimeOfDay visibleTimeOfDay);
+typedef OnScrollPositionChanged = void Function(KalenderTime visibleTimeOfDay);
 
 /// The callback for when a user taps on an empty space in the calendar.
 ///

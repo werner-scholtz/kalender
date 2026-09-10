@@ -72,7 +72,7 @@ class MyLayoutStrategy extends EventLayoutStrategy {
   EventLayoutDelegate createDelegate({
     required Iterable<CalendarEvent> events,
     required InternalDateTime date,
-    required TimeOfDayRange timeOfDayRange,
+    required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
     required EventLayoutDelegateCache? cache,

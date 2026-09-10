@@ -5,6 +5,9 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 ### Breaking Changes
 
 - `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
+- `KalenderTime` replaces Material's `TimeOfDay` in every public signature.
+- `TimeOfDayRange` is renamed to `KalenderTimeRange`, and holds `KalenderTime` values.
+- `TimeOfDayExtension` is removed. `toInternalDateTime` and `toDateTime` are methods on `KalenderTime`.
 - `InternalDateTimeRange` no longer extends `DateTimeRange`, and `forLocation` returns a `KalenderDateTimeRange`.
 - `InternalDateTimeRange.overlaps` takes an `InternalDateTimeRange`, and `InternalDateTimeRange.fromDateTimeRange` takes a `KalenderDateTimeRange`.
 - `PageIndexCalculator` and its subclasses take `start` and `end` rather than `dateTimeRange`.
@@ -17,6 +20,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - The schedule view reports `onPageChanged` in the calendar's location, matching the multi-day and month views.
 - The schedule view's `monthItemBuilder` and `emptyItemBuilder` receive ranges in the calendar's location.
 - The timeline's drag tooltip tests visibility in the calendar's own time space rather than against converted values.
+- `KalenderTime` asserts that its `hour` and `minute` are within a day, matching `replacing`.
 
 ### Features
 

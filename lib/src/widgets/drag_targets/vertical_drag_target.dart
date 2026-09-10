@@ -93,7 +93,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   MultiDayViewController get viewController => widget.viewController;
   ScrollController get scrollController => viewController.scrollController;
-  TimeOfDayRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
+  KalenderTimeRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
 
   VerticalConfiguration get bodyConfiguration => widget.configuration;
   bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;

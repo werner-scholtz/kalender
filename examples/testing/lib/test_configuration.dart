@@ -35,7 +35,7 @@ class TestConfiguration {
   /// The calendar controller for the test.
   final calendarController = CalendarController();
 
-  static List<CalendarEvent> generate(List<TimeOfDayRange> timeOfDayRanges) {
+  static List<CalendarEvent> generate(List<KalenderTimeRange> timeOfDayRanges) {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
 
     // Loop through the test range and create events.
@@ -86,91 +86,91 @@ class Event extends CalendarEvent {
 }
 
 final timeOfDayRanges = [
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 5, minute: 0),
-    end: const TimeOfDay(hour: 6, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 5, minute: 0),
+    end: const KalenderTime(hour: 6, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 5, minute: 30),
-    end: const TimeOfDay(hour: 6, minute: 15),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 5, minute: 30),
+    end: const KalenderTime(hour: 6, minute: 15),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 6, minute: 0),
-    end: const TimeOfDay(hour: 8, minute: 15),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 6, minute: 0),
+    end: const KalenderTime(hour: 8, minute: 15),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 8, minute: 0),
-    end: const TimeOfDay(hour: 9, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 9, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 8, minute: 30),
-    end: const TimeOfDay(hour: 10, minute: 0),
-  ),
-
-  /// 5
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 9, minute: 0),
-    end: const TimeOfDay(hour: 10, minute: 0),
-  ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 10, minute: 0),
-    end: const TimeOfDay(hour: 11, minute: 0),
-  ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 12, minute: 0),
-    end: const TimeOfDay(hour: 13, minute: 0),
-  ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 13, minute: 0),
-    end: const TimeOfDay(hour: 14, minute: 0),
-  ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 8, minute: 0),
-    end: const TimeOfDay(hour: 14, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 30),
+    end: const KalenderTime(hour: 10, minute: 0),
   ),
 
   /// 5
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 14, minute: 0),
-    end: const TimeOfDay(hour: 15, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 9, minute: 0),
+    end: const KalenderTime(hour: 10, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 14, minute: 30),
-    end: const TimeOfDay(hour: 15, minute: 30),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 10, minute: 0),
+    end: const KalenderTime(hour: 11, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 15, minute: 0),
-    end: const TimeOfDay(hour: 16, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 12, minute: 0),
+    end: const KalenderTime(hour: 13, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 16, minute: 0),
-    end: const TimeOfDay(hour: 17, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 13, minute: 0),
+    end: const KalenderTime(hour: 14, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 8, minute: 0),
-    end: const TimeOfDay(hour: 17, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 14, minute: 0),
   ),
 
   /// 5
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 17, minute: 0),
-    end: const TimeOfDay(hour: 18, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 14, minute: 0),
+    end: const KalenderTime(hour: 15, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 17, minute: 30),
-    end: const TimeOfDay(hour: 18, minute: 30),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 14, minute: 30),
+    end: const KalenderTime(hour: 15, minute: 30),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 18, minute: 0),
-    end: const TimeOfDay(hour: 19, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 15, minute: 0),
+    end: const KalenderTime(hour: 16, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 19, minute: 0),
-    end: const TimeOfDay(hour: 20, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 16, minute: 0),
+    end: const KalenderTime(hour: 17, minute: 0),
   ),
-  TimeOfDayRange(
-    start: const TimeOfDay(hour: 20, minute: 0),
-    end: const TimeOfDay(hour: 21, minute: 0),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 17, minute: 0),
+  ),
+
+  /// 5
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 17, minute: 0),
+    end: const KalenderTime(hour: 18, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 17, minute: 30),
+    end: const KalenderTime(hour: 18, minute: 30),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 18, minute: 0),
+    end: const KalenderTime(hour: 19, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 19, minute: 0),
+    end: const KalenderTime(hour: 20, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 20, minute: 0),
+    end: const KalenderTime(hour: 21, minute: 0),
   ),
 
   /// Additional generated ranges (indices 20–49) so the heavy
@@ -180,9 +180,9 @@ final timeOfDayRanges = [
     final startMinutes = 5 * 60 + (i * 31) % (15 * 60); // 05:00–20:00, prime step for variety
     final durationMinutes = 30 + (i % 4) * 30; // 30/60/90/120
     final endMinutes = startMinutes + durationMinutes;
-    return TimeOfDayRange(
-      start: TimeOfDay(hour: startMinutes ~/ 60, minute: startMinutes % 60),
-      end: TimeOfDay(hour: endMinutes ~/ 60, minute: endMinutes % 60),
+    return KalenderTimeRange(
+      start: KalenderTime(hour: startMinutes ~/ 60, minute: startMinutes % 60),
+      end: KalenderTime(hour: endMinutes ~/ 60, minute: endMinutes % 60),
     );
   }),
 ];

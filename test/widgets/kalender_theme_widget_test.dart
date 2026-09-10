@@ -50,7 +50,7 @@ void main() {
     await tester.pumpWidget(
       app(
         child: TimeIndicator(
-          timeOfDayRange: TimeOfDayRange.allDay(),
+          timeOfDayRange: KalenderTimeRange.allDay(),
           heightPerMinute: 1,
           location: null,
           nowCallback: () => DateTime(2026, 1, 1, 12),
