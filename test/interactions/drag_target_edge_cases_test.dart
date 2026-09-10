@@ -49,18 +49,14 @@ final _restrictedRange = KalenderTimeRange(
 
 /// A single-day event (2 h) on Jan 6, 2025.
 CalendarEvent _singleDayEvent({DateTime? start, DateTime? end}) => CalendarEvent(
-      dateTimeRange: KalenderDateTimeRange(
-        start: start ?? DateTime(2025, 1, 6, 10, 0),
-        end: end ?? DateTime(2025, 1, 6, 12, 0),
-      ),
+      start: start ?? DateTime(2025, 1, 6, 10, 0),
+      end: end ?? DateTime(2025, 1, 6, 12, 0),
     );
 
 /// A midnight-to-midnight event (always spans multiple days).
 CalendarEvent _multiDayEvent() => CalendarEvent(
-      dateTimeRange: KalenderDateTimeRange(
-        start: DateTime(2025, 1, 6, 0, 0),
-        end: DateTime(2025, 1, 7, 0, 0),
-      ),
+      start: DateTime(2025, 1, 6, 0, 0),
+      end: DateTime(2025, 1, 7, 0, 0),
     );
 
 DragTargetDetails<Object?> _dragDetails(Object? data) => DragTargetDetails(data: data, offset: Offset.zero);
@@ -284,10 +280,8 @@ void main() {
 
       // 10-hour event (> 8h 1min range duration) — still a single-day event
       final hugeEvent = CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: DateTime(2025, 1, 6, 8, 0),
-          end: DateTime(2025, 1, 6, 18, 0),
-        ),
+        start: DateTime(2025, 1, 6, 8, 0),
+        end: DateTime(2025, 1, 6, 18, 0),
       );
       expect(hugeEvent.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isFalse);
 
@@ -716,10 +710,8 @@ void main() {
       final ec = DefaultEventsController();
       ec.addEvent(
         CalendarEvent(
-          dateTimeRange: KalenderDateTimeRange(
-            start: DateTime(2025, 1, 6, 10),
-            end: DateTime(2025, 1, 6, 12),
-          ),
+          start: DateTime(2025, 1, 6, 10),
+          end: DateTime(2025, 1, 6, 12),
         ),
       );
 

@@ -20,24 +20,18 @@ void main() {
     events = [
       // Event 0: 23:00 day before → 01:00 start day (2h, crosses midnight)
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start.copyWith(hour: start.hour - 1),
-          end: start.copyWith(hour: start.hour + 1),
-        ),
+        start: start.copyWith(hour: start.hour - 1),
+        end: start.copyWith(hour: start.hour + 1),
       ),
       // Event 1: 00:00 → 02:00 on start day (2h)
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start,
-          end: start.copyWith(hour: start.hour + 2),
-        ),
+        start: start,
+        end: start.copyWith(hour: start.hour + 2),
       ),
       // Event 2: 00:00 → 03:00 on next day (3h)
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start.copyWith(day: start.day + 1),
-          end: start.copyWith(day: start.day + 1, hour: start.hour + 3),
-        ),
+        start: start.copyWith(day: start.day + 1),
+        end: start.copyWith(day: start.day + 1, hour: start.hour + 3),
       ),
     ];
 
@@ -153,10 +147,8 @@ void main() {
     testWidgets('renders a single event', (tester) async {
       eventsController.clearEvents();
       final singleEvent = CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start,
-          end: start.copyWith(hour: 4),
-        ),
+        start: start,
+        end: start.copyWith(hour: 4),
       );
       eventsController.addEvent(singleEvent);
       events = [singleEvent]; // update local list for finder
@@ -169,10 +161,8 @@ void main() {
     testWidgets('renders short event (15 min)', (tester) async {
       eventsController.clearEvents();
       final shortEvent = CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start.copyWith(hour: 10),
-          end: start.copyWith(hour: 10, minute: 15),
-        ),
+        start: start.copyWith(hour: 10),
+        end: start.copyWith(hour: 10, minute: 15),
       );
       eventsController.addEvent(shortEvent);
       events = [shortEvent];
@@ -200,10 +190,8 @@ void main() {
 
       // Add a 4th event on the same day.
       final newEvent = CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(
-          start: start.copyWith(hour: 5),
-          end: start.copyWith(hour: 7),
-        ),
+        start: start.copyWith(hour: 5),
+        end: start.copyWith(hour: 7),
       );
       eventsController.addEvent(newEvent);
       events.add(newEvent);

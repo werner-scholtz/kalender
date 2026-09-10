@@ -19,7 +19,8 @@ class Event extends CalendarEvent {
 
   Event({
     super.id,
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.title,
     this.description,
     this.color,
@@ -32,16 +33,18 @@ class Event extends CalendarEvent {
   // and resize, then restores id, interaction, multiDayRule and isAllDay
   // itself, so none of those are listed here.
   @override
-  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
+  Event copyWithData({required DateTime start, required DateTime end}) {
+    return Event(start: start,
+      end: end, title: title, description: description, color: color);
   }
 
   // A copy method of your own. It is not an override, so it takes whatever
   // parameters suit you. carryOver keeps the copy's identity and rule.
-  Event copyWith({KalenderDateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+  Event copyWith({DateTime? start, DateTime? end, String? title, String? description, Color? color}) {
     return carryOver(
       Event(
-        dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+        start: start ?? this.start,
+        end: end ?? this.end,
         title: title ?? this.title,
         description: description ?? this.description,
         color: color ?? this.color,
@@ -117,7 +120,8 @@ Pass this as `KalenderView.callbacks`:
 ```dart
 CalendarCallbacks(
   onEventCreate: (event) => Event(
-    dateTimeRange: event.dateTimeRange,
+    start: event.start,
+      end: event.end,
     title: 'New Event',
     color: Colors.blue,
   ),
@@ -135,7 +139,7 @@ An event that is all-day by nature rather than by duration says so directly, and
 
 <!-- snippet: expression -->
 ```dart
-CalendarEvent(dateTimeRange: range, isAllDay: true)
+CalendarEvent(start: range.start, end: range.end, isAllDay: true)
 ```
 
 This puts it in the header lane whatever its duration, which no `MultiDayRule` can express for an event lasting an hour. The date range is left alone, so an app wanting midnight to midnight supplies it. `isAllDay` defaults to false, where the rules below apply as before.
@@ -145,7 +149,8 @@ A single event can override the calendar's rule:
 <!-- snippet: expression -->
 ```dart
 CalendarEvent(
-  dateTimeRange: range,
+  start: range.start,
+  end: range.end,
   multiDayRule: const MultiDayRule.calendarDays(),
 )
 ```

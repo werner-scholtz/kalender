@@ -7,16 +7,10 @@ class TestConfiguration {
   TestConfiguration({required this.viewConfiguration});
 
   TestConfiguration.week()
-    : viewConfiguration = MultiDayViewConfiguration.week(
-        displayRange: testRange,
-        initialDateTime: initialDateTime,
-      );
+    : viewConfiguration = MultiDayViewConfiguration.week(displayRange: testRange, initialDateTime: initialDateTime);
 
   TestConfiguration.month()
-    : viewConfiguration = MonthViewConfiguration.singleMonth(
-        displayRange: testRange,
-        initialDateTime: initialDateTime,
-      );
+    : viewConfiguration = MonthViewConfiguration.singleMonth(displayRange: testRange, initialDateTime: initialDateTime);
 
   TestConfiguration.schedule()
     : viewConfiguration = ScheduleViewConfiguration.continuous(
@@ -43,10 +37,8 @@ class TestConfiguration {
       for (var date in InternalDateTimeRange.fromDateTimeRange(testRange).dates()) ...[
         for (var timeOfDayRange in timeOfDayRanges)
           Event(
-            dateTimeRange: KalenderDateTimeRange(
-              start: timeOfDayRange.start.toInternalDateTime(date),
-              end: timeOfDayRange.end.toInternalDateTime(date),
-            ),
+            start: timeOfDayRange.start.toInternalDateTime(date),
+            end: timeOfDayRange.end.toInternalDateTime(date),
             title: 'Event',
             description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
             color: Colors.primaries[date.day % Colors.primaries.length],
@@ -62,7 +54,8 @@ class TestConfiguration {
 class Event extends CalendarEvent {
   Event({
     super.id,
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.title,
     this.description,
     this.color,
@@ -80,98 +73,38 @@ class Event extends CalendarEvent {
   final Color? color;
 
   @override
-  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
+  Event copyWithData({required DateTime start, required DateTime end}) {
+    return Event(start: start, end: end, title: title, description: description, color: color);
   }
 }
 
 final timeOfDayRanges = [
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 5, minute: 0),
-    end: const KalenderTime(hour: 6, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 5, minute: 30),
-    end: const KalenderTime(hour: 6, minute: 15),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 6, minute: 0),
-    end: const KalenderTime(hour: 8, minute: 15),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 8, minute: 0),
-    end: const KalenderTime(hour: 9, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 8, minute: 30),
-    end: const KalenderTime(hour: 10, minute: 0),
-  ),
+  KalenderTimeRange(start: const KalenderTime(hour: 5, minute: 0), end: const KalenderTime(hour: 6, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 5, minute: 30), end: const KalenderTime(hour: 6, minute: 15)),
+  KalenderTimeRange(start: const KalenderTime(hour: 6, minute: 0), end: const KalenderTime(hour: 8, minute: 15)),
+  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 0), end: const KalenderTime(hour: 9, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 30), end: const KalenderTime(hour: 10, minute: 0)),
 
   /// 5
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 9, minute: 0),
-    end: const KalenderTime(hour: 10, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 10, minute: 0),
-    end: const KalenderTime(hour: 11, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 12, minute: 0),
-    end: const KalenderTime(hour: 13, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 13, minute: 0),
-    end: const KalenderTime(hour: 14, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 8, minute: 0),
-    end: const KalenderTime(hour: 14, minute: 0),
-  ),
+  KalenderTimeRange(start: const KalenderTime(hour: 9, minute: 0), end: const KalenderTime(hour: 10, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 10, minute: 0), end: const KalenderTime(hour: 11, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 12, minute: 0), end: const KalenderTime(hour: 13, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 13, minute: 0), end: const KalenderTime(hour: 14, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 0), end: const KalenderTime(hour: 14, minute: 0)),
 
   /// 5
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 14, minute: 0),
-    end: const KalenderTime(hour: 15, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 14, minute: 30),
-    end: const KalenderTime(hour: 15, minute: 30),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 15, minute: 0),
-    end: const KalenderTime(hour: 16, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 16, minute: 0),
-    end: const KalenderTime(hour: 17, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 8, minute: 0),
-    end: const KalenderTime(hour: 17, minute: 0),
-  ),
+  KalenderTimeRange(start: const KalenderTime(hour: 14, minute: 0), end: const KalenderTime(hour: 15, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 14, minute: 30), end: const KalenderTime(hour: 15, minute: 30)),
+  KalenderTimeRange(start: const KalenderTime(hour: 15, minute: 0), end: const KalenderTime(hour: 16, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 16, minute: 0), end: const KalenderTime(hour: 17, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 0), end: const KalenderTime(hour: 17, minute: 0)),
 
   /// 5
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 17, minute: 0),
-    end: const KalenderTime(hour: 18, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 17, minute: 30),
-    end: const KalenderTime(hour: 18, minute: 30),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 18, minute: 0),
-    end: const KalenderTime(hour: 19, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 19, minute: 0),
-    end: const KalenderTime(hour: 20, minute: 0),
-  ),
-  KalenderTimeRange(
-    start: const KalenderTime(hour: 20, minute: 0),
-    end: const KalenderTime(hour: 21, minute: 0),
-  ),
+  KalenderTimeRange(start: const KalenderTime(hour: 17, minute: 0), end: const KalenderTime(hour: 18, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 17, minute: 30), end: const KalenderTime(hour: 18, minute: 30)),
+  KalenderTimeRange(start: const KalenderTime(hour: 18, minute: 0), end: const KalenderTime(hour: 19, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 19, minute: 0), end: const KalenderTime(hour: 20, minute: 0)),
+  KalenderTimeRange(start: const KalenderTime(hour: 20, minute: 0), end: const KalenderTime(hour: 21, minute: 0)),
 
   /// Additional generated ranges (indices 20–49) so the heavy
   /// 50-events-per-day scenario has enough distinct slots. Spread across the

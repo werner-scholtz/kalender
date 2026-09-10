@@ -13,7 +13,8 @@ import 'package:kalender/kalender.dart';
 /// Rebuilds only its own field, as the documentation shows.
 class _Task extends CalendarEvent {
   _Task({
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.title,
     super.interaction,
     super.multiDayRule,
@@ -22,14 +23,14 @@ class _Task extends CalendarEvent {
   final String title;
 
   @override
-  _Task copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return _Task(dateTimeRange: dateTimeRange, title: title);
+  _Task copyWithData({required DateTime start, required DateTime end}) {
+    return _Task(start: start, end: end, title: title);
   }
 
   /// A copy method of the subclass's own, which is no longer an override and so
   /// can take whatever parameters it likes.
   _Task copyWith({String? title}) {
-    return carryOver(_Task(dateTimeRange: dateTimeRange, title: title ?? this.title));
+    return carryOver(_Task(start: dateTimeRange.start, end: dateTimeRange.end, title: title ?? this.title));
   }
 }
 
@@ -37,7 +38,7 @@ class _Task extends CalendarEvent {
 /// implementation returns a plain [CalendarEvent].
 // ignore: missing_override_of_must_be_overridden
 class _NoHook extends CalendarEvent {
-  _NoHook({required super.dateTimeRange});
+  _NoHook({required super.start, required super.end});
 }
 
 void main() {
@@ -46,7 +47,7 @@ void main() {
 
   group('withDateTimeRange', () {
     test('moves a base event and keeps its identity and rule', () {
-      final event = CalendarEvent(dateTimeRange: range, multiDayRule: const MultiDayRule.calendarDays());
+      final event = CalendarEvent(start: range.start, end: range.end, multiDayRule: const MultiDayRule.calendarDays());
       final copy = event.withDateTimeRange(moved);
 
       expect(copy.dateTimeRange, equals(moved));
@@ -56,7 +57,8 @@ void main() {
 
     test('keeps the state a subclass never mentions', () {
       final event = _Task(
-        dateTimeRange: range,
+        start: range.start,
+        end: range.end,
         title: 'standup',
         multiDayRule: const MultiDayRule.calendarDays(),
         interaction: EventInteraction.fromCanModify(false),
@@ -72,12 +74,12 @@ void main() {
     });
 
     test('returns the subclass type, not the base one', () {
-      final event = _Task(dateTimeRange: range, title: 'standup');
+      final event = _Task(start: range.start, end: range.end, title: 'standup');
       expect(event.withDateTimeRange(moved), isA<_Task>());
     });
 
     test('a subclass with no hook is reported by name', () {
-      final event = _NoHook(dateTimeRange: range);
+      final event = _NoHook(start: range.start, end: range.end);
 
       expect(
         () => event.withDateTimeRange(moved),
@@ -95,7 +97,8 @@ void main() {
   group('carryOver', () {
     test('a copyWith of the subclass keeps the base state too', () {
       final event = _Task(
-        dateTimeRange: range,
+        start: range.start,
+        end: range.end,
         title: 'standup',
         multiDayRule: const MultiDayRule.calendarDays(),
       );
@@ -113,7 +116,7 @@ void main() {
       final controller = DefaultEventsController();
       addTearDown(controller.dispose);
 
-      final event = _Task(dateTimeRange: range, title: 'standup');
+      final event = _Task(start: range.start, end: range.end, title: 'standup');
       controller.addEvent(event);
 
       final moved0 = event.withDateTimeRange(moved);

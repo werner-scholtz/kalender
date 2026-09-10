@@ -12,7 +12,8 @@ import 'package:timezone/timezone.dart' as tz;
 class Event extends CalendarEvent {
   Event({
     super.id,
-    required super.dateTimeRange,
+    required super.start,
+    required super.end,
     required this.title,
     this.description,
     this.color,
@@ -26,14 +27,15 @@ class Event extends CalendarEvent {
   final Color? color;
 
   @override
-  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
-    return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
+  Event copyWithData({required DateTime start, required DateTime end}) {
+    return Event(start: start, end: end, title: title, description: description, color: color);
   }
 
-  Event copyWith({KalenderDateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+  Event copyWith({DateTime? start, DateTime? end, String? title, String? description, Color? color}) {
     return carryOver(
       Event(
-        dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+        start: start ?? this.start,
+        end: end ?? this.end,
         title: title ?? this.title,
         description: description ?? this.description,
         color: color ?? this.color,
@@ -72,7 +74,6 @@ final calendarController = CalendarController();
 final viewConfiguration = MultiDayViewConfiguration.week();
 
 final location = tz.getLocation('Etc/UTC');
-final range =
-    KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
-final event = CalendarEvent(dateTimeRange: range);
+final range = KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
+final event = CalendarEvent(start: range.start, end: range.end);
 const someId = 'an-event-id';

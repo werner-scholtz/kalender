@@ -5,7 +5,8 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 void main() {
   CalendarEvent makeEvent({String id = 'e1'}) => CalendarEvent(
         id: id,
-        dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
+        start: DateTime.utc(2024, 1, 15, 9),
+        end: DateTime.utc(2024, 1, 15, 10),
       );
 
   // ─── ResizeDirection ─────────────────────────────────────────────────────────

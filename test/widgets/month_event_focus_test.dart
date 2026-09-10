@@ -14,8 +14,8 @@ void main() {
     // Two events covering the same days (Tue–Thu of the first full week) so they
     // stack: one on row 0, one on row 1.
     final range = KalenderDateTimeRange(start: DateTime(2025, 1, 7), end: DateTime(2025, 1, 10));
-    final eventA = CalendarEvent(dateTimeRange: range);
-    final eventB = CalendarEvent(dateTimeRange: range);
+    final eventA = CalendarEvent(start: range.start, end: range.end);
+    final eventB = CalendarEvent(start: range.start, end: range.end);
     eventsController.addEvent(eventA);
     eventsController.addEvent(eventB);
 

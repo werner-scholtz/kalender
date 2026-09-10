@@ -60,7 +60,8 @@ void main() {
   CalendarEvent eventWithId(String id) {
     return CalendarEvent(
       id: id,
-      dateTimeRange: KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10)),
+      start: DateTime.utc(2024, 1, 15, 9),
+      end: DateTime.utc(2024, 1, 15, 10),
     );
   }
 

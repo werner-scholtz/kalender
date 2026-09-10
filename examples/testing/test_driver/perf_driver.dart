@@ -17,8 +17,7 @@ enum Scenario {
   const Scenario(this.numberOfEvents);
   final int numberOfEvents;
 
-  String getReportKey(Views view, ReportKeys key, int run) =>
-      '${name.toLowerCase()}-${view.name}-${key.name}-$run';
+  String getReportKey(Views view, ReportKeys key, int run) => '${name.toLowerCase()}-${view.name}-${key.name}-$run';
 
   static String baseKeyFromReportKey(String key) {
     return key.split('-').take(3).join('-');
@@ -112,7 +111,8 @@ Future<void> main() {
           return suffix == 'ms' ? '${median.toStringAsFixed(fraction)}ms' : '${median.round()}';
         }
 
-        final extra = 'p90_build=${fmt(_p90Metric)} '
+        final extra =
+            'p90_build=${fmt(_p90Metric)} '
             'p99_build=${fmt(_p99Metric)} '
             'missed_build=${fmt(_missedBuildMetric, suffix: 'count')} '
             '(runs=${buildValues.length})';

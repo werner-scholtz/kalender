@@ -386,10 +386,8 @@ void main() {
       // A single-day event on Jan 15, 2025 (within the displayed month).
       eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: KalenderDateTimeRange(
-            start: DateTime(2025, 1, 15, 9),
-            end: DateTime(2025, 1, 15, 10),
-          ),
+          start: DateTime(2025, 1, 15, 9),
+          end: DateTime(2025, 1, 15, 10),
         ),
       );
 
@@ -439,10 +437,8 @@ void main() {
 
       testWidgets('renders month view without error and is invoked', (tester) async {
         final event = CalendarEvent(
-          dateTimeRange: KalenderDateTimeRange(
-            start: DateTime(2025, 1, 15, 9),
-            end: DateTime(2025, 1, 15, 10),
-          ),
+          start: DateTime(2025, 1, 15, 9),
+          end: DateTime(2025, 1, 15, 10),
         );
         eventsController.addEvent(event);
 

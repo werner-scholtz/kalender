@@ -149,7 +149,7 @@ When events come from an `.ics` file, a device calendar, or an API, map each sou
 
   final start = tz.TZDateTime(tz.getLocation('Europe/London'), 2025, 1, 6, 9);
   final event = CalendarEvent(
-    dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(hours: 1))),
+    start: start, end: start.add(const Duration(hours: 1)),
   );
   ```
 

@@ -24,7 +24,8 @@ void main() {
     calendarController = CalendarController();
     eventId = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
+        start: DateTime(2025, 1, 1, 1),
+        end: DateTime(2025, 1, 1, 4),
       ),
     );
   });

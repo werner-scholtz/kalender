@@ -38,7 +38,8 @@ void main() {
 
       eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 15, 9), end: DateTime(2025, 1, 15, 10)),
+          start: DateTime(2025, 1, 15, 9),
+          end: DateTime(2025, 1, 15, 10),
         ),
       );
 

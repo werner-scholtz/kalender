@@ -28,8 +28,7 @@ void main() {
   });
 
   String addEvent(DateTime start, Duration duration) {
-    return eventsController
-        .addEvent(CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(duration))));
+    return eventsController.addEvent(CalendarEvent(start: start, end: start.add(duration)));
   }
 
   Future<void> pumpSchedule(

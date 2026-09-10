@@ -275,13 +275,15 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                               final String message;
                               final IconData icon;
                               if (!widget.isEditing) {
-                                message = '$_recurrenceCount ${_recurrenceCount == 1 ? 'occurrence' : 'occurrences'} will be created';
+                                message =
+                                    '$_recurrenceCount ${_recurrenceCount == 1 ? 'occurrence' : 'occurrences'} will be created';
                                 icon = Icons.repeat;
                               } else if (diff > 0) {
                                 message = '$diff new ${diff == 1 ? 'occurrence' : 'occurrences'} will be added';
                                 icon = Icons.add_circle_outline;
                               } else if (diff < 0) {
-                                message = '${diff.abs()} ${diff.abs() == 1 ? 'occurrence' : 'occurrences'} will be removed';
+                                message =
+                                    '${diff.abs()} ${diff.abs() == 1 ? 'occurrence' : 'occurrences'} will be removed';
                                 icon = Icons.remove_circle_outline;
                               } else {
                                 message = 'No change in occurrences';

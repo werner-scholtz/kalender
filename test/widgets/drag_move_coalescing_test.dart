@@ -25,7 +25,8 @@ void main() {
     calendarController = CalendarController();
     eventId = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: KalenderDateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(hour: 8)),
+        start: start.copyWith(hour: 6),
+        end: start.copyWith(hour: 8),
       ),
     );
   });

@@ -48,7 +48,7 @@ void main() {
 
   testWidgets('RTL: a multi-day event renders as one spanning tile', (tester) async {
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 4)))),
+      CalendarEvent(start: start, end: start.add(const Duration(days: 4))),
     );
 
     await pump(tester, TextDirection.rtl);
@@ -62,7 +62,8 @@ void main() {
   testWidgets('RTL mirrors the tile position relative to LTR', (tester) async {
     // A 2-day event on the first two visible days.
     final event = CalendarEvent(
-      dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 2))),
+      start: start,
+      end: start.add(const Duration(days: 2)),
     );
     final id = eventsController.addEvent(event);
 
@@ -85,8 +86,8 @@ void main() {
   testWidgets('RTL: scrolling forward moves the tile toward the start side (right)', (tester) async {
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange:
-            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+        start: start.add(const Duration(days: 1)),
+        end: start.add(const Duration(days: 4)),
       ),
     );
 

@@ -51,7 +51,7 @@ void main() {
   }
 
   testWidgets('an hour-long all-day event renders in the header', (tester) async {
-    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange, isAllDay: true));
+    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
 
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
 
@@ -60,7 +60,7 @@ void main() {
   });
 
   testWidgets('the same event without the flag stays in the body', (tester) async {
-    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange));
+    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end));
 
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
 
@@ -70,7 +70,7 @@ void main() {
 
   testWidgets('the view rule cannot pull it back into the body', (tester) async {
     // A rule nothing satisfies. The flag still decides.
-    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange, isAllDay: true));
+    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
 
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(days: 365)));
 
@@ -79,7 +79,7 @@ void main() {
   });
 
   testWidgets('rescheduling it in the header keeps it all-day', (tester) async {
-    final id = eventsController.addEvent(CalendarEvent(dateTimeRange: shortRange, isAllDay: true));
+    final id = eventsController.addEvent(CalendarEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
 
     CalendarEvent? changed;
     await pumpWeek(
