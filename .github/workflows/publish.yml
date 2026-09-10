@@ -68,5 +68,14 @@ jobs:
       - name: Dry-run publish
         run: flutter pub publish --dry-run
 
+      # Exchanges the workflow's OIDC token for a pub.dev credential. It runs
+      # here rather than with the other setup because the Dart it installs is
+      # used for pub operations ahead of the one Flutter ships, which cannot
+      # resolve the versions flutter_tools pins. By this point Flutter has built
+      # its tool snapshot, so publishing does not resolve them again.
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
       - name: Publish
         run: flutter pub publish --force
