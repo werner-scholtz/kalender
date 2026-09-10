@@ -47,6 +47,9 @@ The sections below cover what is left after the fixes have run.
 
 ## v0.29.x → v0.30.0
 
+`dart fix --apply` applies most of this release. If it reports an analysis server
+error, run it over fewer files at a time.
+
 ### The `Calendar*` types are renamed to `Kalender*`
 
 `dart fix` applies all of these. The package has been converging on `Kalender` as
@@ -232,11 +235,15 @@ range you were passing.
 
 ```dart
 // Before
-CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: end))
+CalendarEvent(dateTimeRange: range)
 
 // After
-KalenderEvent(start: start, end: end)
+KalenderEvent(start: range.start, end: range.end)
 ```
+
+The fix copies the argument into both parameters. Where the argument is an
+expression rather than a variable, that expression appears twice and is evaluated
+twice, so rewrite those call sites by hand.
 
 `dateTimeRange` survives as a getter, so `event.dateTimeRange` still returns a
 `KalenderDateTimeRange`. `event.start` and `event.end` are usually what you want.
