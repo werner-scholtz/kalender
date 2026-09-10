@@ -20,6 +20,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - The schedule view reports `onPageChanged` in the calendar's location, matching the multi-day and month views.
 - The schedule view's `monthItemBuilder` and `emptyItemBuilder` receive ranges in the calendar's location.
 - The timeline's drag tooltip tests visibility in the calendar's own time space rather than against converted values.
+- `KalenderTime` asserts that its `hour` and `minute` are within a day, matching `replacing`.
 
 ### Features
 

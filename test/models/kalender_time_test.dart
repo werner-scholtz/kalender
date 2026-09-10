@@ -10,6 +10,24 @@ void main() {
       expect(time.minute, 30);
     });
 
+    test('rejects an hour outside the day', () {
+      for (final hour in [24, -1]) {
+        expect(() => KalenderTime(hour: hour, minute: 0), throwsAssertionError);
+      }
+    });
+
+    test('rejects a minute outside the hour', () {
+      for (final minute in [60, -1]) {
+        expect(() => KalenderTime(hour: 0, minute: minute), throwsAssertionError);
+      }
+    });
+
+    test('accepts the bounds of the day', () {
+      for (final (hour, minute) in [(0, 0), (23, 59)]) {
+        expect(() => KalenderTime(hour: hour, minute: minute), returnsNormally);
+      }
+    });
+
     test('names the units of a day', () {
       expect(KalenderTime.hoursPerDay, 24);
       expect(KalenderTime.minutesPerHour, 60);
