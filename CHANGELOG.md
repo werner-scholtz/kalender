@@ -39,7 +39,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `DateTimeExtensions.timeLocalized` formats the time of day for a locale, with `use24HourFormat` to force `HH:mm`.
 - `PageIndexCalculator.month` and `MonthIndexCalculator.fromRange` build a month calculator from a range.
 - `package:kalender/material.dart` converts `KalenderDateTimeRange` and `KalenderTime` to and from Material's `DateTimeRange` and `TimeOfDay`.
-- `dart fix --apply` renames the eight `Calendar*` types to `Kalender*`, renames `TimeOfDayRange` and `TimeOfDayStringBuilder` to `KalenderTimeRange` and `KalenderTimeStringBuilder`, renames `calendarController` to `kalenderController`, the two `KalenderScope` controller accessors and `ViewController.visibleDateTimeRange` to match, and rewrites the `dateTimeRange` argument of `CalendarEvent` and the `PageIndexCalculator` subclasses into `start` and `end`.
+- `dart fix --apply` applies this release's renames and both parameter reshapes.
 
 ### Fixes
 
