@@ -1,0 +1,18 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/506
+  - title: "Rename to 'KalenderTimeRange'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      class: 'TimeOfDayRange'
+    changes:
+      - kind: 'rename'
+        newName: 'KalenderTimeRange'

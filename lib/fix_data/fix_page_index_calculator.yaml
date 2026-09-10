@@ -1,0 +1,256 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'DayIndexCalculator'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'DayIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'WeekIndexCalculator'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'WeekIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'WeekIndexCalculator.week'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: 'week'
+      inClass: 'WeekIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'WeekIndexCalculator.workWeek'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: 'workWeek'
+      inClass: 'WeekIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'CustomIndexCalculator'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'CustomIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'MonthIndexCalculator'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MonthIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'ContinuousScheduleIndexCalculator'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'ContinuousScheduleIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
+  - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'PaginatedScheduleIndexCalculator'"
+    date: 2026-09-03
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'PaginatedScheduleIndexCalculator'
+    changes:
+      - kind: 'addParameter'
+        index: 1
+        name: 'start'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.start'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'addParameter'
+        index: 2
+        name: 'end'
+        style: required_named
+        argumentValue:
+          expression: '{% range %}.end'
+          variables:
+            range:
+              kind: 'fragment'
+              value: 'arguments[dateTimeRange]'
+      - kind: 'removeParameter'
+        name: 'dateTimeRange'

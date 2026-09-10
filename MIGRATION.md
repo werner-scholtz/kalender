@@ -152,7 +152,8 @@ still names no Material type.
 
 ### `TimeOfDayRange` is renamed to `KalenderTimeRange`
 
-It holds `KalenderTime` values now. Nothing else about it changes.
+`dart fix` applies this one. It holds `KalenderTime` values now, and nothing else
+about it changes.
 
 ```dart
 // Before
@@ -171,6 +172,9 @@ are unchanged and only the type they are called on differs.
 
 The event always stored two UTC instants. The constructor took a range and pulled
 it apart immediately, so it takes the two values now.
+
+`dart fix` applies this at every call site, deriving the two arguments from the
+range you were passing.
 
 ```dart
 // Before
@@ -218,7 +222,7 @@ holds a whole range.
 ### `PageIndexCalculator` takes `start` and `end`
 
 Every subclass unpacked the range into two values and converted each separately, so
-it holds the two values now.
+it holds the two values now. `dart fix` applies this at every call site.
 
 ```dart
 // Before
