@@ -47,9 +47,6 @@ The sections below cover what is left after the fixes have run.
 
 ## v0.29.x → v0.30.0
 
-`dart fix --apply` applies most of this release. If it reports an analysis server
-error, run it over fewer files at a time.
-
 ### The `Calendar*` types are renamed to `Kalender*`
 
 `dart fix` applies all of these. The package has been converging on `Kalender` as
@@ -297,6 +294,12 @@ The factories on `PageIndexCalculator` still take a range, so
 `PageIndexCalculator.week(range, firstDayOfWeek)` is unchanged.
 `MonthIndexCalculator.fromRange(range, firstDayOfWeek)` is the equivalent for the
 month view.
+
+A file constructing two or more subclasses directly stops `dart fix` with an
+analysis server error. The run then applies nothing, in that file or any other, and
+does not exit on its own. Change those call sites by hand, or run `dart fix` over
+one file at a time. Constructing one subclass per file is unaffected, and so is any
+number of events.
 
 ### The schedule view converts what it reports
 
