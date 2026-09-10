@@ -36,11 +36,17 @@ jobs:
           [ "$version" = "$tag" ] \
             || { echo "::error::pubspec.yaml is $version but the tag is $tag"; exit 1; }
 
-      # Flutter ships the Dart SDK it needs. A standalone Dart on PATH is used
-      # for pub operations instead, and cannot resolve the versions flutter_tools
-      # pins, so `flutter pub get` fails.
+      # Pinned rather than tracking stable. 3.47.3 fails to resolve the versions
+      # flutter_tools pins, which stops `flutter pub get`, and publishing under it
+      # returns 403 from pub.dev while resolving. 3.47.2 published 0.28.0, 0.29.0
+      # and 0.29.1. Raise both together once a later release is known to work.
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.13.2
+
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: 3.47.2
           channel: 'stable'
 
       - name: Install dependencies
@@ -67,15 +73,6 @@ jobs:
 
       - name: Dry-run publish
         run: flutter pub publish --dry-run
-
-      # Exchanges the workflow's OIDC token for a pub.dev credential. It runs
-      # here rather than with the other setup because the Dart it installs is
-      # used for pub operations ahead of the one Flutter ships, which cannot
-      # resolve the versions flutter_tools pins. By this point Flutter has built
-      # its tool snapshot, so publishing does not resolve them again.
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
 
       - name: Publish
         run: flutter pub publish --force
