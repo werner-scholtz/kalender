@@ -19,7 +19,7 @@ class DemoConfiguration extends ChangeNotifier {
 
   KalenderTime get _initialTimeOfDay {
     final now = KalenderTime.now();
-    final hour = now.hour == 2 ? 1 : (now.hour - 2);
+    final hour = now.hour < 2 ? 0 : now.hour - 2;
     return KalenderTime(hour: hour, minute: 0);
   }
 
