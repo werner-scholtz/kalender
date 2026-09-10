@@ -11,7 +11,7 @@ import '../utilities.dart';
 // into one tile per day.
 void main() {
   final start = DateTime(2025, 3, 24); // Monday
-  final displayRange = DateTimeRange(start: start, end: start.add(const Duration(days: 21)));
+  final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -49,7 +49,7 @@ void main() {
     // Monday 00:00 -> Friday 00:00, a 4-day span inside the first visible week.
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(days: 4))),
+        dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 4))),
       ),
     );
 
@@ -69,7 +69,7 @@ void main() {
     final id = eventsController.addEvent(
       CalendarEvent(
         dateTimeRange:
-            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
       ),
     );
 
@@ -92,10 +92,10 @@ void main() {
   testWidgets('renders without blowing up on a multi-year display range', (tester) async {
     // A large range would make a whole-range strip millions of pixels wide, so
     // the band must window the days it renders.
-    final bigRange = DateTimeRange(start: DateTime(2018), end: DateTime(2036));
+    final bigRange = KalenderDateTimeRange(start: DateTime(2018), end: DateTime(2036));
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: DateTime(2026, 7, 6), end: DateTime(2026, 7, 9)),
+        dateTimeRange: KalenderDateTimeRange(start: DateTime(2026, 7, 6), end: DateTime(2026, 7, 9)),
       ),
     );
 

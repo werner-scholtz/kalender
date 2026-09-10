@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/kalender_date_time_range.dart';
 
 /// Encapsulates a start and end [TimeOfDay] that represents a day time range.
 ///
@@ -27,8 +28,8 @@ class TimeOfDayRange {
     );
   }
 
-  /// Creates a [TimeOfDayRange] from the given [DateTimeRange].
-  factory TimeOfDayRange.fromDateTimeRange(DateTimeRange dateTimeRange) {
+  /// Creates a [TimeOfDayRange] from the given [KalenderDateTimeRange].
+  factory TimeOfDayRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange) {
     return TimeOfDayRange(
       start: TimeOfDay.fromDateTime(dateTimeRange.start),
       end: TimeOfDay.fromDateTime(dateTimeRange.end),

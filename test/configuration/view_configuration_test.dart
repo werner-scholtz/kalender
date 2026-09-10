@@ -46,7 +46,7 @@ void main() {
   final start = DateTime(2024, 1, 1);
   final end = DateTime(2027, 1, 1);
   final lastDisplayDate = DateTime(2025, 12, 31);
-  final displayRange = DateTimeRange(start: start, end: end);
+  final displayRange = KalenderDateTimeRange(start: start, end: end);
 
   // The initial date for the calendar controller.
   final initialDate = InternalDateTime(2025, 1, 1);
@@ -60,7 +60,7 @@ void main() {
       final key = start.copyWith(year: start.year, month: start.month, day: start.day + i);
       final end = key.copyWith(hour: start.hour + 1);
       final value = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: DateTimeRange(start: key, end: end)),
+        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: key, end: end)),
       );
       return MapEntry<DateTime, String>(key, value);
     },

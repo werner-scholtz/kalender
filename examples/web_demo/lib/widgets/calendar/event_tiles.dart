@@ -4,7 +4,7 @@ import 'package:web_demo/models/event.dart';
 
 abstract class BaseEventTile extends StatelessWidget {
   final Event event;
-  final DateTimeRange tileRange;
+  final KalenderDateTimeRange tileRange;
   const BaseEventTile({
     super.key,
     required this.event,
@@ -32,7 +32,7 @@ Color eventColorOf(Event event) => event.color ?? BaseEventTile.defaultColor;
 
 class EventTile extends BaseEventTile {
   const EventTile({super.key, required super.event, required super.tileRange});
-  static EventTile builder(Event event, DateTimeRange tileRange) {
+  static EventTile builder(Event event, KalenderDateTimeRange tileRange) {
     return EventTile(event: event, tileRange: tileRange);
   }
 
@@ -61,11 +61,11 @@ class MultiDayEventTile extends BaseEventTile {
   final bool overlay;
   const MultiDayEventTile({super.key, required super.event, required super.tileRange, this.overlay = false});
 
-  static MultiDayEventTile builder(Event event, DateTimeRange tileRange) {
+  static MultiDayEventTile builder(Event event, KalenderDateTimeRange tileRange) {
     return MultiDayEventTile(event: event, tileRange: tileRange);
   }
 
-  static MultiDayEventTile overlayBuilder(Event event, DateTimeRange tileRange) {
+  static MultiDayEventTile overlayBuilder(Event event, KalenderDateTimeRange tileRange) {
     return MultiDayEventTile(event: event, tileRange: tileRange, overlay: true);
   }
 

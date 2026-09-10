@@ -32,13 +32,13 @@ class Event extends CalendarEvent {
   // and resize, then restores id, interaction, multiDayRule and isAllDay
   // itself, so none of those are listed here.
   @override
-  Event copyWithData({required DateTimeRange dateTimeRange}) {
+  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return Event(dateTimeRange: dateTimeRange, title: title, description: description, color: color);
   }
 
   // A copy method of your own. It is not an override, so it takes whatever
   // parameters suit you. carryOver keeps the copy's identity and rule.
-  Event copyWith({DateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
+  Event copyWith({KalenderDateTimeRange? dateTimeRange, String? title, String? description, Color? color}) {
     return carryOver(
       Event(
         dateTimeRange: dateTimeRange ?? this.dateTimeRange,

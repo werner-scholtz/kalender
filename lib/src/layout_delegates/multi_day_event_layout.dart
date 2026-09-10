@@ -302,22 +302,22 @@ class MultiDayLayoutFrameCache {
   final Map<String, MultiDayLayoutFrame> _cache = {};
 
   /// Generates a cache key based on the parameters.
-  String _generateCacheKey(DateTimeRange visibleDateTimeRange) {
+  String _generateCacheKey(InternalDateTimeRange visibleDateTimeRange) {
     return '${visibleDateTimeRange.start.toIso8601String()}_${visibleDateTimeRange.end.toIso8601String()}';
   }
 
   /// Gets the cached layout frame if it exists.
-  MultiDayLayoutFrame? getCache(DateTimeRange visibleDateTimeRange) {
+  MultiDayLayoutFrame? getCache(InternalDateTimeRange visibleDateTimeRange) {
     final key = _generateCacheKey(visibleDateTimeRange);
     return _cache[key];
   }
 
-  void setCache(DateTimeRange visibleDateTimeRange, MultiDayLayoutFrame frame) {
+  void setCache(InternalDateTimeRange visibleDateTimeRange, MultiDayLayoutFrame frame) {
     final key = _generateCacheKey(visibleDateTimeRange);
     _cache[key] = frame;
   }
 
-  void removeCache(DateTimeRange visibleDateTimeRange) {
+  void removeCache(InternalDateTimeRange visibleDateTimeRange) {
     final key = _generateCacheKey(visibleDateTimeRange);
     _cache.remove(key);
   }

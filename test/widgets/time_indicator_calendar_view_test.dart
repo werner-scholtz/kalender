@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
@@ -33,7 +32,7 @@ void main() {
 
   // A known Monday and the week that starts on it.
   final monday = DateTime(2026, 4, 13);
-  final weekRange = DateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
+  final weekRange = KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
 
   Future<void> pumpCalendarView(
     WidgetTester tester,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
+import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/widgets/components/month_day_cell.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
@@ -124,7 +125,7 @@ class MonthBodyComponents {
   }
 
   /// Builds a week number, with [weekNumberBuilder] when set.
-  Widget buildWeekNumber(BuildContext context, DateTimeRange visibleDateTimeRange) {
+  Widget buildWeekNumber(BuildContext context, KalenderDateTimeRange visibleDateTimeRange) {
     return weekNumberBuilder?.call(context, visibleDateTimeRange) ??
         WeekNumber(visibleDateTimeRange: visibleDateTimeRange);
   }

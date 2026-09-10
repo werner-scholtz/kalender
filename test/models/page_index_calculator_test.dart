@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
@@ -18,11 +17,11 @@ void main() {
   final locations = locationsToTest.map(getLocation).toList();
 
   for (final location in locations) {
-    final range = DateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2021));
+    final range = KalenderDateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2021));
     group('DayIndexCalculator for $location', () {
       late DayIndexCalculator calculator;
       setUpAll(() {
-        calculator = DayIndexCalculator(dateTimeRange: range);
+        calculator = DayIndexCalculator(start: range.start, end: range.end);
       });
 
       test('test dateTimeRangeFromIndex', () {
@@ -88,11 +87,11 @@ void main() {
       // An empty range (start == end) has 0 pages; indexFromDate must not throw
       // on the negative clamp bound, and should fall back to index 0.
       test('test indexFromDate for an empty range', () {
-        final emptyRange = DateTimeRange(
+        final emptyRange = KalenderDateTimeRange(
           start: TZDateTime(location, 2020),
           end: TZDateTime(location, 2020),
         );
-        final emptyCalculator = DayIndexCalculator(dateTimeRange: emptyRange);
+        final emptyCalculator = DayIndexCalculator(start: emptyRange.start, end: emptyRange.end);
         expect(emptyCalculator.numberOfPages(location), 0);
         expect(() => emptyCalculator.indexFromDate(TZDateTime(location, 2020), location), returnsNormally);
         expect(emptyCalculator.indexFromDate(TZDateTime(location, 2020), location), 0);
@@ -117,7 +116,8 @@ void main() {
       });
 
       test('a range ending mid-day still covers the part day', () {
-        final partDay = DateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2020, 1, 8, 13, 30));
+        final partDay =
+            KalenderDateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2020, 1, 8, 13, 30));
         final calculator = PageIndexCalculator.freeScroll(partDay);
         expect(calculator.numberOfPages(location), 8);
       });
@@ -126,7 +126,7 @@ void main() {
     group('WeekIndexCalculator for $location', () {
       late WeekIndexCalculator calculator;
       setUpAll(() {
-        calculator = WeekIndexCalculator.week(dateTimeRange: range, firstDayOfWeek: DateTime.monday);
+        calculator = WeekIndexCalculator.week(start: range.start, end: range.end, firstDayOfWeek: DateTime.monday);
       });
 
       test('test dateTimeRangeFromIndex', () {
@@ -197,7 +197,8 @@ void main() {
       late WeekIndexCalculator calculator;
       setUpAll(() {
         calculator = WeekIndexCalculator(
-          dateTimeRange: range,
+          start: range.start,
+          end: range.end,
           firstDayOfWeek: DateTime.monday,
           daysToDisplay: 6,
         );
@@ -234,7 +235,7 @@ void main() {
     group('CustomIndexCalculator for $location', () {
       late CustomIndexCalculator calculator;
       setUpAll(() {
-        calculator = CustomIndexCalculator(dateTimeRange: range, numberOfDays: 3);
+        calculator = CustomIndexCalculator(start: range.start, end: range.end, numberOfDays: 3);
       });
 
       test('test dateTimeRangeFromIndex', () {
@@ -305,7 +306,7 @@ void main() {
     group('MonthIndexCalculator for $location', () {
       late MonthIndexCalculator calculator;
       setUpAll(() {
-        calculator = MonthIndexCalculator(dateTimeRange: range, firstDayOfWeek: DateTime.monday);
+        calculator = MonthIndexCalculator.fromRange(range, DateTime.monday);
       });
 
       test('test dateTimeRangeFromIndex', () {
@@ -376,10 +377,8 @@ void main() {
       // otherwise the month view renders nothing.
       test('test numberOfPages for a single-month range', () {
         final singleMonth = MonthIndexCalculator(
-          dateTimeRange: DateTimeRange(
-            start: TZDateTime(location, 2020, 5),
-            end: TZDateTime(location, 2020, 5, 31),
-          ),
+          start: TZDateTime(location, 2020, 5),
+          end: TZDateTime(location, 2020, 5, 31),
           firstDayOfWeek: DateTime.monday,
         );
         expect(singleMonth.numberOfPages(location), 1);
@@ -390,7 +389,7 @@ void main() {
     group('ContinuousScheduleIndexCalculator for $location', () {
       late ContinuousScheduleIndexCalculator calculator;
       setUpAll(() {
-        calculator = ContinuousScheduleIndexCalculator(dateTimeRange: range);
+        calculator = ContinuousScheduleIndexCalculator(start: range.start, end: range.end);
       });
 
       test('test dateTimeRangeFromIndex', () {
@@ -423,7 +422,7 @@ void main() {
     group('PaginatedScheduleIndexCalculator for $location', () {
       late PaginatedScheduleIndexCalculator calculator;
       setUpAll(() {
-        calculator = PaginatedScheduleIndexCalculator(dateTimeRange: range);
+        calculator = PaginatedScheduleIndexCalculator(start: range.start, end: range.end);
       });
 
       test('test dateTimeRangeFromIndex', () {

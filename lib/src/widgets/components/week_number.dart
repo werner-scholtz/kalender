@@ -42,7 +42,7 @@ double defaultWeekNumberWidth(BuildContext context) {
 /// defaults into that scope, so the same call returns the month's value there.
 typedef WeekNumberBuilder = Widget Function(
   BuildContext context,
-  DateTimeRange visibleDateTimeRange,
+  KalenderDateTimeRange visibleDateTimeRange,
 );
 
 /// The style of the [WeekNumber].
@@ -142,7 +142,7 @@ class WeekNumberStyle with Diagnosticable {
 /// A widget that displays the week number.
 class WeekNumber extends StatelessWidget {
   /// The range of dates that the week number will be displayed for.
-  final DateTimeRange visibleDateTimeRange;
+  final KalenderDateTimeRange visibleDateTimeRange;
 
   /// The style used by the [WeekNumber].
   final WeekNumberStyle? weekNumberStyle;

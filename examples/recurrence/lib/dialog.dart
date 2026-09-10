@@ -70,7 +70,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
   int get _recurrenceCount {
     if (type == RecurrenceType.none) return 1;
     if (endMode == _EndMode.count) return _count;
-    final recurrenceRange = DateTimeRange(
+    final recurrenceRange = KalenderDateTimeRange(
       start: localEventRange.start,
       end: _endDate.copyWith(hour: 23, minute: 59, second: 59),
     );
@@ -91,7 +91,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
     } else {
       return Recurrence.fromDateTimeRange(
         eventRange: localEventRange,
-        recurrenceRange: DateTimeRange(
+        recurrenceRange: KalenderDateTimeRange(
           start: localEventRange.start,
           end: _endDate.copyWith(hour: 23, minute: 59, second: 59),
         ),

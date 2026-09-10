@@ -27,7 +27,7 @@ did. Together they are how the calendar connects to the rest of your app.
 | `clearEvents()`                      | Remove all events                                                                                                              |
 | `eventsFromDateTimeRange(range)`     | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
 
-`eventsFromDateTimeRange` takes an `InternalDateTimeRange`, not a `DateTimeRange`.
+`eventsFromDateTimeRange` takes an `InternalDateTimeRange`, not a `KalenderDateTimeRange`.
 Convert with `InternalDateTimeRange.fromDateTimeRange(range)`.
 
 ### CalendarController
@@ -38,7 +38,7 @@ Convert with `InternalDateTimeRange.fromDateTimeRange(range)`.
 
 | Notifier               | Type                                | Description                                            |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
-| `visibleDateTimeRange` | `ValueNotifier<DateTimeRange?>`     | The currently visible date range                       |
+| `visibleDateTimeRange` | `ValueNotifier<KalenderDateTimeRange?>`     | The currently visible date range                       |
 | `visibleTimeOfDay`     | `ValueNotifier<TimeOfDay?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
 | `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
 | `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |

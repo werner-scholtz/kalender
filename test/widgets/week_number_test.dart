@@ -23,7 +23,7 @@ void main() {
 
     // Pinned to UTC so the dates below land in the week they read as, whichever
     // of the six timezones CI is running under.
-    Future<void> pumpWeekNumber(WidgetTester tester, DateTimeRange range) {
+    Future<void> pumpWeekNumber(WidgetTester tester, KalenderDateTimeRange range) {
       return pumpAndSettleWithMaterialApp(
         tester,
         TestProvider(
@@ -44,7 +44,7 @@ void main() {
     testWidgets('a single week renders one number', (tester) async {
       await pumpWeekNumber(
         tester,
-        DateTimeRange(start: DateTime.utc(2025, 8, 4), end: DateTime.utc(2025, 8, 11)),
+        KalenderDateTimeRange(start: DateTime.utc(2025, 8, 4), end: DateTime.utc(2025, 8, 11)),
       );
 
       expect(labelOf(tester).data, isNot(contains('-')));
@@ -54,7 +54,7 @@ void main() {
     testWidgets('a range crossing a week boundary renders both numbers', (tester) async {
       await pumpWeekNumber(
         tester,
-        DateTimeRange(start: DateTime.utc(2025, 8, 6), end: DateTime.utc(2025, 8, 13)),
+        KalenderDateTimeRange(start: DateTime.utc(2025, 8, 6), end: DateTime.utc(2025, 8, 13)),
       );
 
       expect(labelOf(tester).data, contains('-'));
@@ -63,7 +63,7 @@ void main() {
     testWidgets('the label is centred, so a wrapped second line does not sit left', (tester) async {
       await pumpWeekNumber(
         tester,
-        DateTimeRange(start: DateTime.utc(2025, 8, 6), end: DateTime.utc(2025, 8, 13)),
+        KalenderDateTimeRange(start: DateTime.utc(2025, 8, 6), end: DateTime.utc(2025, 8, 13)),
       );
 
       expect(

@@ -20,7 +20,7 @@ class DefaultTileBase extends StatelessWidget {
 }
 
 // Example builder functions for each tile type:
-Widget defaultTileBuilder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) =>
+Widget defaultTileBuilder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) =>
     const DefaultTileBase(label: 'Tile');
 Widget defaultTileWhenDraggingBuilder(BuildContext context, CalendarEvent event) =>
     const DefaultTileBase(label: 'TileWhenDragging');

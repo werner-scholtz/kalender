@@ -35,10 +35,12 @@ void main() {
   void addTwoRowDay() {
     eventsController.addEvents([
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: base.add(const Duration(days: 1)), end: base.add(const Duration(days: 3))),
+        dateTimeRange:
+            KalenderDateTimeRange(start: base.add(const Duration(days: 1)), end: base.add(const Duration(days: 3))),
       ),
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: base.add(const Duration(days: 2)), end: base.add(const Duration(days: 4))),
+        dateTimeRange:
+            KalenderDateTimeRange(start: base.add(const Duration(days: 2)), end: base.add(const Duration(days: 4))),
       ),
     ]);
   }
@@ -49,7 +51,7 @@ void main() {
         viewConfiguration: MultiDayViewConfiguration.freeScroll(
           numberOfDays: 3,
           initialDateTime: initialDate,
-          displayRange: DateTimeRange(start: base, end: base.add(const Duration(days: 21))),
+          displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
         ),
         callbacks: callbacks,
         header: CalendarHeader(multiDayTileComponents: tileComponents),

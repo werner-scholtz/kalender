@@ -11,7 +11,7 @@ mixin EventTileUtils {
   /// the event data that this tile is displaying.
   CalendarEvent get event;
 
-  /// The [DateTimeRange] that the tile is being displayed within.
+  /// The [KalenderDateTimeRange] that the tile is being displayed within.
   ///
   /// This represents the time span that the tile is displayed on,
   /// as provided by the [TileComponents.tileBuilder]. For day views, this is
@@ -19,7 +19,7 @@ mixin EventTileUtils {
   ///
   /// The values are **wall-clock** [DateTime]s (local or [TZDateTime]),
   /// not UTC. See [internalTileRange] to obtain an [InternalDateTimeRange].
-  DateTimeRange get tileRange;
+  KalenderDateTimeRange get tileRange;
 
   /// Converts [tileRange] into an [InternalDateTimeRange] using the
   /// current [LocationProvider].
@@ -47,7 +47,7 @@ mixin EventTileUtils {
 ///   final CalendarEvent event;
 ///
 ///   @override
-///   final DateTimeRange tileRange;
+///   final KalenderDateTimeRange tileRange;
 ///
 ///   const DayEventTileExample({
 ///     super.key,
@@ -80,7 +80,7 @@ mixin DayEventTileUtils implements EventTileUtils {
   CalendarEvent get event;
 
   @override
-  DateTimeRange get tileRange;
+  KalenderDateTimeRange get tileRange;
 
   @override
   InternalDateTimeRange internalTileRange(BuildContext context) {
@@ -91,14 +91,14 @@ mixin DayEventTileUtils implements EventTileUtils {
     );
   }
 
-  /// Get the [DateTimeRange] of the event clipped to the current display date.
+  /// Get the [KalenderDateTimeRange] of the event clipped to the current display date.
   ///
   /// This returns the portion of the event that falls within the current
   /// tile's date, which is useful for events that span multiple days but
   /// you only want the portion visible on the current day.
   ///
   /// Returns the event's time range intersected with the tile's date.
-  DateTimeRange eventRangeOnDate(BuildContext context) {
+  InternalDateTimeRange eventRangeOnDate(BuildContext context) {
     final location = context.location;
     return event.internalRange(location: location).dateTimeRangeOnDate(internalTileRange(context).start.startOfDay)!;
   }
@@ -187,7 +187,7 @@ mixin DayEventTileUtils implements EventTileUtils {
 ///   final CalendarEvent event;
 ///
 ///   @override
-///   final DateTimeRange tileRange;
+///   final KalenderDateTimeRange tileRange;
 ///
 ///   const MultiDayEventTileExample({
 ///     super.key,
@@ -220,7 +220,7 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
   CalendarEvent get event;
 
   @override
-  DateTimeRange get tileRange;
+  KalenderDateTimeRange get tileRange;
 
   @override
   InternalDateTimeRange internalTileRange(BuildContext context) {

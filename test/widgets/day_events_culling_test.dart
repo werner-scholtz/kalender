@@ -28,7 +28,7 @@ void main() {
   String addEvent(int hour, {int durationHours = 1}) {
     return eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: day.copyWith(hour: hour),
           end: day.copyWith(hour: hour + durationHours),
         ),
@@ -48,7 +48,7 @@ void main() {
         viewConfiguration: MultiDayViewConfiguration.singleDay(
           initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
           initialHeightPerMinute: 1,
-          displayRange: DateTimeRange(start: day, end: day.add(const Duration(days: 1))),
+          displayRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1))),
           initialDateTime: day,
         ),
         body: CalendarBody(multiDayTileComponents: components),

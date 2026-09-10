@@ -504,7 +504,7 @@ class MultiDayOverlay extends StatelessWidget {
                                           child: overlayTileBuilder(
                                             context,
                                             event,
-                                            InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                                            date.dayRange,
                                             portalController.hide,
                                           ),
                                         ),

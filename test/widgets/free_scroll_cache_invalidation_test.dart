@@ -15,7 +15,7 @@ import '../utilities.dart';
 // creating the event made the event vanish, even though it clearly covered the
 // visible days.
 void main() {
-  final displayRange = DateTimeRange(start: DateTime(2018), end: DateTime(2036));
+  final displayRange = KalenderDateTimeRange(start: DateTime(2018), end: DateTime(2036));
   final initial = DateTime(2026, 7, 10);
 
   late DefaultEventsController eventsController;
@@ -65,7 +65,7 @@ void main() {
 
     // A three-day event starting on the initial leading day.
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: initial, end: initial.add(const Duration(days: 3)))),
+      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: initial, end: initial.add(const Duration(days: 3)))),
     );
     await tester.pumpAndSettle();
 

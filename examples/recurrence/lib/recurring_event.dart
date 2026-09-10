@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:recurrence/recurrence.dart';
 
@@ -16,7 +15,7 @@ class RecurringCalendarEvent extends CalendarEvent {
   /// Rebuilds the group this occurrence belongs to. The rest is restored by
   /// [CalendarEvent].
   @override
-  RecurringCalendarEvent copyWithData({required DateTimeRange dateTimeRange}) {
+  RecurringCalendarEvent copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return RecurringCalendarEvent(dateTimeRange: dateTimeRange, groupId: groupId);
   }
 

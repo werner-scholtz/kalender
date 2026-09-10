@@ -13,7 +13,7 @@ class DemoConfiguration extends ChangeNotifier {
   }
 
   /// The display range of the calendar.
-  final _displayRange = DateTimeRange(
+  final _displayRange = KalenderDateTimeRange(
     start: DateTime(2018),
     end: DateTime(DateTime.now().year + 10),
   );

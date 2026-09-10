@@ -7,7 +7,7 @@ import '../utilities.dart';
 void main() {
   late EventsController eventsController;
   late CalendarController calendarController;
-  final calendarRange = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
+  final calendarRange = KalenderDateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
 
   /// Shared key so didUpdateWidget fires instead of full rebuild.
   late GlobalKey calendarViewKey;

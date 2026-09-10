@@ -93,7 +93,7 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
       onPageChanged: (value) {
         final range =
             widget.viewController.viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(value, context.location);
-        context.callbacks?.onPageChanged?.call(range);
+        context.callbacks?.onPageChanged?.call(range.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {
         return SchedulePositionList(
@@ -261,7 +261,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       final internalDate = InternalDateTime.fromDateTime(date);
       // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsFromDateTimeRange(
-        InternalDateTimeRange.fromDateTimeRange(internalDate.dayRange),
+        internalDate.dayRange,
         multiDayRule: widget.viewController.viewConfiguration.multiDayRule,
         location: widget.location,
       );
@@ -381,13 +381,19 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
             if (item is MonthItem) {
               final locale = context.locale;
-              return components.monthItemBuilder?.call(context, InternalDateTime.fromDateTime(date).monthRange) ??
+              return components.monthItemBuilder?.call(
+                    context,
+                    InternalDateTime.fromDateTime(date).monthRange.forLocation(location: context.location),
+                  ) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
                 minLeadingWidth: 0,
                 leading: leadingSlot(leading),
-                title: components.emptyItemBuilder?.call(context, InternalDateTime.fromDateTime(date).dayRange),
+                title: components.emptyItemBuilder?.call(
+                  context,
+                  InternalDateTime.fromDateTime(date).dayRange.forLocation(location: context.location),
+                ),
               );
               return components.buildScheduleTileHighlight(
                 context,
@@ -407,7 +413,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                   key: ScheduleEventTile.tileKey(event.id),
                   event: event,
                   tileComponents: tileComponents,
-                  dateTimeRange: InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                  dateTimeRange: date.dayRange,
                   resizeAxis: null,
                 ),
               );

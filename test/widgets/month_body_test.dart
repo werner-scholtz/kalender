@@ -27,7 +27,7 @@ void main() {
     late CalendarController calendarController;
 
     // Wide enough to cover every test month.
-    final displayRange = DateTimeRange(start: DateTime(2023), end: DateTime(2026));
+    final displayRange = KalenderDateTimeRange(start: DateTime(2023), end: DateTime(2026));
 
     setUp(() {
       eventsController = DefaultEventsController();
@@ -182,7 +182,7 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: DateTimeRange(start: DateTime(2026, 5), end: DateTime(2026, 5, 31)),
+            displayRange: KalenderDateTimeRange(start: DateTime(2026, 5), end: DateTime(2026, 5, 31)),
             initialDateTime: DateTime(2026, 5),
           ),
           body: const CalendarBody(),
@@ -386,7 +386,7 @@ void main() {
       // A single-day event on Jan 15, 2025 (within the displayed month).
       eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 1, 15, 9),
             end: DateTime(2025, 1, 15, 10),
           ),
@@ -439,7 +439,7 @@ void main() {
 
       testWidgets('renders month view without error and is invoked', (tester) async {
         final event = CalendarEvent(
-          dateTimeRange: DateTimeRange(
+          dateTimeRange: KalenderDateTimeRange(
             start: DateTime(2025, 1, 15, 9),
             end: DateTime(2025, 1, 15, 10),
           ),

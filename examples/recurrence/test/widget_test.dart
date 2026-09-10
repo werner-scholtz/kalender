@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:recurrence/main.dart';
 import 'package:recurrence/recurrence.dart';
@@ -11,7 +11,7 @@ void main() {
   });
 
   group('RecurrenceType.generateDateTimeRanges', () {
-    final first = DateTimeRange(start: DateTime(2025, 1, 6, 9), end: DateTime(2025, 1, 6, 10));
+    final first = KalenderDateTimeRange(start: DateTime(2025, 1, 6, 9), end: DateTime(2025, 1, 6, 10));
 
     test('daily steps one day at a time', () {
       final ranges = RecurrenceType.daily.generateDateTimeRanges(first, 3);

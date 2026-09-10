@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   final calendarController = CalendarController();
 
   final now = DateTime.now();
-  late final displayRange = DateTimeRange(
+  late final displayRange = KalenderDateTimeRange(
     start: DateTime(now.year - 1, now.month, now.day),
     end: DateTime(now.year + 1, now.month, now.day),
   );
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   List<IcsSource> _sources = [];
 
   /// The window the events controller currently holds expanded events for.
-  DateTimeRange? _covered;
+  KalenderDateTimeRange? _covered;
 
   @override
   void initState() {
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     final text = await rootBundle.loadString('assets/sample.ics');
     _sources = parseIcs(text);
     // Seed a window around today; the range listener keeps it in sync afterwards.
-    _regenerate(_windowAround(DateTimeRange(start: now, end: now)));
+    _regenerate(_windowAround(KalenderDateTimeRange(start: now, end: now)));
   }
 
   void _onVisibleRangeChanged() {
@@ -81,12 +81,12 @@ class _HomePageState extends State<HomePage> {
     _regenerate(_windowAround(visible));
   }
 
-  DateTimeRange _windowAround(DateTimeRange range) => DateTimeRange(
+  KalenderDateTimeRange _windowAround(KalenderDateTimeRange range) => KalenderDateTimeRange(
         start: range.start.subtract(const Duration(days: 60)),
         end: range.end.add(const Duration(days: 60)),
       );
 
-  void _regenerate(DateTimeRange window) {
+  void _regenerate(KalenderDateTimeRange window) {
     _covered = window;
     eventsController.replaceEvents(expandEvents(_sources, window));
   }

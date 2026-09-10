@@ -49,7 +49,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final now = DateTime.now();
   late final displayRange =
-      DateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
+      KalenderDateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
   final calendarController = CalendarController();
   final controller = RecurrenceController();
   late ViewConfiguration viewConfiguration = MultiDayViewConfiguration.week(

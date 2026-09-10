@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show DateTimeRange, Size;
+import 'package:flutter/material.dart' show Size;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -14,7 +14,7 @@ void main() {
   // them on the delegate's date on any machine. UTC times would shift to a
   // different day under a non-UTC timezone and the events would be clamped out.
   CalendarEvent event(int startSeconds, int endSeconds) => CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: DateTime(2024, 1, 1).add(Duration(seconds: startSeconds)),
           end: DateTime(2024, 1, 1).add(Duration(seconds: endSeconds)),
         ),

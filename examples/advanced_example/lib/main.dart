@@ -38,7 +38,7 @@ class Event extends CalendarEvent {
   }
 
   @override
-  Event copyWithData({required DateTimeRange dateTimeRange}) {
+  Event copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return Event(dateTimeRange: dateTimeRange, title: title, person: person);
   }
 

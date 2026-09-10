@@ -18,7 +18,7 @@ void main() {
         for (final (index, date) in range.dates().map(InternalDateTime.fromDateTime).indexed) {
           testWidgets('day index $index', (tester) async {
             final viewConfiguration = MultiDayViewConfiguration.week(
-              displayRange: range,
+              displayRange: range.forLocation(),
               nowCallback: () => date,
             );
 
@@ -32,7 +32,7 @@ void main() {
                     TimeIndicatorPositioner(
                       viewController: MultiDayViewController(
                         viewConfiguration: viewConfiguration,
-                        visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
+                        visibleDateTimeRange: ValueNotifier(range),
                         visibleEvents: ValueNotifier(<CalendarEvent>{}),
                       ),
                       initialPage: 0,
@@ -55,7 +55,7 @@ void main() {
         final monday = InternalDateTime.fromDateTime(range.dates()[0]);
 
         final viewConfiguration = MultiDayViewConfiguration.week(
-          displayRange: range,
+          displayRange: range.forLocation(),
           nowCallback: () => thursday,
         );
 
@@ -69,7 +69,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
+                    visibleDateTimeRange: ValueNotifier(range),
                     visibleEvents: ValueNotifier(<CalendarEvent>{}),
                   ),
                   initialPage: 0,
@@ -96,7 +96,7 @@ void main() {
             );
 
         final viewConfiguration = MultiDayViewConfiguration.week(
-          displayRange: todayRange,
+          displayRange: todayRange.forLocation(),
           // No nowCallback — null by default
         );
 
@@ -110,7 +110,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(todayRange)),
+                    visibleDateTimeRange: ValueNotifier(todayRange),
                     visibleEvents: ValueNotifier(<CalendarEvent>{}),
                   ),
                   initialPage: 0,
@@ -129,7 +129,7 @@ void main() {
         // For a single-day view, the indicator should always be at index 0 (the only column).
         final monday = InternalDateTime.fromDateTime(range.dates()[0]);
         final viewConfiguration = MultiDayViewConfiguration.singleDay(
-          displayRange: range,
+          displayRange: range.forLocation(),
           nowCallback: () => monday,
         );
 
@@ -143,7 +143,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
-                    visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
+                    visibleDateTimeRange: ValueNotifier(range),
                     visibleEvents: ValueNotifier(<CalendarEvent>{}),
                     initialDate: monday,
                   ),

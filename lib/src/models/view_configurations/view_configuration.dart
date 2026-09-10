@@ -96,10 +96,11 @@ abstract class ViewConfiguration {
   /// The functions for navigating the [PageView].
   PageIndexCalculator get pageIndexCalculator;
 
-  /// The [DateTimeRange] that the calendar can display.
+  /// The [KalenderDateTimeRange] that the calendar can display.
   ///
   /// The exact range shown can differ by the calendar's location.
-  DateTimeRange get dateTimeRange => pageIndexCalculator.dateTimeRange;
+  KalenderDateTimeRange get dateTimeRange =>
+      KalenderDateTimeRange(start: pageIndexCalculator.start, end: pageIndexCalculator.end);
 }
 
 /// The base class for all vertical views of the calendar.
@@ -277,7 +278,7 @@ const kDefaultHeightPerMinute = 0.7;
 const kDefaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
 const kDefaultEmptyDayBehavior = EmptyDayBehavior.showOnlyToday;
-DateTimeRange kDefaultRange() {
+KalenderDateTimeRange kDefaultRange() {
   final now = DateTime.now();
-  return DateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));
+  return KalenderDateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));
 }

@@ -280,7 +280,7 @@ Widget _grid(BuildContext context, int numberOfRows) => const SizedBox();
 Widget _dateWidget(BuildContext context, DateTime date) => const SizedBox();
 String _dateString(BuildContext context, DateTime date) => '';
 Widget _dayCell(BuildContext context, MonthDayCellDetails details) => const SizedBox();
-Widget _weekNumber(BuildContext context, DateTimeRange range) => const SizedBox();
+Widget _weekNumber(BuildContext context, KalenderDateTimeRange range) => const SizedBox();
 Widget _horizontalTrigger(BuildContext context, double pageWidth) => const SizedBox();
 Widget _verticalTrigger(BuildContext context, double viewPortHeight) => const SizedBox();
 Widget _hourLines(BuildContext context, double heightPerMinute, TimeOfDayRange range) => const SizedBox();
@@ -290,7 +290,7 @@ Widget _timeline(
   double heightPerMinute,
   TimeOfDayRange range,
   ValueNotifier<CalendarEvent?> eventBeingDragged,
-  ValueNotifier<DateTimeRange?> visibleDateTimeRange,
+  ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
 ) =>
     const SizedBox();
 
@@ -311,4 +311,4 @@ Widget _tileHighlight(
 ) =>
     child;
 
-Widget _rangeWidget(BuildContext context, DateTimeRange range) => const SizedBox();
+Widget _rangeWidget(BuildContext context, KalenderDateTimeRange range) => const SizedBox();

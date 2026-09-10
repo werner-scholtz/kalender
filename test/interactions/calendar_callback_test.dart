@@ -245,7 +245,9 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12))),
+        CalendarEvent(
+          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -274,7 +276,9 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12))),
+        CalendarEvent(
+          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -299,7 +303,7 @@ void main() {
     });
 
     testWidgets('onPageChanged fires when navigating pages', (tester) async {
-      DateTimeRange? changedRange;
+      KalenderDateTimeRange? changedRange;
 
       await pumpMultiDayView(
         tester,
@@ -499,7 +503,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
+        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
       );
       await tester.pumpAndSettle();
 
@@ -528,7 +532,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
+        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
       );
       await tester.pumpAndSettle();
 
@@ -549,7 +553,7 @@ void main() {
     });
 
     testWidgets('onPageChanged fires when navigating pages', (tester) async {
-      DateTimeRange? changedRange;
+      KalenderDateTimeRange? changedRange;
 
       await pumpMonthView(
         tester,
@@ -704,7 +708,9 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12))),
+        CalendarEvent(
+          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -764,7 +770,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
+        CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
       );
       await tester.pumpAndSettle();
 

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -23,7 +22,7 @@ class _Task extends CalendarEvent {
   final String title;
 
   @override
-  _Task copyWithData({required DateTimeRange dateTimeRange}) {
+  _Task copyWithData({required KalenderDateTimeRange dateTimeRange}) {
     return _Task(dateTimeRange: dateTimeRange, title: title);
   }
 
@@ -42,8 +41,8 @@ class _NoHook extends CalendarEvent {
 }
 
 void main() {
-  final range = DateTimeRange(start: DateTime.utc(2025, 1, 6, 9), end: DateTime.utc(2025, 1, 6, 10));
-  final moved = DateTimeRange(start: DateTime.utc(2025, 1, 6, 11), end: DateTime.utc(2025, 1, 6, 12));
+  final range = KalenderDateTimeRange(start: DateTime.utc(2025, 1, 6, 9), end: DateTime.utc(2025, 1, 6, 10));
+  final moved = KalenderDateTimeRange(start: DateTime.utc(2025, 1, 6, 11), end: DateTime.utc(2025, 1, 6, 12));
 
   group('withDateTimeRange', () {
     test('moves a base event and keeps its identity and rule', () {

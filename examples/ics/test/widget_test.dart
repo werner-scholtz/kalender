@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ics/ics_calendar.dart';
 import 'package:ics/main.dart';
@@ -43,7 +42,7 @@ void main() {
     expect(sources.length, 4);
 
     // January 2025 has Mondays on the 6th, 13th, 20th and 27th.
-    final window = DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 31));
+    final window = KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 31));
     final events = expandEvents(sources, window);
 
     final weekly = events.where((e) => e.uid == 'w@example.com');
@@ -81,7 +80,7 @@ void main() {
     });
 
     test('the flag reaches the CalendarEvent', () {
-      final window = DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 31));
+      final window = KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 31));
       final events = expandEvents(sources, window);
       expect(events.firstWhere((e) => e.uid == 'a@example.com').isAllDay, isTrue);
       expect(events.firstWhere((e) => e.uid == 's@example.com').isAllDay, isFalse);
@@ -102,7 +101,7 @@ void main() {
     final sources = parseIcs(_sample);
     // A window in February: the single January event is outside it, and only the
     // February occurrences of the weekly event should be produced.
-    final window = DateTimeRange(start: DateTime(2025, 2, 1), end: DateTime(2025, 2, 28));
+    final window = KalenderDateTimeRange(start: DateTime(2025, 2, 1), end: DateTime(2025, 2, 28));
     final events = expandEvents(sources, window);
 
     expect(events.any((e) => e.uid == 's@example.com'), isFalse, reason: 'single January event is outside the window');

@@ -75,7 +75,7 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
     final today = DateTime.now();
     _eventsController.addEvents([
       CalendarEvent(
-        dateTimeRange: DateTimeRange(
+        dateTimeRange: KalenderDateTimeRange(
           start: DateTime(today.year, today.month, today.day, 9),
           end: DateTime(today.year, today.month, today.day, 11),
         ),
@@ -126,7 +126,7 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
           locale: _locale,
           components: intl4xComponents(),
           viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: DateTimeRange(
+            displayRange: KalenderDateTimeRange(
               start: DateTime.now().subtract(const Duration(days: 180)),
               end: DateTime.now().add(const Duration(days: 180)),
             ),

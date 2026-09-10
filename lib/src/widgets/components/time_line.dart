@@ -35,7 +35,7 @@ typedef TimeLineBuilder = Widget Function(
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
   ValueNotifier<CalendarEvent?> eventBeingDragged,
-  ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
+  ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
 );
 
 /// Resolves the width of the timeline gutter.
@@ -318,7 +318,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   final ValueNotifier<CalendarEvent?> eventBeingDragged;
 
   /// The visibleDataTimeRange.
-  final ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange;
+  final ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange;
 
   /// Creates a new [TimeLine] widget.
   const TimeLine({
@@ -397,7 +397,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
             // Ensure that the event is visible.
             final eventRange = eventBeingDragged.internalRange(location: context.location);
-            if (!eventRange.overlaps(visibleRange)) return const SizedBox();
+            if (!eventRange.overlaps(InternalDateTimeRange.fromDateTimeRange(visibleRange))) return const SizedBox();
 
             final start = eventBeingDragged.internalStart(location: context.location);
             final end = eventBeingDragged.internalEnd(location: context.location);

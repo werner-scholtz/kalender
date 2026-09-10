@@ -193,7 +193,7 @@ class _CalendarContentState extends State<CalendarContent> {
     );
   }
 
-  Widget _buildWeekNumberText(BuildContext context, DateTimeRange visibleDateTimeRange) {
+  Widget _buildWeekNumberText(BuildContext context, KalenderDateTimeRange visibleDateTimeRange) {
     // In the month gutter this resolves the calendar's own top-aligned default,
     // which it merges into the scope the gutter is drawn in.
     final style = KalenderTheme.of(context).weekNumberStyle;
@@ -261,7 +261,7 @@ class _CalendarContentState extends State<CalendarContent> {
         },
         onTapped: (_) => context.controller.deselectEvent(),
         onEventCreate: (event) => Event(
-          dateTimeRange: DateTimeRange(start: event.start, end: event.end),
+          dateTimeRange: KalenderDateTimeRange(start: event.start, end: event.end),
           title: context.l10n.newEventTitle,
         ),
         onEventCreated: (event) => context.eventsController.addEvent(event),
@@ -271,7 +271,7 @@ class _CalendarContentState extends State<CalendarContent> {
         ),
         onLongPressedWithDetail: (TapDetail detail) {
           final range = switch (detail) {
-            DayDetail detail => DateTimeRange(start: detail.date, end: detail.date.add(const Duration(minutes: 45))),
+            DayDetail detail => KalenderDateTimeRange(start: detail.date, end: detail.date.add(const Duration(minutes: 45))),
             MultiDayDetail detail => detail.dateTimeRange,
             _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
           };

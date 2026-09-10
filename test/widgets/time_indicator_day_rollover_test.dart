@@ -34,7 +34,7 @@ void main() {
             TimeIndicatorPositioner(
               viewController: MultiDayViewController(
                 viewConfiguration: MultiDayViewConfiguration.week(
-                  displayRange: range,
+                  displayRange: range.forLocation(),
                   nowCallback: now,
                 ),
                 visibleDateTimeRange: ValueNotifier(range),
@@ -88,7 +88,7 @@ void main() {
                 TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: MultiDayViewConfiguration.week(
-                      displayRange: range,
+                      displayRange: range.forLocation(),
                       nowCallback: () => now,
                     ),
                     visibleDateTimeRange: ValueNotifier(range),

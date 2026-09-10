@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
@@ -14,7 +13,7 @@ void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
 
-  final displayRange = DateTimeRange(start: DateTime(2025, 6), end: DateTime(2025, 7));
+  final displayRange = KalenderDateTimeRange(start: DateTime(2025, 6), end: DateTime(2025, 7));
 
   final interaction = CalendarInteraction(
     allowRescheduling: true,
@@ -30,7 +29,7 @@ void main() {
 
   String addEvent(DateTime start, Duration duration) {
     return eventsController
-        .addEvent(CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: start.add(duration))));
+        .addEvent(CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(duration))));
   }
 
   Future<void> pumpSchedule(

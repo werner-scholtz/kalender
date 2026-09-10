@@ -342,7 +342,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     // the DST spring-forward gap collapsing start and end to the same UTC instant.
     final convertedStart = start.forLocation(location: context.location);
     final updatedEvent = event.withDateTimeRange(
-      DateTimeRange(start: convertedStart, end: convertedStart.add(duration)),
+      KalenderDateTimeRange(start: convertedStart, end: convertedStart.add(duration)),
     );
 
     // Remove now from the snap points.

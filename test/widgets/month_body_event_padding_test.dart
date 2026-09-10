@@ -38,7 +38,7 @@ void main() {
 
       eventsController.addEvent(
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 15, 9), end: DateTime(2025, 1, 15, 10)),
+          dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 15, 9), end: DateTime(2025, 1, 15, 10)),
         ),
       );
 
@@ -48,7 +48,7 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: DateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
+            displayRange: KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
             initialDateTime: DateTime(2025, 1),
           ),
           body: const CalendarBody(

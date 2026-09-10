@@ -94,10 +94,10 @@ class ScheduleComponents {
 
 /// The builder for the empty item.
 ///
-/// [tileRange] is the [DateTimeRange] of the ListTile where this widget will be displayed.
-typedef EmptyItemBuilder = Widget Function(BuildContext context, DateTimeRange tileRange);
+/// [tileRange] is the [KalenderDateTimeRange] of the ListTile where this widget will be displayed.
+typedef EmptyItemBuilder = Widget Function(BuildContext context, KalenderDateTimeRange tileRange);
 
 /// The builder for the month item.
 ///
-/// [monthRange] is the [DateTimeRange] of the month.
-typedef MonthItemBuilder = Widget Function(BuildContext context, DateTimeRange monthRange);
+/// [monthRange] is the [KalenderDateTimeRange] of the month.
+typedef MonthItemBuilder = Widget Function(BuildContext context, KalenderDateTimeRange monthRange);

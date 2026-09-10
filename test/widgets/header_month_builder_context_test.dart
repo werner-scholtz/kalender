@@ -37,7 +37,7 @@ void main() {
     );
   }
 
-  final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2025, 2));
+  final displayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2));
   final week = MultiDayViewConfiguration.week(displayRange: displayRange);
   final month = MonthViewConfiguration.singleMonth(displayRange: displayRange);
 

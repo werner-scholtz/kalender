@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:recurrence/recurring_event.dart';
 
@@ -100,17 +99,17 @@ enum RecurrenceType {
 
   /// Generate [number] date-time ranges starting from [first], each offset by the recurrence interval.
   /// All DateTimes should be in local time.
-  List<DateTimeRange> generateDateTimeRanges(DateTimeRange first, int number) {
+  List<KalenderDateTimeRange> generateDateTimeRanges(KalenderDateTimeRange first, int number) {
     if (this == none) return [first];
     return List.generate(number, (i) {
       final offset = Duration(days: _intervalDays * i);
-      return DateTimeRange(start: first.start.add(offset), end: first.end.add(offset));
+      return KalenderDateTimeRange(start: first.start.add(offset), end: first.end.add(offset));
     });
   }
 
   /// Compute the first recurrence range: takes the time-of-day from [eventRange]
   /// and the start date from [recurrenceRange]. All DateTimes should be in local time.
-  DateTimeRange firstRecurrence(DateTimeRange eventRange, DateTimeRange recurrenceRange) {
+  KalenderDateTimeRange firstRecurrence(KalenderDateTimeRange eventRange, KalenderDateTimeRange recurrenceRange) {
     if (this == none) return eventRange;
     final start = recurrenceRange.start.copyWith(
       hour: eventRange.start.hour,
@@ -118,11 +117,11 @@ enum RecurrenceType {
       second: eventRange.start.second,
     );
     final end = start.add(eventRange.duration);
-    return DateTimeRange(start: start, end: end);
+    return KalenderDateTimeRange(start: start, end: end);
   }
 
   /// Count how many recurrences of [firstEventRange] fit within [dateTimeRange].
-  int numberFromDateTimeRange(DateTimeRange firstEventRange, DateTimeRange dateTimeRange) {
+  int numberFromDateTimeRange(KalenderDateTimeRange firstEventRange, KalenderDateTimeRange dateTimeRange) {
     if (this == none) return 1;
     var count = 0;
     var current = firstEventRange.start;
@@ -133,7 +132,7 @@ enum RecurrenceType {
     return count;
   }
 
-  bool _isWithin(DateTime date, DateTimeRange range) {
+  bool _isWithin(DateTime date, KalenderDateTimeRange range) {
     return !date.isBefore(range.start) && date.isBefore(range.end);
   }
 }
@@ -143,7 +142,7 @@ class Recurrence {
   final RecurrenceType type;
 
   /// The range of the first recurrence (local time).
-  late final DateTimeRange first;
+  late final KalenderDateTimeRange first;
 
   /// The number of recurrences.
   late final int number;
@@ -158,8 +157,8 @@ class Recurrence {
   ///
   /// Both [eventRange] and [recurrenceRange] must be in local time.
   Recurrence.fromDateTimeRange({
-    required DateTimeRange eventRange,
-    required DateTimeRange recurrenceRange,
+    required KalenderDateTimeRange eventRange,
+    required KalenderDateTimeRange recurrenceRange,
     required this.type,
   }) {
     first = type.firstRecurrence(eventRange, recurrenceRange);
@@ -180,7 +179,7 @@ class Recurrence {
   Recurrence updateWithEvent(CalendarEvent event, CalendarEvent updatedEvent) {
     final (deltaStart, deltaEnd) = Recurrence._calculateDelta(event, updatedEvent);
     return Recurrence(
-      first: DateTimeRange(
+      first: KalenderDateTimeRange(
         start: first.start.add(deltaStart),
         end: first.end.add(deltaEnd),
       ),

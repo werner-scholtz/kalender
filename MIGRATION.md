@@ -45,6 +45,91 @@ The sections below cover what is left after the fixes have run.
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
 
+## v0.29.x → v0.30.0
+
+### `KalenderDateTimeRange` replaces Material's `DateTimeRange`
+
+Material and Cupertino left the Flutter framework and became the `material_ui` and
+`cupertino_ui` packages. `DateTimeRange` exists in both, and two same-named classes
+from two packages are different types to the compiler, so a package naming either
+one shuts out every app on the other side. Kalender owns the type instead.
+
+`dart fix` cannot do this one. Kalender cannot deprecate another package's type, so
+there is nothing for a fix to trigger on. A project-wide replace of `DateTimeRange(`
+with `KalenderDateTimeRange(` covers it, plus the annotations.
+
+```dart
+// Before
+CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: end))
+
+// After
+CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: end))
+```
+
+It carries the same members as the type it replaces: `start`, `end`, `duration`,
+`==` and `hashCode`.
+
+The same substitution applies to `displayRange`, the `tileRange` a tile builder
+receives, `EmptyItemBuilder`, `MonthItemBuilder`, `OnPageChanged`,
+`CalendarController.visibleDateTimeRange` and `ViewConfiguration.dateTimeRange`.
+
+A subclass overriding `copyWithData` changes by hand, since a fix rewrites call
+sites and not the declarations in your own code:
+
+```dart
+// Before
+Event copyWithData({required DateTimeRange dateTimeRange}) => ...
+
+// After
+Event copyWithData({required KalenderDateTimeRange dateTimeRange}) => ...
+```
+
+### `InternalDateTimeRange` is its own class
+
+It used to extend `DateTimeRange`, which is how it reached Material. It now carries
+`start`, `end`, `duration`, `==` and `hashCode` itself, and behaves as before.
+
+Two of its members change type. `forLocation` returns a `KalenderDateTimeRange`,
+and `fromDateTimeRange` takes one. `overlaps` takes an `InternalDateTimeRange`,
+which is what every call already passed.
+
+An `InternalDateTimeRange` is no longer a `DateTimeRange`, so passing one where a
+wall-clock range is expected needs `forLocation`:
+
+```dart
+// Before
+MultiDayViewConfiguration.week(displayRange: someInternalRange)
+
+// After
+MultiDayViewConfiguration.week(displayRange: someInternalRange.forLocation(location: location))
+```
+
+### `PageIndexCalculator` takes `start` and `end`
+
+Every subclass unpacked the range into two values and converted each separately, so
+it holds the two values now.
+
+```dart
+// Before
+DayIndexCalculator(dateTimeRange: range)
+
+// After
+DayIndexCalculator(start: range.start, end: range.end)
+```
+
+The factories on `PageIndexCalculator` still take a range, so
+`PageIndexCalculator.week(range, firstDayOfWeek)` is unchanged.
+`MonthIndexCalculator.fromRange(range, firstDayOfWeek)` is the equivalent for the
+month view.
+
+### The schedule view converts what it reports
+
+`onPageChanged`, `monthItemBuilder` and `emptyItemBuilder` handed back unconverted
+internal values, while the multi-day and month views converted theirs. They now
+report ranges in the calendar's location like the other two. Code reading those
+ranges against a `location` sees values shifted by that location's offset from
+what it saw before.
+
 ## v0.28.x → v0.29.0
 
 ### `CalendarView` is renamed to `KalenderView`

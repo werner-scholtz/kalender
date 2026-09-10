@@ -33,7 +33,7 @@ void main() {
       eventsController: eventsController,
       calendarController: calendarController,
       viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: DateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
+        displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
       ),
       components: components,
       locale: locale,

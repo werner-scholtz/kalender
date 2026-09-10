@@ -12,7 +12,7 @@ import '../utilities.dart';
 // same as before the helper existed.
 void main() {
   final start = DateTime(2025, 3, 24); // Monday
-  final displayRange = DateTimeRange(start: start, end: start.add(const Duration(days: 28)));
+  final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 28)));
 
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -56,7 +56,7 @@ void main() {
     final id = eventsController.addEvent(
       CalendarEvent(
         dateTimeRange:
-            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
+            KalenderDateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
       ),
     );
 
@@ -92,7 +92,9 @@ void main() {
     // A one-hour timed event, shown in the body.
     final eventStart = start.add(const Duration(days: 1, hours: 9));
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1)))),
+      CalendarEvent(
+        dateTimeRange: KalenderDateTimeRange(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
+      ),
     );
 
     await pumpWeek(tester);

@@ -8,7 +8,7 @@ import '../utilities.dart';
 // translated and clipped, not just in the paged headers.
 void main() {
   final start = DateTime(2025, 3, 24); // Monday
-  final displayRange = DateTimeRange(start: start, end: start.add(const Duration(days: 21)));
+  final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
 
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -46,8 +46,8 @@ void main() {
     // Two overlapping 2-day events. With a one-row limit the second overflows,
     // so Mon and Tue each get a "+N more" portal.
     eventsController.addEvents([
-      CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(days: 2)))),
-      CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(days: 2)))),
+      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 2)))),
+      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 2)))),
     ]);
 
     await pumpFreeScroll(tester);

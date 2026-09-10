@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:kalender/kalender.dart';
 
 /// Deterministic fixture data for the micro-benchmarks.
@@ -27,7 +26,7 @@ List<CalendarEvent> generateDayEvents({
       final hour = 6 + (e % 12);
       final startTime = DateTime.utc(date.year, date.month, date.day, hour);
       final endTime = startTime.add(Duration(minutes: 30 + (e % 4) * 30));
-      events.add(CalendarEvent(dateTimeRange: DateTimeRange(start: startTime, end: endTime)));
+      events.add(CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: startTime, end: endTime)));
     }
   }
   return events;
@@ -46,7 +45,7 @@ List<CalendarEvent> generateMultiDayEvents({
     final span = 1 + (i % 5);
     final startTime = DateTime.utc(start.year, start.month, start.day + offset);
     final endTime = DateTime.utc(start.year, start.month, start.day + offset + span);
-    events.add(CalendarEvent(dateTimeRange: DateTimeRange(start: startTime, end: endTime)));
+    events.add(CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: startTime, end: endTime)));
   }
   return events;
 }

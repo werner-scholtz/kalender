@@ -48,7 +48,7 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.dateResolver,
     super.nowCallback,
     super.multiDayRule,
-    DateTimeRange? displayRange,
+    KalenderDateTimeRange? displayRange,
   })  : pageIndexCalculator = PageIndexCalculator.scheduleContinuous(displayRange ?? kDefaultRange()),
         viewType = ScheduleViewType.continuous;
 
@@ -60,7 +60,7 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.dateResolver,
     super.nowCallback,
     super.multiDayRule,
-    DateTimeRange? displayRange,
+    KalenderDateTimeRange? displayRange,
   })  : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? kDefaultRange()),
         viewType = ScheduleViewType.paginated;
 

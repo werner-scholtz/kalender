@@ -31,7 +31,7 @@ ScheduleTileComponents get scheduleTileComponents {
 
 abstract class BaseEventTile extends StatelessWidget {
   final Event event;
-  final DateTimeRange tileRange;
+  final KalenderDateTimeRange tileRange;
   const BaseEventTile({
     super.key,
     required this.event,
@@ -57,7 +57,7 @@ abstract class BaseEventTile extends StatelessWidget {
 
 class EventTile extends BaseEventTile {
   const EventTile({super.key, required super.event, required super.tileRange});
-  static EventTile builder(BuildContext context, CalendarEvent event, DateTimeRange tileRange) {
+  static EventTile builder(BuildContext context, CalendarEvent event, KalenderDateTimeRange tileRange) {
     return EventTile(event: event as Event, tileRange: tileRange);
   }
 
@@ -84,7 +84,7 @@ class MultiDayEventTile extends BaseEventTile {
   static MultiDayEventTile builder(
     BuildContext context,
     CalendarEvent event,
-    DateTimeRange tileRange,
+    KalenderDateTimeRange tileRange,
   ) {
     return MultiDayEventTile(event: event as Event, tileRange: tileRange);
   }
@@ -121,7 +121,7 @@ class OverlayEventTile extends BaseEventTile {
   static OverlayEventTile builder(
     BuildContext context,
     CalendarEvent event,
-    DateTimeRange tileRange,
+    KalenderDateTimeRange tileRange,
   ) {
     return OverlayEventTile(event: event as Event, tileRange: tileRange);
   }

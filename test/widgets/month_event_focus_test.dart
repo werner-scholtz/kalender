@@ -13,7 +13,7 @@ void main() {
 
     // Two events covering the same days (Tue–Thu of the first full week) so they
     // stack: one on row 0, one on row 1.
-    final range = DateTimeRange(start: DateTime(2025, 1, 7), end: DateTime(2025, 1, 10));
+    final range = KalenderDateTimeRange(start: DateTime(2025, 1, 7), end: DateTime(2025, 1, 10));
     final eventA = CalendarEvent(dateTimeRange: range);
     final eventB = CalendarEvent(dateTimeRange: range);
     eventsController.addEvent(eventA);
@@ -30,7 +30,7 @@ void main() {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: MonthViewConfiguration.singleMonth(
-          displayRange: DateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
+          displayRange: KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
           initialDateTime: DateTime(2025, 1),
         ),
         body: CalendarBody(monthTileComponents: tiles),

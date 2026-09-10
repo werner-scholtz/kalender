@@ -48,20 +48,20 @@ void main() {
     calendarController = CalendarController();
 
     dayEventID = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4))),
+      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4))),
     );
     multiDayEventID = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2))),
+      CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2))),
     );
     customDayEventID = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 23)),
+        dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 23)),
         interaction: EventInteraction(allowEndResize: true, allowStartResize: false, allowRescheduling: false),
       ),
     );
     customMultiDayEventID = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)),
+        dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)),
         interaction: EventInteraction(allowEndResize: true, allowStartResize: false, allowRescheduling: false),
       ),
     );

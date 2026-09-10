@@ -32,11 +32,11 @@ void main() {
   });
 
   test('ResizeHandleDetails builds a nameable ResizeDetector', () {
-    final range = DateTimeRange(start: DateTime(2025), end: DateTime(2025, 1, 2));
+    final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 1, 2));
     final details = ResizeHandleDetails(
       event: CalendarEvent(dateTimeRange: range),
       interaction: CalendarInteraction(),
-      dateTimeRange: range,
+      dateTimeRange: InternalDateTimeRange.fromDateTimeRange(range),
       size: const Size(100, 100),
       axis: Axis.vertical,
       isImprecise: false,

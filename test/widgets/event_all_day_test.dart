@@ -16,7 +16,7 @@ void main() {
 
   // One hour, inside a single calendar day. Neither built-in rule calls this
   // multi-day, so only the flag can put it in the header.
-  final shortRange = DateTimeRange(
+  final shortRange = KalenderDateTimeRange(
     start: start.add(const Duration(days: 1, hours: 9)),
     end: start.add(const Duration(days: 1, hours: 10)),
   );

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 /// A class used by the [DragTargetUtilities] to determine that a [CalendarEvent] is being rescheduled.
@@ -27,9 +26,9 @@ class Resize {
   bool get verticalResize => direction.vertical;
   bool get horizontalResize => direction.horizontal;
 
-  /// Updates the [Resize]'s [CalendarEvent] with the new [DateTimeRange].
+  /// Updates the [Resize]'s [CalendarEvent] with the new [KalenderDateTimeRange].
   Resize updateDateTimeRange(
-    DateTimeRange dateTimeRange,
+    KalenderDateTimeRange dateTimeRange,
   ) {
     final updatedEvent = event.withDateTimeRange(dateTimeRange);
     return Resize(event: updatedEvent, direction: direction);

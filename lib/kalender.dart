@@ -30,6 +30,7 @@ export 'package:kalender/src/models/calendar_interaction.dart';
 export 'package:kalender/src/models/controllers/view_controller.dart';
 export 'package:kalender/src/models/view_transition.dart';
 export 'package:kalender/src/models/navigation_triggers.dart';
+export 'package:kalender/src/models/kalender_date_time_range.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
 export 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 export 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';

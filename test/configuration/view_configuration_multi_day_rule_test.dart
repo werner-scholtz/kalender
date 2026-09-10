@@ -10,7 +10,7 @@ import '../utilities.dart';
 /// timeline, so a configuration that drops it on `copyWith` silently resets how
 /// every event is classified.
 void main() {
-  final displayRange = DateTimeRange(start: DateTime(2024), end: DateTime(2026));
+  final displayRange = KalenderDateTimeRange(start: DateTime(2024), end: DateTime(2026));
   const calendarDays = MultiDayRule.calendarDays();
 
   group('copyWith keeps the rule', () {
@@ -55,7 +55,7 @@ void main() {
     // classify differently.
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 15, 22), end: DateTime(2025, 1, 16, 2)),
+        dateTimeRange: KalenderDateTimeRange(start: DateTime(2025, 1, 15, 22), end: DateTime(2025, 1, 16, 2)),
       ),
     );
     final base = MultiDayViewConfiguration.week(

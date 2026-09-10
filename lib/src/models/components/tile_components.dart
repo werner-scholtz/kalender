@@ -8,6 +8,7 @@ import 'package:kalender/kalender.dart'
         ResizeHandleDetails,
         ResizeHandlePositioner,
         ScheduleComponents;
+import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/widgets/components/default_tile_components.dart';
 import 'package:kalender/src/widgets/components/resize_handles.dart' show DefaultResizeHandles;
 
@@ -165,12 +166,12 @@ class ScheduleTileComponents extends TileComponents {
 ///
 /// [event] is the event that the tile will be built for.
 ///
-/// [tileRange] is the wall-clock [DateTimeRange] of the view the tile will be displayed in.
+/// [tileRange] is the wall-clock [KalenderDateTimeRange] of the view the tile will be displayed in.
 /// The values are local [DateTime]s (or `TZDateTime`s when a timezone location is set).
 typedef TileBuilder = Widget Function(
   BuildContext context,
   CalendarEvent event,
-  DateTimeRange tileRange,
+  KalenderDateTimeRange tileRange,
 );
 
 /// The builder for the event tile when dragging.

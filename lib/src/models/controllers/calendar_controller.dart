@@ -3,6 +3,7 @@ import 'package:kalender/src/extensions/internal_date_time_range.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
 
@@ -35,8 +36,8 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
     visibleDateTimeRange.value = newRange;
   }
 
-  /// The [DateTimeRange] that is currently visible for the current location of the calendar this controller is attached to.
-  final visibleDateTimeRange = ValueNotifier<DateTimeRange<DateTime>?>(null);
+  /// The [KalenderDateTimeRange] that is currently visible for the current location of the calendar this controller is attached to.
+  final visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
 
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<Set<CalendarEvent>>({});

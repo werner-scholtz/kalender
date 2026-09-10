@@ -57,7 +57,7 @@ class MultiDayEventOverlayTile extends EventTile {
         );
       };
 
-  DateTimeRange _calculateExactDayRange(Offset localPosition, Size size, BuildContext context) {
+  KalenderDateTimeRange _calculateExactDayRange(Offset localPosition, Size size, BuildContext context) {
     var date = dateTimeRange.start;
     if (size.width > 0) {
       final percentage = (localPosition.dx / size.width).clamp(0.0, 1.0);
