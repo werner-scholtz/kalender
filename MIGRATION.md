@@ -232,11 +232,15 @@ range you were passing.
 
 ```dart
 // Before
-CalendarEvent(dateTimeRange: KalenderDateTimeRange(start: start, end: end))
+CalendarEvent(dateTimeRange: range)
 
 // After
-KalenderEvent(start: start, end: end)
+KalenderEvent(start: range.start, end: range.end)
 ```
+
+The fix copies the argument into both parameters. Where the argument is an
+expression rather than a variable, that expression appears twice and is evaluated
+twice, so rewrite those call sites by hand.
 
 `dateTimeRange` survives as a getter, so `event.dateTimeRange` still returns a
 `KalenderDateTimeRange`. `event.start` and `event.end` are usually what you want.
@@ -290,6 +294,12 @@ The factories on `PageIndexCalculator` still take a range, so
 `PageIndexCalculator.week(range, firstDayOfWeek)` is unchanged.
 `MonthIndexCalculator.fromRange(range, firstDayOfWeek)` is the equivalent for the
 month view.
+
+A file constructing two or more subclasses directly stops `dart fix` with an
+analysis server error. The run then applies nothing, in that file or any other, and
+does not exit on its own. Change those call sites by hand, or run `dart fix` over
+one file at a time. Constructing one subclass per file is unaffected, and so is any
+number of events.
 
 ### The schedule view converts what it reports
 
