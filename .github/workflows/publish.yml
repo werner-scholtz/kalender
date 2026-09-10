@@ -36,11 +36,9 @@ jobs:
           [ "$version" = "$tag" ] \
             || { echo "::error::pubspec.yaml is $version but the tag is $tag"; exit 1; }
 
-      # For Flutter package
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-
+      # Flutter ships the Dart SDK it needs. A standalone Dart on PATH is used
+      # for pub operations instead, and cannot resolve the versions flutter_tools
+      # pins, so `flutter pub get` fails.
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
