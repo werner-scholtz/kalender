@@ -9,6 +9,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `KalenderView.calendarController` is renamed to `kalenderController`.
 - `KalenderScope.calendarControllerOf` and `maybeCalendarControllerOf` are renamed to `kalenderControllerOf` and `maybeKalenderControllerOf`.
 - `ViewController.visibleDateTimeRange` is renamed to `internalVisibleRange`.
+- The minimum Flutter version is 3.32.0.
 - The deprecated `CalendarView` and `CalendarViewState` typedefs are removed.
 - `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
 - `KalenderTime` replaces Material's `TimeOfDay` in every public signature.
@@ -33,6 +34,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - The schedule view's `monthItemBuilder` and `emptyItemBuilder` receive ranges in the calendar's location.
 - The timeline's drag tooltip tests visibility in the calendar's own time space.
 - `KalenderTime` asserts that its `hour` and `minute` are within a day.
+- `KalenderController.id` is unique to each controller.
 
 ### Deprecations
 
@@ -49,6 +51,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 ### Fixes
 
 - The timeline labels its hours with `intl` where the app installs no `MaterialLocalizations`, rather than throwing. ([#491](https://github.com/werner-scholtz/kalender/issues/491))
+- `KalenderTimeRange.coversWholeDay` is false for a range that starts after midnight.
 
 ## 0.29.1
 
@@ -758,12 +761,12 @@ Both are removed in 0.24.0.
 ### Breaking changes:
 Version 0.5.0 has quite a few Breaking changes, there is no easy way to migrate to this version. Here are a few important things that have changed.
 
-- The [CalendarView](https://github.com/werner-scholtz/kalender/blob/main/lib/src/calendar_view.dart) now takes a `header` [CalendarHeader](https://github.com/werner-scholtz/kalender/blob/main/lib/src/calendar_header.dart) and `body` [CalendarBody](https://github.com/werner-scholtz/kalender/blob/main/lib/src/calendar_body.dart) widgets. You can wrap these widgets in other widgets to style them as seen [here](https://github.com/werner-scholtz/kalender/blob/9a053c9daac51985bbbb336393d5013ef3977bd0/example/lib/main.dart#L112)
+- The [CalendarView](https://github.com/werner-scholtz/kalender/blob/v0.5.0/lib/src/calendar_view.dart) now takes a `header` [CalendarHeader](https://github.com/werner-scholtz/kalender/blob/v0.5.0/lib/src/calendar_header.dart) and `body` [CalendarBody](https://github.com/werner-scholtz/kalender/blob/v0.5.0/lib/src/calendar_body.dart) widgets. You can wrap these widgets in other widgets to style them as seen [here](https://github.com/werner-scholtz/kalender/blob/9a053c9daac51985bbbb336393d5013ef3977bd0/example/lib/main.dart#L112)
 
 - Event tiles now make use of the [Draggable](https://api.flutter.dev/flutter/widgets/Draggable-class.html) widget provided by flutter.
-Take a look at the [TileComponents](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/tile_components.dart) for more details on how tiles work now. This opens some interesting possibilities for displaying multiple calendars.
+Take a look at the [TileComponents](https://github.com/werner-scholtz/kalender/blob/v0.5.0/lib/src/models/components/tile_components.dart) for more details on how tiles work now. This opens some interesting possibilities for displaying multiple calendars.
 
-- The [CalendarCallbacks](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/calendar_callbacks.dart) (previously `CalendarEventHandlers`) have been changed so more information is given when an interaction occurs.
+- The [CalendarCallbacks](https://github.com/werner-scholtz/kalender/blob/v0.5.0/lib/src/models/calendar_callbacks.dart) (previously `CalendarEventHandlers`) have been changed so more information is given when an interaction occurs.
 
 - The schedule view has been removed, but will be reimplemented in the future.
 
