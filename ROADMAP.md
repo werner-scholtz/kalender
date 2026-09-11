@@ -231,6 +231,14 @@ The question per field is whether it reaches something an app cannot otherwise r
 
 The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
+### Known defects
+
+Found reviewing 0.30.0, neither introduced by it. Both are fixable without a break, so neither waits for a window.
+
+**`KalenderController.id` is not unique.** The constructor takes it from `DateTime.now().millisecondsSinceEpoch`, so two controllers built in the same millisecond share an id, and two calendars on one screen is the ordinary way to reach that. The drag targets compare on that id to decide whether a create gesture is theirs, so a create drag can be accepted by the wrong calendar. A static counter fixes it. This one can produce wrong behaviour at runtime, so it goes first.
+
+**`KalenderTimeRange.coversWholeDay` ignores the start minute.** It tests `start.hour == 0 && end.hour == 23 && end.minute == 59`, so a range from 00:30 to 23:59 reports that it covers the whole day. The tests cover the cases it was written against and not this one, so the fix needs the missing case with it.
+
 ### Tests
 
 Coverage is 92.3% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below, and that gate is now met.
@@ -248,6 +256,8 @@ Both columns are line coverage of the directory and everything under it, measure
 | `theme/` | 78% | 97% | Done. 0.25.0 rewrote this code and tested it, taking it from the lowest covered area to one of the highest. |
 
 The rest runs from 79% to 100% with no large gap.
+
+**Two things CI does not verify.** `analyze_examples.yml` pins every example to Flutter 3.44.6, `examples/material_ui` with them, though its `.fvmrc` says 3.47.2 and the SDK that moved Material out is the whole point of it. That example has never been analyzed on the version it demonstrates. Separately, `pubspec.yaml` declares `flutter: ">=3.22.0"` and nothing runs near that, while `lib/material.dart` writes `DateTimeRange<DateTime>`, which the Material class has not always been. Add a job on the declared minimum and set the bound from what it reports rather than from a guess.
 
 Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%.
 

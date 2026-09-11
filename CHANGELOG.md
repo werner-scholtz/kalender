@@ -12,12 +12,16 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - The deprecated `CalendarView` and `CalendarViewState` typedefs are removed.
 - `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
 - `KalenderTime` replaces Material's `TimeOfDay` in every public signature.
-- `TimeOfDayRange` is renamed to `KalenderTimeRange`, and holds `KalenderTime` values.
+- `TimeOfDayRange` is renamed to `KalenderTimeRange`.
+- `KalenderTimeRange` holds `KalenderTime` values.
 - `TimeOfDayStringBuilder` is renamed to `KalenderTimeStringBuilder`.
-- `TimeOfDayExtension` is removed. `toInternalDateTime` and `toDateTime` are methods on `KalenderTime`.
-- `InternalDateTimeRange` no longer extends `DateTimeRange`, and `forLocation` returns a `KalenderDateTimeRange`.
-- `InternalDateTimeRange.overlaps` takes an `InternalDateTimeRange`, and `InternalDateTimeRange.fromDateTimeRange` takes a `KalenderDateTimeRange`.
-- `CalendarEvent` and `CalendarEvent.copyWithData` take `start` and `end` rather than `dateTimeRange`.
+- `TimeOfDayExtension` is removed.
+- `toInternalDateTime` and `toDateTime` are methods on `KalenderTime`.
+- `InternalDateTimeRange` no longer extends `DateTimeRange`.
+- `InternalDateTimeRange.forLocation` returns a `KalenderDateTimeRange`.
+- `InternalDateTimeRange.overlaps` takes an `InternalDateTimeRange`.
+- `InternalDateTimeRange.fromDateTimeRange` takes a `KalenderDateTimeRange`.
+- `KalenderEvent` and `KalenderEvent.copyWithData` take `start` and `end` rather than `dateTimeRange`.
 - `PageIndexCalculator` and its subclasses take `start` and `end` rather than `dateTimeRange`.
 - `DragTargetUtils.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` take an `InternalDateTimeRange`.
 - `EventTileUtils.eventRangeOnDate` returns an `InternalDateTimeRange`.
@@ -25,14 +29,14 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 
 ### Behavior Changes
 
-- The schedule view reports `onPageChanged` in the calendar's location, matching the multi-day and month views.
+- The schedule view reports `onPageChanged` in the calendar's location.
 - The schedule view's `monthItemBuilder` and `emptyItemBuilder` receive ranges in the calendar's location.
-- The timeline's drag tooltip tests visibility in the calendar's own time space rather than against converted values.
-- `KalenderTime` asserts that its `hour` and `minute` are within a day, matching `replacing`.
+- The timeline's drag tooltip tests visibility in the calendar's own time space.
+- `KalenderTime` asserts that its `hour` and `minute` are within a day.
 
 ### Deprecations
 
-- `BuildContext.calendarLocale` is renamed to `kalenderLocale`. The old name is a deprecated getter, removed in 0.31.0.
+- `BuildContext.calendarLocale` is renamed to `kalenderLocale`. The old name is removed in 0.31.0.
 
 ### Features
 
@@ -40,7 +44,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `PageIndexCalculator.month` and `MonthIndexCalculator.fromRange` build a month calculator from a range.
 - `package:kalender/material.dart` converts `KalenderDateTimeRange` and `KalenderTime` to and from Material's `DateTimeRange` and `TimeOfDay`.
 - `dart fix --apply` applies this release's renames and both parameter reshapes.
-- `context.calendarLocale` is the one rename `dart fix` cannot apply.
+- `dart fix` does not apply the `context.calendarLocale` rename.
 
 ### Fixes
 
