@@ -187,7 +187,7 @@ The month comes along, which is what makes the rule true of the whole package ra
 `gutter_style_scope_test.dart` is replaced by `gutter_width_test.dart`. The tests that report an ignored scoped style go with the report. The ones that check the gutter and the spacer measure alike, that a theme above the calendar reaches the gutter, and that the drag target spacer matches are carried over. The labels-fit test is rewritten against the default, since a scoped text size is now meant to lay the labels out wider than the gutter.
 
 
-### 0.30.0, off Material, previewed in 0.30.0-dev.1
+### 0.30.0, off Material, done
 
 **Flutter moved Material and Cupertino out of the framework, and the two value types kalender's public API is built on went with them.** `material_ui` and `cupertino_ui` are 1.x packages in `flutter/packages` now, and `material_ui` redefines `DateTimeRange` and `TimeOfDay` as its own classes. `package:flutter/material.dart` still ships in 3.47.2 carrying no deprecation, so nothing is broken today. An app that runs the migration Flutter documents, `dart fix --apply --code=migrate_design_widgets`, ends up holding types with the same names as the ones kalender asks for and no relationship to them. No bridge closes that, because it is a compile-time identity problem rather than a runtime lookup.
 
