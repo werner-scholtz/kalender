@@ -47,10 +47,9 @@ jobs:
           flutter-version: 3.47.2
           channel: 'stable'
 
-      # The credential setup-dart provisions grants access to this package alone,
-      # and pub sends it with every request to pub.dev, so pub.dev refuses the
-      # metadata reads for every other package and resolution fails. It is set
-      # aside here and restored for the upload.
+      # pub.dev answers 403 for package metadata whenever the request carries a
+      # bearer token, and pub sends the credential with every request to pub.dev,
+      # so resolution fails. It is set aside here and restored for the upload.
       - name: Set the credential aside
         run: dart pub token remove https://pub.dev
 
@@ -82,5 +81,9 @@ jobs:
       - name: Restore the credential
         run: dart pub token add https://pub.dev --env-var PUB_TOKEN
 
+      # pub.dev answers 403 for package metadata whenever the request carries a
+      # bearer token, so the credentialed step must not resolve. The dry run above
+      # has already validated the package with no credential configured. See
+      # dart-lang/pub-dev#9576, and drop the flag once that is fixed.
       - name: Publish
-        run: flutter pub publish --force
+        run: flutter pub publish --force --skip-validation
