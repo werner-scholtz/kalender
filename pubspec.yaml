@@ -11,8 +11,8 @@ topics:
   - drag-and-drop
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.32.0"
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.1"
 
 dependencies:
   collection: ^1.19.1

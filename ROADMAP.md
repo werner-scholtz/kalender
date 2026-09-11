@@ -265,7 +265,7 @@ Both columns are line coverage of the directory and everything under it, measure
 
 The rest runs from 79% to 100% with no large gap.
 
-**One thing CI does not verify.** `analyze_examples.yml` pins every example to Flutter 3.44.6, `examples/material_ui` with them, though its `.fvmrc` says 3.47.2 and the SDK that moved Material out is the whole point of it. That example has never been analyzed on the version it demonstrates. The declared minimum is checked as of 0.30.0, which raised the bound to 3.32.0, where `DateTimeRange` became generic, and added a job that analyses against it.
+**One thing CI does not verify.** `analyze_examples.yml` pins every example to Flutter 3.44.6, `examples/material_ui` with them, though its `.fvmrc` says 3.47.2 and the SDK that moved Material out is the whole point of it. That example has never been analyzed on the version it demonstrates. The declared minimum is checked as of 0.30.0. It declared `flutter: ">=3.22.0"` and `sdk: ">=3.0.0"`, neither of which held: `lib/material.dart` needs the generic `DateTimeRange` that arrived in Flutter 3.32.0, and `timezone` needs Dart 3.10.0, which reaches stable in Flutter 3.38.1. The bounds are those now, and a job analyses against them.
 
 Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%.
 

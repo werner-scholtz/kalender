@@ -9,7 +9,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `KalenderView.calendarController` is renamed to `kalenderController`.
 - `KalenderScope.calendarControllerOf` and `maybeCalendarControllerOf` are renamed to `kalenderControllerOf` and `maybeKalenderControllerOf`.
 - `ViewController.visibleDateTimeRange` is renamed to `internalVisibleRange`.
-- The minimum Flutter version is 3.32.0.
+- The minimum Flutter version is 3.38.1, and the minimum Dart version is 3.10.0.
 - The deprecated `CalendarView` and `CalendarViewState` typedefs are removed.
 - `KalenderDateTimeRange` replaces Material's `DateTimeRange` in every public signature.
 - `KalenderTime` replaces Material's `TimeOfDay` in every public signature.
