@@ -175,11 +175,11 @@ void main() {
       });
     });
 
-    group('toInternalDateTime', () {
+    group('toFloatingDateTime', () {
       test('sets the correct hour and minute', () {
         const timeOfDay = KalenderTime(hour: 14, minute: 30);
-        final input = InternalDateTime(2024, 6, 15, 9, 0);
-        final result = timeOfDay.toInternalDateTime(input);
+        final input = FloatingDateTime(2024, 6, 15, 9, 0);
+        final result = timeOfDay.toFloatingDateTime(input);
 
         expect(result.year, 2024);
         expect(result.month, 6);
@@ -190,10 +190,10 @@ void main() {
 
       test('zeroes out second, millisecond, and microsecond', () {
         const timeOfDay = KalenderTime(hour: 10, minute: 15);
-        final input = InternalDateTime.fromDateTime(
+        final input = FloatingDateTime.fromDateTime(
           DateTime(2024, 6, 15, 9, 45, 30, 500, 250),
         );
-        final result = timeOfDay.toInternalDateTime(input);
+        final result = timeOfDay.toFloatingDateTime(input);
 
         expect(result.second, 0, reason: 'second should be zeroed');
         expect(result.millisecond, 0, reason: 'millisecond should be zeroed');

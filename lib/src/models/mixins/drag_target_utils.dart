@@ -186,13 +186,13 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   void _cancelPendingMove() => _pendingMove = null;
 
   /// Reschedule an event.
-  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime);
+  KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime);
 
   /// Resize an event.
-  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime);
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime);
 
   /// Reschedule an event.
-  KalenderEvent? createEvent(InternalDateTime cursorDateTime) => newEvent ??= controller.newEvent;
+  KalenderEvent? createEvent(FloatingDateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
   /// Resolves the latest version of the [event] from the [EventsController],
   /// falling back to the provided instance if not found.
@@ -244,50 +244,50 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   }
 
   /// Calculate the [DateTime] of the cursor.
-  InternalDateTime? calculateCursorDateTime(
+  FloatingDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   });
 
-  /// Calculate the [InternalDateTimeRange] from the start [DateTime].
+  /// Calculate the [FloatingDateTimeRange] from the start [DateTime].
   ///
-  /// Will return a [InternalDateTimeRange] with an updated start [DateTime] and the same end [DateTime].
+  /// Will return a [FloatingDateTimeRange] with an updated start [DateTime] and the same end [DateTime].
   /// - In the case where the new start [DateTime] is after the end [DateTime], the start and end [DateTime]s will be swapped.
-  /// - In the case where the [DateTime]s are the same, the original [InternalDateTimeRange] will be returned.
-  InternalDateTimeRange calculateDateTimeRangeFromStart(
-    InternalDateTimeRange dateTimeRange,
+  /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
+  FloatingDateTimeRange calculateDateTimeRangeFromStart(
+    FloatingDateTimeRange dateTimeRange,
     DateTime newStart,
   ) {
     if (newStart.isBefore(dateTimeRange.end)) {
-      return InternalDateTimeRange(start: newStart, end: dateTimeRange.end);
+      return FloatingDateTimeRange(start: newStart, end: dateTimeRange.end);
     } else if (newStart.isAtSameMomentAs(dateTimeRange.end)) {
-      return InternalDateTimeRange(start: dateTimeRange.start, end: dateTimeRange.end);
+      return FloatingDateTimeRange(start: dateTimeRange.start, end: dateTimeRange.end);
     } else {
-      return InternalDateTimeRange(start: dateTimeRange.end, end: newStart);
+      return FloatingDateTimeRange(start: dateTimeRange.end, end: newStart);
     }
   }
 
-  /// Calculate the [InternalDateTimeRange] from the end [DateTime].
+  /// Calculate the [FloatingDateTimeRange] from the end [DateTime].
   ///
-  /// Will return a [InternalDateTimeRange] with an updated end [DateTime] and the same start [DateTime].
+  /// Will return a [FloatingDateTimeRange] with an updated end [DateTime] and the same start [DateTime].
   /// - In the case where the new end [DateTime] is before the start [DateTime], the start and end [DateTime]s will be swapped.
-  /// - In the case where the [DateTime]s are the same, the original [InternalDateTimeRange] will be returned.
-  InternalDateTimeRange calculateDateTimeRangeFromEnd(
-    InternalDateTimeRange dateTimeRange,
+  /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
+  FloatingDateTimeRange calculateDateTimeRangeFromEnd(
+    FloatingDateTimeRange dateTimeRange,
     DateTime newEnd,
   ) {
     if (newEnd.isBefore(dateTimeRange.start)) {
-      return InternalDateTimeRange(start: newEnd, end: dateTimeRange.start);
+      return FloatingDateTimeRange(start: newEnd, end: dateTimeRange.start);
     } else if (newEnd.isAtSameMomentAs(dateTimeRange.start)) {
-      return InternalDateTimeRange(start: dateTimeRange.start, end: dateTimeRange.end);
+      return FloatingDateTimeRange(start: dateTimeRange.start, end: dateTimeRange.end);
     } else {
-      return InternalDateTimeRange(start: dateTimeRange.start, end: newEnd);
+      return FloatingDateTimeRange(start: dateTimeRange.start, end: newEnd);
     }
   }
 
-  /// Converts an [InternalDateTimeRange] to a [KalenderDateTimeRange] for the current location,
+  /// Converts an [FloatingDateTimeRange] to a [KalenderDateTimeRange] for the current location,
   /// handling DST spring-forward gaps where start can get pushed past end.
-  KalenderDateTimeRange toLocationDateTimeRange(InternalDateTimeRange range) {
+  KalenderDateTimeRange toLocationDateTimeRange(FloatingDateTimeRange range) {
     final location = context.location;
     var start = range.start.forLocation(location: location);
     var end = range.end.forLocation(location: location);
@@ -300,7 +300,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   ///
   /// Used where only the date can meaningfully change: the header, and a
   /// multi-day event dragged across the body.
-  KalenderEvent rescheduleToDate(KalenderEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent rescheduleToDate(KalenderEvent event, FloatingDateTime cursorDateTime) {
     final start = event.internalStart(location: context.location);
     final newStart = cursorDateTime.copyWith(
       hour: start.hour,
@@ -310,7 +310,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
       microsecond: start.microsecond,
     );
 
-    final range = InternalDateTimeRange(start: newStart, end: newStart.add(event.duration));
+    final range = FloatingDateTimeRange(start: newStart, end: newStart.add(event.duration));
     return event.withDateTimeRange(toLocationDateTimeRange(range));
   }
 }

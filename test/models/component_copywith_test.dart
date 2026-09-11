@@ -301,12 +301,12 @@ Widget _daySeparator(BuildContext context) => const SizedBox();
 Widget _timeIndicator(BuildContext context, KalenderTimeRange range, double heightPerMinute, Location? location) =>
     const SizedBox();
 
-Widget _scheduleDate(BuildContext context, InternalDateTime date) => const SizedBox();
+Widget _scheduleDate(BuildContext context, FloatingDateTime date) => const SizedBox();
 
 Widget _tileHighlight(
   BuildContext context,
-  InternalDateTime date,
-  ValueNotifier<InternalDateTimeRange?> dateTimeRange,
+  FloatingDateTime date,
+  ValueNotifier<FloatingDateTimeRange?> dateTimeRange,
   Widget child,
 ) =>
     child;

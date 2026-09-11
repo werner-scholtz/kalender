@@ -474,9 +474,9 @@ void main() {
       final allDay = KalenderEvent(start: shortRange.start, end: shortRange.end, isAllDay: true);
       controller.addEvents([timed, allDay]);
 
-      final day = InternalDateTimeRange(
-        start: InternalDateTime.fromExternal(DateTime.utc(2024, 1, 15), location: utcLocation),
-        end: InternalDateTime.fromExternal(DateTime.utc(2024, 1, 16), location: utcLocation),
+      final day = FloatingDateTimeRange(
+        start: FloatingDateTime.fromExternal(DateTime.utc(2024, 1, 15), location: utcLocation),
+        end: FloatingDateTime.fromExternal(DateTime.utc(2024, 1, 16), location: utcLocation),
       );
 
       expect(

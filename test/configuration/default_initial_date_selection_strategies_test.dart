@@ -17,64 +17,64 @@ void main() {
 
     // ── Controller builders ──────────────────────────────────────────────
     //
-    // All controllers use initialDate = InternalDateTime(2025, 1, 1) which is
+    // All controllers use initialDate = FloatingDateTime(2025, 1, 1) which is
     // treated as a timezone-agnostic wall-clock value by page calculators.
     //
     // The dummy initial visibleDateTimeRange passed to each constructor is
     // immediately overwritten inside the constructor, so any sentinel value works.
 
-    InternalDateTimeRange dummyRange() => InternalDateTimeRange(
-          start: InternalDateTime(2025),
-          end: InternalDateTime(2025, 2),
+    FloatingDateTimeRange dummyRange() => FloatingDateTimeRange(
+          start: FloatingDateTime(2025),
+          end: FloatingDateTime(2025, 2),
         );
 
     MonthViewController buildMonth() => MonthViewController(
           viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
           internalVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
-          initialDate: InternalDateTime(2025, 1, 1),
+          initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildWeek() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
           internalVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
-          initialDate: InternalDateTime(2025, 1, 1),
+          initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildWorkWeek() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.workWeek(displayRange: range),
           internalVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
-          initialDate: InternalDateTime(2025, 1, 1),
+          initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildDay() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
           internalVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
-          initialDate: InternalDateTime(2025, 1, 1),
+          initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildCustomMultiDay() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range),
           internalVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
-          initialDate: InternalDateTime(2025, 1, 1),
+          initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildCustomSingleDay() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range),
           internalVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
-          initialDate: InternalDateTime(2025, 1, 1),
+          initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     ContinuousScheduleViewController buildSchedule() => ContinuousScheduleViewController(
           viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: range),
           internalVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
-          initialDate: InternalDateTime(2025, 1, 1),
+          initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     // ── Expected starting dates ──────────────────────────────────────────
@@ -90,9 +90,9 @@ void main() {
     // For UTC+2/+11 locations that start resolves to Dec 31 instead of Jan 1,
     // shifting page boundaries. We therefore derive those starts from the
     // constructed controllers instead of hardcoding them.
-    final monthOrWeekStart = InternalDateTime(2024, 12, 30);
-    final dayStart = InternalDateTime(2025, 1, 1);
-    final dominantJanuary = InternalDateTime(2025, 1, 1);
+    final monthOrWeekStart = FloatingDateTime(2024, 12, 30);
+    final dayStart = FloatingDateTime(2025, 1, 1);
+    final dominantJanuary = FloatingDateTime(2025, 1, 1);
 
     // Location-dependent starts – built once, reused across all strategy groups.
     final customMultiStart = buildCustomMultiDay().internalVisibleRange.value!.start;

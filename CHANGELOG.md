@@ -1,3 +1,17 @@
+## 0.31.0
+
+See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
+
+### Breaking Changes
+
+- `InternalDateTime` is renamed to `FloatingDateTime`.
+- `InternalDateTimeRange` is renamed to `FloatingDateTimeRange`.
+- `KalenderTime.toInternalDateTime` is renamed to `toFloatingDateTime`.
+
+### Features
+
+- `dart fix --apply` applies this release's renames.
+
 ## 0.30.0
 
 See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.

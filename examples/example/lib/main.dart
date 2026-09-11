@@ -201,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
               final int year;
 
               if (viewConfiguration is MonthViewConfiguration) {
-                final dominantMonthDate = InternalDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
+                final dominantMonthDate = FloatingDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
                 year = dominantMonthDate.year;
                 month = dominantMonthDate.monthNameLocalized();
               } else {

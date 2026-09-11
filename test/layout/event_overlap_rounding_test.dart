@@ -31,7 +31,7 @@ void main() {
         event(boundary, boundary + durationSeconds),
       ],
       heightPerMinute: heightPerMinute,
-      date: InternalDateTime(2024, 1, 1),
+      date: FloatingDateTime(2024, 1, 1),
       location: null,
       timeOfDayRange: KalenderTimeRange.allDay(),
       minimumTileHeight: minimumTileHeight,

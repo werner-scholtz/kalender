@@ -11,7 +11,7 @@ class MultiDayEventsRow extends StatelessWidget {
   final MultiDayBodyConfiguration configuration;
 
   /// The internal date time range that is being displayed.
-  final InternalDateTimeRange internalRange;
+  final FloatingDateTimeRange internalRange;
 
   /// The controller for the multi-day view.
   final MultiDayViewController viewController;
@@ -38,7 +38,7 @@ class MultiDayEventsRow extends StatelessWidget {
               child: DayEventsColumn(
                 key: columnKey(date),
                 configuration: configuration,
-                date: InternalDateTime.fromDateTime(date),
+                date: FloatingDateTime.fromDateTime(date),
                 eventsController: context.eventsController,
                 location: context.location,
                 viewConfiguration: viewController.viewConfiguration,
@@ -67,7 +67,7 @@ class DayEventsColumn extends StatefulWidget {
   final MultiDayViewConfiguration viewConfiguration;
 
   /// The date for which the events are being displayed.
-  final InternalDateTime date;
+  final FloatingDateTime date;
 
   /// The controller for the multi-day view.
   // final MultiDayViewController viewController;
@@ -345,7 +345,7 @@ class DayDropTargetColumn extends StatefulWidget {
   final EventsController eventsController;
   final MultiDayViewConfiguration viewConfiguration;
   final MultiDayBodyConfiguration configuration;
-  final InternalDateTime date;
+  final FloatingDateTime date;
   final List<KalenderEvent> events;
   final KalenderController controller;
   final EventLayoutDelegateCache cache;

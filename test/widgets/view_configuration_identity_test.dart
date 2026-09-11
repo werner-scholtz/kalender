@@ -177,4 +177,4 @@ void main() {
 }
 
 DateTime _stubNow() => DateTime(2025, 1, 14);
-InternalDateTime _stubResolver(ViewTransitionContext transition) => InternalDateTime(2025, 8, 20);
+FloatingDateTime _stubResolver(ViewTransitionContext transition) => FloatingDateTime(2025, 8, 20);

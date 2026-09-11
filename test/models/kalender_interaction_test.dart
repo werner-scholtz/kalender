@@ -6,23 +6,23 @@ void main() {
   // ─── kDefaultSnapStrategy ─────────────────────────────────────────────────────
 
   group('IntervalSnapStrategy', () {
-    final startOfDay = InternalDateTime(2024, 1, 15);
-    InternalDateTime snap(InternalDateTime cursor) {
+    final startOfDay = FloatingDateTime(2024, 1, 15);
+    FloatingDateTime snap(FloatingDateTime cursor) {
       return kDefaultSnapStrategy.snap(cursorDate: cursor, startOfDay: startOfDay, snapIntervalMinutes: 15);
     }
 
     test('snaps the cursor down to the nearest interval (rounds toward the lower boundary)', () {
       // 00:07 is 7 min in → 7/15 rounds to 0 → snaps back to 00:00.
-      expect(snap(InternalDateTime(2024, 1, 15, 0, 7)), equals(InternalDateTime(2024, 1, 15)));
+      expect(snap(FloatingDateTime(2024, 1, 15, 0, 7)), equals(FloatingDateTime(2024, 1, 15)));
     });
 
     test('snaps the cursor up to the nearest interval (rounds toward the upper boundary)', () {
       // 00:08 is 8 min in → 8/15 rounds to 1 → snaps forward to 00:15.
-      expect(snap(InternalDateTime(2024, 1, 15, 0, 8)), equals(InternalDateTime(2024, 1, 15, 0, 15)));
+      expect(snap(FloatingDateTime(2024, 1, 15, 0, 8)), equals(FloatingDateTime(2024, 1, 15, 0, 15)));
     });
 
     test('a cursor already on an interval boundary is unchanged', () {
-      final onBoundary = InternalDateTime(2024, 1, 15, 9, 30);
+      final onBoundary = FloatingDateTime(2024, 1, 15, 9, 30);
       expect(snap(onBoundary), equals(onBoundary));
     });
 
@@ -33,10 +33,10 @@ void main() {
 
   group('NoSnapStrategy', () {
     test('returns the cursor unchanged', () {
-      final cursor = InternalDateTime(2024, 1, 15, 0, 7);
+      final cursor = FloatingDateTime(2024, 1, 15, 0, 7);
       final snapped = const EventSnapStrategy.none().snap(
         cursorDate: cursor,
-        startOfDay: InternalDateTime(2024, 1, 15),
+        startOfDay: FloatingDateTime(2024, 1, 15),
         snapIntervalMinutes: 15,
       );
       expect(snapped, equals(cursor));

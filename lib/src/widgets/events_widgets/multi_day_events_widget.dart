@@ -26,7 +26,7 @@ class MultiDayEventWidget extends StatefulWidget {
   final HorizontalConfiguration configuration;
 
   /// The range of dates that are visible.
-  final InternalDateTimeRange internalDateTimeRange;
+  final FloatingDateTimeRange internalDateTimeRange;
 
   /// The maximum number of vertical events that can be displayed.
   final int? maxNumberOfVerticalEvents;
@@ -150,7 +150,7 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
   final HorizontalConfiguration configuration;
 
   /// The range of dates that are visible.
-  final InternalDateTimeRange internalDateTimeRange;
+  final FloatingDateTimeRange internalDateTimeRange;
 
   /// The list of events that will be laid out.
   ///
@@ -191,7 +191,7 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 
 class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// The range of dates that the events will be laid out on.
-  late InternalDateTimeRange _dateTimeRange = widget.internalDateTimeRange;
+  late FloatingDateTimeRange _dateTimeRange = widget.internalDateTimeRange;
 
   /// The layout frame that contains all the data needed to display the events.
   MultiDayLayoutFrame? _frame;
@@ -403,7 +403,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   MultiDayEventOverlayTile _overlayEventTileBuilder(
     BuildContext context,
     KalenderEvent event,
-    InternalDateTimeRange dateTimeRange,
+    FloatingDateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,
   ) {
     return MultiDayEventOverlayTile(

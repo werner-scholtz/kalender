@@ -162,7 +162,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   void _updatePageNumberAndIndex() {
     final nowCallback = widget.viewController.viewConfiguration.nowCallback;
     final location = widget.viewController.location;
-    final today = InternalDateTime.fromDateTime(
+    final today = FloatingDateTime.fromDateTime(
       widget.dateOverride ??
           (nowCallback != null ? nowCallback() : (location == null ? DateTime.now() : TZDateTime.now(location))),
     );

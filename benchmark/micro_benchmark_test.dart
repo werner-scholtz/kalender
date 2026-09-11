@@ -37,7 +37,7 @@ abstract class _KalenderBenchmark extends BenchmarkBase {
   void exercise() => run();
 }
 
-/// `InternalDateTimeRange.dates()` — linear day expansion, called all over the
+/// `FloatingDateTimeRange.dates()` — linear day expansion, called all over the
 /// layout and event-store code.
 ///
 /// A single expansion is sub-microsecond and dominated by timer/JIT noise, so
@@ -48,11 +48,11 @@ class _DatesBenchmark extends _KalenderBenchmark {
   _DatesBenchmark(this.days) : super('dates x$_batch / ${days}d');
   static const _batch = 200;
   final int days;
-  late InternalDateTimeRange range;
+  late FloatingDateTimeRange range;
 
   @override
   void setup() {
-    range = InternalDateTimeRange(
+    range = FloatingDateTimeRange(
       start: benchmarkStart,
       end: benchmarkStart.add(Duration(days: days)),
     );
@@ -73,12 +73,12 @@ class _MultiDayFrameBenchmark extends _KalenderBenchmark {
   _MultiDayFrameBenchmark(this.eventCount, this.days) : super('multiDayFrame / ${eventCount}ev x ${days}d');
   final int eventCount;
   final int days;
-  late InternalDateTimeRange range;
+  late FloatingDateTimeRange range;
   late List<KalenderEvent> events;
 
   @override
   void setup() {
-    range = InternalDateTimeRange(
+    range = FloatingDateTimeRange(
       start: benchmarkStart,
       end: benchmarkStart.add(Duration(days: days)),
     );
@@ -105,12 +105,12 @@ class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
       : super('multiDayFrame / ${eventsPerDay}ev-per-day x ${days}d');
   final int eventsPerDay;
   final int days;
-  late InternalDateTimeRange range;
+  late FloatingDateTimeRange range;
   late List<KalenderEvent> events;
 
   @override
   void setup() {
-    range = InternalDateTimeRange(
+    range = FloatingDateTimeRange(
       start: benchmarkStart,
       end: benchmarkStart.add(Duration(days: days)),
     );
@@ -142,7 +142,7 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
     delegate = SideBySideLayoutDelegate(
       events: const [],
       heightPerMinute: 1.0,
-      date: InternalDateTime(2024, 1, 1),
+      date: FloatingDateTime(2024, 1, 1),
       location: null,
       timeOfDayRange: KalenderTimeRange.allDay(),
       minimumTileHeight: null,
@@ -166,13 +166,13 @@ class _EventQueryBenchmark extends _KalenderBenchmark {
   _EventQueryBenchmark(this.queryDays) : super('eventsFromRange / query ${queryDays}d');
   final int queryDays;
   late DefaultEventsController controller;
-  late InternalDateTimeRange queryRange;
+  late FloatingDateTimeRange queryRange;
 
   @override
   void setup() {
     controller = DefaultEventsController();
     controller.addEvents(generateDayEvents(start: benchmarkStart, days: 365, eventsPerDay: 10));
-    queryRange = InternalDateTimeRange(
+    queryRange = FloatingDateTimeRange(
       start: benchmarkStart,
       end: benchmarkStart.add(Duration(days: queryDays)),
     );

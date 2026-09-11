@@ -1,0 +1,12 @@
+// The input for `fix_floating_date_time.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:kalender/kalender.dart';
+
+FloatingDateTime? dateTime;
+FloatingDateTimeRange? range;
+
+FloatingDateTime fromDateTime(DateTime value) => FloatingDateTime.fromDateTime(value);
+
+FloatingDateTimeRange rangeOf(DateTime start, DateTime end) => FloatingDateTimeRange(start: start, end: end);
+
+FloatingDateTime startOfDay(KalenderTime time, FloatingDateTime date) => time.toFloatingDateTime(date);

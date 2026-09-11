@@ -80,7 +80,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   // TODO: check if this is right, and null check does not break anything.
   @override
-  List<InternalDateTime> get visibleDates => viewController.internalVisibleRange.value!.dates();
+  List<FloatingDateTime> get visibleDates => viewController.internalVisibleRange.value!.dates();
 
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
@@ -259,7 +259,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   }
 
   @override
-  InternalDateTime? calculateCursorDateTime(
+  FloatingDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
@@ -278,19 +278,19 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     if (cursorDate == null) return null;
 
     // Calculate the start of the day.
-    final startOfDate = timeOfDayRange.start.toInternalDateTime(cursorDate);
+    final startOfDate = timeOfDayRange.start.toFloatingDateTime(cursorDate);
 
     // Calculate the duration to add to the startOfDate.
     final durationFromStart = localCursorPosition.dy ~/ heightPerMinute;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return InternalDateTime.fromDateTime(startOfDate.add(duration));
+    return FloatingDateTime.fromDateTime(startOfDate.add(duration));
   }
 
   /// Update the [KalenderEvent] based on the [Offset] delta.
   @override
-  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime) {
     // A multi-day event is laid out in the header, so dragging it across the
     // body can only change which date it starts on. Updating it here is what
     // moves the header's drop target as the cursor crosses day columns.
@@ -298,13 +298,13 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       return rescheduleToDate(event, cursorDateTime);
     }
 
-    InternalDateTime start;
+    FloatingDateTime start;
 
     if (timeOfDayRange.coversWholeDay) {
       start = cursorDateTime;
     } else {
-      final startOfDate = timeOfDayRange.start.toInternalDateTime(cursorDateTime);
-      final endOfDate = timeOfDayRange.end.toInternalDateTime(cursorDateTime);
+      final startOfDate = timeOfDayRange.start.toFloatingDateTime(cursorDateTime);
+      final endOfDate = timeOfDayRange.end.toFloatingDateTime(cursorDateTime);
       if (cursorDateTime.isBefore(startOfDate)) {
         start = startOfDate;
       } else if (cursorDateTime.add(event.duration).isAfter(endOfDate)) {
@@ -319,7 +319,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     var end = start.add(duration);
 
     // Add now to the snap points.
-    late final now = InternalDateTime.fromExternal(DateTime.now(), location: context.location);
+    late final now = FloatingDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
@@ -353,12 +353,12 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   /// Update the [KalenderEvent] based on the [direction] and [cursorDateTime] delta.
   @override
-  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime) {
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
     // Add now to the snap points.
-    late final now = InternalDateTime.fromExternal(DateTime.now(), location: context.location);
+    late final now = FloatingDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;
@@ -378,7 +378,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   }
 
   @override
-  KalenderEvent? createEvent(InternalDateTime cursorDateTime) {
+  KalenderEvent? createEvent(FloatingDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
@@ -386,9 +386,9 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     var range = newEvent!.internalRange(location: context.location);
 
     if (cursorDateTime.isAfter(range.start)) {
-      range = InternalDateTimeRange(start: range.start, end: cursorDateTime);
+      range = FloatingDateTimeRange(start: range.start, end: cursorDateTime);
     } else if (cursorDateTime.isBefore(range.start)) {
-      range = InternalDateTimeRange(start: cursorDateTime, end: range.start);
+      range = FloatingDateTimeRange(start: cursorDateTime, end: range.start);
     }
 
     return event.withDateTimeRange(toLocationDateTimeRange(range));

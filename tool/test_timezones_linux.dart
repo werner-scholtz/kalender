@@ -5,7 +5,7 @@
 //
 // Examples:
 //   dart tool/test_timezones.dart
-//   dart tool/test_timezones.dart test/extensions/internal_date_time_test.dart
+//   dart tool/test_timezones.dart test/models/floating_date_time_test.dart
 //   dart tool/test_timezones.dart --name "startOfDay"
 // ignore_for_file: avoid_print
 

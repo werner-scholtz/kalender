@@ -10,7 +10,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 ///
 /// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
 class HorizontalDragTarget extends StatefulWidget {
-  final InternalDateTimeRange visibleDateTimeRange;
+  final FloatingDateTimeRange visibleDateTimeRange;
 
   final HorizontalConfiguration configuration;
 
@@ -67,13 +67,13 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
   @override
-  List<InternalDateTime> get visibleDates => visibleDateTimeRange.dates();
+  List<FloatingDateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
   ViewController get viewController => controller.viewController!;
   TileComponents get tileComponents => context.tileComponents;
-  InternalDateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
+  FloatingDateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
   double get tileHeight => widget.configuration.tileHeight;
 
@@ -170,7 +170,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  InternalDateTime? calculateCursorDateTime(
+  FloatingDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
@@ -189,7 +189,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime) {
     // If the configuration does not allow single-day events (e.g., multi-day header),
     // return null to prevent updating the selection while dragging over this area.
     if (!widget.configuration.allowSingleDayEvents &&
@@ -201,7 +201,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime) {
     final internalRange = event.internalRange(location: context.location);
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
@@ -213,17 +213,17 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  KalenderEvent? createEvent(InternalDateTime cursorDateTime) {
+  KalenderEvent? createEvent(FloatingDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
     var range = newEvent!.internalRange(location: context.location);
-    final cursor = InternalDateTime.fromDateTime(cursorDateTime);
+    final cursor = FloatingDateTime.fromDateTime(cursorDateTime);
 
     if ((cursor.isSameDay(range.start) || cursor.isSameDay(range.end)) || cursor.isAfter(range.start)) {
-      range = InternalDateTimeRange(start: range.start.startOfDay, end: cursor.endOfDay);
+      range = FloatingDateTimeRange(start: range.start.startOfDay, end: cursor.endOfDay);
     } else if (cursor.isBefore(range.start)) {
-      range = InternalDateTimeRange(start: cursor, end: range.start.endOfDay);
+      range = FloatingDateTimeRange(start: cursor, end: range.start.endOfDay);
     }
 
     return event.withDateTimeRange(toLocationDateTimeRange(range));

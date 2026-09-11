@@ -5,9 +5,9 @@
 /// back.
 ///
 /// It is not the type the calendar lays out with. That is
-/// `InternalDateTimeRange`, whose ends are unzoned calendar positions and which
-/// carries the date arithmetic. `InternalDateTimeRange.forLocation` converts to
-/// this type and `InternalDateTimeRange.fromDateTimeRange` converts back.
+/// `FloatingDateTimeRange`, whose ends name no timezone and which carries the
+/// date arithmetic. `FloatingDateTimeRange.forLocation` converts to this type
+/// and `FloatingDateTimeRange.fromDateTimeRange` converts back.
 ///
 /// For Material's `DateTimeRange`, import `package:kalender/material.dart` and
 /// call `toDateTimeRange()` or `toKalenderDateTimeRange()`.

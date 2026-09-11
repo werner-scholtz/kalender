@@ -64,7 +64,7 @@ class MultiDayEventOverlayTile extends EventTile {
       final daysOffset = (dateTimeRange.duration.inDays * percentage).truncate();
       date = date.add(Duration(days: daysOffset));
     }
-    final range = InternalDateTimeRange(start: date.startOfDay, end: date.endOfDay);
+    final range = FloatingDateTimeRange(start: date.startOfDay, end: date.endOfDay);
     return range.forLocation(location: context.location);
   }
 

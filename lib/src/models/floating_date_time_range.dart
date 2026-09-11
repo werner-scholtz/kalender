@@ -1,38 +1,39 @@
 import 'package:kalender/kalender.dart';
 
-/// A range that uses [InternalDateTime] for timezone-safe display and layout.
+/// A range between two [FloatingDateTime]s, the space the calendar lays out in.
 ///
-/// Both [start] and [end] are stored as [InternalDateTime] values, so all
-/// helpers on this range (dates, overlaps, week numbers, etc.) are DST-safe.
-/// Use [forLocation] to convert back to a wall-clock [KalenderDateTimeRange].
+/// Both [start] and [end] name no timezone, so [dates], [overlaps] and
+/// [weekNumbers] step calendar units and stay correct across a DST transition.
+/// Use [forLocation] to convert back to a [KalenderDateTimeRange] of instants.
 ///
 /// This is deliberately a separate type from [KalenderDateTimeRange] rather than
 /// a set of helpers on it. Its ends are calendar positions, not instants, so
 /// stepping a day moves a day even across a DST transition, where adding 24
-/// hours to a real instant does not. [dates], [overlaps] and [weekNumbers] are
-/// only correct on that footing.
-class InternalDateTimeRange {
-  /// Creates a [InternalDateTimeRange] instance.
-  InternalDateTimeRange({
+/// hours to a real instant does not. Keeping the two types apart is also what
+/// makes the compiler refuse a range of instants where a layout position is
+/// wanted.
+class FloatingDateTimeRange {
+  /// Creates a [FloatingDateTimeRange] instance.
+  FloatingDateTimeRange({
     required DateTime start,
     required DateTime end,
-  })  : start = InternalDateTime.fromDateTime(start),
-        end = InternalDateTime.fromDateTime(end) {
+  })  : start = FloatingDateTime.fromDateTime(start),
+        end = FloatingDateTime.fromDateTime(end) {
     assert(!this.start.isAfter(this.end));
   }
 
-  /// Creates a [InternalDateTimeRange] from an existing [KalenderDateTimeRange].
-  InternalDateTimeRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange)
-      : start = InternalDateTime.fromDateTime(dateTimeRange.start),
-        end = InternalDateTime.fromDateTime(dateTimeRange.end) {
+  /// Creates a [FloatingDateTimeRange] from an existing [KalenderDateTimeRange].
+  FloatingDateTimeRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange)
+      : start = FloatingDateTime.fromDateTime(dateTimeRange.start),
+        end = FloatingDateTime.fromDateTime(dateTimeRange.end) {
     assert(!start.isAfter(end));
   }
 
   /// The start of the range.
-  final InternalDateTime start;
+  final FloatingDateTime start;
 
   /// The end of the range.
-  final InternalDateTime end;
+  final FloatingDateTime end;
 
   /// The [Duration] between [start] and [end].
   Duration get duration => end.difference(start);
@@ -49,7 +50,7 @@ class InternalDateTimeRange {
   ///
   /// By default the end date is excluded (half-open). Set [inclusive] to `true`
   /// to include the end date itself.
-  List<InternalDateTime> dates({bool inclusive = false}) {
+  List<FloatingDateTime> dates({bool inclusive = false}) {
     // Start with the beginning of the start date.
     final dates = [start.startOfDay];
 
@@ -84,9 +85,9 @@ class InternalDateTimeRange {
   /// * If [date] is on the end day → `[startOfDay, end)`.
   /// * If [date] is in between → the full day `[startOfDay, endOfDay)`.
   /// * If start and end are the same day → returns the range unchanged.
-  InternalDateTimeRange? dateTimeRangeOnDate(InternalDateTime date) {
+  FloatingDateTimeRange? dateTimeRangeOnDate(FloatingDateTime date) {
     // Adjust the start and end times to the beginning and end of the day.
-    final range = InternalDateTimeRange(start: start.startOfDay, end: end.endOfDay);
+    final range = FloatingDateTimeRange(start: start.startOfDay, end: end.endOfDay);
 
     // Check if the given date is outside the range. If so, return null.
     if (!date.isWithin(range, includeStart: true)) return null;
@@ -95,21 +96,21 @@ class InternalDateTimeRange {
     if (start.isSameDay(end)) return this;
 
     // Check if the given date is the same as the start date.
-    if (date.isSameDay(start)) return InternalDateTimeRange(start: start, end: start.endOfDay);
+    if (date.isSameDay(start)) return FloatingDateTimeRange(start: start, end: start.endOfDay);
 
     // Check if the given date is the same as the end date.
-    if (date.isSameDay(end)) return InternalDateTimeRange(start: end.startOfDay, end: end);
+    if (date.isSameDay(end)) return FloatingDateTimeRange(start: end.startOfDay, end: end);
 
     // If none of the above conditions are met, the date must be within the range
     // but not the start or end date.
-    return InternalDateTimeRange(start: date.startOfDay, end: date.endOfDay);
+    return FloatingDateTimeRange(start: date.startOfDay, end: date.endOfDay);
   }
 
   /// Whether this range shares any time with [other].
   ///
   /// Ranges that only touch at a boundary (e.g. one ends where the other starts)
   /// return `false` by default. Set [touching] to `true` to treat those as overlapping.
-  bool overlaps(InternalDateTimeRange other, {bool touching = false}) {
+  bool overlaps(FloatingDateTimeRange other, {bool touching = false}) {
     // Check if the ranges overlap.
     final overlap = start.isBefore(other.end) && end.isAfter(other.start);
     if (!touching) return overlap;
@@ -153,7 +154,7 @@ class InternalDateTimeRange {
   /// `(firstWeek, lastWeek)` when the range crosses a week boundary.
   /// A midnight end is treated as the previous day.
   (int first, int? last) get weekNumbers {
-    final days = InternalDateTimeRange(start: start, end: end).dates(inclusive: false);
+    final days = FloatingDateTimeRange(start: start, end: end).dates(inclusive: false);
     final isSingleWeek = days.length <= 7;
 
     if (start.year != end.year && !isSingleWeek) {
@@ -178,7 +179,7 @@ class InternalDateTimeRange {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is InternalDateTimeRange && other.start == start && other.end == end;
+    return other is FloatingDateTimeRange && other.start == start && other.end == end;
   }
 
   @override

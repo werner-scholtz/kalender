@@ -36,5 +36,5 @@ abstract class EventStore {
   /// Parameters:
   /// - [dateTimeRange]: The internal date time range to search for events.
   /// - [location]: The location for which to retrieve the event IDs.
-  Set<String> eventIdsFromDateTimeRange(InternalDateTimeRange dateTimeRange, Location? location);
+  Set<String> eventIdsFromDateTimeRange(FloatingDateTimeRange dateTimeRange, Location? location);
 }

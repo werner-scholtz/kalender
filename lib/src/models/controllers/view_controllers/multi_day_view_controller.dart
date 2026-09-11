@@ -7,13 +7,13 @@ class MultiDayViewController extends ViewController {
     required this.viewConfiguration,
     required super.internalVisibleRange,
     required this.visibleEvents,
-    InternalDateTime? initialDate,
+    FloatingDateTime? initialDate,
     KalenderTime? initialTimeOfDayOverride,
     double? initialHeightPerMinute,
     super.location,
   }) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
-    final now = InternalDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
+    final now = FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
     initialPage = pageIndexCalculator.indexFromDate(initialDate ?? now, location);
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
@@ -27,7 +27,7 @@ class MultiDayViewController extends ViewController {
     final range = pageIndexCalculator.dateTimeRangeFromIndex(initialPage, location);
 
     if (type == MultiDayViewType.freeScroll) {
-      internalVisibleRange.value = InternalDateTimeRange(
+      internalVisibleRange.value = FloatingDateTimeRange(
         start: range.start,
         end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
       );
@@ -38,8 +38,8 @@ class MultiDayViewController extends ViewController {
     // Align the top of the viewport with the initial time-of-day. The override
     // (e.g. a time-of-day preserved across a view switch) takes precedence over
     // the view's configured initialTimeOfDay.
-    final topOfDay = (initialTimeOfDayOverride ?? viewConfiguration.initialTimeOfDay).toInternalDateTime(now);
-    final dayStart = viewConfiguration.timeOfDayRange.start.toInternalDateTime(now);
+    final topOfDay = (initialTimeOfDayOverride ?? viewConfiguration.initialTimeOfDay).toFloatingDateTime(now);
+    final dayStart = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(now);
     final scrollOffset = topOfDay.difference(dayStart).inMinutes * heightPerMinute.value;
     scrollController = ScrollController(initialScrollOffset: scrollOffset);
     // Seed the visible time-of-day from the initial offset, since a ScrollController
@@ -141,8 +141,8 @@ class MultiDayViewController extends ViewController {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    final internalDate = InternalDateTime.fromExternal(date);
-    final startOfDay = viewConfiguration.timeOfDayRange.start.toInternalDateTime(internalDate);
+    final internalDate = FloatingDateTime.fromExternal(date);
+    final startOfDay = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(internalDate);
     final timeDifference = internalDate.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
@@ -167,7 +167,7 @@ class MultiDayViewController extends ViewController {
     final eventCenter = event.internalStart(location: location).add(Duration(minutes: event.duration.inMinutes ~/ 2));
     final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
-    final target = InternalDateTime.fromDateTime(eventCenter.subtract(duration));
+    final target = FloatingDateTime.fromDateTime(eventCenter.subtract(duration));
 
     // It is important to check if the target is in the same day as the event start.
     // If it is, we can use the local time of the target, otherwise we use the event start.

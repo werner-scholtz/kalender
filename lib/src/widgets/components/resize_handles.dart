@@ -27,8 +27,8 @@ class ResizeHandleDetails {
   /// The global interaction settings for the calendar.
   final KalenderInteraction interaction;
 
-  /// The InternalDateTimeRange that the current view is displaying.
-  final InternalDateTimeRange dateTimeRange;
+  /// The FloatingDateTimeRange that the current view is displaying.
+  final FloatingDateTimeRange dateTimeRange;
 
   /// The size of the event tile.
   final Size size;

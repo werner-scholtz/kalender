@@ -151,9 +151,9 @@ class WeekNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final internalDateTime = InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(visibleDateTimeRange.start, location: context.location),
-      end: InternalDateTime.fromExternal(visibleDateTimeRange.end, location: context.location),
+    final internalDateTime = FloatingDateTimeRange(
+      start: FloatingDateTime.fromExternal(visibleDateTimeRange.start, location: context.location),
+      end: FloatingDateTime.fromExternal(visibleDateTimeRange.end, location: context.location),
     );
     final (start, end) = internalDateTime.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');

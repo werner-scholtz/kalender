@@ -46,9 +46,9 @@ class KalenderTime implements Comparable<KalenderTime> {
     return KalenderTime(hour: hour ?? this.hour, minute: minute ?? this.minute);
   }
 
-  /// This time on [dateTime]'s date, as an [InternalDateTime].
-  InternalDateTime toInternalDateTime(InternalDateTime dateTime) {
-    return InternalDateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
+  /// This time on [dateTime]'s date, as an [FloatingDateTime].
+  FloatingDateTime toFloatingDateTime(FloatingDateTime dateTime) {
+    return FloatingDateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
   }
 
   /// This time on [dateTime]'s date.

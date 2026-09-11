@@ -473,7 +473,7 @@ class _RecordingStrategy extends MultiDayLayoutStrategy {
 
   @override
   MultiDayLayoutFrame generateFrame({
-    required InternalDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleDateTimeRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,

@@ -12,7 +12,7 @@ import '../utilities.dart';
 void main() {
   // 15 January 2025 is a Wednesday, whose abbreviation differs from the first
   // three letters of its full name in several locales.
-  final wednesday = InternalDateTime(2025, 1, 15);
+  final wednesday = FloatingDateTime(2025, 1, 15);
 
   Future<void> pumpScheduleDate(WidgetTester tester, Locale locale) async {
     await initializeDateFormatting(locale.toLanguageTag());

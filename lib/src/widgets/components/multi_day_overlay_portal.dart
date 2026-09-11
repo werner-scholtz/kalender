@@ -26,7 +26,7 @@ typedef MultiDayOverlayPortalBuilder = Widget Function(
 /// A widget that manages the overlay portal for a single day.
 class MultiDayOverlayPortal extends StatefulWidget {
   /// The date for which the widget is created.
-  final InternalDateTime date;
+  final FloatingDateTime date;
 
   /// All the events that should be displayed for the given [date].
   final List<KalenderEvent> events;

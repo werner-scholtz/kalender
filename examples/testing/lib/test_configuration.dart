@@ -34,11 +34,11 @@ class TestConfiguration {
 
     // Loop through the test range and create events.
     final events = <KalenderEvent>[
-      for (var date in InternalDateTimeRange.fromDateTimeRange(testRange).dates()) ...[
+      for (var date in FloatingDateTimeRange.fromDateTimeRange(testRange).dates()) ...[
         for (var timeOfDayRange in timeOfDayRanges)
           Event(
-            start: timeOfDayRange.start.toInternalDateTime(date),
-            end: timeOfDayRange.end.toInternalDateTime(date),
+            start: timeOfDayRange.start.toFloatingDateTime(date),
+            end: timeOfDayRange.end.toFloatingDateTime(date),
             title: 'Event',
             description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
             color: Colors.primaries[date.day % Colors.primaries.length],

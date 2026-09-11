@@ -6,8 +6,8 @@ import '../utilities.dart';
 
 /// Two resolvers landing in different months, so the visible range names which
 /// one ran.
-InternalDateTime resolveToMarch(ViewTransitionContext transition) => InternalDateTime(2025, 3, 10);
-InternalDateTime resolveToAugust(ViewTransitionContext transition) => InternalDateTime(2025, 8, 20);
+FloatingDateTime resolveToMarch(ViewTransitionContext transition) => FloatingDateTime(2025, 3, 10);
+FloatingDateTime resolveToAugust(ViewTransitionContext transition) => FloatingDateTime(2025, 8, 20);
 
 DateTime nowMonday() => DateTime(2025, 1, 13, 14, 30);
 DateTime nowTuesday() => DateTime(2025, 1, 14, 14, 30);

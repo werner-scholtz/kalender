@@ -8,11 +8,11 @@ import '../utilities.dart';
 void main() {
   group('TimeIndicatorPositioner', () {
     final key = UniqueKey();
-    final now = InternalDateTime.fromDateTime(DateTime.now()).startOfWeek();
-    final range = InternalDateTimeRange(start: now, end: now.endOfWeek());
+    final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
+    final range = FloatingDateTimeRange(start: now, end: now.endOfWeek());
     final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range.forLocation());
 
-    for (final (index, date) in range.dates().map(InternalDateTime.fromDateTime).indexed) {
+    for (final (index, date) in range.dates().map(FloatingDateTime.fromDateTime).indexed) {
       testWidgets('for date index: ($index)', (tester) async {
         await pumpAndSettleWithMaterialApp(
           tester,

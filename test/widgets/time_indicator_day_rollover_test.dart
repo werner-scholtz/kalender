@@ -21,8 +21,8 @@ void main() {
   /// Pumps a week view whose clock is [now], and returns the indicator finder.
   Future<Finder> pumpWeek(WidgetTester tester, DateTime Function() now, {Key? key}) async {
     final indicatorKey = key ?? UniqueKey();
-    final monday = InternalDateTime.fromDateTime(now()).startOfWeek();
-    final range = InternalDateTimeRange(start: monday, end: monday.endOfWeek());
+    final monday = FloatingDateTime.fromDateTime(now()).startOfWeek();
+    final range = FloatingDateTimeRange(start: monday, end: monday.endOfWeek());
 
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -72,8 +72,8 @@ void main() {
     final indicatorKey = UniqueKey();
     late StateSetter rebuild;
 
-    final monday = InternalDateTime.fromDateTime(now).startOfWeek();
-    final range = InternalDateTimeRange(start: monday, end: monday.endOfWeek());
+    final monday = FloatingDateTime.fromDateTime(now).startOfWeek();
+    final range = FloatingDateTimeRange(start: monday, end: monday.endOfWeek());
 
     await pumpAndSettleWithMaterialApp(
       tester,

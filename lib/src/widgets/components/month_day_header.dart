@@ -103,7 +103,7 @@ class MonthDayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).monthDayHeaderStyle ?? const MonthDayHeaderStyle()).merge(this.style);
-    final localDate = InternalDateTime.fromExternal(date, location: context.location);
+    final localDate = FloatingDateTime.fromExternal(date, location: context.location);
     final stringBuilder = context.components.monthComponents.bodyComponents.monthDayHeaderStringBuilder;
     final displayDate = localDate.forLocation(location: context.location);
     final numberText = stringBuilder?.call(context, displayDate) ?? date.day.toString();

@@ -13,7 +13,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   late final ValueNotifier<Set<KalenderEvent>> visibleEvents;
 
   /// The initial date to display in the schedule view.
-  final InternalDateTime initialDate;
+  final FloatingDateTime initialDate;
 
   ScheduleViewController({
     super.location,
@@ -34,7 +34,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   ItemPositionsListener? itemPositionsListener;
 
   /// The highlighted date time range.
-  final highlightedDateTimeRange = ValueNotifier<InternalDateTimeRange?>(null);
+  final highlightedDateTimeRange = ValueNotifier<FloatingDateTimeRange?>(null);
 
   /// The index of the current page.
   late int currentPage;
@@ -46,7 +46,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   ListItem? item(int index) => indexItem(currentPage)[index];
 
   /// Get the [DateTime] for the given index of the current page.
-  InternalDateTime? dateTimeFromIndex(int index) => dateTimeFromIndexForPage(currentPage, index);
+  FloatingDateTime? dateTimeFromIndex(int index) => dateTimeFromIndexForPage(currentPage, index);
 
   /// Get the index of the item for the given [DateTime] for the current page.
   int? indexFromDateTime(DateTime date) => indexFromDateTimeForPage(currentPage, date);
@@ -55,7 +55,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   int closestIndex(DateTime date) => closestIndexForPage(currentPage, date);
 
   /// Add an item to the schedule map of the current page.
-  void addItem({required ListItem item, required InternalDateTime date, bool isFirst = false}) {
+  void addItem({required ListItem item, required FloatingDateTime date, bool isFirst = false}) {
     return addItemForPage(item: item, date: date, pageIndex: currentPage, isFirst: isFirst);
   }
 
@@ -68,7 +68,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   /// [indexFromDateTime]/[closestIndex] look up), and never writes a fallback back
   /// into the authoritative date→index map.
   int initialScrollIndex(DateTime date) {
-    final normalized = InternalDateTime.fromExternal(date, location: location).startOfDay;
+    final normalized = FloatingDateTime.fromExternal(date, location: location).startOfDay;
     return dateTimeItemIndex(currentPage)[normalized] ?? closestIndex(normalized);
   }
 
@@ -142,7 +142,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
 
     final date = dateTimeFromIndex(currentIndex);
     if (date == null) return;
-    final nextMonth = InternalDateTime.fromDateTime(date.copyWith(month: date.month + 1)).startOfMonth;
+    final nextMonth = FloatingDateTime.fromDateTime(date.copyWith(month: date.month + 1)).startOfMonth;
 
     final index = monthIndexFromDateTime(currentPage, nextMonth) ?? closestIndex(nextMonth);
     return _animateToIndex(index);
@@ -157,7 +157,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
     final currentDate = dateTimeFromIndex(currentIndex);
 
     if (currentDate == null) return;
-    final previousDate = InternalDateTime.fromDateTime(currentDate.copyWith(month: currentDate.month - 1)).startOfMonth;
+    final previousDate = FloatingDateTime.fromDateTime(currentDate.copyWith(month: currentDate.month - 1)).startOfMonth;
 
     final index = monthIndexFromDateTime(currentPage, previousDate) ?? closestIndex(previousDate);
     return _animateToIndex(index);

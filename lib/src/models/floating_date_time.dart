@@ -1,17 +1,22 @@
 import 'package:kalender/kalender.dart';
 
-/// A [DateTime] subclass that stores date/time components as-is via [DateTime.utc],
-/// bypassing implicit timezone conversions.
+/// A date and time with no timezone, the calendar position the views lay out
+/// with.
 ///
-/// **Not a real UTC instant** — the UTC flag is only used to prevent Dart from
-/// applying local-timezone adjustments. This makes arithmetic (e.g. [add], [subtract])
-/// DST-safe and keeps display values stable across timezones.
+/// Floating is the term RFC 5545 uses for a date and time that names no
+/// timezone, so 09:00 is 09:00 wherever it is read. The components are stored
+/// as-is through [DateTime.utc], which stops Dart applying local-timezone
+/// adjustments, so [add] and [subtract] step calendar units rather than
+/// absolute time and a value renders the same in every timezone.
 ///
-/// Use [fromExternal] to convert a wall-clock [DateTime] or [TZDateTime] into
-/// an [InternalDateTime], and [forLocation] to convert back.
-class InternalDateTime extends DateTime {
-  /// Creates a [InternalDateTime] instance.
-  InternalDateTime(
+/// **Not a UTC instant.** The UTC flag is how the components are held, not a
+/// claim about the zone.
+///
+/// Use [fromExternal] to convert a zoned [DateTime] or [TZDateTime] into a
+/// [FloatingDateTime], and [forLocation] to convert back.
+class FloatingDateTime extends DateTime {
+  /// Creates a [FloatingDateTime] instance.
+  FloatingDateTime(
     super.year, [
     super.month,
     super.day,
@@ -22,8 +27,8 @@ class InternalDateTime extends DateTime {
     super.microsecond,
   ]) : super.utc();
 
-  /// Creates a [InternalDateTime] from an existing [DateTime].
-  InternalDateTime.fromDateTime(DateTime dateTime)
+  /// Creates a [FloatingDateTime] from an existing [DateTime].
+  FloatingDateTime.fromDateTime(DateTime dateTime)
       : super.utc(
           dateTime.year,
           dateTime.month,
@@ -35,48 +40,48 @@ class InternalDateTime extends DateTime {
           dateTime.microsecond,
         );
 
-  /// Converts a [DateTime] or [TZDateTime] into an [InternalDateTime].
+  /// Converts a [DateTime] or [TZDateTime] into an [FloatingDateTime].
   ///
-  /// Returns [dateTime] unchanged if it is already an [InternalDateTime].
+  /// Returns [dateTime] unchanged if it is already an [FloatingDateTime].
   /// Otherwise converts to UTC first, then resolves to the target timezone
   /// ([location] if provided, or the system's local timezone) before
   /// storing the resulting components.
-  static InternalDateTime fromExternal(DateTime dateTime, {Location? location}) {
-    if (dateTime is InternalDateTime) return dateTime;
+  static FloatingDateTime fromExternal(DateTime dateTime, {Location? location}) {
+    if (dateTime is FloatingDateTime) return dateTime;
     final utc = dateTime.toUtc();
     final date = location != null ? TZDateTime.from(utc, location) : utc.toLocal();
-    return InternalDateTime.fromDateTime(date);
+    return FloatingDateTime.fromDateTime(date);
   }
 
   /// Returns midnight (00:00:00) of this date.
-  InternalDateTime get startOfDay => InternalDateTime(year, month, day);
+  FloatingDateTime get startOfDay => FloatingDateTime(year, month, day);
 
   /// Returns midnight (00:00:00) of the **next** day (exclusive upper bound).
   ///
   /// This is an exclusive boundary — it represents the start of the following day,
   /// not the last instant of the current day. Useful for half-open `[start, end)` ranges.
-  InternalDateTime get endOfDay => InternalDateTime(year, month, day + 1);
+  FloatingDateTime get endOfDay => FloatingDateTime(year, month, day + 1);
 
   /// Returns a half-open `[start, end)` range covering this entire day.
-  InternalDateTimeRange get dayRange => InternalDateTimeRange(start: startOfDay, end: endOfDay);
+  FloatingDateTimeRange get dayRange => FloatingDateTimeRange(start: startOfDay, end: endOfDay);
 
   /// Returns the first day of this date's month at midnight.
-  InternalDateTime get startOfMonth => InternalDateTime(year, month, 1);
+  FloatingDateTime get startOfMonth => FloatingDateTime(year, month, 1);
 
   /// Returns the first day of the **next** month at midnight (exclusive upper bound).
-  InternalDateTime get endOfMonth => InternalDateTime(year, month + 1, 1);
+  FloatingDateTime get endOfMonth => FloatingDateTime(year, month + 1, 1);
 
   /// Returns a half-open `[start, end)` range covering this entire month.
-  InternalDateTimeRange get monthRange => InternalDateTimeRange(start: startOfMonth, end: endOfMonth);
+  FloatingDateTimeRange get monthRange => FloatingDateTimeRange(start: startOfMonth, end: endOfMonth);
 
   /// Returns January 1st of this date's year at midnight.
-  InternalDateTime get startOfYear => InternalDateTime(year, 1, 1);
+  FloatingDateTime get startOfYear => FloatingDateTime(year, 1, 1);
 
   /// Returns January 1st of the **next** year at midnight (exclusive upper bound).
-  InternalDateTime get endOfYear => InternalDateTime(year + 1, 1, 1);
+  FloatingDateTime get endOfYear => FloatingDateTime(year + 1, 1, 1);
 
   /// Returns a half-open `[start, end)` range covering this entire year.
-  InternalDateTimeRange get yearRange => InternalDateTimeRange(start: startOfYear, end: endOfYear);
+  FloatingDateTimeRange get yearRange => FloatingDateTimeRange(start: startOfYear, end: endOfYear);
 
   /// Whether this date is exactly at midnight (all time components are zero).
   bool get isStartOfDay => hour == 0 && minute == 0 && second == 0 && millisecond == 0 && microsecond == 0;
@@ -85,32 +90,32 @@ class InternalDateTime extends DateTime {
   ///
   /// The [firstDayOfWeek] parameter controls which day starts the week
   /// (defaults to [DateTime.monday] per ISO 8601).
-  InternalDateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
+  FloatingDateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final daysToSubtract = (weekday - firstDayOfWeek) % 7;
-    return InternalDateTime(year, month, day - daysToSubtract);
+    return FloatingDateTime(year, month, day - daysToSubtract);
   }
 
   /// Returns midnight of the day **after** the last day of this date's week (exclusive upper bound).
   ///
   /// The [firstDayOfWeek] parameter controls which day starts the week
   /// (defaults to [DateTime.monday] per ISO 8601).
-  InternalDateTime endOfWeek({int firstDayOfWeek = DateTime.monday}) {
+  FloatingDateTime endOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final daysToAdd = (firstDayOfWeek - weekday - 1) % 7;
-    return InternalDateTime(year, month, day + daysToAdd + 1);
+    return FloatingDateTime(year, month, day + daysToAdd + 1);
   }
 
   /// Returns a half-open `[start, end)` range covering this entire week.
   ///
   /// The [firstDayOfWeek] parameter controls which day starts the week
   /// (defaults to [DateTime.monday] per ISO 8601).
-  InternalDateTimeRange weekRange({int firstDayOfWeek = DateTime.monday}) {
-    return InternalDateTimeRange(
+  FloatingDateTimeRange weekRange({int firstDayOfWeek = DateTime.monday}) {
+    return FloatingDateTimeRange(
       start: startOfWeek(firstDayOfWeek: firstDayOfWeek),
       end: endOfWeek(firstDayOfWeek: firstDayOfWeek),
     );
   }
 
-  /// Converts this [InternalDateTime] to a [DateTime] for the specified [location].
+  /// Converts this [FloatingDateTime] to a [DateTime] for the specified [location].
   DateTime forLocation({Location? location}) {
     if (location == null) {
       return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
@@ -119,7 +124,7 @@ class InternalDateTime extends DateTime {
     }
   }
 
-  /// Checks if this [InternalDateTime] represents the current day in the specified [location].
+  /// Checks if this [FloatingDateTime] represents the current day in the specified [location].
   ///
   /// Both `now` and this date are converted to the same target timezone before
   /// comparing year, month, and day. This is necessary because comparing in UTC
@@ -136,7 +141,7 @@ class InternalDateTime extends DateTime {
   ///
   /// Example:
   /// ```dart
-  /// final date = InternalDateTime.fromDateTime(DateTime.now());
+  /// final date = FloatingDateTime.fromDateTime(DateTime.now());
   ///
   /// // Check using system timezone
   /// print(date.isToday()); // true
@@ -151,7 +156,7 @@ class InternalDateTime extends DateTime {
   /// ```
   bool isToday({Location? location, DateTime? now}) {
     if (now != null) {
-      return isSameDay(InternalDateTime.fromDateTime(now));
+      return isSameDay(FloatingDateTime.fromDateTime(now));
     }
     final currentTime = location != null ? TZDateTime.now(location) : DateTime.now();
     final localDate = forLocation(location: location);
@@ -160,40 +165,40 @@ class InternalDateTime extends DateTime {
         localDate.day == currentTime.day;
   }
 
-  /// Checks if [date] falls on the same calendar day as this [InternalDateTime].
+  /// Checks if [date] falls on the same calendar day as this [FloatingDateTime].
   ///
   /// Compares year, month, and day components only; time-of-day is ignored.
   ///
   /// Example:
   /// ```dart
-  /// final date = InternalDateTime(2024, 1, 15);
-  /// print(date.isSameDay(InternalDateTime(2024, 1, 15))); // Output: true
-  /// print(date.isSameDay(InternalDateTime(2024, 1, 16))); // Output: false
+  /// final date = FloatingDateTime(2024, 1, 15);
+  /// print(date.isSameDay(FloatingDateTime(2024, 1, 15))); // Output: true
+  /// print(date.isSameDay(FloatingDateTime(2024, 1, 16))); // Output: false
   /// ```
-  bool isSameDay(InternalDateTime date) {
+  bool isSameDay(FloatingDateTime date) {
     return year == date.year && month == date.month && day == date.day;
   }
 
-  /// Checks if this [InternalDateTime] occurs during the given [InternalDateTimeRange].
+  /// Checks if this [FloatingDateTime] occurs during the given [FloatingDateTimeRange].
   ///
   /// By default, the start time is included in the range, but the end time is not.
   /// This behavior can be changed by setting the `includeStart` and `includeEnd` parameters.
   ///
   /// Example:
   /// ```dart
-  /// final date = InternalDateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final range = InternalDateTimeRange(start: InternalDateTime(2024, 1, 1), end: InternalDateTime(2024, 1, 31));
+  /// final date = FloatingDateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 31));
   /// print(date.isWithin(range)); // Output: true
   ///
-  /// final date2 = InternalDateTime(2024, 1, 1); // January 1, 2024, 12:00 AM
+  /// final date2 = FloatingDateTime(2024, 1, 1); // January 1, 2024, 12:00 AM
   /// print(date2.isWithin(range)); // Output: true
   /// print(date2.isWithin(range, includeStart: false)); // Output: false
   ///
-  /// final date3 = InternalDateTime(2024, 1, 31); // January 31, 2024, 12:00 AM
+  /// final date3 = FloatingDateTime(2024, 1, 31); // January 31, 2024, 12:00 AM
   /// print(date3.isWithin(range)); // Output: false
   /// print(date3.isWithin(range, includeEnd: true)); // Output: true
   /// ```
-  bool isWithin(InternalDateTimeRange dateTimeRange, {bool includeStart = true, bool includeEnd = false}) {
+  bool isWithin(FloatingDateTimeRange dateTimeRange, {bool includeStart = true, bool includeEnd = false}) {
     final isWithin = isAfter(dateTimeRange.start) && isBefore(dateTimeRange.end);
     late final isAtStart = isAtSameMomentAs(dateTimeRange.start);
     late final isAtEnd = isAtSameMomentAs(dateTimeRange.end);
@@ -222,13 +227,13 @@ class InternalDateTime extends DateTime {
     // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
     if (woy == 0) {
       // The 28th of December is always in the last week of the year
-      return InternalDateTime(year - 1, 12, 28).weekNumber;
+      return FloatingDateTime(year - 1, 12, 28).weekNumber;
     }
 
     // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
     if (woy == 53 &&
-        InternalDateTime(year, 1, 1).weekday != DateTime.thursday &&
-        InternalDateTime(year, 12, 31).weekday != DateTime.thursday) {
+        FloatingDateTime(year, 1, 1).weekday != DateTime.thursday &&
+        FloatingDateTime(year, 12, 31).weekday != DateTime.thursday) {
       return 1;
     }
 
@@ -250,24 +255,24 @@ class InternalDateTime extends DateTime {
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
   }
 
-  /// Adds a [Duration] to this [InternalDateTime] and returns a new [InternalDateTime].
+  /// Adds a [Duration] to this [FloatingDateTime] and returns a new [FloatingDateTime].
   ///
-  /// Note because [InternalDateTime] is stored in UTC, it is unaffected by DST changes,
+  /// Note because [FloatingDateTime] is stored in UTC, it is unaffected by DST changes,
   /// so adding a duration will always yield the expected result without any surprises.
   @override
-  InternalDateTime add(Duration duration) {
+  FloatingDateTime add(Duration duration) {
     final result = super.add(duration);
-    return InternalDateTime.fromDateTime(result);
+    return FloatingDateTime.fromDateTime(result);
   }
 
-  /// Subtracts a [Duration] from this [InternalDateTime] and returns a new [InternalDateTime].
+  /// Subtracts a [Duration] from this [FloatingDateTime] and returns a new [FloatingDateTime].
   ///
-  /// Note because [InternalDateTime] is stored in UTC, it is unaffected by DST changes,
+  /// Note because [FloatingDateTime] is stored in UTC, it is unaffected by DST changes,
   /// so subtracting a duration will always yield the expected result without any surprises.
   @override
-  InternalDateTime subtract(Duration duration) {
+  FloatingDateTime subtract(Duration duration) {
     final result = super.subtract(duration);
-    return InternalDateTime.fromDateTime(result);
+    return FloatingDateTime.fromDateTime(result);
   }
 
   /// Returns the [Duration] between this and [other].
@@ -277,10 +282,10 @@ class InternalDateTime extends DateTime {
   @override
   Duration difference(DateTime other) => super.difference(other);
 
-  /// Returns a new [InternalDateTime] with the given fields replaced.
+  /// Returns a new [FloatingDateTime] with the given fields replaced.
   ///
   /// Unspecified fields are copied from this instance.
-  InternalDateTime copyWith({
+  FloatingDateTime copyWith({
     int? year,
     int? month,
     int? day,
@@ -290,7 +295,7 @@ class InternalDateTime extends DateTime {
     int? millisecond,
     int? microsecond,
   }) {
-    return InternalDateTime(
+    return FloatingDateTime(
       year ?? this.year,
       month ?? this.month,
       day ?? this.day,

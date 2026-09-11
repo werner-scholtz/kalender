@@ -402,15 +402,15 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
             // Ensure that the event is visible.
             final eventRange = eventBeingDragged.internalRange(location: context.location);
-            if (!eventRange.overlaps(InternalDateTimeRange.fromDateTimeRange(visibleRange))) return const SizedBox();
+            if (!eventRange.overlaps(FloatingDateTimeRange.fromDateTimeRange(visibleRange))) return const SizedBox();
 
             final start = eventBeingDragged.internalStart(location: context.location);
             final end = eventBeingDragged.internalEnd(location: context.location);
 
             // Calculate the top and bottom values.
             final startTop =
-                start.difference(timeOfDayRange.start.toInternalDateTime(start)).inMinutes * heightPerMinute;
-            final endTop = end.difference(timeOfDayRange.start.toInternalDateTime(end)).inMinutes * heightPerMinute;
+                start.difference(timeOfDayRange.start.toFloatingDateTime(start)).inMinutes * heightPerMinute;
+            final endTop = end.difference(timeOfDayRange.start.toFloatingDateTime(end)).inMinutes * heightPerMinute;
 
             final startTime = KalenderTime.fromDateTime(start);
             final endTime = KalenderTime.fromDateTime(end);

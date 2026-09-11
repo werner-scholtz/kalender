@@ -135,7 +135,7 @@ class SchedulePositionList extends StatefulWidget {
   final ScheduleBodyConfiguration configuration;
 
   /// The date range to display in this list.
-  final InternalDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange dateTimeRange;
 
   /// The current page index (used in paginated views).
   final int currentPage;
@@ -306,7 +306,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   /// this is the first occurrence of a new month in the current view.
   ///
   /// [date] The date to potentially add a month header for.
-  void _addMonthItem(InternalDateTime date) {
+  void _addMonthItem(FloatingDateTime date) {
     // Check if the date is the first date of the month.
     final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
     if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
@@ -334,7 +334,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        kalenderController.internalDateTimeRange.value = InternalDateTimeRange(start: start, end: end);
+        kalenderController.internalDateTimeRange.value = FloatingDateTimeRange(start: start, end: end);
       }
 
       // Update the visible events based on the current item positions.

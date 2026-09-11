@@ -87,8 +87,8 @@ void main() {
       final harness = _DayTileHarness(event: event, tileRange: tileRange);
       final context = await pumpHarness(tester, harness);
       final range = harness.internalTileRange(context);
-      expect(range.start, equals(InternalDateTime(2024, 1, 15)));
-      expect(range.end, equals(InternalDateTime(2024, 1, 16)));
+      expect(range.start, equals(FloatingDateTime(2024, 1, 15)));
+      expect(range.end, equals(FloatingDateTime(2024, 1, 16)));
     });
 
     testWidgets('eventRangeOnDate clips the event to the tile date', (tester) async {

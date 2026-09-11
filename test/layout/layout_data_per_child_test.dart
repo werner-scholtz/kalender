@@ -8,7 +8,7 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 /// returned list has to hold one entry per event even when two events share a
 /// key, otherwise a child is silently dropped and layout throws.
 void main() {
-  final date = InternalDateTime(2024, 1, 1);
+  final date = FloatingDateTime(2024, 1, 1);
 
   KalenderEvent event({String? id, int hour = 9}) {
     return KalenderEvent(

@@ -121,7 +121,7 @@ void main() {
       final todayIndex = controller.indexFromDateTime(DateTime(2025, 1, 15));
       expect(todayIndex, isNotNull, reason: "today's empty row must be indexed");
       expect(controller.item(todayIndex!), isA<EmptyItem>());
-      expect(controller.dateTimeFromIndex(todayIndex)!.isSameDay(InternalDateTime(2025, 1, 15)), isTrue);
+      expect(controller.dateTimeFromIndex(todayIndex)!.isSameDay(FloatingDateTime(2025, 1, 15)), isTrue);
       expect(controller.initialScrollIndex(DateTime(2025, 1, 15)), todayIndex);
 
       // Only today is shown among empty days.
@@ -143,7 +143,7 @@ void main() {
       final controller = schedule();
       final index = controller.closestIndex(DateTime(2025, 1, 15));
       expect(
-        controller.dateTimeFromIndex(index)!.isSameDay(InternalDateTime(2025, 1, 14)),
+        controller.dateTimeFromIndex(index)!.isSameDay(FloatingDateTime(2025, 1, 14)),
         isTrue,
         reason: 'Jan 14 is 1 day away, Jan 18 is 3 — the nearer one wins',
       );
@@ -164,7 +164,7 @@ void main() {
       final controller = schedule();
       final index = controller.closestIndex(DateTime(2025, 1, 15));
       expect(
-        controller.dateTimeFromIndex(index)!.isSameDay(InternalDateTime(2025, 1, 16)),
+        controller.dateTimeFromIndex(index)!.isSameDay(FloatingDateTime(2025, 1, 16)),
         isTrue,
         reason: 'Jan 16 is 1 day away, Jan 12 is 3 — the nearer one wins',
       );
@@ -180,10 +180,10 @@ void main() {
 
       final controller = schedule();
       final earliest = controller.closestIndex(DateTime(2025, 1, 1));
-      expect(controller.dateTimeFromIndex(earliest)!.isSameDay(InternalDateTime(2025, 6, 10)), isTrue);
+      expect(controller.dateTimeFromIndex(earliest)!.isSameDay(FloatingDateTime(2025, 6, 10)), isTrue);
 
       final latest = controller.closestIndex(DateTime(2025, 12, 31));
-      expect(controller.dateTimeFromIndex(latest)!.isSameDay(InternalDateTime(2025, 6, 20)), isTrue);
+      expect(controller.dateTimeFromIndex(latest)!.isSameDay(FloatingDateTime(2025, 6, 20)), isTrue);
     });
 
     testWidgets('initialScrollIndex does not pollute the date→index map', (tester) async {

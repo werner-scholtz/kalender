@@ -12,9 +12,9 @@ import '../utilities.dart';
 void main() {
   group('MultiDayLayoutFrame.dateFromColumn', () {
     // Mon 27 Jan - Sun 2 Feb 2025, a single week row of the month grid.
-    final week = InternalDateTimeRange(
-      start: InternalDateTime.fromDateTime(DateTime.utc(2025, 1, 27)),
-      end: InternalDateTime.fromDateTime(DateTime.utc(2025, 2, 3)),
+    final week = FloatingDateTimeRange(
+      start: FloatingDateTime.fromDateTime(DateTime.utc(2025, 1, 27)),
+      end: FloatingDateTime.fromDateTime(DateTime.utc(2025, 2, 3)),
     );
 
     MultiDayLayoutFrame frameFor(TextDirection textDirection) {
@@ -29,18 +29,18 @@ void main() {
     test('left to right reads columns from the start of the range', () {
       final frame = frameFor(TextDirection.ltr);
 
-      expect(frame.dateFromColumn(0), InternalDateTime.fromDateTime(DateTime.utc(2025, 1, 27)));
-      expect(frame.dateFromColumn(2), InternalDateTime.fromDateTime(DateTime.utc(2025, 1, 29)));
-      expect(frame.dateFromColumn(6), InternalDateTime.fromDateTime(DateTime.utc(2025, 2, 2)));
+      expect(frame.dateFromColumn(0), FloatingDateTime.fromDateTime(DateTime.utc(2025, 1, 27)));
+      expect(frame.dateFromColumn(2), FloatingDateTime.fromDateTime(DateTime.utc(2025, 1, 29)));
+      expect(frame.dateFromColumn(6), FloatingDateTime.fromDateTime(DateTime.utc(2025, 2, 2)));
     });
 
     test('right to left reads columns from the end of the range', () {
       final frame = frameFor(TextDirection.rtl);
 
       // Column 0 is the rightmost day of the range, not the leftmost.
-      expect(frame.dateFromColumn(0), InternalDateTime.fromDateTime(DateTime.utc(2025, 2, 2)));
-      expect(frame.dateFromColumn(4), InternalDateTime.fromDateTime(DateTime.utc(2025, 1, 29)));
-      expect(frame.dateFromColumn(6), InternalDateTime.fromDateTime(DateTime.utc(2025, 1, 27)));
+      expect(frame.dateFromColumn(0), FloatingDateTime.fromDateTime(DateTime.utc(2025, 2, 2)));
+      expect(frame.dateFromColumn(4), FloatingDateTime.fromDateTime(DateTime.utc(2025, 1, 29)));
+      expect(frame.dateFromColumn(6), FloatingDateTime.fromDateTime(DateTime.utc(2025, 1, 27)));
     });
 
     test('every column maps to a distinct date in both directions', () {

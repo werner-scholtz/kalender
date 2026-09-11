@@ -12,7 +12,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | Path | Purpose |
 |------|---------|
 | `lib/kalender.dart` | Main barrel export: organized by category (Widgets, Enumerations, Layout, Models, Components, Utils) |
-| `lib/kalender_extensions.dart` | Public extension APIs: `DateTimeExtensions`, `InternalDateTime`, `InternalDateTimeRange`, `KalenderDateTimeRange` |
+| `lib/kalender_extensions.dart` | Public extension APIs: `DateTimeExtensions`, `FloatingDateTime`, `FloatingDateTimeRange`, `KalenderDateTimeRange` |
 | `lib/src/` | All implementation code |
 | `lib/src/models/` | Core data structures: controllers, events, view configurations, providers, components, mixins |
 | `lib/src/models/controllers/` | `KalenderController` (ChangeNotifier), `EventsController` (abstract), `ViewController` (abstract), view-specific controllers |
@@ -68,7 +68,7 @@ TZ=America/New_York flutter test
 dart tool/test_timezones_linux.dart
 
 # Run specific test file across all timezones
-dart tool/test_timezones_linux.dart test/extensions/internal_date_time_test.dart
+dart tool/test_timezones_linux.dart test/models/floating_date_time_test.dart
 ```
 
 ### CI Pipeline (`.github/workflows/flutter_analyze_and_test.yml`)
@@ -149,8 +149,8 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 ### DateTime & Timezone Handling
 
 - **All dates stored in UTC**: `KalenderEvent.start`/`.end` are always UTC.
-- **Wall-clock arithmetic** uses `InternalDateTime` and `InternalDateTimeRange` (in `lib/src/extensions/`) to handle DST transitions safely.
-- Use `InternalDateTime.fromExternal(utcDateTime, location: location)` to convert for display.
+- **Calendar arithmetic** uses `FloatingDateTime` and `FloatingDateTimeRange` (in `lib/src/models/`) to handle DST transitions safely.
+- Use `FloatingDateTime.fromExternal(utcDateTime, location: location)` to convert for display.
 - The `timezone` package provides `Location` objects for timezone-aware logic.
 - `DateTimeExtensions` (public) provide localized day/month names via `intl`.
 
@@ -158,13 +158,14 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 
 Two range types exist and they are not interchangeable. `KalenderDateTimeRange`
 holds instants and is what an app hands in and reads back.
-`InternalDateTimeRange` holds unzoned calendar positions and carries the date
-arithmetic, so a day step stays a day step across a DST transition.
+`FloatingDateTimeRange` names no timezone, which is the term RFC 5545 uses, and
+carries the date arithmetic, so a day step stays a day step across a DST
+transition.
 
-**A member carrying the internal space says `internal` in its name. A member
-without it carries `KalenderDateTimeRange`.** `KalenderEvent` sets the pattern:
-`dateTimeRange`, `start` and `end` are the boundary, `internalRange()`,
-`internalStart()` and `internalEnd()` are the layout space.
+**A member is named for what it is, not for the spelling of its type, so say
+`range` rather than `dateTimeRange`.** The type annotation says which space the
+value is in. Add a `floating` marker only where one class carries both spaces,
+which `KalenderEvent` and `KalenderController` both do.
 
 Apply this to anything new. The existing surface does not follow it everywhere,
 which is recorded in ROADMAP.md under the next breaking window.

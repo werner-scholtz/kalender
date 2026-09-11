@@ -260,7 +260,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
         // Update the visible date time range based on the page index.
         final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final range = _isFreeScroll
-            ? InternalDateTimeRange(
+            ? FloatingDateTimeRange(
                 start: visibleRange.start,
                 end: visibleRange.start.add(Duration(days: widget.viewController.viewConfiguration.numberOfDays)),
               )
