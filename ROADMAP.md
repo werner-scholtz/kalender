@@ -233,11 +233,19 @@ The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 ### Known defects
 
-Found reviewing 0.30.0, neither introduced by it. Both are fixable without a break, so neither waits for a window.
+**Two were fixed in 0.30.0.** `KalenderController.id` came from a millisecond timestamp, so two controllers built together shared an id and a create drag could be accepted by the wrong calendar. `KalenderTimeRange.coversWholeDay` did not read the start minute, so a range from 00:30 reported that it covered the day.
 
-**`KalenderController.id` is not unique.** The constructor takes it from `DateTime.now().millisecondsSinceEpoch`, so two controllers built in the same millisecond share an id, and two calendars on one screen is the ordinary way to reach that. The drag targets compare on that id to decide whether a create gesture is theirs, so a create drag can be accepted by the wrong calendar. A static counter fixes it. This one can produce wrong behaviour at runtime, so it goes first.
+**Fourteen `TODO` comments ship in `lib/`.** Not all are defects, but several record real uncertainty and none is recorded anywhere but the source. Grouped by what they touch.
 
-**`KalenderTimeRange.coversWholeDay` ignores the start minute.** It tests `start.hour == 0 && end.hour == 23 && end.minute == 59`, so a range from 00:30 to 23:59 reports that it covers the whole day. The tests cover the cases it was written against and not this one, so the fix needs the missing case with it.
+*Location handling.* `multi_day_body.dart:252` says the current page is sometimes wrong after switching location, which reads as a confirmed defect rather than a note. `kalender_provider.dart:79` asks whether the calendar updates correctly when the location changes. `schedule_body.dart:261` says a location is not passed down properly. `page_index_calculator.dart:6` says the calculators still need to work with `TZDateTime` and locations. These four are one piece of work.
+
+*Drag targets.* `vertical_drag_target.dart:81` questions whether force-unwrapping `internalVisibleRange.value` is safe. The same pattern appears in `kalender_controller.dart:98`, so it is either an invariant worth writing down or a crash worth fixing, and reading it once settles both. `vertical_drag_target.dart:385` says new events may be created in an area the view does not display.
+
+*Event ids.* `kalender_event.dart:97` suggests a UUID package. 0.30.0 fixed the controller id for the same class of problem, so this is the matching question for events.
+
+*Rebuild cost.* `schedule_body.dart:42` and `:102` both flag rebuilds that may be unnecessary, and `kalender_view.dart:80` wants a field to become a `ValueNotifier`. Measure before changing any of them, as Performance below says.
+
+*Structure.* `multi_day_body.dart:12` wants the split between content and header removed, `view_controller.dart:33` notes a value is created where it could be passed in, `kalender_callbacks.dart:66` asks how the callbacks interact with the draggables, and `event_layout_delegate.dart:427` asks whether a hard-coded value should be adjustable.
 
 ### Tests
 
@@ -257,7 +265,9 @@ Both columns are line coverage of the directory and everything under it, measure
 
 The rest runs from 79% to 100% with no large gap.
 
-**Two things CI does not verify.** `analyze_examples.yml` pins every example to Flutter 3.44.6, `examples/material_ui` with them, though its `.fvmrc` says 3.47.2 and the SDK that moved Material out is the whole point of it. That example has never been analyzed on the version it demonstrates. Separately, `pubspec.yaml` declares `flutter: ">=3.22.0"` and nothing runs near that, while `lib/material.dart` writes `DateTimeRange<DateTime>`, which the Material class has not always been. Add a job on the declared minimum and set the bound from what it reports rather than from a guess.
+**One thing CI does not verify.** `analyze_examples.yml` pins every example to Flutter 3.44.6, `examples/material_ui` with them, though its `.fvmrc` says 3.47.2 and the SDK that moved Material out is the whole point of it. That example has never been analyzed on the version it demonstrates. The declared Flutter minimum is checked as of 0.30.0. It declared `flutter: ">=3.22.0"`, which never held: `lib/material.dart` needs the generic `DateTimeRange` that arrived in 3.32.0, and `timezone` needs Dart 3.10.0, which reaches stable in Flutter 3.38.1. The bound is 3.38.1 now and a job analyses against it.
+
+**The Dart bound still says `>=3.0.0` and that is not what the package needs.** `timezone` requires Dart `^3.10.0`, so pub already refuses to resolve on anything older and no user can reach the versions the bound claims. Correcting it to `>=3.10.0` costs more than it reads: the formatter picks its style from the package language version, so any bound at 3.7 or above switches `dart format` to the tall style and rewrites 161 of the 210 files. That is a real piece of work with its own review, not a line in a release. Do it on its own, and take the accurate bound with it.
 
 Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%.
 

@@ -28,6 +28,14 @@ void main() {
           isFalse,
         );
       });
+
+      test('coversWholeDay is false when the range starts after midnight', () {
+        final range = KalenderTimeRange(
+          start: const KalenderTime(hour: 0, minute: 30),
+          end: const KalenderTime(hour: 23, minute: 59),
+        );
+        expect(range.coversWholeDay, isFalse);
+      });
     });
 
     group('Constructors', () {

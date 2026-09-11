@@ -15,11 +15,16 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 /// And detaches itself by calling [detach].
 ///
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
-  KalenderController() : id = DateTime.now().millisecondsSinceEpoch {
+  KalenderController() : id = _nextId++ {
     _internalDateTimeRange.addListener(_updateVisibleDateTimeRange);
   }
 
+  static int _nextId = 0;
+
   /// This controllers id.
+  ///
+  /// Unique to this instance. The drag targets compare it to decide whether a
+  /// create gesture belongs to their calendar.
   final int id;
 
   /// This is a reference to the [ViewController] that is currently attached to this [KalenderController].

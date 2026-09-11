@@ -19,6 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
+        with:
+          cache: true
 
       # The examples are excluded via analysis_options.yaml (analyzer.exclude) and
       # verified by the separate analyze_examples.yml workflow.
@@ -51,11 +53,35 @@ jobs:
         shell: bash
         working-directory: ./
 
+  minimum-flutter: # The floor pubspec.yaml declares, so the bound is tested rather than assumed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          flutter-version: 3.38.1
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+        shell: bash
+        working-directory: ./
+
+      # Analysis is what the bound is about. The library has to compile on the
+      # oldest Flutter an app may resolve it against.
+      - name: Analyze
+        run: flutter analyze
+        shell: bash
+        working-directory: ./
+
   doc-snippets: # The code in the README and the guides, which flutter analyze cannot see
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
+        with:
+          cache: true
 
       - name: Install dependencies
         run: flutter pub get
@@ -84,6 +110,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
+        with:
+          cache: true
 
       - name: Install dependencies
         run: flutter pub get
