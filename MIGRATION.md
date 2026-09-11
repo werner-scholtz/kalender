@@ -49,8 +49,7 @@ The sections below cover what is left after the fixes have run.
 
 ### The `Calendar*` types are renamed to `Kalender*`
 
-`dart fix` applies all of these. The package has been converging on `Kalender` as
-its ownership marker since `KalenderView`, and this release finishes it.
+`dart fix` applies all of these.
 
 | Before | After |
 | --- | --- |
@@ -76,10 +75,9 @@ The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now.
 | `KalenderScope.maybeCalendarControllerOf` | `KalenderScope.maybeKalenderControllerOf` |
 | `ViewController.visibleDateTimeRange` | `ViewController.internalVisibleRange` |
 
-`ViewController`'s is the one that was not only a naming question.
-`KalenderController.visibleDateTimeRange` is a `KalenderDateTimeRange` and
-`ViewController`'s was an `InternalDateTimeRange`, so one name meant two types
-across the public API. A member carrying the internal layout space says
+`ViewController`'s changes type as well as name. `KalenderController.visibleDateTimeRange`
+is a `KalenderDateTimeRange` and `ViewController`'s is an `InternalDateTimeRange`, so
+check which one a call site holds. A member carrying the internal layout space says
 `internal` in its name now.
 
 `MultiDayRule.calendarDays` is unchanged. A calendar day is a unit of time, not a
@@ -87,10 +85,8 @@ reference to the type.
 
 ### `context.calendarLocale` is `context.kalenderLocale`
 
-The one rename in this release `dart fix` cannot apply. A data-driven fix matches
-an extension member only where the extension is named explicitly, and nobody writes
-`KalenderLocale(context).calendarLocale`. The old name is a deprecated getter that
-forwards to the new one, so the analyzer points at every call site, and it is
+The one rename in this release `dart fix` cannot apply. The old name is a deprecated
+getter that forwards to the new one, so the analyzer points at every call site. It is
 removed in 0.31.0.
 
 ```dart
@@ -108,14 +104,11 @@ them to `KalenderView` and `KalenderViewState` since 0.29.1, and still does.
 
 ### `KalenderDateTimeRange` replaces Material's `DateTimeRange`
 
-Material and Cupertino left the Flutter framework and became the `material_ui` and
-`cupertino_ui` packages. `DateTimeRange` exists in both, and two same-named classes
-from two packages are different types to the compiler, so a package naming either
-one shuts out every app on the other side. Kalender owns the type instead.
+Kalender owns this type now, so a call site reads the same whether the app uses
+Material or `material_ui`.
 
-`dart fix` cannot do this one. Kalender cannot deprecate another package's type, so
-there is nothing for a fix to trigger on. A project-wide replace of `DateTimeRange(`
-with `KalenderDateTimeRange(` covers it, plus the annotations.
+`dart fix` cannot do this one. A project-wide replace of `DateTimeRange(` with
+`KalenderDateTimeRange(` covers it, plus the annotations.
 
 ```dart
 // Before
@@ -195,8 +188,8 @@ final picked = await showTimePicker(context: context, initialTime: time.toTimeOf
 final time = picked?.toKalenderTime();
 ```
 
-It is a separate entry point, so importing `package:kalender/kalender.dart` alone
-still names no Material type.
+It is a separate entry point, so no value type in `package:kalender/kalender.dart`
+names a Material class. Theming still does, through `KalenderThemeData`.
 
 ### `TimeOfDayRange` is renamed to `KalenderTimeRange`
 

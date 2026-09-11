@@ -34,8 +34,13 @@ class Event extends KalenderEvent {
   // itself, so none of those are listed here.
   @override
   Event copyWithData({required DateTime start, required DateTime end}) {
-    return Event(start: start,
-      end: end, title: title, description: description, color: color);
+    return Event(
+      start: start,
+      end: end,
+      title: title,
+      description: description,
+      color: color,
+    );
   }
 
   // A copy method of your own. It is not an override, so it takes whatever
@@ -121,7 +126,7 @@ Pass this as `KalenderView.callbacks`:
 KalenderCallbacks(
   onEventCreate: (event) => Event(
     start: event.start,
-      end: event.end,
+    end: event.end,
     title: 'New Event',
     color: Colors.blue,
   ),

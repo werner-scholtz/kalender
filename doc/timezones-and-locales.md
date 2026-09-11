@@ -104,7 +104,7 @@ MultiDayBodyComponents(
 
 ## Location
 
-`KalenderView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `KalenderEvent` constructor automatically converts `dateTimeRange` values to UTC, so events are always stored in UTC internally and converted to the given location for display.
+`KalenderView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `KalenderEvent` constructor automatically converts `start` and `end` to UTC, so events are always stored in UTC internally and converted to the given location for display.
 
 <!-- snippet: expression -->
 ```dart

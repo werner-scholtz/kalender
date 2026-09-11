@@ -36,10 +36,24 @@ can't be assigned to the parameter type 'TimeOfDay (where TimeOfDay is defined i
 flutter/lib/src/material/time.dart)'.
 ```
 
-The calendar now uses `KalenderDateTimeRange` and `KalenderTime`, so no kalender
-signature names a Material type and nothing here needs a prefix import. Import
-`package:kalender/material.dart` for the conversions where you do hand values to
-a Material API.
+The calendar now uses `KalenderDateTimeRange` and `KalenderTime`, so neither value
+type names a Material class and nothing here needs a prefix import. Theming is a
+separate matter, covered in section 3.
+
+`package:kalender/material.dart` is not the conversion for an app on `material_ui`.
+Its extensions are on the types in `package:flutter/material.dart`, which are
+different types from `material_ui`'s, and importing it would pull Material back into
+this app. Build the kalender value directly from what `material_ui` hands you:
+
+```dart
+final picked = await showDateRangePicker(context: context, firstDate: first, lastDate: last);
+final range = picked == null ? null : KalenderDateTimeRange(start: picked.start, end: picked.end);
+
+final time = await showTimePicker(context: context, initialTime: initial);
+final start = time == null ? null : KalenderTime(hour: time.hour, minute: time.minute);
+```
+
+Wrap those in extensions of your own if you cross the boundary often.
 
 ## 3. `KalenderThemeData` cannot be a theme extension
 
