@@ -40,6 +40,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `PageIndexCalculator.month` and `MonthIndexCalculator.fromRange` build a month calculator from a range.
 - `package:kalender/material.dart` converts `KalenderDateTimeRange` and `KalenderTime` to and from Material's `DateTimeRange` and `TimeOfDay`.
 - `dart fix --apply` applies this release's renames and both parameter reshapes.
+- `context.calendarLocale` is the one rename `dart fix` cannot apply.
 
 ### Fixes
 

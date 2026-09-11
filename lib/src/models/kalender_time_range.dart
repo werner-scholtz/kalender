@@ -4,7 +4,7 @@ import 'package:kalender/src/models/kalender_time.dart';
 /// Encapsulates a start and end [KalenderTime] that represents a day time range.
 ///
 /// - The range includes the [start] and [end] times.
-/// - The [start] time must be before to the [end] time.
+/// - The [start] time must not be after the [end] time.
 class KalenderTimeRange {
   KalenderTimeRange({
     required this.start,
