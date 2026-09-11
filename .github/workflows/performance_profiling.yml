@@ -54,6 +54,7 @@ jobs:
       # shows up as a performance change that no commit here caused.
       - uses: subosito/flutter-action@v2
         with:
+          cache: true
           flutter-version: 3.44.6
           channel: stable
 
