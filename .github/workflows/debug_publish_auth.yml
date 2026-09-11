@@ -1,6 +1,5 @@
-# Temporary. Reproduces the publish workflow's dependency resolution to find why
-# it fails, and removes the pub.dev credential to compare in the same run.
-# Delete once the cause is known.
+# Temporary. Determines whether `dart pub get` resolves with a pub.dev credential
+# configured, where `flutter pub get` does not. Delete once publishing works.
 name: Debug publish auth
 
 on:
@@ -24,21 +23,24 @@ jobs:
           flutter-version: 3.47.2
           channel: 'stable'
 
-      - name: Which hosts have a credential
-        run: dart pub token list || true
+      - name: Credential is configured
+        run: dart pub token list
 
-      - name: Resolve with the credential present
-        id: authenticated
-        continue-on-error: true
-        run: flutter pub get
+      - name: A. dart pub get, credential present
+        run: |
+          if dart pub get; then echo "RESULT A: dart pub get SUCCEEDED"; else echo "RESULT A: dart pub get FAILED"; exit 1; fi
 
-      - name: The pub log from that attempt
-        if: always()
-        run: cat "${PUB_CACHE:-$HOME/.pub-cache}/log/pub_log.txt" || echo "no pub log written"
-
-      - name: Resolve again with the credential removed
+      - name: B. dart analyze, credential present
         if: always()
         run: |
-          dart pub token remove https://pub.dev || true
-          rm -f "${PUB_CACHE:-$HOME/.pub-cache}/log/pub_log.txt"
-          flutter pub get
+          if dart analyze --no-fatal-warnings; then echo "RESULT B: dart analyze SUCCEEDED"; else echo "RESULT B: dart analyze FAILED"; fi
+
+      - name: C. dart pub publish dry run, credential present
+        if: always()
+        run: |
+          if dart pub publish --dry-run; then echo "RESULT C: dry run SUCCEEDED"; else echo "RESULT C: dry run FAILED"; fi
+
+      - name: D. flutter pub get, credential present
+        if: always()
+        run: |
+          if flutter pub get; then echo "RESULT D: flutter pub get SUCCEEDED"; else echo "RESULT D: flutter pub get FAILED (expected)"; fi
