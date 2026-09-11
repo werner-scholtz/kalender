@@ -36,10 +36,8 @@ jobs:
           [ "$version" = "$tag" ] \
             || { echo "::error::pubspec.yaml is $version but the tag is $tag"; exit 1; }
 
-      # Pinned rather than tracking stable. 3.47.3 fails to resolve the versions
-      # flutter_tools pins, which stops `flutter pub get`, and publishing under it
-      # returns 403 from pub.dev while resolving. 3.47.2 published 0.28.0, 0.29.0
-      # and 0.29.1. Raise both together once a later release is known to work.
+      # Pinned rather than tracking stable, so a bad SDK release breaks a build
+      # rather than a release. Raise both together.
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: 3.13.2
@@ -48,6 +46,13 @@ jobs:
         with:
           flutter-version: 3.47.2
           channel: 'stable'
+
+      # The credential setup-dart provisions grants access to this package alone,
+      # and pub sends it with every request to pub.dev, so pub.dev refuses the
+      # metadata reads for every other package and resolution fails. It is set
+      # aside here and restored for the upload.
+      - name: Set the credential aside
+        run: dart pub token remove https://pub.dev
 
       - name: Install dependencies
         run: flutter pub get
@@ -73,6 +78,9 @@ jobs:
 
       - name: Dry-run publish
         run: flutter pub publish --dry-run
+
+      - name: Restore the credential
+        run: dart pub token add https://pub.dev --env-var PUB_TOKEN
 
       - name: Publish
         run: flutter pub publish --force
