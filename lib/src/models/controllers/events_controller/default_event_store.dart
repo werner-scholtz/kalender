@@ -122,7 +122,7 @@ class DefaultEventStore extends EventStore {
 
     for (final locationString in locationDateIdMap.keys) {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
-      final dates = event.internalRange(location: location).dates();
+      final dates = event.floatingRange(location: location).dates();
       for (final date in dates) {
         // Null-safe so a date-key that was never populated is a no-op rather
         // than throwing (Map.update without ifAbsent would); symmetric with
@@ -152,7 +152,7 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  Set<String> eventIdsFromDateTimeRange(FloatingDateTimeRange dateTimeRange, Location? location) {
+  Set<String> eventIdsInRange(FloatingDateTimeRange range, Location? location) {
     final locationString = location?.name ?? defaultLocation;
     // Ensure the location exists in the map.
     final hasLocation = hasDateToEventIds(locationString);
@@ -163,7 +163,7 @@ class DefaultEventStore extends EventStore {
       populateLocation(location);
     }
 
-    final days = dateTimeRange.dates();
+    final days = range.dates();
     final eventIds = <String>{};
     for (final day in days) {
       final dateIds = locationDateIdMap[locationString]!;
@@ -215,7 +215,7 @@ class DefaultEventStore extends EventStore {
   /// Add an [event] to the specified [location] in the [locationDateIdMap].
   void addEventToLocation(Location? location, KalenderEvent event) {
     final locationString = location?.name ?? defaultLocation;
-    final dates = event.internalRange(location: location).dates();
+    final dates = event.floatingRange(location: location).dates();
     for (final date in dates) {
       locationDateIdMap[locationString]!.update(
         toKey(date),

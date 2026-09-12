@@ -28,7 +28,7 @@ class ResizeHandleDetails {
   final KalenderInteraction interaction;
 
   /// The FloatingDateTimeRange that the current view is displaying.
-  final FloatingDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange range;
 
   /// The size of the event tile.
   final Size size;
@@ -45,7 +45,7 @@ class ResizeHandleDetails {
   const ResizeHandleDetails({
     required this.event,
     required this.interaction,
-    required this.dateTimeRange,
+    required this.range,
     required this.size,
     required this.axis,
     required this.isImprecise,
@@ -58,10 +58,10 @@ class ResizeHandleDetails {
   EventInteraction get eventInteraction => event.interaction;
 
   /// Whether the event continues before the current date range.
-  bool continuesBefore({Location? location}) => event.internalStart(location: location).isBefore(dateTimeRange.start);
+  bool continuesBefore({Location? location}) => event.floatingStart(location: location).isBefore(range.start);
 
   /// Whether the event continues after the current date range.
-  bool continuesAfter({Location? location}) => event.internalEnd(location: location).isAfter(dateTimeRange.end);
+  bool continuesAfter({Location? location}) => event.floatingEnd(location: location).isAfter(range.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
   bool showStart({Location? location}) =>

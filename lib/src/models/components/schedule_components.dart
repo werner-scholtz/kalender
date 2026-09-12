@@ -46,11 +46,11 @@ class ScheduleComponents {
   Widget buildScheduleTileHighlight(
     BuildContext context,
     FloatingDateTime date,
-    ValueNotifier<FloatingDateTimeRange?> dateTimeRange,
+    ValueNotifier<FloatingDateTimeRange?> range,
     Widget child,
   ) {
-    return scheduleTileHighlightBuilder?.call(context, date, dateTimeRange, child) ??
-        ScheduleTileHighlight(date: date, dateTimeRange: dateTimeRange, child: child);
+    return scheduleTileHighlightBuilder?.call(context, date, range, child) ??
+        ScheduleTileHighlight(date: date, range: range, child: child);
   }
 
   /// Creates a copy of this with the given fields replaced.

@@ -64,7 +64,7 @@ class _CalendarDaysRule extends MultiDayRule {
 
   @override
   bool isMultiDay(KalenderEvent event, {required Location? location}) {
-    final range = event.internalRange(location: location);
+    final range = event.floatingRange(location: location);
     if (range.dates().length > 1) return true;
 
     // `dates()` is half-open, so a full day (00:00 to the next 00:00) counts as

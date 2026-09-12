@@ -20,9 +20,9 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// This is the unzoned counterpart of [KalenderController.visibleDateTimeRange],
   /// which carries the same range as a [KalenderDateTimeRange] for an app to read.
   /// Call [FloatingDateTimeRange.forLocation] to cross between them.
-  final ValueNotifier<FloatingDateTimeRange?> internalVisibleRange;
+  final ValueNotifier<FloatingDateTimeRange?> floatingVisibleRange;
 
-  ViewController({this.location, required this.internalVisibleRange});
+  ViewController({this.location, required this.floatingVisibleRange});
 
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;

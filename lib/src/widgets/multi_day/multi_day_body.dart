@@ -234,8 +234,8 @@ class _MultiDayPageState extends State<MultiDayPage> {
 
   /// Updates the visible events for the given page index.
   void _updateVisibleEvents(int index, Location? location) {
-    final events = widget.eventsController.eventsFromDateTimeRange(
-      _pageNavigation.dateTimeRangeFromIndex(index, location),
+    final events = widget.eventsController.eventsInRange(
+      _pageNavigation.rangeFromIndex(index, location),
       multiDayRule: widget.viewController.viewConfiguration.multiDayRule,
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
@@ -258,7 +258,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (index) {
         // Update the visible date time range based on the page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
+        final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);
         final range = _isFreeScroll
             ? FloatingDateTimeRange(
                 start: visibleRange.start,
@@ -266,7 +266,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
               )
             : visibleRange;
         final controller = context.kalenderController;
-        controller.internalDateTimeRange.value = range;
+        controller.floatingRange.value = range;
 
         // Update the visible events for the new page index.
         _updateVisibleEvents(index, context.location);
@@ -277,7 +277,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
       },
       itemBuilder: (context, index) {
         // Calculate the visible date time range for the current page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
+        final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);
         final page = Stack(
           key: MultiDayPage.contentKey,
           clipBehavior: Clip.none,
@@ -296,7 +296,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
             // The draggable area for the creating events.
             Positioned.fill(
               child: DayDraggable(
-                visibleDateTimeRange: visibleRange,
+                visibleRange: visibleRange,
                 timeOfDayRange: widget.viewController.viewConfiguration.timeOfDayRange,
                 pageHeight: widget.pageHeight,
               ),
@@ -306,7 +306,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
             Positioned.fill(
               child: MultiDayEventsRow(
                 configuration: widget.configuration,
-                internalRange: visibleRange,
+                floatingRange: visibleRange,
                 viewController: widget.viewController,
               ),
             ),

@@ -123,14 +123,14 @@ class FrameSortedByEnd extends MultiDayLayoutStrategy {
 
   @override
   MultiDayLayoutFrame generateFrame({
-    required FloatingDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,
   }) {
     return defaultMultiDayFrameGenerator(
-      visibleDateTimeRange: visibleDateTimeRange,
+      visibleRange: visibleRange,
       events: events,
       textDirection: textDirection,
       location: location,

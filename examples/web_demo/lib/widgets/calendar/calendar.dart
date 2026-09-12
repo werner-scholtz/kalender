@@ -197,11 +197,11 @@ class _CalendarContentState extends State<CalendarContent> {
     // In the month gutter this resolves the calendar's own top-aligned default,
     // which it merges into the scope the gutter is drawn in.
     final style = KalenderTheme.of(context).weekNumberStyle;
-    final internalDateTimeRange = FloatingDateTimeRange(
+    final floatingRange = FloatingDateTimeRange(
       start: FloatingDateTime.fromExternal(visibleDateTimeRange.start),
       end: FloatingDateTime.fromExternal(visibleDateTimeRange.end),
     );
-    final (start, end) = internalDateTimeRange.weekNumbers;
+    final (start, end) = floatingRange.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
 
     return Align(

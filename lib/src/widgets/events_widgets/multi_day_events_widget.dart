@@ -26,7 +26,7 @@ class MultiDayEventWidget extends StatefulWidget {
   final HorizontalConfiguration configuration;
 
   /// The range of dates that are visible.
-  final FloatingDateTimeRange internalDateTimeRange;
+  final FloatingDateTimeRange floatingRange;
 
   /// The maximum number of vertical events that can be displayed.
   final int? maxNumberOfVerticalEvents;
@@ -44,7 +44,7 @@ class MultiDayEventWidget extends StatefulWidget {
     super.key,
     required this.eventsController,
     required this.configuration,
-    required this.internalDateTimeRange,
+    required this.floatingRange,
     required this.maxNumberOfVerticalEvents,
     required this.multiDayCache,
     required this.overlayBuilders,
@@ -85,8 +85,8 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   /// Updates the list of visible events if there are changes.
   void _updateEvents() {
     final visibleEvents = widget.eventsController
-        .eventsFromDateTimeRange(
-          widget.internalDateTimeRange,
+        .eventsInRange(
+          widget.floatingRange,
           multiDayRule: context.multiDayRule,
           includeDayEvents: widget.configuration.allowSingleDayEvents,
           includeMultiDayEvents: true,
@@ -126,7 +126,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
 
     return MultiDayEventLayoutWidget(
       events: _events,
-      internalDateTimeRange: widget.internalDateTimeRange,
+      floatingRange: widget.floatingRange,
       textDirection: Directionality.of(context),
       configuration: widget.configuration,
       maxNumberOfVerticalEvents: widget.maxNumberOfVerticalEvents,
@@ -150,7 +150,7 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
   final HorizontalConfiguration configuration;
 
   /// The range of dates that are visible.
-  final FloatingDateTimeRange internalDateTimeRange;
+  final FloatingDateTimeRange floatingRange;
 
   /// The list of events that will be laid out.
   ///
@@ -175,7 +175,7 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 
   const MultiDayEventLayoutWidget({
     required this.events,
-    required this.internalDateTimeRange,
+    required this.floatingRange,
     required this.configuration,
     required this.textDirection,
     required this.maxNumberOfVerticalEvents,
@@ -191,7 +191,7 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 
 class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// The range of dates that the events will be laid out on.
-  late FloatingDateTimeRange _dateTimeRange = widget.internalDateTimeRange;
+  late FloatingDateTimeRange _dateTimeRange = widget.floatingRange;
 
   /// The layout frame that contains all the data needed to display the events.
   MultiDayLayoutFrame? _frame;
@@ -212,7 +212,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   void initState() {
     super.initState();
     _frame = multiDayLayoutStrategy.generateFrame(
-      visibleDateTimeRange: _dateTimeRange,
+      visibleRange: _dateTimeRange,
       events: widget.events,
       textDirection: widget.textDirection,
       cache: widget.multiDayCache,
@@ -228,10 +228,10 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         oldWidget.configuration != widget.configuration ||
         oldWidget.textDirection != widget.textDirection;
 
-    final didUpdate = shouldUpdateCache || oldWidget.internalDateTimeRange != widget.internalDateTimeRange;
+    final didUpdate = shouldUpdateCache || oldWidget.floatingRange != widget.floatingRange;
 
     if (didUpdate) {
-      _dateTimeRange = widget.internalDateTimeRange;
+      _dateTimeRange = widget.floatingRange;
 
       if (shouldUpdateCache) {
         // The events, configuration, and text direction apply to every range,
@@ -245,7 +245,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
       setState(() {
         _frame = multiDayLayoutStrategy.generateFrame(
-          visibleDateTimeRange: _dateTimeRange,
+          visibleRange: _dateTimeRange,
           events: widget.events,
           textDirection: widget.textDirection,
           cache: widget.multiDayCache,
@@ -266,7 +266,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     // The multi-day events widget is used to display the events that span multiple days.
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
-        dateTimeRange: widget.internalDateTimeRange,
+        range: widget.floatingRange,
         layoutInfo: layoutInfo,
         numberOfRows: maxNumberOfRows,
         tileHeight: widget.configuration.tileHeight,
@@ -283,7 +283,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
             child: MultiDayEventTile(
               event: event,
               tileComponents: context.tileComponents,
-              dateTimeRange: widget.internalDateTimeRange,
+              floatingRange: widget.floatingRange,
               resizeAxis: Axis.horizontal,
             ),
           ),
@@ -300,7 +300,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
             !event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
           return const SizedBox();
         }
-        if (!event.internalRange(location: context.location).overlaps(widget.internalDateTimeRange)) {
+        if (!event.floatingRange(location: context.location).overlaps(widget.floatingRange)) {
           return const SizedBox();
         }
 
@@ -314,7 +314,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         }
 
         final frame = multiDayLayoutStrategy.generateFrame(
-          visibleDateTimeRange: widget.internalDateTimeRange,
+          visibleRange: widget.floatingRange,
           events: previewEvents,
           textDirection: widget.textDirection,
           cache: null,
@@ -329,7 +329,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
-            dateTimeRange: widget.internalDateTimeRange,
+            range: widget.floatingRange,
             layoutInfo: layoutInfo,
             numberOfRows: maxNumberOfRows,
             tileHeight: widget.configuration.tileHeight,
@@ -403,11 +403,11 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   MultiDayEventOverlayTile _overlayEventTileBuilder(
     BuildContext context,
     KalenderEvent event,
-    FloatingDateTimeRange dateTimeRange,
+    FloatingDateTimeRange floatingRange,
     VoidCallback dismissOverlay,
   ) {
     return MultiDayEventOverlayTile(
-      dateTimeRange: dateTimeRange,
+      floatingRange: floatingRange,
       tileComponents: context.tileComponents,
       dismissOverlay: dismissOverlay,
       event: event,

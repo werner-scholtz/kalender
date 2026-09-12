@@ -32,9 +32,9 @@ abstract class MultiDayLayoutStrategy {
   /// Places the longest events first, breaking ties by start time. The default.
   const factory MultiDayLayoutStrategy.byDuration() = DurationMultiDayLayoutStrategy;
 
-  /// The layout frame for [events] across [visibleDateTimeRange].
+  /// The layout frame for [events] across [visibleRange].
   MultiDayLayoutFrame generateFrame({
-    required FloatingDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
@@ -48,14 +48,14 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 
   @override
   MultiDayLayoutFrame generateFrame({
-    required FloatingDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,
   }) {
     return defaultMultiDayFrameGenerator(
-      visibleDateTimeRange: visibleDateTimeRange,
+      visibleRange: visibleRange,
       events: events,
       textDirection: textDirection,
       location: location,
@@ -100,7 +100,7 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
 MultiDayLayoutFrame defaultMultiDayFrameGenerator({
-  required FloatingDateTimeRange visibleDateTimeRange,
+  required FloatingDateTimeRange visibleRange,
   required List<KalenderEvent> events,
   required TextDirection textDirection,
   required Location? location,
@@ -109,23 +109,23 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 }) {
   // Check cache first if provided
   if (cache != null) {
-    final cachedFrame = cache.getCache(visibleDateTimeRange);
+    final cachedFrame = cache.getCache(visibleRange);
     if (cachedFrame != null) return cachedFrame;
   }
 
   // A list of dates that are visible in the current date range.
-  final dates = visibleDateTimeRange.dates();
+  final dates = visibleRange.dates();
   // Take the text direction into account to determine the order of the dates.
   final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
 
   // Precompute each event's internal range and sort keys once. The sort runs its
   // comparator O(N log N) times, and the old comparator recomputed timezone
-  // conversions (internalStart/internalRange) on every call. That dominated the
+  // conversions (floatingStart/floatingRange) on every call. That dominated the
   // cost when many events share a duration, because the tie-breaker then runs on
   // almost every comparison.
   final entries = <_FrameEntry>[];
   for (final event in events) {
-    final range = event.internalRange(location: location);
+    final range = event.floatingRange(location: location);
     // Round the end to the end of the day unless it already sits on a day
     // boundary, so the final day of the event is included.
     final roundedEnd = range.end == range.end.startOfDay ? range.end.startOfDay : range.end.endOfDay;
@@ -254,7 +254,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   }
 
   final frame = MultiDayLayoutFrame(
-    dateTimeRange: visibleDateTimeRange,
+    range: visibleRange,
     layoutInfo: layoutInfo,
     events: sortedEvents,
     totalNumberOfRows: sortedEvents.isEmpty ? 0 : maxRow + 1,
@@ -266,7 +266,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 
   // Store in cache if provided
   if (cache != null) {
-    cache.setCache(visibleDateTimeRange, frame);
+    cache.setCache(visibleRange, frame);
   }
 
   return frame;
@@ -302,23 +302,23 @@ class MultiDayLayoutFrameCache {
   final Map<String, MultiDayLayoutFrame> _cache = {};
 
   /// Generates a cache key based on the parameters.
-  String _generateCacheKey(FloatingDateTimeRange visibleDateTimeRange) {
-    return '${visibleDateTimeRange.start.toIso8601String()}_${visibleDateTimeRange.end.toIso8601String()}';
+  String _generateCacheKey(FloatingDateTimeRange visibleRange) {
+    return '${visibleRange.start.toIso8601String()}_${visibleRange.end.toIso8601String()}';
   }
 
   /// Gets the cached layout frame if it exists.
-  MultiDayLayoutFrame? getCache(FloatingDateTimeRange visibleDateTimeRange) {
-    final key = _generateCacheKey(visibleDateTimeRange);
+  MultiDayLayoutFrame? getCache(FloatingDateTimeRange visibleRange) {
+    final key = _generateCacheKey(visibleRange);
     return _cache[key];
   }
 
-  void setCache(FloatingDateTimeRange visibleDateTimeRange, MultiDayLayoutFrame frame) {
-    final key = _generateCacheKey(visibleDateTimeRange);
+  void setCache(FloatingDateTimeRange visibleRange, MultiDayLayoutFrame frame) {
+    final key = _generateCacheKey(visibleRange);
     _cache[key] = frame;
   }
 
-  void removeCache(FloatingDateTimeRange visibleDateTimeRange) {
-    final key = _generateCacheKey(visibleDateTimeRange);
+  void removeCache(FloatingDateTimeRange visibleRange) {
+    final key = _generateCacheKey(visibleRange);
     _cache.remove(key);
   }
 
@@ -332,7 +332,7 @@ class MultiDayLayoutFrame {
   /// The range of dates that this frame is for.
   ///
   /// ex. 1 Week (7 days).
-  final FloatingDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange range;
 
   /// The sorted events for this frame that will be used to generate `MultiDayEventTile`s.
   final List<KalenderEvent> events;
@@ -349,11 +349,11 @@ class MultiDayLayoutFrame {
   /// The direction the columns run in.
   ///
   /// Columns are laid out left to right, so in [TextDirection.rtl] column 0 is
-  /// the last date of [dateTimeRange] rather than the first.
+  /// the last date of [range] rather than the first.
   final TextDirection textDirection;
 
   const MultiDayLayoutFrame({
-    required this.dateTimeRange,
+    required this.range,
     required this.layoutInfo,
     required this.events,
     required this.totalNumberOfRows,
@@ -366,8 +366,8 @@ class MultiDayLayoutFrame {
   /// Reads from the end of the range in [TextDirection.rtl], mirroring the
   /// column order the frame was laid out with.
   FloatingDateTime dateFromColumn(int column) {
-    final days = textDirection == TextDirection.ltr ? column : dateTimeRange.dates().length - 1 - column;
-    return FloatingDateTime.fromDateTime(dateTimeRange.start.add(Duration(days: days)));
+    final days = textDirection == TextDirection.ltr ? column : range.dates().length - 1 - column;
+    return FloatingDateTime.fromDateTime(range.start.add(Duration(days: days)));
   }
 
   /// Returns the visible events and their layout information based on the provided max number of rows.
@@ -473,14 +473,14 @@ class EventLayoutInformation {
 /// across the corresponding date columns and rows.
 class MultiDayLayout extends MultiChildLayoutDelegate {
   MultiDayLayout({
-    required this.dateTimeRange,
+    required this.range,
     required this.layoutInfo,
     required this.numberOfRows,
     required this.tileHeight,
   });
 
   /// The date range that the events are laid out on.
-  final FloatingDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange range;
 
   /// The layout info for each event.
   final List<EventLayoutInformation> layoutInfo;
@@ -505,7 +505,7 @@ class MultiDayLayout extends MultiChildLayoutDelegate {
   @override
   void performLayout(Size size) {
     final numberOfChildren = layoutInfo.length;
-    final visibleDates = dateTimeRange.dates();
+    final visibleDates = range.dates();
     final dayWidth = size.width / visibleDates.length;
     for (var i = 0; i < numberOfChildren; i++) {
       // Get the layout information for the current child.
@@ -526,10 +526,10 @@ class MultiDayLayout extends MultiChildLayoutDelegate {
   }
 
   /// Determines if the layout should be re-calculated based on changes in the
-  /// [dateTimeRange], [layoutInfo], [numberOfRows], or [tileHeight].
+  /// [range], [layoutInfo], [numberOfRows], or [tileHeight].
   @override
   bool shouldRelayout(covariant MultiDayLayout oldDelegate) {
-    return oldDelegate.dateTimeRange != dateTimeRange ||
+    return oldDelegate.range != range ||
         oldDelegate.layoutInfo != layoutInfo ||
         oldDelegate.numberOfRows != numberOfRows ||
         oldDelegate.tileHeight != tileHeight;

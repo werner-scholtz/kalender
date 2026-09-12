@@ -52,7 +52,7 @@ void main() {
         ),
       );
 
-      final visibleRange = kalenderController.internalDateTimeRange.value;
+      final visibleRange = kalenderController.floatingRange.value;
       expect(visibleRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(selectedDate)));
     });
 
@@ -73,7 +73,7 @@ void main() {
         ),
       );
 
-      final visibleRange = kalenderController.internalDateTimeRange.value;
+      final visibleRange = kalenderController.floatingRange.value;
       expect(visibleRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(selectedDate)));
     });
   });
@@ -93,7 +93,7 @@ void main() {
       kalenderController.jumpToDate(DateTime(2024, 6, 1));
       await tester.pumpAndSettle();
 
-      final visibleRangeBefore = kalenderController.internalDateTimeRange.value;
+      final visibleRangeBefore = kalenderController.floatingRange.value;
 
       await pumpCalendarView(
         tester,
@@ -101,7 +101,7 @@ void main() {
       );
 
       // Default monthly→daily strategy uses dominantMonthDate.
-      final visibleRangeAfter = kalenderController.internalDateTimeRange.value;
+      final visibleRangeAfter = kalenderController.floatingRange.value;
       final expectedDate = visibleRangeBefore!.dominantMonthDate;
       expect(visibleRangeAfter!.start.startOfDay, equals(FloatingDateTime.fromDateTime(expectedDate)));
     });
@@ -121,7 +121,7 @@ void main() {
         ),
       );
 
-      final visibleRange = kalenderController.internalDateTimeRange.value;
+      final visibleRange = kalenderController.floatingRange.value;
       expect(visibleRange!.start.startOfDay, equals(_fixedDate));
     });
 
@@ -175,7 +175,7 @@ void main() {
         config: MultiDayViewConfiguration.week(name: 'Week', displayRange: calendarRange),
       );
 
-      final weekRange = kalenderController.internalDateTimeRange.value;
+      final weekRange = kalenderController.floatingRange.value;
       expect(weekRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(monthRange!.start)));
     });
 
@@ -196,7 +196,7 @@ void main() {
         config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
       );
 
-      final dayRange = kalenderController.internalDateTimeRange.value;
+      final dayRange = kalenderController.floatingRange.value;
       expect(dayRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(weekRange!.start)));
     });
 
@@ -218,7 +218,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final monthRange = kalenderController.internalDateTimeRange.value;
+      final monthRange = kalenderController.floatingRange.value;
       expect(monthRange!.dominantMonthDate.year, equals(specificDay.year));
       expect(monthRange.dominantMonthDate.month, equals(specificDay.month));
       expect(monthRange.dominantMonthDate.day, equals(1));
@@ -236,14 +236,14 @@ void main() {
       final specificDate = DateTime(2024, 7, 20);
       kalenderController.jumpToDate(specificDate);
       await tester.pumpAndSettle();
-      final scheduleRange = kalenderController.internalDateTimeRange.value;
+      final scheduleRange = kalenderController.floatingRange.value;
 
       await pumpCalendarView(
         tester,
         config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
       );
 
-      final dayRange = kalenderController.internalDateTimeRange.value;
+      final dayRange = kalenderController.floatingRange.value;
       expect(dayRange!.start.startOfDay, equals(scheduleRange!.start.startOfDay));
     });
 
@@ -262,7 +262,7 @@ void main() {
         tester,
         config: MultiDayViewConfiguration.week(name: 'Week', displayRange: calendarRange),
       );
-      final weekRange = kalenderController.internalDateTimeRange.value;
+      final weekRange = kalenderController.floatingRange.value;
       expect(weekRange, isNotNull);
 
       // Week → Month
@@ -270,7 +270,7 @@ void main() {
         tester,
         config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
       );
-      final monthRange = kalenderController.internalDateTimeRange.value;
+      final monthRange = kalenderController.floatingRange.value;
       expect(monthRange!.dominantMonthDate.month, equals(6));
     });
 
@@ -288,7 +288,7 @@ void main() {
         config: MultiDayViewConfiguration.workWeek(name: 'Work Week', displayRange: calendarRange),
       );
 
-      final workWeekRange = kalenderController.internalDateTimeRange.value;
+      final workWeekRange = kalenderController.floatingRange.value;
       expect(workWeekRange, isNotNull);
       // Work week should have 5 days
       expect(workWeekRange!.end.difference(workWeekRange.start).inDays, equals(5));
@@ -311,7 +311,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(ScheduleBody), findsOneWidget);
-      expect(kalenderController.internalDateTimeRange.value, isNotNull);
+      expect(kalenderController.floatingRange.value, isNotNull);
     });
 
     testWidgets('paginated schedule → day', (tester) async {
@@ -324,14 +324,14 @@ void main() {
 
       kalenderController.jumpToDate(DateTime(2024, 9, 1));
       await tester.pumpAndSettle();
-      final scheduleRange = kalenderController.internalDateTimeRange.value;
+      final scheduleRange = kalenderController.floatingRange.value;
 
       await pumpCalendarView(
         tester,
         config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
       );
 
-      final dayRange = kalenderController.internalDateTimeRange.value;
+      final dayRange = kalenderController.floatingRange.value;
       expect(dayRange!.start.startOfDay, equals(scheduleRange!.start.startOfDay));
     });
   });
@@ -433,7 +433,7 @@ void main() {
         withBody: true,
       );
 
-      final initialRange = kalenderController.internalDateTimeRange.value;
+      final initialRange = kalenderController.floatingRange.value;
 
       // Go to month and back
       await pumpCalendarView(
@@ -445,7 +445,7 @@ void main() {
         config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
       );
 
-      final finalRange = kalenderController.internalDateTimeRange.value;
+      final finalRange = kalenderController.floatingRange.value;
       // After round-trip, should still be in June.
       expect(finalRange!.start.month, equals(initialRange!.start.month));
     });
@@ -467,7 +467,7 @@ void main() {
         config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
       );
 
-      expect(kalenderController.internalDateTimeRange.value, isNotNull);
+      expect(kalenderController.floatingRange.value, isNotNull);
     });
 
     testWidgets('config change at end of display range', (tester) async {
@@ -486,7 +486,7 @@ void main() {
         config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
       );
 
-      expect(kalenderController.internalDateTimeRange.value, isNotNull);
+      expect(kalenderController.floatingRange.value, isNotNull);
     });
 
     testWidgets('custom number of days', (tester) async {
@@ -509,7 +509,7 @@ void main() {
       );
 
       expect(find.byType(MultiDayBody), findsOneWidget);
-      expect(kalenderController.internalDateTimeRange.value, isNotNull);
+      expect(kalenderController.floatingRange.value, isNotNull);
     });
   });
 
@@ -519,7 +519,7 @@ void main() {
   group('View-transition policy (#249)', () {
     MultiDayViewController multiDay() => kalenderController.viewController as MultiDayViewController;
     MonthViewConfiguration month() => MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange);
-    FloatingDateTime? visibleStart() => kalenderController.internalDateTimeRange.value?.start.startOfDay;
+    FloatingDateTime? visibleStart() => kalenderController.floatingRange.value?.start.startOfDay;
 
     MultiDayViewConfiguration week({
       ScrollTransition scroll = ScrollTransition.preserve,

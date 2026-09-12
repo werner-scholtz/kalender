@@ -1,0 +1,57 @@
+// The input for `fix_range_members.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:flutter/widgets.dart';
+import 'package:kalender/kalender.dart';
+
+FloatingDateTimeRange? controllerRange(KalenderController c) => c.floatingRange.value;
+FloatingDateTime eventStart(KalenderEvent e) => e.floatingStart();
+FloatingDateTime eventEnd(KalenderEvent e) => e.floatingEnd();
+FloatingDateTimeRange eventRange(KalenderEvent e) => e.floatingRange();
+FloatingDateTimeRange? viewRange(ViewController c) => c.floatingVisibleRange.value;
+FloatingDateTimeRange? highlighted(ScheduleViewController c) => c.highlightedRange.value;
+
+Iterable<KalenderEvent> events(EventsController c, FloatingDateTimeRange r, MultiDayRule rule) =>
+    c.eventsInRange(r, multiDayRule: rule);
+Set<String> ids(EventStore s, FloatingDateTimeRange r) => s.eventIdsInRange(r, null);
+
+FloatingDateTimeRange fromIndex(PageIndexCalculator p) => p.rangeFromIndex(0, null);
+FloatingDateTimeRange fromDate(PageIndexCalculator p, FloatingDateTime d) => p.rangeFromDate(d, null);
+FloatingDateTimeRange whole(PageIndexCalculator p) => p.floatingRange(null);
+
+FloatingDateTimeRange? onDate(FloatingDateTimeRange r, FloatingDateTime d) => r.rangeOnDate(d);
+
+FloatingDateTimeRange handleRange(ResizeHandleDetails d) => d.range;
+FloatingDateTimeRange frameRange(MultiDayLayoutFrame f) => f.range;
+
+MultiDayLayoutFrame frame(FloatingDateTimeRange r) => MultiDayLayoutFrame(
+      range: r,
+      events: const [],
+      layoutInfo: const [],
+      totalNumberOfRows: 0,
+      columnRowMap: const {},
+      textDirection: TextDirection.ltr,
+    );
+
+Widget highlight(FloatingDateTime date, ValueNotifier<FloatingDateTimeRange?> r, Widget child) =>
+    ScheduleTileHighlight(date: date, range: r, child: child);
+
+MultiDayLayoutFrame generated(FloatingDateTimeRange r, Location? location) => defaultMultiDayFrameGenerator(
+      visibleRange: r,
+      events: const [],
+      textDirection: TextDirection.ltr,
+      location: location,
+    );
+
+MultiDayLayout layout(FloatingDateTimeRange r) => MultiDayLayout(
+      range: r,
+      layoutInfo: const [],
+      numberOfRows: 1,
+      tileHeight: 24,
+    );
+
+Widget positionList(FloatingDateTimeRange r, ScheduleBodyConfiguration config) => SchedulePositionList(
+      configuration: config,
+      range: r,
+      currentPage: 0,
+      paginated: false,
+    );

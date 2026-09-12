@@ -20,7 +20,7 @@ void main() {
     MultiDayLayoutFrame frameFor(TextDirection textDirection) {
       return defaultMultiDayFrameGenerator(
         events: const [],
-        visibleDateTimeRange: week,
+        visibleRange: week,
         textDirection: textDirection,
         location: null,
       );

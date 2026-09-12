@@ -83,7 +83,7 @@ class _SingleDayHeader extends StatelessWidget {
 
     final headerComponents = components.multiDayComponents.headerComponents;
     final dayHeaderWidget = ValueListenableBuilder(
-      valueListenable: context.kalenderController.internalDateTimeRange,
+      valueListenable: context.kalenderController.floatingRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -98,7 +98,7 @@ class _SingleDayHeader extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
+          final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
 
           // Minimum constraints for the multiDayEvents.
           final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2);
@@ -106,12 +106,12 @@ class _SingleDayHeader extends StatelessWidget {
           return Stack(
             children: [
               if (configuration.showTiles) ...[
-                Positioned.fill(child: MultiDayDraggable(internalRange: visibleRange)),
+                Positioned.fill(child: MultiDayDraggable(floatingRange: visibleRange)),
                 ConstrainedBox(
                   constraints: constraints,
                   child: MultiDayEventWidget(
                     eventsController: context.eventsController,
-                    internalDateTimeRange: visibleRange,
+                    floatingRange: visibleRange,
                     configuration: configuration,
                     multiDayCache: viewController.multiDayCache,
                     maxNumberOfVerticalEvents: null,
@@ -120,7 +120,7 @@ class _SingleDayHeader extends StatelessWidget {
                 ),
                 Positioned.fill(
                   child: HorizontalDragTarget(
-                    visibleDateTimeRange: visibleRange,
+                    visibleRange: visibleRange,
                     configuration: configuration,
                     leftPageTrigger: headerComponents.leftTriggerBuilder,
                     rightPageTrigger: headerComponents.rightTriggerBuilder,
@@ -156,7 +156,7 @@ class _MultiDayHeader extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.kalenderController.internalDateTimeRange,
+      valueListenable: context.kalenderController.floatingRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -171,7 +171,7 @@ class _MultiDayHeader extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
+          final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
           final visibleDates = visibleRange.dates();
 
           return Column(
@@ -184,12 +184,12 @@ class _MultiDayHeader extends StatelessWidget {
               if (configuration.showTiles)
                 Stack(
                   children: [
-                    Positioned.fill(child: MultiDayDraggable(internalRange: visibleRange)),
+                    Positioned.fill(child: MultiDayDraggable(floatingRange: visibleRange)),
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget(
                         eventsController: context.eventsController,
-                        internalDateTimeRange: visibleRange,
+                        floatingRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,
@@ -198,7 +198,7 @@ class _MultiDayHeader extends StatelessWidget {
                     ),
                     Positioned.fill(
                       child: HorizontalDragTarget(
-                        visibleDateTimeRange: visibleRange,
+                        visibleRange: visibleRange,
                         configuration: configuration,
                         leftPageTrigger: headerComponents.leftTriggerBuilder,
                         rightPageTrigger: headerComponents.rightTriggerBuilder,
@@ -236,7 +236,7 @@ class _FreeScrollHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.kalenderController.internalDateTimeRange,
+      valueListenable: context.kalenderController.floatingRange,
       builder: (context, value, child) {
         if (value == null) return const SizedBox.shrink();
         return headerComponents.buildWeekNumber(context, value.forLocation(location: context.location));
@@ -367,8 +367,8 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
         final requested = _numberOfDays + 2 * _bufferDays;
         final domainCount = requested > maxCount ? maxCount : (requested < 1 ? 1 : requested);
 
-        final rangeStart = pageNavigation.dateTimeRangeFromIndex(start, context.location).start;
-        final rangeEnd = pageNavigation.dateTimeRangeFromIndex(start + domainCount - 1, context.location).end;
+        final rangeStart = pageNavigation.rangeFromIndex(start, context.location).start;
+        final rangeEnd = pageNavigation.rangeFromIndex(start + domainCount - 1, context.location).end;
         final windowRange = FloatingDateTimeRange(start: rangeStart, end: rangeEnd);
         final windowDates = windowRange.dates();
         final bandWidth = domainCount * dayWidth;
@@ -396,12 +396,12 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
               if (widget.configuration.showTiles)
                 Stack(
                   children: [
-                    Positioned.fill(child: MultiDayDraggable(internalRange: windowRange)),
+                    Positioned.fill(child: MultiDayDraggable(floatingRange: windowRange)),
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: widget.configuration.tileHeight),
                       child: MultiDayEventWidget(
                         eventsController: context.eventsController,
-                        internalDateTimeRange: windowRange,
+                        floatingRange: windowRange,
                         configuration: widget.configuration,
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,
@@ -410,7 +410,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
                     ),
                     Positioned.fill(
                       child: HorizontalDragTarget(
-                        visibleDateTimeRange: windowRange,
+                        visibleRange: windowRange,
                         configuration: widget.configuration,
                         // The page-edge triggers are anchored to the viewport
                         // below, not to this window-wide (translated) target,

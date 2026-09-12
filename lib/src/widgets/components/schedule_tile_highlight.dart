@@ -6,14 +6,14 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// The schedule tile highlight builder.
 ///
 /// The [date] is the date that the highlight will be applied to.
-/// The [dateTimeRange] is the range of dates that the highlight will be applied to.
+/// The [range] is the range of dates that the highlight will be applied to.
 /// The [child] is the widget that will be displayed inside the highlight.
 ///
 /// Resolve the style with [KalenderTheme].
 typedef ScheduleTileHighlightBuilder = Widget Function(
   BuildContext context,
   FloatingDateTime date,
-  ValueNotifier<FloatingDateTimeRange?> dateTimeRange,
+  ValueNotifier<FloatingDateTimeRange?> range,
   Widget child,
 );
 
@@ -58,13 +58,13 @@ class ScheduleTileHighlightStyle with Diagnosticable {
   }
 }
 
-/// A widget that highlights the list item if the date is within the given dateTimeRange.
+/// A widget that highlights the list item if the date is within the given range.
 class ScheduleTileHighlight extends StatelessWidget {
-  /// The date to check against the dateTimeRange.
+  /// The date to check against the range.
   final FloatingDateTime date;
 
-  /// The dateTimeRange to check against the date.
-  final ValueNotifier<FloatingDateTimeRange?> dateTimeRange;
+  /// The range to check against the date.
+  final ValueNotifier<FloatingDateTimeRange?> range;
 
   /// The style of the highlight.
   final ScheduleTileHighlightStyle? style;
@@ -75,7 +75,7 @@ class ScheduleTileHighlight extends StatelessWidget {
   const ScheduleTileHighlight({
     super.key,
     required this.date,
-    required this.dateTimeRange,
+    required this.range,
     this.style,
     required this.child,
   });
@@ -85,7 +85,7 @@ class ScheduleTileHighlight extends StatelessWidget {
     final style =
         (KalenderTheme.of(context).scheduleTileHighlightStyle ?? const ScheduleTileHighlightStyle()).merge(this.style);
     return ValueListenableBuilder(
-      valueListenable: dateTimeRange,
+      valueListenable: range,
       builder: (context, value, child) {
         if (value != null && date.isWithin(value)) {
           return DecoratedBox(

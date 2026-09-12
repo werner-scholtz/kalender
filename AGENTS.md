@@ -134,7 +134,7 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 ### Event Model
 
 - `KalenderEvent` is the base class: extend it to attach custom data (title, colour, etc.).
-- Events store UTC internally (`start` and `end` as `DateTime` in UTC). Use `internalStart()`/`internalEnd()` for wall-clock access.
+- Events store UTC internally (`start` and `end` as `DateTime` in UTC). Use `floatingStart()`/`floatingEnd()` for calendar-position access.
 - Event IDs are `String` (10-char random alphanumeric, auto-generated).
 - Override `copyWithData()`, `==`, and `hashCode` in subclasses. `copyWithData` carries `@mustBeOverridden`, and `KalenderEvent` reapplies `id`, `interaction` and `multiDayRule` through `carryOver` afterwards, so a subclass never forwards those by hand.
 - `EventInteraction` controls per-event permissions (resizing, rescheduling).
@@ -235,7 +235,7 @@ A message without a version has no deadline and will sit there for years. `lib/`
 **Some changes cannot be deprecated at all.** There is no window available for any of these, so they go straight into a breaking batch with a migration entry:
 
 - Turning a getter into a method of the same name. Dart rejects declaring both (`duplicate_definition`), so the getter has to vanish the moment the method appears.
-- Adding a named parameter to a method that subclasses override, including optional ones. An override must accept every named parameter its supertype declares, so `copyWith` and `eventsFromDateTimeRange` break every implementer either way.
+- Adding a named parameter to a method that subclasses override, including optional ones. An override must accept every named parameter its supertype declares, so `copyWith` and `eventsInRange` break every implementer either way.
 - Adding a member to a public mixin or abstract class, or narrowing what it can be applied to, such as constraining `DragTargetUtilities` to `State`.
 - Changing a function typedef's signature. A typedef cannot be deprecated into a new shape, so a builder that gains or loses a parameter breaks every implementer at once. 0.27.0 moved all twenty-four builders to a leading `BuildContext` in one release for that reason: splitting the work by component would have broken the same concept twice.
 

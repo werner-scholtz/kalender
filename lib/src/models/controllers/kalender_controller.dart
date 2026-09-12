@@ -16,7 +16,7 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 ///
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
   KalenderController() : id = _nextId++ {
-    _internalDateTimeRange.addListener(_updateVisibleDateTimeRange);
+    _floatingRange.addListener(_updateVisibleDateTimeRange);
   }
 
   static int _nextId = 0;
@@ -35,10 +35,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// The internal [FloatingDateTimeRange] that is currently visible.
   ///
   /// See [FloatingDateTimeRange] for more information.
-  late final _internalDateTimeRange = ValueNotifier<FloatingDateTimeRange?>(null);
-  ValueNotifier<FloatingDateTimeRange?> get internalDateTimeRange => _internalDateTimeRange;
+  late final _floatingRange = ValueNotifier<FloatingDateTimeRange?>(null);
+  ValueNotifier<FloatingDateTimeRange?> get floatingRange => _floatingRange;
   void _updateVisibleDateTimeRange() {
-    final newRange = _internalDateTimeRange.value?.forLocation(location: _viewController?.location);
+    final newRange = _floatingRange.value?.forLocation(location: _viewController?.location);
     visibleDateTimeRange.value = newRange;
   }
 
@@ -100,8 +100,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     if (isAttached) detach();
 
     _viewController = viewController;
-    final visibleRange = viewController.internalVisibleRange.value!;
-    _internalDateTimeRange.value = visibleRange;
+    final visibleRange = viewController.floatingVisibleRange.value!;
+    _floatingRange.value = visibleRange;
     final newRange = visibleRange.forLocation(location: viewController.location);
     visibleDateTimeRange.value = null;
     visibleDateTimeRange.value = newRange;
@@ -222,7 +222,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   @override
   void dispose() {
-    _internalDateTimeRange.removeListener(_updateVisibleDateTimeRange);
+    _floatingRange.removeListener(_updateVisibleDateTimeRange);
     _detachVisibleTimeOfDay();
     visibleTimeOfDay.dispose();
     super.dispose();

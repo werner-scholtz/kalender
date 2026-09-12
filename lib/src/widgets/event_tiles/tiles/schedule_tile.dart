@@ -8,7 +8,7 @@ class ScheduleEventTile extends EventTile {
     super.key,
     required super.event,
     required super.tileComponents,
-    required super.dateTimeRange,
+    required super.floatingRange,
     required super.resizeAxis,
   });
 
@@ -29,7 +29,7 @@ class ScheduleEventTile extends EventTile {
         context.callbacks?.onEventTappedWithDetail?.call(
           event,
           MultiDayDetail(
-            dateTimeRange: dateTimeRange.forLocation(location: context.location),
+            dateTimeRange: floatingRange.forLocation(location: context.location),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),
@@ -44,7 +44,7 @@ class ScheduleEventTile extends EventTile {
         context.callbacks?.onEventSecondaryTappedWithDetail?.call(
           event,
           MultiDayDetail(
-            dateTimeRange: dateTimeRange.forLocation(location: context.location),
+            dateTimeRange: floatingRange.forLocation(location: context.location),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),

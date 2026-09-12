@@ -7,7 +7,7 @@ import '../utilities.dart';
 
 void main() {
   final start = DateTime(2025, 3, 24);
-  final internalStart = FloatingDateTime.fromDateTime(start);
+  final floatingStart = FloatingDateTime.fromDateTime(start);
 
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -39,8 +39,8 @@ void main() {
     kalenderController = KalenderController();
     viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
-      internalVisibleRange: ValueNotifier(
-        FloatingDateTimeRange(start: internalStart.startOfDay, end: internalStart.endOfDay),
+      floatingVisibleRange: ValueNotifier(
+        FloatingDateTimeRange(start: floatingStart.startOfDay, end: floatingStart.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),
     );
@@ -55,7 +55,7 @@ void main() {
     TileComponents? tileComponents,
     double width = 700,
   }) async {
-    final displayRange = range ?? internalStart.startOfDay.weekRange();
+    final displayRange = range ?? floatingStart.startOfDay.weekRange();
     final tiles = tileComponents ??
         TileComponents(
           tileBuilder: (context, event, tileRange) => Container(
@@ -74,7 +74,7 @@ void main() {
             width: width,
             child: MultiDayEventsRow(
               configuration: configuration,
-              internalRange: displayRange,
+              floatingRange: displayRange,
               viewController: viewController,
             ),
           ),
@@ -234,7 +234,7 @@ void main() {
       await pumpEventsRow(tester);
 
       // The week range starting from March 24 (Monday) should have 7 day columns.
-      final weekRange = internalStart.startOfDay.weekRange();
+      final weekRange = floatingStart.startOfDay.weekRange();
       var currentDate = weekRange.start;
       while (currentDate.isBefore(weekRange.end)) {
         final key = MultiDayEventsRow.columnKey(currentDate);

@@ -41,8 +41,8 @@ class _EventDetailCardState extends State<EventDetailCard> {
     final colorScheme = Theme.of(context).colorScheme;
     final eventColor = event.color ?? Colors.blueGrey;
 
-    final displayStart = event.internalStart(location: _location);
-    final displayEnd = event.internalEnd(location: _location);
+    final displayStart = event.floatingStart(location: _location);
+    final displayEnd = event.floatingEnd(location: _location);
 
     return Card(
       elevation: 8,

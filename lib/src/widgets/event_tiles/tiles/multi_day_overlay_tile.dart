@@ -10,7 +10,7 @@ class MultiDayEventOverlayTile extends EventTile {
     super.key,
     required super.event,
     required super.tileComponents,
-    required super.dateTimeRange,
+    required super.floatingRange,
     required super.resizeAxis,
     required super.dismissOverlay,
   });
@@ -58,10 +58,10 @@ class MultiDayEventOverlayTile extends EventTile {
       };
 
   KalenderDateTimeRange _calculateExactDayRange(Offset localPosition, Size size, BuildContext context) {
-    var date = dateTimeRange.start;
+    var date = floatingRange.start;
     if (size.width > 0) {
       final percentage = (localPosition.dx / size.width).clamp(0.0, 1.0);
-      final daysOffset = (dateTimeRange.duration.inDays * percentage).truncate();
+      final daysOffset = (floatingRange.duration.inDays * percentage).truncate();
       date = date.add(Duration(days: daysOffset));
     }
     final range = FloatingDateTimeRange(start: date.startOfDay, end: date.endOfDay);

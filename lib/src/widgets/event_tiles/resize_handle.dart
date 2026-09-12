@@ -16,7 +16,7 @@ class ResizeHandleWidget extends StatefulWidget {
   final KalenderEvent event;
 
   /// The FloatingDateTimeRange that the current view is displaying.
-  final FloatingDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange floatingRange;
 
   /// The axis along which the resize handles are positioned.
   final Axis axis;
@@ -25,7 +25,7 @@ class ResizeHandleWidget extends StatefulWidget {
   const ResizeHandleWidget({
     super.key,
     required this.event,
-    required this.dateTimeRange,
+    required this.floatingRange,
     this.axis = Axis.vertical,
   });
 
@@ -157,7 +157,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
         ResizeHandleDetails(
           event: widget.event,
           interaction: interaction,
-          dateTimeRange: widget.dateTimeRange,
+          range: widget.floatingRange,
           size: _size,
           axis: widget.axis,
           isImprecise: isImprecise,

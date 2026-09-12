@@ -151,11 +151,11 @@ class WeekNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final internalDateTime = FloatingDateTimeRange(
+    final floatingDateTime = FloatingDateTimeRange(
       start: FloatingDateTime.fromExternal(visibleDateTimeRange.start, location: context.location),
       end: FloatingDateTime.fromExternal(visibleDateTimeRange.end, location: context.location),
     );
-    final (start, end) = internalDateTime.weekNumbers;
+    final (start, end) = floatingDateTime.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
 
     final style = (KalenderTheme.of(context).weekNumberStyle ?? const WeekNumberStyle()).merge(weekNumberStyle);

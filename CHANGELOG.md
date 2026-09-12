@@ -7,10 +7,24 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `InternalDateTime` is renamed to `FloatingDateTime`.
 - `InternalDateTimeRange` is renamed to `FloatingDateTimeRange`.
 - `KalenderTime.toInternalDateTime` is renamed to `toFloatingDateTime`.
+- `KalenderEvent.internalStart`, `internalEnd` and `internalRange` are renamed to `floatingStart`, `floatingEnd` and `floatingRange`.
+- `KalenderController.internalDateTimeRange` is renamed to `floatingRange`.
+- `ViewController.internalVisibleRange` is renamed to `floatingVisibleRange`.
+- `ScheduleViewController.highlightedDateTimeRange` is renamed to `highlightedRange`.
+- `EventsController.eventsFromDateTimeRange` is renamed to `eventsInRange`.
+- `EventStore.eventIdsFromDateTimeRange` is renamed to `eventIdsInRange`.
+- `PageIndexCalculator.dateTimeRangeFromIndex`, `dateTimeRangeFromDate` and `internalRange` are renamed to `rangeFromIndex`, `rangeFromDate` and `floatingRange`.
+- `EventTileUtils.internalTileRange` is renamed to `floatingTileRange`.
+- `DragTargetUtils.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` are renamed to `calculateRangeFromStart` and `calculateRangeFromEnd`.
+- `FloatingDateTimeRange.dateTimeRangeOnDate` is renamed to `rangeOnDate`.
+- `ResizeHandleDetails`, `MultiDayLayoutFrame`, `MultiDayLayout`, `ScheduleTileHighlight` and `SchedulePositionList` rename their `dateTimeRange` to `range`.
+- `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
+- `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
 
 ### Features
 
 - `dart fix --apply` applies this release's renames.
+- `dart fix` does not apply the declaration of a renamed member you override.
 
 ## 0.30.0
 

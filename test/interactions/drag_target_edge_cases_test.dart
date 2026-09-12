@@ -536,7 +536,7 @@ void main() {
       final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);
-      final resultStart = result!.internalStart();
+      final resultStart = result!.floatingStart();
       expect(resultStart.day, equals(9), reason: 'Event date should change to Jan 9');
       expect(resultStart.hour, equals(10), reason: 'Original 10:00 start hour should be preserved');
     });
@@ -576,7 +576,7 @@ void main() {
       final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);
-      final resultStart = result!.internalStart();
+      final resultStart = result!.floatingStart();
       expect(resultStart.day, equals(20));
       expect(resultStart.hour, equals(9));
       expect(resultStart.minute, equals(30));

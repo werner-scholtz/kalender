@@ -18,7 +18,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   ScheduleViewController({
     super.location,
     required this.viewConfiguration,
-    required super.internalVisibleRange,
+    required super.floatingVisibleRange,
     required this.visibleEvents,
     required this.initialDate,
   }) {
@@ -34,7 +34,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   ItemPositionsListener? itemPositionsListener;
 
   /// The highlighted date time range.
-  final highlightedDateTimeRange = ValueNotifier<FloatingDateTimeRange?>(null);
+  final highlightedRange = ValueNotifier<FloatingDateTimeRange?>(null);
 
   /// The index of the current page.
   late int currentPage;
@@ -83,7 +83,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   }
 
   @override
-  void dispose() => highlightedDateTimeRange.dispose();
+  void dispose() => highlightedRange.dispose();
 
   /// Check if the controller has been initialized with the necessary components.
   bool get hasInitialized => itemScrollController != null && itemPositionsListener != null;
@@ -93,11 +93,11 @@ class ContinuousScheduleViewController extends ScheduleViewController {
   ContinuousScheduleViewController({
     super.location,
     required super.viewConfiguration,
-    required super.internalVisibleRange,
+    required super.floatingVisibleRange,
     required super.visibleEvents,
     required super.initialDate,
   }) {
-    internalVisibleRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
+    floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
     visibleEvents.value = {};
   }
 
@@ -180,11 +180,11 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   PaginatedScheduleViewController({
     super.location,
     required super.viewConfiguration,
-    required super.internalVisibleRange,
+    required super.floatingVisibleRange,
     required super.visibleEvents,
     required super.initialDate,
   }) {
-    internalVisibleRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
+    floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
     visibleEvents.value = {};
     pageController = PageController(initialPage: currentPage);
   }

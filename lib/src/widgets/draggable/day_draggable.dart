@@ -8,13 +8,13 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 /// - These draggable widgets are used to create new events.
 ///
 class DayDraggable extends StatefulWidget {
-  final FloatingDateTimeRange visibleDateTimeRange;
+  final FloatingDateTimeRange visibleRange;
   final KalenderTimeRange timeOfDayRange;
   final double pageHeight;
 
   const DayDraggable({
     super.key,
-    required this.visibleDateTimeRange,
+    required this.visibleRange,
     required this.timeOfDayRange,
     required this.pageHeight,
   });
@@ -35,7 +35,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     return Listener(
       child: Row(
         children: [
-          for (final date in widget.visibleDateTimeRange.dates())
+          for (final date in widget.visibleRange.dates())
             Expanded(
               child: Builder(
                 builder: (context) {
@@ -141,7 +141,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   @override
-  FloatingDateTimeRange calculateDateTimeRange(FloatingDateTime date, Offset localPosition) {
+  FloatingDateTimeRange calculateFloatingRange(FloatingDateTime date, Offset localPosition) {
     final start = _calculateTimeAndDate(date, localPosition);
     final snapInterval = context.snapping.snapIntervalMinutes;
     final end = start.copyWith(minute: start.minute + snapInterval);

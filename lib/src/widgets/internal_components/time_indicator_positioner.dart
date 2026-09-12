@@ -169,7 +169,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     final now = today.startOfDay;
     final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
     todayPageNumber = pageNavigation.indexFromDate(today, widget.viewController.location);
-    final range = pageNavigation.dateTimeRangeFromIndex(todayPageNumber, widget.viewController.location);
+    final range = pageNavigation.rangeFromIndex(todayPageNumber, widget.viewController.location);
     todayIndex = range.dates().indexOf(now);
   }
 

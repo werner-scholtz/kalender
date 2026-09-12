@@ -112,7 +112,7 @@ FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
 
 /// Carry-focus date when switching **to** a month view, derived from [old].
 FloatingDateTime kDefaultToMonthly(ViewController old) {
-  final oldRange = old.internalVisibleRange.value!;
+  final oldRange = old.floatingVisibleRange.value!;
   return switch (old.viewConfiguration) {
     MonthViewConfiguration _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
     MultiDayViewConfiguration _ => oldRange.start,
@@ -122,11 +122,11 @@ FloatingDateTime kDefaultToMonthly(ViewController old) {
 }
 
 /// Carry-focus date when switching **to** a weekly (multi-day) view.
-FloatingDateTime kDefaultToWeekly(ViewController old) => old.internalVisibleRange.value!.start;
+FloatingDateTime kDefaultToWeekly(ViewController old) => old.floatingVisibleRange.value!.start;
 
 /// Carry-focus date when switching **to** a daily view, derived from [old].
 FloatingDateTime kDefaultToDaily(ViewController old) {
-  final oldRange = old.internalVisibleRange.value!;
+  final oldRange = old.floatingVisibleRange.value!;
   return switch (old.viewConfiguration) {
     MonthViewConfiguration _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
     MultiDayViewConfiguration _ => oldRange.start,
@@ -136,4 +136,4 @@ FloatingDateTime kDefaultToDaily(ViewController old) {
 }
 
 /// Carry-focus date when switching **to** a schedule view.
-FloatingDateTime kDefaultToSchedule(ViewController old) => old.internalVisibleRange.value!.start;
+FloatingDateTime kDefaultToSchedule(ViewController old) => old.floatingVisibleRange.value!.start;

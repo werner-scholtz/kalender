@@ -11,12 +11,12 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
 ///
 /// The [event] is the event that is being displayed.
-/// The [internalRange] is the range for which the event is displayed.
+/// The [floatingRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
 typedef MultiDayOverlayEventTileBuilder = MultiDayEventOverlayTile Function(
   BuildContext context,
   KalenderEvent event,
-  FloatingDateTimeRange internalRange,
+  FloatingDateTimeRange floatingRange,
   VoidCallback dismissOverlay,
 );
 

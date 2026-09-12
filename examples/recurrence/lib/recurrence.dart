@@ -204,8 +204,8 @@ class Recurrence {
 
   /// Calculate the change in start and end DateTimes.
   static (Duration start, Duration end) _calculateDelta(KalenderEvent event, KalenderEvent updatedEvent) {
-    final deltaStart = updatedEvent.internalStart().difference(event.internalStart());
-    final deltaEnd = updatedEvent.internalEnd().difference(event.internalEnd());
+    final deltaStart = updatedEvent.floatingStart().difference(event.floatingStart());
+    final deltaEnd = updatedEvent.floatingEnd().difference(event.floatingEnd());
     return (deltaStart, deltaEnd);
   }
 }

@@ -5,7 +5,7 @@ import 'package:linked_pageview/linked_pageview.dart';
 class MultiDayViewController extends ViewController {
   MultiDayViewController({
     required this.viewConfiguration,
-    required super.internalVisibleRange,
+    required super.floatingVisibleRange,
     required this.visibleEvents,
     FloatingDateTime? initialDate,
     KalenderTime? initialTimeOfDayOverride,
@@ -24,15 +24,15 @@ class MultiDayViewController extends ViewController {
     numberOfPages = pageIndexCalculator.numberOfPages(location);
     heightPerMinute = ValueNotifier<double>(initialHeightPerMinute ?? viewConfiguration.initialHeightPerMinute);
 
-    final range = pageIndexCalculator.dateTimeRangeFromIndex(initialPage, location);
+    final range = pageIndexCalculator.rangeFromIndex(initialPage, location);
 
     if (type == MultiDayViewType.freeScroll) {
-      internalVisibleRange.value = FloatingDateTimeRange(
+      floatingVisibleRange.value = FloatingDateTimeRange(
         start: range.start,
         end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
       );
     } else {
-      internalVisibleRange.value = range;
+      floatingVisibleRange.value = range;
     }
 
     // Align the top of the viewport with the initial time-of-day. The override
@@ -141,9 +141,9 @@ class MultiDayViewController extends ViewController {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    final internalDate = FloatingDateTime.fromExternal(date);
-    final startOfDay = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(internalDate);
-    final timeDifference = internalDate.difference(startOfDay);
+    final floatingDate = FloatingDateTime.fromExternal(date);
+    final startOfDay = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(floatingDate);
+    final timeDifference = floatingDate.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
     // Animate to the offset of the time.
@@ -164,7 +164,7 @@ class MultiDayViewController extends ViewController {
     bool centerEvent = true,
   }) async {
     final DateTime date;
-    final eventCenter = event.internalStart(location: location).add(Duration(minutes: event.duration.inMinutes ~/ 2));
+    final eventCenter = event.floatingStart(location: location).add(Duration(minutes: event.duration.inMinutes ~/ 2));
     final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
     final target = FloatingDateTime.fromDateTime(eventCenter.subtract(duration));
@@ -172,7 +172,7 @@ class MultiDayViewController extends ViewController {
     // It is important to check if the target is in the same day as the event start.
     // If it is, we can use the local time of the target, otherwise we use the event start.
     // This prevents the view from moving to the previous day if the event starts at midnight.
-    if (target.isSameDay(event.internalStart(location: location))) {
+    if (target.isSameDay(event.floatingStart(location: location))) {
       date = target;
     } else {
       date = event.start;

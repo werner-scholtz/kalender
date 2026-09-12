@@ -24,33 +24,33 @@ void main() {
         calculator = DayIndexCalculator(start: range.start, end: range.end);
       });
 
-      test('test dateTimeRangeFromIndex', () {
-        var internalRange = calculator.dateTimeRangeFromIndex(0, location);
+      test('test rangeFromIndex', () {
+        var floatingRange = calculator.rangeFromIndex(0, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 2)),
         );
-        internalRange = calculator.dateTimeRangeFromIndex(1, location);
+        floatingRange = calculator.rangeFromIndex(1, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 2), end: FloatingDateTime(2020, 1, 3)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(166, location);
+        floatingRange = calculator.rangeFromIndex(166, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 6, 15), end: FloatingDateTime(2020, 6, 16)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(365, location);
+        floatingRange = calculator.rangeFromIndex(365, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 31), end: FloatingDateTime(2021, 1, 1)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(366, location);
+        floatingRange = calculator.rangeFromIndex(366, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2021), end: FloatingDateTime(2021, 1, 2)),
         );
       });
@@ -79,9 +79,9 @@ void main() {
         expect(numberOfPages, 366);
       });
 
-      test('test internalRange', () {
-        final internalRange = calculator.internalRange(location);
-        expect(internalRange, FloatingDateTimeRange.fromDateTimeRange(range));
+      test('test floatingRange', () {
+        final floatingRange = calculator.floatingRange(location);
+        expect(floatingRange, FloatingDateTimeRange.fromDateTimeRange(range));
       });
 
       // An empty range (start == end) has 0 pages; indexFromDate must not throw
@@ -110,7 +110,7 @@ void main() {
         final calculator = PageIndexCalculator.freeScroll(range);
         expect(calculator.numberOfPages(location), 366);
 
-        final last = calculator.dateTimeRangeFromIndex(calculator.numberOfPages(location) - 1, location);
+        final last = calculator.rangeFromIndex(calculator.numberOfPages(location) - 1, location);
         expect(last.start, FloatingDateTime(2020, 12, 31));
         expect(last.end, FloatingDateTime(2021));
       });
@@ -129,34 +129,34 @@ void main() {
         calculator = WeekIndexCalculator.week(start: range.start, end: range.end, firstDayOfWeek: DateTime.monday);
       });
 
-      test('test dateTimeRangeFromIndex', () {
-        var internalRange = calculator.dateTimeRangeFromIndex(0, location);
+      test('test rangeFromIndex', () {
+        var floatingRange = calculator.rangeFromIndex(0, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2020, 1, 6)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(1, location);
+        floatingRange = calculator.rangeFromIndex(1, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 6), end: FloatingDateTime(2020, 1, 13)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(9, location);
+        floatingRange = calculator.rangeFromIndex(9, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 3, 2), end: FloatingDateTime(2020, 3, 9)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(51, location);
+        floatingRange = calculator.rangeFromIndex(51, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 21), end: FloatingDateTime(2020, 12, 28)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(52, location);
+        floatingRange = calculator.rangeFromIndex(52, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 28), end: FloatingDateTime(2021, 1, 4)),
         );
       });
@@ -184,10 +184,10 @@ void main() {
         expect(numberOfPages, 53);
       });
 
-      test('test internalRange', () {
-        final internalRange = calculator.internalRange(location);
+      test('test floatingRange', () {
+        final floatingRange = calculator.floatingRange(location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2021, 1, 4)),
         );
       });
@@ -206,11 +206,11 @@ void main() {
 
       test('a page ends after six days', () {
         expect(
-          calculator.dateTimeRangeFromIndex(0, location),
+          calculator.rangeFromIndex(0, location),
           FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2020, 1, 5)),
         );
         expect(
-          calculator.dateTimeRangeFromIndex(1, location),
+          calculator.rangeFromIndex(1, location),
           FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 6), end: FloatingDateTime(2020, 1, 12)),
         );
       });
@@ -220,7 +220,7 @@ void main() {
         expect(calculator.indexFromDate(TZDateTime(location, 2020, 3, 2), location), 9);
         expect(calculator.numberOfPages(location), 53);
         expect(
-          calculator.internalRange(location),
+          calculator.floatingRange(location),
           FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2021, 1, 4)),
         );
       });
@@ -238,34 +238,34 @@ void main() {
         calculator = CustomIndexCalculator(start: range.start, end: range.end, numberOfDays: 3);
       });
 
-      test('test dateTimeRangeFromIndex', () {
-        var internalRange = calculator.dateTimeRangeFromIndex(0, location);
+      test('test rangeFromIndex', () {
+        var floatingRange = calculator.rangeFromIndex(0, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 4)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(1, location);
+        floatingRange = calculator.rangeFromIndex(1, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 4), end: FloatingDateTime(2020, 1, 7)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(9, location);
+        floatingRange = calculator.rangeFromIndex(9, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 28), end: FloatingDateTime(2020, 1, 31)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(120, location);
+        floatingRange = calculator.rangeFromIndex(120, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 26), end: FloatingDateTime(2020, 12, 29)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(121, location);
+        floatingRange = calculator.rangeFromIndex(121, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 29), end: FloatingDateTime(2021)),
         );
       });
@@ -293,10 +293,10 @@ void main() {
         expect(numberOfPages, 122);
       });
 
-      test('test internalRange', () {
-        final internalRange = calculator.internalRange(location);
+      test('test floatingRange', () {
+        final floatingRange = calculator.floatingRange(location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
         );
         expect(true, true);
@@ -309,34 +309,34 @@ void main() {
         calculator = MonthIndexCalculator.fromRange(range, DateTime.monday);
       });
 
-      test('test dateTimeRangeFromIndex', () {
-        var internalRange = calculator.dateTimeRangeFromIndex(0, location);
+      test('test rangeFromIndex', () {
+        var floatingRange = calculator.rangeFromIndex(0, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2020, 2, 3)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(1, location);
+        floatingRange = calculator.rangeFromIndex(1, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 27), end: FloatingDateTime(2020, 3, 2)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(9, location);
+        floatingRange = calculator.rangeFromIndex(9, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 9, 28), end: FloatingDateTime(2020, 11, 2)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(10, location);
+        floatingRange = calculator.rangeFromIndex(10, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 10, 26), end: FloatingDateTime(2020, 12, 07)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(11, location);
+        floatingRange = calculator.rangeFromIndex(11, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 11, 30), end: FloatingDateTime(2021, 1, 4)),
         );
       });
@@ -364,10 +364,10 @@ void main() {
         expect(numberOfPages, 12);
       });
 
-      test('test internalRange', () {
-        final internalRange = calculator.internalRange(location);
+      test('test floatingRange', () {
+        final floatingRange = calculator.floatingRange(location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
         );
       });
@@ -392,10 +392,10 @@ void main() {
         calculator = ContinuousScheduleIndexCalculator(start: range.start, end: range.end);
       });
 
-      test('test dateTimeRangeFromIndex', () {
-        final internalRange = calculator.dateTimeRangeFromIndex(0, location);
+      test('test rangeFromIndex', () {
+        final floatingRange = calculator.rangeFromIndex(0, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
         );
       });
@@ -410,10 +410,10 @@ void main() {
         expect(endIndex, 1);
       });
 
-      test('test internalRange', () {
-        final internalRange = calculator.internalRange(location);
+      test('test floatingRange', () {
+        final floatingRange = calculator.floatingRange(location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
         );
       });
@@ -425,34 +425,34 @@ void main() {
         calculator = PaginatedScheduleIndexCalculator(start: range.start, end: range.end);
       });
 
-      test('test dateTimeRangeFromIndex', () {
-        var internalRange = calculator.dateTimeRangeFromIndex(0, location);
+      test('test rangeFromIndex', () {
+        var floatingRange = calculator.rangeFromIndex(0, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 2)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(1, location);
+        floatingRange = calculator.rangeFromIndex(1, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 2), end: FloatingDateTime(2020, 3)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(9, location);
+        floatingRange = calculator.rangeFromIndex(9, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 10), end: FloatingDateTime(2020, 11)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(10, location);
+        floatingRange = calculator.rangeFromIndex(10, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 11), end: FloatingDateTime(2020, 12)),
         );
 
-        internalRange = calculator.dateTimeRangeFromIndex(11, location);
+        floatingRange = calculator.rangeFromIndex(11, location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020, 12), end: FloatingDateTime(2021)),
         );
       });
@@ -480,10 +480,10 @@ void main() {
         expect(numberOfPages, 12);
       });
 
-      test('test internalRange', () {
-        final internalRange = calculator.internalRange(location);
+      test('test floatingRange', () {
+        final floatingRange = calculator.floatingRange(location);
         expect(
-          internalRange,
+          floatingRange,
           FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
         );
       });

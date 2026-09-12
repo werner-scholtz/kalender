@@ -1,0 +1,273 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  - title: "Rename to 'floatingRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      getter: 'internalDateTimeRange'
+      inClass: 'KalenderController'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingRange'
+
+  - title: "Rename to 'floatingStart'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'internalStart'
+      inClass: 'KalenderEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingStart'
+
+  - title: "Rename to 'floatingEnd'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'internalEnd'
+      inClass: 'KalenderEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingEnd'
+
+  - title: "Rename to 'floatingRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'internalRange'
+      inClass: 'KalenderEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'internalVisibleRange'
+      inClass: 'ViewController'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingVisibleRange'
+
+  - title: "Rename to 'highlightedRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'highlightedDateTimeRange'
+      inClass: 'ScheduleViewController'
+    changes:
+      - kind: 'rename'
+        newName: 'highlightedRange'
+
+  - title: "Rename to 'eventsInRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'eventsFromDateTimeRange'
+      inClass: 'EventsController'
+    changes:
+      - kind: 'rename'
+        newName: 'eventsInRange'
+
+  - title: "Rename to 'eventIdsInRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'eventIdsFromDateTimeRange'
+      inClass: 'EventStore'
+    changes:
+      - kind: 'rename'
+        newName: 'eventIdsInRange'
+
+  - title: "Rename to 'rangeFromIndex'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'dateTimeRangeFromIndex'
+      inClass: 'PageIndexCalculator'
+    changes:
+      - kind: 'rename'
+        newName: 'rangeFromIndex'
+
+  - title: "Rename to 'rangeFromDate'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'dateTimeRangeFromDate'
+      inClass: 'PageIndexCalculator'
+    changes:
+      - kind: 'rename'
+        newName: 'rangeFromDate'
+
+  - title: "Rename to 'floatingRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'internalRange'
+      inClass: 'PageIndexCalculator'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingRange'
+
+  - title: "Rename to 'floatingTileRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'internalTileRange'
+      inClass: 'EventTileUtils'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingTileRange'
+
+  - title: "Rename to 'calculateRangeFromStart'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'calculateDateTimeRangeFromStart'
+      inClass: 'DragTargetUtils'
+    changes:
+      - kind: 'rename'
+        newName: 'calculateRangeFromStart'
+
+  - title: "Rename to 'calculateRangeFromEnd'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'calculateDateTimeRangeFromEnd'
+      inClass: 'DragTargetUtils'
+    changes:
+      - kind: 'rename'
+        newName: 'calculateRangeFromEnd'
+
+  - title: "Rename to 'rangeOnDate'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart', 'package:kalender/kalender_extensions.dart' ]
+      method: 'dateTimeRangeOnDate'
+      inClass: 'FloatingDateTimeRange'
+    changes:
+      - kind: 'rename'
+        newName: 'rangeOnDate'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'dateTimeRange'
+      inClass: 'ResizeHandleDetails'
+    changes:
+      - kind: 'rename'
+        newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'dateTimeRange'
+      inClass: 'MultiDayLayoutFrame'
+    changes:
+      - kind: 'rename'
+        newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MultiDayLayoutFrame'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTimeRange'
+        newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'dateTimeRange'
+      inClass: 'ScheduleTileHighlight'
+    changes:
+      - kind: 'rename'
+        newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'ScheduleTileHighlight'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTimeRange'
+        newName: 'range'
+
+  - title: "Rename to 'visibleRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      function: 'defaultMultiDayFrameGenerator'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'visibleDateTimeRange'
+        newName: 'visibleRange'
+
+  - title: "Rename to 'floatingRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MultiDayEventOverlayTile'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTimeRange'
+        newName: 'floatingRange'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'dateTimeRange'
+      inClass: 'MultiDayLayout'
+    changes:
+      - kind: 'rename'
+        newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MultiDayLayout'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTimeRange'
+        newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'dateTimeRange'
+      inClass: 'SchedulePositionList'
+    changes:
+      - kind: 'rename'
+        newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'SchedulePositionList'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTimeRange'
+        newName: 'range'
