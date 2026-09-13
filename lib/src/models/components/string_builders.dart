@@ -29,8 +29,4 @@ extension KalenderLocale on BuildContext {
   /// is not necessarily the app's locale. Pass it to `intl`'s `DateFormat` or
   /// `NumberFormat`, or to the localized extensions on [DateTime].
   Locale? get kalenderLocale => LocaleProvider.of(this);
-
-  /// The locale of the enclosing calendar.
-  @Deprecated('Renamed to kalenderLocale. Will be removed in 0.31.0.')
-  Locale? get calendarLocale => kalenderLocale;
 }

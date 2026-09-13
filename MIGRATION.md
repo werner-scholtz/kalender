@@ -33,7 +33,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. Six declarations you override need editing by hand. |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. Six declarations you override need editing by hand. The deprecated `calendarLocale` is removed. |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
@@ -150,6 +150,23 @@ The other four follow the same shape:
 - `MultiDayLayoutStrategy.generateFrame` takes `visibleRange` rather than
   `visibleDateTimeRange`.
 - `EventTileUtils.internalTileRange` becomes `floatingTileRange`.
+
+### `BuildContext.calendarLocale` is removed
+
+`kalenderLocale` replaces it, as the 0.30.0 deprecation message said.
+
+```dart
+// Before
+Locale? locale = context.calendarLocale;
+
+// After
+Locale? locale = context.kalenderLocale;
+```
+
+`dart fix` reaches this one only where you apply the extension explicitly, as
+`KalenderLocale(context).calendarLocale`. A rename on an extension member does not
+match the bare `context.calendarLocale`, so the analyzer reports that spelling
+instead and you change it by hand.
 
 ## v0.29.x → v0.30.0
 

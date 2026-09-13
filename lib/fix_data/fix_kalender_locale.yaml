@@ -1,0 +1,23 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+#
+# This transform reaches `KalenderLocale(context).calendarLocale` and not
+# `context.calendarLocale`. A rename on an extension member only matches where the
+# extension is applied explicitly, so the analyzer reports the common spelling
+# instead. See MIGRATION.md.
+
+version: 1
+transforms:
+  - title: "Rename to 'kalenderLocale'"
+    date: 2026-09-13
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      getter: 'calendarLocale'
+      inExtension: 'KalenderLocale'
+    changes:
+      - kind: 'rename'
+        newName: 'kalenderLocale'
