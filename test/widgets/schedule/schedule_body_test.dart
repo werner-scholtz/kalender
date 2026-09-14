@@ -249,6 +249,57 @@ void main() {
       expect(find.text('custom empty'), findsOneWidget);
     });
   });
+
+  group('Item map', () {
+    testWidgets('is built once when the view first appears', (tester) async {
+      final counting = _CountingEventsController();
+      eventsController = counting;
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule(initialDate: DateTime(2025, 1, 15)));
+      final callsOnMount = counting.eventsInRangeCalls;
+
+      counting.addEvent(eventAt(DateTime(2025, 1, 15), 9));
+      await tester.pumpAndSettle();
+      final callsPerBuild = counting.eventsInRangeCalls - callsOnMount;
+
+      expect(callsPerBuild, isPositive);
+      expect(callsOnMount, callsPerBuild);
+    });
+
+    testWidgets('a replaced events controller is no longer listened to', (tester) async {
+      final first = DefaultEventsController();
+      eventsController = first;
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule(initialDate: DateTime(2025, 1, 15)));
+
+      eventsController = DefaultEventsController();
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule(initialDate: DateTime(2025, 1, 15)));
+      await tester.pumpWidget(const SizedBox());
+
+      first.addEvent(eventAt(DateTime(2025, 1, 15), 9));
+      expect(tester.takeException(), isNull);
+    });
+  });
+}
+
+class _CountingEventsController extends DefaultEventsController {
+  int eventsInRangeCalls = 0;
+
+  @override
+  Iterable<KalenderEvent> eventsInRange(
+    FloatingDateTimeRange range, {
+    required MultiDayRule multiDayRule,
+    bool includeMultiDayEvents = true,
+    bool includeDayEvents = true,
+    Location? location,
+  }) {
+    eventsInRangeCalls++;
+    return super.eventsInRange(
+      range,
+      multiDayRule: multiDayRule,
+      includeMultiDayEvents: includeMultiDayEvents,
+      includeDayEvents: includeDayEvents,
+      location: location,
+    );
+  }
 }
 
 Widget _customMonthItem(BuildContext context, KalenderDateTimeRange monthRange) => const Text('custom month');
