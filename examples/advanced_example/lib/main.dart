@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:advanced_example/layout_strategy.dart';
 import 'package:advanced_example/tiles.dart';
 import 'package:advanced_example/zoom.dart';

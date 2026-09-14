@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 // Rewrites the repository links in README.md, example/README.md, CHANGELOG.md and
 // doc/*.md to point at a release tag instead of the main branch.
 //

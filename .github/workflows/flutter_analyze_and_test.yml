@@ -43,6 +43,11 @@ jobs:
         shell: bash
         working-directory: ./
 
+      - name: License headers
+        run: dart run tool/license_headers.dart --check
+        shell: bash
+        working-directory: ./
+
       - name: Analyze (dart)
         run: dart analyze
         shell: bash

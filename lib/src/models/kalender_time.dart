@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:kalender/kalender_extensions.dart';
 
 /// A time of day, as an hour and a minute.

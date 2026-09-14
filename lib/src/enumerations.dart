@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 /// The [ResizeDirection] is used to differentiate between the different directions that an event can be resized in.
 enum ResizeDirection {
   /// Resizes the event to the left.
