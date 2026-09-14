@@ -1,4 +1,3 @@
-// import 'package:kalender/kalender.dart';
 import 'package:kalender/kalender.dart';
 
 /// A mixin that adds snap points to a class.

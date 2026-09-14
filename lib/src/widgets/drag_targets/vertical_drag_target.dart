@@ -78,7 +78,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   @override
   KalenderController get controller => widget.controller;
 
-  // TODO: check if this is right, and null check does not break anything.
+  // Every view controller sets this in its constructor.
   @override
   List<FloatingDateTime> get visibleDates => viewController.floatingVisibleRange.value!.dates();
 
