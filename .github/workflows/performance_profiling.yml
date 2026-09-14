@@ -49,14 +49,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      # Pinned, unlike the analyze and test workflows. This job compares numbers
-      # against the history stored on gh-pages, so an SDK that moves underneath it
-      # shows up as a performance change that no commit here caused.
       - uses: subosito/flutter-action@v2
         with:
           cache: true
-          flutter-version: 3.44.6
-          channel: stable
+          flutter-version-file: .fvmrc
 
       - name: Install Linux dependencies
         run: |

@@ -11,6 +11,7 @@ analyzer:
     # Deliberately uses deprecated members. Checked by
     # `dart fix --compare-to-golden test_fixes` instead.
     - test_fixes/**
+    - build/**
   language:
     strict-inference: true
     strict-raw-types: true

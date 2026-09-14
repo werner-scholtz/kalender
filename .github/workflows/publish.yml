@@ -36,16 +36,15 @@ jobs:
           [ "$version" = "$tag" ] \
             || { echo "::error::pubspec.yaml is $version but the tag is $tag"; exit 1; }
 
-      # Pinned rather than tracking stable, so a bad SDK release breaks a build
-      # rather than a release. Raise both together.
+      # Supplies the pub.dev credential. Every step runs the Dart that comes with
+      # the Flutter below.
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: 3.13.2
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.47.2
-          channel: 'stable'
+          flutter-version-file: .fvmrc
 
       # The credential is only needed for the upload, so it is set aside for every
       # step before it.

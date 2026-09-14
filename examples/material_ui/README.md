@@ -71,7 +71,7 @@ bridge maps the color scheme and text theme.
 
 ## Running
 
-This example is pinned to Flutter 3.47.2 in `.fvmrc`:
+Run it on the Flutter version in the repository's `.fvmrc`:
 
 ```sh
 fvm use

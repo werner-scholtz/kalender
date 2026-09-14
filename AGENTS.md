@@ -73,6 +73,7 @@ dart tool/test_timezones_linux.dart test/extensions/internal_date_time_test.dart
 
 ### CI Pipeline (`.github/workflows/flutter_analyze_and_test.yml`)
 
+- **Flutter version**: Every job runs the version in `.fvmrc`, except `minimum-flutter`, which runs the floor `pubspec.yaml` declares, and `latest-stable`, which runs the newest stable and does not fail the workflow. Format with the `.fvmrc` version.
 - **Analyze job**: `dart analyze` + `flutter analyze` on `ubuntu-latest`.
 - **Test job**: Matrix strategy over 6 timezones: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`, `Africa/Johannesburg`, `UTC`. Sets system timezone via `timedatectl` and `TZ` env var.
 - **Additional workflows**: `performance_profiling.yml`, `publish.yml`, `web_demo.yml`.

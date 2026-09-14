@@ -9,6 +9,7 @@ on:
       - 'lib/**'
       - 'examples/**'
       - 'pubspec.yaml'
+      - '.fvmrc'
       - '.github/workflows/analyze_examples.yml'
   push:
     branches: [main, main-wip]
@@ -16,6 +17,7 @@ on:
       - 'lib/**'
       - 'examples/**'
       - 'pubspec.yaml'
+      - '.fvmrc'
       - '.github/workflows/analyze_examples.yml'
 
 jobs:
@@ -36,11 +38,11 @@ jobs:
           - testing
     steps:
       - uses: actions/checkout@v5
+
       - uses: subosito/flutter-action@v2
         with:
           cache: true
-          flutter-version: 3.44.6
-          channel: stable
+          flutter-version-file: .fvmrc
 
       - name: Install dependencies
         run: flutter pub get
