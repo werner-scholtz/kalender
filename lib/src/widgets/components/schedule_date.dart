@@ -16,9 +16,13 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// The [date] is the date that the header will be displayed for.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef ScheduleDateBuilder = Widget Function(BuildContext context, FloatingDateTime date);
 
 /// The style of the [ScheduleDate].
+///
+/// {@category Appearance}
 class ScheduleDateStyle with Diagnosticable {
   /// Creates a new [ScheduleDateStyle].
   const ScheduleDateStyle({this.textStyle, this.numberTextStyle});
@@ -74,6 +78,8 @@ class ScheduleDateStyle with Diagnosticable {
 }
 
 /// A widget that displays the name of the day and the day number of the week.
+///
+/// {@category Appearance}
 class ScheduleDate extends StatelessWidget {
   /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('ScheduleDate.today');

@@ -19,6 +19,8 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// The [event] is the event that is being displayed.
 /// The [floatingRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
+///
+/// {@category Appearance}
 typedef MultiDayOverlayEventTileBuilder =
     MultiDayEventOverlayTile Function(
       BuildContext context,
@@ -28,6 +30,8 @@ typedef MultiDayOverlayEventTileBuilder =
     );
 
 /// A function that returns a [RenderBox] for the multi-day event layout.
+///
+/// {@category Layout}
 typedef RenderBoxCallback = RenderBox Function();
 
 /// A function that returns a [MultiDayOverlay] widget.
@@ -41,6 +45,8 @@ typedef RenderBoxCallback = RenderBox Function();
 /// The [overlayTileBuilder] is the builder for the overlay event tile.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef MultiDayOverlayBuilder =
     Widget Function(
       BuildContext context, {
@@ -53,6 +59,7 @@ typedef MultiDayOverlayBuilder =
       required MultiDayOverlayEventTileBuilder overlayTileBuilder,
     });
 
+/// {@category Appearance}
 class MultiDayOverlayStyle with Diagnosticable {
   /// The function that returns the name of the day.
   final String Function(DateTime date)? dayNameBuilder;
@@ -293,6 +300,7 @@ class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
   }
 }
 
+/// {@category Appearance}
 class MultiDayOverlay extends StatelessWidget {
   /// The date for which the widget is created.
   final FloatingDateTime date;

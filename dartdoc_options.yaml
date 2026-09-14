@@ -1,0 +1,24 @@
+dartdoc:
+  categories:
+    "Views":
+      markdown: doc/views.md
+    "Events":
+      markdown: doc/events.md
+    "Controllers and callbacks":
+      markdown: doc/controllers-and-callbacks.md
+    "Interaction":
+      markdown: doc/interaction.md
+    "Appearance":
+      markdown: doc/appearance.md
+    "Layout":
+      markdown: doc/layout.md
+    "Dates and times":
+      markdown: doc/timezones-and-locales.md
+  categoryOrder:
+    - Views
+    - Events
+    - Controllers and callbacks
+    - Interaction
+    - Appearance
+    - Layout
+    - Dates and times

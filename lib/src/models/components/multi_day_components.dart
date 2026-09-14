@@ -20,6 +20,8 @@ import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
 /// A class containing custom widget builders for the [MultiDayBody] and [MultiDayHeader].
+///
+/// {@category Appearance}
 class MultiDayComponents {
   /// The component builders used by the [MultiDayBody].
   final MultiDayHeaderComponents headerComponents;
@@ -56,6 +58,8 @@ class MultiDayComponents {
 /// The component builders used by the [MultiDayHeader].
 ///
 /// - Using these will override the respective default components.
+///
+/// {@category Appearance}
 class MultiDayHeaderComponents {
   /// A function that builds the day header widget.
   /// Null uses [DayHeader].
@@ -156,6 +160,8 @@ class MultiDayHeaderComponents {
 /// The component builders used by the [MultiDayBody].
 ///
 /// - Using these will override the respective default components.
+///
+/// {@category Appearance}
 class MultiDayBodyComponents {
   /// A function that builds the hour lines widget.
   /// Null uses [HourLines].

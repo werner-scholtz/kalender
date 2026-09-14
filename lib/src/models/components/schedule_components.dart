@@ -11,6 +11,8 @@ import 'package:kalender/src/widgets/components/schedule_date.dart';
 import 'package:kalender/src/widgets/components/schedule_tile_highlight.dart';
 
 /// A class containing custom widget builders for the `ScheduleBody`.
+///
+/// {@category Appearance}
 class ScheduleComponents {
   /// A function that builds the day header widget.
   /// Null uses [ScheduleDate].
@@ -101,9 +103,13 @@ class ScheduleComponents {
 /// The builder for the empty item.
 ///
 /// [tileRange] is the [KalenderDateTimeRange] of the ListTile where this widget will be displayed.
+///
+/// {@category Appearance}
 typedef EmptyItemBuilder = Widget Function(BuildContext context, KalenderDateTimeRange tileRange);
 
 /// The builder for the month item.
 ///
 /// [monthRange] is the [KalenderDateTimeRange] of the month.
+///
+/// {@category Appearance}
 typedef MonthItemBuilder = Widget Function(BuildContext context, KalenderDateTimeRange monthRange);

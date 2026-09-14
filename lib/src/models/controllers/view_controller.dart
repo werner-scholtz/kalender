@@ -17,6 +17,8 @@ export 'view_controllers/schedule_view_controller.dart';
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
+///
+/// {@category Controllers and callbacks}
 abstract class ViewController with KalenderNavigationFunctions {
   /// The location of the current view.
   Location? location;

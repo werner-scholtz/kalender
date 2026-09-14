@@ -20,6 +20,8 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 /// The [KalenderView] attaches itself to the [KalenderController] by calling [attach].
 /// And detaches itself by calling [detach].
 ///
+///
+/// {@category Controllers and callbacks}
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
   KalenderController() : id = _nextId++ {
     _floatingRange.addListener(_updateVisibleDateTimeRange);

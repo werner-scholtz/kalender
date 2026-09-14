@@ -11,6 +11,8 @@ import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 
 /// The default [EventsController] for managing [KalenderEvent]s.
+///
+/// {@category Events}
 class DefaultEventsController extends EventsController {
   final List<Location> locations;
 

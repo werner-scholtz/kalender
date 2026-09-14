@@ -46,6 +46,8 @@ import 'package:meta/meta.dart';
 /// [multiDayRule] and [isAllDay] are reapplied by [carryOver] afterwards, so a
 /// field added to this class later reaches every subclass without any of them
 /// changing.
+///
+/// {@category Events}
 class KalenderEvent {
   /// The start of the event in UTC.
   final DateTime start;

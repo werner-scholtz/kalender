@@ -9,6 +9,8 @@ import 'package:kalender/kalender.dart';
 /// A class that maps [KalenderEvent]s to dates.
 ///
 /// This class is used to store [KalenderEvent]s and retrieve them based on the date.
+///
+/// {@category Events}
 abstract class EventStore {
   /// A iterable of all [KalenderEvent]s in the store.
   Iterable<KalenderEvent> get events;

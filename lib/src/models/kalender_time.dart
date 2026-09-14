@@ -17,6 +17,8 @@ import 'package:kalender/kalender_extensions.dart';
 /// minute the body lays out with. Event data is unaffected: `KalenderEvent.start`
 /// and `KalenderEvent.end` are ordinary [DateTime]s and keep full precision.
 /// Building one of these from a [DateTime] drops everything below the minute.
+///
+/// {@category Dates and times}
 class KalenderTime implements Comparable<KalenderTime> {
   /// Creates a [KalenderTime].
   ///

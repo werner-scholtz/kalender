@@ -18,10 +18,14 @@ import 'package:kalender/kalender.dart';
 /// The [location] is the calendar's time zone.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef TimeIndicatorBuilder =
     Widget Function(BuildContext context, KalenderTimeRange timeOfDayRange, double heightPerMinute, Location? location);
 
 /// The style of the [TimeIndicator] widget.
+///
+/// {@category Appearance}
 class TimeIndicatorStyle with Diagnosticable {
   /// The [Color] of the time indicator.
   final Color? lineColor;
@@ -95,6 +99,8 @@ class TimeIndicatorStyle with Diagnosticable {
 }
 
 /// A widget that displays the current time as a line and a circle.
+///
+/// {@category Appearance}
 class TimeIndicator extends StatefulWidget {
   /// The [KalenderTimeRange] that will be used to display the hour lines.
   final KalenderTimeRange timeOfDayRange;

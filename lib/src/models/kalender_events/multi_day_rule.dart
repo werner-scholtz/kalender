@@ -8,6 +8,8 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 
 /// The rule a calendar uses when nothing overrides it: 24 hours or longer.
+///
+/// {@category Events}
 const kDefaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
 
 /// Decides whether an event belongs in the multi-day header lane rather than
@@ -28,6 +30,8 @@ const kDefaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
 /// This is a class rather than a function so that it has value equality. View
 /// configurations are compared with `==` to decide whether the calendar needs
 /// to rebuild, and a function field would defeat that.
+///
+/// {@category Events}
 abstract class MultiDayRule {
   const MultiDayRule();
 

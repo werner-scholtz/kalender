@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:kalender/kalender.dart';
 
+/// {@category Views}
 class MonthViewConfiguration extends ViewConfiguration {
   @override
   final MonthIndexCalculator pageIndexCalculator;
@@ -99,6 +100,7 @@ class MonthViewConfiguration extends ViewConfiguration {
   }
 }
 
+/// {@category Views}
 class MonthBodyConfiguration extends HorizontalConfiguration {
   const MonthBodyConfiguration({
     super.multiDayLayoutStrategy,

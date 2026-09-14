@@ -10,6 +10,8 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
 
 /// The month header is a simple widget that just displays the day names.
+///
+/// {@category Views}
 class MonthHeader extends StatelessWidget {
   /// Creates a new [MonthHeader].
   const MonthHeader({super.key});

@@ -13,9 +13,13 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// The month grid builder.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef MonthGridBuilder = Widget Function(BuildContext context, int numberOfRows);
 
 /// The [MonthGridStyle] class is used by the [MonthGrid] widget.
+///
+/// {@category Appearance}
 class MonthGridStyle with Diagnosticable {
   const MonthGridStyle({this.color, this.thickness});
 
@@ -64,6 +68,8 @@ class MonthGridStyle with Diagnosticable {
 }
 
 /// A widget that displays the month grid.
+///
+/// {@category Appearance}
 class MonthGrid extends StatelessWidget {
   final MonthGridStyle? style;
   final int numberOfRows;

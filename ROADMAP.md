@@ -359,7 +359,7 @@ Slow frames come from the size of the widget, render and semantics tree, not fro
 
 ### Documentation
 
-- Group the API reference. It lists 189 symbols in one alphabetical run with no categories, so nothing marks out the handful most people need.
+- **The API reference is grouped** into seven categories that match the guides: Views, Events, Controllers and callbacks, Interaction, Appearance, Layout, and Dates and times. Every one of the 226 public symbols carries its category, and each category's topic page is its guide.
 
 ## Decided against
 

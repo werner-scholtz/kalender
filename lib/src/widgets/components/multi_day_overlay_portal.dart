@@ -18,6 +18,8 @@ import 'package:kalender/kalender.dart';
 /// [overlayBuilders] is the builders for the overlay event tile.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef MultiDayOverlayPortalBuilder =
     Widget Function(
       BuildContext context, {
@@ -31,6 +33,8 @@ typedef MultiDayOverlayPortalBuilder =
     });
 
 /// A widget that manages the overlay portal for a single day.
+///
+/// {@category Appearance}
 class MultiDayOverlayPortal extends StatefulWidget {
   /// The date for which the widget is created.
   final FloatingDateTime date;
