@@ -7,10 +7,8 @@
 // packaging so every published version keeps linking to its own documentation.
 // The rewrite only touches the working tree, nothing is committed.
 //
-// The guides under doc/ are only ever read on GitHub, where a relative link
-// already resolves against whatever ref is being browsed. They therefore get the
-// branch rewrite but not the relative rewrite, which prepends a root-relative
-// prefix and would break `../README.md` and sibling links like `views.md`.
+// The guides under doc/ are also the topic pages of the API reference. A relative
+// link in a guide is resolved against the guide's own directory.
 //
 // Usage: dart run tool/pin_release_links.dart v0.24.0
 //
@@ -56,15 +54,18 @@ String packageName(String pubspec) {
 /// Images are rewritten in both markdown and `<img>` form. pub.dev resolves a
 /// README image against the repository rather than the archive, so a relative
 /// image that survives shows the default branch instead of the tag.
-String pinRelativeLinks(String content, String repoUrl, String tag) {
+///
+/// Links resolve against the directory of [path], the file [content] was read from.
+String pinRelativeLinks(String content, String repoUrl, String tag, {String path = 'README.md'}) {
   final rawBase = repoUrl.replaceFirst('https://github.com/', 'https://raw.githubusercontent.com/');
+  String resolve(String target) => Uri.parse(path).resolve(target).path;
   return content
-      .replaceAllMapped(relativeImage, (m) => '![${m[1]}]($rawBase/$tag/${m[2]}${m[3] ?? ''})')
+      .replaceAllMapped(relativeImage, (m) => '![${m[1]}]($rawBase/$tag/${resolve(m[2]!)}${m[3] ?? ''})')
       .replaceAllMapped(
         htmlImageTag,
-        (m) => m[0]!.replaceAllMapped(relativeHtmlSrc, (src) => 'src="$rawBase/$tag/${src[1]}"'),
+        (m) => m[0]!.replaceAllMapped(relativeHtmlSrc, (src) => 'src="$rawBase/$tag/${resolve(src[1]!)}"'),
       )
-      .replaceAllMapped(relativeLink, (m) => ']($repoUrl/blob/$tag/${m[1]}${m[2] ?? ''})');
+      .replaceAllMapped(relativeLink, (m) => ']($repoUrl/blob/$tag/${resolve(m[1]!)}${m[2] ?? ''})');
 }
 
 /// A pub.dev API documentation link for [package] on the `latest` version.
@@ -102,14 +103,12 @@ String pinChangelog(String content, String repoUrl, String tag) {
 /// the newest documentation rather than this release's.
 ///
 /// Set [allowUnpinnedLinks] for files that keep such links on purpose, such as
-/// the changelog's historical entries. Set [allowRelativeLinks] for files whose
-/// relative links are deliberately kept, such as the guides under doc/.
+/// the changelog's historical entries.
 List<String> leftoverProblems(
   String path,
   String content,
   String repoUrl, {
   required bool allowUnpinnedLinks,
-  bool allowRelativeLinks = false,
   String package = 'kalender',
 }) {
   final rawBase = repoUrl.replaceFirst('https://github.com/', 'https://raw.githubusercontent.com/');
@@ -119,10 +118,10 @@ List<String> leftoverProblems(
   final lines = content.split('\n');
   for (var i = 0; i < lines.length; i++) {
     final line = lines[i];
-    if (!allowRelativeLinks && (relativeImage.hasMatch(line) || relativeLink.hasMatch(line))) {
+    if (relativeImage.hasMatch(line) || relativeLink.hasMatch(line)) {
       problems.add('$path:${i + 1}: a relative link survived the rewrite: $line');
     }
-    if (!allowRelativeLinks && hasRelativeHtmlImage(line)) {
+    if (hasRelativeHtmlImage(line)) {
       problems.add('$path:${i + 1}: a relative image survived the rewrite: $line');
     }
     if (!allowUnpinnedLinks && mainRefs.any(line.contains)) {
@@ -157,21 +156,20 @@ void main(List<String> args) {
   /// Everything except the changelog, whose historical entries are pinned separately.
   String pinAll(String content) => pinPubDevDocs(pinBranchUrls(content, repoUrl, tag), package, tag);
 
-  final rewrites = <({String path, String Function(String) rewrite, bool allowUnpinnedLinks, bool allowRelativeLinks})>[
+  final rewrites = <({String path, String Function(String) rewrite, bool allowUnpinnedLinks})>[
     (
       path: 'README.md',
       rewrite: (content) => pinRelativeLinks(pinAll(content), repoUrl, tag),
       allowUnpinnedLinks: false,
-      allowRelativeLinks: false,
     ),
-    (path: 'example/README.md', rewrite: pinAll, allowUnpinnedLinks: false, allowRelativeLinks: false),
-    (
-      path: 'CHANGELOG.md',
-      rewrite: (content) => pinChangelog(content, repoUrl, tag),
-      allowUnpinnedLinks: true,
-      allowRelativeLinks: false,
-    ),
-    for (final doc in docFiles()) (path: doc, rewrite: pinAll, allowUnpinnedLinks: false, allowRelativeLinks: true),
+    (path: 'example/README.md', rewrite: pinAll, allowUnpinnedLinks: false),
+    (path: 'CHANGELOG.md', rewrite: (content) => pinChangelog(content, repoUrl, tag), allowUnpinnedLinks: true),
+    for (final doc in docFiles())
+      (
+        path: doc,
+        rewrite: (content) => pinRelativeLinks(pinAll(content), repoUrl, tag, path: doc),
+        allowUnpinnedLinks: false,
+      ),
   ];
 
   final problems = <String>[];
@@ -185,7 +183,6 @@ void main(List<String> args) {
         rewritten,
         repoUrl,
         allowUnpinnedLinks: entry.allowUnpinnedLinks,
-        allowRelativeLinks: entry.allowRelativeLinks,
         package: package,
       ),
     );
