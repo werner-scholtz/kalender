@@ -211,7 +211,7 @@ The month comes along, which is what makes the rule true of the whole package ra
 
 This does not wait for Flutter. [#97496](https://github.com/flutter/flutter/issues/97496) is the remaining route for a canonical range type and is a proposals channel with no owner for this and no date. Filing there costs nothing and is worth doing, but it cannot be on the critical path. If Flutter promotes one later, kalender adds a converter and deprecates its own over a release or two, which is a smaller migration than the one waiting produces.
 
-### 0.31.0, the floating names, done
+### 0.31.0, the floating names, previewed in 0.31.0-dev.1
 
 **The layout date types are `FloatingDateTime` and `FloatingDateTimeRange`.** 0.30.0 kept the name `InternalDateTimeRange` for a later window. "Internal" on an exported type read oddly beside the `Kalender` marker, and it suggested the type was not meant for apps, while a custom page index calculator or layout strategy has to name it. Floating is the term RFC 5545 uses for a date and time that names no timezone, which is what both types hold, and the ICS example already parses that format. `InternalDateTime` moves with the range, since the two are a pair.
 
