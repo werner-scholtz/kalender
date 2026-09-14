@@ -414,6 +414,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     VoidCallback dismissOverlay,
   ) {
     return MultiDayEventOverlayTile(
+      key: MultiDayEventOverlayTile.tileKey(event.id),
       floatingRange: floatingRange,
       tileComponents: context.tileComponents,
       dismissOverlay: dismissOverlay,

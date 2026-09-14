@@ -34,6 +34,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 
 ### Fixes
 
+- `MultiDayEventOverlayTile.tileKey` matches the tiles in the multi-day overlay.
 - Changing the calendar's location keeps the date on screen.
 - A drag that creates or resizes an event stops at the end of `timeOfDayRange`.
 
