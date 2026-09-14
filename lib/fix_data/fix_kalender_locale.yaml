@@ -5,10 +5,7 @@
 #
 # For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
 #
-# This transform reaches `KalenderLocale(context).calendarLocale` and not
-# `context.calendarLocale`. A rename on an extension member only matches where the
-# extension is applied explicitly, so the analyzer reports the common spelling
-# instead. See MIGRATION.md.
+# Renames `KalenderLocale(context).calendarLocale` only. The bare `context.calendarLocale` is not matched.
 
 version: 1
 transforms:

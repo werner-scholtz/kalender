@@ -23,14 +23,14 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/src/models/kalender_events/` | `KalenderEvent` base class (extensible via subclassing) |
 | `lib/src/widgets/` | UI widgets by view (`month/`, `multi_day/`, `schedule/`) plus shared (`components/`, `event_tiles/`, `draggable/`, `drag_targets/`) |
 | `lib/src/layout_delegates/` | Event layout/positioning strategies (`EventLayoutStrategy`, `MultiDayLayoutStrategy`) with caching |
-| `lib/src/extensions/` | Internal DateTime utilities (DST-safe wall-clock arithmetic) |
+| `lib/src/extensions/` | `DateTimeExtensions`: localized day, month and time strings |
 | `lib/src/kalender_body.dart` | Top-level body widget that delegates to the correct view |
 | `lib/src/kalender_header.dart` | Top-level header widget |
 | `lib/src/kalender_view.dart` | Main KalenderView orchestrator widget |
 | `test/` | Unit and widget tests (mirrors `lib/src/` structure) |
 | `test/utilities.dart` | Shared test helpers: `TestProvider`, `wrapWithMaterialApp`, `testWithTimeZones`, `WidgetTesterUtils` |
 | `doc/` | The user-facing guides, indexed by `doc/README.md` |
-| `examples/` | Example Flutter apps (`example/`, `advanced_example/`, `riverpod/`, `recurrence/`, `ics/`, `testing/`, `web_demo/`) |
+| `examples/` | Example Flutter apps (`example/`, `advanced_example/`, `riverpod/`, `recurrence/`, `ics/`, `intl4x/`, `material_ui/`, `testing/`, `web_demo/`), plus `doc_snippets/` for the snippet check |
 | `example/` | README only: the pub.dev Example tab, which links to `examples/` |
 | `tool/` | Dev scripts: `test_timezones_linux.dart` replicates the CI timezone matrix locally, `pin_release_links.dart` pins documentation links at publish |
 | `.github/workflows/` | CI: `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `deploy_dashboard.yml`, `publish.yml`, `web_demo.yml` |
@@ -156,19 +156,14 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 
 #### Naming the two range spaces
 
-Two range types exist and they are not interchangeable. `KalenderDateTimeRange`
-holds instants and is what an app hands in and reads back.
-`FloatingDateTimeRange` names no timezone, which is the term RFC 5545 uses, and
-carries the date arithmetic, so a day step stays a day step across a DST
-transition.
+`KalenderDateTimeRange` holds instants and is what an app hands in and reads
+back. `FloatingDateTimeRange` names no timezone and carries the date arithmetic.
+They are not interchangeable.
 
-**A member is named for what it is, not for the spelling of its type, so say
-`range` rather than `dateTimeRange`.** The type annotation says which space the
-value is in. Add a `floating` marker only where one class carries both spaces,
-which `KalenderEvent` and `KalenderController` both do.
-
-Apply this to anything new. The existing surface does not follow it everywhere,
-which is recorded in ROADMAP.md under the next breaking window.
+**Name a member for what it is, not for its type.** Say `range` rather than
+`dateTimeRange`, and let the type annotation say which space the value is in.
+Add a `floating` marker only where one class carries both spaces, as
+`KalenderEvent`, `KalenderController` and `PageIndexCalculator` do.
 
 ### Layout Delegates
 
@@ -251,7 +246,7 @@ What a fix can do:
 - Rename, add or remove a named parameter.
 - Derive a new argument from an old one, so one parameter can become two. `KalenderEvent(dateTimeRange: r)` to `KalenderEvent(start: r.start, end: r.end)` is an `addParameter` pair with `argumentValue.expression` reading `arguments[dateTimeRange]`, plus a `removeParameter`.
 
-What it cannot do: rewrite a declaration in the user's own code. An override of a changed `@mustBeOverridden` method is a hand edit, and the migration guide has to carry it.
+What it cannot do: rewrite the body of an override, or reshape an override's parameters. Both are hand edits the migration guide has to carry.
 
 A type change with no rename has nothing to trigger on, since kalender cannot deprecate another package's type. Rename the parameter alongside the type change and the fix can wrap the old value.
 
@@ -261,11 +256,13 @@ A type change with no rename has nothing to trigger on, since kalender cannot de
 
 | Change | Call sites | Override signature | Override body |
 | --- | --- | --- | --- |
-| `rename` | yes | not applicable | not applicable |
+| `rename` of a method | yes | yes, the override is renamed | not applicable |
 | `renameParameter` | yes | yes | no, references to the parameter are left undefined |
 | `addParameter` with `removeParameter` | yes | no, reported as `invalid_override` | not applicable |
 
 So a parameter reshape, which is the shape a signature change usually takes, fixes every call site and leaves every subclass to be edited by hand. Say so in the migration guide for any change to a `@mustBeOverridden` member.
+
+**A `renameParameter` reaches only the element it names.** A transform on `defaultMultiDayFrameGenerator` does not rename the same parameter on `MultiDayLayoutStrategy.generateFrame`. Give each function and method an app calls or overrides its own transform, and give a probe override a body that uses the parameter, or the body edit stays hidden.
 
 **Every fix is tested.** The fixture pair lives in `test_fixes/<name>.dart` and `<name>.dart.expect`, and CI runs:
 

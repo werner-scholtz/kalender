@@ -271,3 +271,14 @@ transforms:
       - kind: 'renameParameter'
         oldName: 'dateTimeRange'
         newName: 'range'
+
+  - title: "Rename to 'visibleRange'"
+    date: 2026-09-12
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'generateFrame'
+      inClass: 'MultiDayLayoutStrategy'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'visibleDateTimeRange'
+        newName: 'visibleRange'

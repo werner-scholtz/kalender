@@ -1,17 +1,9 @@
 import 'package:kalender/kalender.dart';
 
-/// A range between two [FloatingDateTime]s, the space the calendar lays out in.
+/// A range between two [FloatingDateTime]s, used for calendar layout.
 ///
-/// Both [start] and [end] name no timezone, so [dates], [overlaps] and
-/// [weekNumbers] step calendar units and stay correct across a DST transition.
-/// Use [forLocation] to convert back to a [KalenderDateTimeRange] of instants.
-///
-/// This is deliberately a separate type from [KalenderDateTimeRange] rather than
-/// a set of helpers on it. Its ends are calendar positions, not instants, so
-/// stepping a day moves a day even across a DST transition, where adding 24
-/// hours to a real instant does not. Keeping the two types apart is also what
-/// makes the compiler refuse a range of instants where a layout position is
-/// wanted.
+/// [dates], [overlaps] and [weekNumbers] step calendar units, so they stay correct across a DST transition. Use
+/// [forLocation] to convert to a [KalenderDateTimeRange].
 class FloatingDateTimeRange {
   /// Creates a [FloatingDateTimeRange] instance.
   FloatingDateTimeRange({

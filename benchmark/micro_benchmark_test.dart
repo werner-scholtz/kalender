@@ -37,7 +37,7 @@ abstract class _KalenderBenchmark extends BenchmarkBase {
   void exercise() => run();
 }
 
-/// `FloatingDateTimeRange.dates()` — linear day expansion, called all over the
+/// `FloatingDateTimeRange.dates()`: linear day expansion, called all over the
 /// layout and event-store code.
 ///
 /// A single expansion is sub-microsecond and dominated by timer/JIT noise, so
@@ -159,7 +159,7 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
   void run() => _sink ^= delegate.findLongestChain(data);
 }
 
-/// `DefaultEventsController.eventsInRange` — the per-frame event query
+/// `DefaultEventsController.eventsInRange`: the per-frame event query
 /// path (covers `eventIdsInRange` + type filtering). A full year of
 /// events is loaded once; the benchmark queries a [queryDays]-day window.
 class _EventQueryBenchmark extends _KalenderBenchmark {

@@ -27,7 +27,7 @@ did. Together they are how the calendar connects to the rest of your app.
 | `clearEvents()`                      | Remove all events                                                                                                              |
 | `eventsInRange(range)`     | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
 
-`eventsInRange` takes an `FloatingDateTimeRange`, not a `KalenderDateTimeRange`.
+`eventsInRange` takes a `FloatingDateTimeRange`, not a `KalenderDateTimeRange`.
 Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 
 ### KalenderController

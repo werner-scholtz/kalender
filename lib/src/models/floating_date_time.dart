@@ -1,19 +1,12 @@
 import 'package:kalender/kalender.dart';
 
-/// A date and time with no timezone, the calendar position the views lay out
-/// with.
+/// A date and time with no timezone, used for calendar layout.
 ///
-/// Floating is the term RFC 5545 uses for a date and time that names no
-/// timezone, so 09:00 is 09:00 wherever it is read. The components are stored
-/// as-is through [DateTime.utc], which stops Dart applying local-timezone
-/// adjustments, so [add] and [subtract] step calendar units rather than
-/// absolute time and a value renders the same in every timezone.
+/// The components are stored through [DateTime.utc], so [add] and [subtract] step calendar units and a value renders
+/// the same in every timezone. It is not a UTC instant.
 ///
-/// **Not a UTC instant.** The UTC flag is how the components are held, not a
-/// claim about the zone.
-///
-/// Use [fromExternal] to convert a zoned [DateTime] or [TZDateTime] into a
-/// [FloatingDateTime], and [forLocation] to convert back.
+/// Use [fromExternal] to convert a zoned [DateTime] or [TZDateTime] into a [FloatingDateTime], and [forLocation] to
+/// convert back.
 class FloatingDateTime extends DateTime {
   /// Creates a [FloatingDateTime] instance.
   FloatingDateTime(

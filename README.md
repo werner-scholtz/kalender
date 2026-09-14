@@ -136,6 +136,8 @@ Runnable apps in [`examples/`](examples/README.md):
 | [Recurrence](https://github.com/werner-scholtz/kalender/tree/main/examples/recurrence) | Recurring events built on top of the package, which has no recurrence of its own. |
 | [ICS](https://github.com/werner-scholtz/kalender/tree/main/examples/ics) | Importing and exporting `.ics` files, expanding `RRULE` recurrence lazily over the visible range. |
 | [Riverpod](https://github.com/werner-scholtz/kalender/tree/main/examples/riverpod) | Sharing the controllers and the selected view through providers. |
+| [intl4x](https://github.com/werner-scholtz/kalender/tree/main/examples/intl4x) | The calendar's localized strings rendered with intl4x instead of intl. |
+| [material_ui](https://github.com/werner-scholtz/kalender/tree/main/examples/material_ui) | The calendar inside an app that uses the standalone `material_ui` package. |
 | [Web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/): every option, theming, locales, and a split view. |
 
 ---

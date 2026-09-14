@@ -5,8 +5,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 
 import '../utilities.dart';
 
-/// A create or resize drag stops at the end of `timeOfDayRange`. The cursor time snaps to the nearest interval, so
-/// when the range was not a whole number of intervals the last pixel of the day rounded past its end.
+/// A create or resize drag stops at the end of `timeOfDayRange`.
 void main() {
   // 08:00 to 17:40 is 580 minutes, not a whole number of 15-minute intervals.
   final timeOfDayRange = KalenderTimeRange(

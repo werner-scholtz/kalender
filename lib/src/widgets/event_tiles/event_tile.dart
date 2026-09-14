@@ -33,7 +33,7 @@ abstract class EventTile extends StatelessWidget {
   /// The components used to build the tile.
   final TileComponents tileComponents;
 
-  /// The internal date time range that the event spans.
+  /// The range the event spans.
   final FloatingDateTimeRange floatingRange;
 
   /// The function that is called when the overlay needs to be dismissed.
