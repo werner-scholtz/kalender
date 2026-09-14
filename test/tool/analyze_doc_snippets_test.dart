@@ -76,7 +76,8 @@ void main() {
 
   group('groupSnippets', () {
     test('a continued block joins the one above it, and skips are dropped', () {
-      const markdown = '<!-- snippet: file -->\n```dart\nclass A {}\n```\n'
+      const markdown =
+          '<!-- snippet: file -->\n```dart\nclass A {}\n```\n'
           '<!-- snippet: continues -->\n```dart\nclass B {}\n```\n'
           '<!-- snippet: skip: prose -->\n```dart\nnot code\n```\n'
           '<!-- snippet: file -->\n```dart\nclass C {}\n```\n';
@@ -151,10 +152,9 @@ void main() {
         groupSnippets(parseSnippets(block('<!-- snippet: file -->', 'class A {}'), 'doc/a.md')).single,
         0,
       );
-      final mapped = mapDiagnostics(
-        '  error • Bad import • lib/generated/snippet_0.dart:3:1 • some_code',
-        {'snippet_0.dart': unit},
-      );
+      final mapped = mapDiagnostics('  error • Bad import • lib/generated/snippet_0.dart:3:1 • some_code', {
+        'snippet_0.dart': unit,
+      });
       expect(mapped.single, contains('snippet_0.dart:3:1'));
     });
 

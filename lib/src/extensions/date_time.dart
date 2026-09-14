@@ -27,9 +27,7 @@ String _formatLocalized(DateFormat Function() format, DateTime date, Locale? loc
         '    runApp(const MyApp());\n'
         '  }',
       ),
-      ErrorHint(
-        'intl compiles in en_US only, so every other locale needs this call, including "en".',
-      ),
+      ErrorHint('intl compiles in en_US only, so every other locale needs this call, including "en".'),
     ]);
   }
 }

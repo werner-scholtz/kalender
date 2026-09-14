@@ -49,8 +49,8 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     KalenderDateTimeRange? displayRange,
-  })  : pageIndexCalculator = PageIndexCalculator.scheduleContinuous(displayRange ?? kDefaultRange()),
-        viewType = ScheduleViewType.continuous;
+  }) : pageIndexCalculator = PageIndexCalculator.scheduleContinuous(displayRange ?? kDefaultRange()),
+       viewType = ScheduleViewType.continuous;
 
   /// Creates a paginated [ScheduleViewConfiguration].
   ScheduleViewConfiguration.paginated({
@@ -61,8 +61,8 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     super.multiDayRule,
     KalenderDateTimeRange? displayRange,
-  })  : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? kDefaultRange()),
-        viewType = ScheduleViewType.paginated;
+  }) : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? kDefaultRange()),
+       viewType = ScheduleViewType.paginated;
 
   @override
   bool operator ==(Object other) {
@@ -79,15 +79,8 @@ class ScheduleViewConfiguration extends ViewConfiguration {
   }
 
   @override
-  int get hashCode => Object.hash(
-        name,
-        initialDateTime,
-        dateTransition,
-        nowCallback,
-        multiDayRule,
-        viewType,
-        pageIndexCalculator,
-      );
+  int get hashCode =>
+      Object.hash(name, initialDateTime, dateTransition, nowCallback, multiDayRule, viewType, pageIndexCalculator);
 }
 
 /// The default width of the leading (date) column in the schedule view.
@@ -106,8 +99,8 @@ class ScheduleBodyConfiguration {
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     this.scrollPhysics,
     this.pageScrollPhysics,
-  })  : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration(),
-        scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+  }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration(),
+       scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
 
   /// The behavior of empty days in the schedule view.
   /// - [EmptyDayBehavior.show]: Show every empty day in the schedule view.

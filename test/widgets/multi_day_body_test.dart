@@ -17,16 +17,10 @@ void main() {
   );
 
   final components = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(
-      key: ValueKey(event.id),
-      color: Colors.red,
-    ),
+    tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
   );
   final scheduleComponents = ScheduleTileComponents(
-    tileBuilder: (context, event, tileRange) => Container(
-      key: ValueKey(event.id),
-      color: Colors.blue,
-    ),
+    tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.blue),
   );
 
   setUp(() {
@@ -74,17 +68,11 @@ void main() {
       late String eventId;
       setUp(() {
         eventId = eventsController.addEvent(
-          KalenderEvent(
-            start: start.copyWith(hour: 6),
-            end: start.copyWith(hour: 8),
-          ),
+          KalenderEvent(start: start.copyWith(hour: 6), end: start.copyWith(hour: 8)),
         );
       });
 
-      Future<void> pumpCalendarView(
-        WidgetTester tester,
-        MultiDayViewConfiguration viewConfiguration,
-      ) =>
+      Future<void> pumpCalendarView(WidgetTester tester, MultiDayViewConfiguration viewConfiguration) =>
           pumpAndSettleWithMaterialApp(
             tester,
             KalenderView(
@@ -202,10 +190,7 @@ void main() {
         final gesture = await tester.createMouseGesture();
         await tester.hoverOn(tile, gesture);
 
-        final bottomHandle = find.descendant(
-          of: tile,
-          matching: find.byKey(ResizeDetector.endResizeDraggableKey(id)),
-        );
+        final bottomHandle = find.descendant(of: tile, matching: find.byKey(ResizeDetector.endResizeDraggableKey(id)));
         expect(bottomHandle, findsOneWidget, reason: 'the bottom resize handle should be rendered');
 
         final before = eventsController.events.firstWhere((event) => event.id == id).dateTimeRange;
@@ -252,17 +237,11 @@ void main() {
       late String eventId;
       setUp(() {
         eventId = eventsController.addEvent(
-          KalenderEvent(
-            start: start.copyWith(hour: 6),
-            end: start.copyWith(hour: 8),
-          ),
+          KalenderEvent(start: start.copyWith(hour: 6), end: start.copyWith(hour: 8)),
         );
       });
 
-      Future<void> pumpImpreciseCalendarView(
-        WidgetTester tester,
-        MultiDayViewConfiguration viewConfiguration,
-      ) =>
+      Future<void> pumpImpreciseCalendarView(WidgetTester tester, MultiDayViewConfiguration viewConfiguration) =>
           pumpAndSettleWithMaterialApp(
             tester,
             KalenderView(

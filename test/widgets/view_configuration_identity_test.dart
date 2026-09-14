@@ -19,32 +19,25 @@ void main() {
   });
 
   /// Two configurations built the same way, as a `build` method would.
-  MultiDayViewConfiguration week() => MultiDayViewConfiguration.week(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025, 1, 13),
-      );
+  MultiDayViewConfiguration week() =>
+      MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: DateTime(2025, 1, 13));
 
   MultiDayViewConfiguration weekWith({
     KalenderTime? initialTimeOfDay,
     double? initialHeightPerMinute,
     NowCallback? nowCallback,
-  }) =>
-      MultiDayViewConfiguration.week(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025, 1, 13),
-        initialTimeOfDay: initialTimeOfDay ?? const KalenderTime(hour: 0, minute: 0),
-        initialHeightPerMinute: initialHeightPerMinute ?? 0.7,
-        nowCallback: nowCallback,
-      );
+  }) => MultiDayViewConfiguration.week(
+    displayRange: year2025DisplayRange,
+    initialDateTime: DateTime(2025, 1, 13),
+    initialTimeOfDay: initialTimeOfDay ?? const KalenderTime(hour: 0, minute: 0),
+    initialHeightPerMinute: initialHeightPerMinute ?? 0.7,
+    nowCallback: nowCallback,
+  );
 
-  MonthViewConfiguration monthConfigWith({DateResolver? dateResolver}) => MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-        dateResolver: dateResolver,
-      );
+  MonthViewConfiguration monthConfigWith({DateResolver? dateResolver}) =>
+      MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, dateResolver: dateResolver);
 
-  MonthViewConfiguration monthConfig() => MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-      );
+  MonthViewConfiguration monthConfig() => MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
 
   Widget build(ViewConfiguration configuration) {
     return KalenderView(

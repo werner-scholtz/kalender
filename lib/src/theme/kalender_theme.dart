@@ -121,10 +121,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   /// Names no Material beyond [Icons.close], which stage 4 replaces with an
   /// owned or caller-supplied icon.
   static KalenderThemeData _buildDefaults(KalenderPalette palette) {
-    final tooltipDecoration = BoxDecoration(
-      color: palette.surface,
-      borderRadius: BorderRadius.circular(8),
-    );
+    final tooltipDecoration = BoxDecoration(color: palette.surface, borderRadius: BorderRadius.circular(8));
 
     return KalenderThemeData(
       dayHeaderStyle: DayHeaderStyle(
@@ -139,32 +136,15 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         startDecoration: tooltipDecoration,
         endDecoration: tooltipDecoration,
       ),
-      hourLinesStyle: HourLinesStyle(
-        color: palette.surface,
-        thickness: 1,
-        indent: 0,
-        endIndent: 0,
-      ),
-      daySeparatorStyle: DaySeparatorStyle(
-        color: palette.surface,
-        width: 1,
-        topIndent: 0,
-        bottomIndent: 0,
-      ),
-      timeIndicatorStyle: TimeIndicatorStyle(
-        lineColor: palette.error,
-        thickness: 1,
-        circleSize: const Size(10, 10),
-      ),
+      hourLinesStyle: HourLinesStyle(color: palette.surface, thickness: 1, indent: 0, endIndent: 0),
+      daySeparatorStyle: DaySeparatorStyle(color: palette.surface, width: 1, topIndent: 0, bottomIndent: 0),
+      timeIndicatorStyle: TimeIndicatorStyle(lineColor: palette.error, thickness: 1, circleSize: const Size(10, 10)),
       weekNumberStyle: WeekNumberStyle(
         textStyle: palette.medium,
         tooltip: 'Week Number',
         padding: const EdgeInsets.symmetric(horizontal: 4),
       ),
-      monthGridStyle: MonthGridStyle(
-        color: palette.surface,
-        thickness: 0,
-      ),
+      monthGridStyle: MonthGridStyle(color: palette.surface, thickness: 0),
       monthDayHeaderStyle: MonthDayHeaderStyle(
         numberTextStyle: palette.medium,
         // Keeps the today highlight clear of the gridline above it and the
@@ -175,10 +155,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         textStyle: palette.small,
         padding: const EdgeInsets.symmetric(vertical: 2),
       ),
-      scheduleDateStyle: ScheduleDateStyle(
-        textStyle: palette.small,
-        numberTextStyle: palette.medium,
-      ),
+      scheduleDateStyle: ScheduleDateStyle(textStyle: palette.small, numberTextStyle: palette.medium),
       scheduleTileHighlightStyle: ScheduleTileHighlightStyle(
         decoration: BoxDecoration(color: palette.accent.withAlpha(50)),
       ),
@@ -255,7 +232,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       multiDayOverlayStyle: multiDayOverlayStyle?.merge(other.multiDayOverlayStyle) ?? other.multiDayOverlayStyle,
       multiDayPortalOverlayButtonStyle:
           multiDayPortalOverlayButtonStyle?.merge(other.multiDayPortalOverlayButtonStyle) ??
-              other.multiDayPortalOverlayButtonStyle,
+          other.multiDayPortalOverlayButtonStyle,
       resizeHandleStyle: resizeHandleStyle?.merge(other.resizeHandleStyle) ?? other.resizeHandleStyle,
     );
   }
@@ -274,8 +251,11 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       monthDayHeaderStyle: MonthDayHeaderStyle.lerp(monthDayHeaderStyle, other.monthDayHeaderStyle, t),
       weekDayHeaderStyle: WeekDayHeaderStyle.lerp(weekDayHeaderStyle, other.weekDayHeaderStyle, t),
       scheduleDateStyle: ScheduleDateStyle.lerp(scheduleDateStyle, other.scheduleDateStyle, t),
-      scheduleTileHighlightStyle:
-          ScheduleTileHighlightStyle.lerp(scheduleTileHighlightStyle, other.scheduleTileHighlightStyle, t),
+      scheduleTileHighlightStyle: ScheduleTileHighlightStyle.lerp(
+        scheduleTileHighlightStyle,
+        other.scheduleTileHighlightStyle,
+        t,
+      ),
       multiDayOverlayStyle: MultiDayOverlayStyle.lerp(multiDayOverlayStyle, other.multiDayOverlayStyle, t),
       multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle.lerp(
         multiDayPortalOverlayButtonStyle,
@@ -309,21 +289,21 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
 
   @override
   int get hashCode => Object.hash(
-        dayHeaderStyle,
-        timelineStyle,
-        hourLinesStyle,
-        daySeparatorStyle,
-        timeIndicatorStyle,
-        weekNumberStyle,
-        monthGridStyle,
-        monthDayHeaderStyle,
-        weekDayHeaderStyle,
-        scheduleDateStyle,
-        scheduleTileHighlightStyle,
-        multiDayOverlayStyle,
-        multiDayPortalOverlayButtonStyle,
-        resizeHandleStyle,
-      );
+    dayHeaderStyle,
+    timelineStyle,
+    hourLinesStyle,
+    daySeparatorStyle,
+    timeIndicatorStyle,
+    weekNumberStyle,
+    monthGridStyle,
+    monthDayHeaderStyle,
+    weekDayHeaderStyle,
+    scheduleDateStyle,
+    scheduleTileHighlightStyle,
+    multiDayOverlayStyle,
+    multiDayPortalOverlayButtonStyle,
+    resizeHandleStyle,
+  );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -332,14 +312,17 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     properties.add(DiagnosticsProperty<TimelineStyle>('timelineStyle', timelineStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<HourLinesStyle>('hourLinesStyle', hourLinesStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<DaySeparatorStyle>('daySeparatorStyle', daySeparatorStyle, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty<TimeIndicatorStyle>('timeIndicatorStyle', timeIndicatorStyle, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<TimeIndicatorStyle>('timeIndicatorStyle', timeIndicatorStyle, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<WeekNumberStyle>('weekNumberStyle', weekNumberStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<MonthGridStyle>('monthGridStyle', monthGridStyle, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty<MonthDayHeaderStyle>('monthDayHeaderStyle', monthDayHeaderStyle, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty<WeekDayHeaderStyle>('weekDayHeaderStyle', weekDayHeaderStyle, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<MonthDayHeaderStyle>('monthDayHeaderStyle', monthDayHeaderStyle, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<WeekDayHeaderStyle>('weekDayHeaderStyle', weekDayHeaderStyle, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty<ScheduleDateStyle>('scheduleDateStyle', scheduleDateStyle, defaultValue: null));
     properties.add(
       DiagnosticsProperty<ScheduleTileHighlightStyle>(

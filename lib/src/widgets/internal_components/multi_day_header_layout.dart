@@ -21,12 +21,7 @@ class MultiDayHeaderWidget extends StatelessWidget {
 
   /// Creates a MultiDayHeaderWidget.
   /// This widget is used to display the header of the MultiDayView.
-  const MultiDayHeaderWidget({
-    super.key,
-    required this.content,
-    required this.leading,
-    this.timelineWidthOverride,
-  });
+  const MultiDayHeaderWidget({super.key, required this.content, required this.leading, this.timelineWidthOverride});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +31,8 @@ class MultiDayHeaderWidget extends StatelessWidget {
       timelineWidth = override;
     } else {
       final bodyComponents = context.components.multiDayComponents.bodyComponents;
-      timelineWidth = GutterWidths.maybeOf(context)?.timeline ??
+      timelineWidth =
+          GutterWidths.maybeOf(context)?.timeline ??
           bodyComponents.buildTimelineWidth(context, KalenderTimeRange.allDay());
     }
 
@@ -49,11 +45,8 @@ class MultiDayHeaderWidget extends StatelessWidget {
 }
 
 class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
-  _MultiDayHeaderWidget({
-    required this.timelineWidth,
-    required this.leading,
-    required this.content,
-  }) : super(children: [content, leading]);
+  _MultiDayHeaderWidget({required this.timelineWidth, required this.leading, required this.content})
+    : super(children: [content, leading]);
 
   /// The width of the timeline gutter that the content is offset by.
   final double timelineWidth;
@@ -82,8 +75,8 @@ class _RenderMultiDayHeaderWidget extends RenderBox
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   _RenderMultiDayHeaderWidget(TextDirection? textDirection, double timelineWidth)
-      : _textDirection = textDirection,
-        _timelineWidth = timelineWidth;
+    : _textDirection = textDirection,
+      _timelineWidth = timelineWidth;
 
   TextDirection? get textDirection => _textDirection;
   TextDirection? _textDirection;

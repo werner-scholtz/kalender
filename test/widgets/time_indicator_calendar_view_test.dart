@@ -34,10 +34,7 @@ void main() {
   final monday = DateTime(2026, 4, 13);
   final weekRange = KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
 
-  Future<void> pumpCalendarView(
-    WidgetTester tester,
-    ViewConfiguration viewConfiguration,
-  ) =>
+  Future<void> pumpCalendarView(WidgetTester tester, ViewConfiguration viewConfiguration) =>
       pumpAndSettleWithMaterialApp(
         tester,
         KalenderView(
@@ -83,11 +80,7 @@ void main() {
           closeTo(expectedLeft, 1.0),
           reason: 'Indicator should be in weekday $weekday\'s column.',
         );
-        expect(
-          indicatorRect.width,
-          closeTo(dayWidth, 1.0),
-          reason: 'Indicator should span exactly one day column.',
-        );
+        expect(indicatorRect.width, closeTo(dayWidth, 1.0), reason: 'Indicator should span exactly one day column.');
       });
     }
 

@@ -56,12 +56,11 @@ void main() {
     double width = 700,
   }) async {
     final displayRange = range ?? floatingStart.startOfDay.weekRange();
-    final tiles = tileComponents ??
+    final tiles =
+        tileComponents ??
         TileComponents(
-          tileBuilder: (context, event, tileRange) => Container(
-            key: ValueKey(event.id),
-            child: Text(event.id.toString()),
-          ),
+          tileBuilder: (context, event, tileRange) =>
+              Container(key: ValueKey(event.id), child: Text(event.id.toString())),
         );
 
     await tester.pumpWidget(
@@ -146,10 +145,7 @@ void main() {
 
     testWidgets('renders a single event', (tester) async {
       eventsController.clearEvents();
-      final singleEvent = KalenderEvent(
-        start: start,
-        end: start.copyWith(hour: 4),
-      );
+      final singleEvent = KalenderEvent(start: start, end: start.copyWith(hour: 4));
       eventsController.addEvent(singleEvent);
       events = [singleEvent]; // update local list for finder
 
@@ -160,10 +156,7 @@ void main() {
 
     testWidgets('renders short event (15 min)', (tester) async {
       eventsController.clearEvents();
-      final shortEvent = KalenderEvent(
-        start: start.copyWith(hour: 10),
-        end: start.copyWith(hour: 10, minute: 15),
-      );
+      final shortEvent = KalenderEvent(start: start.copyWith(hour: 10), end: start.copyWith(hour: 10, minute: 15));
       eventsController.addEvent(shortEvent);
       events = [shortEvent];
 
@@ -189,10 +182,7 @@ void main() {
       expect(eventFinder(2), findsOneWidget);
 
       // Add a 4th event on the same day.
-      final newEvent = KalenderEvent(
-        start: start.copyWith(hour: 5),
-        end: start.copyWith(hour: 7),
-      );
+      final newEvent = KalenderEvent(start: start.copyWith(hour: 5), end: start.copyWith(hour: 7));
       eventsController.addEvent(newEvent);
       events.add(newEvent);
       await tester.pump();

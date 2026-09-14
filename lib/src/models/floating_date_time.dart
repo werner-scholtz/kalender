@@ -22,16 +22,16 @@ class FloatingDateTime extends DateTime {
 
   /// Creates a [FloatingDateTime] from an existing [DateTime].
   FloatingDateTime.fromDateTime(DateTime dateTime)
-      : super.utc(
-          dateTime.year,
-          dateTime.month,
-          dateTime.day,
-          dateTime.hour,
-          dateTime.minute,
-          dateTime.second,
-          dateTime.millisecond,
-          dateTime.microsecond,
-        );
+    : super.utc(
+        dateTime.year,
+        dateTime.month,
+        dateTime.day,
+        dateTime.hour,
+        dateTime.minute,
+        dateTime.second,
+        dateTime.millisecond,
+        dateTime.microsecond,
+      );
 
   /// Converts a [DateTime] or [TZDateTime] into an [FloatingDateTime].
   ///

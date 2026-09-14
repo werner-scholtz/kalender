@@ -192,8 +192,9 @@ class KalenderViewState extends State<KalenderView> {
     if (range == null) return;
 
     final config = controller.viewConfiguration;
-    final date =
-        config is MonthViewConfiguration ? FloatingDateTime.fromDateTime(range.dominantMonthDate) : range.start;
+    final date = config is MonthViewConfiguration
+        ? FloatingDateTime.fromDateTime(range.dominantMonthDate)
+        : range.start;
 
     final multiDay = controller is MultiDayViewController ? controller : null;
     final snapshot = ViewSnapshot(
@@ -242,37 +243,37 @@ class KalenderViewState extends State<KalenderView> {
 
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController(
-          viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-          floatingVisibleRange: widget.kalenderController.floatingRange,
-          visibleEvents: widget.kalenderController.visibleEvents,
-          initialDate: initialDate,
-          initialTimeOfDayOverride: initialTimeOfDay,
-          initialHeightPerMinute: initialHeightPerMinute,
-          location: widget.location,
-        ),
+        viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
+        floatingVisibleRange: widget.kalenderController.floatingRange,
+        visibleEvents: widget.kalenderController.visibleEvents,
+        initialDate: initialDate,
+        initialTimeOfDayOverride: initialTimeOfDay,
+        initialHeightPerMinute: initialHeightPerMinute,
+        location: widget.location,
+      ),
       const (MonthViewConfiguration) => MonthViewController(
-          viewConfiguration: viewConfiguration as MonthViewConfiguration,
+        viewConfiguration: viewConfiguration as MonthViewConfiguration,
+        floatingVisibleRange: widget.kalenderController.floatingRange,
+        visibleEvents: widget.kalenderController.visibleEvents,
+        initialDate: initialDate,
+        location: widget.location,
+      ),
+      const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
+        ScheduleViewType.continuous => ContinuousScheduleViewController(
+          viewConfiguration: viewConfiguration,
           floatingVisibleRange: widget.kalenderController.floatingRange,
           visibleEvents: widget.kalenderController.visibleEvents,
           initialDate: initialDate,
           location: widget.location,
         ),
-      const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
-          ScheduleViewType.continuous => ContinuousScheduleViewController(
-              viewConfiguration: viewConfiguration,
-              floatingVisibleRange: widget.kalenderController.floatingRange,
-              visibleEvents: widget.kalenderController.visibleEvents,
-              initialDate: initialDate,
-              location: widget.location,
-            ),
-          ScheduleViewType.paginated => PaginatedScheduleViewController(
-              viewConfiguration: viewConfiguration,
-              floatingVisibleRange: widget.kalenderController.floatingRange,
-              visibleEvents: widget.kalenderController.visibleEvents,
-              initialDate: initialDate,
-              location: widget.location,
-            ),
-        },
+        ScheduleViewType.paginated => PaginatedScheduleViewController(
+          viewConfiguration: viewConfiguration,
+          floatingVisibleRange: widget.kalenderController.floatingRange,
+          visibleEvents: widget.kalenderController.visibleEvents,
+          initialDate: initialDate,
+          location: widget.location,
+        ),
+      },
       _ => throw ErrorHint('Unsupported ViewConfiguration'),
     };
   }
@@ -286,8 +287,9 @@ class KalenderViewState extends State<KalenderView> {
     // Each gutter is measured only for the view that draws it.
     final viewConfiguration = widget.viewConfiguration;
     final multiDayConfiguration = viewConfiguration is MultiDayViewConfiguration ? viewConfiguration : null;
-    final monthConfiguration =
-        viewConfiguration is MonthViewConfiguration && viewConfiguration.showWeekNumbers ? viewConfiguration : null;
+    final monthConfiguration = viewConfiguration is MonthViewConfiguration && viewConfiguration.showWeekNumbers
+        ? viewConfiguration
+        : null;
 
     return LocationProvider(
       notifier: _location,
@@ -317,16 +319,8 @@ class KalenderViewState extends State<KalenderView> {
                     child: CustomMultiChildLayout(
                       delegate: KalenderLayoutDelegate(headerId, bodyId),
                       children: [
-                        if (bodyId != null)
-                          LayoutId(
-                            id: bodyId,
-                            child: widget.body!,
-                          ),
-                        if (headerId != null)
-                          LayoutId(
-                            id: headerId,
-                            child: widget.header!,
-                          ),
+                        if (bodyId != null) LayoutId(id: bodyId, child: widget.body!),
+                        if (headerId != null) LayoutId(id: headerId, child: widget.header!),
                       ],
                     ),
                   ),

@@ -23,33 +23,33 @@ class ScheduleEventTile extends EventTile {
 
   @override
   EventTileOnTapUp? get onTapUp => (details, context) {
-        // Find the global position and size of the tile.
-        final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventTapped?.call(event);
-        context.callbacks?.onEventTappedWithDetail?.call(
-          event,
-          MultiDayDetail(
-            dateTimeRange: floatingRange.forLocation(location: context.location),
-            renderBox: renderObject,
-            localOffset: details.localPosition,
-          ),
-        );
-      };
+    // Find the global position and size of the tile.
+    final renderObject = context.findRenderObject()! as RenderBox;
+    context.callbacks?.onEventTapped?.call(event);
+    context.callbacks?.onEventTappedWithDetail?.call(
+      event,
+      MultiDayDetail(
+        dateTimeRange: floatingRange.forLocation(location: context.location),
+        renderBox: renderObject,
+        localOffset: details.localPosition,
+      ),
+    );
+  };
 
   @override
   EventTileOnTapUp? get onSecondaryTapUp => (details, context) {
-        // Find the global position and size of the tile.
-        final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventSecondaryTapped?.call(event);
-        context.callbacks?.onEventSecondaryTappedWithDetail?.call(
-          event,
-          MultiDayDetail(
-            dateTimeRange: floatingRange.forLocation(location: context.location),
-            renderBox: renderObject,
-            localOffset: details.localPosition,
-          ),
-        );
-      };
+    // Find the global position and size of the tile.
+    final renderObject = context.findRenderObject()! as RenderBox;
+    context.callbacks?.onEventSecondaryTapped?.call(event);
+    context.callbacks?.onEventSecondaryTappedWithDetail?.call(
+      event,
+      MultiDayDetail(
+        dateTimeRange: floatingRange.forLocation(location: context.location),
+        renderBox: renderObject,
+        localOffset: details.localPosition,
+      ),
+    );
+  };
 
   @override
   Key get rescheduleKey => ScheduleEventTile.rescheduleDraggableKey(event.id);

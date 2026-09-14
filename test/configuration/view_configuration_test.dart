@@ -54,17 +54,12 @@ void main() {
   final endDate = FloatingDateTime.fromDateTime(lastDisplayDate);
 
   // What do we need we need a list of DateTime objects to event IDs. to ensure we can find them in the widget tree.
-  final eventMapItems = List.generate(
-    FloatingDateTimeRange.fromDateTimeRange(displayRange).dates().length,
-    (i) {
-      final key = start.copyWith(year: start.year, month: start.month, day: start.day + i);
-      final end = key.copyWith(hour: start.hour + 1);
-      final value = eventsController.addEvent(
-        KalenderEvent(start: key, end: end),
-      );
-      return MapEntry<DateTime, String>(key, value);
-    },
-  );
+  final eventMapItems = List.generate(FloatingDateTimeRange.fromDateTimeRange(displayRange).dates().length, (i) {
+    final key = start.copyWith(year: start.year, month: start.month, day: start.day + i);
+    final end = key.copyWith(hour: start.hour + 1);
+    final value = eventsController.addEvent(KalenderEvent(start: key, end: end));
+    return MapEntry<DateTime, String>(key, value);
+  });
   final eventsMap = Map<DateTime, String>.fromEntries(eventMapItems);
 
   // Test animating to specific events.
@@ -478,10 +473,7 @@ extension ViewControllerUtilities on WidgetTester {
   }
 
   /// Test event visibility in the widget tree after jumping to a specific date.
-  Future<void> testAnimateToCalendarEvent(
-    KalenderController controller,
-    KalenderEvent event,
-  ) async {
+  Future<void> testAnimateToCalendarEvent(KalenderController controller, KalenderEvent event) async {
     controller.animateToEvent(event);
     await pumpAndSettle();
     expect(
@@ -538,7 +530,8 @@ extension ViewControllerUtilities on WidgetTester {
     expect(
       dateTime.isWithin(controller.floatingRange.value!, includeEnd: true),
       isTrue,
-      reason: 'Calling the $function should include the $dateTime date in the visible range, '
+      reason:
+          'Calling the $function should include the $dateTime date in the visible range, '
           'which is ${controller.floatingRange.value}',
     );
 

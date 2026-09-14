@@ -79,8 +79,10 @@ void main() {
         });
 
         testWidgets('keeps a navigated page in the month view', (tester) async {
-          final config =
-              MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: initialDateTime);
+          final config = MonthViewConfiguration.singleMonth(
+            displayRange: displayRange,
+            initialDateTime: initialDateTime,
+          );
           await pumpView(tester, config, newYork);
           kalenderController.jumpToDate(june);
           await tester.pumpAndSettle();
@@ -120,8 +122,9 @@ void main() {
                 location: location,
                 components: components,
                 viewConfiguration: config,
-                body:
-                    KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
+                body: KalenderBody(
+                  scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
+                ),
               ),
             );
           }

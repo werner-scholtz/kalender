@@ -68,10 +68,7 @@ void main() {
     overlayBuilders: overlayBuilders,
   );
 
-  const monthHeader = MonthHeaderComponents(
-    weekDayHeaderBuilder: _dateWidget,
-    weekDayHeaderStringBuilder: _dateString,
-  );
+  const monthHeader = MonthHeaderComponents(weekDayHeaderBuilder: _dateWidget, weekDayHeaderStringBuilder: _dateString);
 
   const multiDayHeader = MultiDayHeaderComponents(
     dayHeaderBuilder: _dateWidget,
@@ -259,8 +256,7 @@ Widget _overlay(
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
   required RenderBoxCallback getOverlayPortalRenderBox,
   required MultiDayOverlayEventTileBuilder overlayTileBuilder,
-}) =>
-    const SizedBox();
+}) => const SizedBox();
 
 Widget _overlayPortal(
   BuildContext context, {
@@ -271,8 +267,7 @@ Widget _overlayPortal(
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
   required MultiDayOverlayEventTileBuilder overlayTileBuilder,
   required OverlayBuilders? overlayBuilders,
-}) =>
-    const SizedBox();
+}) => const SizedBox();
 
 Widget _overlayButton(BuildContext context, OverlayPortalController controller, int hidden) => const SizedBox();
 String _hiddenCount(BuildContext context, int hidden) => '$hidden';
@@ -291,8 +286,7 @@ Widget _timeline(
   KalenderTimeRange range,
   ValueNotifier<KalenderEvent?> eventBeingDragged,
   ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
-) =>
-    const SizedBox();
+) => const SizedBox();
 
 String _timeString(BuildContext context, KalenderTime time) => '';
 double _timelineWidth(BuildContext context, KalenderTimeRange range) => 56;
@@ -308,7 +302,6 @@ Widget _tileHighlight(
   FloatingDateTime date,
   ValueNotifier<FloatingDateTimeRange?> dateTimeRange,
   Widget child,
-) =>
-    child;
+) => child;
 
 Widget _rangeWidget(BuildContext context, KalenderDateTimeRange range) => const SizedBox();

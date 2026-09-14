@@ -20,9 +20,7 @@ void main() {
       initialDateTime: DateTime(2025, 1, 15),
     );
     for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(
-        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-      );
+      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
     }
   });
 

@@ -62,10 +62,7 @@ abstract class EventsController with ChangeNotifier {
   ///
   /// The [event] is the event that needs to be changed.
   /// The [updatedEvent] is the event that will replace the [event].
-  void updateEvent({
-    required KalenderEvent event,
-    required KalenderEvent updatedEvent,
-  });
+  void updateEvent({required KalenderEvent event, required KalenderEvent updatedEvent});
 
   /// Retrieve a [KalenderEvent] by it's id if it exists.
   KalenderEvent? byId(String id);

@@ -100,10 +100,7 @@ void main() {
     test('Purges a multi-day event from the index on every spanned date', () {
       // Spans Jan 10, 11, 12; removal must clear the id from all three date
       // buckets, not just the start day.
-      final event = KalenderEvent(
-        start: DateTime.utc(2024, 1, 10, 9),
-        end: DateTime.utc(2024, 1, 12, 17),
-      );
+      final event = KalenderEvent(start: DateTime.utc(2024, 1, 10, 9), end: DateTime.utc(2024, 1, 12, 17));
       controller.addEvent(event);
       controller.removeEvent(event);
 
@@ -217,19 +214,13 @@ void main() {
     test('Swaps the whole set: old events gone, new events present', () {
       final old = List.generate(3, (i) {
         final start = DateTime.utc(2024, 6, i + 1, 9);
-        return KalenderEvent(
-          start: start,
-          end: start.add(const Duration(hours: 1)),
-        );
+        return KalenderEvent(start: start, end: start.add(const Duration(hours: 1)));
       });
       controller.addEvents(old);
 
       final replacement = List.generate(2, (i) {
         final start = DateTime.utc(2024, 7, i + 1, 9);
-        return KalenderEvent(
-          start: start,
-          end: start.add(const Duration(hours: 1)),
-        );
+        return KalenderEvent(start: start, end: start.add(const Duration(hours: 1)));
       });
       final ids = controller.replaceEvents(replacement);
 
@@ -244,31 +235,16 @@ void main() {
     });
 
     test('Notifies listeners exactly once', () {
-      controller.addEvents([
-        KalenderEvent(
-          start: DateTime.utc(2024, 6, 1, 9),
-          end: DateTime.utc(2024, 6, 1, 10),
-        ),
-      ]);
+      controller.addEvents([KalenderEvent(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))]);
 
       var count = 0;
       controller.addListener(() => count++);
-      controller.replaceEvents([
-        KalenderEvent(
-          start: DateTime.utc(2024, 7, 1, 9),
-          end: DateTime.utc(2024, 7, 1, 10),
-        ),
-      ]);
+      controller.replaceEvents([KalenderEvent(start: DateTime.utc(2024, 7, 1, 9), end: DateTime.utc(2024, 7, 1, 10))]);
       expect(count, 1, reason: 'A single atomic update, not a clear followed by an add.');
     });
 
     test('Replacing with an empty list clears all events', () {
-      controller.addEvents([
-        KalenderEvent(
-          start: DateTime.utc(2024, 6, 1, 9),
-          end: DateTime.utc(2024, 6, 1, 10),
-        ),
-      ]);
+      controller.addEvents([KalenderEvent(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))]);
       controller.replaceEvents([]);
       expect(controller.events, isEmpty);
     });
@@ -334,10 +310,7 @@ void main() {
       final event = KalenderEvent(start: start, end: end);
       controller.addEvent(event);
       controller.addListener(() => notified = true);
-      final updatedEvent = KalenderEvent(
-        start: DateTime.utc(2024, 8, 3, 11),
-        end: DateTime.utc(2024, 8, 3, 12),
-      );
+      final updatedEvent = KalenderEvent(start: DateTime.utc(2024, 8, 3, 11), end: DateTime.utc(2024, 8, 3, 12));
       controller.updateEvent(event: event, updatedEvent: updatedEvent);
       expect(notified, isTrue);
     });
@@ -390,18 +363,12 @@ void main() {
       final updatedEvent = KalenderEvent(start: newStart, end: newEnd);
       controller.updateEvent(event: event, updatedEvent: updatedEvent);
 
-      final oldRange = FloatingDateTimeRange(
-        start: FloatingDateTime(2024, 12, 1),
-        end: FloatingDateTime(2024, 12, 2),
-      );
+      final oldRange = FloatingDateTimeRange(start: FloatingDateTime(2024, 12, 1), end: FloatingDateTime(2024, 12, 2));
       final newRange = FloatingDateTimeRange(
         start: FloatingDateTime(2024, 12, 20),
         end: FloatingDateTime(2024, 12, 21),
       );
-      expect(
-        controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, oldRange),
-        isNot(contains(updatedEvent)),
-      );
+      expect(controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, oldRange), isNot(contains(updatedEvent)));
       expect(controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, newRange), contains(updatedEvent));
     });
 

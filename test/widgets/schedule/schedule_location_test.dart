@@ -27,9 +27,9 @@ void main() {
   });
 
   KalenderEvent eventAt(DateTime day, int hour) => KalenderEvent(
-        start: TZDateTime(tokyo, day.year, day.month, day.day, hour),
-        end: TZDateTime(tokyo, day.year, day.month, day.day, hour + 1),
-      );
+    start: TZDateTime(tokyo, day.year, day.month, day.day, hour),
+    end: TZDateTime(tokyo, day.year, day.month, day.day, hour + 1),
+  );
 
   KalenderView buildSchedule({
     required ScheduleViewConfiguration configuration,
@@ -44,9 +44,7 @@ void main() {
       components: components,
       callbacks: callbacks,
       viewConfiguration: configuration,
-      body: KalenderBody(
-        scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay),
-      ),
+      body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay)),
     );
   }
 

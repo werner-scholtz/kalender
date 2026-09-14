@@ -70,10 +70,8 @@ void main() {
   KalenderThemeData withTimelineStyle(TimelineStyle style) => KalenderThemeData(timelineStyle: style);
 
   KalenderComponents withTimelineStringBuilder(KalenderTimeStringBuilder builder) => KalenderComponents(
-        multiDayComponents: MultiDayComponents(
-          bodyComponents: MultiDayBodyComponents(timelineStringBuilder: builder),
-        ),
-      );
+    multiDayComponents: MultiDayComponents(bodyComponents: MultiDayBodyComponents(timelineStringBuilder: builder)),
+  );
 
   /// The label of the timeline entry for [hour]:00.
   String labelAt(WidgetTester tester, int hour) {

@@ -19,11 +19,7 @@ void main() {
   });
 
   /// Helper to pump a KalenderView with the given config and optional body.
-  Future<void> pumpCalendarView(
-    WidgetTester tester, {
-    required ViewConfiguration config,
-    bool withBody = false,
-  }) async {
+  Future<void> pumpCalendarView(WidgetTester tester, {required ViewConfiguration config, bool withBody = false}) async {
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -47,8 +43,10 @@ void main() {
         calendarViewKey = GlobalKey();
         await pumpCalendarView(
           tester,
-          config:
-              MonthViewConfiguration.singleMonth(displayRange: calendarRange, initialDateTime: DateTime(2024, 6, 15)),
+          config: MonthViewConfiguration.singleMonth(
+            displayRange: calendarRange,
+            initialDateTime: DateTime(2024, 6, 15),
+          ),
         );
         await pumpCalendarView(
           tester,
@@ -461,11 +459,7 @@ void main() {
       final start = calendarRange.start;
       await pumpCalendarView(
         tester,
-        config: MultiDayViewConfiguration.singleDay(
-          name: 'Day',
-          initialDateTime: start,
-          displayRange: calendarRange,
-        ),
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', initialDateTime: start, displayRange: calendarRange),
       );
 
       // Switch to month - should not crash at the boundary.
@@ -507,11 +501,7 @@ void main() {
 
       await pumpCalendarView(
         tester,
-        config: MultiDayViewConfiguration.custom(
-          name: '3-Day',
-          numberOfDays: 3,
-          displayRange: calendarRange,
-        ),
+        config: MultiDayViewConfiguration.custom(name: '3-Day', numberOfDays: 3, displayRange: calendarRange),
         withBody: true,
       );
 
@@ -535,17 +525,16 @@ void main() {
       ScrollResolver? scrollResolver,
       ZoomResolver? zoomResolver,
       DateResolver? dateResolver,
-    }) =>
-        MultiDayViewConfiguration.week(
-          name: 'Week',
-          displayRange: calendarRange,
-          scrollTransition: scroll,
-          zoomTransition: zoom,
-          dateTransition: date,
-          scrollResolver: scrollResolver,
-          zoomResolver: zoomResolver,
-          dateResolver: dateResolver,
-        );
+    }) => MultiDayViewConfiguration.week(
+      name: 'Week',
+      displayRange: calendarRange,
+      scrollTransition: scroll,
+      zoomTransition: zoom,
+      dateTransition: date,
+      scrollResolver: scrollResolver,
+      zoomResolver: zoomResolver,
+      dateResolver: dateResolver,
+    );
 
     testWidgets('defaults preserve scroll + zoom across Week → Month → Week', (tester) async {
       await pumpCalendarView(tester, config: week(), withBody: true);
@@ -671,8 +660,9 @@ void main() {
       expect(kalenderController.visibleTimeOfDay.value, equals(const KalenderTime(hour: 9, minute: 0)));
     });
 
-    testWidgets('visibleTimeOfDay is non-null in multi-day and null in month; onScrollPositionChanged fires',
-        (tester) async {
+    testWidgets('visibleTimeOfDay is non-null in multi-day and null in month; onScrollPositionChanged fires', (
+      tester,
+    ) async {
       final reported = <KalenderTime>[];
       await pumpAndSettleWithMaterialApp(
         tester,

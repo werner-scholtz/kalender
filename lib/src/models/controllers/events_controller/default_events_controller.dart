@@ -71,10 +71,7 @@ class DefaultEventsController extends EventsController {
   }
 
   @override
-  void updateEvent({
-    required KalenderEvent event,
-    required KalenderEvent updatedEvent,
-  }) {
+  void updateEvent({required KalenderEvent event, required KalenderEvent updatedEvent}) {
     updatedEvent.id = event.id;
     eventStore.updateEvent(event, updatedEvent);
     notifyListeners();
@@ -111,13 +108,11 @@ class DefaultEventsController extends EventsController {
     FloatingDateTimeRange range,
     Location? location,
   ) {
-    return events.where(
-      (event) {
-        // If the event is a zero duration event at the start of the day, we should check for touching.
-        final touching = _checkTouching(event, location);
-        return event.floatingRange(location: location).overlaps(range, touching: touching);
-      },
-    );
+    return events.where((event) {
+      // If the event is a zero duration event at the start of the day, we should check for touching.
+      final touching = _checkTouching(event, location);
+      return event.floatingRange(location: location).overlaps(range, touching: touching);
+    });
   }
 
   /// Finds the [KalenderEvent]s longer than 1 day that occur during the [range].
@@ -158,11 +153,6 @@ class DefaultEventsController extends EventsController {
     final floatingEnd = event.floatingEnd(location: location);
 
     return floatingStart == floatingEnd &&
-        floatingStart ==
-            FloatingDateTime(
-              floatingStart.year,
-              floatingStart.month,
-              floatingStart.day,
-            );
+        floatingStart == FloatingDateTime(floatingStart.year, floatingStart.month, floatingStart.day);
   }
 }

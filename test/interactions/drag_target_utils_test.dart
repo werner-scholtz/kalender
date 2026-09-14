@@ -58,11 +58,7 @@ void main() {
   final range = FloatingDateTimeRange(start: DateTime.utc(2024, 1, 15, 10), end: DateTime.utc(2024, 1, 15, 12));
 
   KalenderEvent eventWithId(String id) {
-    return KalenderEvent(
-      id: id,
-      start: DateTime.utc(2024, 1, 15, 9),
-      end: DateTime.utc(2024, 1, 15, 10),
-    );
+    return KalenderEvent(id: id, start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10));
   }
 
   // ─── calculateRangeFromStart ─────────────────────────────────────────
@@ -147,7 +143,10 @@ void main() {
       KalenderEvent resolve(KalenderEvent _) => live;
 
       expect(
-        dispatch(Resize(event: eventWithId('stale'), direction: ResizeDirection.top), resolveEvent: resolve),
+        dispatch(
+          Resize(event: eventWithId('stale'), direction: ResizeDirection.top),
+          resolveEvent: resolve,
+        ),
         equals('resize:live:top'),
       );
       expect(dispatch(Reschedule(event: eventWithId('stale')), resolveEvent: resolve), equals('reschedule:live'));
@@ -171,10 +170,7 @@ void main() {
     test('onAcceptWithDetails returns normally for a foreign create', () {
       final host = _DragUtilsHarness();
       final foreign = Create(controllerId: host.controller.id + 1);
-      expect(
-        () => host.onAcceptWithDetails(DragTargetDetails(data: foreign, offset: Offset.zero)),
-        returnsNormally,
-      );
+      expect(() => host.onAcceptWithDetails(DragTargetDetails(data: foreign, offset: Offset.zero)), returnsNormally);
     });
   });
 }

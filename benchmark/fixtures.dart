@@ -14,11 +14,7 @@ final DateTime benchmarkStart = DateTime.utc(2024, 1, 1);
 ///
 /// Events are spread across the working day (06:00–18:00) with varying
 /// durations so that overlap logic has something to chew on.
-List<KalenderEvent> generateDayEvents({
-  required DateTime start,
-  required int days,
-  required int eventsPerDay,
-}) {
+List<KalenderEvent> generateDayEvents({required DateTime start, required int days, required int eventsPerDay}) {
   final events = <KalenderEvent>[];
   for (var d = 0; d < days; d++) {
     final date = DateTime.utc(start.year, start.month, start.day + d);
@@ -34,11 +30,7 @@ List<KalenderEvent> generateDayEvents({
 
 /// Generates [count] multi-day events distributed across a [days]-day window
 /// starting at [start], each spanning between 1 and 5 days.
-List<KalenderEvent> generateMultiDayEvents({
-  required DateTime start,
-  required int days,
-  required int count,
-}) {
+List<KalenderEvent> generateMultiDayEvents({required DateTime start, required int days, required int count}) {
   final events = <KalenderEvent>[];
   for (var i = 0; i < count; i++) {
     final offset = i % days;

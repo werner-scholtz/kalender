@@ -200,10 +200,7 @@ typedef OnEventTapped = void Function(KalenderEvent event);
 /// The [detail] is the details of the date that was tapped.
 /// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
 /// - [TapDetail.renderBox] is the [RenderBox] of the event tile.
-typedef OnEventTappedWithDetail = void Function(
-  KalenderEvent event,
-  TapDetail detail,
-);
+typedef OnEventTappedWithDetail = void Function(KalenderEvent event, TapDetail detail);
 
 /// The callback for when an event is about to be changed.
 typedef OnEventChange = void Function(KalenderEvent event);
@@ -223,10 +220,7 @@ typedef OnEventCreate = KalenderEvent? Function(KalenderEvent event);
 ///
 /// [event] is the event that will be created.
 /// [detail] contains the details of the tap that created the event.
-typedef OnEventCreateWithDetail = KalenderEvent? Function(
-  KalenderEvent event,
-  TapDetail detail,
-);
+typedef OnEventCreateWithDetail = KalenderEvent? Function(KalenderEvent event, TapDetail detail);
 
 /// The callback for a new event has been created.
 ///
@@ -272,11 +266,12 @@ typedef OnLongPressedWithDetail = void Function(TapDetail detail);
 /// [configuration] is the configuration of the vertical view.
 ///
 /// See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
-typedef OnWillAcceptWithDetailsVertical = bool Function(
-  DragTargetDetails<Object?> details,
-  KalenderController controller,
-  VerticalConfiguration configuration,
-);
+typedef OnWillAcceptWithDetailsVertical =
+    bool Function(
+      DragTargetDetails<Object?> details,
+      KalenderController controller,
+      VerticalConfiguration configuration,
+    );
 
 /// The callback for when a drag target is evaluating whether to accept a draggable.
 ///
@@ -287,11 +282,12 @@ typedef OnWillAcceptWithDetailsVertical = bool Function(
 /// By default the calendar will only accept draggables that are of type [Create], [Resize], or [Reschedule].
 ///
 /// See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
-typedef OnWillAcceptWithDetailsHorizontal = bool Function(
-  DragTargetDetails<Object?> details,
-  KalenderController controller,
-  HorizontalConfiguration configuration,
-);
+typedef OnWillAcceptWithDetailsHorizontal =
+    bool Function(
+      DragTargetDetails<Object?> details,
+      KalenderController controller,
+      HorizontalConfiguration configuration,
+    );
 
 abstract class TapDetail {
   /// The render box of the gesture detector that was tapped.

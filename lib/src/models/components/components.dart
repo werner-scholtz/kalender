@@ -63,12 +63,7 @@ class KalenderComponents {
   }
 
   @override
-  int get hashCode => Object.hash(
-        monthComponents,
-        multiDayComponents,
-        scheduleComponents,
-        overlayBuilders,
-      );
+  int get hashCode => Object.hash(monthComponents, multiDayComponents, scheduleComponents, overlayBuilders);
 }
 
 /// Builders used to create the overlayPortal, overlay and overlay button widgets.
@@ -124,11 +119,11 @@ class OverlayBuilders {
 
   @override
   int get hashCode => Object.hash(
-        multiDayOverlayBuilder,
-        multiDayOverlayPortalBuilder,
-        multiDayPortalOverlayButtonBuilder,
-        multiDayPortalOverlayButtonStringBuilder,
-      );
+    multiDayOverlayBuilder,
+    multiDayOverlayPortalBuilder,
+    multiDayPortalOverlayButtonBuilder,
+    multiDayPortalOverlayButtonStringBuilder,
+  );
 }
 
 /// The trigger widget builder, should be constrained in width.

@@ -12,12 +12,7 @@ class DayDraggable extends StatefulWidget {
   final KalenderTimeRange timeOfDayRange;
   final double pageHeight;
 
-  const DayDraggable({
-    super.key,
-    required this.visibleRange,
-    required this.timeOfDayRange,
-    required this.pageHeight,
-  });
+  const DayDraggable({super.key, required this.visibleRange, required this.timeOfDayRange, required this.pageHeight});
 
   @override
   State<DayDraggable> createState() => _DayDraggableState();
@@ -50,31 +45,32 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
                       onSecondaryTap: callbacks?.hasOnSecondaryTapped == true
                           ? () => _onSecondaryTap(context, date, position)
                           : null,
-                      onLongPress:
-                          callbacks?.hasOnLongPressed == true ? () => _onLongPress(context, date, position) : null,
+                      onLongPress: callbacks?.hasOnLongPressed == true
+                          ? () => _onLongPress(context, date, position)
+                          : null,
                       onSecondaryLongPress: callbacks?.hasOnSecondaryLongPressed == true
                           ? () => _onSecondaryLongPress(context, date, position)
                           : null,
                       child: context.interaction.allowEventCreation
                           ? switch (context.interaction.createEventGesture) {
                               EventInteractionGesture.tap => Draggable(
-                                  dragAnchorStrategy: pointerDragAnchorStrategy,
-                                  onDragStarted: () => createNewEvent(context, date, position),
-                                  onDraggableCanceled: onDragFinished,
-                                  onDragEnd: onDragFinished,
-                                  data: Create(controllerId: controller.id),
-                                  feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                                  child: Container(color: Colors.transparent, height: widget.pageHeight),
-                                ),
+                                dragAnchorStrategy: pointerDragAnchorStrategy,
+                                onDragStarted: () => createNewEvent(context, date, position),
+                                onDraggableCanceled: onDragFinished,
+                                onDragEnd: onDragFinished,
+                                data: Create(controllerId: controller.id),
+                                feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                                child: Container(color: Colors.transparent, height: widget.pageHeight),
+                              ),
                               EventInteractionGesture.longPress => LongPressDraggable(
-                                  dragAnchorStrategy: pointerDragAnchorStrategy,
-                                  onDragStarted: () => createNewEvent(context, date, position),
-                                  onDraggableCanceled: onDragFinished,
-                                  onDragEnd: onDragFinished,
-                                  data: Create(controllerId: controller.id),
-                                  feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                                  child: Container(color: Colors.transparent, height: widget.pageHeight),
-                                ),
+                                dragAnchorStrategy: pointerDragAnchorStrategy,
+                                onDragStarted: () => createNewEvent(context, date, position),
+                                onDraggableCanceled: onDragFinished,
+                                onDragEnd: onDragFinished,
+                                data: Create(controllerId: controller.id),
+                                feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                                child: Container(color: Colors.transparent, height: widget.pageHeight),
+                              ),
                             }
                           : null,
                     ),
@@ -110,7 +106,11 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     if (callbacks?.onLongPressedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
-      DayDetail(date: dateTime.forLocation(location: context.location), renderBox: renderBox, localOffset: position),
+      DayDetail(
+        date: dateTime.forLocation(location: context.location),
+        renderBox: renderBox,
+        localOffset: position,
+      ),
     );
   }
 
@@ -136,7 +136,11 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     if (callbacks?.onSecondaryLongPressedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryLongPressedWithDetail?.call(
-      DayDetail(date: dateTime.forLocation(location: context.location), renderBox: renderBox, localOffset: position),
+      DayDetail(
+        date: dateTime.forLocation(location: context.location),
+        renderBox: renderBox,
+        localOffset: position,
+      ),
     );
   }
 

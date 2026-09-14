@@ -41,8 +41,9 @@ const impliedImports = <String>[
 ];
 
 /// A directive comment naming how the block below it is compiled.
-final directivePattern =
-    RegExp(r'^\s*<!--\s*snippet:\s*(file|statements|expression|continues|skip)\s*(?::\s*(.*?))?\s*-->\s*$');
+final directivePattern = RegExp(
+  r'^\s*<!--\s*snippet:\s*(file|statements|expression|continues|skip)\s*(?::\s*(.*?))?\s*-->\s*$',
+);
 
 /// The opening of a fenced dart block, capturing its indentation.
 final fenceOpenPattern = RegExp(r'^(\s*)```dart\s*$');
@@ -142,9 +143,7 @@ List<Snippet> parseSnippets(String markdown, String path) {
       throw SnippetError('$path:${i + 1}: a continued snippet needs a compiled block above it in the same file');
     }
 
-    snippets.add(
-      Snippet(path: path, line: i + 2, kind: kind, code: code.join('\n'), skipReason: reason),
-    );
+    snippets.add(Snippet(path: path, line: i + 2, kind: kind, code: code.join('\n'), skipReason: reason));
     i = end;
   }
 
@@ -197,12 +196,7 @@ GeneratedUnit generateUnit(List<Snippet> unit, int index) {
   final base = unit.first;
   final imports = <String>{...impliedImports, for (final s in unit) ...s.imports}.toList()..sort();
 
-  final out = <String>[
-    '// Generated from ${base.path}. Do not edit.',
-    '// ignore_for_file: type=lint',
-    ...imports,
-    '',
-  ];
+  final out = <String>['// Generated from ${base.path}. Do not edit.', '// ignore_for_file: type=lint', ...imports, ''];
   final origins = <int, ({String path, int line})>{};
 
   void emit(Snippet snippet) {
@@ -242,7 +236,7 @@ GeneratedUnit generateUnit(List<Snippet> unit, int index) {
 List<String> snippetSources() {
   final docs = Directory('doc').existsSync()
       ? (Directory('doc').listSync().whereType<File>().map((f) => f.path).where((p) => p.endsWith('.md')).toList()
-        ..sort())
+          ..sort())
       : <String>[];
   return ['README.md', 'example/README.md', ...docs];
 }

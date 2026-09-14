@@ -48,16 +48,11 @@ final _restrictedRange = KalenderTimeRange(
 );
 
 /// A single-day event (2 h) on Jan 6, 2025.
-KalenderEvent _singleDayEvent({DateTime? start, DateTime? end}) => KalenderEvent(
-      start: start ?? DateTime(2025, 1, 6, 10, 0),
-      end: end ?? DateTime(2025, 1, 6, 12, 0),
-    );
+KalenderEvent _singleDayEvent({DateTime? start, DateTime? end}) =>
+    KalenderEvent(start: start ?? DateTime(2025, 1, 6, 10, 0), end: end ?? DateTime(2025, 1, 6, 12, 0));
 
 /// A midnight-to-midnight event (always spans multiple days).
-KalenderEvent _multiDayEvent() => KalenderEvent(
-      start: DateTime(2025, 1, 6, 0, 0),
-      end: DateTime(2025, 1, 7, 0, 0),
-    );
+KalenderEvent _multiDayEvent() => KalenderEvent(start: DateTime(2025, 1, 6, 0, 0), end: DateTime(2025, 1, 7, 0, 0));
 
 DragTargetDetails<Object?> _dragDetails(Object? data) => DragTargetDetails(data: data, offset: Offset.zero);
 
@@ -137,11 +132,7 @@ void main() {
       final event = _singleDayEvent();
       expect(event.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isFalse);
       expect(
-        HorizontalDragTarget.onWillAcceptWithDetails(
-          _dragDetails(Reschedule(event: event)),
-          controller,
-          headerConfig,
-        ),
+        HorizontalDragTarget.onWillAcceptWithDetails(_dragDetails(Reschedule(event: event)), controller, headerConfig),
         isFalse,
       );
     });
@@ -149,11 +140,7 @@ void main() {
     test('Reschedule single-day event, month body config (allowSingleDayEvents=true) → true', () {
       final event = _singleDayEvent();
       expect(
-        HorizontalDragTarget.onWillAcceptWithDetails(
-          _dragDetails(Reschedule(event: event)),
-          controller,
-          monthConfig,
-        ),
+        HorizontalDragTarget.onWillAcceptWithDetails(_dragDetails(Reschedule(event: event)), controller, monthConfig),
         isTrue,
       );
     });
@@ -162,11 +149,7 @@ void main() {
       final event = _multiDayEvent();
       expect(event.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isTrue);
       expect(
-        HorizontalDragTarget.onWillAcceptWithDetails(
-          _dragDetails(Reschedule(event: event)),
-          controller,
-          headerConfig,
-        ),
+        HorizontalDragTarget.onWillAcceptWithDetails(_dragDetails(Reschedule(event: event)), controller, headerConfig),
         isTrue,
       );
     });
@@ -189,14 +172,14 @@ void main() {
   // ────────────────────────────────────────────────────────────────────────────
   group('VerticalDragTarget.onWillAcceptWithDetails', () {
     KalenderView weekCalendarView(KalenderController controller) => KalenderView(
-          eventsController: DefaultEventsController(),
-          kalenderController: controller,
-          viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: year2025DisplayRange,
-            initialDateTime: _weekInitialDate,
-          ),
-          body: const KalenderBody(),
-        );
+      eventsController: DefaultEventsController(),
+      kalenderController: controller,
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialDateTime: _weekInitialDate,
+      ),
+      body: const KalenderBody(),
+    );
 
     testWidgets('Create with matching controller id → true', (tester) async {
       final controller = KalenderController();
@@ -220,11 +203,7 @@ void main() {
       final other = KalenderController();
 
       expect(
-        VerticalDragTarget.onWillAcceptWithDetails(
-          _dragDetails(Create(controllerId: other.id)),
-          controller,
-          config,
-        ),
+        VerticalDragTarget.onWillAcceptWithDetails(_dragDetails(Create(controllerId: other.id)), controller, config),
         isFalse,
       );
     });
@@ -279,18 +258,11 @@ void main() {
       const config = MultiDayBodyConfiguration();
 
       // 10-hour event (> 8h 1min range duration) — still a single-day event
-      final hugeEvent = KalenderEvent(
-        start: DateTime(2025, 1, 6, 8, 0),
-        end: DateTime(2025, 1, 6, 18, 0),
-      );
+      final hugeEvent = KalenderEvent(start: DateTime(2025, 1, 6, 8, 0), end: DateTime(2025, 1, 6, 18, 0));
       expect(hugeEvent.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isFalse);
 
       expect(
-        VerticalDragTarget.onWillAcceptWithDetails(
-          _dragDetails(Reschedule(event: hugeEvent)),
-          controller,
-          config,
-        ),
+        VerticalDragTarget.onWillAcceptWithDetails(_dragDetails(Reschedule(event: hugeEvent)), controller, config),
         isFalse,
       );
     });
@@ -522,12 +494,7 @@ void main() {
 
     testWidgets('single-day event: date changes but time-of-day is preserved', (tester) async {
       final ec = DefaultEventsController();
-      ec.addEvent(
-        _singleDayEvent(
-          start: DateTime(2025, 1, 6, 10, 0),
-          end: DateTime(2025, 1, 6, 12, 0),
-        ),
-      );
+      ec.addEvent(_singleDayEvent(start: DateTime(2025, 1, 6, 10, 0), end: DateTime(2025, 1, 6, 12, 0)));
       final state = await pumpMonthState(tester, ec: ec);
 
       final event = ec.events.first;
@@ -562,12 +529,7 @@ void main() {
 
     testWidgets('single-day event moved to a different week row → correct day', (tester) async {
       final ec = DefaultEventsController();
-      ec.addEvent(
-        _singleDayEvent(
-          start: DateTime(2025, 1, 6, 9, 30),
-          end: DateTime(2025, 1, 6, 10, 30),
-        ),
-      );
+      ec.addEvent(_singleDayEvent(start: DateTime(2025, 1, 6, 9, 30), end: DateTime(2025, 1, 6, 10, 30)));
       final state = await pumpMonthState(tester, ec: ec);
 
       final event = ec.events.first;
@@ -597,17 +559,11 @@ void main() {
   group('Resize leave/re-enter restores selectedEventId (regression)', () {
     DragTarget<Object?> findDragTargetOf<T extends Widget>(WidgetTester tester) {
       return tester.widget<DragTarget<Object?>>(
-        find
-            .descendant(
-              of: find.byType(T),
-              matching: find.byWidgetPredicate((w) => w is DragTarget),
-            )
-            .first,
+        find.descendant(of: find.byType(T), matching: find.byWidgetPredicate((w) => w is DragTarget)).first,
       );
     }
 
-    testWidgets(
-        'VerticalDragTarget: onLeave clears selectedEventId; '
+    testWidgets('VerticalDragTarget: onLeave clears selectedEventId; '
         're-entry with Resize data restores it', (tester) async {
       final ec = DefaultEventsController();
       ec.addEvent(_singleDayEvent());
@@ -649,7 +605,8 @@ void main() {
       expect(
         controller.selectedEventId,
         equals(liveEvent.id),
-        reason: 'selectedEventId must be restored on re-entry so that '
+        reason:
+            'selectedEventId must be restored on re-entry so that '
             '_DayDropTargetColumnState does not insert a duplicate event',
       );
 
@@ -657,8 +614,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets(
-        'HorizontalDragTarget: onLeave clears selectedEventId; '
+    testWidgets('HorizontalDragTarget: onLeave clears selectedEventId; '
         're-entry with Resize data restores it', (tester) async {
       final ec = DefaultEventsController();
       // Multi-day event so it lives in the HorizontalDragTarget (header/month).
@@ -708,12 +664,7 @@ void main() {
   group('ScheduleDragTarget', () {
     testWidgets('continuous schedule view renders without exception', (tester) async {
       final ec = DefaultEventsController();
-      ec.addEvent(
-        KalenderEvent(
-          start: DateTime(2025, 1, 6, 10),
-          end: DateTime(2025, 1, 6, 12),
-        ),
-      );
+      ec.addEvent(KalenderEvent(start: DateTime(2025, 1, 6, 10), end: DateTime(2025, 1, 6, 12)));
 
       await pumpAndSettleWithMaterialApp(
         tester,

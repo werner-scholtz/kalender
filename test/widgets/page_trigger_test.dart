@@ -54,10 +54,7 @@ void main() {
   testWidgets('dragging a header tile to the viewport edge advances the page', (tester) async {
     // A 2-day event in the first visible week, shown in the multi-day header.
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: start.add(const Duration(days: 1)),
-        end: start.add(const Duration(days: 3)),
-      ),
+      KalenderEvent(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
     );
 
     await pumpWeek(tester);
@@ -92,10 +89,7 @@ void main() {
     // A one-hour timed event, shown in the body.
     final eventStart = start.add(const Duration(days: 1, hours: 9));
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: eventStart,
-        end: eventStart.add(const Duration(hours: 1)),
-      ),
+      KalenderEvent(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
     );
 
     await pumpWeek(tester);

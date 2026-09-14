@@ -33,11 +33,7 @@ class MonthViewController extends ViewController {
   late final ValueNotifier<Set<KalenderEvent>> visibleEvents;
 
   @override
-  Future<void> animateToDate(
-    DateTime date, {
-    Duration? duration,
-    Curve? curve,
-  }) async {
+  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
     // Calculate the pageNumber of the date.
     final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 

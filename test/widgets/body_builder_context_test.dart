@@ -17,11 +17,7 @@ void main() {
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
-  Future<void> pumpWeek(
-    WidgetTester tester, {
-    KalenderComponents? components,
-    KalenderThemeData? theme,
-  }) async {
+  Future<void> pumpWeek(WidgetTester tester, {KalenderComponents? components, KalenderThemeData? theme}) async {
     final view = KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
@@ -32,10 +28,7 @@ void main() {
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),
     );
-    await pumpAndSettleWithMaterialApp(
-      tester,
-      theme == null ? view : KalenderTheme(data: theme, child: view),
-    );
+    await pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
   }
 
   KalenderComponents bodyComponents(MultiDayBodyComponents components) {
@@ -82,9 +75,7 @@ void main() {
       tester,
       theme: const KalenderThemeData(daySeparatorStyle: DaySeparatorStyle(color: Color(0xFF0000FF))),
       components: bodyComponents(
-        MultiDayBodyComponents(
-          daySeparator: (context) => _Probe(KalenderTheme.of(context).daySeparatorStyle?.color),
-        ),
+        MultiDayBodyComponents(daySeparator: (context) => _Probe(KalenderTheme.of(context).daySeparatorStyle?.color)),
       ),
     );
 

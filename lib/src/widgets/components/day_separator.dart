@@ -23,20 +23,10 @@ class DaySeparatorStyle with Diagnosticable {
   /// The bottom indent of the day separator.
   final double? bottomIndent;
 
-  const DaySeparatorStyle({
-    this.color,
-    this.width,
-    this.topIndent,
-    this.bottomIndent,
-  });
+  const DaySeparatorStyle({this.color, this.width, this.topIndent, this.bottomIndent});
 
   /// Creates a copy of this style with the given fields replaced with the new values.
-  DaySeparatorStyle copyWith({
-    Color? color,
-    double? width,
-    double? topIndent,
-    double? bottomIndent,
-  }) {
+  DaySeparatorStyle copyWith({Color? color, double? width, double? topIndent, double? bottomIndent}) {
     return DaySeparatorStyle(
       color: color ?? this.color,
       width: width ?? this.width,

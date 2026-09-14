@@ -162,14 +162,13 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
         );
 
         if (!correctType) {
-          debugPrint(
-            'VerticalDragTarget: cannot use details: $details because of unknown data type',
-          );
+          debugPrint('VerticalDragTarget: cannot use details: $details because of unknown data type');
           return false;
         }
 
         // First test if the details can be accepted at all.
-        final accepted = callbacks?.onWillAcceptWithDetailsVertical?.call(details, controller, bodyConfiguration) ??
+        final accepted =
+            callbacks?.onWillAcceptWithDetailsVertical?.call(details, controller, bodyConfiguration) ??
             VerticalDragTarget.onWillAcceptWithDetails(details, controller, bodyConfiguration);
         if (!accepted) return accepted;
 
@@ -259,10 +258,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   }
 
   @override
-  FloatingDateTime? calculateCursorDateTime(
-    Offset offset, {
-    Offset feedbackWidgetOffset = Offset.zero,
-  }) {
+  FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
     final localCursorPosition = calculateLocalCursorPosition(offset, scrollOffset: Offset(0, scrollController.offset));
     if (localCursorPosition == null) return null;
 
@@ -376,7 +372,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final dateTimeRange = switch (direction) {
       ResizeDirection.top => calculateRangeFromStart(floatingRange, cursorSnapPoint),
       ResizeDirection.bottom => calculateRangeFromEnd(floatingRange, cursorSnapPoint),
-      _ => null
+      _ => null,
     };
     if (dateTimeRange == null) return null;
 

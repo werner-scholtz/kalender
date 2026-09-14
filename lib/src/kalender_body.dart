@@ -100,27 +100,27 @@ class _KalenderBodyState extends State<KalenderBody> {
         notifier: _interaction,
         child: switch (viewController) {
           MultiDayViewController() => TileComponentProvider(
-              tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents(),
-              child: HeightPerMinute(
-                notifier: viewController.heightPerMinute,
-                child: Snapping(
-                  notifier: _snapping,
-                  child: MultiDayBody(configuration: widget.multiDayBodyConfiguration),
-                ),
+            tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents(),
+            child: HeightPerMinute(
+              notifier: viewController.heightPerMinute,
+              child: Snapping(
+                notifier: _snapping,
+                child: MultiDayBody(configuration: widget.multiDayBodyConfiguration),
               ),
             ),
+          ),
           MonthViewController() => TileComponentProvider(
-              tileComponents: widget.monthTileComponents ?? TileComponents.defaultComponents(),
-              child: MonthBody(configuration: widget.monthBodyConfiguration),
-            ),
+            tileComponents: widget.monthTileComponents ?? TileComponents.defaultComponents(),
+            child: MonthBody(configuration: widget.monthBodyConfiguration),
+          ),
           ScheduleViewController() => TileComponentProvider(
-              tileComponents: widget.scheduleTileComponents ?? ScheduleTileComponents.defaultComponents(),
-              child: ScheduleBody(configuration: widget.scheduleBodyConfiguration),
-            ),
+            tileComponents: widget.scheduleTileComponents ?? ScheduleTileComponents.defaultComponents(),
+            child: ScheduleBody(configuration: widget.scheduleBodyConfiguration),
+          ),
           _ => throw ErrorHint(
-              'Unsupported ViewController type: ${viewController.runtimeType}. '
-              'Make sure to use the correct KalenderBody for the ViewController.',
-            ),
+            'Unsupported ViewController type: ${viewController.runtimeType}. '
+            'Make sure to use the correct KalenderBody for the ViewController.',
+          ),
         },
       ),
     );

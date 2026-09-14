@@ -46,12 +46,8 @@ void main() {
     eventsController = DefaultEventsController();
     kalenderController = KalenderController();
 
-    dayEventID = eventsController.addEvent(
-      KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
-    );
-    multiDayEventID = eventsController.addEvent(
-      KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)),
-    );
+    dayEventID = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)));
+    multiDayEventID = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)));
     customDayEventID = eventsController.addEvent(
       KalenderEvent(
         start: DateTime(2025, 1, 1, 1),
@@ -73,88 +69,88 @@ void main() {
   // ---------------------------------------------------------------------------
 
   Future<void> pumpMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: MultiDayViewConfiguration.singleDay(
-            displayRange: year2025DisplayRange,
-            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-            initialDateTime: DateTime(2025, 1, 1),
-          ),
-          header: KalenderHeader(interaction: interaction),
-          body: KalenderBody(interaction: interaction),
-        ),
-      );
+    tester,
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+      header: KalenderHeader(interaction: interaction),
+      body: KalenderBody(interaction: interaction),
+    ),
+  );
 
   Future<void> pumpMonthView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: year2025DisplayRange,
-            initialDateTime: DateTime(2025),
-          ),
-          header: KalenderHeader(interaction: interaction),
-          body: KalenderBody(interaction: interaction),
-        ),
-      );
+    tester,
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: MonthViewConfiguration.singleMonth(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025),
+      ),
+      header: KalenderHeader(interaction: interaction),
+      body: KalenderBody(interaction: interaction),
+    ),
+  );
 
   Future<void> pumpScheduleView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
-          header: KalenderHeader(interaction: interaction),
-          body: KalenderBody(interaction: interaction),
-        ),
-      );
+    tester,
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
+      header: KalenderHeader(interaction: interaction),
+      body: KalenderBody(interaction: interaction),
+    ),
+  );
 
   Future<void> pumpImpreciseMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: MultiDayViewConfiguration.singleDay(
-            displayRange: year2025DisplayRange,
-            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-            initialDateTime: DateTime(2025, 1, 1),
-          ),
-          header: KalenderHeader(interaction: impreciseInteraction),
-          body: KalenderBody(interaction: impreciseInteraction),
-        ),
-      );
+    tester,
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+      header: KalenderHeader(interaction: impreciseInteraction),
+      body: KalenderBody(interaction: impreciseInteraction),
+    ),
+  );
 
   Future<void> pumpImpreciseMonthView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: year2025DisplayRange,
-            initialDateTime: DateTime(2025),
-          ),
-          header: KalenderHeader(interaction: impreciseInteraction),
-          body: KalenderBody(interaction: impreciseInteraction),
-        ),
-      );
+    tester,
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: MonthViewConfiguration.singleMonth(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025),
+      ),
+      header: KalenderHeader(interaction: impreciseInteraction),
+      body: KalenderBody(interaction: impreciseInteraction),
+    ),
+  );
 
   Future<void> pumpAutoMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: MultiDayViewConfiguration.singleDay(
-            displayRange: year2025DisplayRange,
-            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-            initialDateTime: DateTime(2025, 1, 1),
-          ),
-          header: KalenderHeader(interaction: autoInteraction),
-          body: KalenderBody(interaction: autoInteraction),
-        ),
-      );
+    tester,
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+      header: KalenderHeader(interaction: autoInteraction),
+      body: KalenderBody(interaction: autoInteraction),
+    ),
+  );
 
   Future<void> sendPointerHover(
     WidgetTester tester, {
@@ -366,11 +362,7 @@ void main() {
       final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
       expect(tile, findsOneWidget);
 
-      await sendPointerHover(
-        tester,
-        target: tile,
-        kind: PointerDeviceKind.touch,
-      );
+      await sendPointerHover(tester, target: tile, kind: PointerDeviceKind.touch);
 
       expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
       expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
@@ -383,11 +375,7 @@ void main() {
       final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
       expect(tile, findsOneWidget);
 
-      await sendPointerHover(
-        tester,
-        target: tile,
-        kind: PointerDeviceKind.mouse,
-      );
+      await sendPointerHover(tester, target: tile, kind: PointerDeviceKind.mouse);
 
       expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
       expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsOneWidget);

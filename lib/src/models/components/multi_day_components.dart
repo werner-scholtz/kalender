@@ -27,10 +27,7 @@ class MultiDayComponents {
   });
 
   /// Creates a copy of this with the given fields replaced.
-  MultiDayComponents copyWith({
-    MultiDayHeaderComponents? headerComponents,
-    MultiDayBodyComponents? bodyComponents,
-  }) {
+  MultiDayComponents copyWith({MultiDayHeaderComponents? headerComponents, MultiDayBodyComponents? bodyComponents}) {
     return MultiDayComponents(
       headerComponents: headerComponents ?? this.headerComponents,
       bodyComponents: bodyComponents ?? this.bodyComponents,
@@ -140,14 +137,14 @@ class MultiDayHeaderComponents {
 
   @override
   int get hashCode => Object.hash(
-        dayHeaderBuilder,
-        dayHeaderStringBuilder,
-        dayHeaderNumberStringBuilder,
-        weekNumberBuilder,
-        leftTriggerBuilder,
-        rightTriggerBuilder,
-        overlayBuilders,
-      );
+    dayHeaderBuilder,
+    dayHeaderStringBuilder,
+    dayHeaderNumberStringBuilder,
+    weekNumberBuilder,
+    leftTriggerBuilder,
+    rightTriggerBuilder,
+    overlayBuilders,
+  );
 }
 
 /// The component builders used by the [MultiDayBody].
@@ -313,15 +310,15 @@ class MultiDayBodyComponents {
 
   @override
   int get hashCode => Object.hash(
-        hourLines,
-        timeline,
-        timelineStringBuilder,
-        timelineWidth,
-        daySeparator,
-        timeIndicator,
-        leftTriggerBuilder,
-        rightTriggerBuilder,
-        topTriggerBuilder,
-        bottomTriggerBuilder,
-      );
+    hourLines,
+    timeline,
+    timelineStringBuilder,
+    timelineWidth,
+    daySeparator,
+    timeIndicator,
+    leftTriggerBuilder,
+    rightTriggerBuilder,
+    topTriggerBuilder,
+    bottomTriggerBuilder,
+  );
 }

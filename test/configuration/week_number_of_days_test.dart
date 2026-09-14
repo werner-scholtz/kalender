@@ -62,10 +62,7 @@ void main() {
         throwsAssertionError,
         reason: 'pages would overlap',
       );
-      expect(
-        () => MultiDayViewConfiguration.week(displayRange: displayRange, numberOfDays: 0),
-        throwsAssertionError,
-      );
+      expect(() => MultiDayViewConfiguration.week(displayRange: displayRange, numberOfDays: 0), throwsAssertionError);
     });
   });
 

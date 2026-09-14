@@ -21,6 +21,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
 - The deprecated `BuildContext.calendarLocale` is removed.
+- The minimum Dart version is 3.10.0.
 
 ### Behavior Changes
 

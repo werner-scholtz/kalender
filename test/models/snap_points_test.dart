@@ -72,40 +72,22 @@ void main() {
     });
 
     test('cursor close to 10:00 snaps to 10:00 (before midpoint)', () {
-      expect(
-        points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 5), snapRange),
-        FloatingDateTime(2024, 1, 1, 10),
-      );
-      expect(
-        points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 29), snapRange),
-        FloatingDateTime(2024, 1, 1, 10),
-      );
+      expect(points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 5), snapRange), FloatingDateTime(2024, 1, 1, 10));
+      expect(points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 29), snapRange), FloatingDateTime(2024, 1, 1, 10));
     });
 
     test('cursor at or past midpoint snaps to 11:00', () {
       // At exactly 10:30 both 10:00 and 11:00 are equidistant; implementation picks 11:00.
-      expect(
-        points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 30), snapRange),
-        FloatingDateTime(2024, 1, 1, 11),
-      );
-      expect(
-        points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 31), snapRange),
-        FloatingDateTime(2024, 1, 1, 11),
-      );
+      expect(points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 30), snapRange), FloatingDateTime(2024, 1, 1, 11));
+      expect(points.findSnapPoint(FloatingDateTime(2024, 1, 1, 10, 31), snapRange), FloatingDateTime(2024, 1, 1, 11));
     });
 
     test('cursor out of range on the low side returns null', () {
-      expect(
-        points.findSnapPoint(FloatingDateTime(2024, 1, 1, 8, 59), snapRange),
-        isNull,
-      );
+      expect(points.findSnapPoint(FloatingDateTime(2024, 1, 1, 8, 59), snapRange), isNull);
     });
 
     test('cursor out of range on the high side returns null', () {
-      expect(
-        points.findSnapPoint(FloatingDateTime(2024, 1, 1, 14, 1), snapRange),
-        isNull,
-      );
+      expect(points.findSnapPoint(FloatingDateTime(2024, 1, 1, 14, 1), snapRange), isNull);
     });
   });
 }

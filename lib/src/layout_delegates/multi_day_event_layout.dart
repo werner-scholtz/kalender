@@ -170,17 +170,13 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 
   // Maps each visible date to its column index so column lookups are O(1)
   // instead of a linear search per event per day.
-  final columnForDate = <FloatingDateTime, int>{
-    for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i,
-  };
+  final columnForDate = <FloatingDateTime, int>{for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i};
 
   // A map that contains the number of rows for each of the columns.
   // Initialised to -1 (sentinel: no event assigned to this column yet) so that
   // columns without any events do not trigger spurious overflow buttons when
   // maxNumberOfRows is 0.
-  final columnRowMap = <int, int>{
-    for (var i = 0; i < visibleDates.length; i++) i: -1,
-  };
+  final columnRowMap = <int, int>{for (var i = 0; i < visibleDates.length; i++) i: -1};
 
   for (final entry in entries) {
     final event = entry.event;
@@ -276,12 +272,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 /// and placing it. Computed once per event so the sort comparator and layout
 /// loop reuse them instead of recomputing timezone conversions.
 class _FrameEntry {
-  _FrameEntry({
-    required this.event,
-    required this.start,
-    required this.roundedEnd,
-    required this.durationMicroseconds,
-  });
+  _FrameEntry({required this.event, required this.start, required this.roundedEnd, required this.durationMicroseconds});
 
   final KalenderEvent event;
 
@@ -416,33 +407,16 @@ class EventLayoutInformation {
   /// The ending column of the event.
   int get end => columns.last;
 
-  EventLayoutInformation({
-    required this.id,
-    required this.row,
-    required this.columns,
-  }) : assert(columns.isNotEmpty, 'Columns cannot be empty');
+  EventLayoutInformation({required this.id, required this.row, required this.columns})
+    : assert(columns.isNotEmpty, 'Columns cannot be empty');
 
-  factory EventLayoutInformation.preliminary({
-    required String id,
-    required List<int> columns,
-  }) {
-    return EventLayoutInformation(
-      id: id,
-      row: 0,
-      columns: columns,
-    );
+  factory EventLayoutInformation.preliminary({required String id, required List<int> columns}) {
+    return EventLayoutInformation(id: id, row: 0, columns: columns);
   }
 
   /// Creates a copy of the [EventLayoutInformation] with the provided values.
-  EventLayoutInformation copyWith({
-    int? row,
-    List<int>? columns,
-  }) {
-    return EventLayoutInformation(
-      id: id,
-      row: row ?? this.row,
-      columns: columns ?? this.columns,
-    );
+  EventLayoutInformation copyWith({int? row, List<int>? columns}) {
+    return EventLayoutInformation(id: id, row: row ?? this.row, columns: columns ?? this.columns);
   }
 
   /// Checks if this event overlaps with another [EventLayoutInformation].
@@ -472,12 +446,7 @@ class EventLayoutInformation {
 /// This layout ensures that events spanning multiple days are displayed correctly
 /// across the corresponding date columns and rows.
 class MultiDayLayout extends MultiChildLayoutDelegate {
-  MultiDayLayout({
-    required this.range,
-    required this.layoutInfo,
-    required this.numberOfRows,
-    required this.tileHeight,
-  });
+  MultiDayLayout({required this.range, required this.layoutInfo, required this.numberOfRows, required this.tileHeight});
 
   /// The date range that the events are laid out on.
   final FloatingDateTimeRange range;

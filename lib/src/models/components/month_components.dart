@@ -24,10 +24,7 @@ class MonthComponents {
   });
 
   /// Creates a copy of this with the given fields replaced.
-  MonthComponents copyWith({
-    MonthBodyComponents? bodyComponents,
-    MonthHeaderComponents? headerComponents,
-  }) {
+  MonthComponents copyWith({MonthBodyComponents? bodyComponents, MonthHeaderComponents? headerComponents}) {
     return MonthComponents(
       bodyComponents: bodyComponents ?? this.bodyComponents,
       headerComponents: headerComponents ?? this.headerComponents,
@@ -173,16 +170,16 @@ class MonthBodyComponents {
 
   @override
   int get hashCode => Object.hash(
-        monthGridBuilder,
-        monthDayHeaderBuilder,
-        monthDayHeaderStringBuilder,
-        monthDayCellBuilder,
-        weekNumberBuilder,
-        weekNumberWidth,
-        leftTriggerBuilder,
-        rightTriggerBuilder,
-        overlayBuilders,
-      );
+    monthGridBuilder,
+    monthDayHeaderBuilder,
+    monthDayHeaderStringBuilder,
+    monthDayCellBuilder,
+    weekNumberBuilder,
+    weekNumberWidth,
+    leftTriggerBuilder,
+    rightTriggerBuilder,
+    overlayBuilders,
+  );
 }
 
 /// The component builders used by the [MonthHeader].
@@ -199,10 +196,7 @@ class MonthHeaderComponents {
   final DateStringBuilder? weekDayHeaderStringBuilder;
 
   /// Creates overrides for the default components used by the [MonthHeader].
-  const MonthHeaderComponents({
-    this.weekDayHeaderBuilder,
-    this.weekDayHeaderStringBuilder,
-  });
+  const MonthHeaderComponents({this.weekDayHeaderBuilder, this.weekDayHeaderStringBuilder});
 
   /// Builds a week day header, with [weekDayHeaderBuilder] when set.
   Widget buildWeekDayHeader(BuildContext context, DateTime date) {

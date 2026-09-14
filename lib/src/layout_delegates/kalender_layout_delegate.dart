@@ -21,16 +21,9 @@ class KalenderLayoutDelegate extends MultiChildLayoutDelegate {
     if (headerId != null) {
       final width = size.width;
 
-      final constrains = BoxConstraints(
-        minWidth: width,
-        maxWidth: width,
-        minHeight: 0.0,
-      );
+      final constrains = BoxConstraints(minWidth: width, maxWidth: width, minHeight: 0.0);
 
-      headerSize = layoutChild(
-        headerId!,
-        constrains,
-      );
+      headerSize = layoutChild(headerId!, constrains);
 
       positionChild(headerId!, Offset.zero);
     }
@@ -41,17 +34,9 @@ class KalenderLayoutDelegate extends MultiChildLayoutDelegate {
       final headerHeight = headerSize?.height ?? 0.0;
       final maxHeight = height - headerHeight;
 
-      final constraints = BoxConstraints(
-        minWidth: width,
-        maxWidth: width,
-        maxHeight: maxHeight,
-        minHeight: 0.0,
-      );
+      final constraints = BoxConstraints(minWidth: width, maxWidth: width, maxHeight: maxHeight, minHeight: 0.0);
 
-      layoutChild(
-        bodyId!,
-        constraints,
-      );
+      layoutChild(bodyId!, constraints);
 
       positionChild(bodyId!, Offset(0, headerHeight));
     }

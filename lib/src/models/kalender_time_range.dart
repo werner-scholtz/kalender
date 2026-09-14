@@ -6,11 +6,9 @@ import 'package:kalender/src/models/kalender_time.dart';
 /// - The range includes the [start] and [end] times.
 /// - The [start] time must not be after the [end] time.
 class KalenderTimeRange {
-  KalenderTimeRange({
-    required this.start,
-    required this.end,
-  })  : assert(start.hour <= end.hour),
-        assert(start.hour == end.hour ? start.minute <= end.minute : true);
+  KalenderTimeRange({required this.start, required this.end})
+    : assert(start.hour <= end.hour),
+      assert(start.hour == end.hour ? start.minute <= end.minute : true);
 
   /// Creates a [KalenderTimeRange] that represents an entire day.
   factory KalenderTimeRange.allDay() {
@@ -50,10 +48,7 @@ class KalenderTimeRange {
   /// Returns a [Duration] representing the time difference between the [start] and [end].
   /// * Note we need to add 1 minute to the duration to include the end time.
   Duration get duration {
-    return Duration(
-      hours: end.hour - start.hour,
-      minutes: (end.minute - start.minute) + 1,
-    );
+    return Duration(hours: end.hour - start.hour, minutes: (end.minute - start.minute) + 1);
   }
 
   /// Generates a list of [KalenderTimeRange] segments from the current [KalenderTimeRange].
@@ -81,20 +76,14 @@ class KalenderTimeRange {
 
     var currentMinutes = rangeStartMinutes;
     while (currentMinutes <= rangeEndMinutes) {
-      final startOfSegment = KalenderTime(
-        hour: currentMinutes ~/ 60,
-        minute: currentMinutes % 60,
-      );
+      final startOfSegment = KalenderTime(hour: currentMinutes ~/ 60, minute: currentMinutes % 60);
 
       var endOfSegmentMinutes = currentMinutes + segmentLength - 1;
       if (endOfSegmentMinutes > rangeEndMinutes) {
         endOfSegmentMinutes = rangeEndMinutes;
       }
 
-      final endOfSegment = KalenderTime(
-        hour: endOfSegmentMinutes ~/ 60,
-        minute: endOfSegmentMinutes % 60,
-      );
+      final endOfSegment = KalenderTime(hour: endOfSegmentMinutes ~/ 60, minute: endOfSegmentMinutes % 60);
 
       segments.add(KalenderTimeRange(start: startOfSegment, end: endOfSegment));
       currentMinutes += segmentLength;

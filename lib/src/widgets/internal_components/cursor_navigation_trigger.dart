@@ -108,10 +108,7 @@ class _CursorNavigationTriggerState extends State<CursorNavigationTrigger> {
     return DragTarget(
       onWillAcceptWithDetails: (details) {
         // Start the timer on enter.
-        triggerTimer = Timer.periodic(
-          widget.triggerDelay,
-          (timer) => widget.onTrigger(),
-        );
+        triggerTimer = Timer.periodic(widget.triggerDelay, (timer) => widget.onTrigger());
 
         // Always return false to allow the drag to continue.
         return false;

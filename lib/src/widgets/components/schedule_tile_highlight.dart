@@ -10,12 +10,13 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// The [child] is the widget that will be displayed inside the highlight.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef ScheduleTileHighlightBuilder = Widget Function(
-  BuildContext context,
-  FloatingDateTime date,
-  ValueNotifier<FloatingDateTimeRange?> range,
-  Widget child,
-);
+typedef ScheduleTileHighlightBuilder =
+    Widget Function(
+      BuildContext context,
+      FloatingDateTime date,
+      ValueNotifier<FloatingDateTimeRange?> range,
+      Widget child,
+    );
 
 class ScheduleTileHighlightStyle with Diagnosticable {
   /// Creates a new [ScheduleTileHighlightStyle].
@@ -72,26 +73,18 @@ class ScheduleTileHighlight extends StatelessWidget {
   /// The child widget to display.
   final Widget child;
 
-  const ScheduleTileHighlight({
-    super.key,
-    required this.date,
-    required this.range,
-    this.style,
-    required this.child,
-  });
+  const ScheduleTileHighlight({super.key, required this.date, required this.range, this.style, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final style =
-        (KalenderTheme.of(context).scheduleTileHighlightStyle ?? const ScheduleTileHighlightStyle()).merge(this.style);
+    final style = (KalenderTheme.of(context).scheduleTileHighlightStyle ?? const ScheduleTileHighlightStyle()).merge(
+      this.style,
+    );
     return ValueListenableBuilder(
       valueListenable: range,
       builder: (context, value, child) {
         if (value != null && date.isWithin(value)) {
-          return DecoratedBox(
-            decoration: style.decoration ?? const BoxDecoration(),
-            child: child!,
-          );
+          return DecoratedBox(decoration: style.decoration ?? const BoxDecoration(), child: child!);
         } else {
           return child!;
         }

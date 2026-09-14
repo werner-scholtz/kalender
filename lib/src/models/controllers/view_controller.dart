@@ -47,23 +47,13 @@ abstract class ViewController with KalenderNavigationFunctions {
   FutureOr<void> jumpToDate(DateTime date);
 
   @override
-  Future<void> animateToNextPage({
-    Duration? duration,
-    Curve? curve,
-  });
+  Future<void> animateToNextPage({Duration? duration, Curve? curve});
 
   @override
-  Future<void> animateToPreviousPage({
-    Duration? duration,
-    Curve? curve,
-  });
+  Future<void> animateToPreviousPage({Duration? duration, Curve? curve});
 
   @override
-  Future<void> animateToDate(
-    DateTime date, {
-    Duration? duration,
-    Curve? curve,
-  });
+  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve});
 
   @override
   Future<void> animateToDateTime(

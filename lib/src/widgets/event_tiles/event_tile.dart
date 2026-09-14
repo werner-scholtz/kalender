@@ -115,11 +115,7 @@ abstract class EventTile extends StatelessWidget {
               children: [
                 Positioned.fill(child: draggable),
                 Positioned.fill(
-                  child: ResizeHandleWidget(
-                    event: event,
-                    floatingRange: floatingRange,
-                    axis: resizeAxis!,
-                  ),
+                  child: ResizeHandleWidget(event: event, floatingRange: floatingRange, axis: resizeAxis!),
                 ),
               ],
             ),

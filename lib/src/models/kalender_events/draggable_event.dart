@@ -18,18 +18,13 @@ class Resize {
   final ResizeDirection direction;
 
   /// Create a reschedule object from a [KalenderEvent] and a [ResizeDirection].
-  Resize({
-    required this.event,
-    required this.direction,
-  });
+  Resize({required this.event, required this.direction});
 
   bool get verticalResize => direction.vertical;
   bool get horizontalResize => direction.horizontal;
 
   /// Updates the [Resize]'s [KalenderEvent] with the new [KalenderDateTimeRange].
-  Resize updateDateTimeRange(
-    KalenderDateTimeRange dateTimeRange,
-  ) {
+  Resize updateDateTimeRange(KalenderDateTimeRange dateTimeRange) {
     final updatedEvent = event.withDateTimeRange(dateTimeRange);
     return Resize(event: updatedEvent, direction: direction);
   }

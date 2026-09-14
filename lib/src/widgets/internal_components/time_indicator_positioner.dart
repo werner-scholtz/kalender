@@ -224,13 +224,13 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
               child: pageOffset <= -_visibilityThreshold || pageOffset >= _visibilityThreshold
                   ? const SizedBox.shrink()
                   : widget.childOverride ??
-                      context.components.multiDayComponents.bodyComponents.buildTimeIndicator(
-                        context,
-                        widget.viewController.viewConfiguration.timeOfDayRange,
-                        context.heightPerMinute,
-                        context.location,
-                        nowCallback: widget.viewController.viewConfiguration.nowCallback,
-                      ),
+                        context.components.multiDayComponents.bodyComponents.buildTimeIndicator(
+                          context,
+                          widget.viewController.viewConfiguration.timeOfDayRange,
+                          context.heightPerMinute,
+                          context.location,
+                          nowCallback: widget.viewController.viewConfiguration.nowCallback,
+                        ),
             ),
           ],
         );

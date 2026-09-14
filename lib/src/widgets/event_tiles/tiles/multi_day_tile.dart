@@ -23,33 +23,33 @@ class MultiDayEventTile extends EventTile {
 
   @override
   void Function(TapUpDetails details, BuildContext context)? get onTapUp => (details, context) {
-        // Find the global position and size of the tile.
-        final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventTapped?.call(event);
-        context.callbacks?.onEventTappedWithDetail?.call(
-          event,
-          MultiDayDetail(
-            dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
-            renderBox: renderObject,
-            localOffset: details.localPosition,
-          ),
-        );
-      };
+    // Find the global position and size of the tile.
+    final renderObject = context.findRenderObject()! as RenderBox;
+    context.callbacks?.onEventTapped?.call(event);
+    context.callbacks?.onEventTappedWithDetail?.call(
+      event,
+      MultiDayDetail(
+        dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
+        renderBox: renderObject,
+        localOffset: details.localPosition,
+      ),
+    );
+  };
 
   @override
   void Function(TapUpDetails details, BuildContext context)? get onSecondaryTapUp => (details, context) {
-        // Find the global position and size of the tile.
-        final renderObject = context.findRenderObject()! as RenderBox;
-        context.callbacks?.onEventSecondaryTapped?.call(event);
-        context.callbacks?.onEventSecondaryTappedWithDetail?.call(
-          event,
-          MultiDayDetail(
-            dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
-            renderBox: renderObject,
-            localOffset: details.localPosition,
-          ),
-        );
-      };
+    // Find the global position and size of the tile.
+    final renderObject = context.findRenderObject()! as RenderBox;
+    context.callbacks?.onEventSecondaryTapped?.call(event);
+    context.callbacks?.onEventSecondaryTappedWithDetail?.call(
+      event,
+      MultiDayDetail(
+        dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
+        renderBox: renderObject,
+        localOffset: details.localPosition,
+      ),
+    );
+  };
 
   KalenderDateTimeRange _calculateExactDayRange(Offset localPosition, Size size, BuildContext context) {
     var date = floatingRange.start;

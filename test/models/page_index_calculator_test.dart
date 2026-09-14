@@ -4,13 +4,7 @@ import 'package:kalender/src/models/view_configurations/page_index_calculator.da
 import 'package:timezone/data/latest_10y.dart';
 import 'package:timezone/timezone.dart';
 
-final locationsToTest = [
-  'Etc/UTC',
-  'Africa/Johannesburg',
-  'America/New_York',
-  'Europe/London',
-  'Australia/Sydney',
-];
+final locationsToTest = ['Etc/UTC', 'Africa/Johannesburg', 'America/New_York', 'Europe/London', 'Australia/Sydney'];
 
 void main() {
   initializeTimeZones();
@@ -26,10 +20,7 @@ void main() {
 
       test('test rangeFromIndex', () {
         var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 2)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 2)));
         floatingRange = calculator.rangeFromIndex(1, location);
         expect(
           floatingRange,
@@ -49,10 +40,7 @@ void main() {
         );
 
         floatingRange = calculator.rangeFromIndex(366, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2021), end: FloatingDateTime(2021, 1, 2)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2021), end: FloatingDateTime(2021, 1, 2)));
       });
 
       test('test indexFromDate', () {
@@ -87,10 +75,7 @@ void main() {
       // An empty range (start == end) has 0 pages; indexFromDate must not throw
       // on the negative clamp bound, and should fall back to index 0.
       test('test indexFromDate for an empty range', () {
-        final emptyRange = KalenderDateTimeRange(
-          start: TZDateTime(location, 2020),
-          end: TZDateTime(location, 2020),
-        );
+        final emptyRange = KalenderDateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2020));
         final emptyCalculator = DayIndexCalculator(start: emptyRange.start, end: emptyRange.end);
         expect(emptyCalculator.numberOfPages(location), 0);
         expect(() => emptyCalculator.indexFromDate(TZDateTime(location, 2020), location), returnsNormally);
@@ -116,8 +101,10 @@ void main() {
       });
 
       test('a range ending mid-day still covers the part day', () {
-        final partDay =
-            KalenderDateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2020, 1, 8, 13, 30));
+        final partDay = KalenderDateTimeRange(
+          start: TZDateTime(location, 2020),
+          end: TZDateTime(location, 2020, 1, 8, 13, 30),
+        );
         final calculator = PageIndexCalculator.freeScroll(partDay);
         expect(calculator.numberOfPages(location), 8);
       });
@@ -240,10 +227,7 @@ void main() {
 
       test('test rangeFromIndex', () {
         var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 4)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 4)));
 
         floatingRange = calculator.rangeFromIndex(1, location);
         expect(
@@ -295,10 +279,7 @@ void main() {
 
       test('test floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
         expect(true, true);
       });
     });
@@ -366,10 +347,7 @@ void main() {
 
       test('test floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
       });
 
       // Regression: https://github.com/werner-scholtz/kalender/issues/266
@@ -394,10 +372,7 @@ void main() {
 
       test('test rangeFromIndex', () {
         final floatingRange = calculator.rangeFromIndex(0, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
       });
 
       test('test indexFromDate', () {
@@ -412,10 +387,7 @@ void main() {
 
       test('test floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
       });
     });
 
@@ -427,16 +399,10 @@ void main() {
 
       test('test rangeFromIndex', () {
         var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 2)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 2)));
 
         floatingRange = calculator.rangeFromIndex(1, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 2), end: FloatingDateTime(2020, 3)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020, 2), end: FloatingDateTime(2020, 3)));
 
         floatingRange = calculator.rangeFromIndex(9, location);
         expect(
@@ -451,10 +417,7 @@ void main() {
         );
 
         floatingRange = calculator.rangeFromIndex(11, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 12), end: FloatingDateTime(2021)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020, 12), end: FloatingDateTime(2021)));
       });
 
       test('test indexFromDate', () {
@@ -482,10 +445,7 @@ void main() {
 
       test('test floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)),
-        );
+        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
       });
     });
   }

@@ -12,11 +12,8 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// [numberOfHiddenRows] is the number of events that are not displayed because of constraints.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
-  BuildContext context,
-  OverlayPortalController portalController,
-  int numberOfHiddenRows,
-);
+typedef MultiDayPortalOverlayButtonBuilder =
+    Widget Function(BuildContext context, OverlayPortalController portalController, int numberOfHiddenRows);
 
 class MultiDayPortalOverlayButtonStyle with Diagnosticable {
   /// The text style of the button.
@@ -124,8 +121,9 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style =
-        (KalenderTheme.of(context).multiDayPortalOverlayButtonStyle ?? const MultiDayPortalOverlayButtonStyle())
-            .merge(this.style);
+        (KalenderTheme.of(context).multiDayPortalOverlayButtonStyle ?? const MultiDayPortalOverlayButtonStyle()).merge(
+          this.style,
+        );
     return InkWell(
       onTap: portalController.show,
       child: Padding(

@@ -13,20 +13,14 @@ mixin KalenderNavigationFunctions {
   /// [duration] the [Duration] of the animation.
   ///
   /// [curve] the [Curve] of the animation.
-  Future<void> animateToNextPage({
-    Duration? duration,
-    Curve? curve,
-  });
+  Future<void> animateToNextPage({Duration? duration, Curve? curve});
 
   /// Animate to the previous page.
   ///
   /// [duration] the [Duration] of the animation.
   ///
   /// [curve] the [Curve] of the animation.
-  Future<void> animateToPreviousPage({
-    Duration? duration,
-    Curve? curve,
-  });
+  Future<void> animateToPreviousPage({Duration? duration, Curve? curve});
 
   /// Animate to the date part of the given [DateTime].
   ///
@@ -35,11 +29,7 @@ mixin KalenderNavigationFunctions {
   /// [duration] the [Duration] of the animation.
   ///
   /// [curve] the [Curve] of the animation.
-  Future<void> animateToDate(
-    DateTime date, {
-    Duration? duration,
-    Curve? curve,
-  });
+  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve});
 
   /// Animate to the date and time parts of the given [DateTime].
   ///

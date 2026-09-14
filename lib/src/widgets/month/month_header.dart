@@ -37,13 +37,10 @@ class MonthHeader extends StatelessWidget {
             if (showWeekNumbers) const MonthWeekNumberSpacer(),
             Expanded(
               child: Row(
-                children: List<Widget>.generate(
-                  7,
-                  (index) {
-                    final date = visibleDateTimeRange.start.add(Duration(days: index));
-                    return Expanded(child: components.buildWeekDayHeader(context, date));
-                  },
-                ),
+                children: List<Widget>.generate(7, (index) {
+                  final date = visibleDateTimeRange.start.add(Duration(days: index));
+                  return Expanded(child: components.buildWeekDayHeader(context, date));
+                }),
               ),
             ),
           ],

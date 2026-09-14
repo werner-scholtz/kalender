@@ -14,9 +14,9 @@ void main() {
   // them on the delegate's date on any machine. UTC times would shift to a
   // different day under a non-UTC timezone and the events would be clamped out.
   KalenderEvent event(int startSeconds, int endSeconds) => KalenderEvent(
-        start: DateTime(2024, 1, 1).add(Duration(seconds: startSeconds)),
-        end: DateTime(2024, 1, 1).add(Duration(seconds: endSeconds)),
-      );
+    start: DateTime(2024, 1, 1).add(Duration(seconds: startSeconds)),
+    end: DateTime(2024, 1, 1).add(Duration(seconds: endSeconds)),
+  );
 
   int groupCountForTouchingPair({
     required int startSeconds,
@@ -26,10 +26,7 @@ void main() {
   }) {
     final boundary = startSeconds + durationSeconds;
     final delegate = OverlapLayoutDelegate(
-      events: [
-        event(startSeconds, boundary),
-        event(boundary, boundary + durationSeconds),
-      ],
+      events: [event(startSeconds, boundary), event(boundary, boundary + durationSeconds)],
       heightPerMinute: heightPerMinute,
       date: FloatingDateTime(2024, 1, 1),
       location: null,
@@ -60,7 +57,8 @@ void main() {
           expect(
             groups,
             2,
-            reason: 'touching events grouped as overlapping at '
+            reason:
+                'touching events grouped as overlapping at '
                 'start=${startSeconds}s duration=${durationSeconds}s hpm=$heightPerMinute',
           );
         }

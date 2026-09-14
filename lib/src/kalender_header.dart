@@ -75,18 +75,18 @@ class _KalenderHeaderState extends State<KalenderHeader> {
       callbacks: _callbacks ?? context.callbacks,
       child: switch (viewController) {
         MultiDayViewController() => Interaction(
-            notifier: _interaction,
-            child: TileComponentProvider(
-              tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents(),
-              child: MultiDayHeader(configuration: widget.multiDayHeaderConfiguration),
-            ),
+          notifier: _interaction,
+          child: TileComponentProvider(
+            tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents(),
+            child: MultiDayHeader(configuration: widget.multiDayHeaderConfiguration),
           ),
+        ),
         MonthViewController() => const MonthHeader(),
         ScheduleViewController() => const ScheduleHeader(),
         _ => throw ErrorHint(
-            'Unsupported ViewController type: ${viewController.runtimeType}. '
-            'Make sure to use the correct KalenderHeader for the ViewController.',
-          )
+          'Unsupported ViewController type: ${viewController.runtimeType}. '
+          'Make sure to use the correct KalenderHeader for the ViewController.',
+        ),
       },
     );
   }

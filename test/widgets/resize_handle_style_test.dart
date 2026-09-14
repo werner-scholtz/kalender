@@ -11,18 +11,13 @@ void main() {
   late KalenderController kalenderController;
   late String eventId;
 
-  KalenderInteraction interactionFor(InputMode mode) => KalenderInteraction(
-        allowResizing: true,
-        allowRescheduling: true,
-        inputMode: mode,
-      );
+  KalenderInteraction interactionFor(InputMode mode) =>
+      KalenderInteraction(allowResizing: true, allowRescheduling: true, inputMode: mode);
 
   setUp(() {
     eventsController = DefaultEventsController();
     kalenderController = KalenderController();
-    eventId = eventsController.addEvent(
-      KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
-    );
+    eventId = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)));
   });
 
   tearDown(() {
@@ -51,7 +46,12 @@ void main() {
 
     return pumpAndSettleWithMaterialApp(
       tester,
-      style == null ? view : KalenderTheme(data: KalenderThemeData(resizeHandleStyle: style), child: view),
+      style == null
+          ? view
+          : KalenderTheme(
+              data: KalenderThemeData(resizeHandleStyle: style),
+              child: view,
+            ),
     );
   }
 

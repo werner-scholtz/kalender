@@ -18,12 +18,7 @@ void main() {
           body: Builder(
             builder: (context) {
               colorScheme = Theme.of(context).colorScheme;
-              return DayNumber(
-                number: const Text('15'),
-                isToday: isToday,
-                todayKey: todayKey,
-                size: size,
-              );
+              return DayNumber(number: const Text('15'), isToday: isToday, todayKey: todayKey, size: size);
             },
           ),
         ),

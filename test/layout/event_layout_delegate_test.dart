@@ -15,10 +15,7 @@ void main() {
   // None of the events overlap, so every strategy should render each tile at
   // full width.
   final events = [
-    KalenderEvent(
-      start: date.copyWith(hour: 1, minute: 29),
-      end: date.copyWith(hour: 1, minute: 30),
-    ),
+    KalenderEvent(start: date.copyWith(hour: 1, minute: 29), end: date.copyWith(hour: 1, minute: 30)),
     KalenderEvent(
       start: date.copyWith(hour: 1, minute: 30),
       end: date.copyWith(hour: 1, minute: 59, second: 59, microsecond: 999999),

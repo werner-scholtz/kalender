@@ -146,14 +146,14 @@ void main() {
 
   group('KalenderInteraction equality', () {
     KalenderInteraction make() => KalenderInteraction(
-          allowResizing: true,
-          allowRescheduling: true,
-          allowEventCreation: true,
-          inputMode: InputMode.precise,
-          allowHorizontalImpreciseResize: false,
-          createEventGesture: EventInteractionGesture.tap,
-          modifyEventGesture: EventInteractionGesture.tap,
-        );
+      allowResizing: true,
+      allowRescheduling: true,
+      allowEventCreation: true,
+      inputMode: InputMode.precise,
+      allowHorizontalImpreciseResize: false,
+      createEventGesture: EventInteractionGesture.tap,
+      modifyEventGesture: EventInteractionGesture.tap,
+    );
 
     test('identical configurations are equal with matching hashCodes', () {
       expect(make(), equals(make()));

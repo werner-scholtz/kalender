@@ -11,11 +11,8 @@ import 'package:kalender/kalender.dart';
 ///
 /// Resolve the line style with [KalenderTheme]. The number of lines follows the
 /// timeline's label size, which [KalenderTheme] resolves.
-typedef HourLinesBuilder = Widget Function(
-  BuildContext context,
-  double heightPerMinute,
-  KalenderTimeRange timeOfDayRange,
-);
+typedef HourLinesBuilder =
+    Widget Function(BuildContext context, double heightPerMinute, KalenderTimeRange timeOfDayRange);
 
 /// The style of the [HourLines] widget.
 class HourLinesStyle with Diagnosticable {
@@ -31,20 +28,10 @@ class HourLinesStyle with Diagnosticable {
   /// The end indent of the hour lines.
   final double? endIndent;
 
-  const HourLinesStyle({
-    this.color,
-    this.thickness,
-    this.indent,
-    this.endIndent,
-  });
+  const HourLinesStyle({this.color, this.thickness, this.indent, this.endIndent});
 
   /// Creates a copy of this style with the given fields replaced with the new values.
-  HourLinesStyle copyWith({
-    Color? color,
-    double? thickness,
-    double? indent,
-    double? endIndent,
-  }) {
+  HourLinesStyle copyWith({Color? color, double? thickness, double? indent, double? endIndent}) {
     return HourLinesStyle(
       color: color ?? this.color,
       thickness: thickness ?? this.thickness,

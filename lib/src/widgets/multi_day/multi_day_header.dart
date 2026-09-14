@@ -40,23 +40,23 @@ class MultiDayHeader extends StatelessWidget {
 
     final header = switch (viewConfiguration.type) {
       MultiDayViewType.freeScroll => _FreeScrollHeader(
-          key: ValueKey(viewConfiguration.hashCode),
-          viewController: viewController,
-          configuration: headerConfiguration,
-          components: components,
-        ),
+        key: ValueKey(viewConfiguration.hashCode),
+        viewController: viewController,
+        configuration: headerConfiguration,
+        components: components,
+      ),
       MultiDayViewType.singleDay => _SingleDayHeader(
-          key: ValueKey(viewConfiguration.hashCode),
-          viewController: viewController,
-          configuration: headerConfiguration,
-          components: components,
-        ),
+        key: ValueKey(viewConfiguration.hashCode),
+        viewController: viewController,
+        configuration: headerConfiguration,
+        components: components,
+      ),
       _ => _MultiDayHeader(
-          key: ValueKey(viewConfiguration.hashCode),
-          viewController: viewController,
-          configuration: headerConfiguration,
-          components: components,
-        )
+        key: ValueKey(viewConfiguration.hashCode),
+        viewController: viewController,
+        configuration: headerConfiguration,
+        components: components,
+      ),
     };
 
     return Column(children: [header]);
@@ -273,11 +273,7 @@ class _FreeScrollMultiDayBand extends StatefulWidget {
   final HorizontalConfiguration configuration;
   final KalenderComponents components;
 
-  const _FreeScrollMultiDayBand({
-    required this.viewController,
-    required this.configuration,
-    required this.components,
-  });
+  const _FreeScrollMultiDayBand({required this.viewController, required this.configuration, required this.components});
 
   @override
   State<_FreeScrollMultiDayBand> createState() => _FreeScrollMultiDayBandState();

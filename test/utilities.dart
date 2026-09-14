@@ -10,13 +10,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 final year2025DisplayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
 /// Timezone names used in tests that exercise timezone-aware controllers.
-const locationsToTest = [
-  'Etc/UTC',
-  'Africa/Johannesburg',
-  'America/New_York',
-  'Europe/London',
-  'Australia/Sydney',
-];
+const locationsToTest = ['Etc/UTC', 'Africa/Johannesburg', 'America/New_York', 'Europe/London', 'Australia/Sydney'];
 
 final datesToTest = [
   DateTime.now(),
@@ -78,18 +72,10 @@ void testWithTimeZones({
 
 /// Wraps the given [child] with a [MaterialApp] and [Scaffold].
 MaterialApp wrapWithMaterialApp(Widget child) {
-  return MaterialApp(
-    home: Scaffold(
-      body: child,
-    ),
-  );
+  return MaterialApp(home: Scaffold(body: child));
 }
 
-Future<void> pumpAndSettleWithMaterialApp(
-  WidgetTester tester,
-  Widget child, {
-  Duration? duration,
-}) async {
+Future<void> pumpAndSettleWithMaterialApp(WidgetTester tester, Widget child, {Duration? duration}) async {
   await tester.pumpWidget(wrapWithMaterialApp(child));
   if (duration != null) {
     await tester.pumpAndSettle(duration);
@@ -148,10 +134,7 @@ class TestProvider extends StatelessWidget {
                       tileComponents: tileComponents,
                       child: LocaleProvider(
                         locale: locale,
-                        child: LocationProvider(
-                          notifier: ValueNotifier(location),
-                          child: child,
-                        ),
+                        child: LocationProvider(notifier: ValueNotifier(location), child: child),
                       ),
                     ),
                   ),
@@ -170,10 +153,7 @@ extension WidgetTesterUtils on WidgetTester {
   ///
   /// Resize handles are only shown on hover for non-mobile devices, so tests
   /// that check for them must hover over the tile first.
-  Future<void> hoverOn(
-    Finder tile,
-    TestGesture gesture,
-  ) async {
+  Future<void> hoverOn(Finder tile, TestGesture gesture) async {
     await pump();
     await gesture.moveTo(getCenter(tile));
     await pumpAndSettle();
@@ -183,10 +163,7 @@ extension WidgetTesterUtils on WidgetTester {
   ///
   /// This starts a gesture at [startLocation], waits for the long press delay,
   /// then moves by [offset] and lifts the pointer.
-  Future<void> longPressDrag(
-    Offset startLocation,
-    Offset offset,
-  ) async {
+  Future<void> longPressDrag(Offset startLocation, Offset offset) async {
     final gesture = await startGesture(startLocation);
     await pump(const Duration(milliseconds: 500));
     await gesture.moveBy(offset);
@@ -196,10 +173,7 @@ extension WidgetTesterUtils on WidgetTester {
   }
 
   /// Performs a long-press-drag on the given [finder] widget.
-  Future<void> longPressDragWidget(
-    Finder finder,
-    Offset offset,
-  ) async {
+  Future<void> longPressDragWidget(Finder finder, Offset offset) async {
     await longPressDrag(getCenter(finder), offset);
   }
 

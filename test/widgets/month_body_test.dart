@@ -14,11 +14,7 @@ import '../utilities.dart';
 void _expectMonthRows(WidgetTester tester, int expectedRows) {
   expect(find.byType(MonthBody), findsOneWidget, reason: 'MonthBody should be rendered');
   expect(find.byType(MonthGrid), findsOneWidget, reason: 'MonthGrid should be rendered');
-  expect(
-    find.byType(MonthWeek),
-    findsNWidgets(expectedRows),
-    reason: 'Expected $expectedRows MonthWeek rows',
-  );
+  expect(find.byType(MonthWeek), findsNWidgets(expectedRows), reason: 'Expected $expectedRows MonthWeek rows');
 }
 
 void main() {
@@ -54,10 +50,7 @@ void main() {
         body: const KalenderBody(),
       );
 
-      return pumpAndSettleWithMaterialApp(
-        tester,
-        theme == null ? view : KalenderTheme(data: theme, child: view),
-      );
+      return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
     }
 
     // ---------------------------------------------------------------------------
@@ -144,8 +137,9 @@ void main() {
 
       await pumpMonthView(tester, DateTime(2025, 1), components: components);
 
-      final shade =
-          Theme.of(tester.element(find.byType(MonthDayCell).first)).colorScheme.onSurface.withValues(alpha: 0.08);
+      final shade = Theme.of(
+        tester.element(find.byType(MonthDayCell).first),
+      ).colorScheme.onSurface.withValues(alpha: 0.08);
       final shaded = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).where((box) => box.color == shade).length;
 
       expect(shaded, 4, reason: '2 leading + 2 trailing adjacent-month days are shaded');
@@ -230,11 +224,7 @@ void main() {
 
     testWidgets('renders one week number per row when enabled', (tester) async {
       const rows = 5; // January 2025 → 5 rows
-      await pumpMonthView(
-        tester,
-        DateTime(2025, 1),
-        showWeekNumbers: true,
-      );
+      await pumpMonthView(tester, DateTime(2025, 1), showWeekNumbers: true);
 
       _expectMonthRows(tester, rows);
 
@@ -246,11 +236,7 @@ void main() {
     });
 
     testWidgets('keeps the month grid at 7 day columns when week numbers are enabled', (tester) async {
-      await pumpMonthView(
-        tester,
-        DateTime(2025, 1),
-        showWeekNumbers: true,
-      );
+      await pumpMonthView(tester, DateTime(2025, 1), showWeekNumbers: true);
 
       // The grid draws its column lines in a Row, one more than the number of
       // day columns.
@@ -302,9 +288,7 @@ void main() {
         tester,
         DateTime(2025, 1),
         showWeekNumbers: true,
-        theme: const KalenderThemeData(
-          weekNumberStyle: WeekNumberStyle(alignment: Alignment.bottomCenter),
-        ),
+        theme: const KalenderThemeData(weekNumberStyle: WeekNumberStyle(alignment: Alignment.bottomCenter)),
       );
 
       expect(
@@ -324,17 +308,13 @@ void main() {
         tester,
         DateTime(2025, 1),
         showWeekNumbers: true,
-        theme: const KalenderThemeData(
-          weekNumberStyle: WeekNumberStyle(alignment: Alignment.topCenter),
-        ),
+        theme: const KalenderThemeData(weekNumberStyle: WeekNumberStyle(alignment: Alignment.topCenter)),
       );
 
       expect(
         find.descendant(
           of: find.byType(WeekNumber),
-          matching: find.byWidgetPredicate(
-            (widget) => widget is Align && widget.alignment == Alignment.topCenter,
-          ),
+          matching: find.byWidgetPredicate((widget) => widget is Align && widget.alignment == Alignment.topCenter),
         ),
         findsNWidgets(rows),
         reason: 'Month week numbers should respect the configured vertical alignment',
@@ -358,19 +338,17 @@ void main() {
     const tallTileHeight = 1000.0;
 
     Future<void> pumpShortCellMonthView(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
-          tester,
-          KalenderView(
-            eventsController: eventsController,
-            kalenderController: kalenderController,
-            viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: displayRange,
-              initialDateTime: initialDateTime,
-            ),
-            body: const KalenderBody(
-              monthBodyConfiguration: MonthBodyConfiguration(tileHeight: tallTileHeight),
-            ),
-          ),
-        );
+      tester,
+      KalenderView(
+        eventsController: eventsController,
+        kalenderController: kalenderController,
+        viewConfiguration: MonthViewConfiguration.singleMonth(
+          displayRange: displayRange,
+          initialDateTime: initialDateTime,
+        ),
+        body: const KalenderBody(monthBodyConfiguration: MonthBodyConfiguration(tileHeight: tallTileHeight)),
+      ),
+    );
 
     testWidgets('shows no overflow button in month view when there are no events (#255)', (tester) async {
       // eventsController is empty – do not add any events.
@@ -384,12 +362,7 @@ void main() {
 
     testWidgets('shows exactly one overflow button for a single event when max is 0 (#255)', (tester) async {
       // A single-day event on Jan 15, 2025 (within the displayed month).
-      eventsController.addEvent(
-        KalenderEvent(
-          start: DateTime(2025, 1, 15, 9),
-          end: DateTime(2025, 1, 15, 10),
-        ),
-      );
+      eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 15, 9), end: DateTime(2025, 1, 15, 10)));
 
       await pumpShortCellMonthView(tester, DateTime(2025, 1));
 
@@ -419,27 +392,22 @@ void main() {
       late _RecordingStrategy strategy;
 
       Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
-            tester,
-            KalenderView(
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              viewConfiguration: MonthViewConfiguration.singleMonth(
-                displayRange: displayRange,
-                initialDateTime: initialDateTime,
-              ),
-              body: KalenderBody(
-                monthBodyConfiguration: MonthBodyConfiguration(multiDayLayoutStrategy: strategy),
-              ),
-            ),
-          );
+        tester,
+        KalenderView(
+          eventsController: eventsController,
+          kalenderController: kalenderController,
+          viewConfiguration: MonthViewConfiguration.singleMonth(
+            displayRange: displayRange,
+            initialDateTime: initialDateTime,
+          ),
+          body: KalenderBody(monthBodyConfiguration: MonthBodyConfiguration(multiDayLayoutStrategy: strategy)),
+        ),
+      );
 
       setUp(() => strategy = _RecordingStrategy());
 
       testWidgets('renders month view without error and is invoked', (tester) async {
-        final event = KalenderEvent(
-          start: DateTime(2025, 1, 15, 9),
-          end: DateTime(2025, 1, 15, 10),
-        );
+        final event = KalenderEvent(start: DateTime(2025, 1, 15, 9), end: DateTime(2025, 1, 15, 10));
         eventsController.addEvent(event);
 
         await pumpWithCustomFrame(tester, DateTime(2025, 1));

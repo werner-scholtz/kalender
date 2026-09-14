@@ -218,7 +218,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
       for (final event in events)
         (
           delegate.calculateDistanceFromStart(event),
-          delegate.calculateDistanceFromStart(event) + delegate.calculateHeight(event)
+          delegate.calculateDistanceFromStart(event) + delegate.calculateHeight(event),
         ),
     ];
   }
@@ -270,15 +270,17 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   /// Sorts the events based on the layout strategy defined in the configuration.
   List<KalenderEvent> _sort(Iterable<KalenderEvent> events) {
-    return widget.configuration.eventLayoutStrategy.createDelegate(
-      events: const [],
-      date: widget.date,
-      timeOfDayRange: KalenderTimeRange.allDay(),
-      heightPerMinute: 0,
-      minimumTileHeight: widget.configuration.minimumTileHeight,
-      cache: widget.cache,
-      location: widget.location,
-    ).sortEvents(events);
+    return widget.configuration.eventLayoutStrategy
+        .createDelegate(
+          events: const [],
+          date: widget.date,
+          timeOfDayRange: KalenderTimeRange.allDay(),
+          heightPerMinute: 0,
+          minimumTileHeight: widget.configuration.minimumTileHeight,
+          cache: widget.cache,
+          location: widget.location,
+        )
+        .sortEvents(events);
   }
 
   @override
@@ -450,19 +452,14 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
         cache: widget.cache,
         location: context.location,
       ),
-      children: eventList.indexed.map(
-        (item) {
-          final event = item.$2;
-          final latest = widget.eventsController.byId(event.id);
-          final selected = event.id == controller.selectedEventId;
-          final drawTile = dropTarget != null && selected;
+      children: eventList.indexed.map((item) {
+        final event = item.$2;
+        final latest = widget.eventsController.byId(event.id);
+        final selected = event.id == controller.selectedEventId;
+        final drawTile = dropTarget != null && selected;
 
-          return LayoutId(
-            id: item.$1,
-            child: drawTile ? dropTarget.call(context, latest ?? event) : const SizedBox(),
-          );
-        },
-      ).toList(),
+        return LayoutId(id: item.$1, child: drawTile ? dropTarget.call(context, latest ?? event) : const SizedBox());
+      }).toList(),
     );
   }
 }

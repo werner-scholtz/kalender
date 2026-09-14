@@ -127,11 +127,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    return animateToDate(
-      event.start,
-      duration: scrollDuration,
-      curve: scrollCurve,
-    );
+    return animateToDate(event.start, duration: scrollDuration, curve: scrollCurve);
   }
 
   @override

@@ -12,9 +12,7 @@ mixin SnapPoints {
     if (_snapPoints.isEmpty) return null;
 
     // Find the index of the closest snap point to the dateTime.
-    final closest = _snapPoints.reduce(
-      (a, b) => (a.difference(dateTime).abs() < b.difference(dateTime).abs()) ? a : b,
-    );
+    final closest = _snapPoints.reduce((a, b) => (a.difference(dateTime).abs() < b.difference(dateTime).abs()) ? a : b);
 
     // If the closest snap point is not within the snap range, return null.
     if (closest.difference(dateTime).abs() > snapRange) return null;

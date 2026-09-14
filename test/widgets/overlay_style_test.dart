@@ -28,9 +28,7 @@ void main() {
 
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(
-        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-      );
+      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
     }
 
     final view = KalenderView(
@@ -48,7 +46,12 @@ void main() {
       MaterialApp(
         theme: ThemeData(cardTheme: appCardTheme, extensions: [if (extension != null) extension]),
         home: Scaffold(
-          body: style == null ? view : KalenderTheme(data: KalenderThemeData(multiDayOverlayStyle: style), child: view),
+          body: style == null
+              ? view
+              : KalenderTheme(
+                  data: KalenderThemeData(multiDayOverlayStyle: style),
+                  child: view,
+                ),
         ),
       ),
     );
@@ -94,9 +97,7 @@ void main() {
       await openOverlay(
         tester,
         extension: const KalenderThemeData(
-          multiDayOverlayStyle: MultiDayOverlayStyle(
-            cardTheme: CardThemeData(color: Color(0xFF00FF00), elevation: 8),
-          ),
+          multiDayOverlayStyle: MultiDayOverlayStyle(cardTheme: CardThemeData(color: Color(0xFF00FF00), elevation: 8)),
         ),
       );
 

@@ -31,20 +31,18 @@ void main() {
   /// A calendar with no Material ancestor at all, so no `MaterialLocalizations`.
   /// The overlay is what the drag targets need and `MaterialApp` would provide.
   Widget withoutMaterial(Locale locale, Widget child) => WidgetsApp(
-        color: const Color(0xFF000000),
-        locale: locale,
-        builder: (context, _) => Overlay(
-          initialEntries: [OverlayEntry(builder: (context) => child)],
-        ),
-      );
+    color: const Color(0xFF000000),
+    locale: locale,
+    builder: (context, _) => Overlay(initialEntries: [OverlayEntry(builder: (context) => child)]),
+  );
 
   Widget calendar(Locale locale) => KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        locale: locale,
-        viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
-        body: KalenderBody(multiDayTileComponents: tiles),
-      );
+    eventsController: eventsController,
+    kalenderController: kalenderController,
+    locale: locale,
+    viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
+    body: KalenderBody(multiDayTileComponents: tiles),
+  );
 
   String labelAt(WidgetTester tester, int hour) {
     return tester.widget<Text>(find.byKey(TimeLine.getTimeKey(hour, 0)).first).data!;

@@ -236,28 +236,19 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// [scrollOffset] The scroll offset of the current view.
   ///
   /// This calculates the local position of the cursor on the [DragTarget] widget.
-  Offset? calculateLocalCursorPosition(
-    Offset cursorPosition, {
-    Offset scrollOffset = Offset.zero,
-  }) {
+  Offset? calculateLocalCursorPosition(Offset cursorPosition, {Offset scrollOffset = Offset.zero}) {
     return dragTargetRenderBox.globalToLocal(cursorPosition) + scrollOffset;
   }
 
   /// Calculate the [DateTime] of the cursor.
-  FloatingDateTime? calculateCursorDateTime(
-    Offset offset, {
-    Offset feedbackWidgetOffset = Offset.zero,
-  });
+  FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero});
 
   /// Calculate the [FloatingDateTimeRange] from the start [DateTime].
   ///
   /// Will return a [FloatingDateTimeRange] with an updated start [DateTime] and the same end [DateTime].
   /// - In the case where the new start [DateTime] is after the end [DateTime], the start and end [DateTime]s will be swapped.
   /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
-  FloatingDateTimeRange calculateRangeFromStart(
-    FloatingDateTimeRange range,
-    DateTime newStart,
-  ) {
+  FloatingDateTimeRange calculateRangeFromStart(FloatingDateTimeRange range, DateTime newStart) {
     if (newStart.isBefore(range.end)) {
       return FloatingDateTimeRange(start: newStart, end: range.end);
     } else if (newStart.isAtSameMomentAs(range.end)) {
@@ -272,10 +263,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Will return a [FloatingDateTimeRange] with an updated end [DateTime] and the same start [DateTime].
   /// - In the case where the new end [DateTime] is before the start [DateTime], the start and end [DateTime]s will be swapped.
   /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
-  FloatingDateTimeRange calculateRangeFromEnd(
-    FloatingDateTimeRange range,
-    DateTime newEnd,
-  ) {
+  FloatingDateTimeRange calculateRangeFromEnd(FloatingDateTimeRange range, DateTime newEnd) {
     if (newEnd.isBefore(range.start)) {
       return FloatingDateTimeRange(start: newEnd, end: range.start);
     } else if (newEnd.isAtSameMomentAs(range.start)) {

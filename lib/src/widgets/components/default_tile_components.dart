@@ -27,5 +27,7 @@ Widget defaultTileWhenDraggingBuilder(BuildContext context, KalenderEvent event)
 Widget defaultDropTargetBuilder(BuildContext context, KalenderEvent event) =>
     const DefaultTileBase(label: 'DropTarget');
 Widget defaultFeedbackTileBuilder(BuildContext context, KalenderEvent event, Size size) {
-  return Material(child: DefaultTileBase(label: 'FeedbackTile', width: size.width, height: size.height));
+  return Material(
+    child: DefaultTileBase(label: 'FeedbackTile', width: size.width, height: size.height),
+  );
 }

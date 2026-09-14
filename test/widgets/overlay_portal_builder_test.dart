@@ -24,9 +24,7 @@ void main() {
 
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(
-        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-      );
+      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
     }
     addTearDown(eventsController.dispose);
 
@@ -46,10 +44,7 @@ void main() {
       body: const KalenderBody(),
     );
 
-    await pumpAndSettleWithMaterialApp(
-      tester,
-      scoped == null ? view : KalenderTheme(data: scoped, child: view),
-    );
+    await pumpAndSettleWithMaterialApp(tester, scoped == null ? view : KalenderTheme(data: scoped, child: view));
   }
 
   testWidgets('a custom portal builder resolves the overlay styles from its context', (tester) async {
@@ -57,26 +52,23 @@ void main() {
 
     await pumpOverflowingMonth(
       tester,
-      portalBuilder: (
-        context, {
-        required date,
-        required events,
-        required numberOfHiddenRows,
-        required tileHeight,
-        required getMultiDayEventLayoutRenderBox,
-        required overlayTileBuilder,
-        required overlayBuilders,
-      }) {
-        received = KalenderTheme.of(context).multiDayOverlayStyle;
-        return const SizedBox();
-      },
+      portalBuilder:
+          (
+            context, {
+            required date,
+            required events,
+            required numberOfHiddenRows,
+            required tileHeight,
+            required getMultiDayEventLayoutRenderBox,
+            required overlayTileBuilder,
+            required overlayBuilders,
+          }) {
+            received = KalenderTheme.of(context).multiDayOverlayStyle;
+            return const SizedBox();
+          },
     );
 
-    expect(
-      received,
-      isNotNull,
-      reason: 'the Material defaults populate this even when the app sets nothing',
-    );
+    expect(received, isNotNull, reason: 'the Material defaults populate this even when the app sets nothing');
   });
 
   testWidgets('a scoped theme reaches the custom portal builder', (tester) async {
@@ -85,19 +77,20 @@ void main() {
     await pumpOverflowingMonth(
       tester,
       scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
-      portalBuilder: (
-        context, {
-        required date,
-        required events,
-        required numberOfHiddenRows,
-        required tileHeight,
-        required getMultiDayEventLayoutRenderBox,
-        required overlayTileBuilder,
-        required overlayBuilders,
-      }) {
-        received = KalenderTheme.of(context).multiDayOverlayStyle;
-        return const SizedBox();
-      },
+      portalBuilder:
+          (
+            context, {
+            required date,
+            required events,
+            required numberOfHiddenRows,
+            required tileHeight,
+            required getMultiDayEventLayoutRenderBox,
+            required overlayTileBuilder,
+            required overlayBuilders,
+          }) {
+            received = KalenderTheme.of(context).multiDayOverlayStyle;
+            return const SizedBox();
+          },
     );
 
     expect(received?.width, equals(321));
@@ -129,19 +122,20 @@ void main() {
       tester,
       scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
       overlayBuilders: OverlayBuilders(
-        multiDayOverlayBuilder: (
-          context, {
-          required date,
-          required events,
-          required tileHeight,
-          required portalController,
-          required overlayTileBuilder,
-          required getMultiDayEventLayoutRenderBox,
-          required getOverlayPortalRenderBox,
-        }) {
-          received = KalenderTheme.of(context).multiDayOverlayStyle;
-          return const SizedBox();
-        },
+        multiDayOverlayBuilder:
+            (
+              context, {
+              required date,
+              required events,
+              required tileHeight,
+              required portalController,
+              required overlayTileBuilder,
+              required getMultiDayEventLayoutRenderBox,
+              required getOverlayPortalRenderBox,
+            }) {
+              received = KalenderTheme.of(context).multiDayOverlayStyle;
+              return const SizedBox();
+            },
       ),
     );
 
@@ -154,9 +148,7 @@ void main() {
   testWidgets('the built-in overlay still follows a scoped theme with nothing passed to it', (tester) async {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(
-        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-      );
+      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
     }
     addTearDown(eventsController.dispose);
 

@@ -3,11 +3,8 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 
 void main() {
-  KalenderEvent makeEvent({String id = 'e1'}) => KalenderEvent(
-        id: id,
-        start: DateTime.utc(2024, 1, 15, 9),
-        end: DateTime.utc(2024, 1, 15, 10),
-      );
+  KalenderEvent makeEvent({String id = 'e1'}) =>
+      KalenderEvent(id: id, start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10));
 
   // ─── ResizeDirection ─────────────────────────────────────────────────────────
 
@@ -41,7 +38,10 @@ void main() {
     });
 
     test('updateDateTimeRange returns a new Resize with the updated event and same direction', () {
-      final original = Resize(event: makeEvent(id: 'keep-me'), direction: ResizeDirection.bottom);
+      final original = Resize(
+        event: makeEvent(id: 'keep-me'),
+        direction: ResizeDirection.bottom,
+      );
       final newRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 12));
 
       final updated = original.updateDateTimeRange(newRange);
