@@ -192,28 +192,22 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
   @override
-  void initState() {
-    super.initState();
-    _setup();
-  }
-
-  @override
   void didUpdateWidget(covariant SchedulePositionList oldWidget) {
-    _removeListeners();
+    _removeListeners(oldWidget.eventsController);
     _setup();
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void didChangeDependencies() {
-    _removeListeners();
+    _removeListeners(eventsController);
     _setup();
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    _removeListeners();
+    _removeListeners(eventsController);
     super.dispose();
   }
 
@@ -235,8 +229,8 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   }
 
   /// Removes all event listeners to prevent memory leaks.
-  void _removeListeners() {
-    eventsController.removeListener(_updateMap);
+  void _removeListeners(EventsController controller) {
+    controller.removeListener(_updateMap);
     _itemPositionsListener.itemPositions.removeListener(_positionListener);
   }
 
