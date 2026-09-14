@@ -285,7 +285,13 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return FloatingDateTime.fromDateTime(startOfDate.add(duration));
+    final cursorDateTime = FloatingDateTime.fromDateTime(startOfDate.add(duration));
+    if (timeOfDayRange.coversWholeDay) return cursorDateTime;
+
+    final endOfDate = timeOfDayRange.end.toFloatingDateTime(cursorDate);
+    if (cursorDateTime.isBefore(startOfDate)) return startOfDate;
+    if (cursorDateTime.isAfter(endOfDate)) return endOfDate;
+    return cursorDateTime;
   }
 
   /// Update the [KalenderEvent] based on the [Offset] delta.
@@ -382,7 +388,6 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    // TODO: This might need to take `timeOfDayRange` into account otherwise some new events might be created in undisplayed area's.
     var range = newEvent!.floatingRange(location: context.location);
 
     if (cursorDateTime.isAfter(range.start)) {
