@@ -94,7 +94,6 @@ class KalenderEvent {
         _isAllDay = isAllDay,
         _interaction = interaction ?? EventInteraction.fromCanModify(true);
 
-  // TODO: consider using a UUID package for more robust ID generation.
   static String _createUniqueId() {
     final rawRandom = Random();
     const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
