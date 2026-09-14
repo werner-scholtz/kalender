@@ -227,7 +227,7 @@ Merging the range into `KalenderDateTimeRange` was rejected. The two were one ty
 
 **Seven of the fourteen TODOs were resolved.** The four about locations were the defect above, already resolved, or out of date, since every `PageIndexCalculator` member already took a location. The force-unwrap of `floatingVisibleRange.value` is safe, since every view controller sets it in its constructor and nothing clears it. Event ids are random rather than timestamp-based, so the UUID suggestion described no defect. The TODO about new events outside the displayed hours was narrower than it read. A drag that leaves the day already creates nothing, but snapping rounded the last pixel past the end of a `timeOfDayRange` that is not a whole number of intervals. The cursor time is clamped now, as rescheduling already was, which fixes creating and resizing together.
 
-Publishing validates the package again, now that pub.dev accepts a metadata request that carries a bearer token, and each example is analyzed on the Flutter version its `.fvmrc` names.
+Publishing validates the package again, now that pub.dev accepts a metadata request that carries a bearer token, and every CI job runs the Flutter version in `.fvmrc`.
 
 ### 0.32.0, planned
 
@@ -283,7 +283,7 @@ Both columns are line coverage of the directory and everything under it, measure
 
 The rest runs from 79% to 100% with no large gap.
 
-**CI analyzes each example on the Flutter version its `.fvmrc` names**, so `examples/material_ui` runs on the release that moved Material out, which is the point of it. The declared Flutter minimum has had its own job since 0.30.0.
+**CI runs every job on the Flutter version in `.fvmrc`**, so `examples/material_ui` runs on the release that moved Material out, which is the point of it. A job on the newest stable reports a break before `.fvmrc` moves. The declared Flutter minimum has had its own job since 0.30.0.
 
 **The Dart bound still says `>=3.0.0` and that is not what the package needs.** `timezone` requires Dart `^3.10.0`, so pub already refuses to resolve on anything older and no user can reach the versions the bound claims. Correcting it to `>=3.10.0` costs more than it reads: the formatter picks its style from the package language version, so any bound at 3.7 or above switches `dart format` to the tall style and rewrites 161 of the 210 files. That is a real piece of work with its own review, not a line in a release. Do it on its own, and take the accurate bound with it.
 
