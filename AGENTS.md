@@ -32,13 +32,14 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `doc/` | The user-facing guides, indexed by `doc/README.md` |
 | `examples/` | Example Flutter apps (`example/`, `advanced_example/`, `riverpod/`, `recurrence/`, `ics/`, `intl4x/`, `material_ui/`, `testing/`, `web_demo/`), plus `doc_snippets/` for the snippet check |
 | `example/` | README only: the pub.dev Example tab, which links to `examples/` |
-| `tool/` | Dev scripts: `test_timezones_linux.dart` replicates the CI timezone matrix locally, `pin_release_links.dart` pins documentation links at publish |
+| `tool/` | Dev scripts: `test_timezones_linux.dart` replicates the CI timezone matrix locally, `pin_release_links.dart` pins documentation links at publish, `license_headers.dart` adds the license header to Dart files |
 | `.github/workflows/` | CI: `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `deploy_dashboard.yml`, `publish.yml`, `web_demo.yml` |
 
 ## Code Style
 
 - **Linting**: `package:flutter_lints` with strict-inference and strict-raw-types enabled. See `analysis_options.yaml`.
 - **Formatter page width**: 120 characters.
+- **License header**: Every Dart file starts with the KDAB license header. `dart run tool/license_headers.dart` adds them and CI checks them.
 - **Imports**: Always use `package:` imports (never relative). Enforced by `always_use_package_imports: true`. Follow `directives_ordering` (dart:, package:, relative in that order).
 - **Strings**: Prefer `single_quotes`.
 - **Variables/fields**: Prefer `final` locals (`prefer_final_locals`) and `final` fields (`prefer_final_fields`). Use `omit_local_variable_types` and `avoid_types_on_closure_parameters` so type inference does the work.

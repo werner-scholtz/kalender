@@ -1,5 +1,11 @@
 #!/usr/bin/env dart
 
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 // Replicates the GitHub Actions timezone matrix locally.
 // Usage (from the repo root):
 //   dart tool/test_timezones.dart [flutter-test-args...]

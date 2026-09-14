@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 // Compiles every Dart snippet in the README and the doc/ guides.
 //
 // The snippets are the first code a reader copies, so a snippet that no longer
