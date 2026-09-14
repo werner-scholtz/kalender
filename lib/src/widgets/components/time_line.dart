@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
@@ -37,13 +43,14 @@ String _formatTime(BuildContext context, KalenderTime time) {
 /// Resolve the style with `KalenderTheme.of`.
 ///
 /// {@category Appearance}
-typedef TimeLineBuilder = Widget Function(
-  BuildContext context,
-  double heightPerMinute,
-  KalenderTimeRange timeOfDayRange,
-  ValueNotifier<KalenderEvent?> eventBeingDragged,
-  ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
-);
+typedef TimeLineBuilder =
+    Widget Function(
+      BuildContext context,
+      double heightPerMinute,
+      KalenderTimeRange timeOfDayRange,
+      ValueNotifier<KalenderEvent?> eventBeingDragged,
+      ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
+    );
 
 /// Resolves the width of the timeline gutter.
 ///
@@ -59,10 +66,7 @@ typedef TimeLineBuilder = Widget Function(
 /// See [defaultTimelineWidth] for the default implementation.
 ///
 /// {@category Appearance}
-typedef TimelineWidthBuilder = double Function(
-  BuildContext context,
-  KalenderTimeRange timeOfDayRange,
-);
+typedef TimelineWidthBuilder = double Function(BuildContext context, KalenderTimeRange timeOfDayRange);
 
 /// The default [TimelineWidthBuilder].
 ///
@@ -227,15 +231,15 @@ class TimelineStyle with Diagnosticable {
 
   @override
   int get hashCode => Object.hash(
-        textStyle,
-        textDirection,
-        textAlign,
-        textOverflow,
-        textPadding,
-        width,
-        startDecoration,
-        endDecoration,
-      );
+    textStyle,
+    textDirection,
+    textAlign,
+    textOverflow,
+    textPadding,
+    width,
+    startDecoration,
+    endDecoration,
+  );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -454,12 +458,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
     return SizedBox(
       width: itemSize.width,
-      child: Stack(
-        children: [
-          ...positionedTimes.nonNulls,
-          eventBeingDraggedTimes,
-        ],
-      ),
+      child: Stack(children: [...positionedTimes.nonNulls, eventBeingDraggedTimes]),
     );
   }
 }

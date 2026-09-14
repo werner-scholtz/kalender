@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -30,11 +36,11 @@ void main() {
   });
 
   KalenderCallbacks recordingCallbacks() => KalenderCallbacks(
-        onEventTapped: (event) => tapped = event,
-        onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
-        onEventSecondaryTapped: (event) => secondaryTapped = event,
-        onEventSecondaryTappedWithDetail: (event, detail) => secondaryTappedDetail = detail,
-      );
+    onEventTapped: (event) => tapped = event,
+    onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
+    onEventSecondaryTapped: (event) => secondaryTapped = event,
+    onEventSecondaryTappedWithDetail: (event, detail) => secondaryTappedDetail = detail,
+  );
 
   void expectDayDetail(TapDetail? detail, DateTime day) {
     expect(detail, isA<MultiDayDetail>());

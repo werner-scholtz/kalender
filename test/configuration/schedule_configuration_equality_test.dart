@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -31,11 +37,15 @@ void main() {
     for (final entry in <String, ScheduleViewConfiguration>{
       'name': ScheduleViewConfiguration.continuous(name: 'Agenda', displayRange: range),
       'initialDateTime': ScheduleViewConfiguration.continuous(initialDateTime: DateTime(2025, 2), displayRange: range),
-      'dateTransition':
-          ScheduleViewConfiguration.continuous(dateTransition: DateTransition.restorePerView, displayRange: range),
+      'dateTransition': ScheduleViewConfiguration.continuous(
+        dateTransition: DateTransition.restorePerView,
+        displayRange: range,
+      ),
       'nowCallback': ScheduleViewConfiguration.continuous(nowCallback: _now, displayRange: range),
-      'multiDayRule':
-          ScheduleViewConfiguration.continuous(multiDayRule: const MultiDayRule.calendarDays(), displayRange: range),
+      'multiDayRule': ScheduleViewConfiguration.continuous(
+        multiDayRule: const MultiDayRule.calendarDays(),
+        displayRange: range,
+      ),
       'viewType': ScheduleViewConfiguration(
         name: 'Schedule (continuous)',
         viewType: ScheduleViewType.paginated,

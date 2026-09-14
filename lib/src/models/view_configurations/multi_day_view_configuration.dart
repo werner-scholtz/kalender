@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
@@ -12,13 +18,7 @@ import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
 /// {@category Views}
-enum MultiDayViewType {
-  singleDay,
-  week,
-  workWeek,
-  custom,
-  freeScroll,
-}
+enum MultiDayViewType { singleDay, week, workWeek, custom, freeScroll }
 
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
 ///
@@ -83,10 +83,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
   }) : assert(
-          firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
-          'First day of week must be a valid week day number\n'
-          'Use DateTime.monday, DateTime.tuesday, etc. to set the first day of the week',
-        );
+         firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
+         'First day of week must be a valid week day number\n'
+         'Use DateTime.monday, DateTime.tuesday, etc. to set the first day of the week',
+       );
 
   /// Creates a [MultiDayViewConfiguration] for a single day.
   MultiDayViewConfiguration.singleDay({
@@ -105,10 +105,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
-        numberOfDays = 1,
-        type = MultiDayViewType.singleDay,
-        pageIndexCalculator = PageIndexCalculator.singleDay(displayRange ?? kDefaultRange());
+  }) : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
+       numberOfDays = 1,
+       type = MultiDayViewType.singleDay,
+       pageIndexCalculator = PageIndexCalculator.singleDay(displayRange ?? kDefaultRange());
 
   /// Creates a [MultiDayViewConfiguration] for a week.
   ///
@@ -134,18 +134,18 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : assert(
-          numberOfDays >= 1 && numberOfDays <= DateTime.daysPerWeek,
-          'numberOfDays must be between 1 and 7 for a week view.\n'
-          'Use MultiDayViewConfiguration.custom for a page of any other length.',
-        ),
-        timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
-        type = MultiDayViewType.week,
-        pageIndexCalculator = PageIndexCalculator.week(
-          displayRange ?? kDefaultRange(),
-          firstDayOfWeek,
-          daysToDisplay: numberOfDays,
-        );
+  }) : assert(
+         numberOfDays >= 1 && numberOfDays <= DateTime.daysPerWeek,
+         'numberOfDays must be between 1 and 7 for a week view.\n'
+         'Use MultiDayViewConfiguration.custom for a page of any other length.',
+       ),
+       timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
+       type = MultiDayViewType.week,
+       pageIndexCalculator = PageIndexCalculator.week(
+         displayRange ?? kDefaultRange(),
+         firstDayOfWeek,
+         daysToDisplay: numberOfDays,
+       );
 
   /// Creates a [MultiDayViewConfiguration] for a work week.
   ///
@@ -167,18 +167,15 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : assert(
-          numberOfDays >= 1 && numberOfDays <= DateTime.daysPerWeek,
-          'numberOfDays must be between 1 and 7 for a work week view.\n'
-          'Use MultiDayViewConfiguration.custom for a page of any other length.',
-        ),
-        timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
-        firstDayOfWeek = kDefaultFirstDayOfWeek,
-        type = MultiDayViewType.workWeek,
-        pageIndexCalculator = PageIndexCalculator.workWeek(
-          displayRange ?? kDefaultRange(),
-          daysToDisplay: numberOfDays,
-        );
+  }) : assert(
+         numberOfDays >= 1 && numberOfDays <= DateTime.daysPerWeek,
+         'numberOfDays must be between 1 and 7 for a work week view.\n'
+         'Use MultiDayViewConfiguration.custom for a page of any other length.',
+       ),
+       timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
+       firstDayOfWeek = kDefaultFirstDayOfWeek,
+       type = MultiDayViewType.workWeek,
+       pageIndexCalculator = PageIndexCalculator.workWeek(displayRange ?? kDefaultRange(), daysToDisplay: numberOfDays);
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
@@ -198,9 +195,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
-        type = MultiDayViewType.custom,
-        pageIndexCalculator = PageIndexCalculator.custom(displayRange ?? kDefaultRange(), numberOfDays);
+  }) : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
+       type = MultiDayViewType.custom,
+       pageIndexCalculator = PageIndexCalculator.custom(displayRange ?? kDefaultRange(), numberOfDays);
 
   /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
   MultiDayViewConfiguration.freeScroll({
@@ -219,10 +216,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.scrollResolver,
     this.zoomTransition = ZoomTransition.preserve,
     this.zoomResolver,
-  })  : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
-        firstDayOfWeek = kDefaultFirstDayOfWeek,
-        type = MultiDayViewType.freeScroll,
-        pageIndexCalculator = PageIndexCalculator.freeScroll(displayRange ?? kDefaultRange());
+  }) : timeOfDayRange = timeOfDayRange ?? KalenderTimeRange.allDay(),
+       firstDayOfWeek = kDefaultFirstDayOfWeek,
+       type = MultiDayViewType.freeScroll,
+       pageIndexCalculator = PageIndexCalculator.freeScroll(displayRange ?? kDefaultRange());
 
   MultiDayViewConfiguration copyWith({
     String? name,
@@ -258,87 +255,87 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
     return switch (type) {
       MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
-          name: name0,
-          initialDateTime: selectedDate0,
-          dateTransition: dateTransition0,
-          dateResolver: dateResolver0,
-          nowCallback: nowCallback0,
-          timeOfDayRange: timeOfDayRange0,
-          displayRange: displayRange0,
-          firstDayOfWeek: firstDayOfWeek0,
-          initialTimeOfDay: initialTimeOfDay0,
-          scrollTransition: scrollTransition0,
-          scrollResolver: scrollResolver0,
-          zoomTransition: zoomTransition0,
-          zoomResolver: zoomResolver0,
-          multiDayRule: multiDayRule0,
-        ),
+        name: name0,
+        initialDateTime: selectedDate0,
+        dateTransition: dateTransition0,
+        dateResolver: dateResolver0,
+        nowCallback: nowCallback0,
+        timeOfDayRange: timeOfDayRange0,
+        displayRange: displayRange0,
+        firstDayOfWeek: firstDayOfWeek0,
+        initialTimeOfDay: initialTimeOfDay0,
+        scrollTransition: scrollTransition0,
+        scrollResolver: scrollResolver0,
+        zoomTransition: zoomTransition0,
+        zoomResolver: zoomResolver0,
+        multiDayRule: multiDayRule0,
+      ),
       MultiDayViewType.week => MultiDayViewConfiguration.week(
-          name: name0,
-          initialDateTime: selectedDate0,
-          dateTransition: dateTransition0,
-          dateResolver: dateResolver0,
-          nowCallback: nowCallback0,
-          timeOfDayRange: timeOfDayRange0,
-          displayRange: displayRange0,
-          firstDayOfWeek: firstDayOfWeek0,
-          numberOfDays: numberOfDays ?? this.numberOfDays,
-          initialTimeOfDay: initialTimeOfDay0,
-          scrollTransition: scrollTransition0,
-          scrollResolver: scrollResolver0,
-          zoomTransition: zoomTransition0,
-          zoomResolver: zoomResolver0,
-          multiDayRule: multiDayRule0,
-        ),
+        name: name0,
+        initialDateTime: selectedDate0,
+        dateTransition: dateTransition0,
+        dateResolver: dateResolver0,
+        nowCallback: nowCallback0,
+        timeOfDayRange: timeOfDayRange0,
+        displayRange: displayRange0,
+        firstDayOfWeek: firstDayOfWeek0,
+        numberOfDays: numberOfDays ?? this.numberOfDays,
+        initialTimeOfDay: initialTimeOfDay0,
+        scrollTransition: scrollTransition0,
+        scrollResolver: scrollResolver0,
+        zoomTransition: zoomTransition0,
+        zoomResolver: zoomResolver0,
+        multiDayRule: multiDayRule0,
+      ),
       MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
-          name: name0,
-          initialDateTime: selectedDate0,
-          dateTransition: dateTransition0,
-          dateResolver: dateResolver0,
-          nowCallback: nowCallback0,
-          timeOfDayRange: timeOfDayRange0,
-          displayRange: displayRange0,
-          numberOfDays: numberOfDays ?? this.numberOfDays,
-          initialTimeOfDay: initialTimeOfDay0,
-          scrollTransition: scrollTransition0,
-          scrollResolver: scrollResolver0,
-          zoomTransition: zoomTransition0,
-          zoomResolver: zoomResolver0,
-          multiDayRule: multiDayRule0,
-        ),
+        name: name0,
+        initialDateTime: selectedDate0,
+        dateTransition: dateTransition0,
+        dateResolver: dateResolver0,
+        nowCallback: nowCallback0,
+        timeOfDayRange: timeOfDayRange0,
+        displayRange: displayRange0,
+        numberOfDays: numberOfDays ?? this.numberOfDays,
+        initialTimeOfDay: initialTimeOfDay0,
+        scrollTransition: scrollTransition0,
+        scrollResolver: scrollResolver0,
+        zoomTransition: zoomTransition0,
+        zoomResolver: zoomResolver0,
+        multiDayRule: multiDayRule0,
+      ),
       MultiDayViewType.custom => MultiDayViewConfiguration.custom(
-          name: name0,
-          initialDateTime: selectedDate0,
-          dateTransition: dateTransition0,
-          dateResolver: dateResolver0,
-          nowCallback: nowCallback0,
-          timeOfDayRange: timeOfDayRange0,
-          displayRange: displayRange0,
-          firstDayOfWeek: firstDayOfWeek0,
-          numberOfDays: numberOfDays ?? this.numberOfDays,
-          initialTimeOfDay: initialTimeOfDay0,
-          scrollTransition: scrollTransition0,
-          scrollResolver: scrollResolver0,
-          zoomTransition: zoomTransition0,
-          zoomResolver: zoomResolver0,
-          multiDayRule: multiDayRule0,
-        ),
+        name: name0,
+        initialDateTime: selectedDate0,
+        dateTransition: dateTransition0,
+        dateResolver: dateResolver0,
+        nowCallback: nowCallback0,
+        timeOfDayRange: timeOfDayRange0,
+        displayRange: displayRange0,
+        firstDayOfWeek: firstDayOfWeek0,
+        numberOfDays: numberOfDays ?? this.numberOfDays,
+        initialTimeOfDay: initialTimeOfDay0,
+        scrollTransition: scrollTransition0,
+        scrollResolver: scrollResolver0,
+        zoomTransition: zoomTransition0,
+        zoomResolver: zoomResolver0,
+        multiDayRule: multiDayRule0,
+      ),
       MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
-          name: name0,
-          initialDateTime: selectedDate0,
-          dateTransition: dateTransition0,
-          dateResolver: dateResolver0,
-          nowCallback: nowCallback0,
-          timeOfDayRange: timeOfDayRange0,
-          displayRange: displayRange0,
-          numberOfDays: numberOfDays ?? this.numberOfDays,
-          initialTimeOfDay: initialTimeOfDay0,
-          scrollTransition: scrollTransition0,
-          scrollResolver: scrollResolver0,
-          zoomTransition: zoomTransition0,
-          zoomResolver: zoomResolver0,
-          multiDayRule: multiDayRule0,
-        ),
+        name: name0,
+        initialDateTime: selectedDate0,
+        dateTransition: dateTransition0,
+        dateResolver: dateResolver0,
+        nowCallback: nowCallback0,
+        timeOfDayRange: timeOfDayRange0,
+        displayRange: displayRange0,
+        numberOfDays: numberOfDays ?? this.numberOfDays,
+        initialTimeOfDay: initialTimeOfDay0,
+        scrollTransition: scrollTransition0,
+        scrollResolver: scrollResolver0,
+        zoomTransition: zoomTransition0,
+        zoomResolver: zoomResolver0,
+        multiDayRule: multiDayRule0,
+      ),
     };
   }
 

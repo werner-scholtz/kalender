@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
@@ -13,11 +19,8 @@ import 'package:kalender/kalender.dart';
 /// timeline's label size, which [KalenderTheme] resolves.
 ///
 /// {@category Appearance}
-typedef HourLinesBuilder = Widget Function(
-  BuildContext context,
-  double heightPerMinute,
-  KalenderTimeRange timeOfDayRange,
-);
+typedef HourLinesBuilder =
+    Widget Function(BuildContext context, double heightPerMinute, KalenderTimeRange timeOfDayRange);
 
 /// The style of the [HourLines] widget.
 ///
@@ -35,20 +38,10 @@ class HourLinesStyle with Diagnosticable {
   /// The end indent of the hour lines.
   final double? endIndent;
 
-  const HourLinesStyle({
-    this.color,
-    this.thickness,
-    this.indent,
-    this.endIndent,
-  });
+  const HourLinesStyle({this.color, this.thickness, this.indent, this.endIndent});
 
   /// Creates a copy of this style with the given fields replaced with the new values.
-  HourLinesStyle copyWith({
-    Color? color,
-    double? thickness,
-    double? indent,
-    double? endIndent,
-  }) {
+  HourLinesStyle copyWith({Color? color, double? thickness, double? indent, double? endIndent}) {
     return HourLinesStyle(
       color: color ?? this.color,
       thickness: thickness ?? this.thickness,

@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
@@ -48,23 +54,14 @@ double defaultWeekNumberWidth(BuildContext context) {
 /// defaults into that scope, so the same call returns the month's value there.
 ///
 /// {@category Appearance}
-typedef WeekNumberBuilder = Widget Function(
-  BuildContext context,
-  KalenderDateTimeRange visibleDateTimeRange,
-);
+typedef WeekNumberBuilder = Widget Function(BuildContext context, KalenderDateTimeRange visibleDateTimeRange);
 
 /// The style of the [WeekNumber].
 ///
 /// {@category Appearance}
 class WeekNumberStyle with Diagnosticable {
   /// Creates a new [WeekNumberStyle].
-  const WeekNumberStyle({
-    this.textStyle,
-    this.buttonSize,
-    this.tooltip,
-    this.padding,
-    this.alignment,
-  });
+  const WeekNumberStyle({this.textStyle, this.buttonSize, this.tooltip, this.padding, this.alignment});
 
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.
   final TextStyle? textStyle;
@@ -187,11 +184,7 @@ class WeekNumber extends StatelessWidget {
           // The gutter is sized by the calendar, not by this label, so a range
           // spanning two weeks wraps. Without this the short second line sits
           // against the leading edge.
-          icon: Text(
-            weekNumber,
-            textAlign: TextAlign.center,
-            style: style.textStyle,
-          ),
+          icon: Text(weekNumber, textAlign: TextAlign.center, style: style.textStyle),
         ),
       ),
     );

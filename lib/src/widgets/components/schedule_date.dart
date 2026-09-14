@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender_extensions.dart';
@@ -12,20 +18,14 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}
-typedef ScheduleDateBuilder = Widget Function(
-  BuildContext context,
-  FloatingDateTime date,
-);
+typedef ScheduleDateBuilder = Widget Function(BuildContext context, FloatingDateTime date);
 
 /// The style of the [ScheduleDate].
 ///
 /// {@category Appearance}
 class ScheduleDateStyle with Diagnosticable {
   /// Creates a new [ScheduleDateStyle].
-  const ScheduleDateStyle({
-    this.textStyle,
-    this.numberTextStyle,
-  });
+  const ScheduleDateStyle({this.textStyle, this.numberTextStyle});
 
   /// The [TextStyle] used by the [ScheduleDate] widget to display the name of the day.
   final TextStyle? textStyle;
@@ -34,10 +34,7 @@ class ScheduleDateStyle with Diagnosticable {
   final TextStyle? numberTextStyle;
 
   /// Creates a copy of this style with the given fields replaced with the new values.
-  ScheduleDateStyle copyWith({
-    TextStyle? textStyle,
-    TextStyle? numberTextStyle,
-  }) {
+  ScheduleDateStyle copyWith({TextStyle? textStyle, TextStyle? numberTextStyle}) {
     return ScheduleDateStyle(
       textStyle: textStyle ?? this.textStyle,
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
@@ -114,10 +111,7 @@ class ScheduleDate extends StatelessWidget {
 
     return FittedBox(
       fit: BoxFit.scaleDown,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [text, button],
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [text, button]),
     );
   }
 }

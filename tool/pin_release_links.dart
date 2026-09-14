@@ -184,13 +184,7 @@ void main(List<String> args) {
     final rewritten = entry.rewrite(file.readAsStringSync());
     file.writeAsStringSync(rewritten);
     problems.addAll(
-      leftoverProblems(
-        entry.path,
-        rewritten,
-        repoUrl,
-        allowUnpinnedLinks: entry.allowUnpinnedLinks,
-        package: package,
-      ),
+      leftoverProblems(entry.path, rewritten, repoUrl, allowUnpinnedLinks: entry.allowUnpinnedLinks, package: package),
     );
     stdout.writeln('Pinned ${entry.path} to $tag');
   }

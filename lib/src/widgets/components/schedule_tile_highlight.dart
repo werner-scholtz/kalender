@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender_extensions.dart';
@@ -12,12 +18,13 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}
-typedef ScheduleTileHighlightBuilder = Widget Function(
-  BuildContext context,
-  FloatingDateTime date,
-  ValueNotifier<FloatingDateTimeRange?> range,
-  Widget child,
-);
+typedef ScheduleTileHighlightBuilder =
+    Widget Function(
+      BuildContext context,
+      FloatingDateTime date,
+      ValueNotifier<FloatingDateTimeRange?> range,
+      Widget child,
+    );
 
 /// {@category Appearance}
 class ScheduleTileHighlightStyle with Diagnosticable {
@@ -77,26 +84,18 @@ class ScheduleTileHighlight extends StatelessWidget {
   /// The child widget to display.
   final Widget child;
 
-  const ScheduleTileHighlight({
-    super.key,
-    required this.date,
-    required this.range,
-    this.style,
-    required this.child,
-  });
+  const ScheduleTileHighlight({super.key, required this.date, required this.range, this.style, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final style =
-        (KalenderTheme.of(context).scheduleTileHighlightStyle ?? const ScheduleTileHighlightStyle()).merge(this.style);
+    final style = (KalenderTheme.of(context).scheduleTileHighlightStyle ?? const ScheduleTileHighlightStyle()).merge(
+      this.style,
+    );
     return ValueListenableBuilder(
       valueListenable: range,
       builder: (context, value, child) {
         if (value != null && date.isWithin(value)) {
-          return DecoratedBox(
-            decoration: style.decoration ?? const BoxDecoration(),
-            child: child!,
-          );
+          return DecoratedBox(decoration: style.decoration ?? const BoxDecoration(), child: child!);
         } else {
           return child!;
         }

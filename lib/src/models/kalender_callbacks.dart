@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
@@ -206,10 +212,7 @@ typedef OnEventTapped = void Function(KalenderEvent event);
 /// - [TapDetail.renderBox] is the [RenderBox] of the event tile.
 ///
 /// {@category Controllers and callbacks}
-typedef OnEventTappedWithDetail = void Function(
-  KalenderEvent event,
-  TapDetail detail,
-);
+typedef OnEventTappedWithDetail = void Function(KalenderEvent event, TapDetail detail);
 
 /// The callback for when an event is about to be changed.
 ///
@@ -237,10 +240,7 @@ typedef OnEventCreate = KalenderEvent? Function(KalenderEvent event);
 /// [detail] contains the details of the tap that created the event.
 ///
 /// {@category Controllers and callbacks}
-typedef OnEventCreateWithDetail = KalenderEvent? Function(
-  KalenderEvent event,
-  TapDetail detail,
-);
+typedef OnEventCreateWithDetail = KalenderEvent? Function(KalenderEvent event, TapDetail detail);
 
 /// The callback for a new event has been created.
 ///
@@ -302,11 +302,12 @@ typedef OnLongPressedWithDetail = void Function(TapDetail detail);
 /// See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
 ///
 /// {@category Interaction}
-typedef OnWillAcceptWithDetailsVertical = bool Function(
-  DragTargetDetails<Object?> details,
-  KalenderController controller,
-  VerticalConfiguration configuration,
-);
+typedef OnWillAcceptWithDetailsVertical =
+    bool Function(
+      DragTargetDetails<Object?> details,
+      KalenderController controller,
+      VerticalConfiguration configuration,
+    );
 
 /// The callback for when a drag target is evaluating whether to accept a draggable.
 ///
@@ -319,11 +320,12 @@ typedef OnWillAcceptWithDetailsVertical = bool Function(
 /// See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
 ///
 /// {@category Interaction}
-typedef OnWillAcceptWithDetailsHorizontal = bool Function(
-  DragTargetDetails<Object?> details,
-  KalenderController controller,
-  HorizontalConfiguration configuration,
-);
+typedef OnWillAcceptWithDetailsHorizontal =
+    bool Function(
+      DragTargetDetails<Object?> details,
+      KalenderController controller,
+      HorizontalConfiguration configuration,
+    );
 
 /// {@category Controllers and callbacks}
 abstract class TapDetail {

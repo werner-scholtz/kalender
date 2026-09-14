@@ -1,3 +1,9 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -167,10 +173,7 @@ void main() {
       File('${directory.path}/appearance.md').writeAsStringSync('');
       File('${directory.path}/notes.txt').writeAsStringSync('');
 
-      expect(
-        docFiles(directory).map((path) => path.split(Platform.pathSeparator).last),
-        ['appearance.md', 'views.md'],
-      );
+      expect(docFiles(directory).map((path) => path.split(Platform.pathSeparator).last), ['appearance.md', 'views.md']);
     });
 
     test('an absent directory yields nothing', () {
