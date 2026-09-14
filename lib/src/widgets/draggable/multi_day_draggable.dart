@@ -5,8 +5,8 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 class MultiDayDraggable extends StatefulWidget {
-  final FloatingDateTimeRange internalRange;
-  const MultiDayDraggable({super.key, required this.internalRange});
+  final FloatingDateTimeRange floatingRange;
+  const MultiDayDraggable({super.key, required this.floatingRange});
   @override
   State<MultiDayDraggable> createState() => _MultiDayDraggableState();
 }
@@ -22,7 +22,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (final date in widget.internalRange.dates())
+        for (final date in widget.floatingRange.dates())
           Expanded(
             child: Builder(
               builder: (context) {
@@ -76,7 +76,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     callbacks?.onTapped?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onTappedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, localPosition);
+    final range = calculateFloatingRange(date, localPosition);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onTappedWithDetail?.call(
       MultiDayDetail(
@@ -91,7 +91,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     callbacks?.onLongPressed?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onLongPressedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, position);
+    final range = calculateFloatingRange(date, position);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
       MultiDayDetail(
@@ -106,7 +106,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     callbacks?.onSecondaryTapped?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onSecondaryTappedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, localPosition);
+    final range = calculateFloatingRange(date, localPosition);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryTappedWithDetail?.call(
       MultiDayDetail(
@@ -121,7 +121,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     callbacks?.onSecondaryLongPressed?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onSecondaryLongPressedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, position);
+    final range = calculateFloatingRange(date, position);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryLongPressedWithDetail?.call(
       MultiDayDetail(
@@ -133,7 +133,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
   }
 
   @override
-  FloatingDateTimeRange calculateDateTimeRange(FloatingDateTime date, Offset localPosition) {
+  FloatingDateTimeRange calculateFloatingRange(FloatingDateTime date, Offset localPosition) {
     final start = date;
     final end = start.endOfDay;
     return FloatingDateTimeRange(start: start, end: end);

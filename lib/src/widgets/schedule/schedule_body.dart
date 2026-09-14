@@ -40,7 +40,7 @@ class ScheduleBody extends StatelessWidget {
         eventsController: context.eventsController,
         viewController: viewController,
         // TODO: this might cause rebuilds.
-        dateTimeRange: viewController.viewConfiguration.pageIndexCalculator.internalRange(context.location),
+        range: viewController.viewConfiguration.pageIndexCalculator.floatingRange(context.location),
         currentPage: 0,
         paginated: false,
         configuration: configuration,
@@ -92,7 +92,7 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
         final range =
-            widget.viewController.viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(value, context.location);
+            widget.viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(value, context.location);
         context.callbacks?.onPageChanged?.call(range.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {
@@ -100,8 +100,7 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
           eventsController: context.eventsController,
           viewController: widget.viewController,
           // TODO: Might cause unnecessary rebuilds.
-          dateTimeRange: widget.viewController.viewConfiguration.pageIndexCalculator
-              .dateTimeRangeFromIndex(index, context.location),
+          range: widget.viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(index, context.location),
           currentPage: index,
           paginated: true,
           configuration: widget.configuration,
@@ -135,7 +134,7 @@ class SchedulePositionList extends StatefulWidget {
   final ScheduleBodyConfiguration configuration;
 
   /// The date range to display in this list.
-  final FloatingDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange range;
 
   /// The current page index (used in paginated views).
   final int currentPage;
@@ -151,7 +150,7 @@ class SchedulePositionList extends StatefulWidget {
     super.key,
     required this.eventsController,
     required this.viewController,
-    required this.dateTimeRange,
+    required this.range,
     required this.currentPage,
     required this.paginated,
     required this.configuration,
@@ -252,14 +251,14 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   /// large date ranges with many events.
   void _generateMap() {
     // Get the range of dates from the view configuration.
-    final dates = widget.dateTimeRange.dates();
+    final dates = widget.range.dates();
     viewController.clear();
 
     var hasAddedMonth = false;
 
     for (final date in dates) {
       // TODO: this location needs to be passed down properly.
-      final events = eventsController.eventsFromDateTimeRange(
+      final events = eventsController.eventsInRange(
         date.dayRange,
         multiDayRule: widget.viewController.viewConfiguration.multiDayRule,
         location: widget.location,
@@ -334,7 +333,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        kalenderController.internalDateTimeRange.value = FloatingDateTimeRange(start: start, end: end);
+        kalenderController.floatingRange.value = FloatingDateTimeRange(start: start, end: end);
       }
 
       // Update the visible events based on the current item positions.
@@ -397,7 +396,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
               return components.buildScheduleTileHighlight(
                 context,
                 date,
-                viewController.highlightedDateTimeRange,
+                viewController.highlightedRange,
                 child,
               );
             } else if (item is EventItem) {
@@ -412,7 +411,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                   key: ScheduleEventTile.tileKey(event.id),
                   event: event,
                   tileComponents: tileComponents,
-                  dateTimeRange: date.dayRange,
+                  floatingRange: date.dayRange,
                   resizeAxis: null,
                 ),
               );
@@ -420,7 +419,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
               return components.buildScheduleTileHighlight(
                 context,
                 date,
-                viewController.highlightedDateTimeRange,
+                viewController.highlightedRange,
                 child,
               );
             } else {

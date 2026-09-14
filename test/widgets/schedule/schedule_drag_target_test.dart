@@ -84,16 +84,16 @@ void main() {
     final id = addEvent(DateTime(2025, 6, 2, 9), const Duration(hours: 1));
     await pumpSchedule(tester);
 
-    expect(schedule().highlightedDateTimeRange.value, isNull, reason: 'nothing is highlighted before a drag');
+    expect(schedule().highlightedRange.value, isNull, reason: 'nothing is highlighted before a drag');
 
     final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)), 120);
-    final highlighted = schedule().highlightedDateTimeRange.value;
+    final highlighted = schedule().highlightedRange.value;
     expect(highlighted, isNotNull, reason: 'the row under the cursor should be highlighted');
     expect(highlighted!.duration, equals(const Duration(hours: 1)), reason: 'the highlight spans the event duration');
 
     await gesture.up();
     await tester.pumpAndSettle();
-    expect(schedule().highlightedDateTimeRange.value, isNull, reason: 'the drop should clear the highlight');
+    expect(schedule().highlightedRange.value, isNull, reason: 'the drop should clear the highlight');
   });
 
   testWidgets('dropping commits the new date', (tester) async {
@@ -149,12 +149,12 @@ void main() {
     await pumpSchedule(tester);
 
     final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)), 120);
-    expect(schedule().highlightedDateTimeRange.value, isNotNull);
+    expect(schedule().highlightedRange.value, isNotNull);
 
     // Off the drag target entirely, which is a leave rather than a drop.
     await gesture.moveTo(const Offset(-50, -50));
     await tester.pumpAndSettle();
-    expect(schedule().highlightedDateTimeRange.value, isNull, reason: 'leaving should clear the highlight');
+    expect(schedule().highlightedRange.value, isNull, reason: 'leaving should clear the highlight');
 
     await gesture.up();
     await tester.pumpAndSettle();

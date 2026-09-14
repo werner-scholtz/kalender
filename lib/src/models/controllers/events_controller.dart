@@ -70,9 +70,9 @@ abstract class EventsController with ChangeNotifier {
   /// Retrieve a [KalenderEvent] by it's id if it exists.
   KalenderEvent? byId(String id);
 
-  /// Finds the [KalenderEvent]s that occur during the [dateTimeRange].
+  /// Finds the [KalenderEvent]s that occur during the [range].
   ///
-  /// The [dateTimeRange] is the range of dates to search for events.
+  /// The [range] is the range of dates to search for events.
   /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
   /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
   /// The [location] is the calendar's timezone, used to place day boundaries when evaluating [multiDayRule].
@@ -80,8 +80,8 @@ abstract class EventsController with ChangeNotifier {
   /// [multiDayRule] decides which events count as multi-day. Pass the current
   /// view's [ViewConfiguration.multiDayRule]; an event overriding it with
   /// [KalenderEvent.multiDayRule] takes precedence.
-  Iterable<KalenderEvent> eventsFromDateTimeRange(
-    FloatingDateTimeRange dateTimeRange, {
+  Iterable<KalenderEvent> eventsInRange(
+    FloatingDateTimeRange range, {
     required MultiDayRule multiDayRule,
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,

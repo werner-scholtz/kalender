@@ -34,7 +34,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
   late RecurrenceType type;
 
   /// The event's range in local time.
-  late final localEventRange = widget.event.internalRange().forLocation();
+  late final localEventRange = widget.event.floatingRange().forLocation();
 
   /// Whether the user is specifying an end date or a count.
   _EndMode endMode = _EndMode.count;

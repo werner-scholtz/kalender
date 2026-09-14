@@ -184,12 +184,12 @@ void main() {
       expect(dates.map((d) => d.day), equals([15, 16, 17]));
     });
 
-    test('internalStart/internalEnd round-trip the wall-clock components', () {
+    test('floatingStart/floatingEnd round-trip the wall-clock components', () {
       final event = eventUtc(DateTime.utc(2024, 1, 15, 9, 30), DateTime.utc(2024, 1, 15, 10, 45));
-      final internalStart = event.internalStart(location: utcLocation);
-      final internalEnd = event.internalEnd(location: utcLocation);
-      expect([internalStart.hour, internalStart.minute], equals([9, 30]));
-      expect([internalEnd.hour, internalEnd.minute], equals([10, 45]));
+      final floatingStart = event.floatingStart(location: utcLocation);
+      final floatingEnd = event.floatingEnd(location: utcLocation);
+      expect([floatingStart.hour, floatingStart.minute], equals([9, 30]));
+      expect([floatingEnd.hour, floatingEnd.minute], equals([10, 45]));
     });
   });
 
@@ -480,7 +480,7 @@ void main() {
       );
 
       expect(
-        controller.eventsFromDateTimeRange(
+        controller.eventsInRange(
           day,
           multiDayRule: kDefaultMultiDayRule,
           includeDayEvents: false,
@@ -489,7 +489,7 @@ void main() {
         equals([allDay]),
       );
       expect(
-        controller.eventsFromDateTimeRange(
+        controller.eventsInRange(
           day,
           multiDayRule: kDefaultMultiDayRule,
           includeMultiDayEvents: false,

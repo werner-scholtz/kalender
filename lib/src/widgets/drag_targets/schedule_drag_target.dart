@@ -191,7 +191,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   @override
   KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime) {
     // The highlight marks whole rows, so it stays anchored to the target day.
-    widget.viewController.highlightedDateTimeRange.value = FloatingDateTimeRange(
+    widget.viewController.highlightedRange.value = FloatingDateTimeRange(
       start: cursorDateTime,
       end: cursorDateTime.add(event.duration),
     );
@@ -202,13 +202,13 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   @override
   void onAcceptWithDetails(DragTargetDetails<Object?> details) {
     super.onAcceptWithDetails(details);
-    widget.viewController.highlightedDateTimeRange.value = null;
+    widget.viewController.highlightedRange.value = null;
   }
 
   @override
   void onLeave(Object? details) {
     super.onLeave(details);
-    widget.viewController.highlightedDateTimeRange.value = null;
+    widget.viewController.highlightedRange.value = null;
   }
 
   @override

@@ -193,7 +193,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(KalenderEvent event) {
-    final durationOnDate = event.internalRange(location: location).dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
+    final durationOnDate = event.floatingRange(location: location).rangeOnDate(date)?.duration ?? Duration.zero;
     final height = durationOnDate.inSeconds * heightPerMinute / 60;
     if (minimumTileHeight != null && height < minimumTileHeight!) {
       return minimumTileHeight!;
@@ -220,7 +220,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   ///
   /// * Note: this takes into account the [KalenderTimeRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(KalenderEvent event) {
-    final eventStart = event.internalRange(location: location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
+    final eventStart = event.floatingRange(location: location).rangeOnDate(date)?.start ?? date.startOfDay;
     return _offsetFromDayStart(eventStart);
   }
 
@@ -258,7 +258,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   }
 
   VerticalLayoutData _calculateSingleEventLayout(int id, Size size, KalenderEvent event) {
-    final range = event.internalRange(location: location).dateTimeRangeOnDate(date);
+    final range = event.floatingRange(location: location).rangeOnDate(date);
     final eventStart = range?.start ?? date.startOfDay;
     final eventEnd = range?.end ?? date.startOfDay;
 
@@ -393,7 +393,7 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
       ..sort((a, b) => b.duration.compareTo(a.duration))
       ..sort(
         (a, b) => b.duration.compareTo(a.duration) == 0
-            ? b.internalStart(location: location).compareTo(a.internalStart(location: location))
+            ? b.floatingStart(location: location).compareTo(a.floatingStart(location: location))
             : 0,
       );
   }

@@ -170,17 +170,17 @@ void main() {
       });
     });
 
-    // ── dateTimeRangeOnDate ──────────────────────────────────────────────
+    // ── rangeOnDate ──────────────────────────────────────────────
 
-    group('dateTimeRangeOnDate', () {
+    group('rangeOnDate', () {
       test('returns null for a date outside the range', () {
         final range = FloatingDateTimeRange(
           start: FloatingDateTime(2024, 1, 10, 9, 0),
           end: FloatingDateTime(2024, 1, 20, 17, 0),
         );
 
-        expect(range.dateTimeRangeOnDate(FloatingDateTime(2024, 1, 5)), isNull);
-        expect(range.dateTimeRangeOnDate(FloatingDateTime(2024, 1, 25)), isNull);
+        expect(range.rangeOnDate(FloatingDateTime(2024, 1, 5)), isNull);
+        expect(range.rangeOnDate(FloatingDateTime(2024, 1, 25)), isNull);
       });
 
       test('returns the full range when start and end are on the same day', () {
@@ -188,7 +188,7 @@ void main() {
           start: FloatingDateTime(2024, 1, 15, 9, 0),
           end: FloatingDateTime(2024, 1, 15, 17, 0),
         );
-        final result = range.dateTimeRangeOnDate(FloatingDateTime(2024, 1, 15));
+        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 15));
 
         expect(result, isNotNull);
         expect(result!.start, range.start);
@@ -200,7 +200,7 @@ void main() {
           start: FloatingDateTime(2024, 1, 10, 9, 0),
           end: FloatingDateTime(2024, 1, 20, 17, 0),
         );
-        final result = range.dateTimeRangeOnDate(FloatingDateTime(2024, 1, 10));
+        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 10));
 
         expect(result, isNotNull);
         expect(result!.start, FloatingDateTime(2024, 1, 10, 9, 0));
@@ -212,7 +212,7 @@ void main() {
           start: FloatingDateTime(2024, 1, 10, 9, 0),
           end: FloatingDateTime(2024, 1, 20, 17, 0),
         );
-        final result = range.dateTimeRangeOnDate(FloatingDateTime(2024, 1, 20));
+        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 20));
 
         expect(result, isNotNull);
         expect(result!.start, FloatingDateTime(2024, 1, 20)); // startOfDay
@@ -224,7 +224,7 @@ void main() {
           start: FloatingDateTime(2024, 1, 10, 9, 0),
           end: FloatingDateTime(2024, 1, 20, 17, 0),
         );
-        final result = range.dateTimeRangeOnDate(FloatingDateTime(2024, 1, 15));
+        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 15));
 
         expect(result, isNotNull);
         expect(result!.start, FloatingDateTime(2024, 1, 15));

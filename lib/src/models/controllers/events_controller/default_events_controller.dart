@@ -84,60 +84,60 @@ class DefaultEventsController extends EventsController {
   KalenderEvent? byId(String id) => eventStore.byId(id);
 
   @override
-  Iterable<KalenderEvent> eventsFromDateTimeRange(
-    FloatingDateTimeRange dateTimeRange, {
+  Iterable<KalenderEvent> eventsInRange(
+    FloatingDateTimeRange range, {
     required MultiDayRule multiDayRule,
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
     Location? location,
   }) {
-    final eventIds = eventStore.eventIdsFromDateTimeRange(dateTimeRange, location);
+    final eventIds = eventStore.eventIdsInRange(range, location);
     final events = eventIds.map((id) => eventStore.byId(id)).nonNulls;
 
     if (includeMultiDayEvents && includeDayEvents) {
-      return _allEventsFromDateTimeRange(events, dateTimeRange, location);
+      return _allEventsFromDateTimeRange(events, range, location);
     } else if (includeMultiDayEvents) {
-      return _multiDayEventsFromDateTimeRange(events, dateTimeRange, location, multiDayRule);
+      return _multiDayEventsFromDateTimeRange(events, range, location, multiDayRule);
     } else if (includeDayEvents) {
-      return _dayEventsFromDateTimeRange(events, dateTimeRange, location, multiDayRule);
+      return _dayEventsFromDateTimeRange(events, range, location, multiDayRule);
     } else {
       return [];
     }
   }
 
-  /// Finds all the [KalenderEvent]s that occur during the [dateTimeRange].
+  /// Finds all the [KalenderEvent]s that occur during the [range].
   Iterable<KalenderEvent> _allEventsFromDateTimeRange(
     Iterable<KalenderEvent> events,
-    FloatingDateTimeRange dateTimeRange,
+    FloatingDateTimeRange range,
     Location? location,
   ) {
     return events.where(
       (event) {
         // If the event is a zero duration event at the start of the day, we should check for touching.
         final touching = _checkTouching(event, location);
-        return event.internalRange(location: location).overlaps(dateTimeRange, touching: touching);
+        return event.floatingRange(location: location).overlaps(range, touching: touching);
       },
     );
   }
 
-  /// Finds the [KalenderEvent]s longer than 1 day that occur during the [dateTimeRange].
+  /// Finds the [KalenderEvent]s longer than 1 day that occur during the [range].
   Iterable<KalenderEvent> _multiDayEventsFromDateTimeRange(
     Iterable<KalenderEvent> events,
-    FloatingDateTimeRange dateTimeRange,
+    FloatingDateTimeRange range,
     Location? location,
     MultiDayRule multiDayRule,
   ) {
     return events.where((event) {
       // If the event is not a multi day event, return false.
       if (!event.spansMultipleDays(location: location, defaultRule: multiDayRule)) return false;
-      return event.internalRange(location: location).overlaps(dateTimeRange);
+      return event.floatingRange(location: location).overlaps(range);
     });
   }
 
-  /// Finds the [KalenderEvent]s that are shorter than 1 day that occur during the [dateTimeRange].
+  /// Finds the [KalenderEvent]s that are shorter than 1 day that occur during the [range].
   Iterable<KalenderEvent> _dayEventsFromDateTimeRange(
     Iterable<KalenderEvent> events,
-    FloatingDateTimeRange dateTimeRange,
+    FloatingDateTimeRange range,
     Location? location,
     MultiDayRule multiDayRule,
   ) {
@@ -148,21 +148,21 @@ class DefaultEventsController extends EventsController {
       // If the event is a zero duration event at the start of the day, we should check for touching.
       final touching = _checkTouching(event, location);
 
-      return event.internalRange(location: location).overlaps(dateTimeRange, touching: touching);
+      return event.floatingRange(location: location).overlaps(range, touching: touching);
     });
   }
 
   /// Check if the event is touching the start of the day, and that is a zero duration event.
   bool _checkTouching(KalenderEvent event, Location? location) {
-    final internalStart = event.internalStart(location: location);
-    final internalEnd = event.internalEnd(location: location);
+    final floatingStart = event.floatingStart(location: location);
+    final floatingEnd = event.floatingEnd(location: location);
 
-    return internalStart == internalEnd &&
-        internalStart ==
+    return floatingStart == floatingEnd &&
+        floatingStart ==
             FloatingDateTime(
-              internalStart.year,
-              internalStart.month,
-              internalStart.day,
+              floatingStart.year,
+              floatingStart.month,
+              floatingStart.day,
             );
   }
 }

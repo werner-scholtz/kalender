@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 class MonthViewController extends ViewController {
   MonthViewController({
     required this.viewConfiguration,
-    required super.internalVisibleRange,
+    required super.floatingVisibleRange,
     required this.visibleEvents,
     FloatingDateTime? initialDate,
     super.location,
@@ -13,7 +13,7 @@ class MonthViewController extends ViewController {
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.timestamp(), location);
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages(location);
-    internalVisibleRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
+    floatingVisibleRange.value = pageNavigationFunctions.rangeFromIndex(initialPage, location);
     visibleEvents.value = {};
   }
 

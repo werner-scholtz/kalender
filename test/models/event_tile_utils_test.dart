@@ -83,10 +83,10 @@ void main() {
     );
     final tileRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16));
 
-    testWidgets('internalTileRange converts the tile range using the location', (tester) async {
+    testWidgets('floatingTileRange converts the tile range using the location', (tester) async {
       final harness = _DayTileHarness(event: event, tileRange: tileRange);
       final context = await pumpHarness(tester, harness);
-      final range = harness.internalTileRange(context);
+      final range = harness.floatingTileRange(context);
       expect(range.start, equals(FloatingDateTime(2024, 1, 15)));
       expect(range.end, equals(FloatingDateTime(2024, 1, 16)));
     });

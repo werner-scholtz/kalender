@@ -198,10 +198,10 @@ class FloatingDateTime extends DateTime {
   /// print(date3.isWithin(range)); // Output: false
   /// print(date3.isWithin(range, includeEnd: true)); // Output: true
   /// ```
-  bool isWithin(FloatingDateTimeRange dateTimeRange, {bool includeStart = true, bool includeEnd = false}) {
-    final isWithin = isAfter(dateTimeRange.start) && isBefore(dateTimeRange.end);
-    late final isAtStart = isAtSameMomentAs(dateTimeRange.start);
-    late final isAtEnd = isAtSameMomentAs(dateTimeRange.end);
+  bool isWithin(FloatingDateTimeRange range, {bool includeStart = true, bool includeEnd = false}) {
+    final isWithin = isAfter(range.start) && isBefore(range.end);
+    late final isAtStart = isAtSameMomentAs(range.start);
+    late final isAtEnd = isAtSameMomentAs(range.end);
 
     if (includeStart && includeEnd) {
       // If both are included, the date must be within or at the start or end.

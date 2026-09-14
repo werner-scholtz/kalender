@@ -192,7 +192,7 @@ class KalenderViewState extends State<KalenderView> {
 
   /// Snapshot the outgoing view's current state, keyed by its config `name`.
   void _snapshotOutgoingView(ViewController controller) {
-    final range = controller.internalVisibleRange.value;
+    final range = controller.floatingVisibleRange.value;
     if (range == null) return;
 
     final config = controller.viewConfiguration;
@@ -247,7 +247,7 @@ class KalenderViewState extends State<KalenderView> {
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController(
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-          internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+          floatingVisibleRange: widget.kalenderController.floatingRange,
           visibleEvents: widget.kalenderController.visibleEvents,
           initialDate: initialDate,
           initialTimeOfDayOverride: initialTimeOfDay,
@@ -256,7 +256,7 @@ class KalenderViewState extends State<KalenderView> {
         ),
       const (MonthViewConfiguration) => MonthViewController(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
-          internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+          floatingVisibleRange: widget.kalenderController.floatingRange,
           visibleEvents: widget.kalenderController.visibleEvents,
           initialDate: initialDate,
           location: widget.location,
@@ -264,14 +264,14 @@ class KalenderViewState extends State<KalenderView> {
       const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
           ScheduleViewType.continuous => ContinuousScheduleViewController(
               viewConfiguration: viewConfiguration,
-              internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+              floatingVisibleRange: widget.kalenderController.floatingRange,
               visibleEvents: widget.kalenderController.visibleEvents,
               initialDate: initialDate,
               location: widget.location,
             ),
           ScheduleViewType.paginated => PaginatedScheduleViewController(
               viewConfiguration: viewConfiguration,
-              internalVisibleRange: widget.kalenderController.internalDateTimeRange,
+              floatingVisibleRange: widget.kalenderController.floatingRange,
               visibleEvents: widget.kalenderController.visibleEvents,
               initialDate: initialDate,
               location: widget.location,

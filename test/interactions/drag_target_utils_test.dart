@@ -65,45 +65,45 @@ void main() {
     );
   }
 
-  // ─── calculateDateTimeRangeFromStart ─────────────────────────────────────────
+  // ─── calculateRangeFromStart ─────────────────────────────────────────
 
-  group('calculateDateTimeRangeFromStart', () {
+  group('calculateRangeFromStart', () {
     test('new start before end keeps the end and moves the start', () {
-      final result = harness.calculateDateTimeRangeFromStart(range, DateTime.utc(2024, 1, 15, 9));
+      final result = harness.calculateRangeFromStart(range, DateTime.utc(2024, 1, 15, 9));
       expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 9)), isTrue);
       expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 12)), isTrue);
     });
 
     test('new start equal to end returns the original range', () {
-      final result = harness.calculateDateTimeRangeFromStart(range, DateTime.utc(2024, 1, 15, 12));
+      final result = harness.calculateRangeFromStart(range, DateTime.utc(2024, 1, 15, 12));
       expect(result.start.isAtSameMomentAs(range.start), isTrue);
       expect(result.end.isAtSameMomentAs(range.end), isTrue);
     });
 
     test('new start after end swaps the boundaries', () {
-      final result = harness.calculateDateTimeRangeFromStart(range, DateTime.utc(2024, 1, 15, 13));
+      final result = harness.calculateRangeFromStart(range, DateTime.utc(2024, 1, 15, 13));
       expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 12)), isTrue);
       expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 13)), isTrue);
     });
   });
 
-  // ─── calculateDateTimeRangeFromEnd ───────────────────────────────────────────
+  // ─── calculateRangeFromEnd ───────────────────────────────────────────
 
-  group('calculateDateTimeRangeFromEnd', () {
+  group('calculateRangeFromEnd', () {
     test('new end after start keeps the start and moves the end', () {
-      final result = harness.calculateDateTimeRangeFromEnd(range, DateTime.utc(2024, 1, 15, 13));
+      final result = harness.calculateRangeFromEnd(range, DateTime.utc(2024, 1, 15, 13));
       expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 10)), isTrue);
       expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 13)), isTrue);
     });
 
     test('new end equal to start returns the original range', () {
-      final result = harness.calculateDateTimeRangeFromEnd(range, DateTime.utc(2024, 1, 15, 10));
+      final result = harness.calculateRangeFromEnd(range, DateTime.utc(2024, 1, 15, 10));
       expect(result.start.isAtSameMomentAs(range.start), isTrue);
       expect(result.end.isAtSameMomentAs(range.end), isTrue);
     });
 
     test('new end before start swaps the boundaries', () {
-      final result = harness.calculateDateTimeRangeFromEnd(range, DateTime.utc(2024, 1, 15, 9));
+      final result = harness.calculateRangeFromEnd(range, DateTime.utc(2024, 1, 15, 9));
       expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 9)), isTrue);
       expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 10)), isTrue);
     });

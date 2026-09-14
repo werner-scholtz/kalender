@@ -401,11 +401,11 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             }
 
             // Ensure that the event is visible.
-            final eventRange = eventBeingDragged.internalRange(location: context.location);
+            final eventRange = eventBeingDragged.floatingRange(location: context.location);
             if (!eventRange.overlaps(FloatingDateTimeRange.fromDateTimeRange(visibleRange))) return const SizedBox();
 
-            final start = eventBeingDragged.internalStart(location: context.location);
-            final end = eventBeingDragged.internalEnd(location: context.location);
+            final start = eventBeingDragged.floatingStart(location: context.location);
+            final end = eventBeingDragged.floatingEnd(location: context.location);
 
             // Calculate the top and bottom values.
             final startTop =

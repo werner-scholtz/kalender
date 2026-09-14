@@ -8,7 +8,7 @@ class DayEventTile extends EventTile {
     super.key,
     required super.event,
     required super.tileComponents,
-    required super.dateTimeRange,
+    required super.floatingRange,
     required super.resizeAxis,
   });
 
@@ -54,7 +54,7 @@ class DayEventTile extends EventTile {
       };
 
   DateTime _calculateExactTime(Offset localPosition, BuildContext context) {
-    var date = dateTimeRange.start;
+    var date = floatingRange.start;
     try {
       final heightPerMinute = context.heightPerMinute;
       if (heightPerMinute > 0) {

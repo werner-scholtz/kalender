@@ -28,7 +28,7 @@ import '../utilities.dart';
 /// - [ViewController.animateToDate]
 /// - [ViewController.animateToDateTime]
 /// - [ViewController.animateToEvent]
-/// - [ViewController.internalVisibleRange]
+/// - [ViewController.floatingVisibleRange]
 /// - [ViewController.visibleEvents]
 ///
 void main() {
@@ -339,7 +339,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = ContinuousScheduleViewController(
         viewConfiguration: viewConfiguration,
-        internalVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
+        floatingVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );
@@ -397,7 +397,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = PaginatedScheduleViewController(
         viewConfiguration: viewConfiguration,
-        internalVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
+        floatingVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );
@@ -490,7 +490,7 @@ extension ViewControllerUtilities on WidgetTester {
       reason: 'Event ${event.id} should be in the visible events after animating to it',
     );
     expect(
-      event.internalStart().isWithin(controller.internalDateTimeRange.value!, includeEnd: true),
+      event.floatingStart().isWithin(controller.floatingRange.value!, includeEnd: true),
       isTrue,
       reason: 'Event start ${event.start} should be within the visible range after animating to it',
     );
@@ -509,7 +509,7 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
     // Check if the visible range start is the same as the dateTime.
     expect(
-      controller.internalDateTimeRange.value!.start,
+      controller.floatingRange.value!.start,
       dateTime,
       reason: 'Calling the $function should set the change the visible range start to $dateTime',
     );
@@ -536,10 +536,10 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
 
     expect(
-      dateTime.isWithin(controller.internalDateTimeRange.value!, includeEnd: true),
+      dateTime.isWithin(controller.floatingRange.value!, includeEnd: true),
       isTrue,
       reason: 'Calling the $function should include the $dateTime date in the visible range, '
-          'which is ${controller.internalDateTimeRange.value}',
+          'which is ${controller.floatingRange.value}',
     );
 
     // If an event is provided, check if it is visible.

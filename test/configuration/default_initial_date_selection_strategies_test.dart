@@ -30,49 +30,49 @@ void main() {
 
     MonthViewController buildMonth() => MonthViewController(
           viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
-          internalVisibleRange: ValueNotifier(dummyRange()),
+          floatingVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
           initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildWeek() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
-          internalVisibleRange: ValueNotifier(dummyRange()),
+          floatingVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
           initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildWorkWeek() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.workWeek(displayRange: range),
-          internalVisibleRange: ValueNotifier(dummyRange()),
+          floatingVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
           initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildDay() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
-          internalVisibleRange: ValueNotifier(dummyRange()),
+          floatingVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
           initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildCustomMultiDay() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range),
-          internalVisibleRange: ValueNotifier(dummyRange()),
+          floatingVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
           initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     MultiDayViewController buildCustomSingleDay() => MultiDayViewController(
           viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range),
-          internalVisibleRange: ValueNotifier(dummyRange()),
+          floatingVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
           initialDate: FloatingDateTime(2025, 1, 1),
         );
 
     ContinuousScheduleViewController buildSchedule() => ContinuousScheduleViewController(
           viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: range),
-          internalVisibleRange: ValueNotifier(dummyRange()),
+          floatingVisibleRange: ValueNotifier(dummyRange()),
           visibleEvents: visibleEvents,
           initialDate: FloatingDateTime(2025, 1, 1),
         );
@@ -95,8 +95,8 @@ void main() {
     final dominantJanuary = FloatingDateTime(2025, 1, 1);
 
     // Location-dependent starts – built once, reused across all strategy groups.
-    final customMultiStart = buildCustomMultiDay().internalVisibleRange.value!.start;
-    final scheduleStart = buildSchedule().internalVisibleRange.value!.start;
+    final customMultiStart = buildCustomMultiDay().floatingVisibleRange.value!.start;
+    final scheduleStart = buildSchedule().floatingVisibleRange.value!.start;
 
     // ── kDefaultToMonthly ────────────────────────────────────────────────
 

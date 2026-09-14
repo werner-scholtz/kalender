@@ -254,16 +254,16 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Will return a [FloatingDateTimeRange] with an updated start [DateTime] and the same end [DateTime].
   /// - In the case where the new start [DateTime] is after the end [DateTime], the start and end [DateTime]s will be swapped.
   /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
-  FloatingDateTimeRange calculateDateTimeRangeFromStart(
-    FloatingDateTimeRange dateTimeRange,
+  FloatingDateTimeRange calculateRangeFromStart(
+    FloatingDateTimeRange range,
     DateTime newStart,
   ) {
-    if (newStart.isBefore(dateTimeRange.end)) {
-      return FloatingDateTimeRange(start: newStart, end: dateTimeRange.end);
-    } else if (newStart.isAtSameMomentAs(dateTimeRange.end)) {
-      return FloatingDateTimeRange(start: dateTimeRange.start, end: dateTimeRange.end);
+    if (newStart.isBefore(range.end)) {
+      return FloatingDateTimeRange(start: newStart, end: range.end);
+    } else if (newStart.isAtSameMomentAs(range.end)) {
+      return FloatingDateTimeRange(start: range.start, end: range.end);
     } else {
-      return FloatingDateTimeRange(start: dateTimeRange.end, end: newStart);
+      return FloatingDateTimeRange(start: range.end, end: newStart);
     }
   }
 
@@ -272,16 +272,16 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Will return a [FloatingDateTimeRange] with an updated end [DateTime] and the same start [DateTime].
   /// - In the case where the new end [DateTime] is before the start [DateTime], the start and end [DateTime]s will be swapped.
   /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
-  FloatingDateTimeRange calculateDateTimeRangeFromEnd(
-    FloatingDateTimeRange dateTimeRange,
+  FloatingDateTimeRange calculateRangeFromEnd(
+    FloatingDateTimeRange range,
     DateTime newEnd,
   ) {
-    if (newEnd.isBefore(dateTimeRange.start)) {
-      return FloatingDateTimeRange(start: newEnd, end: dateTimeRange.start);
-    } else if (newEnd.isAtSameMomentAs(dateTimeRange.start)) {
-      return FloatingDateTimeRange(start: dateTimeRange.start, end: dateTimeRange.end);
+    if (newEnd.isBefore(range.start)) {
+      return FloatingDateTimeRange(start: newEnd, end: range.start);
+    } else if (newEnd.isAtSameMomentAs(range.start)) {
+      return FloatingDateTimeRange(start: range.start, end: range.end);
     } else {
-      return FloatingDateTimeRange(start: dateTimeRange.start, end: newEnd);
+      return FloatingDateTimeRange(start: range.start, end: newEnd);
     }
   }
 
@@ -301,7 +301,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Used where only the date can meaningfully change: the header, and a
   /// multi-day event dragged across the body.
   KalenderEvent rescheduleToDate(KalenderEvent event, FloatingDateTime cursorDateTime) {
-    final start = event.internalStart(location: context.location);
+    final start = event.floatingStart(location: context.location);
     final newStart = cursorDateTime.copyWith(
       hour: start.hour,
       minute: start.minute,

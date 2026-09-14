@@ -5,13 +5,13 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
-/// This widget renders a [DayEventsColumn] for each day in the [internalRange].
+/// This widget renders a [DayEventsColumn] for each day in the [floatingRange].
 class MultiDayEventsRow extends StatelessWidget {
   /// The configuration for the multi-day body.
   final MultiDayBodyConfiguration configuration;
 
   /// The internal date time range that is being displayed.
-  final FloatingDateTimeRange internalRange;
+  final FloatingDateTimeRange floatingRange;
 
   /// The controller for the multi-day view.
   final MultiDayViewController viewController;
@@ -20,7 +20,7 @@ class MultiDayEventsRow extends StatelessWidget {
   const MultiDayEventsRow({
     super.key,
     required this.configuration,
-    required this.internalRange,
+    required this.floatingRange,
     required this.viewController,
   });
 
@@ -31,7 +31,7 @@ class MultiDayEventsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (final date in internalRange.dates())
+        for (final date in floatingRange.dates())
           Expanded(
             child: Padding(
               padding: configuration.horizontalPadding.copyWith(top: 0, bottom: 0),
@@ -171,7 +171,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   /// Queries the events for this day from the controller.
   Iterable<KalenderEvent> _queryEvents() {
-    return widget.eventsController.eventsFromDateTimeRange(
+    return widget.eventsController.eventsInRange(
       widget.date.dayRange,
       multiDayRule: widget.viewConfiguration.multiDayRule,
       includeDayEvents: true,
@@ -310,7 +310,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
             child: DayEventTile(
               event: _events[index],
               tileComponents: context.tileComponents,
-              dateTimeRange: tileRange,
+              floatingRange: tileRange,
               resizeAxis: Axis.vertical,
             ),
           ),
@@ -399,7 +399,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
     }
 
     // If the selected event does not overlap with the current date.
-    if (!selectedEvent.internalRange(location: widget.location).overlaps(widget.date.dayRange)) {
+    if (!selectedEvent.floatingRange(location: widget.location).overlaps(widget.date.dayRange)) {
       // We need to check if the _selectedEvent is null, if it is not, we reset the state.
       if (_selectedEvent != null) setState(() => _selectedEvent = null);
       return;

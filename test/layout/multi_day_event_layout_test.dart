@@ -56,7 +56,7 @@ void main() {
     }) {
       final inner = MultiDayEventLayoutWidget(
         events: eventsController.events.toList(),
-        internalDateTimeRange: visibleRange,
+        floatingRange: visibleRange,
         textDirection: TextDirection.ltr,
         multiDayOverlayBuilders: null,
         configuration: configuration,
@@ -91,7 +91,7 @@ void main() {
             height: height,
             child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
-              internalDateTimeRange: visibleRange,
+              floatingRange: visibleRange,
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               configuration: configuration,
@@ -501,14 +501,14 @@ class _ComparatorStrategy extends MultiDayLayoutStrategy {
 
   @override
   MultiDayLayoutFrame generateFrame({
-    required FloatingDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
     required MultiDayLayoutFrameCache? cache,
   }) {
     return defaultMultiDayFrameGenerator(
-      visibleDateTimeRange: visibleDateTimeRange,
+      visibleRange: visibleRange,
       events: events,
       textDirection: textDirection,
       cache: cache,

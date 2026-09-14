@@ -31,7 +31,7 @@ void main() {
   }
 
   bool visibleRangeContains(DateTime date) {
-    final range = kalenderController.internalDateTimeRange.value!;
+    final range = kalenderController.floatingRange.value!;
     return range.dates().any((d) => d.year == date.year && d.month == date.month && d.day == date.day);
   }
 
@@ -66,7 +66,7 @@ void main() {
     kalenderController.jumpToDate(DateTime(2025, 6, 15));
     await tester.pumpAndSettle();
 
-    final range = kalenderController.internalDateTimeRange.value!;
+    final range = kalenderController.floatingRange.value!;
     expect(range.dominantMonthDate.month, 6, reason: 'The last month of the range should be reachable');
   });
 
@@ -86,8 +86,8 @@ void main() {
     final viewController = kalenderController.viewController! as MultiDayViewController;
     expect(viewController.numberOfPages, 7, reason: 'one column per day in the range, and no more');
 
-    final last = viewController.viewConfiguration.pageIndexCalculator
-        .dateTimeRangeFromIndex(viewController.numberOfPages - 1, null);
+    final last =
+        viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(viewController.numberOfPages - 1, null);
     expect(last.start, FloatingDateTime(2025, 6, 7), reason: 'the last column is the last day of the range');
   });
 

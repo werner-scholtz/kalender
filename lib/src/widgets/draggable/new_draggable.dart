@@ -6,27 +6,27 @@ mixin NewDraggableWidget {
   KalenderController get controller;
   KalenderCallbacks? get callbacks;
 
-  /// Calculate the initial dateTimeRange of a new event.
+  /// Calculate the initial floatingRange of a new event.
   ///
   /// [date] is the date the draggable is located at.
   /// [localPosition] is the last known position of the cursor.
-  FloatingDateTimeRange calculateDateTimeRange(FloatingDateTime date, Offset localPosition);
+  FloatingDateTimeRange calculateFloatingRange(FloatingDateTime date, Offset localPosition);
 
   /// Create a TapDetail for the new event.
   ///
-  /// [range] is the dateTimeRange of the new event.
+  /// [range] is the floatingRange of the new event.
   /// [localPosition] is the last known position of the cursor.
   TapDetail createTapDetail(BuildContext context, FloatingDateTimeRange range, Offset localPosition);
 
   /// Create the new event and select it where needed.
   void createNewEvent(BuildContext context, FloatingDateTime date, Offset localPosition) {
-    final dateTimeRange = calculateDateTimeRange(date, localPosition);
-    final range = dateTimeRange.forLocation(location: context.location);
+    final floatingRange = calculateFloatingRange(date, localPosition);
+    final range = floatingRange.forLocation(location: context.location);
     final newEvent = KalenderEvent(start: range.start, end: range.end);
 
     KalenderEvent? event;
     if (callbacks?.onEventCreateWithDetail != null) {
-      final detail = createTapDetail(context, dateTimeRange, localPosition);
+      final detail = createTapDetail(context, floatingRange, localPosition);
       event = callbacks?.onEventCreateWithDetail?.call(newEvent, detail);
     } else if (callbacks?.onEventCreate != null) {
       event = callbacks?.onEventCreate?.call(newEvent);

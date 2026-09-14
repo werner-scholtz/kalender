@@ -10,7 +10,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 ///
 /// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
 class HorizontalDragTarget extends StatefulWidget {
-  final FloatingDateTimeRange visibleDateTimeRange;
+  final FloatingDateTimeRange visibleRange;
 
   final HorizontalConfiguration configuration;
 
@@ -19,7 +19,7 @@ class HorizontalDragTarget extends StatefulWidget {
 
   const HorizontalDragTarget({
     super.key,
-    required this.visibleDateTimeRange,
+    required this.visibleRange,
     required this.configuration,
     required this.leftPageTrigger,
     required this.rightPageTrigger,
@@ -67,13 +67,13 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
   @override
-  List<FloatingDateTime> get visibleDates => visibleDateTimeRange.dates();
+  List<FloatingDateTime> get visibleDates => visibleRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
   ViewController get viewController => controller.viewController!;
   TileComponents get tileComponents => context.tileComponents;
-  FloatingDateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
+  FloatingDateTimeRange get visibleRange => widget.visibleRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
   double get tileHeight => widget.configuration.tileHeight;
 
@@ -202,10 +202,10 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
 
   @override
   KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime) {
-    final internalRange = event.internalRange(location: context.location);
+    final floatingRange = event.floatingRange(location: context.location);
     final range = switch (direction) {
-      ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
-      ResizeDirection.right => calculateDateTimeRangeFromEnd(internalRange, cursorDateTime.endOfDay),
+      ResizeDirection.left => calculateRangeFromStart(floatingRange, cursorDateTime),
+      ResizeDirection.right => calculateRangeFromEnd(floatingRange, cursorDateTime.endOfDay),
       _ => null
     };
     if (range == null) return null;
@@ -217,7 +217,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    var range = newEvent!.internalRange(location: context.location);
+    var range = newEvent!.floatingRange(location: context.location);
     final cursor = FloatingDateTime.fromDateTime(cursorDateTime);
 
     if ((cursor.isSameDay(range.start) || cursor.isSameDay(range.end)) || cursor.isAfter(range.start)) {

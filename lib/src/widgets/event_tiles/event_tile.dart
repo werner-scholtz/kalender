@@ -34,7 +34,7 @@ abstract class EventTile extends StatelessWidget {
   final TileComponents tileComponents;
 
   /// The internal date time range that the event spans.
-  final FloatingDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange floatingRange;
 
   /// The function that is called when the overlay needs to be dismissed.
   ///
@@ -52,7 +52,7 @@ abstract class EventTile extends StatelessWidget {
     super.key,
     required this.event,
     required this.tileComponents,
-    required this.dateTimeRange,
+    required this.floatingRange,
     this.resizeAxis,
     this.dismissOverlay,
   });
@@ -95,7 +95,7 @@ abstract class EventTile extends StatelessWidget {
         initialEvent: event,
         tileBuilder: effectiveTileBuilder,
         tileWhenDraggingBuilder: tileComponents.tileWhenDraggingBuilder,
-        dateTimeRange: dateTimeRange,
+        floatingRange: floatingRange,
       ),
     );
 
@@ -117,7 +117,7 @@ abstract class EventTile extends StatelessWidget {
                 Positioned.fill(
                   child: ResizeHandleWidget(
                     event: event,
-                    dateTimeRange: dateTimeRange,
+                    floatingRange: floatingRange,
                     axis: resizeAxis!,
                   ),
                 ),

@@ -85,7 +85,7 @@ class FloatingDateTimeRange {
   /// * If [date] is on the end day → `[startOfDay, end)`.
   /// * If [date] is in between → the full day `[startOfDay, endOfDay)`.
   /// * If start and end are the same day → returns the range unchanged.
-  FloatingDateTimeRange? dateTimeRangeOnDate(FloatingDateTime date) {
+  FloatingDateTimeRange? rangeOnDate(FloatingDateTime date) {
     // Adjust the start and end times to the beginning and end of the day.
     final range = FloatingDateTimeRange(start: start.startOfDay, end: end.endOfDay);
 

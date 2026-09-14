@@ -33,7 +33,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`. |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. Six declarations you override need editing by hand. |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
@@ -66,6 +66,90 @@ InternalDateTimeRange rangeFor(InternalDateTime date) => date.dayRange;
 // After
 FloatingDateTimeRange rangeFor(FloatingDateTime date) => date.dayRange;
 ```
+
+### The members carrying those types are renamed
+
+A member is now named for what it is rather than for the spelling of its type, so
+it says `range` rather than `dateTimeRange`, and the type annotation says which
+space the value is in. A `floating` marker is kept only where one class carries
+both spaces, which `KalenderEvent`, `KalenderController` and
+`PageIndexCalculator` all do.
+
+`dart fix --apply` rewrites every call site.
+
+| Before | After |
+| --- | --- |
+| `KalenderEvent.internalStart` | `floatingStart` |
+| `KalenderEvent.internalEnd` | `floatingEnd` |
+| `KalenderEvent.internalRange` | `floatingRange` |
+| `KalenderController.internalDateTimeRange` | `floatingRange` |
+| `ViewController.internalVisibleRange` | `floatingVisibleRange` |
+| `ScheduleViewController.highlightedDateTimeRange` | `highlightedRange` |
+| `EventsController.eventsFromDateTimeRange` | `eventsInRange` |
+| `EventStore.eventIdsFromDateTimeRange` | `eventIdsInRange` |
+| `PageIndexCalculator.dateTimeRangeFromIndex` | `rangeFromIndex` |
+| `PageIndexCalculator.dateTimeRangeFromDate` | `rangeFromDate` |
+| `PageIndexCalculator.internalRange` | `floatingRange` |
+| `EventTileUtils.internalTileRange` | `floatingTileRange` |
+| `DragTargetUtils.calculateDateTimeRangeFromStart` | `calculateRangeFromStart` |
+| `DragTargetUtils.calculateDateTimeRangeFromEnd` | `calculateRangeFromEnd` |
+| `FloatingDateTimeRange.dateTimeRangeOnDate` | `rangeOnDate` |
+| `ResizeHandleDetails.dateTimeRange` | `range` |
+| `MultiDayLayoutFrame.dateTimeRange` | `range` |
+| `ScheduleTileHighlight.dateTimeRange` | `range` |
+| `MultiDayLayout.dateTimeRange` | `range` |
+| `SchedulePositionList.dateTimeRange` | `range` |
+| `MultiDayLayoutStrategy.generateFrame(visibleDateTimeRange:)` | `visibleRange:` |
+| `defaultMultiDayFrameGenerator(visibleDateTimeRange:)` | `visibleRange:` |
+| `MultiDayEventOverlayTile(dateTimeRange:)` | `floatingRange:` |
+
+`KalenderEvent.dateTimeRange`, `KalenderController.visibleDateTimeRange` and the
+`onPageChanged` callback keep their names. They carry `KalenderDateTimeRange`, so
+the rule leaves them alone.
+
+### Six declarations to edit by hand
+
+A fix rewrites calls, never a declaration in your own code, so an override of one
+of these is yours to rename. You are affected only if you wrote your own
+`EventsController`, `EventStore`, `PageIndexCalculator` or
+`MultiDayLayoutStrategy`, or override `EventTileUtils.internalTileRange`.
+
+Five of the six are abstract, so the build fails until you rename them and the
+analyzer points at each one. `EventTileUtils.internalTileRange` is the exception:
+it has a default implementation, so an override keeping the old name becomes a
+method that overrides nothing and the calendar silently uses the default. The
+only report is the `override_on_non_overriding_member` warning on your
+`@override`. Search your code for `internalTileRange` rather than relying on the
+build to fail.
+
+```dart
+// Before
+class MyEventsController extends EventsController {
+  @override
+  Iterable<KalenderEvent> eventsFromDateTimeRange(
+    InternalDateTimeRange dateTimeRange, {
+    required MultiDayRule multiDayRule,
+  }) { ... }
+}
+
+// After
+class MyEventsController extends EventsController {
+  @override
+  Iterable<KalenderEvent> eventsInRange(
+    FloatingDateTimeRange range, {
+    required MultiDayRule multiDayRule,
+  }) { ... }
+}
+```
+
+The other four follow the same shape:
+
+- `EventStore.eventIdsFromDateTimeRange` becomes `eventIdsInRange`.
+- `PageIndexCalculator.dateTimeRangeFromIndex` becomes `rangeFromIndex`, and
+  `internalRange` becomes `floatingRange`.
+- `MultiDayLayoutStrategy.generateFrame` takes `visibleRange` rather than
+  `visibleDateTimeRange`.
+- `EventTileUtils.internalTileRange` becomes `floatingTileRange`.
 
 ## v0.29.x → v0.30.0
 

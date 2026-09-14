@@ -88,7 +88,7 @@ class _MultiDayFrameBenchmark extends _KalenderBenchmark {
   @override
   void run() {
     final frame = defaultMultiDayFrameGenerator(
-      visibleDateTimeRange: range,
+      visibleRange: range,
       events: events,
       textDirection: TextDirection.ltr,
       location: null,
@@ -120,7 +120,7 @@ class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
   @override
   void run() {
     final frame = defaultMultiDayFrameGenerator(
-      visibleDateTimeRange: range,
+      visibleRange: range,
       events: events,
       textDirection: TextDirection.ltr,
       location: null,
@@ -159,8 +159,8 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
   void run() => _sink ^= delegate.findLongestChain(data);
 }
 
-/// `DefaultEventsController.eventsFromDateTimeRange` — the per-frame event query
-/// path (covers `eventIdsFromDateTimeRange` + type filtering). A full year of
+/// `DefaultEventsController.eventsInRange` — the per-frame event query
+/// path (covers `eventIdsInRange` + type filtering). A full year of
 /// events is loaded once; the benchmark queries a [queryDays]-day window.
 class _EventQueryBenchmark extends _KalenderBenchmark {
   _EventQueryBenchmark(this.queryDays) : super('eventsFromRange / query ${queryDays}d');
@@ -179,7 +179,7 @@ class _EventQueryBenchmark extends _KalenderBenchmark {
   }
 
   @override
-  void run() => _sink ^= controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, queryRange).length;
+  void run() => _sink ^= controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, queryRange).length;
 }
 
 void main() {

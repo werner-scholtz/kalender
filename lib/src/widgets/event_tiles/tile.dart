@@ -22,7 +22,7 @@ class Tile extends StatefulWidget {
   final TileWhenDraggingBuilder? tileWhenDraggingBuilder;
 
   /// The [FloatingDateTimeRange] that the current view is displaying.
-  final FloatingDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange floatingRange;
 
   /// Creates an instance of [Tile].
   const Tile({
@@ -30,7 +30,7 @@ class Tile extends StatefulWidget {
     required this.initialEvent,
     required this.tileBuilder,
     required this.tileWhenDraggingBuilder,
-    required this.dateTimeRange,
+    required this.floatingRange,
   });
 
   @override
@@ -90,5 +90,5 @@ class _TileState extends State<Tile> {
   @override
   Widget build(BuildContext context) => _isDragging && widget.tileWhenDraggingBuilder != null
       ? widget.tileWhenDraggingBuilder!.call(context, _event)
-      : widget.tileBuilder.call(context, _event, widget.dateTimeRange.forLocation(location: context.location));
+      : widget.tileBuilder.call(context, _event, widget.floatingRange.forLocation(location: context.location));
 }

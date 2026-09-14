@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           // Month/year label that navigates to today on tap.
           ValueListenableBuilder(
-            valueListenable: kalenderController.internalDateTimeRange,
+            valueListenable: kalenderController.floatingRange,
             builder: (context, value, child) {
               if (value == null) return const SizedBox.shrink();
               final localRange = value.forLocation();

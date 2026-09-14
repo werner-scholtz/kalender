@@ -51,13 +51,13 @@ class MonthBody extends StatelessWidget {
       controller: viewController.pageController,
       itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
+        final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
         final controller = context.kalenderController;
-        controller.internalDateTimeRange.value = visibleRange;
+        controller.floatingRange.value = visibleRange;
         context.callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
+        final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
         final grid = monthComponents.bodyComponents.buildMonthGrid(context, numberOfRows);
 
@@ -73,7 +73,7 @@ class MonthBody extends StatelessWidget {
               Expanded(
                 child: MonthWeek(
                   key: ValueKey('MonthWeek-${weekRange.start.toIso8601String()}'),
-                  internalRange: weekRange,
+                  floatingRange: weekRange,
                   configuration: configuration,
                   viewController: viewController,
                 ),
@@ -126,12 +126,12 @@ class MonthBody extends StatelessWidget {
 ///
 /// It contains the [WeekDayHeaders], the [MultiDayEventWidget], the [HorizontalDragTarget] and the [MultiDayDraggable].
 class MonthWeek extends StatelessWidget {
-  final FloatingDateTimeRange internalRange;
+  final FloatingDateTimeRange floatingRange;
   final HorizontalConfiguration configuration;
   final ViewController viewController;
   const MonthWeek({
     super.key,
-    required this.internalRange,
+    required this.floatingRange,
     required this.configuration,
     required this.viewController,
   });
@@ -145,15 +145,15 @@ class MonthWeek extends StatelessWidget {
       children: [
         Positioned.fill(
           child: MultiDayDraggable(
-            key: ValueKey('MultiDayDraggable-${internalRange.start.toIso8601String()}'),
-            internalRange: internalRange,
+            key: ValueKey('MultiDayDraggable-${floatingRange.start.toIso8601String()}'),
+            floatingRange: floatingRange,
           ),
         ),
         Positioned.fill(
           child: Column(
             children: [
               WeekDayHeaders(
-                dates: internalRange.dates(),
+                dates: floatingRange.dates(),
                 dayHeaderBuilder: (context, date) => context.components.monthComponents.bodyComponents
                     .buildMonthDayHeader(context, date.forLocation(location: context.location)),
               ),
@@ -169,7 +169,7 @@ class MonthWeek extends StatelessWidget {
 
                     return MultiDayEventWidget(
                       eventsController: context.eventsController,
-                      internalDateTimeRange: internalRange,
+                      floatingRange: floatingRange,
                       configuration: configuration,
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
                       multiDayCache: viewController.multiDayCache,
@@ -183,7 +183,7 @@ class MonthWeek extends StatelessWidget {
         ),
         Positioned.fill(
           child: HorizontalDragTarget(
-            visibleDateTimeRange: internalRange,
+            visibleRange: floatingRange,
             configuration: configuration,
             leftPageTrigger: components.monthComponents.bodyComponents.leftTriggerBuilder,
             rightPageTrigger: components.monthComponents.bodyComponents.rightTriggerBuilder,

@@ -31,10 +31,10 @@ abstract class EventStore {
   /// Clear all events.
   void clear();
 
-  /// Retrieves the IDs of events that occur during the specified [dateTimeRange].
+  /// Retrieves the IDs of events that occur during the specified [range].
   ///
   /// Parameters:
-  /// - [dateTimeRange]: The internal date time range to search for events.
+  /// - [range]: The internal date time range to search for events.
   /// - [location]: The location for which to retrieve the event IDs.
-  Set<String> eventIdsFromDateTimeRange(FloatingDateTimeRange dateTimeRange, Location? location);
+  Set<String> eventIdsInRange(FloatingDateTimeRange range, Location? location);
 }

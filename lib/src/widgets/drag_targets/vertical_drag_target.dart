@@ -80,7 +80,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   // TODO: check if this is right, and null check does not break anything.
   @override
-  List<FloatingDateTime> get visibleDates => viewController.internalVisibleRange.value!.dates();
+  List<FloatingDateTime> get visibleDates => viewController.floatingVisibleRange.value!.dates();
 
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
@@ -366,10 +366,10 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
 
-    final internalRange = event.internalRange(location: context.location);
+    final floatingRange = event.floatingRange(location: context.location);
     final dateTimeRange = switch (direction) {
-      ResizeDirection.top => calculateDateTimeRangeFromStart(internalRange, cursorSnapPoint),
-      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(internalRange, cursorSnapPoint),
+      ResizeDirection.top => calculateRangeFromStart(floatingRange, cursorSnapPoint),
+      ResizeDirection.bottom => calculateRangeFromEnd(floatingRange, cursorSnapPoint),
       _ => null
     };
     if (dateTimeRange == null) return null;
@@ -383,7 +383,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     if (event == null) return null;
 
     // TODO: This might need to take `timeOfDayRange` into account otherwise some new events might be created in undisplayed area's.
-    var range = newEvent!.internalRange(location: context.location);
+    var range = newEvent!.floatingRange(location: context.location);
 
     if (cursorDateTime.isAfter(range.start)) {
       range = FloatingDateTimeRange(start: range.start, end: cursorDateTime);
