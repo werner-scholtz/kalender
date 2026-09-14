@@ -76,7 +76,6 @@ class LocaleProvider extends InheritedWidget {
 }
 
 /// The [LocationProvider] is used to provide the [Location] for the calendar.
-// TODO: Check that the calendar updates correctly when the location changes.
 class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
   /// Creates a [LocationProvider] with the specified location.
   const LocationProvider({super.key, required super.notifier, required super.child});

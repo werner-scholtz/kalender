@@ -37,44 +37,51 @@ void main() {
   }
 
   // ---------------------------------------------------------------------------
-  // selectedDate tests
+  // initialDateTime tests
   // ---------------------------------------------------------------------------
-  group('View configuration changes with selectedDate', () {
-    testWidgets('uses initialDateTime when provided during config change', (tester) async {
-      await pumpCalendarView(tester, config: MonthViewConfiguration.singleMonth(displayRange: calendarRange));
+  group('View configuration changes with initialDateTime', () {
+    testWidgets('ignores initialDateTime on a config change', (tester) async {
+      Future<FloatingDateTime> switchToDay({DateTime? initialDateTime}) async {
+        await tester.pumpWidget(const SizedBox());
+        kalenderController = KalenderController();
+        calendarViewKey = GlobalKey();
+        await pumpCalendarView(
+          tester,
+          config:
+              MonthViewConfiguration.singleMonth(displayRange: calendarRange, initialDateTime: DateTime(2024, 6, 15)),
+        );
+        await pumpCalendarView(
+          tester,
+          config: MultiDayViewConfiguration.singleDay(initialDateTime: initialDateTime, displayRange: calendarRange),
+        );
+        return kalenderController.floatingRange.value!.start.startOfDay;
+      }
 
-      final selectedDate = DateTime(2024, 8, 20);
-      await pumpCalendarView(
-        tester,
-        config: MultiDayViewConfiguration.singleDay(
-          initialDateTime: selectedDate,
-          displayRange: calendarRange,
-        ),
-      );
+      final withInitialDateTime = await switchToDay(initialDateTime: DateTime(2024, 8, 20));
+      final withoutInitialDateTime = await switchToDay();
 
-      final visibleRange = kalenderController.floatingRange.value;
-      expect(visibleRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(selectedDate)));
+      expect(withInitialDateTime, isNot(FloatingDateTime(2024, 8, 20)));
+      expect(withInitialDateTime, withoutInitialDateTime);
     });
 
-    testWidgets('prioritizes initialDateTime over strategy', (tester) async {
+    testWidgets('dateResolver decides the date on a config change even when initialDateTime is set', (tester) async {
       await pumpCalendarView(
         tester,
         config: MonthViewConfiguration.singleMonth(name: 'Month View', displayRange: calendarRange),
       );
 
-      final selectedDate = DateTime(2024, 12, 25);
       await pumpCalendarView(
         tester,
         config: MultiDayViewConfiguration.singleDay(
           name: 'Day View',
-          initialDateTime: selectedDate,
+          initialDateTime: DateTime(2024, 12, 25),
           dateResolver: _alwaysReturnJanuaryResolver,
           displayRange: calendarRange,
         ),
       );
 
       final visibleRange = kalenderController.floatingRange.value;
-      expect(visibleRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(selectedDate)));
+      expect(visibleRange!.start.startOfDay, equals(_fixedDate));
     });
   });
 

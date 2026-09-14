@@ -22,11 +22,20 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
 - The deprecated `BuildContext.calendarLocale` is removed. `kalenderLocale` replaces it.
 
+### Behavior Changes
+
+- `initialDateTime` only sets the date a calendar opens on. A view switch takes its date from `dateResolver` or `dateTransition` even when the incoming configuration sets `initialDateTime`.
+- Rebuilding a view configuration with a different `initialDateTime` no longer moves a calendar that is already built.
+
 ### Features
 
 - `dart fix --apply` applies this release's renames.
 - `dart fix` does not apply the declaration of a renamed member you override.
 - `dart fix` renames `calendarLocale` only where the `KalenderLocale` extension is applied explicitly.
+
+### Fixes
+
+- Changing the calendar's location keeps the date on screen, rather than returning to `initialDateTime` or to the page before or after it.
 
 ## 0.30.0
 

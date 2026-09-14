@@ -133,11 +133,7 @@ class KalenderViewState extends State<KalenderView> {
         lastMultiDay: _lastMultiDaySnapshot,
       );
 
-      // Resolve the date: explicit initialDateTime wins, then the resolver, then
-      // the enum policy.
-      final initialDate = newConfig.initialDateTime != null
-          ? FloatingDateTime.fromDateTime(newConfig.initialDateTime!)
-          : (newConfig.dateResolver?.call(context) ?? _resolveDate(newConfig.dateTransition, context));
+      final initialDate = newConfig.dateResolver?.call(context) ?? _resolveDate(newConfig.dateTransition, context);
 
       // Resolve the vertical state (multi-day views only): resolver wins, else enum.
       KalenderTime? initialTimeOfDay;

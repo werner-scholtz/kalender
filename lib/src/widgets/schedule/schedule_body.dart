@@ -257,7 +257,6 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     var hasAddedMonth = false;
 
     for (final date in dates) {
-      // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsInRange(
         date.dayRange,
         multiDayRule: widget.viewController.viewConfiguration.multiDayRule,

@@ -88,6 +88,7 @@ void main() {
     // Regression for #283: the header must fit the tallest day currently in
     // view, regardless of whether it is the leading day.
     Future<double> pumpAndMeasureHeader(WidgetTester tester, DateTime initialDate) async {
+      await tester.pumpWidget(const SizedBox());
       eventsController = DefaultEventsController();
       kalenderController = KalenderController();
       addTwoRowDay();
