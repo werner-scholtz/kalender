@@ -37,6 +37,8 @@ String _formatLocalized(DateFormat Function() format, DateTime date, Locale? loc
 /// Useful extensions for working with [DateTime] objects.
 ///
 /// The localized names require intl's locale data. See [DateTimeExtensions.dayNameLocalized].
+///
+/// {@category Dates and times}
 extension DateTimeExtensions on DateTime {
   /// Gets the day name in a specific locale.
   ///

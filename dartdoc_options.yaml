@@ -1,0 +1,10 @@
+dartdoc:
+  showUndocumentedCategories: true
+  categoryOrder:
+    - Views
+    - Events
+    - Controllers and callbacks
+    - Interaction
+    - Appearance
+    - Layout
+    - Dates and times

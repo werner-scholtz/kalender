@@ -10,12 +10,16 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// so comparisons against `DateTime.now()` behave correctly.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef MonthDayHeaderBuilder = Widget Function(
   BuildContext context,
   DateTime date,
 );
 
 /// The style of the [MonthDayHeader].
+///
+/// {@category Appearance}
 class MonthDayHeaderStyle with Diagnosticable {
   /// Creates a new [MonthDayHeaderStyle].
   const MonthDayHeaderStyle({
@@ -91,6 +95,8 @@ class MonthDayHeaderStyle with Diagnosticable {
 }
 
 /// A widget that displays the day number.
+///
+/// {@category Appearance}
 class MonthDayHeader extends StatelessWidget {
   /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('MonthDayHeader.today');

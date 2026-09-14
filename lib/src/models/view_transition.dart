@@ -1,6 +1,8 @@
 import 'package:kalender/kalender.dart';
 
 /// How the horizontal date is chosen when switching to a view.
+///
+/// {@category Views}
 enum DateTransition {
   /// Carry the current focus forward from the view being switched away from
   /// (e.g. the visible week's start becomes the new day). This is the default.
@@ -13,6 +15,8 @@ enum DateTransition {
 
 /// How the vertical scroll position (time-of-day) is chosen when switching to a
 /// multi-day view.
+///
+/// {@category Views}
 enum ScrollTransition {
   /// Keep the time-of-day the user was last looking at in a multi-day view
   /// (survives a round-trip through a view without scroll, e.g. Month). Default.
@@ -27,6 +31,8 @@ enum ScrollTransition {
 }
 
 /// How the zoom (`heightPerMinute`) is chosen when switching to a multi-day view.
+///
+/// {@category Views}
 enum ZoomTransition {
   /// Keep the last multi-day zoom level. Default.
   preserve,
@@ -40,18 +46,26 @@ enum ZoomTransition {
 }
 
 /// Resolves the initial date for the incoming view. Overrides [DateTransition].
+///
+/// {@category Views}
 typedef DateResolver = FloatingDateTime Function(ViewTransitionContext transition);
 
 /// Resolves the initial time-of-day for the incoming multi-day view. Overrides
 /// [ScrollTransition]. Return `null` to use the view's `initialTimeOfDay`.
+///
+/// {@category Views}
 typedef ScrollResolver = KalenderTime? Function(ViewTransitionContext transition);
 
 /// Resolves the initial zoom (`heightPerMinute`) for the incoming multi-day view.
 /// Overrides [ZoomTransition]. Return `null` to use `initialHeightPerMinute`.
+///
+/// {@category Views}
 typedef ZoomResolver = double? Function(ViewTransitionContext transition);
 
 /// A snapshot of what a view was displaying, captured when it is switched away
 /// from. Used to restore per-view state on a later switch.
+///
+/// {@category Views}
 class ViewSnapshot {
   const ViewSnapshot({required this.date, this.timeOfDay, this.heightPerMinute});
 
@@ -67,6 +81,8 @@ class ViewSnapshot {
 }
 
 /// The inputs available when resolving how a view switch should transfer state.
+///
+/// {@category Views}
 class ViewTransitionContext {
   const ViewTransitionContext({
     required this.oldViewController,
@@ -95,6 +111,8 @@ class ViewTransitionContext {
 /// [kDefaultToSchedule] based on the view being switched *to*. Exposed so a
 /// custom [DateResolver] can build on the default behaviour, e.g.
 /// `dateResolver: (transition) => nextBusinessDay(kCarryFocusDate(transition))`.
+///
+/// {@category Views}
 FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
   final old = transition.oldViewController;
   return switch (transition.newViewConfiguration) {
@@ -111,6 +129,8 @@ FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
 }
 
 /// Carry-focus date when switching **to** a month view, derived from [old].
+///
+/// {@category Views}
 FloatingDateTime kDefaultToMonthly(ViewController old) {
   final oldRange = old.floatingVisibleRange.value!;
   return switch (old.viewConfiguration) {
@@ -122,9 +142,13 @@ FloatingDateTime kDefaultToMonthly(ViewController old) {
 }
 
 /// Carry-focus date when switching **to** a weekly (multi-day) view.
+///
+/// {@category Views}
 FloatingDateTime kDefaultToWeekly(ViewController old) => old.floatingVisibleRange.value!.start;
 
 /// Carry-focus date when switching **to** a daily view, derived from [old].
+///
+/// {@category Views}
 FloatingDateTime kDefaultToDaily(ViewController old) {
   final oldRange = old.floatingVisibleRange.value!;
   return switch (old.viewConfiguration) {
@@ -136,4 +160,6 @@ FloatingDateTime kDefaultToDaily(ViewController old) {
 }
 
 /// Carry-focus date when switching **to** a schedule view.
+///
+/// {@category Views}
 FloatingDateTime kDefaultToSchedule(ViewController old) => old.floatingVisibleRange.value!.start;

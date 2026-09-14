@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
+/// {@category Controllers and callbacks}
 class MonthViewController extends ViewController {
   MonthViewController({
     required this.viewConfiguration,

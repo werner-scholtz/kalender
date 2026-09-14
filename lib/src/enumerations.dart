@@ -1,4 +1,6 @@
 /// The [ResizeDirection] is used to differentiate between the different directions that an event can be resized in.
+///
+/// {@category Interaction}
 enum ResizeDirection {
   /// Resizes the event to the left.
   left,

@@ -13,9 +13,13 @@ import 'package:kalender/kalender.dart';
 /// This is a background layer and does not receive pointer events. The event
 /// and drag layers sit above it. The default builder renders nothing, leaving
 /// the cell background unchanged.
+///
+/// {@category Appearance}
 typedef MonthDayCellBuilder = Widget Function(BuildContext context, MonthDayCellDetails details);
 
 /// Details describing a single day cell, passed to a [MonthDayCellBuilder].
+///
+/// {@category Appearance}
 class MonthDayCellDetails {
   const MonthDayCellDetails({
     required this.date,
@@ -42,6 +46,8 @@ class MonthDayCellDetails {
 ///
 /// The default is an empty cell. Provide a [MonthDayCellBuilder] via
 /// [MonthBodyComponents.monthDayCellBuilder] to customize it.
+///
+/// {@category Appearance}
 class MonthDayCell extends StatelessWidget {
   const MonthDayCell({super.key});
 

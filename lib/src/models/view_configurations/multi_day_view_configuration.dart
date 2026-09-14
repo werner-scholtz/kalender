@@ -11,6 +11,7 @@ import 'package:kalender/src/widgets/month/month_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
+/// {@category Views}
 enum MultiDayViewType {
   singleDay,
   week,
@@ -20,6 +21,8 @@ enum MultiDayViewType {
 }
 
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
+///
+/// {@category Views}
 class MultiDayViewConfiguration extends ViewConfiguration {
   /// The type of the [MultiDayViewConfiguration].
   final MultiDayViewType type;
@@ -397,6 +400,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 }
 
 /// The configuration used by the [MultiDayBody].
+///
+/// {@category Views}
 class MultiDayBodyConfiguration extends VerticalConfiguration {
   /// Whether to keep visited pages alive so navigating back to them does not
   /// rebuild their content.
@@ -457,6 +462,8 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
+///
+/// {@category Views}
 class MultiDayHeaderConfiguration extends HorizontalConfiguration {
   /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayHeaderConfiguration({

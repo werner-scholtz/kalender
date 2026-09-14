@@ -17,6 +17,8 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 /// renders either:
 /// - [ContinuousScheduleViewController]: Single scrollable list of all events
 /// - [PaginatedScheduleViewController]: Paginated view with discrete pages
+///
+/// {@category Views}
 class ScheduleBody extends StatelessWidget {
   /// Configuration options for the schedule body behavior and appearance.
   ///
@@ -64,6 +66,8 @@ class ScheduleBody extends StatelessWidget {
 ///
 /// The pagination allows users to swipe between different time periods
 /// (e.g., weeks, months) in the schedule view.
+///
+/// {@category Views}
 class PaginatedSchedule extends StatefulWidget {
   /// The controller specifically for paginated schedule view.
   final PaginatedScheduleViewController viewController;
@@ -123,6 +127,8 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
 /// - [MonthItem]: Month header separators
 /// - [EventItem]: Individual event entries
 /// - [EmptyItem]: Placeholder for days with no events (configurable)
+///
+/// {@category Views}
 class SchedulePositionList extends StatefulWidget {
   /// The controller managing the events displayed in this list.
   final EventsController eventsController;

@@ -14,6 +14,8 @@ import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.
 /// Provide your own widgets with [multiDayComponents], [monthComponents] and
 /// [scheduleComponents]. Styling goes through [KalenderThemeData] for the whole
 /// app, or a [KalenderTheme] to scope one calendar.
+///
+/// {@category Appearance}
 class KalenderComponents {
   /// Components used to override the default month components
   final MonthComponents monthComponents;
@@ -72,6 +74,8 @@ class KalenderComponents {
 }
 
 /// Builders used to create the overlayPortal, overlay and overlay button widgets.
+///
+/// {@category Appearance}
 class OverlayBuilders {
   /// The builder for the multi day overlay.
   final MultiDayOverlayBuilder? multiDayOverlayBuilder;
@@ -134,9 +138,13 @@ class OverlayBuilders {
 /// The trigger widget builder, should be constrained in width.
 ///
 /// The [pageWidth] is the width of the page.
+///
+/// {@category Interaction}
 typedef HorizontalTriggerWidgetBuilder = Widget Function(BuildContext context, double pageWidth);
 
 /// The trigger widget builder, should be constrained in height.
 ///
 /// The [viewPortHeight] is the height of the page.
+///
+/// {@category Interaction}
 typedef VerticalTriggerWidgetBuilder = Widget Function(BuildContext context, double viewPortHeight);

@@ -14,12 +14,16 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 ///
 /// [details] carries the event, the tile geometry and the helpers that decide
 /// which handles to show and build them.
+///
+/// {@category Interaction}
 typedef ResizeHandlePositioner = Widget Function(
   BuildContext context,
   ResizeHandleDetails details,
 );
 
 /// What a [ResizeHandlePositioner] needs to lay out the resize handles of one event tile.
+///
+/// {@category Interaction}
 class ResizeHandleDetails {
   /// The event associated with the resize handles.
   final KalenderEvent event;
@@ -105,6 +109,8 @@ class ResizeHandleDetails {
 /// The handle widgets themselves come from [TileComponents.verticalResizeHandle]
 /// and [TileComponents.horizontalResizeHandle]. This sizes the area each one is
 /// given.
+///
+/// {@category Appearance}
 class ResizeHandleStyle with Diagnosticable {
   /// Creates a new [ResizeHandleStyle].
   const ResizeHandleStyle({this.length, this.impreciseLength});
@@ -160,6 +166,8 @@ class ResizeHandleStyle with Diagnosticable {
 }
 
 /// The default layout for the resize handles of an event tile.
+///
+/// {@category Interaction}
 class DefaultResizeHandles extends StatelessWidget {
   /// The event tile the handles are positioned on.
   final ResizeHandleDetails details;

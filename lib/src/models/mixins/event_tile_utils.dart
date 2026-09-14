@@ -4,6 +4,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 
+/// {@category Appearance}
 mixin EventTileUtils {
   /// The [KalenderEvent] that the tile is representing.
   ///
@@ -75,6 +76,7 @@ mixin EventTileUtils {
 /// }
 /// ```
 // ignore: library_private_types_in_public_api
+/// {@category Appearance}
 mixin DayEventTileUtils implements EventTileUtils {
   @override
   KalenderEvent get event;
@@ -214,6 +216,7 @@ mixin DayEventTileUtils implements EventTileUtils {
 /// }
 /// ```
 // ignore: library_private_types_in_public_api
+/// {@category Appearance}
 mixin MultiDayEventTileUtils implements EventTileUtils {
   @override
   KalenderEvent get event;

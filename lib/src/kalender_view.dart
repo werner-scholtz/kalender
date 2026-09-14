@@ -4,6 +4,7 @@ import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
+/// {@category Views}
 class KalenderView extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
   final EventsController eventsController;
@@ -65,6 +66,7 @@ class KalenderView extends StatefulWidget {
   State<KalenderView> createState() => KalenderViewState();
 }
 
+/// {@category Views}
 class KalenderViewState extends State<KalenderView> {
   /// The [ViewController] that will be used by the children of the [KalenderView].
   late ViewController _viewController;

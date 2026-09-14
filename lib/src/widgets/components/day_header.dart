@@ -10,6 +10,8 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// The [date] is the date that the header will be displayed for.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef DayHeaderBuilder = Widget Function(
   BuildContext context,
   DateTime date,
@@ -19,6 +21,8 @@ typedef DayHeaderBuilder = Widget Function(
 ///
 /// This class allows you to customize the appearance of the [DayHeader] widget.
 /// You can change the text style, the string displayed, the number text style, and the alignment.
+///
+/// {@category Appearance}
 class DayHeaderStyle with Diagnosticable {
   /// The [TextStyle] used by the [DayHeader] widget to display the name of the day.
   final TextStyle? textStyle;
@@ -100,6 +104,8 @@ class DayHeaderStyle with Diagnosticable {
 }
 
 /// A widget that displays the name of the day and the day number of the week.
+///
+/// {@category Appearance}
 class DayHeader extends StatelessWidget {
   /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('DayHeader.today');

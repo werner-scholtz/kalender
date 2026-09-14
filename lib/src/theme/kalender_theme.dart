@@ -38,6 +38,8 @@ final _extendedCache = Expando<KalenderThemeData>('kalender defaults + extension
 ///   ),
 /// )
 /// ```
+///
+/// {@category Appearance}
 class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosticable {
   /// The style of the [DayHeader].
   final DayHeaderStyle? dayHeaderStyle;
@@ -379,6 +381,8 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
 /// calendar builds into an [Overlay], such as the tile that follows a drag.
 /// Those are not descendants of this widget, so a plain [InheritedWidget] would
 /// not reach them.
+///
+/// {@category Appearance}
 class KalenderTheme extends InheritedTheme {
   /// The styles applied to the calendars below this widget.
   final KalenderThemeData data;

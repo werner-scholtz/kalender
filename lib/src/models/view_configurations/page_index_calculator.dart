@@ -17,6 +17,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 ///
 /// **Note:** Internal calculations are performed in UTC. Use [FloatingDateTime.forLocation]
 /// to convert results to the appropriate timezone.
+///
+/// {@category Views}
 abstract class PageIndexCalculator {
   /// The start of the range this calculator operates within.
   ///
@@ -138,6 +140,8 @@ abstract class PageIndexCalculator {
 }
 
 /// Calculates page indices and date ranges for a single day view.
+///
+/// {@category Views}
 class DayIndexCalculator extends PageIndexCalculator {
   /// Creates a [DayIndexCalculator] covering [start] to [end].
   DayIndexCalculator({required super.start, required super.end});
@@ -186,6 +190,8 @@ class DayIndexCalculator extends PageIndexCalculator {
 }
 
 /// Calculates page indices and date ranges for a week view.
+///
+/// {@category Views}
 class WeekIndexCalculator extends PageIndexCalculator {
   /// The value to shift the start of week by to get the first day of the week.
   final int firstDayOfWeek;
@@ -286,6 +292,8 @@ class WeekIndexCalculator extends PageIndexCalculator {
 }
 
 /// Calculates page indices and date ranges for a custom multi-day view.
+///
+/// {@category Views}
 class CustomIndexCalculator extends PageIndexCalculator {
   /// The number of days in each page.
   final int numberOfDays;
@@ -344,6 +352,8 @@ class CustomIndexCalculator extends PageIndexCalculator {
 }
 
 /// Calculates page indices and date ranges for a month view.
+///
+/// {@category Views}
 class MonthIndexCalculator extends PageIndexCalculator {
   /// The default number of rows to display in a month view.
   static const numberOfRows = 5;
@@ -424,6 +434,8 @@ class MonthIndexCalculator extends PageIndexCalculator {
 }
 
 /// Calculates page indices and date ranges for a continuous schedule view.
+///
+/// {@category Views}
 class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
   /// Creates a [ContinuousScheduleIndexCalculator] covering [start] to [end].
   ContinuousScheduleIndexCalculator({required super.start, required super.end});
@@ -455,6 +467,7 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
   int get hashCode => Object.hash(ContinuousScheduleIndexCalculator, start, end);
 }
 
+/// {@category Views}
 class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
   PaginatedScheduleIndexCalculator({
     required super.start,

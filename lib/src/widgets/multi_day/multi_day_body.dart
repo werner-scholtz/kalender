@@ -23,6 +23,8 @@ import 'package:linked_pageview/linked_pageview.dart';
 ///
 /// 2. The [VerticalDragTarget]
 ///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
+///
+/// {@category Views}
 class MultiDayBody extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
@@ -157,6 +159,7 @@ class MultiDayBody extends StatelessWidget {
   }
 }
 
+/// {@category Views}
 class MultiDayPage extends StatefulWidget {
   final EventsController eventsController;
 

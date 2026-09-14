@@ -13,6 +13,8 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// The month body's content:
 ///   - Static content [MonthGrid].
 ///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [HorizontalDragTarget], [MultiDayDraggable].
+///
+/// {@category Views}
 class MonthBody extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
   final HorizontalConfiguration? configuration;
@@ -125,6 +127,8 @@ class MonthBody extends StatelessWidget {
 /// A single week in the month view.
 ///
 /// It contains the [WeekDayHeaders], the [MultiDayEventWidget], the [HorizontalDragTarget] and the [MultiDayDraggable].
+///
+/// {@category Views}
 class MonthWeek extends StatelessWidget {
   final FloatingDateTimeRange floatingRange;
   final HorizontalConfiguration configuration;

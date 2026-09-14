@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 /// The configuration for the page triggers.
 ///
 /// The page triggers are used to navigate between pages when the user is dragging a event.
+///
+/// {@category Interaction}
 class PageTriggerConfiguration {
   PageTriggerConfiguration({
     this.triggerDelay = const Duration(milliseconds: 750),
@@ -73,6 +75,8 @@ class PageTriggerConfiguration {
 /// The configuration for the scroll triggers.
 ///
 /// The scroll triggers are used to scroll the view when the user is dragging an event.
+///
+/// {@category Interaction}
 class ScrollTriggerConfiguration {
   ScrollTriggerConfiguration({
     this.triggerDelay = const Duration(milliseconds: 750),

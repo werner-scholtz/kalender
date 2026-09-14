@@ -11,6 +11,8 @@
 ///
 /// For Material's `DateTimeRange`, import `package:kalender/material.dart` and
 /// call `toDateTimeRange()` or `toKalenderDateTimeRange()`.
+///
+/// {@category Dates and times}
 class KalenderDateTimeRange {
   /// Creates a [KalenderDateTimeRange].
   KalenderDateTimeRange({required this.start, required this.end}) : assert(!start.isAfter(end));

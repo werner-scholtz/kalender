@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
+/// {@category Events}
 typedef UpdatedEvent = (KalenderEvent, KalenderEvent);
 
 /// Shared drag-target behaviour for the calendar's [DragTarget] states.
@@ -10,6 +11,8 @@ typedef UpdatedEvent = (KalenderEvent, KalenderEvent);
 /// Constrained to [State] for [context] and [mounted]. [mounted] is checked
 /// before any deferred work, since reading [State.context] after disposal
 /// throws rather than returning null.
+///
+/// {@category Interaction}
 mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   KalenderController get controller;
   EventsController get eventsController;

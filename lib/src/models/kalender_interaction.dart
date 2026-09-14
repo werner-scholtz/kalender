@@ -2,6 +2,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 import 'package:kalender/src/platform.dart';
 
 /// The strategy a calendar uses when nothing overrides it.
+///
+/// {@category Interaction}
 const kDefaultSnapStrategy = EventSnapStrategy.interval();
 
 /// Decides where a dragged event lands, given the position of the cursor.
@@ -17,6 +19,8 @@ const kDefaultSnapStrategy = EventSnapStrategy.interval();
 /// This is a class rather than a function so that it has value equality.
 /// [KalenderSnapping] is compared with `==` to decide whether the calendar needs
 /// to rebuild, and a function field would defeat that.
+///
+/// {@category Interaction}
 abstract class EventSnapStrategy {
   const EventSnapStrategy();
 
@@ -40,6 +44,8 @@ abstract class EventSnapStrategy {
 }
 
 /// Snaps to the nearest multiple of the snap interval.
+///
+/// {@category Interaction}
 class IntervalSnapStrategy extends EventSnapStrategy {
   const IntervalSnapStrategy();
 
@@ -63,6 +69,8 @@ class IntervalSnapStrategy extends EventSnapStrategy {
 }
 
 /// Returns the cursor position unchanged.
+///
+/// {@category Interaction}
 class NoSnapStrategy extends EventSnapStrategy {
   const NoSnapStrategy();
 
@@ -85,6 +93,8 @@ class NoSnapStrategy extends EventSnapStrategy {
 /// The [InputMode] defines the type of input the calendar should optimize for.
 ///
 /// This affects how resize handles are positioned and how visibility is triggered.
+///
+/// {@category Interaction}
 enum InputMode {
   /// Automatically detect input type.
   ///
@@ -104,6 +114,8 @@ enum InputMode {
 }
 
 /// The [EventInteractionGesture] is used to differentiate between the different ways to create and modify an event.
+///
+/// {@category Interaction}
 enum EventInteractionGesture {
   /// Uses a tap gesture.
   tap,
@@ -126,6 +138,8 @@ enum EventInteractionGesture {
 ///   allowEventCreation: true,
 /// );
 /// ```
+///
+/// {@category Interaction}
 class KalenderInteraction {
   /// Allow the resizing of events.
   ///
@@ -266,6 +280,8 @@ class KalenderInteraction {
 ///   allowRescheduling: true,
 /// );
 /// ```
+///
+/// {@category Interaction}
 class EventInteraction {
   /// Whether the start of the event can be resized.
   ///
@@ -339,6 +355,8 @@ class EventInteraction {
 ///   snapRange: Duration(minutes: 10),
 /// );
 /// ```
+///
+/// {@category Interaction}
 class KalenderSnapping {
   /// The snap interval in minutes for events.
   ///

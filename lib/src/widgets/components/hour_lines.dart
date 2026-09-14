@@ -11,6 +11,8 @@ import 'package:kalender/kalender.dart';
 ///
 /// Resolve the line style with [KalenderTheme]. The number of lines follows the
 /// timeline's label size, which [KalenderTheme] resolves.
+///
+/// {@category Appearance}
 typedef HourLinesBuilder = Widget Function(
   BuildContext context,
   double heightPerMinute,
@@ -18,6 +20,8 @@ typedef HourLinesBuilder = Widget Function(
 );
 
 /// The style of the [HourLines] widget.
+///
+/// {@category Appearance}
 class HourLinesStyle with Diagnosticable {
   /// The [Color] of the hour lines.
   final Color? color;
@@ -100,6 +104,8 @@ class HourLinesStyle with Diagnosticable {
 }
 
 /// A widget that displays lines for each hour based on the [timeOfDayRange] and [heightPerMinute].
+///
+/// {@category Appearance}
 class HourLines extends StatelessWidget with TimeLineUtils {
   /// The [KalenderTimeRange] that will be used to display the hour lines.
   final KalenderTimeRange timeOfDayRange;

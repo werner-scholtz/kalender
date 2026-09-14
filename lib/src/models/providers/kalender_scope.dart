@@ -16,6 +16,8 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 ///
 /// The `of` form throws where there is no [KalenderView] above the context. The
 /// `maybeOf` form returns null there instead.
+///
+/// {@category Controllers and callbacks}
 abstract final class KalenderScope {
   /// The [EventsController] driving the calendar.
   static EventsController eventsControllerOf(BuildContext context) => EventsControllerProvider.of(context);

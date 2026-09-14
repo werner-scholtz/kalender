@@ -12,12 +12,15 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// [numberOfHiddenRows] is the number of events that are not displayed because of constraints.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
   BuildContext context,
   OverlayPortalController portalController,
   int numberOfHiddenRows,
 );
 
+/// {@category Appearance}
 class MultiDayPortalOverlayButtonStyle with Diagnosticable {
   /// The text style of the button.
   final TextStyle? textStyle;
@@ -89,6 +92,7 @@ class MultiDayPortalOverlayButtonStyle with Diagnosticable {
   }
 }
 
+/// {@category Appearance}
 class MultiDayPortalOverlayButton extends StatelessWidget {
   /// The [ValueKey] used to identify text displayed in the button.
   static const textKey = ValueKey('multi_day_portal_overlay_button_text');

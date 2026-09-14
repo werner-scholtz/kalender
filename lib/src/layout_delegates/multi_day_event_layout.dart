@@ -26,6 +26,8 @@ import 'package:kalender/kalender.dart';
 /// and month configurations are compared with `==` to decide whether the layout
 /// frame cache survives, and a function field written inline would clear that
 /// cache on every build.
+///
+/// {@category Layout}
 abstract class MultiDayLayoutStrategy {
   const MultiDayLayoutStrategy();
 
@@ -43,6 +45,8 @@ abstract class MultiDayLayoutStrategy {
 }
 
 /// Places the longest events first, breaking ties by start time.
+///
+/// {@category Layout}
 class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
   const DurationMultiDayLayoutStrategy();
 
@@ -99,6 +103,8 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 /// 3. **Row Count Calculation**:
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
+///
+/// {@category Layout}
 MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   required FloatingDateTimeRange visibleRange,
   required List<KalenderEvent> events,
@@ -298,6 +304,8 @@ class _FrameEntry {
 /// A cache for [MultiDayLayoutFrame]s.
 ///
 /// This is used to cache layout frames that are recalculated often.
+///
+/// {@category Layout}
 class MultiDayLayoutFrameCache {
   final Map<String, MultiDayLayoutFrame> _cache = {};
 
@@ -327,6 +335,8 @@ class MultiDayLayoutFrameCache {
 }
 
 /// Frame containing all the data to layout the [KalenderEvent]s with [MultiDayLayout].
+///
+/// {@category Layout}
 @immutable
 class MultiDayLayoutFrame {
   /// The range of dates that this frame is for.
@@ -399,6 +409,8 @@ class MultiDayLayoutFrame {
 }
 
 /// Contains all the data needed to layout a single event with the [MultiDayLayout].
+///
+/// {@category Layout}
 @immutable
 class EventLayoutInformation {
   /// The id of the event.
@@ -471,6 +483,8 @@ class EventLayoutInformation {
 ///
 /// This layout ensures that events spanning multiple days are displayed correctly
 /// across the corresponding date columns and rows.
+///
+/// {@category Layout}
 class MultiDayLayout extends MultiChildLayoutDelegate {
   MultiDayLayout({
     required this.range,

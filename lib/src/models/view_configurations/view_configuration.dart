@@ -27,11 +27,15 @@ export 'package:kalender/kalender_extensions.dart';
 ///   captured value such as a location.
 ///
 /// A closure written inline does not. It is a new function every build.
+///
+/// {@category Views}
 typedef NowCallback = DateTime Function();
 
 /// The base class for all [ViewConfiguration]s.
 ///
 /// [ViewConfiguration]s are used to configure the view of the calendar.
+///
+/// {@category Views}
 abstract class ViewConfiguration {
   const ViewConfiguration({
     required this.name,
@@ -104,6 +108,8 @@ abstract class ViewConfiguration {
 }
 
 /// The base class for all vertical views of the calendar.
+///
+/// {@category Views}
 abstract class VerticalConfiguration {
   /// Whether to show multi-day events in the body.
   ///
@@ -186,6 +192,8 @@ abstract class VerticalConfiguration {
 }
 
 /// The base class for all horizontal views of the calendar.
+///
+/// {@category Views}
 abstract class HorizontalConfiguration {
   /// The height of the tiles.
   final double tileHeight;
@@ -266,18 +274,43 @@ abstract class HorizontalConfiguration {
   }
 }
 
+/// {@category Views}
 const kDefaultTileHeight = 24.0;
+
+/// {@category Interaction}
 const kDefaultNewEventDuration = Duration(minutes: 30);
+
+/// {@category Views}
 const kDefaultShowMultiDayEvents = false;
+
+/// {@category Layout}
 const kDefaultEventLayoutStrategy = EventLayoutStrategy.overlap();
+
+/// {@category Layout}
 const kDefaultMultiDayLayoutStrategy = MultiDayLayoutStrategy.byDuration();
+
+/// {@category Views}
 const kDefaultFirstDayOfWeek = DateTime.monday;
+
+/// {@category Views}
 const kDefaultShowEventTiles = true;
+
+/// {@category Views}
 const kDefaultInitialTimeOfDay = KalenderTime(hour: 0, minute: 0);
+
+/// {@category Views}
 const kDefaultHeightPerMinute = 0.7;
+
+/// {@category Views}
 const kDefaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
+
+/// {@category Views}
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
+
+/// {@category Views}
 const kDefaultEmptyDayBehavior = EmptyDayBehavior.showOnlyToday;
+
+/// {@category Views}
 KalenderDateTimeRange kDefaultRange() {
   final now = DateTime.now();
   return KalenderDateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));
