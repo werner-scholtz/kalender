@@ -17,6 +17,8 @@ import 'package:kalender/src/widgets/month/month_body.dart';
 import 'package:kalender/src/widgets/month/month_header.dart';
 
 /// A class containing custom widget builders for the [MonthBody] and [MonthHeader].
+///
+/// {@category Appearance}
 class MonthComponents {
   /// The component builders used by the [MonthBody].
   final MonthBodyComponents bodyComponents;
@@ -53,6 +55,8 @@ class MonthComponents {
 /// The component builders used by the [MonthBody].
 ///
 /// - Using these will override the respective default components.
+///
+/// {@category Appearance}
 class MonthBodyComponents {
   /// A function that builds the month grid widget.
   /// Null uses [MonthGrid].
@@ -191,6 +195,8 @@ class MonthBodyComponents {
 /// The component builders used by the [MonthHeader].
 ///
 /// - Using these will override the respective default components.
+///
+/// {@category Appearance}
 class MonthHeaderComponents {
   /// A function that builds the week day header widget.
   /// Null uses [WeekDayHeader].

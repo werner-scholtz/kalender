@@ -22,6 +22,8 @@ import 'package:timezone/timezone.dart';
 ///   'default': {DateTime(2024, 1, 15): {1, 2, 3, 5, 7}},
 /// }
 /// ```
+///
+/// {@category Events}
 typedef LocationDateIdMap = Map<String, DateToEventIds>;
 
 /// Maps calendar dates to sets of event IDs that occur on those dates.
@@ -40,6 +42,8 @@ typedef LocationDateIdMap = Map<String, DateToEventIds>;
 ///   DateTime.utc(2024, 1, 16): {103, 105},
 /// }
 /// ```
+///
+/// {@category Events}
 typedef DateToEventIds = Map<String, Set<String>>;
 
 /// Maps unique event IDs to their corresponding [KalenderEvent] instances.
@@ -55,9 +59,13 @@ typedef DateToEventIds = Map<String, Set<String>>;
 ///   102: KalenderEvent(data: 'Lunch', ...),
 /// }
 /// ```
+///
+/// {@category Events}
 typedef EventIdToEvent = Map<String, KalenderEvent>;
 
 /// The default class for storing [KalenderEvent]s.
+///
+/// {@category Events}
 class DefaultEventStore extends EventStore {
   /// Predefined locations for optimizations.
   ///

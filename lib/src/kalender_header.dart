@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
+/// {@category Views}
 class KalenderHeader extends StatefulWidget {
   /// The callbacks used by the [KalenderBody].
   ///

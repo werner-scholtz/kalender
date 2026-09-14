@@ -14,6 +14,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 ///
 /// This class can be extended to create custom [EventsController]s.
 /// e.g. [DefaultEventsController]
+///
+/// {@category Events}
 abstract class EventsController with ChangeNotifier {
   /// A ValueNotifier that holds the size of the feedback widget.
   final feedbackWidgetSize = ValueNotifier<Size>(Size.zero);

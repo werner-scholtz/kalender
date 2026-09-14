@@ -11,6 +11,8 @@ import 'package:kalender/src/models/kalender_time.dart';
 ///
 /// - The range includes the [start] and [end] times.
 /// - The [start] time must not be after the [end] time.
+///
+/// {@category Dates and times}
 class KalenderTimeRange {
   KalenderTimeRange({required this.start, required this.end})
     : assert(start.hour <= end.hour),

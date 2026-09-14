@@ -11,6 +11,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+/// {@category Controllers and callbacks}
 abstract class ScheduleViewController extends ViewController with ScheduleMap {
   @override
   final ScheduleViewConfiguration viewConfiguration;
@@ -95,6 +96,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   bool get hasInitialized => itemScrollController != null && itemPositionsListener != null;
 }
 
+/// {@category Controllers and callbacks}
 class ContinuousScheduleViewController extends ScheduleViewController {
   ContinuousScheduleViewController({
     super.location,
@@ -178,6 +180,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
   }
 }
 
+/// {@category Controllers and callbacks}
 class PaginatedScheduleViewController extends ScheduleViewController {
   PaginatedScheduleViewController({
     super.location,

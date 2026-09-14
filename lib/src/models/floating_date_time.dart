@@ -13,6 +13,8 @@ import 'package:kalender/kalender.dart';
 ///
 /// Use [fromExternal] to convert a zoned [DateTime] or [TZDateTime] into a [FloatingDateTime], and [forLocation] to
 /// convert back.
+///
+/// {@category Dates and times}
 class FloatingDateTime extends DateTime {
   /// Creates a [FloatingDateTime] instance.
   FloatingDateTime(

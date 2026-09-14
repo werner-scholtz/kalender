@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender_extensions.dart';
@@ -16,12 +10,19 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// The [date] is the date that the header will be displayed for.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef DayHeaderBuilder = Widget Function(BuildContext context, DateTime date);
+///
+/// {@category Appearance}
+typedef DayHeaderBuilder = Widget Function(
+  BuildContext context,
+  DateTime date,
+);
 
 /// The styling class for the [DayHeader].
 ///
 /// This class allows you to customize the appearance of the [DayHeader] widget.
 /// You can change the text style, the string displayed, the number text style, and the alignment.
+///
+/// {@category Appearance}
 class DayHeaderStyle with Diagnosticable {
   /// The [TextStyle] used by the [DayHeader] widget to display the name of the day.
   final TextStyle? textStyle;
@@ -41,10 +42,18 @@ class DayHeaderStyle with Diagnosticable {
   /// By default, the [DateTimeExtensions.dayNameShortLocalized] is used to get the short name of the day in the current locale.
 
   /// Creates a new [DayHeaderStyle].
-  const DayHeaderStyle({this.textStyle, this.numberTextStyle, this.mainAxisAlignment});
+  const DayHeaderStyle({
+    this.textStyle,
+    this.numberTextStyle,
+    this.mainAxisAlignment,
+  });
 
   /// Creates a copy of this style with the given fields replaced with the new values.
-  DayHeaderStyle copyWith({TextStyle? textStyle, TextStyle? numberTextStyle, MainAxisAlignment? mainAxisAlignment}) {
+  DayHeaderStyle copyWith({
+    TextStyle? textStyle,
+    TextStyle? numberTextStyle,
+    MainAxisAlignment? mainAxisAlignment,
+  }) {
     return DayHeaderStyle(
       textStyle: textStyle ?? this.textStyle,
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
@@ -95,6 +104,8 @@ class DayHeaderStyle with Diagnosticable {
 }
 
 /// A widget that displays the name of the day and the day number of the week.
+///
+/// {@category Appearance}
 class DayHeader extends StatelessWidget {
   /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('DayHeader.today');
@@ -124,7 +135,11 @@ class DayHeader extends StatelessWidget {
       style: style.numberTextStyle,
     );
 
-    final button = DayNumber(number: numberText, isToday: context.isToday(localDate), todayKey: todayKey);
+    final button = DayNumber(
+      number: numberText,
+      isToday: context.isToday(localDate),
+      todayKey: todayKey,
+    );
 
     final dayName = Text(
       components.dayHeaderStringBuilder?.call(context, displayDate) ?? localDate.dayNameShortLocalized(context.locale),
@@ -132,7 +147,10 @@ class DayHeader extends StatelessWidget {
     );
 
     return Center(
-      child: Column(mainAxisAlignment: style.mainAxisAlignment ?? MainAxisAlignment.start, children: [button, dayName]),
+      child: Column(
+        mainAxisAlignment: style.mainAxisAlignment ?? MainAxisAlignment.start,
+        children: [button, dayName],
+      ),
     );
   }
 }

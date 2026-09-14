@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
@@ -18,19 +12,22 @@ import 'package:kalender/kalender.dart';
 /// [overlayBuilders] is the builders for the overlay event tile.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef MultiDayOverlayPortalBuilder =
-    Widget Function(
-      BuildContext context, {
-      required DateTime date,
-      required List<KalenderEvent> events,
-      required int numberOfHiddenRows,
-      required double tileHeight,
-      required RenderBoxCallback getMultiDayEventLayoutRenderBox,
-      required MultiDayOverlayEventTileBuilder overlayTileBuilder,
-      required OverlayBuilders? overlayBuilders,
-    });
+///
+/// {@category Appearance}
+typedef MultiDayOverlayPortalBuilder = Widget Function(
+  BuildContext context, {
+  required DateTime date,
+  required List<KalenderEvent> events,
+  required int numberOfHiddenRows,
+  required double tileHeight,
+  required RenderBoxCallback getMultiDayEventLayoutRenderBox,
+  required MultiDayOverlayEventTileBuilder overlayTileBuilder,
+  required OverlayBuilders? overlayBuilders,
+});
 
 /// A widget that manages the overlay portal for a single day.
+///
+/// {@category Appearance}
 class MultiDayOverlayPortal extends StatefulWidget {
   /// The date for which the widget is created.
   final FloatingDateTime date;
@@ -85,8 +82,7 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
   void didUpdateWidget(covariant MultiDayOverlayPortal oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final didUpdate =
-        oldWidget.date != widget.date ||
+    final didUpdate = oldWidget.date != widget.date ||
         !oldWidget.events.equals(widget.events) ||
         oldWidget.tileHeight != widget.tileHeight ||
         oldWidget.getMultiDayEventLayoutRenderBox != widget.getMultiDayEventLayoutRenderBox ||
@@ -121,8 +117,7 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
               getOverlayPortalRenderBox: getOverlayPortalRenderBox,
             );
       },
-      child:
-          widget.overlayBuilders?.multiDayPortalOverlayButtonBuilder?.call(
+      child: widget.overlayBuilders?.multiDayPortalOverlayButtonBuilder?.call(
             context,
             _portalController,
             widget.numberOfHiddenRows,

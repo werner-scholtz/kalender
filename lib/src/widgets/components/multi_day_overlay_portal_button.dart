@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,9 +12,15 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// [numberOfHiddenRows] is the number of events that are not displayed because of constraints.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef MultiDayPortalOverlayButtonBuilder =
-    Widget Function(BuildContext context, OverlayPortalController portalController, int numberOfHiddenRows);
+///
+/// {@category Appearance}
+typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
+  BuildContext context,
+  OverlayPortalController portalController,
+  int numberOfHiddenRows,
+);
 
+/// {@category Appearance}
 class MultiDayPortalOverlayButtonStyle with Diagnosticable {
   /// The text style of the button.
   final TextStyle? textStyle;
@@ -92,6 +92,7 @@ class MultiDayPortalOverlayButtonStyle with Diagnosticable {
   }
 }
 
+/// {@category Appearance}
 class MultiDayPortalOverlayButton extends StatelessWidget {
   /// The [ValueKey] used to identify text displayed in the button.
   static const textKey = ValueKey('multi_day_portal_overlay_button_text');
@@ -127,9 +128,8 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style =
-        (KalenderTheme.of(context).multiDayPortalOverlayButtonStyle ?? const MultiDayPortalOverlayButtonStyle()).merge(
-          this.style,
-        );
+        (KalenderTheme.of(context).multiDayPortalOverlayButtonStyle ?? const MultiDayPortalOverlayButtonStyle())
+            .merge(this.style);
     return InkWell(
       onTap: portalController.show,
       child: Padding(

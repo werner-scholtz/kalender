@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
@@ -21,17 +15,23 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// [KalenderTheme] and every [KalenderScope] accessor except the four those two
 /// install: `interactionOf`, `snappingOf`, `tileComponentsOf` and
 /// `heightPerMinuteOf`.
+///
+/// {@category Appearance}
 typedef WeekNumberWidthBuilder = double Function(BuildContext context);
 
 /// The width [defaultWeekNumberWidth] returns when the style sets none.
 ///
 /// Matches `kDefaultScheduleLeadingWidth`, the schedule's equivalent.
+///
+/// {@category Appearance}
 const kDefaultWeekNumberWidth = 56.0;
 
 /// The default [WeekNumberWidthBuilder].
 ///
 /// Returns the width of [WeekNumberStyle.buttonSize] plus its padding when the
 /// style sets one, and [kDefaultWeekNumberWidth] otherwise.
+///
+/// {@category Appearance}
 double defaultWeekNumberWidth(BuildContext context) {
   final style = KalenderTheme.of(context).weekNumberStyle ?? const WeekNumberStyle();
   final buttonSize = style.buttonSize;
@@ -46,12 +46,25 @@ double defaultWeekNumberWidth(BuildContext context) {
 ///
 /// Resolve the style with [KalenderTheme]. The month gutter merges its own
 /// defaults into that scope, so the same call returns the month's value there.
-typedef WeekNumberBuilder = Widget Function(BuildContext context, KalenderDateTimeRange visibleDateTimeRange);
+///
+/// {@category Appearance}
+typedef WeekNumberBuilder = Widget Function(
+  BuildContext context,
+  KalenderDateTimeRange visibleDateTimeRange,
+);
 
 /// The style of the [WeekNumber].
+///
+/// {@category Appearance}
 class WeekNumberStyle with Diagnosticable {
   /// Creates a new [WeekNumberStyle].
-  const WeekNumberStyle({this.textStyle, this.buttonSize, this.tooltip, this.padding, this.alignment});
+  const WeekNumberStyle({
+    this.textStyle,
+    this.buttonSize,
+    this.tooltip,
+    this.padding,
+    this.alignment,
+  });
 
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.
   final TextStyle? textStyle;
@@ -137,6 +150,8 @@ class WeekNumberStyle with Diagnosticable {
 }
 
 /// A widget that displays the week number.
+///
+/// {@category Appearance}
 class WeekNumber extends StatelessWidget {
   /// The range of dates that the week number will be displayed for.
   final KalenderDateTimeRange visibleDateTimeRange;
@@ -172,7 +187,11 @@ class WeekNumber extends StatelessWidget {
           // The gutter is sized by the calendar, not by this label, so a range
           // spanning two weeks wraps. Without this the short second line sits
           // against the leading edge.
-          icon: Text(weekNumber, textAlign: TextAlign.center, style: style.textStyle),
+          icon: Text(
+            weekNumber,
+            textAlign: TextAlign.center,
+            style: style.textStyle,
+          ),
         ),
       ),
     );

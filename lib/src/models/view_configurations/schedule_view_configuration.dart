@@ -8,6 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
 /// The type of the schedule view.
+///
+/// {@category Views}
 enum ScheduleViewType {
   /// A continuous schedule view.
   continuous,
@@ -17,6 +19,8 @@ enum ScheduleViewType {
 }
 
 /// The default behavior for empty days in the schedule view.
+///
+/// {@category Views}
 enum EmptyDayBehavior {
   /// Show every empty day in the schedule view.
   show,
@@ -28,6 +32,7 @@ enum EmptyDayBehavior {
   hide,
 }
 
+/// {@category Views}
 class ScheduleViewConfiguration extends ViewConfiguration {
   @override
   final PageIndexCalculator pageIndexCalculator;
@@ -94,8 +99,11 @@ class ScheduleViewConfiguration extends ViewConfiguration {
 /// A fixed width keeps every row's event tile aligned regardless of whether the
 /// row shows a date, and independent of the day name, day-number digits, locale,
 /// or text scale.
+///
+/// {@category Views}
 const kDefaultScheduleLeadingWidth = 56.0;
 
+/// {@category Views}
 class ScheduleBodyConfiguration {
   /// Creates a new [ScheduleBodyConfiguration].
   ScheduleBodyConfiguration({

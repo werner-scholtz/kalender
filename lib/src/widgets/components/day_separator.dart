@@ -13,9 +13,13 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// The day separator builder.
 ///
 /// Resolve the style with [KalenderTheme].
+///
+/// {@category Appearance}
 typedef DaySeparatorBuilder = Widget Function(BuildContext context);
 
 /// The style for the [DaySeparator] widget.
+///
+/// {@category Appearance}
 class DaySeparatorStyle with Diagnosticable {
   /// The [Color] of the day separator.
   final Color? color;
@@ -88,6 +92,8 @@ class DaySeparatorStyle with Diagnosticable {
 }
 
 /// A widget that displays a separator between days.
+///
+/// {@category Appearance}
 class DaySeparator extends StatelessWidget {
   final DaySeparatorStyle? style;
   const DaySeparator({super.key, this.style});

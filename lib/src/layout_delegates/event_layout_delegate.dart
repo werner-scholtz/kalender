@@ -28,6 +28,8 @@ export 'package:kalender/src/models/kalender_time_range.dart';
 /// This is a class rather than a function so that it has value equality. Body
 /// configurations are compared with `==` to decide whether the calendar needs to
 /// rebuild, and a function field would defeat that.
+///
+/// {@category Layout}
 abstract class EventLayoutStrategy {
   const EventLayoutStrategy();
 
@@ -50,6 +52,8 @@ abstract class EventLayoutStrategy {
 }
 
 /// Lays out the tiles on top of each other.
+///
+/// {@category Layout}
 class OverlapLayoutStrategy extends EventLayoutStrategy {
   const OverlapLayoutStrategy();
 
@@ -82,6 +86,8 @@ class OverlapLayoutStrategy extends EventLayoutStrategy {
 }
 
 /// Lays out the tiles side by side.
+///
+/// {@category Layout}
 class SideBySideLayoutStrategy extends EventLayoutStrategy {
   const SideBySideLayoutStrategy();
 
@@ -118,6 +124,8 @@ class SideBySideLayoutStrategy extends EventLayoutStrategy {
 /// This is used to cache some values that are recalculated often.
 /// What can/do we need to cache here ?
 ///
+///
+/// {@category Layout}
 class EventLayoutDelegateCache {
   final Map<String, Map<int, VerticalLayoutData>> _dateCache = {};
 
@@ -156,6 +164,8 @@ class EventLayoutDelegateCache {
 /// * [calculateVerticalLayoutData] - Calculates the top and bottom of each event.
 /// * [groupVerticalLayoutData] - Groups the [VerticalLayoutData] into horizontal groups.
 ///
+///
+/// {@category Layout}
 abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   EventLayoutDelegate({
     required this.events,
@@ -380,6 +390,8 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
 }
 
 /// The [OverlapLayoutDelegate] lays out [KalenderEvent]'s, by stacking them on top of one another.
+///
+/// {@category Layout}
 class OverlapLayoutDelegate extends EventLayoutDelegate {
   OverlapLayoutDelegate({
     required super.events,
@@ -452,6 +464,8 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
 }
 
 /// The [SideBySideLayoutDelegate] lays out [KalenderEvent]'s next to one another.
+///
+/// {@category Layout}
 class SideBySideLayoutDelegate extends EventLayoutDelegate {
   SideBySideLayoutDelegate({
     required super.events,
@@ -539,6 +553,8 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
 }
 
 /// This stores the vertical layout data of a single [KalenderEvent].
+///
+/// {@category Layout}
 class VerticalLayoutData {
   /// The id of the event.
   final int id;
@@ -577,6 +593,8 @@ class VerticalLayoutData {
 }
 
 /// This stores the final layout data of a single [KalenderEvent].
+///
+/// {@category Layout}
 class EventLayoutData {
   /// The top of the event.
   final double left;
@@ -600,6 +618,8 @@ class EventLayoutData {
 }
 
 /// This stores horizontal data [top] and [bottom] for a group of [VerticalLayoutData].
+///
+/// {@category Layout}
 class HorizontalGroupData {
   final List<VerticalLayoutData> verticalLayoutData = [];
 

@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
@@ -13,11 +7,21 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// The month grid builder.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef MonthGridBuilder = Widget Function(BuildContext context, int numberOfRows);
+///
+/// {@category Appearance}
+typedef MonthGridBuilder = Widget Function(
+  BuildContext context,
+  int numberOfRows,
+);
 
 /// The [MonthGridStyle] class is used by the [MonthGrid] widget.
+///
+/// {@category Appearance}
 class MonthGridStyle with Diagnosticable {
-  const MonthGridStyle({this.color, this.thickness});
+  const MonthGridStyle({
+    this.color,
+    this.thickness,
+  });
 
   /// The color of the month grid lines.
   final Color? color;
@@ -27,13 +31,19 @@ class MonthGridStyle with Diagnosticable {
 
   /// Creates a copy of this style with the given fields replaced with the new values.
   MonthGridStyle copyWith({Color? color, double? thickness}) {
-    return MonthGridStyle(color: color ?? this.color, thickness: thickness ?? this.thickness);
+    return MonthGridStyle(
+      color: color ?? this.color,
+      thickness: thickness ?? this.thickness,
+    );
   }
 
   /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
   MonthGridStyle merge(MonthGridStyle? other) {
     if (other == null) return this;
-    return MonthGridStyle(color: other.color ?? color, thickness: other.thickness ?? thickness);
+    return MonthGridStyle(
+      color: other.color ?? color,
+      thickness: other.thickness ?? thickness,
+    );
   }
 
   /// Linearly interpolates between [a] and [b].
@@ -64,6 +74,8 @@ class MonthGridStyle with Diagnosticable {
 }
 
 /// A widget that displays the month grid.
+///
+/// {@category Appearance}
 class MonthGrid extends StatelessWidget {
   final MonthGridStyle? style;
   final int numberOfRows;
@@ -79,11 +91,15 @@ class MonthGrid extends StatelessWidget {
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [for (int i = 0; i < 8; i++) Container(width: thickness, color: color)],
+          children: [
+            for (int i = 0; i < 8; i++) Container(width: thickness, color: color),
+          ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [for (int i = 0; i < numberOfRows + 1; i++) Container(height: thickness, color: color)],
+          children: [
+            for (int i = 0; i < numberOfRows + 1; i++) Container(height: thickness, color: color),
+          ],
         ),
       ],
     );

@@ -24,6 +24,8 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// header to the current page. The free-scroll header instead renders one
 /// continuous band (see [_FreeScrollMultiDayBand]) so multi-day events can span
 /// day columns.
+///
+/// {@category Views}
 class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final HorizontalConfiguration? configuration;

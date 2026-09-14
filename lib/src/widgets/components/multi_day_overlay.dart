@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
@@ -19,15 +13,18 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// The [event] is the event that is being displayed.
 /// The [floatingRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
-typedef MultiDayOverlayEventTileBuilder =
-    MultiDayEventOverlayTile Function(
-      BuildContext context,
-      KalenderEvent event,
-      FloatingDateTimeRange floatingRange,
-      VoidCallback dismissOverlay,
-    );
+///
+/// {@category Appearance}
+typedef MultiDayOverlayEventTileBuilder = MultiDayEventOverlayTile Function(
+  BuildContext context,
+  KalenderEvent event,
+  FloatingDateTimeRange floatingRange,
+  VoidCallback dismissOverlay,
+);
 
 /// A function that returns a [RenderBox] for the multi-day event layout.
+///
+/// {@category Layout}
 typedef RenderBoxCallback = RenderBox Function();
 
 /// A function that returns a [MultiDayOverlay] widget.
@@ -41,18 +38,20 @@ typedef RenderBoxCallback = RenderBox Function();
 /// The [overlayTileBuilder] is the builder for the overlay event tile.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef MultiDayOverlayBuilder =
-    Widget Function(
-      BuildContext context, {
-      required DateTime date,
-      required List<KalenderEvent> events,
-      required double tileHeight,
-      required OverlayPortalController portalController,
-      required RenderBoxCallback getMultiDayEventLayoutRenderBox,
-      required RenderBoxCallback getOverlayPortalRenderBox,
-      required MultiDayOverlayEventTileBuilder overlayTileBuilder,
-    });
+///
+/// {@category Appearance}
+typedef MultiDayOverlayBuilder = Widget Function(
+  BuildContext context, {
+  required DateTime date,
+  required List<KalenderEvent> events,
+  required double tileHeight,
+  required OverlayPortalController portalController,
+  required RenderBoxCallback getMultiDayEventLayoutRenderBox,
+  required RenderBoxCallback getOverlayPortalRenderBox,
+  required MultiDayOverlayEventTileBuilder overlayTileBuilder,
+});
 
+/// {@category Appearance}
 class MultiDayOverlayStyle with Diagnosticable {
   /// The function that returns the name of the day.
   final String Function(DateTime date)? dayNameBuilder;
@@ -181,9 +180,8 @@ class MultiDayOverlayStyle with Diagnosticable {
       eventPadding: EdgeInsets.lerp(a?.eventPadding, b?.eventPadding, t),
       // CardThemeData.lerp never returns null, so keep null when neither side
       // sets a theme rather than inventing an empty one.
-      cardTheme: a?.cardTheme == null && b?.cardTheme == null
-          ? null
-          : CardThemeData.lerp(a?.cardTheme, b?.cardTheme, t),
+      cardTheme:
+          a?.cardTheme == null && b?.cardTheme == null ? null : CardThemeData.lerp(a?.cardTheme, b?.cardTheme, t),
       closeButtonStyle: ButtonStyle.lerp(a?.closeButtonStyle, b?.closeButtonStyle, t),
       barrierColor: Color.lerp(a?.barrierColor, b?.barrierColor, t),
       width: lerpDouble(a?.width, b?.width, t),
@@ -212,19 +210,19 @@ class MultiDayOverlayStyle with Diagnosticable {
 
   @override
   int get hashCode => Object.hash(
-    dayNameBuilder,
-    dayNameTextStyle,
-    dateTextStyle,
-    closeIcon,
-    headerPadding,
-    eventsPadding,
-    eventPadding,
-    cardTheme,
-    closeButtonStyle,
-    barrierColor,
-    width,
-    headerHeight,
-  );
+        dayNameBuilder,
+        dayNameTextStyle,
+        dateTextStyle,
+        closeIcon,
+        headerPadding,
+        eventsPadding,
+        eventPadding,
+        cardTheme,
+        closeButtonStyle,
+        barrierColor,
+        width,
+        headerHeight,
+      );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -251,7 +249,11 @@ class MultiDayOverlayStyle with Diagnosticable {
 /// receives the measured size in [getPositionForChild], so the card is placed
 /// and clamped in a single pass.
 class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
-  const _MultiDayOverlayLayoutDelegate({required this.anchorTop, required this.anchorCenterX, required this.width});
+  const _MultiDayOverlayLayoutDelegate({
+    required this.anchorTop,
+    required this.anchorCenterX,
+    required this.width,
+  });
 
   /// Where the top of the card should sit, before clamping.
   final double anchorTop;
@@ -278,9 +280,8 @@ class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
     if (top + childSize.height > size.height) top = size.height - childSize.height;
     if (top < 0) top = 0;
 
-    final left = (anchorCenterX - childSize.width / 2)
-        .clamp(0.0, math.max(0.0, size.width - childSize.width))
-        .toDouble();
+    final left =
+        (anchorCenterX - childSize.width / 2).clamp(0.0, math.max(0.0, size.width - childSize.width)).toDouble();
 
     return Offset(left, top);
   }
@@ -293,6 +294,7 @@ class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
   }
 }
 
+/// {@category Appearance}
 class MultiDayOverlay extends StatelessWidget {
   /// The date for which the widget is created.
   final FloatingDateTime date;
@@ -434,7 +436,10 @@ class MultiDayOverlay extends StatelessWidget {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: portalController.hide,
-                child: ColoredBox(key: getBarrierKey(date), color: style.barrierColor ?? Colors.transparent),
+                child: ColoredBox(
+                  key: getBarrierKey(date),
+                  color: style.barrierColor ?? Colors.transparent,
+                ),
               ),
             ),
             CustomSingleChildLayout(
@@ -535,8 +540,7 @@ class MultiDayOverlay extends StatelessWidget {
                                       child: PassThroughPointer(
                                         child: Padding(
                                           padding: eventPadding,
-                                          child:
-                                              context.tileComponents.dropTargetTile?.call(context, selectedEvent) ??
+                                          child: context.tileComponents.dropTargetTile?.call(context, selectedEvent) ??
                                               const SizedBox(),
                                         ),
                                       ),

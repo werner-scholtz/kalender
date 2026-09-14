@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
@@ -41,14 +35,15 @@ String _formatTime(BuildContext context, KalenderTime time) {
 /// labels are only drawn for.
 ///
 /// Resolve the style with `KalenderTheme.of`.
-typedef TimeLineBuilder =
-    Widget Function(
-      BuildContext context,
-      double heightPerMinute,
-      KalenderTimeRange timeOfDayRange,
-      ValueNotifier<KalenderEvent?> eventBeingDragged,
-      ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
-    );
+///
+/// {@category Appearance}
+typedef TimeLineBuilder = Widget Function(
+  BuildContext context,
+  double heightPerMinute,
+  KalenderTimeRange timeOfDayRange,
+  ValueNotifier<KalenderEvent?> eventBeingDragged,
+  ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
+);
 
 /// Resolves the width of the timeline gutter.
 ///
@@ -62,7 +57,12 @@ typedef TimeLineBuilder =
 /// `heightPerMinuteOf`.
 ///
 /// See [defaultTimelineWidth] for the default implementation.
-typedef TimelineWidthBuilder = double Function(BuildContext context, KalenderTimeRange timeOfDayRange);
+///
+/// {@category Appearance}
+typedef TimelineWidthBuilder = double Function(
+  BuildContext context,
+  KalenderTimeRange timeOfDayRange,
+);
 
 /// The default [TimelineWidthBuilder].
 ///
@@ -72,6 +72,8 @@ typedef TimelineWidthBuilder = double Function(BuildContext context, KalenderTim
 /// gutter correct regardless of the locale's time format, the hour's digit
 /// count, and any custom [MultiDayBodyComponents.timelineStringBuilder]. Honors
 /// the ambient [MediaQueryData.textScaler] so it reserves enough room for scaled text.
+///
+/// {@category Appearance}
 double defaultTimelineWidth(BuildContext context, KalenderTimeRange timeOfDayRange) {
   final style = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
   if (style.width != null) return style.width!;
@@ -112,6 +114,8 @@ double defaultTimelineWidth(BuildContext context, KalenderTimeRange timeOfDayRan
 }
 
 /// The style of the [TimeLine] widget.
+///
+/// {@category Appearance}
 class TimelineStyle with Diagnosticable {
   /// The style of the text.
   final TextStyle? textStyle;
@@ -223,15 +227,15 @@ class TimelineStyle with Diagnosticable {
 
   @override
   int get hashCode => Object.hash(
-    textStyle,
-    textDirection,
-    textAlign,
-    textOverflow,
-    textPadding,
-    width,
-    startDecoration,
-    endDecoration,
-  );
+        textStyle,
+        textDirection,
+        textAlign,
+        textOverflow,
+        textPadding,
+        width,
+        startDecoration,
+        endDecoration,
+      );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -248,6 +252,8 @@ class TimelineStyle with Diagnosticable {
 }
 
 /// A mixin that provides utility methods for the [TimeLine] and [HourLines] widget.
+///
+/// {@category Appearance}
 mixin TimeLineUtils {
   /// The style of the timeline.
   TimelineStyle? get timelineStyle;
@@ -313,6 +319,8 @@ mixin TimeLineUtils {
 }
 
 /// A widget that displays a list of times based on the [timeOfDayRange] and [heightPerMinute].
+///
+/// {@category Appearance}
 class TimeLine extends StatelessWidget with TimeLineUtils {
   /// The [KalenderTimeRange] that will be used to display the timeline.
   final KalenderTimeRange timeOfDayRange;
@@ -446,7 +454,12 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
     return SizedBox(
       width: itemSize.width,
-      child: Stack(children: [...positionedTimes.nonNulls, eventBeingDraggedTimes]),
+      child: Stack(
+        children: [
+          ...positionedTimes.nonNulls,
+          eventBeingDraggedTimes,
+        ],
+      ),
     );
   }
 }

@@ -172,6 +172,8 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
 /// The draggable that detects a resize gesture, wrapping the handle widget from
 /// [TileComponents.verticalResizeHandle] or [TileComponents.horizontalResizeHandle].
+///
+/// {@category Interaction}
 class ResizeDetector extends StatelessWidget {
   /// The direction of the resize.
   final ResizeDirection direction;

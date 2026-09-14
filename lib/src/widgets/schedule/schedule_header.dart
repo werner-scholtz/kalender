@@ -6,6 +6,7 @@
 
 import 'package:flutter/widgets.dart';
 
+/// {@category Views}
 class ScheduleHeader extends StatelessWidget {
   const ScheduleHeader({super.key});
 

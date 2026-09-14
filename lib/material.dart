@@ -23,24 +23,32 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 /// Converts a [KalenderDateTimeRange] to Material's [DateTimeRange].
+///
+/// {@category Dates and times}
 extension KalenderDateTimeRangeMaterial on KalenderDateTimeRange {
   /// This range as a Material [DateTimeRange].
   DateTimeRange<DateTime> toDateTimeRange() => DateTimeRange<DateTime>(start: start, end: end);
 }
 
 /// Converts Material's [DateTimeRange] to a [KalenderDateTimeRange].
+///
+/// {@category Dates and times}
 extension MaterialDateTimeRangeKalender<T extends DateTime> on DateTimeRange<T> {
   /// This range as a [KalenderDateTimeRange].
   KalenderDateTimeRange toKalenderDateTimeRange() => KalenderDateTimeRange(start: start, end: end);
 }
 
 /// Converts a [KalenderTime] to Material's [TimeOfDay].
+///
+/// {@category Dates and times}
 extension KalenderTimeMaterial on KalenderTime {
   /// This time as a Material [TimeOfDay].
   TimeOfDay toTimeOfDay() => TimeOfDay(hour: hour, minute: minute);
 }
 
 /// Converts Material's [TimeOfDay] to a [KalenderTime].
+///
+/// {@category Dates and times}
 extension MaterialTimeOfDayKalender on TimeOfDay {
   /// This time as a [KalenderTime].
   KalenderTime toKalenderTime() => KalenderTime(hour: hour, minute: minute);

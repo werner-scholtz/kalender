@@ -10,6 +10,8 @@ import 'package:kalender/kalender.dart';
 ///
 /// [dates], [overlaps] and [weekNumbers] step calendar units, so they stay correct across a DST transition. Use
 /// [forLocation] to convert to a [KalenderDateTimeRange].
+///
+/// {@category Dates and times}
 class FloatingDateTimeRange {
   /// Creates a [FloatingDateTimeRange] instance.
   FloatingDateTimeRange({required DateTime start, required DateTime end})

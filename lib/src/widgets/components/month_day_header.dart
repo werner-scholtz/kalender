@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
@@ -16,12 +10,23 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// so comparisons against `DateTime.now()` behave correctly.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef MonthDayHeaderBuilder = Widget Function(BuildContext context, DateTime date);
+///
+/// {@category Appearance}
+typedef MonthDayHeaderBuilder = Widget Function(
+  BuildContext context,
+  DateTime date,
+);
 
 /// The style of the [MonthDayHeader].
+///
+/// {@category Appearance}
 class MonthDayHeaderStyle with Diagnosticable {
   /// Creates a new [MonthDayHeaderStyle].
-  const MonthDayHeaderStyle({this.numberTextStyle, this.buttonSize, this.margin});
+  const MonthDayHeaderStyle({
+    this.numberTextStyle,
+    this.buttonSize,
+    this.margin,
+  });
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
@@ -35,7 +40,11 @@ class MonthDayHeaderStyle with Diagnosticable {
   final EdgeInsets? margin;
 
   /// Creates a copy of this style with the given fields replaced with the new values.
-  MonthDayHeaderStyle copyWith({TextStyle? numberTextStyle, Size? buttonSize, EdgeInsets? margin}) {
+  MonthDayHeaderStyle copyWith({
+    TextStyle? numberTextStyle,
+    Size? buttonSize,
+    EdgeInsets? margin,
+  }) {
     return MonthDayHeaderStyle(
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
       buttonSize: buttonSize ?? this.buttonSize,
@@ -86,6 +95,8 @@ class MonthDayHeaderStyle with Diagnosticable {
 }
 
 /// A widget that displays the day number.
+///
+/// {@category Appearance}
 class MonthDayHeader extends StatelessWidget {
   /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('MonthDayHeader.today');
