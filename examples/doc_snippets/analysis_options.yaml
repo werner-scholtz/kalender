@@ -9,3 +9,5 @@ analyzer:
     unused_import: ignore
     unused_local_variable: ignore
     unused_shown_name: ignore
+  exclude:
+    - build/**

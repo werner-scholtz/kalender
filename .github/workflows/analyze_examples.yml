@@ -9,6 +9,7 @@ on:
       - 'lib/**'
       - 'examples/**'
       - 'pubspec.yaml'
+      - '.fvmrc'
       - '.github/workflows/analyze_examples.yml'
   push:
     branches: [main, main-wip]
@@ -16,6 +17,7 @@ on:
       - 'lib/**'
       - 'examples/**'
       - 'pubspec.yaml'
+      - '.fvmrc'
       - '.github/workflows/analyze_examples.yml'
 
 jobs:
@@ -37,20 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # Each example runs on the Flutter its .fvmrc names, or the root one when it has none.
-      - name: Read the Flutter version
-        id: flutter
-        shell: bash
-        run: |
-          file=examples/${{ matrix.example }}/.fvmrc
-          [ -f "$file" ] || file=.fvmrc
-          echo "version=$(jq -r .flutter "$file")" >> "$GITHUB_OUTPUT"
-
       - uses: subosito/flutter-action@v2
         with:
           cache: true
-          flutter-version: ${{ steps.flutter.outputs.version }}
-          channel: stable
+          flutter-version-file: .fvmrc
 
       - name: Install dependencies
         run: flutter pub get

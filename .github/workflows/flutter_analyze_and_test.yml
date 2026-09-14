@@ -21,6 +21,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+          flutter-version-file: .fvmrc
 
       # The examples are excluded via analysis_options.yaml (analyzer.exclude) and
       # verified by the separate analyze_examples.yml workflow.
@@ -75,6 +76,31 @@ jobs:
         shell: bash
         working-directory: ./
 
+  latest-stable: # The newest stable Flutter, ahead of .fvmrc. A failure here does not fail the workflow.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+        shell: bash
+        working-directory: ./
+
+      - name: Analyze
+        run: flutter analyze
+        shell: bash
+        working-directory: ./
+
+      - name: Run tests
+        run: flutter test
+        shell: bash
+        working-directory: ./
+
   doc-snippets: # The code in the README and the guides, which flutter analyze cannot see
     runs-on: ubuntu-latest
     steps:
@@ -82,6 +108,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+          flutter-version-file: .fvmrc
 
       - name: Install dependencies
         run: flutter pub get
@@ -112,6 +139,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+          flutter-version-file: .fvmrc
 
       - name: Install dependencies
         run: flutter pub get
