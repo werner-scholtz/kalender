@@ -149,38 +149,18 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   }
 
   @override
-  Future<void> animateToNextPage({
-    Duration? duration,
-    Curve? curve,
-  }) async {
-    await viewController?.animateToNextPage(
-      duration: duration,
-      curve: curve,
-    );
+  Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
+    await viewController?.animateToNextPage(duration: duration, curve: curve);
   }
 
   @override
-  Future<void> animateToPreviousPage({
-    Duration? duration,
-    Curve? curve,
-  }) async {
-    return viewController?.animateToPreviousPage(
-      duration: duration,
-      curve: curve,
-    );
+  Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
+    return viewController?.animateToPreviousPage(duration: duration, curve: curve);
   }
 
   @override
-  Future<void> animateToDate(
-    DateTime date, {
-    Duration? duration,
-    Curve? curve,
-  }) async {
-    return viewController?.animateToDate(
-      date,
-      duration: duration,
-      curve: curve,
-    );
+  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
+    return viewController?.animateToDate(date, duration: duration, curve: curve);
   }
 
   @override
@@ -209,10 +189,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    return viewController?.animateToEvent(
-      event,
-      centerEvent: centerEvent,
-    );
+    return viewController?.animateToEvent(event, centerEvent: centerEvent);
   }
 
   @override

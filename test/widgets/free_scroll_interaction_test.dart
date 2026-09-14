@@ -91,10 +91,7 @@ void main() {
 
     // A 3-day event inside the first visible week.
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: start.add(const Duration(days: 1)),
-        end: start.add(const Duration(days: 4)),
-      ),
+      KalenderEvent(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
     );
 
     await pumpFreeScroll(
@@ -121,19 +118,10 @@ void main() {
 
   testWidgets('dragging an event to the viewport edge scrolls to adjacent days', (tester) async {
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: start.add(const Duration(days: 1)),
-        end: start.add(const Duration(days: 3)),
-      ),
+      KalenderEvent(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
     );
 
-    await pumpFreeScroll(
-      tester,
-      KalenderCallbacks(
-        onEventChange: (event) => event,
-        onEventChanged: (_, __) {},
-      ),
-    );
+    await pumpFreeScroll(tester, KalenderCallbacks(onEventChange: (event) => event, onEventChanged: (_, __) {}));
 
     final controller = viewController().pageController;
     final pageBefore = controller.page ?? 0;

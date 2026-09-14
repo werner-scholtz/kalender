@@ -36,12 +36,7 @@ void main() {
       final eventsController = DefaultEventsController();
       final kalenderController = KalenderController();
 
-      eventsController.addEvent(
-        KalenderEvent(
-          start: DateTime(2025, 1, 15, 9),
-          end: DateTime(2025, 1, 15, 10),
-        ),
-      );
+      eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 15, 9), end: DateTime(2025, 1, 15, 10)));
 
       await pumpAndSettleWithMaterialApp(
         tester,
@@ -52,9 +47,7 @@ void main() {
             displayRange: KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
             initialDateTime: DateTime(2025, 1),
           ),
-          body: const KalenderBody(
-            monthBodyConfiguration: MonthBodyConfiguration(eventPadding: padding),
-          ),
+          body: const KalenderBody(monthBodyConfiguration: MonthBodyConfiguration(eventPadding: padding)),
         ),
       );
 

@@ -31,10 +31,7 @@ void main() {
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),
     );
-    await pumpAndSettleWithMaterialApp(
-      tester,
-      theme == null ? view : KalenderTheme(data: theme, child: view),
-    );
+    await pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
   }
 
   final displayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2));

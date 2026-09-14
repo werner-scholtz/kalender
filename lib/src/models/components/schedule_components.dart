@@ -84,12 +84,12 @@ class ScheduleComponents {
 
   @override
   int get hashCode => Object.hash(
-        leadingDateBuilder,
-        leadingDateStringBuilder,
-        scheduleTileHighlightBuilder,
-        emptyItemBuilder,
-        monthItemBuilder,
-      );
+    leadingDateBuilder,
+    leadingDateStringBuilder,
+    scheduleTileHighlightBuilder,
+    emptyItemBuilder,
+    monthItemBuilder,
+  );
 }
 
 /// The builder for the empty item.

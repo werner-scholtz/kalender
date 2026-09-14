@@ -45,25 +45,19 @@ class MonthWeekNumberGutter extends StatelessWidget {
       child: SizedBox(
         width: _width(context),
         child: Column(
-          children: List.generate(
-            numberOfRows,
-            (index) {
-              final range = _rangeForRow(index);
-              return Expanded(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: index == 0 ? dividerSide : BorderSide.none,
-                      bottom: dividerSide,
-                    ),
-                  ),
-                  child: Builder(
-                    builder: (context) => weekNumberBuilder(context, range.forLocation(location: context.location)),
-                  ),
+          children: List.generate(numberOfRows, (index) {
+            final range = _rangeForRow(index);
+            return Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(top: index == 0 ? dividerSide : BorderSide.none, bottom: dividerSide),
                 ),
-              );
-            },
-          ),
+                child: Builder(
+                  builder: (context) => weekNumberBuilder(context, range.forLocation(location: context.location)),
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -71,7 +65,10 @@ class MonthWeekNumberGutter extends StatelessWidget {
 
   FloatingDateTimeRange _rangeForRow(int index) {
     final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-    return FloatingDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
+    return FloatingDateTimeRange(
+      start: start,
+      end: start.add(const Duration(days: DateTime.daysPerWeek)),
+    );
   }
 }
 

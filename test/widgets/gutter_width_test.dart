@@ -35,7 +35,10 @@ void main() {
       kalenderController: kalenderController,
       viewConfiguration: configuration,
       header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderTheme(data: bodyTheme, child: KalenderBody(multiDayTileComponents: tiles)),
+      body: KalenderTheme(
+        data: bodyTheme,
+        child: KalenderBody(multiDayTileComponents: tiles),
+      ),
     );
   }
 
@@ -51,10 +54,10 @@ void main() {
   }
 
   MonthViewConfiguration month() => MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025, 8),
-        showWeekNumbers: true,
-      );
+    displayRange: year2025DisplayRange,
+    initialDateTime: DateTime(2025, 8),
+    showWeekNumbers: true,
+  );
 
   MultiDayViewConfiguration week() => MultiDayViewConfiguration.week(displayRange: year2025DisplayRange);
 
@@ -84,9 +87,7 @@ void main() {
           kalenderController: kalenderController,
           viewConfiguration: month(),
           components: const KalenderComponents(
-            monthComponents: MonthComponents(
-              bodyComponents: MonthBodyComponents(weekNumberWidth: _fixedWidth),
-            ),
+            monthComponents: MonthComponents(bodyComponents: MonthBodyComponents(weekNumberWidth: _fixedWidth)),
           ),
           header: KalenderHeader(multiDayTileComponents: tiles),
           body: KalenderBody(multiDayTileComponents: tiles),
@@ -101,10 +102,7 @@ void main() {
     // body positions the gutter through a layout delegate.
     for (final direction in TextDirection.values) {
       testWidgets('the gutter and the spacer sit on the same side in $direction', (tester) async {
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          Directionality(textDirection: direction, child: plain(month())),
-        );
+        await pumpAndSettleWithMaterialApp(tester, Directionality(textDirection: direction, child: plain(month())));
         expect(
           tester.getRect(find.byType(MonthWeekNumberGutter)).left,
           moreOrLessEquals(tester.getRect(find.byType(MonthWeekNumberSpacer)).left, epsilon: 0.5),
@@ -115,7 +113,10 @@ void main() {
     testWidgets('a button size above the calendar widens the column', (tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,
-        plain(month(), theme: const KalenderThemeData(weekNumberStyle: WeekNumberStyle(buttonSize: Size(80, 30)))),
+        plain(
+          month(),
+          theme: const KalenderThemeData(weekNumberStyle: WeekNumberStyle(buttonSize: Size(80, 30))),
+        ),
       );
       // The button plus the style's default horizontal padding.
       expect(gutterWidth(tester), 88);
@@ -194,10 +195,7 @@ void main() {
       await pumpAndSettleWithMaterialApp(tester, plain(week()));
 
       final gutter = tester.getRect(find.byKey(MultiDayBody.timelineKey));
-      final labels = find.descendant(
-        of: find.byKey(MultiDayBody.timelineKey),
-        matching: find.byType(Text),
-      );
+      final labels = find.descendant(of: find.byKey(MultiDayBody.timelineKey), matching: find.byType(Text));
       expect(labels, findsWidgets);
 
       for (var index = 0; index < tester.widgetList(labels).length; index++) {

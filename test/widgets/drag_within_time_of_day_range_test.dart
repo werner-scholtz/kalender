@@ -45,8 +45,11 @@ void main() {
             createEventGesture: EventInteractionGesture.tap,
             modifyEventGesture: EventInteractionGesture.tap,
           ),
-          snapping:
-              const KalenderSnapping(snapIntervalMinutes: 15, snapToTimeIndicator: false, snapToOtherEvents: false),
+          snapping: const KalenderSnapping(
+            snapIntervalMinutes: 15,
+            snapToTimeIndicator: false,
+            snapToOtherEvents: false,
+          ),
           multiDayTileComponents: TileComponents(tileBuilder: (context, event, range) => Container(color: Colors.red)),
         ),
       ),

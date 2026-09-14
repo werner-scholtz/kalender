@@ -32,10 +32,7 @@ class MultiDayBody extends StatelessWidget {
   /// This widget is used to display events in a day/week view format.
   ///
   /// This widget is intended to be the body of a [KalenderView].
-  const MultiDayBody({
-    super.key,
-    this.configuration,
-  });
+  const MultiDayBody({super.key, this.configuration});
 
   /// The key used to identify the [SingleChildScrollView] of the [MultiDayBody].
   static const singleChildScrollViewKey = ValueKey('singleChildScrollViewKey');

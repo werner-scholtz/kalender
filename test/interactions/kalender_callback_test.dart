@@ -32,10 +32,7 @@ void main() {
   });
 
   /// Helper to pump a MultiDayView (single day) with the given callbacks.
-  Future<void> pumpMultiDayView(
-    WidgetTester tester, {
-    required KalenderCallbacks callbacks,
-  }) async {
+  Future<void> pumpMultiDayView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -54,10 +51,7 @@ void main() {
   }
 
   /// Helper to pump a MonthView with the given callbacks.
-  Future<void> pumpMonthView(
-    WidgetTester tester, {
-    required KalenderCallbacks callbacks,
-  }) async {
+  Future<void> pumpMonthView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -244,10 +238,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        KalenderEvent(
-          start: DateTime(2025, 1, 1, 1),
-          end: DateTime(2025, 1, 1, 12),
-        ),
+        KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
       );
       await tester.pumpAndSettle();
 
@@ -276,10 +267,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        KalenderEvent(
-          start: DateTime(2025, 1, 1, 1),
-          end: DateTime(2025, 1, 1, 12),
-        ),
+        KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
       );
       await tester.pumpAndSettle();
 
@@ -306,12 +294,7 @@ void main() {
     testWidgets('onPageChanged fires when navigating pages', (tester) async {
       KalenderDateTimeRange? changedRange;
 
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onPageChanged: (range) => changedRange = range,
-        ),
-      );
+      await pumpMultiDayView(tester, callbacks: KalenderCallbacks(onPageChanged: (range) => changedRange = range));
 
       expect(changedRange, isNull);
 
@@ -503,9 +486,7 @@ void main() {
         ),
       );
 
-      final id = eventsController.addEvent(
-        KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
-      );
+      final id = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)));
       await tester.pumpAndSettle();
 
       final eventFinder = find.byKey(MultiDayEventTile.tileKey(id));
@@ -532,9 +513,7 @@ void main() {
         ),
       );
 
-      final id = eventsController.addEvent(
-        KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
-      );
+      final id = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)));
       await tester.pumpAndSettle();
 
       final gestureDetector = find.byKey(MultiDayEventTile.gestureDetectorKey(id));
@@ -556,12 +535,7 @@ void main() {
     testWidgets('onPageChanged fires when navigating pages', (tester) async {
       KalenderDateTimeRange? changedRange;
 
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onPageChanged: (range) => changedRange = range,
-        ),
-      );
+      await pumpMonthView(tester, callbacks: KalenderCallbacks(onPageChanged: (range) => changedRange = range));
 
       expect(changedRange, isNull);
 
@@ -625,10 +599,7 @@ void main() {
   // Imprecise (touch) helpers
   // ---------------------------------------------------------------------------
 
-  Future<void> pumpImpreciseMultiDayView(
-    WidgetTester tester, {
-    required KalenderCallbacks callbacks,
-  }) async {
+  Future<void> pumpImpreciseMultiDayView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -646,10 +617,7 @@ void main() {
     );
   }
 
-  Future<void> pumpImpreciseMonthView(
-    WidgetTester tester, {
-    required KalenderCallbacks callbacks,
-  }) async {
+  Future<void> pumpImpreciseMonthView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
@@ -709,10 +677,7 @@ void main() {
       );
 
       final id = eventsController.addEvent(
-        KalenderEvent(
-          start: DateTime(2025, 1, 1, 1),
-          end: DateTime(2025, 1, 1, 12),
-        ),
+        KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
       );
       await tester.pumpAndSettle();
 
@@ -771,9 +736,7 @@ void main() {
         ),
       );
 
-      final id = eventsController.addEvent(
-        KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)),
-      );
+      final id = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)));
       await tester.pumpAndSettle();
 
       final eventFinder = find.byKey(MultiDayEventTile.tileKey(id));

@@ -32,7 +32,12 @@ void main() {
   testWidgets('a widget-level style overrides the extension', (tester) async {
     const extension = KalenderThemeData(daySeparatorStyle: DaySeparatorStyle(color: Color(0xFF123456)));
     const widgetStyle = DaySeparatorStyle(color: Color(0xFF654321));
-    await tester.pumpWidget(app(extension: extension, child: const DaySeparator(style: widgetStyle)));
+    await tester.pumpWidget(
+      app(
+        extension: extension,
+        child: const DaySeparator(style: widgetStyle),
+      ),
+    );
     expect(daySeparatorColor(tester), const Color(0xFF654321));
   });
 
@@ -40,7 +45,12 @@ void main() {
     // The extension sets the color and width, the widget style only the width.
     const extension = KalenderThemeData(daySeparatorStyle: DaySeparatorStyle(color: Color(0xFF123456), width: 3));
     const widgetStyle = DaySeparatorStyle(width: 5);
-    await tester.pumpWidget(app(extension: extension, child: const DaySeparator(style: widgetStyle)));
+    await tester.pumpWidget(
+      app(
+        extension: extension,
+        child: const DaySeparator(style: widgetStyle),
+      ),
+    );
     expect(daySeparatorColor(tester), const Color(0xFF123456));
     final box = tester.renderObject<RenderBox>(find.byType(Container));
     expect(box.size.width, 5);

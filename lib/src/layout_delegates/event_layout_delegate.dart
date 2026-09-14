@@ -290,9 +290,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   }
 
   /// Groups the [VerticalLayoutData] into horizontal groups.
-  List<HorizontalGroupData> groupVerticalLayoutData(
-    List<VerticalLayoutData> verticalLayoutData,
-  ) {
+  List<HorizontalGroupData> groupVerticalLayoutData(List<VerticalLayoutData> verticalLayoutData) {
     final horizontalGroups = <HorizontalGroupData>[];
 
     for (var i = 0; i < verticalLayoutData.length; i++) {
@@ -465,10 +463,9 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
   List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
     // Sort the data from top to bottom.
     // If the top values are equal compare the bottom
-    return layoutData
-      ..sort((a, b) {
-        return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
-      });
+    return layoutData..sort((a, b) {
+      return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
+    });
   }
 
   @override
@@ -482,9 +479,7 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
     for (var i = 0; i < horizontalGroups.length; i++) {
       final group = horizontalGroups.elementAt(i);
       final verticalLayoutData = group.verticalLayoutData
-        ..sort(
-          (a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : b.height.compareTo(a.height),
-        );
+        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : b.height.compareTo(a.height));
 
       final numberOfEvents = verticalLayoutData.length;
       final longest = findLongestChain(verticalLayoutData);
@@ -523,13 +518,7 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
         // every event (including culled ones) so on-screen tiles stay aligned
         // with off-screen overlapping partners.
         if (hasChild(id)) {
-          layoutChild(
-            id,
-            BoxConstraints.tightFor(
-              width: tileWidth,
-              height: data.height,
-            ),
-          );
+          layoutChild(id, BoxConstraints.tightFor(width: tileWidth, height: data.height));
         }
 
         tiles[id] = Offset(tileXOffset, data.top);
@@ -592,11 +581,7 @@ class EventLayoutData {
   /// The vertical layout data of the event.
   final VerticalLayoutData verticalLayoutData;
 
-  EventLayoutData({
-    required this.left,
-    required this.right,
-    required this.verticalLayoutData,
-  });
+  EventLayoutData({required this.left, required this.right, required this.verticalLayoutData});
 
   /// The width of the event.
   double get width => right - left;

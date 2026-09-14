@@ -25,12 +25,7 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
     if (hasGutter) {
       final gutterSize = layoutChild(
         gutterId!,
-        BoxConstraints(
-          minWidth: 0,
-          maxWidth: size.width,
-          minHeight: size.height,
-          maxHeight: size.height,
-        ),
+        BoxConstraints(minWidth: 0, maxWidth: size.width, minHeight: size.height, maxHeight: size.height),
       );
       gutterWidth = gutterSize.width;
     }
@@ -73,10 +68,7 @@ class MonthWeekNumberHeaderLayoutDelegate extends MultiChildLayoutDelegate {
   final int? probeId;
   final int contentId;
 
-  MonthWeekNumberHeaderLayoutDelegate({
-    required this.probeId,
-    required this.contentId,
-  });
+  MonthWeekNumberHeaderLayoutDelegate({required this.probeId, required this.contentId});
 
   @override
   void performLayout(Size size) {
@@ -85,19 +77,15 @@ class MonthWeekNumberHeaderLayoutDelegate extends MultiChildLayoutDelegate {
     if (probeId != null && hasChild(probeId!)) {
       final probeSize = layoutChild(
         probeId!,
-        BoxConstraints(
-          minWidth: 0,
-          maxWidth: size.width,
-          minHeight: 0,
-          maxHeight: size.height,
-        ),
+        BoxConstraints(minWidth: 0, maxWidth: size.width, minHeight: 0, maxHeight: size.height),
       );
       probeWidth = probeSize.width;
       positionChild(probeId!, Offset.zero);
     }
 
-    final contentConstraints =
-        BoxConstraints.tight(Size((size.width - probeWidth).clamp(0.0, size.width), size.height));
+    final contentConstraints = BoxConstraints.tight(
+      Size((size.width - probeWidth).clamp(0.0, size.width), size.height),
+    );
     layoutChild(contentId, contentConstraints);
     positionChild(contentId, Offset(probeWidth, 0));
   }

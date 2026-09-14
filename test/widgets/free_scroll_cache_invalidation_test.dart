@@ -64,9 +64,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // A three-day event starting on the initial leading day.
-    final id = eventsController.addEvent(
-      KalenderEvent(start: initial, end: initial.add(const Duration(days: 3))),
-    );
+    final id = eventsController.addEvent(KalenderEvent(start: initial, end: initial.add(const Duration(days: 3))));
     await tester.pumpAndSettle();
 
     final tile = MultiDayEventTile.tileKey(id);

@@ -224,7 +224,8 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   void didUpdateWidget(covariant MultiDayEventLayoutWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final shouldUpdateCache = !oldWidget.events.equals(widget.events) ||
+    final shouldUpdateCache =
+        !oldWidget.events.equals(widget.events) ||
         oldWidget.configuration != widget.configuration ||
         oldWidget.textDirection != widget.textDirection;
 
@@ -305,8 +306,9 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         }
 
         final previewEvents = widget.events.toList();
-        final selectedEventIndex =
-            previewEvents.indexWhere((item) => item.id == context.kalenderController.selectedEventId);
+        final selectedEventIndex = previewEvents.indexWhere(
+          (item) => item.id == context.kalenderController.selectedEventId,
+        );
         if (selectedEventIndex != -1) {
           previewEvents[selectedEventIndex] = event;
         } else {
@@ -368,7 +370,8 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
                 final eventsForColumn = frame.eventsForColumn(column);
                 late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
 
-                late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
+                late final overlayPortal =
+                    widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
                       context,
                       date: date,
                       events: eventsForColumn,
@@ -389,9 +392,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
                       overlayTileBuilder: _overlayEventTileBuilder,
                     );
 
-                return Expanded(
-                  child: row >= maxNumberOfRows ? overlayPortal : const SizedBox.shrink(),
-                );
+                return Expanded(child: row >= maxNumberOfRows ? overlayPortal : const SizedBox.shrink());
               }).toList();
             })(),
           ),

@@ -16,24 +16,13 @@ void main() {
   late String eventId;
   late String otherId;
 
-  final interaction = KalenderInteraction(
-    allowResizing: true,
-    allowRescheduling: true,
-    inputMode: InputMode.precise,
-  );
+  final interaction = KalenderInteraction(allowResizing: true, allowRescheduling: true, inputMode: InputMode.precise);
 
   setUp(() {
     eventsController = DefaultEventsController();
     kalenderController = KalenderController();
-    eventId = eventsController.addEvent(
-      KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)),
-    );
-    otherId = eventsController.addEvent(
-      KalenderEvent(
-        start: DateTime(2025, 1, 1, 10),
-        end: DateTime(2025, 1, 1, 14),
-      ),
-    );
+    eventId = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)));
+    otherId = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 10), end: DateTime(2025, 1, 1, 14)));
   });
 
   tearDown(() {

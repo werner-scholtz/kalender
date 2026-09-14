@@ -13,11 +13,7 @@ import '../utilities.dart';
 void expectNoOverlaps(List<Rect> rects) {
   for (var i = 0; i < rects.length; i++) {
     for (var j = i + 1; j < rects.length; j++) {
-      expect(
-        rects[i].overlaps(rects[j]),
-        isFalse,
-        reason: 'Rect ${i + 1} overlaps with Rect ${j + 1}',
-      );
+      expect(rects[i].overlaps(rects[j]), isFalse, reason: 'Rect ${i + 1} overlaps with Rect ${j + 1}');
     }
   }
 }
@@ -31,10 +27,7 @@ void main() {
     late KalenderController controller;
 
     final tileComponents = TileComponents(
-      tileBuilder: (context, event, tileRange) => Container(
-        key: ValueKey(event.id),
-        child: Text(event.id.toString()),
-      ),
+      tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), child: Text(event.id.toString())),
       dropTargetTile: (context, event) => Container(key: const ValueKey('drop-target')),
     );
 
@@ -50,10 +43,7 @@ void main() {
     // -----------------------------------------------------------------------
     // Widget-building helper – avoids repeating the full provider/widget tree.
     // -----------------------------------------------------------------------
-    Widget buildLayoutWidget({
-      required HorizontalConfiguration configuration,
-      Widget? sizedBoxWrapper,
-    }) {
+    Widget buildLayoutWidget({required HorizontalConfiguration configuration, Widget? sizedBoxWrapper}) {
       final inner = MultiDayEventLayoutWidget(
         events: eventsController.events.toList(),
         floatingRange: visibleRange,
@@ -175,10 +165,7 @@ void main() {
           start: start,
           end: start.copyWith(day: start.day + 3),
         ),
-        KalenderEvent(
-          start: start,
-          end: start.add(const Duration(hours: 6)),
-        ),
+        KalenderEvent(start: start, end: start.add(const Duration(hours: 6))),
       ];
       eventsController.addEvents(events);
 
@@ -204,10 +191,7 @@ void main() {
     });
 
     testWidgets('Drop target layout uses the selected event span during horizontal resize', (tester) async {
-      final storedEvent = KalenderEvent(
-        start: DateTime(2025, 3, 24),
-        end: DateTime(2025, 3, 25),
-      );
+      final storedEvent = KalenderEvent(start: DateTime(2025, 3, 24), end: DateTime(2025, 3, 25));
       eventsController.addEvent(storedEvent);
 
       const dayWidth = 80.0;
@@ -228,12 +212,7 @@ void main() {
       final initialWidth = tester.getSize(find.byKey(const ValueKey('drop-target'))).width;
 
       controller.selectEvent(
-        storedEvent.withDateTimeRange(
-          KalenderDateTimeRange(
-            start: DateTime(2025, 3, 24),
-            end: DateTime(2025, 3, 27),
-          ),
-        ),
+        storedEvent.withDateTimeRange(KalenderDateTimeRange(start: DateTime(2025, 3, 24), end: DateTime(2025, 3, 27))),
         internal: true,
       );
       await tester.pump();
@@ -251,30 +230,12 @@ void main() {
       ///                  |-----6----|
 
       final events = [
-        KalenderEvent(
-          start: DateTime(2025, 3, 24),
-          end: DateTime(2025, 3, 27),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 27),
-          end: DateTime(2025, 3, 30),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 24),
-          end: DateTime(2025, 3, 25),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 25),
-          end: DateTime(2025, 3, 28),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 28),
-          end: DateTime(2025, 3, 30),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 27),
-          end: DateTime(2025, 3, 30),
-        ),
+        KalenderEvent(start: DateTime(2025, 3, 24), end: DateTime(2025, 3, 27)),
+        KalenderEvent(start: DateTime(2025, 3, 27), end: DateTime(2025, 3, 30)),
+        KalenderEvent(start: DateTime(2025, 3, 24), end: DateTime(2025, 3, 25)),
+        KalenderEvent(start: DateTime(2025, 3, 25), end: DateTime(2025, 3, 28)),
+        KalenderEvent(start: DateTime(2025, 3, 28), end: DateTime(2025, 3, 30)),
+        KalenderEvent(start: DateTime(2025, 3, 27), end: DateTime(2025, 3, 30)),
       ];
       eventsController.addEvents(events);
 
@@ -307,22 +268,10 @@ void main() {
       /// _______________________________
       ///                 |------4----|
       final events = [
-        KalenderEvent(
-          start: DateTime(2025, 3, 24),
-          end: DateTime(2025, 3, 27),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 27),
-          end: DateTime(2025, 3, 30),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 25),
-          end: DateTime(2025, 3, 28),
-        ),
-        KalenderEvent(
-          start: DateTime(2025, 3, 27),
-          end: DateTime(2025, 3, 30),
-        ),
+        KalenderEvent(start: DateTime(2025, 3, 24), end: DateTime(2025, 3, 27)),
+        KalenderEvent(start: DateTime(2025, 3, 27), end: DateTime(2025, 3, 30)),
+        KalenderEvent(start: DateTime(2025, 3, 25), end: DateTime(2025, 3, 28)),
+        KalenderEvent(start: DateTime(2025, 3, 27), end: DateTime(2025, 3, 30)),
       ];
       eventsController.addEvents(events);
 
@@ -367,14 +316,8 @@ void main() {
           start: start,
           end: start.copyWith(day: start.day + 3),
         ),
-        KalenderEvent(
-          start: start.copyWith(hour: 3),
-          end: start.copyWith(hour: 6),
-        ),
-        KalenderEvent(
-          start: start.copyWith(hour: 7),
-          end: start.copyWith(hour: 10),
-        ),
+        KalenderEvent(start: start.copyWith(hour: 3), end: start.copyWith(hour: 6)),
+        KalenderEvent(start: start.copyWith(hour: 7), end: start.copyWith(hour: 10)),
       ];
       eventsController.addEvents(events);
 
@@ -430,22 +373,10 @@ void main() {
       /// _______________________________
       ///   |-4-|
       final events = [
-        KalenderEvent(
-          start: start,
-          end: start.copyWith(hour: 12),
-        ),
-        KalenderEvent(
-          start: start,
-          end: start.copyWith(hour: 8),
-        ),
-        KalenderEvent(
-          start: start.copyWith(hour: 3),
-          end: start.copyWith(hour: 4),
-        ),
-        KalenderEvent(
-          start: start.copyWith(hour: 3),
-          end: start.copyWith(hour: 16),
-        ),
+        KalenderEvent(start: start, end: start.copyWith(hour: 12)),
+        KalenderEvent(start: start, end: start.copyWith(hour: 8)),
+        KalenderEvent(start: start.copyWith(hour: 3), end: start.copyWith(hour: 4)),
+        KalenderEvent(start: start.copyWith(hour: 3), end: start.copyWith(hour: 16)),
       ];
       eventsController.addEvents(events);
 

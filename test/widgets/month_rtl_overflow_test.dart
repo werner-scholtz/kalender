@@ -68,9 +68,7 @@ void main() {
 
       final eventsController = DefaultEventsController();
       for (var i = 0; i < eventCount; i++) {
-        eventsController.addEvent(
-          KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-        );
+        eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
       }
 
       await pumpAndSettleWithMaterialApp(

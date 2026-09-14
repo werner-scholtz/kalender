@@ -101,11 +101,11 @@ FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
     MonthViewConfiguration _ => kDefaultToMonthly(old),
     ScheduleViewConfiguration _ => kDefaultToSchedule(old),
     final MultiDayViewConfiguration config => switch (config.type) {
-        MultiDayViewType.custom when config.numberOfDays == 1 => kDefaultToDaily(old),
-        MultiDayViewType.freeScroll when config.numberOfDays == 1 => kDefaultToDaily(old),
-        MultiDayViewType.singleDay => kDefaultToDaily(old),
-        _ => kDefaultToWeekly(old),
-      },
+      MultiDayViewType.custom when config.numberOfDays == 1 => kDefaultToDaily(old),
+      MultiDayViewType.freeScroll when config.numberOfDays == 1 => kDefaultToDaily(old),
+      MultiDayViewType.singleDay => kDefaultToDaily(old),
+      _ => kDefaultToWeekly(old),
+    },
     _ => kDefaultToDaily(old),
   };
 }

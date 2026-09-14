@@ -21,12 +21,7 @@ class GutterWidths extends InheritedWidget {
   final double? timeline;
 
   /// Creates a [GutterWidths] with the given measurements.
-  const GutterWidths({
-    super.key,
-    required this.weekNumber,
-    required this.timeline,
-    required super.child,
-  });
+  const GutterWidths({super.key, required this.weekNumber, required this.timeline, required super.child});
 
   /// The [GutterWidths] above [context], or null when there is none.
   ///

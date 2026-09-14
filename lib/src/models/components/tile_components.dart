@@ -114,18 +114,18 @@ class TileComponents {
 
   @override
   int get hashCode => Object.hash(
-        runtimeType,
-        tileBuilder,
-        overlayTileBuilder,
-        tileWhenDraggingBuilder,
-        feedbackTileBuilder,
-        dropTargetTile,
-        dragAnchorStrategy,
-        resizeDragAnchorStrategy,
-        resizeHandlePositioner,
-        verticalResizeHandle,
-        horizontalResizeHandle,
-      );
+    runtimeType,
+    tileBuilder,
+    overlayTileBuilder,
+    tileWhenDraggingBuilder,
+    feedbackTileBuilder,
+    dropTargetTile,
+    dragAnchorStrategy,
+    resizeDragAnchorStrategy,
+    resizeHandlePositioner,
+    verticalResizeHandle,
+    horizontalResizeHandle,
+  );
 }
 
 /// The components used by the [ScheduleBody] to render the event tiles.
@@ -156,9 +156,7 @@ class ScheduleTileComponents extends TileComponents {
   });
 
   static ScheduleTileComponents defaultComponents() {
-    return const ScheduleTileComponents(
-      tileBuilder: defaultTileBuilder,
-    );
+    return const ScheduleTileComponents(tileBuilder: defaultTileBuilder);
   }
 }
 
@@ -168,34 +166,20 @@ class ScheduleTileComponents extends TileComponents {
 ///
 /// [tileRange] is the wall-clock [KalenderDateTimeRange] of the view the tile will be displayed in.
 /// The values are local [DateTime]s (or `TZDateTime`s when a timezone location is set).
-typedef TileBuilder = Widget Function(
-  BuildContext context,
-  KalenderEvent event,
-  KalenderDateTimeRange tileRange,
-);
+typedef TileBuilder = Widget Function(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange);
 
 /// The builder for the event tile when dragging.
 ///
 /// [event] is the event that the tile will be built for.
-typedef TileWhenDraggingBuilder = Widget Function(
-  BuildContext context,
-  KalenderEvent event,
-);
+typedef TileWhenDraggingBuilder = Widget Function(BuildContext context, KalenderEvent event);
 
 /// The builder for the feedback tile. (When dragging)
 ///
 /// [event] is the event that the tile will be built for.
 /// [dropTargetWidgetSize] is the size of the drop target widget.
-typedef FeedbackTileBuilder = Widget Function(
-  BuildContext context,
-  KalenderEvent event,
-  Size dropTargetWidgetSize,
-);
+typedef FeedbackTileBuilder = Widget Function(BuildContext context, KalenderEvent event, Size dropTargetWidgetSize);
 
 /// The builder for the drop target event tile.
 ///
 /// [event] is the event that the tile will be built for.
-typedef TileDropTargetBuilder = Widget Function(
-  BuildContext context,
-  KalenderEvent event,
-);
+typedef TileDropTargetBuilder = Widget Function(BuildContext context, KalenderEvent event);

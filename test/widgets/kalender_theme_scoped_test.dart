@@ -7,8 +7,9 @@ import 'package:kalender/kalender.dart';
 void main() {
   /// The rendered color of the day separator, which follows the theme.
   Color? separatorColor(WidgetTester tester, {Finder? within}) {
-    final finder =
-        within == null ? find.byType(Container) : find.descendant(of: within, matching: find.byType(Container));
+    final finder = within == null
+        ? find.byType(Container)
+        : find.descendant(of: within, matching: find.byType(Container));
     return tester.widget<Container>(finder.first).color;
   }
 
@@ -124,7 +125,9 @@ void main() {
     _DependentState.notifications = 0;
 
     Widget build(KalenderThemeData data) {
-      return app(child: KalenderTheme(data: data, child: const _Dependent()));
+      return app(
+        child: KalenderTheme(data: data, child: const _Dependent()),
+      );
     }
 
     await tester.pumpWidget(build(const KalenderThemeData(daySeparatorStyle: DaySeparatorStyle(width: 1))));

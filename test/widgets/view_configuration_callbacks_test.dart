@@ -45,10 +45,7 @@ void main() {
   }
 
   MonthViewConfiguration month({DateResolver? dateResolver}) {
-    return MonthViewConfiguration.singleMonth(
-      displayRange: year2025DisplayRange,
-      dateResolver: dateResolver,
-    );
+    return MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, dateResolver: dateResolver);
   }
 
   /// Whether the visible range covers [date]. The month grid starts on the
@@ -110,11 +107,7 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(tester, build(week(nowCallback: nowTuesday)));
 
-      expect(
-        highlightedDate(tester).day,
-        equals(14),
-        reason: 'the highlight should follow the current nowCallback',
-      );
+      expect(highlightedDate(tester).day, equals(14), reason: 'the highlight should follow the current nowCallback');
     });
   });
 }

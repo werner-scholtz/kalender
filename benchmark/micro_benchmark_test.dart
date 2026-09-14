@@ -102,7 +102,7 @@ class _MultiDayFrameBenchmark extends _KalenderBenchmark {
 /// This is the path behind the reported month/week navigation jank.
 class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
   _MultiDayFrameDenseBenchmark(this.eventsPerDay, this.days)
-      : super('multiDayFrame / ${eventsPerDay}ev-per-day x ${days}d');
+    : super('multiDayFrame / ${eventsPerDay}ev-per-day x ${days}d');
   final int eventsPerDay;
   final int days;
   late FloatingDateTimeRange range;
@@ -150,9 +150,7 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
     );
     // Staircase overlap: each event overlaps a handful of neighbours, giving a
     // realistic bounded chain depth rather than a pathological fully-dense set.
-    data = [
-      for (var i = 0; i < count; i++) VerticalLayoutData(id: i, top: i * 10.0, bottom: i * 10.0 + 35.0),
-    ];
+    data = [for (var i = 0; i < count; i++) VerticalLayoutData(id: i, top: i * 10.0, bottom: i * 10.0 + 35.0)];
   }
 
   @override
@@ -183,40 +181,36 @@ class _EventQueryBenchmark extends _KalenderBenchmark {
 }
 
 void main() {
-  test(
-    'micro benchmarks',
-    () {
-      final benchmarks = <_KalenderBenchmark>[
-        _DatesBenchmark(7),
-        _DatesBenchmark(30),
-        _DatesBenchmark(90),
-        _DatesBenchmark(365),
-        _MultiDayFrameBenchmark(100, 30),
-        _MultiDayFrameBenchmark(300, 30),
-        _MultiDayFrameDenseBenchmark(50, 7), // week at 50 events/day
-        _MultiDayFrameDenseBenchmark(50, 35), // month at 50 events/day
-        _LongestChainBenchmark(60),
-        _EventQueryBenchmark(1),
-        _EventQueryBenchmark(7),
-        _EventQueryBenchmark(30),
-      ];
+  test('micro benchmarks', () {
+    final benchmarks = <_KalenderBenchmark>[
+      _DatesBenchmark(7),
+      _DatesBenchmark(30),
+      _DatesBenchmark(90),
+      _DatesBenchmark(365),
+      _MultiDayFrameBenchmark(100, 30),
+      _MultiDayFrameBenchmark(300, 30),
+      _MultiDayFrameDenseBenchmark(50, 7), // week at 50 events/day
+      _MultiDayFrameDenseBenchmark(50, 35), // month at 50 events/day
+      _LongestChainBenchmark(60),
+      _EventQueryBenchmark(1),
+      _EventQueryBenchmark(7),
+      _EventQueryBenchmark(30),
+    ];
 
-      final results = <Map<String, dynamic>>[];
-      for (final benchmark in benchmarks) {
-        final microseconds = benchmark.measure();
-        results.add({'name': benchmark.name, 'unit': 'us', 'value': microseconds});
-        // ignore: avoid_print
-        print('${benchmark.name}: ${microseconds.toStringAsFixed(3)} us');
-      }
-
-      final output = File('build/micro_results.json');
-      output.parent.createSync(recursive: true);
-      output.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(results));
-
+    final results = <Map<String, dynamic>>[];
+    for (final benchmark in benchmarks) {
+      final microseconds = benchmark.measure();
+      results.add({'name': benchmark.name, 'unit': 'us', 'value': microseconds});
       // ignore: avoid_print
-      print('Wrote ${results.length} results to ${output.path} (sink=$_sink)');
-      expect(results, isNotEmpty);
-    },
-    timeout: const Timeout(Duration(minutes: 5)),
-  );
+      print('${benchmark.name}: ${microseconds.toStringAsFixed(3)} us');
+    }
+
+    final output = File('build/micro_results.json');
+    output.parent.createSync(recursive: true);
+    output.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(results));
+
+    // ignore: avoid_print
+    print('Wrote ${results.length} results to ${output.path} (sink=$_sink)');
+    expect(results, isNotEmpty);
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }

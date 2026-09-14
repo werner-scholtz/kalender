@@ -91,9 +91,11 @@ void main() {
         final today = FloatingDateTime.fromDateTime(DateTime.now());
         final todayWeekStart = today.startOfWeek();
         final todayRange = FloatingDateTimeRange(start: todayWeekStart, end: todayWeekStart.endOfWeek());
-        final todayIndex = todayRange.dates().map(FloatingDateTime.fromDateTime).toList().indexWhere(
-              (d) => d.isSameDay(today.startOfDay),
-            );
+        final todayIndex = todayRange
+            .dates()
+            .map(FloatingDateTime.fromDateTime)
+            .toList()
+            .indexWhere((d) => d.isSameDay(today.startOfDay));
 
         final viewConfiguration = MultiDayViewConfiguration.week(
           displayRange: todayRange.forLocation(),

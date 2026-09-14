@@ -47,15 +47,11 @@ void main() {
     }
 
     test('a builder held as a top-level function stays equal across instances', () {
-      const a = KalenderComponents(
-        scheduleComponents: ScheduleComponents(leadingDateStringBuilder: _dateLabel),
-      );
+      const a = KalenderComponents(scheduleComponents: ScheduleComponents(leadingDateStringBuilder: _dateLabel));
       // Built without const so this is a separate instance, which is what a
       // consumer constructing their components inside build() ends up with.
       // ignore: prefer_const_constructors
-      final b = KalenderComponents(
-        scheduleComponents: const ScheduleComponents(leadingDateStringBuilder: _dateLabel),
-      );
+      final b = KalenderComponents(scheduleComponents: const ScheduleComponents(leadingDateStringBuilder: _dateLabel));
       expect(a, equals(b));
     });
   });
@@ -89,10 +85,7 @@ void main() {
     });
 
     test('a schedule restriction is not equal to the base with the same builder', () {
-      expect(
-        const ScheduleTileComponents(tileBuilder: _tile),
-        isNot(equals(const TileComponents(tileBuilder: _tile))),
-      );
+      expect(const ScheduleTileComponents(tileBuilder: _tile), isNot(equals(const TileComponents(tileBuilder: _tile))));
     });
   });
 

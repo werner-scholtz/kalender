@@ -9,15 +9,13 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 /// with the day columns.
 class TimelineSizer extends StatelessWidget {
   final Widget child;
-  const TimelineSizer({
-    super.key,
-    required this.child,
-  });
+  const TimelineSizer({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    final width = GutterWidths.maybeOf(context)?.timeline ??
+    final width =
+        GutterWidths.maybeOf(context)?.timeline ??
         bodyComponents.buildTimelineWidth(context, KalenderTimeRange.allDay());
 
     return SizedBox(width: width, child: child);

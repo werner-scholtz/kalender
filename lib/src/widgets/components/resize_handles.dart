@@ -14,10 +14,7 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 ///
 /// [details] carries the event, the tile geometry and the helpers that decide
 /// which handles to show and build them.
-typedef ResizeHandlePositioner = Widget Function(
-  BuildContext context,
-  ResizeHandleDetails details,
-);
+typedef ResizeHandlePositioner = Widget Function(BuildContext context, ResizeHandleDetails details);
 
 /// What a [ResizeHandlePositioner] needs to lay out the resize handles of one event tile.
 class ResizeHandleDetails {
@@ -85,19 +82,19 @@ class ResizeHandleDetails {
   ///
   /// The direction is determined by [axis].
   ResizeDetector get startResizeDetector => ResizeDetector(
-        key: ResizeDetector.startResizeDraggableKey(event.id),
-        event: event,
-        direction: isVertical ? ResizeDirection.top : ResizeDirection.left,
-      );
+    key: ResizeDetector.startResizeDraggableKey(event.id),
+    event: event,
+    direction: isVertical ? ResizeDirection.top : ResizeDirection.left,
+  );
 
   /// The end resize detector.
   ///
   /// The direction is determined by [axis].
   ResizeDetector get endResizeDetector => ResizeDetector(
-        key: ResizeDetector.endResizeDraggableKey(event.id),
-        event: event,
-        direction: isVertical ? ResizeDirection.bottom : ResizeDirection.right,
-      );
+    key: ResizeDetector.endResizeDraggableKey(event.id),
+    event: event,
+    direction: isVertical ? ResizeDirection.bottom : ResizeDirection.right,
+  );
 }
 
 /// The style of the resize handles laid out by [DefaultResizeHandles].
@@ -117,19 +114,13 @@ class ResizeHandleStyle with Diagnosticable {
 
   /// Creates a copy of this style with the given fields replaced with the new values.
   ResizeHandleStyle copyWith({double? length, double? impreciseLength}) {
-    return ResizeHandleStyle(
-      length: length ?? this.length,
-      impreciseLength: impreciseLength ?? this.impreciseLength,
-    );
+    return ResizeHandleStyle(length: length ?? this.length, impreciseLength: impreciseLength ?? this.impreciseLength);
   }
 
   /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
   ResizeHandleStyle merge(ResizeHandleStyle? other) {
     if (other == null) return this;
-    return ResizeHandleStyle(
-      length: other.length ?? length,
-      impreciseLength: other.impreciseLength ?? impreciseLength,
-    );
+    return ResizeHandleStyle(length: other.length ?? length, impreciseLength: other.impreciseLength ?? impreciseLength);
   }
 
   /// Linearly interpolates between [a] and [b].
@@ -204,13 +195,7 @@ class DefaultResizeHandles extends StatelessWidget {
                   height: handleLength,
                   child: details.startResizeDetector,
                 )
-              : Positioned(
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: handleLength,
-                  child: details.startResizeDetector,
-                ),
+              : Positioned(left: 0, top: 0, bottom: 0, width: handleLength, child: details.startResizeDetector),
         if (details.showEnd(location: location))
           isVertical
               ? Positioned(
@@ -221,13 +206,7 @@ class DefaultResizeHandles extends StatelessWidget {
                   height: handleLength,
                   child: details.endResizeDetector,
                 )
-              : Positioned(
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: handleLength,
-                  child: details.endResizeDetector,
-                ),
+              : Positioned(right: 0, top: 0, bottom: 0, width: handleLength, child: details.endResizeDetector),
       ],
     );
   }

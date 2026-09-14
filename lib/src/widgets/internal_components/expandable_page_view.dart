@@ -9,12 +9,7 @@ class ExpandablePageView extends StatefulWidget {
   final Widget Function(BuildContext context, int index) itemBuilder;
   final LinkedPageController controller;
 
-  const ExpandablePageView({
-    super.key,
-    required this.controller,
-    required this.itemCount,
-    required this.itemBuilder,
-  });
+  const ExpandablePageView({super.key, required this.controller, required this.itemCount, required this.itemBuilder});
 
   @override
   State<ExpandablePageView> createState() => _ExpandablePageViewState();

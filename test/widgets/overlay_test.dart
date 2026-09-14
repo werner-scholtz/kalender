@@ -34,12 +34,7 @@ void main() {
     ]);
   });
 
-  final sizesToTest = [
-    const Size(300, 500),
-    const Size(400, 600),
-    const Size(800, 600),
-    const Size(1200, 600),
-  ];
+  final sizesToTest = [const Size(300, 500), const Size(400, 600), const Size(800, 600), const Size(1200, 600)];
 
   group('Overlay', () {
     for (final size in sizesToTest) {
@@ -53,10 +48,7 @@ void main() {
             eventsController: eventsController,
             kalenderController: kalenderController,
             viewConfiguration: viewConfiguration,
-            header: KalenderHeader(
-              multiDayHeaderConfiguration: headerConfiguration,
-              interaction: preciseInteraction,
-            ),
+            header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration, interaction: preciseInteraction),
             body: KalenderBody(interaction: preciseInteraction),
           ),
         );
@@ -105,11 +97,7 @@ void main() {
         expect(event, findsOne);
 
         // Simulate a drag gesture on the event tile to dismiss the overlay.
-        final gesture = await tester.startGesture(
-          tester.getCenter(event),
-          pointer: 1,
-          kind: PointerDeviceKind.mouse,
-        );
+        final gesture = await tester.startGesture(tester.getCenter(event), pointer: 1, kind: PointerDeviceKind.mouse);
         await gesture.moveBy(const Offset(20, 0));
         await tester.pumpAndSettle();
 
@@ -142,9 +130,7 @@ void main() {
 
       final eventsController = DefaultEventsController();
       for (var i = 0; i < eventCount; i++) {
-        eventsController.addEvent(
-          KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-        );
+        eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
       }
 
       await pumpAndSettleWithMaterialApp(

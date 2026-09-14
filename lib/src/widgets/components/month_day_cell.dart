@@ -17,11 +17,7 @@ typedef MonthDayCellBuilder = Widget Function(BuildContext context, MonthDayCell
 
 /// Details describing a single day cell, passed to a [MonthDayCellBuilder].
 class MonthDayCellDetails {
-  const MonthDayCellDetails({
-    required this.date,
-    required this.isToday,
-    required this.isInFocusedMonth,
-  });
+  const MonthDayCellDetails({required this.date, required this.isToday, required this.isInFocusedMonth});
 
   /// The cell's date, as a wall-clock [DateTime] in the calendar's configured
   /// location (via `.forLocation()`), so comparisons against `DateTime.now()`

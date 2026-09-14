@@ -64,7 +64,10 @@ class MonthBody extends StatelessWidget {
         // The date range of each week row, shared by the content and background.
         final weekRanges = List.generate(numberOfRows, (row) {
           final start = visibleRange.start.add(Duration(days: row * DateTime.daysPerWeek));
-          return FloatingDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
+          return FloatingDateTimeRange(
+            start: start,
+            end: start.add(const Duration(days: DateTime.daysPerWeek)),
+          );
         });
 
         final content = Column(
@@ -129,12 +132,7 @@ class MonthWeek extends StatelessWidget {
   final FloatingDateTimeRange floatingRange;
   final HorizontalConfiguration configuration;
   final ViewController viewController;
-  const MonthWeek({
-    super.key,
-    required this.floatingRange,
-    required this.configuration,
-    required this.viewController,
-  });
+  const MonthWeek({super.key, required this.floatingRange, required this.configuration, required this.viewController});
 
   @override
   Widget build(BuildContext context) {

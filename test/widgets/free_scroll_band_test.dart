@@ -47,12 +47,7 @@ void main() {
 
   testWidgets('a multi-day event renders as one continuous spanning tile', (tester) async {
     // Monday 00:00 -> Friday 00:00, a 4-day span inside the first visible week.
-    final id = eventsController.addEvent(
-      KalenderEvent(
-        start: start,
-        end: start.add(const Duration(days: 4)),
-      ),
-    );
+    final id = eventsController.addEvent(KalenderEvent(start: start, end: start.add(const Duration(days: 4))));
 
     await pumpFreeScroll(tester);
 
@@ -68,10 +63,7 @@ void main() {
 
   testWidgets('the spanning tile stays one tile and moves as the view scrolls', (tester) async {
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: start.add(const Duration(days: 1)),
-        end: start.add(const Duration(days: 4)),
-      ),
+      KalenderEvent(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
     );
 
     await pumpFreeScroll(tester);
@@ -94,12 +86,7 @@ void main() {
     // A large range would make a whole-range strip millions of pixels wide, so
     // the band must window the days it renders.
     final bigRange = KalenderDateTimeRange(start: DateTime(2018), end: DateTime(2036));
-    final id = eventsController.addEvent(
-      KalenderEvent(
-        start: DateTime(2026, 7, 6),
-        end: DateTime(2026, 7, 9),
-      ),
-    );
+    final id = eventsController.addEvent(KalenderEvent(start: DateTime(2026, 7, 6), end: DateTime(2026, 7, 9)));
 
     await pumpAndSettleWithMaterialApp(
       tester,

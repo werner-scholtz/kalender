@@ -22,12 +22,7 @@ class ResizeHandleWidget extends StatefulWidget {
   final Axis axis;
 
   /// Creates an instance of [ResizeHandleWidget].
-  const ResizeHandleWidget({
-    super.key,
-    required this.event,
-    required this.floatingRange,
-    this.axis = Axis.vertical,
-  });
+  const ResizeHandleWidget({super.key, required this.event, required this.floatingRange, this.axis = Axis.vertical});
 
   @override
   State<ResizeHandleWidget> createState() => _ResizeHandleWidgetState();
@@ -165,13 +160,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
       ),
     );
 
-    return MouseRegion(
-      onEnter: _onEnter,
-      onExit: _onExit,
-      onHover: _onHover,
-      opaque: false,
-      child: visibility,
-    );
+    return MouseRegion(onEnter: _onEnter, onExit: _onExit, onHover: _onHover, opaque: false, child: visibility);
   }
 }
 
@@ -185,11 +174,7 @@ class ResizeDetector extends StatelessWidget {
   final KalenderEvent event;
 
   /// Creates an instance of [ResizeDetector].
-  const ResizeDetector({
-    super.key,
-    required this.event,
-    required this.direction,
-  });
+  const ResizeDetector({super.key, required this.event, required this.direction});
 
   /// A key used to identify the start resize handle.
   static Key startResizeDraggableKey(String eventId) => Key('ResizeDetector-Start-$eventId');

@@ -35,9 +35,7 @@ void main() {
   }
 
   Future<void> pumpSingleDay(WidgetTester tester) {
-    final components = TileComponents(
-      tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id)),
-    );
+    final components = TileComponents(tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id)));
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(

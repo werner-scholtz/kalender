@@ -33,10 +33,7 @@ void main() {
           children: [
             TimeIndicatorPositioner(
               viewController: MultiDayViewController(
-                viewConfiguration: MultiDayViewConfiguration.week(
-                  displayRange: range.forLocation(),
-                  nowCallback: now,
-                ),
+                viewConfiguration: MultiDayViewConfiguration.week(displayRange: range.forLocation(), nowCallback: now),
                 floatingVisibleRange: ValueNotifier(range),
                 visibleEvents: ValueNotifier(<KalenderEvent>{}),
               ),

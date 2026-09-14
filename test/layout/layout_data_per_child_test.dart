@@ -11,11 +11,7 @@ void main() {
   final date = FloatingDateTime(2024, 1, 1);
 
   KalenderEvent event({String? id, int hour = 9}) {
-    return KalenderEvent(
-      id: id,
-      start: DateTime.utc(2024, 1, 1, hour),
-      end: DateTime.utc(2024, 1, 1, hour + 1),
-    );
+    return KalenderEvent(id: id, start: DateTime.utc(2024, 1, 1, hour), end: DateTime.utc(2024, 1, 1, hour + 1));
   }
 
   OverlapLayoutDelegate delegateFor(List<KalenderEvent> events, {EventLayoutDelegateCache? cache}) {
@@ -76,10 +72,7 @@ void main() {
 /// Hashes to a constant, so every instance collides.
 class _ConstantHashEvent extends KalenderEvent {
   _ConstantHashEvent({required int hour})
-      : super(
-          start: DateTime.utc(2024, 1, 1, hour),
-          end: DateTime.utc(2024, 1, 1, hour + 1),
-        );
+    : super(start: DateTime.utc(2024, 1, 1, hour), end: DateTime.utc(2024, 1, 1, hour + 1));
 
   @override
   _ConstantHashEvent copyWithData({required DateTime start, required DateTime end}) {

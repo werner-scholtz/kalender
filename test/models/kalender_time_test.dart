@@ -190,9 +190,7 @@ void main() {
 
       test('zeroes out second, millisecond, and microsecond', () {
         const timeOfDay = KalenderTime(hour: 10, minute: 15);
-        final input = FloatingDateTime.fromDateTime(
-          DateTime(2024, 6, 15, 9, 45, 30, 500, 250),
-        );
+        final input = FloatingDateTime.fromDateTime(DateTime(2024, 6, 15, 9, 45, 30, 500, 250));
         final result = timeOfDay.toFloatingDateTime(input);
 
         expect(result.second, 0, reason: 'second should be zeroed');

@@ -33,10 +33,7 @@ void main() {
     });
 
     test('MonthViewConfiguration', () {
-      final configuration = MonthViewConfiguration.singleMonth(
-        displayRange: displayRange,
-        multiDayRule: calendarDays,
-      );
+      final configuration = MonthViewConfiguration.singleMonth(displayRange: displayRange, multiDayRule: calendarDays);
       expect(configuration.copyWith(showWeekNumbers: true).multiDayRule, calendarDays);
     });
 
@@ -54,15 +51,9 @@ void main() {
     // Crosses midnight but lasts under 24 hours, the only shape the two rules
     // classify differently.
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: DateTime(2025, 1, 15, 22),
-        end: DateTime(2025, 1, 16, 2),
-      ),
+      KalenderEvent(start: DateTime(2025, 1, 15, 22), end: DateTime(2025, 1, 16, 2)),
     );
-    final base = MultiDayViewConfiguration.week(
-      displayRange: displayRange,
-      initialDateTime: DateTime(2025, 1, 15),
-    );
+    final base = MultiDayViewConfiguration.week(displayRange: displayRange, initialDateTime: DateTime(2025, 1, 15));
 
     Widget build(MultiDayViewConfiguration configuration) {
       return KalenderView(

@@ -33,33 +33,35 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
                   onPointerMove: (event) => position = event.localPosition,
                   child: GestureDetector(
                     onTap: callbacks?.hasOnTapped == true ? () => _onTap(context, date, position) : null,
-                    onSecondaryTap:
-                        callbacks?.hasOnSecondaryTapped == true ? () => _onSecondaryTap(context, date, position) : null,
-                    onLongPress:
-                        callbacks?.hasOnLongPressed == true ? () => _onLongPress(context, date, position) : null,
+                    onSecondaryTap: callbacks?.hasOnSecondaryTapped == true
+                        ? () => _onSecondaryTap(context, date, position)
+                        : null,
+                    onLongPress: callbacks?.hasOnLongPressed == true
+                        ? () => _onLongPress(context, date, position)
+                        : null,
                     onSecondaryLongPress: callbacks?.hasOnSecondaryLongPressed == true
                         ? () => _onSecondaryLongPress(context, date, position)
                         : null,
                     child: context.interaction.allowEventCreation
                         ? switch (context.interaction.createEventGesture) {
                             EventInteractionGesture.tap => Draggable(
-                                onDragStarted: () => createNewEvent(context, date, position),
-                                onDraggableCanceled: onDragFinished,
-                                onDragEnd: onDragFinished,
-                                dragAnchorStrategy: pointerDragAnchorStrategy,
-                                data: Create(controllerId: controller.id),
-                                feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                                child: Container(color: Colors.transparent),
-                              ),
+                              onDragStarted: () => createNewEvent(context, date, position),
+                              onDraggableCanceled: onDragFinished,
+                              onDragEnd: onDragFinished,
+                              dragAnchorStrategy: pointerDragAnchorStrategy,
+                              data: Create(controllerId: controller.id),
+                              feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                              child: Container(color: Colors.transparent),
+                            ),
                             EventInteractionGesture.longPress => LongPressDraggable(
-                                onDragStarted: () => createNewEvent(context, date, position),
-                                onDraggableCanceled: onDragFinished,
-                                onDragEnd: onDragFinished,
-                                dragAnchorStrategy: pointerDragAnchorStrategy,
-                                data: Create(controllerId: controller.id),
-                                feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                                child: Container(color: Colors.transparent),
-                              ),
+                              onDragStarted: () => createNewEvent(context, date, position),
+                              onDraggableCanceled: onDragFinished,
+                              onDragEnd: onDragFinished,
+                              dragAnchorStrategy: pointerDragAnchorStrategy,
+                              data: Create(controllerId: controller.id),
+                              feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                              child: Container(color: Colors.transparent),
+                            ),
                           }
                         : null,
                   ),

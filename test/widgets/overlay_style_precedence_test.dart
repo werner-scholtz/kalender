@@ -15,16 +15,13 @@ void main() {
   /// A theme that colours the overflow button's text with [color], which is
   /// what these tests read back.
   KalenderThemeData themeColoured(Color color) => KalenderThemeData(
-        multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(
-          textStyle: TextStyle(color: color),
-        ),
-      );
+    multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(textStyle: TextStyle(color: color)),
+  );
 
   /// Builds an [OverlayBuilders] whose overflow button is labelled [label]. The
   /// hidden-event count is left out on purpose, it varies with the cell height.
-  OverlayBuilders buildersLabelled(String label) => OverlayBuilders(
-        multiDayPortalOverlayButtonStringBuilder: (context, numberOfHiddenEvents) => label,
-      );
+  OverlayBuilders buildersLabelled(String label) =>
+      OverlayBuilders(multiDayPortalOverlayButtonStringBuilder: (context, numberOfHiddenEvents) => label);
 
   /// Every rendered overflow button, of which there can be more than one: adjacent
   /// pages are built too, and a neighbouring month's grid can include the same day.
@@ -44,19 +41,13 @@ void main() {
   DefaultEventsController controllerWithOverflowOn(DateTime day) {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(
-        KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-      );
+      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
     }
     return eventsController;
   }
 
   group('Month body overlay resolution', () {
-    Future<void> pumpMonthView(
-      WidgetTester tester, {
-      KalenderComponents? components,
-      KalenderThemeData? theme,
-    }) {
+    Future<void> pumpMonthView(WidgetTester tester, {KalenderComponents? components, KalenderThemeData? theme}) {
       // 29 Jan 2025 sits in the last row of a 5-row January.
       final eventsController = controllerWithOverflowOn(DateTime.utc(2025, 1, 29));
       final view = KalenderView(
@@ -70,10 +61,7 @@ void main() {
         body: const KalenderBody(),
       );
 
-      return pumpAndSettleWithMaterialApp(
-        tester,
-        theme == null ? view : KalenderTheme(data: theme, child: view),
-      );
+      return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
     }
 
     testWidgets('the theme styles the overflow button', (tester) async {
@@ -107,29 +95,19 @@ void main() {
   });
 
   group('Multi-day header overlay resolution', () {
-    Future<void> pumpWeekView(
-      WidgetTester tester, {
-      KalenderComponents? components,
-      KalenderThemeData? theme,
-    }) {
+    Future<void> pumpWeekView(WidgetTester tester, {KalenderComponents? components, KalenderThemeData? theme}) {
       final day = DateTime.utc(2025, 1, 15);
       final view = KalenderView(
         eventsController: controllerWithOverflowOn(day),
         kalenderController: KalenderController(),
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: year2025DisplayRange,
-          initialDateTime: day,
-        ),
+        viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
         components: components,
         header: const KalenderHeader(
           multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
         ),
       );
 
-      return pumpAndSettleWithMaterialApp(
-        tester,
-        theme == null ? view : KalenderTheme(data: theme, child: view),
-      );
+      return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
     }
 
     testWidgets('the theme styles the overflow button', (tester) async {

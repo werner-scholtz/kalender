@@ -35,13 +35,14 @@ String _formatTime(BuildContext context, KalenderTime time) {
 /// labels are only drawn for.
 ///
 /// Resolve the style with `KalenderTheme.of`.
-typedef TimeLineBuilder = Widget Function(
-  BuildContext context,
-  double heightPerMinute,
-  KalenderTimeRange timeOfDayRange,
-  ValueNotifier<KalenderEvent?> eventBeingDragged,
-  ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
-);
+typedef TimeLineBuilder =
+    Widget Function(
+      BuildContext context,
+      double heightPerMinute,
+      KalenderTimeRange timeOfDayRange,
+      ValueNotifier<KalenderEvent?> eventBeingDragged,
+      ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
+    );
 
 /// Resolves the width of the timeline gutter.
 ///
@@ -55,10 +56,7 @@ typedef TimeLineBuilder = Widget Function(
 /// `heightPerMinuteOf`.
 ///
 /// See [defaultTimelineWidth] for the default implementation.
-typedef TimelineWidthBuilder = double Function(
-  BuildContext context,
-  KalenderTimeRange timeOfDayRange,
-);
+typedef TimelineWidthBuilder = double Function(BuildContext context, KalenderTimeRange timeOfDayRange);
 
 /// The default [TimelineWidthBuilder].
 ///
@@ -219,15 +217,15 @@ class TimelineStyle with Diagnosticable {
 
   @override
   int get hashCode => Object.hash(
-        textStyle,
-        textDirection,
-        textAlign,
-        textOverflow,
-        textPadding,
-        width,
-        startDecoration,
-        endDecoration,
-      );
+    textStyle,
+    textDirection,
+    textAlign,
+    textOverflow,
+    textPadding,
+    width,
+    startDecoration,
+    endDecoration,
+  );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -442,12 +440,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
     return SizedBox(
       width: itemSize.width,
-      child: Stack(
-        children: [
-          ...positionedTimes.nonNulls,
-          eventBeingDraggedTimes,
-        ],
-      ),
+      child: Stack(children: [...positionedTimes.nonNulls, eventBeingDraggedTimes]),
     );
   }
 }

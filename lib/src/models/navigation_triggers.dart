@@ -10,15 +10,15 @@ class PageTriggerConfiguration {
     this.animationCurve = Curves.easeInOut,
     this.triggerWidth,
   }) : assert(
-          animationDuration <= triggerDelay,
-          'The animation duration must be less or equal to the page trigger delay.',
-        );
+         animationDuration <= triggerDelay,
+         'The animation duration must be less or equal to the page trigger delay.',
+       );
 
   const PageTriggerConfiguration.defaultConfiguration()
-      : triggerDelay = const Duration(milliseconds: 750),
-        animationDuration = const Duration(milliseconds: 300),
-        animationCurve = Curves.easeInOut,
-        triggerWidth = null;
+    : triggerDelay = const Duration(milliseconds: 750),
+      animationDuration = const Duration(milliseconds: 300),
+      animationCurve = Curves.easeInOut,
+      triggerWidth = null;
 
   /// The widget that is rendered above the top page trigger.
   final Duration triggerDelay;
@@ -61,12 +61,7 @@ class PageTriggerConfiguration {
 
   @override
   int get hashCode {
-    return Object.hash(
-      triggerDelay,
-      animationDuration,
-      animationCurve,
-      triggerWidth,
-    );
+    return Object.hash(triggerDelay, animationDuration, animationCurve, triggerWidth);
   }
 }
 
@@ -81,16 +76,16 @@ class ScrollTriggerConfiguration {
     this.triggerHeight,
     this.scrollAmount,
   }) : assert(
-          animationDuration <= triggerDelay,
-          'The animation duration must be less or equal to the page trigger delay.',
-        );
+         animationDuration <= triggerDelay,
+         'The animation duration must be less or equal to the page trigger delay.',
+       );
 
   const ScrollTriggerConfiguration.defaultConfiguration()
-      : triggerDelay = const Duration(milliseconds: 750),
-        animationDuration = const Duration(milliseconds: 200),
-        animationCurve = Curves.easeInOut,
-        triggerHeight = null,
-        scrollAmount = null;
+    : triggerDelay = const Duration(milliseconds: 750),
+      animationDuration = const Duration(milliseconds: 200),
+      animationCurve = Curves.easeInOut,
+      triggerHeight = null,
+      scrollAmount = null;
 
   /// The delay before the scroll trigger is activated.
   final Duration triggerDelay;
@@ -137,11 +132,6 @@ class ScrollTriggerConfiguration {
 
   @override
   int get hashCode {
-    return Object.hash(
-      triggerDelay,
-      animationDuration,
-      animationCurve,
-      triggerHeight,
-    );
+    return Object.hash(triggerDelay, animationDuration, animationCurve, triggerHeight);
   }
 }

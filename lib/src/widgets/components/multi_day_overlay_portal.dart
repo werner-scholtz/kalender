@@ -12,16 +12,17 @@ import 'package:kalender/kalender.dart';
 /// [overlayBuilders] is the builders for the overlay event tile.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef MultiDayOverlayPortalBuilder = Widget Function(
-  BuildContext context, {
-  required DateTime date,
-  required List<KalenderEvent> events,
-  required int numberOfHiddenRows,
-  required double tileHeight,
-  required RenderBoxCallback getMultiDayEventLayoutRenderBox,
-  required MultiDayOverlayEventTileBuilder overlayTileBuilder,
-  required OverlayBuilders? overlayBuilders,
-});
+typedef MultiDayOverlayPortalBuilder =
+    Widget Function(
+      BuildContext context, {
+      required DateTime date,
+      required List<KalenderEvent> events,
+      required int numberOfHiddenRows,
+      required double tileHeight,
+      required RenderBoxCallback getMultiDayEventLayoutRenderBox,
+      required MultiDayOverlayEventTileBuilder overlayTileBuilder,
+      required OverlayBuilders? overlayBuilders,
+    });
 
 /// A widget that manages the overlay portal for a single day.
 class MultiDayOverlayPortal extends StatefulWidget {
@@ -78,7 +79,8 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
   void didUpdateWidget(covariant MultiDayOverlayPortal oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final didUpdate = oldWidget.date != widget.date ||
+    final didUpdate =
+        oldWidget.date != widget.date ||
         !oldWidget.events.equals(widget.events) ||
         oldWidget.tileHeight != widget.tileHeight ||
         oldWidget.getMultiDayEventLayoutRenderBox != widget.getMultiDayEventLayoutRenderBox ||
@@ -113,7 +115,8 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
               getOverlayPortalRenderBox: getOverlayPortalRenderBox,
             );
       },
-      child: widget.overlayBuilders?.multiDayPortalOverlayButtonBuilder?.call(
+      child:
+          widget.overlayBuilders?.multiDayPortalOverlayButtonBuilder?.call(
             context,
             _portalController,
             widget.numberOfHiddenRows,

@@ -72,10 +72,7 @@ void main() {
     // to scroll down. The event sits just below the top edge, so it is visible.
     final eventStart = start.add(const Duration(hours: 1));
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: eventStart,
-        end: eventStart.add(const Duration(hours: 1)),
-      ),
+      KalenderEvent(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
     );
 
     await pumpWeek(tester, 0);
@@ -97,10 +94,7 @@ void main() {
     // Start at midday so the morning is above and there is room to scroll up.
     final eventStart = start.add(const Duration(hours: 12));
     final id = eventsController.addEvent(
-      KalenderEvent(
-        start: eventStart,
-        end: eventStart.add(const Duration(hours: 1)),
-      ),
+      KalenderEvent(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
     );
 
     await pumpWeek(tester, 12);

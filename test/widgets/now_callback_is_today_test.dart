@@ -15,7 +15,8 @@ void main() {
   final tuesday = FloatingDateTime(2026, 4, 14);
   final wednesday = FloatingDateTime(2026, 4, 15);
 
-  NowCallback nowCallbackMonday() => () => DateTime(2026, 4, 13, 14, 30);
+  NowCallback nowCallbackMonday() =>
+      () => DateTime(2026, 4, 13, 14, 30);
 
   // A minimal view configuration that carries the callback.
   MultiDayViewConfiguration weekConfigWithCallback() {
@@ -35,9 +36,7 @@ void main() {
     final eventsController = DefaultEventsController();
     final viewController = MultiDayViewController(
       viewConfiguration: viewConfiguration,
-      floatingVisibleRange: ValueNotifier(
-        FloatingDateTimeRange(start: monday, end: monday.endOfWeek()),
-      ),
+      floatingVisibleRange: ValueNotifier(FloatingDateTimeRange(start: monday, end: monday.endOfWeek())),
       visibleEvents: ValueNotifier(<KalenderEvent>{}),
       location: location,
     );

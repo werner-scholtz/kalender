@@ -160,9 +160,7 @@ void main() {
 
       // The last field compared, so no earlier one can short-circuit ahead of it.
       final differsLast = a.copyWith(
-        multiDayPortalOverlayButtonStyle: const MultiDayPortalOverlayButtonStyle(
-          textOverflow: TextOverflow.ellipsis,
-        ),
+        multiDayPortalOverlayButtonStyle: const MultiDayPortalOverlayButtonStyle(textOverflow: TextOverflow.ellipsis),
       );
       expect(a == differsLast, false);
     });
@@ -174,9 +172,7 @@ void main() {
       // ignore: prefer_const_constructors
       final b = KalenderThemeData(hourLinesStyle: const HourLinesStyle(thickness: 1));
       final c = a.copyWith(
-        multiDayPortalOverlayButtonStyle: const MultiDayPortalOverlayButtonStyle(
-          textOverflow: TextOverflow.ellipsis,
-        ),
+        multiDayPortalOverlayButtonStyle: const MultiDayPortalOverlayButtonStyle(textOverflow: TextOverflow.ellipsis),
       );
       expect(a.hashCode, b.hashCode);
       expect(a.hashCode, isNot(c.hashCode));

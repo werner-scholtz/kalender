@@ -12,13 +12,7 @@ import 'package:kalender/kalender.dart';
 
 /// Rebuilds only its own field, as the documentation shows.
 class _Task extends KalenderEvent {
-  _Task({
-    required super.start,
-    required super.end,
-    required this.title,
-    super.interaction,
-    super.multiDayRule,
-  });
+  _Task({required super.start, required super.end, required this.title, super.interaction, super.multiDayRule});
 
   final String title;
 

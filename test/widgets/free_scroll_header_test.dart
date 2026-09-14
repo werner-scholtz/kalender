@@ -34,29 +34,23 @@ void main() {
   // are single-row.
   void addTwoRowDay() {
     eventsController.addEvents([
-      KalenderEvent(
-        start: base.add(const Duration(days: 1)),
-        end: base.add(const Duration(days: 3)),
-      ),
-      KalenderEvent(
-        start: base.add(const Duration(days: 2)),
-        end: base.add(const Duration(days: 4)),
-      ),
+      KalenderEvent(start: base.add(const Duration(days: 1)), end: base.add(const Duration(days: 3))),
+      KalenderEvent(start: base.add(const Duration(days: 2)), end: base.add(const Duration(days: 4))),
     ]);
   }
 
   Widget freeScrollView({DateTime? initialDate}) => KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.freeScroll(
-          numberOfDays: 3,
-          initialDateTime: initialDate,
-          displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
-        ),
-        callbacks: callbacks,
-        header: KalenderHeader(multiDayTileComponents: tileComponents),
-        body: KalenderBody(multiDayTileComponents: tileComponents),
-      );
+    eventsController: eventsController,
+    kalenderController: kalenderController,
+    viewConfiguration: MultiDayViewConfiguration.freeScroll(
+      numberOfDays: 3,
+      initialDateTime: initialDate,
+      displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
+    ),
+    callbacks: callbacks,
+    header: KalenderHeader(multiDayTileComponents: tileComponents),
+    body: KalenderBody(multiDayTileComponents: tileComponents),
+  );
 
   group('FreeScroll header', () {
     // Regression for #282: the old header reset its measured per-page heights on

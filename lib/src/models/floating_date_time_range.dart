@@ -6,18 +6,16 @@ import 'package:kalender/kalender.dart';
 /// [forLocation] to convert to a [KalenderDateTimeRange].
 class FloatingDateTimeRange {
   /// Creates a [FloatingDateTimeRange] instance.
-  FloatingDateTimeRange({
-    required DateTime start,
-    required DateTime end,
-  })  : start = FloatingDateTime.fromDateTime(start),
-        end = FloatingDateTime.fromDateTime(end) {
+  FloatingDateTimeRange({required DateTime start, required DateTime end})
+    : start = FloatingDateTime.fromDateTime(start),
+      end = FloatingDateTime.fromDateTime(end) {
     assert(!this.start.isAfter(this.end));
   }
 
   /// Creates a [FloatingDateTimeRange] from an existing [KalenderDateTimeRange].
   FloatingDateTimeRange.fromDateTimeRange(KalenderDateTimeRange dateTimeRange)
-      : start = FloatingDateTime.fromDateTime(dateTimeRange.start),
-        end = FloatingDateTime.fromDateTime(dateTimeRange.end) {
+    : start = FloatingDateTime.fromDateTime(dateTimeRange.start),
+      end = FloatingDateTime.fromDateTime(dateTimeRange.end) {
     assert(!start.isAfter(end));
   }
 
@@ -131,9 +129,7 @@ class FloatingDateTimeRange {
       monthCounts[key] = (monthCounts[key] ?? 0) + 1;
     }
 
-    final dominant = monthCounts.entries.reduce(
-      (a, b) => a.value >= b.value ? a : b,
-    );
+    final dominant = monthCounts.entries.reduce((a, b) => a.value >= b.value ? a : b);
 
     return start.isUtc
         ? DateTime.utc(dominant.key.$1, dominant.key.$2, 1)

@@ -31,9 +31,7 @@ void main() {
         viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
-            headerComponents: MultiDayHeaderComponents(
-              dayHeaderStringBuilder: (context, date) => read(context),
-            ),
+            headerComponents: MultiDayHeaderComponents(dayHeaderStringBuilder: (context, date) => read(context)),
           ),
         ),
         header: KalenderHeader(multiDayTileComponents: tiles),
@@ -71,14 +69,8 @@ void main() {
             ),
           ),
         ),
-        header: KalenderHeader(
-          multiDayTileComponents: tiles,
-          interaction: KalenderInteraction(allowResizing: false),
-        ),
-        body: KalenderBody(
-          multiDayTileComponents: tiles,
-          interaction: KalenderInteraction(allowResizing: true),
-        ),
+        header: KalenderHeader(multiDayTileComponents: tiles, interaction: KalenderInteraction(allowResizing: false)),
+        body: KalenderBody(multiDayTileComponents: tiles, interaction: KalenderInteraction(allowResizing: true)),
       ),
     );
 

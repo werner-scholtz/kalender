@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+
 // Replicates the GitHub Actions timezone matrix locally.
 // Usage (from the repo root):
 //   dart tool/test_timezones.dart [flutter-test-args...]

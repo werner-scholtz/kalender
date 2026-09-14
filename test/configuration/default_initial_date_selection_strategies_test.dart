@@ -23,59 +23,57 @@ void main() {
     // The dummy initial visibleDateTimeRange passed to each constructor is
     // immediately overwritten inside the constructor, so any sentinel value works.
 
-    FloatingDateTimeRange dummyRange() => FloatingDateTimeRange(
-          start: FloatingDateTime(2025),
-          end: FloatingDateTime(2025, 2),
-        );
+    FloatingDateTimeRange dummyRange() =>
+        FloatingDateTimeRange(start: FloatingDateTime(2025), end: FloatingDateTime(2025, 2));
 
     MonthViewController buildMonth() => MonthViewController(
-          viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
-          floatingVisibleRange: ValueNotifier(dummyRange()),
-          visibleEvents: visibleEvents,
-          initialDate: FloatingDateTime(2025, 1, 1),
-        );
+      viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
+      floatingVisibleRange: ValueNotifier(dummyRange()),
+      visibleEvents: visibleEvents,
+      initialDate: FloatingDateTime(2025, 1, 1),
+    );
 
     MultiDayViewController buildWeek() => MultiDayViewController(
-          viewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
-          floatingVisibleRange: ValueNotifier(dummyRange()),
-          visibleEvents: visibleEvents,
-          initialDate: FloatingDateTime(2025, 1, 1),
-        );
+      viewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
+      floatingVisibleRange: ValueNotifier(dummyRange()),
+      visibleEvents: visibleEvents,
+      initialDate: FloatingDateTime(2025, 1, 1),
+    );
 
     MultiDayViewController buildWorkWeek() => MultiDayViewController(
-          viewConfiguration: MultiDayViewConfiguration.workWeek(displayRange: range),
-          floatingVisibleRange: ValueNotifier(dummyRange()),
-          visibleEvents: visibleEvents,
-          initialDate: FloatingDateTime(2025, 1, 1),
-        );
+      viewConfiguration: MultiDayViewConfiguration.workWeek(displayRange: range),
+      floatingVisibleRange: ValueNotifier(dummyRange()),
+      visibleEvents: visibleEvents,
+      initialDate: FloatingDateTime(2025, 1, 1),
+    );
 
     MultiDayViewController buildDay() => MultiDayViewController(
-          viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
-          floatingVisibleRange: ValueNotifier(dummyRange()),
-          visibleEvents: visibleEvents,
-          initialDate: FloatingDateTime(2025, 1, 1),
-        );
+      viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
+      floatingVisibleRange: ValueNotifier(dummyRange()),
+      visibleEvents: visibleEvents,
+      initialDate: FloatingDateTime(2025, 1, 1),
+    );
 
     MultiDayViewController buildCustomMultiDay() => MultiDayViewController(
-          viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range),
-          floatingVisibleRange: ValueNotifier(dummyRange()),
-          visibleEvents: visibleEvents,
-          initialDate: FloatingDateTime(2025, 1, 1),
-        );
+      viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range),
+      floatingVisibleRange: ValueNotifier(dummyRange()),
+      visibleEvents: visibleEvents,
+      initialDate: FloatingDateTime(2025, 1, 1),
+    );
 
     MultiDayViewController buildCustomSingleDay() => MultiDayViewController(
-          viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range),
-          floatingVisibleRange: ValueNotifier(dummyRange()),
-          visibleEvents: visibleEvents,
-          initialDate: FloatingDateTime(2025, 1, 1),
-        );
+      viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range),
+      floatingVisibleRange: ValueNotifier(dummyRange()),
+      visibleEvents: visibleEvents,
+      initialDate: FloatingDateTime(2025, 1, 1),
+    );
 
     ContinuousScheduleViewController buildSchedule() => ContinuousScheduleViewController(
-          viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: range),
-          floatingVisibleRange: ValueNotifier(dummyRange()),
-          visibleEvents: visibleEvents,
-          initialDate: FloatingDateTime(2025, 1, 1),
-        );
+      viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: range),
+      floatingVisibleRange: ValueNotifier(dummyRange()),
+      visibleEvents: visibleEvents,
+      initialDate: FloatingDateTime(2025, 1, 1),
+    );
 
     // ── Expected starting dates ──────────────────────────────────────────
     //
@@ -267,66 +265,41 @@ void main() {
 
       test('→ MonthViewConfiguration routes to kDefaultToMonthly', () {
         final cfg = MonthViewConfiguration.singleMonth(displayRange: range);
-        expect(
-          kCarryFocusDate(_ctx(src(), cfg)),
-          kDefaultToMonthly(src()),
-        );
+        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToMonthly(src()));
       });
 
       test('→ week MultiDayViewConfiguration routes to kDefaultToWeekly', () {
         final cfg = MultiDayViewConfiguration.week(displayRange: range);
-        expect(
-          kCarryFocusDate(_ctx(src(), cfg)),
-          kDefaultToWeekly(src()),
-        );
+        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToWeekly(src()));
       });
 
       test('→ workWeek MultiDayViewConfiguration routes to kDefaultToWeekly', () {
         final cfg = MultiDayViewConfiguration.workWeek(displayRange: range);
-        expect(
-          kCarryFocusDate(_ctx(src(), cfg)),
-          kDefaultToWeekly(src()),
-        );
+        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToWeekly(src()));
       });
 
       test('→ custom(3) MultiDayViewConfiguration routes to kDefaultToWeekly', () {
         final cfg = MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range);
-        expect(
-          kCarryFocusDate(_ctx(src(), cfg)),
-          kDefaultToWeekly(src()),
-        );
+        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToWeekly(src()));
       });
 
       test('→ singleDay MultiDayViewConfiguration routes to kDefaultToDaily', () {
         final cfg = MultiDayViewConfiguration.singleDay(displayRange: range);
-        expect(
-          kCarryFocusDate(_ctx(src(), cfg)),
-          kDefaultToDaily(src()),
-        );
+        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToDaily(src()));
       });
 
       test('→ custom(1) MultiDayViewConfiguration routes to kDefaultToDaily', () {
         final cfg = MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range);
-        expect(
-          kCarryFocusDate(_ctx(src(), cfg)),
-          kDefaultToDaily(src()),
-        );
+        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToDaily(src()));
       });
 
       test('→ ScheduleViewConfiguration routes to kDefaultToSchedule', () {
         final cfg = ScheduleViewConfiguration.continuous(displayRange: range);
-        expect(
-          kCarryFocusDate(_ctx(src(), cfg)),
-          kDefaultToSchedule(src()),
-        );
+        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToSchedule(src()));
       });
     });
   }
 }
 
-ViewTransitionContext _ctx(ViewController old, ViewConfiguration next) => ViewTransitionContext(
-      oldViewController: old,
-      newViewConfiguration: next,
-      byView: const {},
-      lastMultiDay: null,
-    );
+ViewTransitionContext _ctx(ViewController old, ViewConfiguration next) =>
+    ViewTransitionContext(oldViewController: old, newViewConfiguration: next, byView: const {}, lastMultiDay: null);

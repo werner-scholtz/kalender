@@ -10,10 +10,7 @@ void main() {
   group('EventLayoutStrategy', () {
     test('two of the same kind are equal, with matching hashCodes', () {
       expect(const EventLayoutStrategy.overlap(), equals(const EventLayoutStrategy.overlap()));
-      expect(
-        const EventLayoutStrategy.overlap().hashCode,
-        equals(const EventLayoutStrategy.overlap().hashCode),
-      );
+      expect(const EventLayoutStrategy.overlap().hashCode, equals(const EventLayoutStrategy.overlap().hashCode));
     });
 
     test('the two built-ins are not equal to each other', () {

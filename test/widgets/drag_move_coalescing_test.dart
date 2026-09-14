@@ -23,12 +23,7 @@ void main() {
   setUp(() {
     eventsController = DefaultEventsController();
     kalenderController = KalenderController();
-    eventId = eventsController.addEvent(
-      KalenderEvent(
-        start: start.copyWith(hour: 6),
-        end: start.copyWith(hour: 8),
-      ),
-    );
+    eventId = eventsController.addEvent(KalenderEvent(start: start.copyWith(hour: 6), end: start.copyWith(hour: 8)));
   });
 
   Future<void> pumpCalendar(WidgetTester tester) {
@@ -39,10 +34,8 @@ void main() {
         kalenderController: kalenderController,
         viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(
-          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
-            event: event,
-            updatedEvent: updatedEvent,
-          ),
+          onEventChanged: (event, updatedEvent) =>
+              eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
         body: KalenderBody(
           interaction: KalenderInteraction(

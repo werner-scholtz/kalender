@@ -72,11 +72,7 @@ class PaginatedSchedule extends StatefulWidget {
   final ScheduleBodyConfiguration configuration;
 
   /// Creates a [PaginatedSchedule].
-  const PaginatedSchedule({
-    super.key,
-    required this.viewController,
-    required this.configuration,
-  });
+  const PaginatedSchedule({super.key, required this.viewController, required this.configuration});
 
   @override
   State<PaginatedSchedule> createState() => _PaginatedScheduleState();
@@ -91,8 +87,10 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
       itemCount: widget.viewController.viewConfiguration.pageIndexCalculator.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
-        final range =
-            widget.viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(value, context.location);
+        final range = widget.viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(
+          value,
+          context.location,
+        );
         context.callbacks?.onPageChanged?.call(range.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {
@@ -392,12 +390,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                   date.dayRange.forLocation(location: context.location),
                 ),
               );
-              return components.buildScheduleTileHighlight(
-                context,
-                date,
-                viewController.highlightedRange,
-                child,
-              );
+              return components.buildScheduleTileHighlight(context, date, viewController.highlightedRange, child);
             } else if (item is EventItem) {
               final showDate = item.isFirst;
               final event = eventsController.byId(item.eventId)!;
@@ -415,12 +408,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                 ),
               );
 
-              return components.buildScheduleTileHighlight(
-                context,
-                date,
-                viewController.highlightedRange,
-                child,
-              );
+              return components.buildScheduleTileHighlight(context, date, viewController.highlightedRange, child);
             } else {
               throw Exception('Unknown item type: ${item.runtimeType}');
             }

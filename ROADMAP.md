@@ -285,7 +285,7 @@ The rest runs from 79% to 100% with no large gap.
 
 **CI runs every job on the Flutter version in `.fvmrc`**, so `examples/material_ui` runs on the release that moved Material out, which is the point of it. A job on the newest stable reports a break before `.fvmrc` moves. The declared Flutter minimum has had its own job since 0.30.0.
 
-**The Dart bound still says `>=3.0.0` and that is not what the package needs.** `timezone` requires Dart `^3.10.0`, so pub already refuses to resolve on anything older and no user can reach the versions the bound claims. Correcting it to `>=3.10.0` costs more than it reads: the formatter picks its style from the package language version, so any bound at 3.7 or above switches `dart format` to the tall style and rewrites 161 of the 210 files. That is a real piece of work with its own review, not a line in a release. Do it on its own, and take the accurate bound with it.
+**The Dart bound is `>=3.10.0`**, the version `timezone` already required. Raising it switched `dart format` to the tall style, since the formatter picks its style from the package language version.
 
 Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 38%.
 

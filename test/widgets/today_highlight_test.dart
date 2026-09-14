@@ -28,19 +28,12 @@ void main() {
     kalenderController = KalenderController();
   });
 
-  Finder todayNumber(Key todayKey, int day) => find.descendant(
-        of: find.byKey(todayKey),
-        matching: find.text('$day'),
-      );
+  Finder todayNumber(Key todayKey, int day) => find.descendant(of: find.byKey(todayKey), matching: find.text('$day'));
 
   group('Today highlighting in KalenderView (#254 #248 #251)', () {
     // ── Month view ──────────────────────────────────────────────────────────
     group('MonthView', () {
-      Future<void> pumpMonth(
-        WidgetTester tester,
-        DateTime month, {
-        NowCallback? nowCallback,
-      }) =>
+      Future<void> pumpMonth(WidgetTester tester, DateTime month, {NowCallback? nowCallback}) =>
           pumpAndSettleWithMaterialApp(
             tester,
             KalenderView(
@@ -69,11 +62,7 @@ void main() {
 
       testWidgets('highlights the callback day, not its neighbour (#251)', (tester) async {
         // The #251 report: current date Dec 24, but Dec 23 was highlighted.
-        await pumpMonth(
-          tester,
-          DateTime(2025, 12),
-          nowCallback: () => DateTime(2025, 12, 24, 10),
-        );
+        await pumpMonth(tester, DateTime(2025, 12), nowCallback: () => DateTime(2025, 12, 24, 10));
 
         expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget);
         expect(todayNumber(MonthDayHeader.todayKey, 24), findsOneWidget, reason: 'Dec 24 must be highlighted');
@@ -82,11 +71,7 @@ void main() {
 
       testWidgets('highlights correctly on a month boundary', (tester) async {
         // Last day of the month — a classic near-midnight / offset failure point.
-        await pumpMonth(
-          tester,
-          DateTime(2025, 12),
-          nowCallback: () => DateTime(2025, 12, 31, 23),
-        );
+        await pumpMonth(tester, DateTime(2025, 12), nowCallback: () => DateTime(2025, 12, 31, 23));
 
         expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget);
         expect(todayNumber(MonthDayHeader.todayKey, 31), findsOneWidget);
@@ -173,24 +158,20 @@ void main() {
       final monday = DateTime(2026, 4, 13);
       final weekRange = KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
 
-      Future<void> pumpWeek(
-        WidgetTester tester, {
-        NowCallback? nowCallback,
-      }) =>
-          pumpAndSettleWithMaterialApp(
-            tester,
-            KalenderView(
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              viewConfiguration: MultiDayViewConfiguration.week(
-                displayRange: weekRange,
-                initialDateTime: monday,
-                nowCallback: nowCallback,
-              ),
-              header: const KalenderHeader(),
-              body: const KalenderBody(),
-            ),
-          );
+      Future<void> pumpWeek(WidgetTester tester, {NowCallback? nowCallback}) => pumpAndSettleWithMaterialApp(
+        tester,
+        KalenderView(
+          eventsController: eventsController,
+          kalenderController: kalenderController,
+          viewConfiguration: MultiDayViewConfiguration.week(
+            displayRange: weekRange,
+            initialDateTime: monday,
+            nowCallback: nowCallback,
+          ),
+          header: const KalenderHeader(),
+          body: const KalenderBody(),
+        ),
+      );
 
       testWidgets('highlights exactly the callback day', (tester) async {
         // Wednesday of the visible week.

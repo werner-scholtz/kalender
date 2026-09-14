@@ -86,8 +86,10 @@ void main() {
     final viewController = kalenderController.viewController! as MultiDayViewController;
     expect(viewController.numberOfPages, 7, reason: 'one column per day in the range, and no more');
 
-    final last =
-        viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(viewController.numberOfPages - 1, null);
+    final last = viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(
+      viewController.numberOfPages - 1,
+      null,
+    );
     expect(last.start, FloatingDateTime(2025, 6, 7), reason: 'the last column is the last day of the range');
   });
 

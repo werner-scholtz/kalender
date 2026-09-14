@@ -23,10 +23,10 @@ class MonthViewConfiguration extends ViewConfiguration {
     required this.showWeekNumbers,
     required this.pageIndexCalculator,
   }) : assert(
-          firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
-          'First day of week must be a valid week day number\n'
-          'Use DateTime.monday, DateTime.tuesday, etc. to set the first day of the week',
-        );
+         firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
+         'First day of week must be a valid week day number\n'
+         'Use DateTime.monday, DateTime.tuesday, etc. to set the first day of the week',
+       );
 
   MonthViewConfiguration.singleMonth({
     super.name = 'Month',
@@ -38,10 +38,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     KalenderDateTimeRange? displayRange,
     this.firstDayOfWeek = kDefaultFirstDayOfWeek,
     this.showWeekNumbers = false,
-  }) : pageIndexCalculator = MonthIndexCalculator.fromRange(
-          displayRange ?? kDefaultRange(),
-          firstDayOfWeek,
-        );
+  }) : pageIndexCalculator = MonthIndexCalculator.fromRange(displayRange ?? kDefaultRange(), firstDayOfWeek);
 
   MonthViewConfiguration copyWith({
     String? name,

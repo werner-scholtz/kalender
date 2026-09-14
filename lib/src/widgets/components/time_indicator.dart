@@ -12,12 +12,8 @@ import 'package:kalender/kalender.dart';
 /// The [location] is the calendar's time zone.
 ///
 /// Resolve the style with [KalenderTheme].
-typedef TimeIndicatorBuilder = Widget Function(
-  BuildContext context,
-  KalenderTimeRange timeOfDayRange,
-  double heightPerMinute,
-  Location? location,
-);
+typedef TimeIndicatorBuilder =
+    Widget Function(BuildContext context, KalenderTimeRange timeOfDayRange, double heightPerMinute, Location? location);
 
 /// The style of the [TimeIndicator] widget.
 class TimeIndicatorStyle with Diagnosticable {
@@ -34,20 +30,10 @@ class TimeIndicatorStyle with Diagnosticable {
   /// The size of the circle.
   final Size? circleSize;
 
-  const TimeIndicatorStyle({
-    this.lineColor,
-    this.thickness,
-    this.circleColor,
-    this.circleSize,
-  });
+  const TimeIndicatorStyle({this.lineColor, this.thickness, this.circleColor, this.circleSize});
 
   /// Creates a copy of this style with the given fields replaced with the new values.
-  TimeIndicatorStyle copyWith({
-    Color? lineColor,
-    double? thickness,
-    Color? circleColor,
-    Size? circleSize,
-  }) {
+  TimeIndicatorStyle copyWith({Color? lineColor, double? thickness, Color? circleColor, Size? circleSize}) {
     return TimeIndicatorStyle(
       lineColor: lineColor ?? this.lineColor,
       thickness: thickness ?? this.thickness,
@@ -195,10 +181,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
             top: top,
             start: 0,
             end: 0,
-            child: Container(
-              height: thickness,
-              color: lineColor,
-            ),
+            child: Container(height: thickness, color: lineColor),
           ),
           PositionedDirectional(
             top: top - circleHeight / 2,
@@ -207,10 +190,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
             width: circleWidth,
             height: circleHeight,
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: style.circleColor ?? lineColor,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: style.circleColor ?? lineColor, shape: BoxShape.circle),
             ),
           ),
         ],

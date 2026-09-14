@@ -199,10 +199,10 @@ class KalenderInteraction {
     this.allowHorizontalImpreciseResize = defaultAllowHorizontalImpreciseResize,
     EventInteractionGesture? createEventGesture,
     EventInteractionGesture? modifyEventGesture,
-  })  : createEventGesture =
-            createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
-        modifyEventGesture =
-            modifyEventGesture ?? (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
+  }) : createEventGesture =
+           createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
+       modifyEventGesture =
+           modifyEventGesture ?? (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
 
   /// Creates a copy of this [KalenderInteraction] but with the given fields replaced with the new values.
   /// If the fields are not provided, the original values will be used.
@@ -242,14 +242,14 @@ class KalenderInteraction {
 
   @override
   int get hashCode => Object.hash(
-        allowResizing,
-        allowRescheduling,
-        allowEventCreation,
-        inputMode,
-        allowHorizontalImpreciseResize,
-        createEventGesture,
-        modifyEventGesture,
-      );
+    allowResizing,
+    allowRescheduling,
+    allowEventCreation,
+    inputMode,
+    allowHorizontalImpreciseResize,
+    createEventGesture,
+    modifyEventGesture,
+  );
 }
 
 /// The [EventInteraction] class defines the interaction settings for individual calendar events.
@@ -285,33 +285,23 @@ class EventInteraction {
   /// Creates a new [EventInteraction] instance with the specified settings.
   ///
   /// All parameters are optional and default to `true`, allowing all interactions.
-  EventInteraction({
-    this.allowStartResize = true,
-    this.allowEndResize = true,
-    this.allowRescheduling = true,
-  });
+  EventInteraction({this.allowStartResize = true, this.allowEndResize = true, this.allowRescheduling = true});
 
   /// Creates an [EventInteraction] with every permission set to [canModify].
   EventInteraction.fromCanModify(bool canModify)
-      : allowStartResize = canModify,
-        allowEndResize = canModify,
-        allowRescheduling = canModify;
+    : allowStartResize = canModify,
+      allowEndResize = canModify,
+      allowRescheduling = canModify;
 
   /// Creates an [EventInteraction] that disables all interactions.
   ///
   /// This is equivalent to creating an instance with all parameters set to `false`.
-  EventInteraction.allowNone()
-      : allowStartResize = false,
-        allowEndResize = false,
-        allowRescheduling = false;
+  EventInteraction.allowNone() : allowStartResize = false, allowEndResize = false, allowRescheduling = false;
 
   /// Creates an [EventInteraction] that enables all interactions.
   ///
   /// This is equivalent to creating an instance with all parameters set to `true`.
-  EventInteraction.allowAll()
-      : allowStartResize = true,
-        allowEndResize = true,
-        allowRescheduling = true;
+  EventInteraction.allowAll() : allowStartResize = true, allowEndResize = true, allowRescheduling = true;
 
   @override
   operator ==(Object other) {
@@ -412,11 +402,6 @@ class KalenderSnapping {
   }
 
   @override
-  int get hashCode => Object.hash(
-        snapIntervalMinutes,
-        snapToTimeIndicator,
-        snapToOtherEvents,
-        snapRange,
-        eventSnapStrategy,
-      );
+  int get hashCode =>
+      Object.hash(snapIntervalMinutes, snapToTimeIndicator, snapToOtherEvents, snapRange, eventSnapStrategy);
 }

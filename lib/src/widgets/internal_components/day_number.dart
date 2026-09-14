@@ -10,13 +10,7 @@ import 'package:flutter/material.dart';
 /// button, so `onPressed` is always null and the highlight has to set the
 /// disabled colors to stay tonal.
 class DayNumber extends StatelessWidget {
-  const DayNumber({
-    super.key,
-    required this.number,
-    required this.isToday,
-    required this.todayKey,
-    this.size,
-  });
+  const DayNumber({super.key, required this.number, required this.isToday, required this.todayKey, this.size});
 
   /// The day number itself, already styled by the calling component.
   final Widget number;

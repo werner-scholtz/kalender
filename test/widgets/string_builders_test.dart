@@ -37,10 +37,7 @@ void main() {
   Future<void> pumpWeek(WidgetTester tester, KalenderComponents components) {
     return pumpView(
       tester,
-      viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: year2025DisplayRange,
-        initialDateTime: day,
-      ),
+      viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
       components: components,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),
@@ -50,10 +47,7 @@ void main() {
   Future<void> pumpMonth(WidgetTester tester, KalenderComponents components) {
     return pumpView(
       tester,
-      viewConfiguration: MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-        initialDateTime: day,
-      ),
+      viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, initialDateTime: day),
       components: components,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),
@@ -141,9 +135,7 @@ void main() {
   group('ScheduleDate', () {
     testWidgets('the components string builder replaces the day name', (tester) async {
       final eventsController = DefaultEventsController()
-        ..addEvent(
-          KalenderEvent(start: day, end: day.add(const Duration(hours: 1))),
-        );
+        ..addEvent(KalenderEvent(start: day, end: day.add(const Duration(hours: 1))));
 
       await pumpView(
         tester,
@@ -167,9 +159,7 @@ void main() {
     DefaultEventsController controllerWithOverflowOn(DateTime day) {
       final eventsController = DefaultEventsController();
       for (var i = 0; i < 8; i++) {
-        eventsController.addEvent(
-          KalenderEvent(start: day, end: day.add(const Duration(days: 1))),
-        );
+        eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
       }
       return eventsController;
     }
@@ -186,10 +176,7 @@ void main() {
           child: KalenderView(
             eventsController: controllerWithOverflowOn(day),
             kalenderController: KalenderController(),
-            viewConfiguration: MultiDayViewConfiguration.week(
-              displayRange: year2025DisplayRange,
-              initialDateTime: day,
-            ),
+            viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
             components: components,
             header: const KalenderHeader(
               multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),

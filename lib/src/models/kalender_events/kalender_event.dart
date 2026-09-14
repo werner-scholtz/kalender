@@ -86,13 +86,13 @@ class KalenderEvent {
     EventInteraction? interaction,
     MultiDayRule? multiDayRule,
     bool isAllDay = false,
-  })  : assert(!start.isAfter(end), 'start must not be after end'),
-        id = id ?? _createUniqueId(),
-        start = start.toUtc(),
-        end = end.toUtc(),
-        _multiDayRule = multiDayRule,
-        _isAllDay = isAllDay,
-        _interaction = interaction ?? EventInteraction.fromCanModify(true);
+  }) : assert(!start.isAfter(end), 'start must not be after end'),
+       id = id ?? _createUniqueId(),
+       start = start.toUtc(),
+       end = end.toUtc(),
+       _multiDayRule = multiDayRule,
+       _isAllDay = isAllDay,
+       _interaction = interaction ?? EventInteraction.fromCanModify(true);
 
   static String _createUniqueId() {
     final rawRandom = Random();
@@ -116,8 +116,10 @@ class KalenderEvent {
   FloatingDateTime floatingEnd({Location? location}) => FloatingDateTime.fromExternal(end, location: location);
 
   /// The full range as an [FloatingDateTimeRange], adjusted for [location].
-  FloatingDateTimeRange floatingRange({Location? location}) =>
-      FloatingDateTimeRange(start: floatingStart(location: location), end: floatingEnd(location: location));
+  FloatingDateTimeRange floatingRange({Location? location}) => FloatingDateTimeRange(
+    start: floatingStart(location: location),
+    end: floatingEnd(location: location),
+  );
 
   /// Total duration (UTC-based).
   Duration get duration => end.difference(start);

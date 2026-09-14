@@ -31,11 +31,7 @@ void main() {
     return eventsController.addEvent(KalenderEvent(start: start, end: start.add(duration)));
   }
 
-  Future<void> pumpSchedule(
-    WidgetTester tester, {
-    KalenderCallbacks? callbacks,
-    bool paginated = false,
-  }) {
+  Future<void> pumpSchedule(WidgetTester tester, {KalenderCallbacks? callbacks, bool paginated = false}) {
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(

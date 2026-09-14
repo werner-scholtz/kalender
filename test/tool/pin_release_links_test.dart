@@ -156,8 +156,13 @@ void main() {
 
     test('a main branch reference is still reported when relative links are allowed', () {
       const content = '[strategy]($repo/blob/main/examples/advanced_example/lib/layout_strategy.dart)';
-      final problems =
-          leftoverProblems('doc/layout.md', content, repo, allowUnpinnedLinks: false, allowRelativeLinks: true);
+      final problems = leftoverProblems(
+        'doc/layout.md',
+        content,
+        repo,
+        allowUnpinnedLinks: false,
+        allowRelativeLinks: true,
+      );
       expect(problems, hasLength(1));
       expect(problems.single, startsWith('doc/layout.md:1:'));
     });
@@ -171,10 +176,7 @@ void main() {
       File('${directory.path}/appearance.md').writeAsStringSync('');
       File('${directory.path}/notes.txt').writeAsStringSync('');
 
-      expect(
-        docFiles(directory).map((path) => path.split(Platform.pathSeparator).last),
-        ['appearance.md', 'views.md'],
-      );
+      expect(docFiles(directory).map((path) => path.split(Platform.pathSeparator).last), ['appearance.md', 'views.md']);
     });
 
     test('an absent directory yields nothing', () {

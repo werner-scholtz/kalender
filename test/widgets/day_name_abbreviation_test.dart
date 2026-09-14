@@ -58,7 +58,12 @@ void main() {
         eventsController: DefaultEventsController(),
         tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
         locale: const Locale('de'),
-        child: Column(children: [ScheduleDate(date: wednesday), DayHeader(date: wednesday)]),
+        child: Column(
+          children: [
+            ScheduleDate(date: wednesday),
+            DayHeader(date: wednesday),
+          ],
+        ),
       ),
     );
 

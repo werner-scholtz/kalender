@@ -23,8 +23,10 @@ void main() {
         expect(timeOfDayRange.coversWholeDay, isFalse);
         expect(KalenderTimeRange.allDay().coversWholeDay, isTrue);
         expect(
-          KalenderTimeRange(start: const KalenderTime(hour: 0, minute: 0), end: const KalenderTime(hour: 23, minute: 0))
-              .coversWholeDay,
+          KalenderTimeRange(
+            start: const KalenderTime(hour: 0, minute: 0),
+            end: const KalenderTime(hour: 23, minute: 0),
+          ).coversWholeDay,
           isFalse,
         );
       });

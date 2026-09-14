@@ -102,16 +102,14 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
             );
 
             if (!correctType) {
-              debugPrint(
-                'HorizontalDragTarget: cannot use details: $details because of unknown data type',
-              );
+              debugPrint('HorizontalDragTarget: cannot use details: $details because of unknown data type');
               return false;
             }
 
             // First test if the details can be accepted at all.
             final accepted =
                 callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
-                    HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
+                HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
             if (!accepted) return accepted;
 
             return onWillAcceptWithDetails(
@@ -126,8 +124,10 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
               },
               onReschedule: (event) {
                 // Set the size of the feedback widget.
-                context.feedbackWidgetSizeNotifier.value =
-                    Size(min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length), tileHeight);
+                context.feedbackWidgetSizeNotifier.value = Size(
+                  min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length),
+                  tileHeight,
+                );
 
                 controller.selectEvent(event, internal: true);
                 return true;
@@ -170,10 +170,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  FloatingDateTime? calculateCursorDateTime(
-    Offset offset, {
-    Offset feedbackWidgetOffset = Offset.zero,
-  }) {
+  FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
     // Calculate the relative cursor position.
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
@@ -206,7 +203,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
     final range = switch (direction) {
       ResizeDirection.left => calculateRangeFromStart(floatingRange, cursorDateTime),
       ResizeDirection.right => calculateRangeFromEnd(floatingRange, cursorDateTime.endOfDay),
-      _ => null
+      _ => null,
     };
     if (range == null) return null;
     return event.withDateTimeRange(toLocationDateTimeRange(range));
