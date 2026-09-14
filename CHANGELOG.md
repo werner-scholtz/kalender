@@ -20,11 +20,13 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `ResizeHandleDetails`, `MultiDayLayoutFrame`, `MultiDayLayout`, `ScheduleTileHighlight` and `SchedulePositionList` rename their `dateTimeRange` to `range`.
 - `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
+- The deprecated `BuildContext.calendarLocale` is removed. `kalenderLocale` replaces it.
 
 ### Features
 
 - `dart fix --apply` applies this release's renames.
 - `dart fix` does not apply the declaration of a renamed member you override.
+- `dart fix` renames `calendarLocale` only where the `KalenderLocale` extension is applied explicitly.
 
 ## 0.30.0
 
