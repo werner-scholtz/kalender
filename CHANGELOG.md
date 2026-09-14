@@ -36,6 +36,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 ### Fixes
 
 - Changing the calendar's location keeps the date on screen, rather than returning to `initialDateTime` or to the page before or after it.
+- A drag that creates or resizes an event stops at the end of `timeOfDayRange` rather than rounding past it.
 
 ## 0.30.0
 
