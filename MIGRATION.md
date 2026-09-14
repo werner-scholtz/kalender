@@ -28,12 +28,14 @@ What it does not do:
 - A replacement that is an expression rather than another member.
 - The body of a method you override. The signature is rewritten and the body is
   not, so finish the edit where the compiler points.
+- An extension member called without naming the extension, such as
+  `context.calendarLocale`.
 
 The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. Six declarations you override need editing by hand. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override needs a hand edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
@@ -50,14 +52,9 @@ The sections below cover what is left after the fixes have run.
 
 ### The two layout date types are renamed
 
-`InternalDateTime` is now `FloatingDateTime` and `InternalDateTimeRange` is now
-`FloatingDateTimeRange`. Floating is the term RFC 5545 uses for a date and time
-that names no timezone, which is what these two hold. Nothing about their
-behaviour changes.
-
-`KalenderTime.toInternalDateTime` is `toFloatingDateTime` for the same reason.
-
-`dart fix --apply` performs all three renames.
+`InternalDateTime` is now `FloatingDateTime`, `InternalDateTimeRange` is now
+`FloatingDateTimeRange`, and `KalenderTime.toInternalDateTime` is now
+`toFloatingDateTime`. `dart fix --apply` performs all three renames.
 
 ```dart
 // Before
@@ -69,13 +66,8 @@ FloatingDateTimeRange rangeFor(FloatingDateTime date) => date.dayRange;
 
 ### The members carrying those types are renamed
 
-A member is now named for what it is rather than for the spelling of its type, so
-it says `range` rather than `dateTimeRange`, and the type annotation says which
-space the value is in. A `floating` marker is kept only where one class carries
-both spaces, which `KalenderEvent`, `KalenderController` and
-`PageIndexCalculator` all do.
-
-`dart fix --apply` rewrites every call site.
+`dart fix --apply` rewrites every use, including the method and parameter names
+in an override.
 
 | Before | After |
 | --- | --- |
@@ -104,56 +96,56 @@ both spaces, which `KalenderEvent`, `KalenderController` and
 | `MultiDayEventOverlayTile(dateTimeRange:)` | `floatingRange:` |
 
 `KalenderEvent.dateTimeRange`, `KalenderController.visibleDateTimeRange` and the
-`onPageChanged` callback keep their names. They carry `KalenderDateTimeRange`, so
-the rule leaves them alone.
+`onPageChanged` callback keep their names.
 
-### Six declarations to edit by hand
+### The body of a `MultiDayLayoutStrategy.generateFrame` override
 
-A fix rewrites calls, never a declaration in your own code, so an override of one
-of these is yours to rename. You are affected only if you wrote your own
-`EventsController`, `EventStore`, `PageIndexCalculator` or
-`MultiDayLayoutStrategy`, or override `EventTileUtils.internalTileRange`.
-
-Five of the six are abstract, so the build fails until you rename them and the
-analyzer points at each one. `EventTileUtils.internalTileRange` is the exception:
-it has a default implementation, so an override keeping the old name becomes a
-method that overrides nothing and the calendar silently uses the default. The
-only report is the `override_on_non_overriding_member` warning on your
-`@override`. Search your code for `internalTileRange` rather than relying on the
-build to fail.
+`dart fix` renames the parameter in your override's signature, not where the body
+uses it. Rename those uses by hand. The analyzer reports each one as an undefined
+name.
 
 ```dart
 // Before
-class MyEventsController extends EventsController {
-  @override
-  Iterable<KalenderEvent> eventsFromDateTimeRange(
-    InternalDateTimeRange dateTimeRange, {
-    required MultiDayRule multiDayRule,
-  }) { ... }
+@override
+MultiDayLayoutFrame generateFrame({
+  required InternalDateTimeRange visibleDateTimeRange,
+  required List<KalenderEvent> events,
+  required TextDirection textDirection,
+  required Location? location,
+  required MultiDayLayoutFrameCache? cache,
+}) {
+  return defaultMultiDayFrameGenerator(
+    visibleDateTimeRange: visibleDateTimeRange,
+    events: events,
+    textDirection: textDirection,
+    location: location,
+    cache: cache,
+  );
 }
 
 // After
-class MyEventsController extends EventsController {
-  @override
-  Iterable<KalenderEvent> eventsInRange(
-    FloatingDateTimeRange range, {
-    required MultiDayRule multiDayRule,
-  }) { ... }
+@override
+MultiDayLayoutFrame generateFrame({
+  required FloatingDateTimeRange visibleRange,
+  required List<KalenderEvent> events,
+  required TextDirection textDirection,
+  required Location? location,
+  required MultiDayLayoutFrameCache? cache,
+}) {
+  return defaultMultiDayFrameGenerator(
+    visibleRange: visibleRange,
+    events: events,
+    textDirection: textDirection,
+    location: location,
+    cache: cache,
+  );
 }
 ```
 
-The other four follow the same shape:
-
-- `EventStore.eventIdsFromDateTimeRange` becomes `eventIdsInRange`.
-- `PageIndexCalculator.dateTimeRangeFromIndex` becomes `rangeFromIndex`, and
-  `internalRange` becomes `floatingRange`.
-- `MultiDayLayoutStrategy.generateFrame` takes `visibleRange` rather than
-  `visibleDateTimeRange`.
-- `EventTileUtils.internalTileRange` becomes `floatingTileRange`.
-
 ### `BuildContext.calendarLocale` is removed
 
-`kalenderLocale` replaces it, as the 0.30.0 deprecation message said.
+`dart fix` renames `KalenderLocale(context).calendarLocale`. Change
+`context.calendarLocale` by hand.
 
 ```dart
 // Before
@@ -163,18 +155,11 @@ Locale? locale = context.calendarLocale;
 Locale? locale = context.kalenderLocale;
 ```
 
-`dart fix` reaches this one only where you apply the extension explicitly, as
-`KalenderLocale(context).calendarLocale`. A rename on an extension member does not
-match the bare `context.calendarLocale`, so the analyzer reports that spelling
-instead and you change it by hand.
-
 ### `initialDateTime` only applies when the calendar is first built
 
-A view switch used to return to the incoming configuration's `initialDateTime`,
-discarding the date on screen. It now takes its date from `dateResolver` or
-`dateTransition`, the same as a configuration that sets no `initialDateTime`.
-
-To keep forcing a date when switching to a view, return it from a `dateResolver`:
+A view switch no longer returns to the incoming configuration's
+`initialDateTime`. To force a date when switching to a view, return it from a
+`dateResolver`:
 
 ```dart
 // Before
@@ -187,8 +172,8 @@ MultiDayViewConfiguration.singleDay(
 )
 ```
 
-Rebuilding with a different `initialDateTime` no longer moves a calendar that is
-already built. Move it through the controller instead:
+Rebuilding with a different `initialDateTime` no longer moves a built calendar.
+Use the controller:
 
 ```dart
 // Before

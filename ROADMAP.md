@@ -211,15 +211,41 @@ The month comes along, which is what makes the rule true of the whole package ra
 
 This does not wait for Flutter. [#97496](https://github.com/flutter/flutter/issues/97496) is the remaining route for a canonical range type and is a proposals channel with no owner for this and no date. Filing there costs nothing and is worth doing, but it cannot be on the critical path. If Flutter promotes one later, kalender adds a converter and deprecates its own over a release or two, which is a smaller migration than the one waiting produces.
 
+### 0.31.0, the floating names, done
+
+**The layout date types are `FloatingDateTime` and `FloatingDateTimeRange`.** 0.30.0 kept the name `InternalDateTimeRange` for a later window. "Internal" on an exported type read oddly beside the `Kalender` marker, and it suggested the type was not meant for apps, while a custom page index calculator or layout strategy has to name it. Floating is the term RFC 5545 uses for a date and time that names no timezone, which is what both types hold, and the ICS example already parses that format. `InternalDateTime` moves with the range, since the two are a pair.
+
+Merging the range into `KalenderDateTimeRange` was rejected. The two were one type until 0.30.0, when `InternalDateTimeRange` still extended Material's `DateTimeRange`, and that subtype relationship is what let three offset defects compile. A single type would make a range of instants assignable where a layout position is wanted again. A generic range could not carry the arithmetic either, since `dates`, `weekNumbers` and the rest call members that live on `FloatingDateTime` rather than on `DateTime`.
+
+**Members are named for what they are, not for their type.** They say `range` rather than `dateTimeRange`, and a `floating` marker stays only where one class carries both spaces: `KalenderEvent`, `KalenderController` and `PageIndexCalculator`. The whole vocabulary landed in one release. The members that only change call sites and the members an app overrides sit side by side on the same classes, so splitting them would have shipped `PageIndexCalculator` with `rangeFromDate` beside `dateTimeRangeFromIndex`. The case is consistency before the freeze rather than correctness: with the Material inheritance gone, a misnamed member can no longer produce a value in the wrong space.
+
+`dart fix` covers more of it than first assumed, measured from a consuming project. A method rename renames the override as well as its call sites, and a parameter rename renames the parameter in the override's signature. What it leaves is a use of the old parameter inside an override's body, which in this release is only `MultiDayLayoutStrategy.generateFrame`.
+
+**`initialDateTime` applies only when the calendar is first built.** A location change and a view switch shared one branch in `KalenderView.didUpdateWidget`, which read `initialDateTime` whenever it was set. A location change therefore threw away the date on screen and returned to the startup date, and it converted that date without the location, so it could land a week early or late. The dartdoc said `initialDateTime` wins on a view switch, while the views guide said it is the date for the first render. The guide won. A view switch and a location change take the date from `dateResolver` or `dateTransition`, and an app that wants a fixed date on a switch returns it from a `dateResolver`.
+
+**The deprecated `calendarLocale` is removed**, as its 0.30.0 message named, and `lib/` carries no `@Deprecated`.
+
+**Seven of the fourteen TODOs were resolved.** The four about locations were the defect above, already resolved, or out of date, since every `PageIndexCalculator` member already took a location. The force-unwrap of `floatingVisibleRange.value` is safe, since every view controller sets it in its constructor and nothing clears it. Event ids are random rather than timestamp-based, so the UUID suggestion described no defect. The TODO about new events outside the displayed hours was narrower than it read. A drag that leaves the day already creates nothing, but snapping rounded the last pixel past the end of a `timeOfDayRange` that is not a whole number of intervals. The cursor time is clamped now, as rescheduling already was, which fixes creating and resizing together.
+
+Publishing validates the package again, now that pub.dev accepts a metadata request that carries a bearer token, and every CI job runs the Flutter version in `.fvmrc`.
+
+### 0.32.0, planned
+
+New features wait for this release, so 0.31.0 stays a release of renames with one migration to read.
+
+**The theme split, as an additive palette.** A `material_ui` app can already supply styles through the `KalenderTheme` widget without `ThemeExtension`. What breaks is the defaults. They are built from `Theme.of`, which such an app does not install, so the calendar falls back to `ThemeData.fallback()`. `KalenderPalette` becomes public and an app can pass one. When none is passed it is still built from `Theme.of`, so a Material app sees no change. The palette grows to cover what the widget fallbacks read today and it does not carry: `primaryContainer`, `onSurface` and the card look. This closes the open half of [#491](https://github.com/werner-scholtz/kalender/issues/491). A `kalender_material_ui` companion stays deferred, since a public palette does the same job without a second package to maintain.
+
+**Days as selectable things, with a way to show a chosen day's events.** [#264](https://github.com/werner-scholtz/kalender/issues/264), [#215](https://github.com/werner-scholtz/kalender/issues/215), [#262](https://github.com/werner-scholtz/kalender/issues/262) for the month and [#89](https://github.com/werner-scholtz/kalender/issues/89) describe one feature in the shape of [table_calendar](https://pub.dev/packages/table_calendar): a grid of days, selection including ranges, markers for days with events, and the chosen day's events shown below the grid or in the overlay card. kalender has the page arithmetic, the grid, `eventsInRange`, location handling and the overlay. It lacks selection as a concept the calendar knows, events drawn as markers rather than tiles, and a compact grid view. It may take more than one release.
+
+One question comes before any code: is it a new view inside `KalenderView`, or a separate widget that shares kalender's controllers? The answer decides whether it waits on a view registry. The rest follow from it. Does selection cover ranges and several days, and does the app or `KalenderController` hold it? How does a day show that it has events? What shows the chosen day's events? Do the two-week and week grids come too? Can an event be dragged between days in the grid? It also has to answer what kalender adds over table_calendar for this shape: timezones, one shared events controller, drag and drop, and consistency with the other views.
+
+**The rest of composability, a view registry and cell slots, shaped by that feature** rather than designed on its own. See Composability below.
+
 ### The next breaking window
 
 Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
 
-**The `internal` naming rule is not applied across the whole surface.** 0.30.0 leaves two range types, and [AGENTS.md](AGENTS.md#naming-the-two-range-spaces) makes the rule explicit: a member carrying the unzoned layout space says `internal` in its name, a member without it carries `KalenderDateTimeRange`. `KalenderEvent` already reads that way and 0.30.0 fixed `ViewController.internalVisibleRange`, which was the one place a single name meant two types across the public API. The rest still says `dateTimeRange` while returning the internal space: `ScheduleViewController.highlightedDateTimeRange`, `ResizeHandleDetails.dateTimeRange`, `EventTileUtils.eventRangeOnDate`, `DragTargetUtils.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd`, `PageIndexCalculator.dateTimeRangeFromIndex` and `dateTimeRangeFromDate`, `EventsController.eventsFromDateTimeRange` and `EventStore.eventIdsFromDateTimeRange`.
-
-It waits because of what it would cost rather than because it is unsettled. The last four are abstract members on classes an app implements or subclasses, and a data-driven fix rewrites call sites but never a declaration in someone else's code, which is the same wall `copyWithData` hits. 0.30.0 already asks for one hand-edited declaration per event subclass and a find-and-replace for every `DateTimeRange` annotation, so three more unfixable declaration changes belong in a release that is reshaping those classes anyway. Do this when `EventsController` is next on the table, and before 1.0.0 freezes it.
-
-`InternalDateTimeRange` keeps its name for the same window. "Internal" on an exported type reads oddly beside the `Kalender` marker, but the name earns itself by warning that the value is a calendar position rather than an instant, and no alternative that keeps that warning has been proposed. Decision 11 of the 0.30.0 work established only that the split does not force the rename, which is not the same as deciding it should never happen.
+Nothing is queued. 0.31.0 took the `internal` naming sweep and the rename of `InternalDateTimeRange`.
 
 ### Theming, still open
 
@@ -233,15 +259,7 @@ The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 ### Known defects
 
-**Two were fixed in 0.30.0.** `KalenderController.id` came from a millisecond timestamp, so two controllers built together shared an id and a create drag could be accepted by the wrong calendar. `KalenderTimeRange.coversWholeDay` did not read the start minute, so a range from 00:30 reported that it covered the day.
-
-**Fourteen `TODO` comments ship in `lib/`.** Not all are defects, but several record real uncertainty and none is recorded anywhere but the source. Grouped by what they touch.
-
-*Location handling.* `multi_day_body.dart:252` says the current page is sometimes wrong after switching location, which reads as a confirmed defect rather than a note. `kalender_provider.dart:79` asks whether the calendar updates correctly when the location changes. `schedule_body.dart:261` says a location is not passed down properly. `page_index_calculator.dart:6` says the calculators still need to work with `TZDateTime` and locations. These four are one piece of work.
-
-*Drag targets.* `vertical_drag_target.dart:81` questions whether force-unwrapping `internalVisibleRange.value` is safe. The same pattern appears in `kalender_controller.dart:98`, so it is either an invariant worth writing down or a crash worth fixing, and reading it once settles both. `vertical_drag_target.dart:385` says new events may be created in an area the view does not display.
-
-*Event ids.* `kalender_event.dart:97` suggests a UUID package. 0.30.0 fixed the controller id for the same class of problem, so this is the matching question for events.
+**Seven `TODO` comments ship in `lib/`.** None is a confirmed defect. Grouped by what they touch.
 
 *Rebuild cost.* `schedule_body.dart:42` and `:102` both flag rebuilds that may be unnecessary, and `kalender_view.dart:80` wants a field to become a `ValueNotifier`. Measure before changing any of them, as Performance below says.
 
@@ -249,57 +267,56 @@ The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 ### Tests
 
-Coverage is 92.3% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below, and that gate is now met.
+Coverage is 92.2% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below, and that gate is now met.
 
 Both columns are line coverage of the directory and everything under it, measured with `flutter test --coverage`.
 
 | Area | 0.24.0 | Now | What is missing |
 |---|---|---|---|
-| `models/` | 87% | 89% | Recovered, and past the 0.24.0 figure, once the directory below was covered. |
+| `models/` | 87% | 90% | Recovered, and past the 0.24.0 figure, once the directory below was covered. |
 | `models/components/` | not tracked | 98% | Done. `copyWith`, `==` and `hashCode` on the nine components classes had no test at all. What is left is six bare `@override` lines that lcov counts and no test can reach. |
-| `models/mixins/` | 84% | 84% | Untouched. |
-| `models/view_configurations/` | 83% | 84% | `schedule_view_configuration.dart` at 42%. |
+| `models/mixins/` | 84% | 86% | No targeted work yet. |
+| `models/view_configurations/` | 83% | 83% | `schedule_view_configuration.dart` at 42%. |
 | `widgets/drag_targets/` | 71% | 91% | Done. `schedule_drag_target.dart` went from 10 of its 87 lines to 82, which covered the whole reschedule path in the schedule view. |
-| `widgets/event_tiles/` | 81% | 82% | Barely moved. `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%. |
-| `theme/` | 78% | 97% | Done. 0.25.0 rewrote this code and tested it, taking it from the lowest covered area to one of the highest. |
+| `widgets/event_tiles/` | 81% | 82% | Barely moved. `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 38%. |
+| `theme/` | 78% | 92% | Done. 0.25.0 rewrote this code and tested it, taking it from the lowest covered area to one of the highest. |
 
 The rest runs from 79% to 100% with no large gap.
 
-**One thing CI does not verify.** `analyze_examples.yml` pins every example to Flutter 3.44.6, `examples/material_ui` with them, though its `.fvmrc` says 3.47.2 and the SDK that moved Material out is the whole point of it. That example has never been analyzed on the version it demonstrates. The declared Flutter minimum is checked as of 0.30.0. It declared `flutter: ">=3.22.0"`, which never held: `lib/material.dart` needs the generic `DateTimeRange` that arrived in 3.32.0, and `timezone` needs Dart 3.10.0, which reaches stable in Flutter 3.38.1. The bound is 3.38.1 now and a job analyses against it.
+**CI runs every job on the Flutter version in `.fvmrc`**, so `examples/material_ui` runs on the release that moved Material out, which is the point of it. A job on the newest stable reports a break before `.fvmrc` moves. The declared Flutter minimum has had its own job since 0.30.0.
 
 **The Dart bound still says `>=3.0.0` and that is not what the package needs.** `timezone` requires Dart `^3.10.0`, so pub already refuses to resolve on anything older and no user can reach the versions the bound claims. Correcting it to `>=3.10.0` costs more than it reads: the formatter picks its style from the package language version, so any bound at 3.7 or above switches `dart format` to the tall style and rewrites 161 of the 210 files. That is a real piece of work with its own review, not a line in a release. Do it on its own, and take the accurate bound with it.
 
-Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 39%.
+Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 38%.
 
 The pattern from 0.24.0 held again, in that closing a gap turned something up. Covering the schedule drag target showed that a drop took the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day landed at midnight. The multi-day header already kept it, and the schedule uses the same path in 0.28.0. The components classes were sound: the tests found no dropped field, which matches the audit done during 0.27.0.
 
 ### Composability
 
-No release attached yet. It reshapes public API, so the shape has to settle before 1.0.0, and it touches enough of the package that it waits on the test coverage above.
+It reshapes public API, so the shape has to settle before 1.0.0. The coverage gate it waited on is met, and 0.32.0 starts on it through the feature planned there.
 
-Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. Three pieces are unbuilt.
+Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. The state layer was the second, public since 0.29.0 as `KalenderScope`. Two pieces are unbuilt.
 
-- **The state layer is closed.** The providers carrying calendar state are private, so nothing outside the package can read them.
 - **View types are hardcoded.** Three switches map a `ViewConfiguration` to its controller, body and header, so a view type cannot be added without forking.
-- **There are no cell or background slots.** The bodies and headers expose nowhere to draw behind or inside a cell.
+- **The multi-day body has no cell or background slots.** It exposes nowhere to draw behind or inside a cell. The month body has `monthDayCellBuilder`.
 
-This is also the gate on most of the feature list below, which is the argument for doing it rather than leaving it under investigation. Five of the nine open feature issues are waiting on one of those three pieces.
+Four of the open feature issues wait on one of those two pieces.
 
 ### Features
 
 Most of the open issues should land before 1.0.0 rather than after it. Each one adds public API, and 1.0.0 is the point where adding it stops being cheap. They are grouped by what they are waiting on rather than by demand, because the grouping is what decides the order.
 
-**Waiting on composability.** These cannot be built cleanly against the package as it stands.
+**Waiting on new structure.** These cannot be built cleanly against the package as it stands.
 
 | Issue | Needs |
 |---|---|
-| [#215](https://github.com/werner-scholtz/kalender/issues/215) a portal for every cell in the month body | The state layer. The overlay portal controller is created privately. |
+| [#215](https://github.com/werner-scholtz/kalender/issues/215) a portal for every cell in the month body | A way to open the day overlay for any date. It exists only for days whose events overflow, and only the "+N more" button opens it. |
 | [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. |
 | [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. Buildable in the month view today, not in the multi-day body. |
-| [#40](https://github.com/werner-scholtz/kalender/issues/40) yearly view | A view registry, and the state layer to build against. |
-| [#264](https://github.com/werner-scholtz/kalender/issues/264) mobile month view | The same two. A grid of days over a list, not a configuration of the current month view. |
+| [#40](https://github.com/werner-scholtz/kalender/issues/40) yearly view | A view registry. |
+| [#264](https://github.com/werner-scholtz/kalender/issues/264) mobile month view | A view registry. A grid of days over a list, not a configuration of the current month view. |
 
-Selection is the thread through the middle three. There is no `selectedDate` on the controller and no `isSelected` on a cell, so it is app owned today, and one addition serves all of them.
+Selection is the thread through the middle three. There is no `selectedDate` on the controller and no `isSelected` on a cell, so it is app owned today, and one addition serves all of them. #264, #215, #262 and #89 are planned together in 0.32.0.
 
 **Independent.** These wait on nothing and can land in any release.
 

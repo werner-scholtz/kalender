@@ -10,7 +10,7 @@ class MultiDayEventsRow extends StatelessWidget {
   /// The configuration for the multi-day body.
   final MultiDayBodyConfiguration configuration;
 
-  /// The internal date time range that is being displayed.
+  /// The range being displayed.
   final FloatingDateTimeRange floatingRange;
 
   /// The controller for the multi-day view.

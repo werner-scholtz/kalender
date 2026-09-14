@@ -20,23 +20,21 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `ResizeHandleDetails`, `MultiDayLayoutFrame`, `MultiDayLayout`, `ScheduleTileHighlight` and `SchedulePositionList` rename their `dateTimeRange` to `range`.
 - `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
-- The deprecated `BuildContext.calendarLocale` is removed. `kalenderLocale` replaces it.
+- The deprecated `BuildContext.calendarLocale` is removed.
 
 ### Behavior Changes
 
-- `initialDateTime` only sets the date a calendar opens on. A view switch takes its date from `dateResolver` or `dateTransition` even when the incoming configuration sets `initialDateTime`.
+- `initialDateTime` only applies when the calendar is first built, not on a view switch.
 - Rebuilding a view configuration with a different `initialDateTime` no longer moves a calendar that is already built.
 
 ### Features
 
 - `dart fix --apply` applies this release's renames.
-- `dart fix` does not apply the declaration of a renamed member you override.
-- `dart fix` renames `calendarLocale` only where the `KalenderLocale` extension is applied explicitly.
 
 ### Fixes
 
-- Changing the calendar's location keeps the date on screen, rather than returning to `initialDateTime` or to the page before or after it.
-- A drag that creates or resizes an event stops at the end of `timeOfDayRange` rather than rounding past it.
+- Changing the calendar's location keeps the date on screen.
+- A drag that creates or resizes an event stops at the end of `timeOfDayRange`.
 
 ## 0.30.0
 

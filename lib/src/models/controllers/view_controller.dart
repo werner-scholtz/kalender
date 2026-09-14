@@ -15,7 +15,7 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// The location of the current view.
   Location? location;
 
-  /// The range currently visible, in the calendar's internal layout space.
+  /// The range currently visible.
   ///
   /// This is the unzoned counterpart of [KalenderController.visibleDateTimeRange],
   /// which carries the same range as a [KalenderDateTimeRange] for an app to read.

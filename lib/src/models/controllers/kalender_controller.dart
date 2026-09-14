@@ -32,7 +32,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   ViewController? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
-  /// The internal [FloatingDateTimeRange] that is currently visible.
+  /// The [FloatingDateTimeRange] that is currently visible.
   ///
   /// See [FloatingDateTimeRange] for more information.
   late final _floatingRange = ValueNotifier<FloatingDateTimeRange?>(null);

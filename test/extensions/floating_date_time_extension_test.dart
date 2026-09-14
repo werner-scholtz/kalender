@@ -36,7 +36,7 @@ void main() {
       test('creates an FloatingDateTime from a TZDateTime preserving components', () {
         final location = getLocation('America/New_York');
         // TZDateTime(location, 2024, 7, 4, 22, 30) represents 10:30 PM in New York
-        // which is 2024-07-05 02:30 UTC — but FloatingDateTime should preserve
+        // which is 2024-07-05 02:30 UTC, but FloatingDateTime should preserve
         // the 2024-07-04 22:30 components, not the UTC representation.
         final tzDate = TZDateTime(location, 2024, 7, 4, 22, 30);
         final internal = FloatingDateTime.fromDateTime(tzDate);

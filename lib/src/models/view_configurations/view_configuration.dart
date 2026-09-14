@@ -54,9 +54,7 @@ abstract class ViewConfiguration {
 
   /// The date the view opens on when the calendar is first built.
   ///
-  /// Read only at startup. On a view switch or a change of location the date comes from [dateResolver] or
-  /// [dateTransition] instead. To move a built calendar to a date, call `KalenderController.jumpToDate` or
-  /// `KalenderController.animateToDate`.
+  /// Not read on a view switch or a change of location, where [dateResolver] or [dateTransition] decides the date.
   final DateTime? initialDateTime;
 
   /// How the visible date is chosen when switching to this view from another, or when the calendar's location

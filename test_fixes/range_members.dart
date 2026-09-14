@@ -55,3 +55,32 @@ Widget positionList(FloatingDateTimeRange r, ScheduleBodyConfiguration config) =
       currentPage: 0,
       paginated: false,
     );
+
+class CustomStrategy extends MultiDayLayoutStrategy {
+  const CustomStrategy();
+
+  @override
+  MultiDayLayoutFrame generateFrame({
+    required FloatingDateTimeRange visibleDateTimeRange,
+    required List<KalenderEvent> events,
+    required TextDirection textDirection,
+    required Location? location,
+    required MultiDayLayoutFrameCache? cache,
+  }) {
+    return defaultMultiDayFrameGenerator(
+      visibleDateTimeRange: visibleDateTimeRange,
+      events: events,
+      textDirection: textDirection,
+      location: location,
+      cache: cache,
+    );
+  }
+}
+
+MultiDayLayoutFrame throughBase(MultiDayLayoutStrategy strategy, FloatingDateTimeRange r) => strategy.generateFrame(
+      visibleDateTimeRange: r,
+      events: const [],
+      textDirection: TextDirection.ltr,
+      location: null,
+      cache: null,
+    );
