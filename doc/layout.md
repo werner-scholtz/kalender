@@ -71,7 +71,7 @@ class MyLayoutStrategy extends EventLayoutStrategy {
   @override
   EventLayoutDelegate createDelegate({
     required Iterable<KalenderEvent> events,
-    required InternalDateTime date,
+    required FloatingDateTime date,
     required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
@@ -123,7 +123,7 @@ class FrameSortedByEnd extends MultiDayLayoutStrategy {
 
   @override
   MultiDayLayoutFrame generateFrame({
-    required InternalDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleDateTimeRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,

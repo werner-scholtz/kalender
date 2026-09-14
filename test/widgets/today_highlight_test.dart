@@ -14,7 +14,7 @@ import '../utilities.dart';
 ///   * #248 — header dates compared against a local `DateTime.now()` incorrectly
 ///            near midnight in offset timezones.
 ///
-/// The root cause was fixed by the `InternalDateTime` + `NowCallback` refactor in
+/// The root cause was fixed by the `FloatingDateTime` + `NowCallback` refactor in
 /// `0.18.0`. The isolated component checks live in `now_callback_is_today_test.dart`;
 /// these exercise the layer users actually hit — a full `KalenderView` — and are
 /// run across the timezone matrix (`tool/test_timezones_linux.dart`) to cover the
@@ -93,7 +93,7 @@ void main() {
       });
 
       // #248: a custom monthDayHeaderBuilder must receive a localized wall-clock
-      // DateTime (via .forLocation()), not a raw UTC-flagged InternalDateTime, so
+      // DateTime (via .forLocation()), not a raw UTC-flagged FloatingDateTime, so
       // consumer comparisons against DateTime.now() behave correctly.
       testWidgets('custom builder receives localized (non-UTC) dates (#248)', (tester) async {
         final received = <DateTime>[];
@@ -122,7 +122,7 @@ void main() {
 
         expect(received, isNotEmpty);
         // No local timezone is configured, so dates arrive as local wall-clock
-        // (isUtc == false) rather than the UTC-flagged InternalDateTime.
+        // (isUtc == false) rather than the UTC-flagged FloatingDateTime.
         expect(
           received.every((d) => !d.isUtc),
           isTrue,

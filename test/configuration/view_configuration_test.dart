@@ -49,13 +49,13 @@ void main() {
   final displayRange = KalenderDateTimeRange(start: start, end: end);
 
   // The initial date for the calendar controller.
-  final initialDate = InternalDateTime(2025, 1, 1);
-  final startDate = InternalDateTime.fromDateTime(start);
-  final endDate = InternalDateTime.fromDateTime(lastDisplayDate);
+  final initialDate = FloatingDateTime(2025, 1, 1);
+  final startDate = FloatingDateTime.fromDateTime(start);
+  final endDate = FloatingDateTime.fromDateTime(lastDisplayDate);
 
   // What do we need we need a list of DateTime objects to event IDs. to ensure we can find them in the widget tree.
   final eventMapItems = List.generate(
-    InternalDateTimeRange.fromDateTimeRange(displayRange).dates().length,
+    FloatingDateTimeRange.fromDateTimeRange(displayRange).dates().length,
     (i) {
       final key = start.copyWith(year: start.year, month: start.month, day: start.day + i);
       final end = key.copyWith(hour: start.hour + 1);
@@ -339,7 +339,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = ContinuousScheduleViewController(
         viewConfiguration: viewConfiguration,
-        internalVisibleRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
+        internalVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );
@@ -397,7 +397,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = PaginatedScheduleViewController(
         viewConfiguration: viewConfiguration,
-        internalVisibleRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
+        internalVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initialDate: initialDate,
       );
@@ -499,7 +499,7 @@ extension ViewControllerUtilities on WidgetTester {
   /// Test that a function call changes the visible range start of the [KalenderController] to the given dateTime.
   Future<void> testDateFunctionExact({
     required KalenderController controller,
-    required InternalDateTime dateTime,
+    required FloatingDateTime dateTime,
     required void Function(DateTime dateTime) function,
     KalenderEvent? event,
   }) async {
@@ -527,7 +527,7 @@ extension ViewControllerUtilities on WidgetTester {
   /// Test that a function call includes the given dateTime in the visible range of the [KalenderController].
   Future<void> testDateFunctionCallWithin({
     required KalenderController controller,
-    required InternalDateTime dateTime,
+    required FloatingDateTime dateTime,
     required void Function(DateTime dateTime) function,
     KalenderEvent? event,
   }) async {

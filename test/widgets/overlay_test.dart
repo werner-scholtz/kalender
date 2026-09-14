@@ -19,7 +19,7 @@ void main() {
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
   setUpAll(() {
-    final now = InternalDateTime.fromDateTime(DateTime.now()).startOfWeek();
+    final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
     final startOfWeek = DateTime(now.year, now.month, now.day);
 
     eventsController.addEvents([

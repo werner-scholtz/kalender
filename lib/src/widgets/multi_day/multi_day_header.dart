@@ -369,7 +369,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
 
         final rangeStart = pageNavigation.dateTimeRangeFromIndex(start, context.location).start;
         final rangeEnd = pageNavigation.dateTimeRangeFromIndex(start + domainCount - 1, context.location).end;
-        final windowRange = InternalDateTimeRange(start: rangeStart, end: rangeEnd);
+        final windowRange = FloatingDateTimeRange(start: rangeStart, end: rangeEnd);
         final windowDates = windowRange.dates();
         final bandWidth = domainCount * dayWidth;
 

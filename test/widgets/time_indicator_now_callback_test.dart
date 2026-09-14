@@ -11,11 +11,11 @@ void main() {
   group('nowCallback', () {
     group('TimeIndicatorPositioner', () {
       final key = UniqueKey();
-      final now = InternalDateTime.fromDateTime(DateTime.now()).startOfWeek();
-      final range = InternalDateTimeRange(start: now, end: now.endOfWeek());
+      final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
+      final range = FloatingDateTimeRange(start: now, end: now.endOfWeek());
 
       group('positions indicator using callback wall-clock values', () {
-        for (final (index, date) in range.dates().map(InternalDateTime.fromDateTime).indexed) {
+        for (final (index, date) in range.dates().map(FloatingDateTime.fromDateTime).indexed) {
           testWidgets('day index $index', (tester) async {
             final viewConfiguration = MultiDayViewConfiguration.week(
               displayRange: range.forLocation(),
@@ -51,8 +51,8 @@ void main() {
 
       testWidgets('dateOverride takes precedence over nowCallback', (tester) async {
         // The callback points to day index 3 (Thursday), but dateOverride points to day index 0 (Monday).
-        final thursday = InternalDateTime.fromDateTime(range.dates()[3]);
-        final monday = InternalDateTime.fromDateTime(range.dates()[0]);
+        final thursday = FloatingDateTime.fromDateTime(range.dates()[3]);
+        final monday = FloatingDateTime.fromDateTime(range.dates()[0]);
 
         final viewConfiguration = MultiDayViewConfiguration.week(
           displayRange: range.forLocation(),
@@ -88,10 +88,10 @@ void main() {
 
       testWidgets('null callback preserves location-based behavior', (tester) async {
         // With no callback, the indicator uses DateTime.now() which is "today".
-        final today = InternalDateTime.fromDateTime(DateTime.now());
+        final today = FloatingDateTime.fromDateTime(DateTime.now());
         final todayWeekStart = today.startOfWeek();
-        final todayRange = InternalDateTimeRange(start: todayWeekStart, end: todayWeekStart.endOfWeek());
-        final todayIndex = todayRange.dates().map(InternalDateTime.fromDateTime).toList().indexWhere(
+        final todayRange = FloatingDateTimeRange(start: todayWeekStart, end: todayWeekStart.endOfWeek());
+        final todayIndex = todayRange.dates().map(FloatingDateTime.fromDateTime).toList().indexWhere(
               (d) => d.isSameDay(today.startOfDay),
             );
 
@@ -127,7 +127,7 @@ void main() {
 
       testWidgets('singleDay config with callback', (tester) async {
         // For a single-day view, the indicator should always be at index 0 (the only column).
-        final monday = InternalDateTime.fromDateTime(range.dates()[0]);
+        final monday = FloatingDateTime.fromDateTime(range.dates()[0]);
         final viewConfiguration = MultiDayViewConfiguration.singleDay(
           displayRange: range.forLocation(),
           nowCallback: () => monday,

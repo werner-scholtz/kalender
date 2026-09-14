@@ -6,7 +6,7 @@ import '../utilities.dart';
 
 void main() {
   final date = DateTime(2025);
-  final internalDate = InternalDateTime.fromDateTime(date);
+  final internalDate = FloatingDateTime.fromDateTime(date);
 
   // Events deliberately chosen to exercise boundary-touching behavior:
   //   - event 0 (01:29–01:30) and event 1 (01:30–01:59:59…) share an exact

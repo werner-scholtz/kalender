@@ -34,7 +34,7 @@ abstract class MultiDayLayoutStrategy {
 
   /// The layout frame for [events] across [visibleDateTimeRange].
   MultiDayLayoutFrame generateFrame({
-    required InternalDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleDateTimeRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
@@ -48,7 +48,7 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 
   @override
   MultiDayLayoutFrame generateFrame({
-    required InternalDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleDateTimeRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,
@@ -100,7 +100,7 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
 MultiDayLayoutFrame defaultMultiDayFrameGenerator({
-  required InternalDateTimeRange visibleDateTimeRange,
+  required FloatingDateTimeRange visibleDateTimeRange,
   required List<KalenderEvent> events,
   required TextDirection textDirection,
   required Location? location,
@@ -170,7 +170,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 
   // Maps each visible date to its column index so column lookups are O(1)
   // instead of a linear search per event per day.
-  final columnForDate = <InternalDateTime, int>{
+  final columnForDate = <FloatingDateTime, int>{
     for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i,
   };
 
@@ -186,7 +186,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     final event = entry.event;
 
     // The range with the end rounded to the end of the day (precomputed above).
-    final range = InternalDateTimeRange(start: entry.start, end: entry.roundedEnd);
+    final range = FloatingDateTimeRange(start: entry.start, end: entry.roundedEnd);
 
     // Find all the columns that the event will appear on.
     final columns = <int>[];
@@ -285,11 +285,11 @@ class _FrameEntry {
 
   final KalenderEvent event;
 
-  /// The event start as an [InternalDateTime].
-  final InternalDateTime start;
+  /// The event start as an [FloatingDateTime].
+  final FloatingDateTime start;
 
   /// The event end rounded to the end of the day (unless it sits on a day boundary).
-  final InternalDateTime roundedEnd;
+  final FloatingDateTime roundedEnd;
 
   /// The event duration in microseconds, used as the primary sort key.
   final int durationMicroseconds;
@@ -302,22 +302,22 @@ class MultiDayLayoutFrameCache {
   final Map<String, MultiDayLayoutFrame> _cache = {};
 
   /// Generates a cache key based on the parameters.
-  String _generateCacheKey(InternalDateTimeRange visibleDateTimeRange) {
+  String _generateCacheKey(FloatingDateTimeRange visibleDateTimeRange) {
     return '${visibleDateTimeRange.start.toIso8601String()}_${visibleDateTimeRange.end.toIso8601String()}';
   }
 
   /// Gets the cached layout frame if it exists.
-  MultiDayLayoutFrame? getCache(InternalDateTimeRange visibleDateTimeRange) {
+  MultiDayLayoutFrame? getCache(FloatingDateTimeRange visibleDateTimeRange) {
     final key = _generateCacheKey(visibleDateTimeRange);
     return _cache[key];
   }
 
-  void setCache(InternalDateTimeRange visibleDateTimeRange, MultiDayLayoutFrame frame) {
+  void setCache(FloatingDateTimeRange visibleDateTimeRange, MultiDayLayoutFrame frame) {
     final key = _generateCacheKey(visibleDateTimeRange);
     _cache[key] = frame;
   }
 
-  void removeCache(InternalDateTimeRange visibleDateTimeRange) {
+  void removeCache(FloatingDateTimeRange visibleDateTimeRange) {
     final key = _generateCacheKey(visibleDateTimeRange);
     _cache.remove(key);
   }
@@ -332,7 +332,7 @@ class MultiDayLayoutFrame {
   /// The range of dates that this frame is for.
   ///
   /// ex. 1 Week (7 days).
-  final InternalDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange dateTimeRange;
 
   /// The sorted events for this frame that will be used to generate `MultiDayEventTile`s.
   final List<KalenderEvent> events;
@@ -365,9 +365,9 @@ class MultiDayLayoutFrame {
   ///
   /// Reads from the end of the range in [TextDirection.rtl], mirroring the
   /// column order the frame was laid out with.
-  InternalDateTime dateFromColumn(int column) {
+  FloatingDateTime dateFromColumn(int column) {
     final days = textDirection == TextDirection.ltr ? column : dateTimeRange.dates().length - 1 - column;
-    return InternalDateTime.fromDateTime(dateTimeRange.start.add(Duration(days: days)));
+    return FloatingDateTime.fromDateTime(dateTimeRange.start.add(Duration(days: days)));
   }
 
   /// Returns the visible events and their layout information based on the provided max number of rows.
@@ -480,7 +480,7 @@ class MultiDayLayout extends MultiChildLayoutDelegate {
   });
 
   /// The date range that the events are laid out on.
-  final InternalDateTimeRange dateTimeRange;
+  final FloatingDateTimeRange dateTimeRange;
 
   /// The layout info for each event.
   final List<EventLayoutInformation> layoutInfo;

@@ -85,7 +85,7 @@ class DefaultEventsController extends EventsController {
 
   @override
   Iterable<KalenderEvent> eventsFromDateTimeRange(
-    InternalDateTimeRange dateTimeRange, {
+    FloatingDateTimeRange dateTimeRange, {
     required MultiDayRule multiDayRule,
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
@@ -108,7 +108,7 @@ class DefaultEventsController extends EventsController {
   /// Finds all the [KalenderEvent]s that occur during the [dateTimeRange].
   Iterable<KalenderEvent> _allEventsFromDateTimeRange(
     Iterable<KalenderEvent> events,
-    InternalDateTimeRange dateTimeRange,
+    FloatingDateTimeRange dateTimeRange,
     Location? location,
   ) {
     return events.where(
@@ -123,7 +123,7 @@ class DefaultEventsController extends EventsController {
   /// Finds the [KalenderEvent]s longer than 1 day that occur during the [dateTimeRange].
   Iterable<KalenderEvent> _multiDayEventsFromDateTimeRange(
     Iterable<KalenderEvent> events,
-    InternalDateTimeRange dateTimeRange,
+    FloatingDateTimeRange dateTimeRange,
     Location? location,
     MultiDayRule multiDayRule,
   ) {
@@ -137,7 +137,7 @@ class DefaultEventsController extends EventsController {
   /// Finds the [KalenderEvent]s that are shorter than 1 day that occur during the [dateTimeRange].
   Iterable<KalenderEvent> _dayEventsFromDateTimeRange(
     Iterable<KalenderEvent> events,
-    InternalDateTimeRange dateTimeRange,
+    FloatingDateTimeRange dateTimeRange,
     Location? location,
     MultiDayRule multiDayRule,
   ) {
@@ -159,7 +159,7 @@ class DefaultEventsController extends EventsController {
 
     return internalStart == internalEnd &&
         internalStart ==
-            InternalDateTime(
+            FloatingDateTime(
               internalStart.year,
               internalStart.month,
               internalStart.day,

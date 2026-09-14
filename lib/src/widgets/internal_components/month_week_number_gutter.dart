@@ -25,7 +25,7 @@ double _width(BuildContext context) {
 }
 
 class MonthWeekNumberGutter extends StatelessWidget {
-  final InternalDateTimeRange visibleRange;
+  final FloatingDateTimeRange visibleRange;
   final int numberOfRows;
   final WeekNumberBuilder weekNumberBuilder;
   final BorderSide dividerSide;
@@ -69,9 +69,9 @@ class MonthWeekNumberGutter extends StatelessWidget {
     );
   }
 
-  InternalDateTimeRange _rangeForRow(int index) {
+  FloatingDateTimeRange _rangeForRow(int index) {
     final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-    return InternalDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
+    return FloatingDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
   }
 }
 

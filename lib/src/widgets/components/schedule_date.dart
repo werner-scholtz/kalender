@@ -12,7 +12,7 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// Resolve the style with [KalenderTheme].
 typedef ScheduleDateBuilder = Widget Function(
   BuildContext context,
-  InternalDateTime date,
+  FloatingDateTime date,
 );
 
 /// The style of the [ScheduleDate].
@@ -81,7 +81,7 @@ class ScheduleDate extends StatelessWidget {
   /// Key applied to the `IconButton` when the date is today.
   static const todayKey = ValueKey('ScheduleDate.today');
 
-  final InternalDateTime date;
+  final FloatingDateTime date;
   final ScheduleDateStyle? style;
 
   /// Create a new [ScheduleDate].

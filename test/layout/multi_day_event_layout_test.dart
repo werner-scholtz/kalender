@@ -38,9 +38,9 @@ void main() {
       dropTargetTile: (context, event) => Container(key: const ValueKey('drop-target')),
     );
 
-    final start = InternalDateTime(2025, 3, 24);
-    final end = InternalDateTime(2025, 3, 31);
-    final visibleRange = InternalDateTimeRange(start: start, end: end);
+    final start = FloatingDateTime(2025, 3, 24);
+    final end = FloatingDateTime(2025, 3, 31);
+    final visibleRange = FloatingDateTimeRange(start: start, end: end);
 
     setUp(() {
       eventsController = DefaultEventsController();
@@ -501,7 +501,7 @@ class _ComparatorStrategy extends MultiDayLayoutStrategy {
 
   @override
   MultiDayLayoutFrame generateFrame({
-    required InternalDateTimeRange visibleDateTimeRange,
+    required FloatingDateTimeRange visibleDateTimeRange,
     required List<KalenderEvent> events,
     required TextDirection textDirection,
     required Location? location,

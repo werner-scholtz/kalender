@@ -57,7 +57,7 @@ void main() {
     expect(find.byType(MultiDayPortalOverlayButton), findsWidgets);
 
     // Tapping the button for Monday opens the overlay.
-    final monday = InternalDateTime.fromDateTime(start);
+    final monday = FloatingDateTime.fromDateTime(start);
     final button = find.byKey(MultiDayPortalOverlayButton.getKey(monday));
     expect(button, findsOneWidget);
     await tester.tap(button);

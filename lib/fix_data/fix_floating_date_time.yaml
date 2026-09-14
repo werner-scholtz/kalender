@@ -1,0 +1,36 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  - title: "Rename to 'FloatingDateTime'"
+    date: 2026-09-11
+    element:
+      uris: [ 'package:kalender/kalender.dart', 'package:kalender/kalender_extensions.dart' ]
+      class: 'InternalDateTime'
+    changes:
+      - kind: 'rename'
+        newName: 'FloatingDateTime'
+
+  - title: "Rename to 'FloatingDateTimeRange'"
+    date: 2026-09-11
+    element:
+      uris: [ 'package:kalender/kalender.dart', 'package:kalender/kalender_extensions.dart' ]
+      class: 'InternalDateTimeRange'
+    changes:
+      - kind: 'rename'
+        newName: 'FloatingDateTimeRange'
+
+  - title: "Rename to 'toFloatingDateTime'"
+    date: 2026-09-11
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'toInternalDateTime'
+      inClass: 'KalenderTime'
+    changes:
+      - kind: 'rename'
+        newName: 'toFloatingDateTime'

@@ -110,15 +110,15 @@ class KalenderEvent {
   /// The date range as a [KalenderDateTimeRange].
   KalenderDateTimeRange get dateTimeRange => KalenderDateTimeRange(start: start, end: end);
 
-  /// The start as an [InternalDateTime], adjusted for [location].
-  InternalDateTime internalStart({Location? location}) => InternalDateTime.fromExternal(start, location: location);
+  /// The start as an [FloatingDateTime], adjusted for [location].
+  FloatingDateTime internalStart({Location? location}) => FloatingDateTime.fromExternal(start, location: location);
 
-  /// The end as an [InternalDateTime], adjusted for [location].
-  InternalDateTime internalEnd({Location? location}) => InternalDateTime.fromExternal(end, location: location);
+  /// The end as an [FloatingDateTime], adjusted for [location].
+  FloatingDateTime internalEnd({Location? location}) => FloatingDateTime.fromExternal(end, location: location);
 
-  /// The full range as an [InternalDateTimeRange], adjusted for [location].
-  InternalDateTimeRange internalRange({Location? location}) =>
-      InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
+  /// The full range as an [FloatingDateTimeRange], adjusted for [location].
+  FloatingDateTimeRange internalRange({Location? location}) =>
+      FloatingDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
 
   /// Total duration (UTC-based).
   Duration get duration => end.difference(start);
@@ -138,7 +138,7 @@ class KalenderEvent {
   }
 
   /// All dates this event spans, adjusted for [location].
-  List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
+  List<FloatingDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
 
   /// A copy of this event covering [dateTimeRange].
   ///

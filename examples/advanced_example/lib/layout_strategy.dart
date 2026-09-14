@@ -16,7 +16,7 @@ class PeopleLayoutStrategy extends EventLayoutStrategy {
   @override
   EventLayoutDelegate createDelegate({
     required Iterable<KalenderEvent> events,
-    required InternalDateTime date,
+    required FloatingDateTime date,
     required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,

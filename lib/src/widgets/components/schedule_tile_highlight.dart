@@ -12,8 +12,8 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// Resolve the style with [KalenderTheme].
 typedef ScheduleTileHighlightBuilder = Widget Function(
   BuildContext context,
-  InternalDateTime date,
-  ValueNotifier<InternalDateTimeRange?> dateTimeRange,
+  FloatingDateTime date,
+  ValueNotifier<FloatingDateTimeRange?> dateTimeRange,
   Widget child,
 );
 
@@ -61,10 +61,10 @@ class ScheduleTileHighlightStyle with Diagnosticable {
 /// A widget that highlights the list item if the date is within the given dateTimeRange.
 class ScheduleTileHighlight extends StatelessWidget {
   /// The date to check against the dateTimeRange.
-  final InternalDateTime date;
+  final FloatingDateTime date;
 
   /// The dateTimeRange to check against the date.
-  final ValueNotifier<InternalDateTimeRange?> dateTimeRange;
+  final ValueNotifier<FloatingDateTimeRange?> dateTimeRange;
 
   /// The style of the highlight.
   final ScheduleTileHighlightStyle? style;

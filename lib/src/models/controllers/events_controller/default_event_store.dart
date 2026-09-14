@@ -73,8 +73,8 @@ class DefaultEventStore extends EventStore {
   /// The default location string.
   static const defaultLocation = 'default';
 
-  /// Convert a [InternalDateTime] to a key string.
-  String toKey(InternalDateTime date) => '${date.year}-${date.month}-${date.day}';
+  /// Convert a [FloatingDateTime] to a key string.
+  String toKey(FloatingDateTime date) => '${date.year}-${date.month}-${date.day}';
 
   /// Create a [DefaultEventStore] with optional predefined [locations].
   DefaultEventStore({required this.locations}) {
@@ -152,7 +152,7 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  Set<String> eventIdsFromDateTimeRange(InternalDateTimeRange dateTimeRange, Location? location) {
+  Set<String> eventIdsFromDateTimeRange(FloatingDateTimeRange dateTimeRange, Location? location) {
     final locationString = location?.name ?? defaultLocation;
     // Ensure the location exists in the map.
     final hasLocation = hasDateToEventIds(locationString);

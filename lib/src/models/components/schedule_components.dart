@@ -38,15 +38,15 @@ class ScheduleComponents {
   });
 
   /// Builds the leading date, with [leadingDateBuilder] when set.
-  Widget buildLeadingDate(BuildContext context, InternalDateTime date) {
+  Widget buildLeadingDate(BuildContext context, FloatingDateTime date) {
     return leadingDateBuilder?.call(context, date) ?? ScheduleDate(date: date);
   }
 
   /// Wraps [child] in the highlight, with [scheduleTileHighlightBuilder] when set.
   Widget buildScheduleTileHighlight(
     BuildContext context,
-    InternalDateTime date,
-    ValueNotifier<InternalDateTimeRange?> dateTimeRange,
+    FloatingDateTime date,
+    ValueNotifier<FloatingDateTimeRange?> dateTimeRange,
     Widget child,
   ) {
     return scheduleTileHighlightBuilder?.call(context, date, dateTimeRange, child) ??

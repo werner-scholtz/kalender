@@ -37,14 +37,14 @@ class _DragUtilsHarness extends State<_HarnessWidget> with DragTargetUtilities<_
   bool get multiDayDragTarget => false;
 
   @override
-  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) => throw UnimplementedError();
+  KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime) => throw UnimplementedError();
 
   @override
-  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) =>
+  KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime) =>
       throw UnimplementedError();
 
   @override
-  InternalDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) =>
+  FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) =>
       throw UnimplementedError();
 
   @override
@@ -55,7 +55,7 @@ void main() {
   initializeTimeZones();
 
   final harness = _DragUtilsHarness();
-  final range = InternalDateTimeRange(start: DateTime.utc(2024, 1, 15, 10), end: DateTime.utc(2024, 1, 15, 12));
+  final range = FloatingDateTimeRange(start: DateTime.utc(2024, 1, 15, 10), end: DateTime.utc(2024, 1, 15, 12));
 
   KalenderEvent eventWithId(String id) {
     return KalenderEvent(

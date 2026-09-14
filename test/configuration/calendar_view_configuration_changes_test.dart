@@ -53,7 +53,7 @@ void main() {
       );
 
       final visibleRange = kalenderController.internalDateTimeRange.value;
-      expect(visibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(selectedDate)));
+      expect(visibleRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(selectedDate)));
     });
 
     testWidgets('prioritizes initialDateTime over strategy', (tester) async {
@@ -74,7 +74,7 @@ void main() {
       );
 
       final visibleRange = kalenderController.internalDateTimeRange.value;
-      expect(visibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(selectedDate)));
+      expect(visibleRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(selectedDate)));
     });
   });
 
@@ -103,7 +103,7 @@ void main() {
       // Default monthly→daily strategy uses dominantMonthDate.
       final visibleRangeAfter = kalenderController.internalDateTimeRange.value;
       final expectedDate = visibleRangeBefore!.dominantMonthDate;
-      expect(visibleRangeAfter!.start.startOfDay, equals(InternalDateTime.fromDateTime(expectedDate)));
+      expect(visibleRangeAfter!.start.startOfDay, equals(FloatingDateTime.fromDateTime(expectedDate)));
     });
 
     testWidgets('uses custom strategy', (tester) async {
@@ -129,7 +129,7 @@ void main() {
       ViewController? capturedOldController;
       ViewConfiguration? capturedNewConfig;
 
-      InternalDateTime capturingResolver(ViewTransitionContext transition) {
+      FloatingDateTime capturingResolver(ViewTransitionContext transition) {
         capturedOldController = transition.oldViewController;
         capturedNewConfig = transition.newViewConfiguration;
         return _fixedDate;
@@ -176,7 +176,7 @@ void main() {
       );
 
       final weekRange = kalenderController.internalDateTimeRange.value;
-      expect(weekRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(monthRange!.start)));
+      expect(weekRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(monthRange!.start)));
     });
 
     testWidgets('week → day', (tester) async {
@@ -197,7 +197,7 @@ void main() {
       );
 
       final dayRange = kalenderController.internalDateTimeRange.value;
-      expect(dayRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(weekRange!.start)));
+      expect(dayRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(weekRange!.start)));
     });
 
     testWidgets('day → month', (tester) async {
@@ -519,7 +519,7 @@ void main() {
   group('View-transition policy (#249)', () {
     MultiDayViewController multiDay() => kalenderController.viewController as MultiDayViewController;
     MonthViewConfiguration month() => MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange);
-    InternalDateTime? visibleStart() => kalenderController.internalDateTimeRange.value?.start.startOfDay;
+    FloatingDateTime? visibleStart() => kalenderController.internalDateTimeRange.value?.start.startOfDay;
 
     MultiDayViewConfiguration week({
       ScrollTransition scroll = ScrollTransition.preserve,
@@ -582,7 +582,7 @@ void main() {
       await tester.pumpAndSettle();
       await pumpCalendarView(tester, config: day, withBody: true);
 
-      expect(visibleStart(), equals(InternalDateTime(2024, 6, 15)));
+      expect(visibleStart(), equals(FloatingDateTime(2024, 6, 15)));
     });
 
     testWidgets('ScrollTransition.restorePerView restores the view\'s own last time-of-day', (tester) async {
@@ -699,8 +699,8 @@ void main() {
   });
 }
 
-InternalDateTime _alwaysReturnJanuaryResolver(ViewTransitionContext transition) {
+FloatingDateTime _alwaysReturnJanuaryResolver(ViewTransitionContext transition) {
   return _fixedDate;
 }
 
-final _fixedDate = InternalDateTime(2024, 1, 1);
+final _fixedDate = FloatingDateTime(2024, 1, 1);

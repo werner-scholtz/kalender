@@ -13,7 +13,7 @@ void main() {
     MultiDayEventOverlayTile build(
       BuildContext context,
       KalenderEvent event,
-      InternalDateTimeRange internalRange,
+      FloatingDateTimeRange internalRange,
       VoidCallback dismissOverlay,
     ) {
       return MultiDayEventOverlayTile(
@@ -36,7 +36,7 @@ void main() {
     final details = ResizeHandleDetails(
       event: KalenderEvent(start: range.start, end: range.end),
       interaction: KalenderInteraction(),
-      dateTimeRange: InternalDateTimeRange.fromDateTimeRange(range),
+      dateTimeRange: FloatingDateTimeRange.fromDateTimeRange(range),
       size: const Size(100, 100),
       axis: Axis.vertical,
       isImprecise: false,

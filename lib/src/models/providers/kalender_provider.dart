@@ -229,7 +229,7 @@ extension ProviderContext on BuildContext {
 
   /// Whether [date] is today, honouring the view's `nowCallback` when set and
   /// otherwise the calendar's [location].
-  bool isToday(InternalDateTime date) {
+  bool isToday(FloatingDateTime date) {
     final now = kalenderController.viewController?.viewConfiguration.nowCallback?.call();
     return now != null ? date.isToday(now: now) : date.isToday(location: location);
   }

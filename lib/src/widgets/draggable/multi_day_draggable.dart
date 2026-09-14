@@ -5,7 +5,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 class MultiDayDraggable extends StatefulWidget {
-  final InternalDateTimeRange internalRange;
+  final FloatingDateTimeRange internalRange;
   const MultiDayDraggable({super.key, required this.internalRange});
   @override
   State<MultiDayDraggable> createState() => _MultiDayDraggableState();
@@ -72,7 +72,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
   }
 
   /// Notify the callbacks about the tap / longPress.
-  void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
+  void _onTap(BuildContext context, FloatingDateTime date, Offset localPosition) {
     callbacks?.onTapped?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onTappedWithDetail == null) return;
@@ -87,7 +87,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     );
   }
 
-  void _onLongPress(BuildContext context, InternalDateTime date, Offset position) {
+  void _onLongPress(BuildContext context, FloatingDateTime date, Offset position) {
     callbacks?.onLongPressed?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onLongPressedWithDetail == null) return;
@@ -102,7 +102,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     );
   }
 
-  void _onSecondaryTap(BuildContext context, InternalDateTime date, Offset localPosition) {
+  void _onSecondaryTap(BuildContext context, FloatingDateTime date, Offset localPosition) {
     callbacks?.onSecondaryTapped?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onSecondaryTappedWithDetail == null) return;
@@ -117,7 +117,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     );
   }
 
-  void _onSecondaryLongPress(BuildContext context, InternalDateTime date, Offset position) {
+  void _onSecondaryLongPress(BuildContext context, FloatingDateTime date, Offset position) {
     callbacks?.onSecondaryLongPressed?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onSecondaryLongPressedWithDetail == null) return;
@@ -133,14 +133,14 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
   }
 
   @override
-  InternalDateTimeRange calculateDateTimeRange(InternalDateTime date, Offset localPosition) {
+  FloatingDateTimeRange calculateDateTimeRange(FloatingDateTime date, Offset localPosition) {
     final start = date;
     final end = start.endOfDay;
-    return InternalDateTimeRange(start: start, end: end);
+    return FloatingDateTimeRange(start: start, end: end);
   }
 
   @override
-  TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition) {
+  TapDetail createTapDetail(BuildContext context, FloatingDateTimeRange range, Offset localPosition) {
     return MultiDayDetail(
       dateTimeRange: range.forLocation(location: context.location),
       renderBox: context.findRenderObject() as RenderBox,

@@ -39,10 +39,10 @@ void main() {
   /// 00:08 with a 15 minute interval. [EventSnapStrategy.interval] moves it to
   /// 00:15 and [EventSnapStrategy.none] leaves it alone, so the result names the
   /// strategy in use by behavior rather than by identity alone.
-  InternalDateTime applyStrategy(KalenderSnapping snapping) {
+  FloatingDateTime applyStrategy(KalenderSnapping snapping) {
     return snapping.eventSnapStrategy.snap(
-      cursorDate: InternalDateTime(2025, 1, 1, 0, 8),
-      startOfDay: InternalDateTime(2025, 1, 1),
+      cursorDate: FloatingDateTime(2025, 1, 1, 0, 8),
+      startOfDay: FloatingDateTime(2025, 1, 1),
       snapIntervalMinutes: 15,
     );
   }
@@ -53,14 +53,14 @@ void main() {
       buildCalendar(const KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none())),
     );
 
-    expect(applyStrategy(resolvedSnapping(tester)), equals(InternalDateTime(2025, 1, 1, 0, 8)));
+    expect(applyStrategy(resolvedSnapping(tester)), equals(FloatingDateTime(2025, 1, 1, 0, 8)));
   });
 
   testWidgets('changing only eventSnapStrategy updates the widget tree', (tester) async {
     await pumpAndSettleWithMaterialApp(tester, buildCalendar(const KalenderSnapping()));
 
     // The default strategy rounds 00:08 up to 00:15.
-    expect(applyStrategy(resolvedSnapping(tester)), equals(InternalDateTime(2025, 1, 1, 0, 15)));
+    expect(applyStrategy(resolvedSnapping(tester)), equals(FloatingDateTime(2025, 1, 1, 0, 15)));
 
     // Rebuild with a snapping that differs only by its strategy.
     await pumpAndSettleWithMaterialApp(
@@ -70,7 +70,7 @@ void main() {
 
     expect(
       applyStrategy(resolvedSnapping(tester)),
-      equals(InternalDateTime(2025, 1, 1, 0, 8)),
+      equals(FloatingDateTime(2025, 1, 1, 0, 8)),
       reason: 'the new strategy should be in effect, so 00:08 is left alone',
     );
   });
@@ -85,6 +85,6 @@ void main() {
 
     final snapping = resolvedSnapping(tester);
     expect(snapping.snapIntervalMinutes, equals(30));
-    expect(applyStrategy(snapping), equals(InternalDateTime(2025, 1, 1, 0, 8)));
+    expect(applyStrategy(snapping), equals(FloatingDateTime(2025, 1, 1, 0, 8)));
   });
 }

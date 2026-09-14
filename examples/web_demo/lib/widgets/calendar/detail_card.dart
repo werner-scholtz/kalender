@@ -220,9 +220,9 @@ class _EventDetailCardState extends State<EventDetailCard> {
     );
   }
 
-  /// Converts wall-clock components back to UTC via InternalDateTime.
+  /// Converts wall-clock components back to UTC via FloatingDateTime.
   DateTime _toUtc(int year, int month, int day, int hour, int minute) {
-    return InternalDateTime(year, month, day, hour, minute).forLocation(location: _location).toUtc();
+    return FloatingDateTime(year, month, day, hour, minute).forLocation(location: _location).toUtc();
   }
 
   void _updateEvent(KalenderDateTimeRange newRange) {

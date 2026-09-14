@@ -64,7 +64,7 @@ class MonthBody extends StatelessWidget {
         // The date range of each week row, shared by the content and background.
         final weekRanges = List.generate(numberOfRows, (row) {
           final start = visibleRange.start.add(Duration(days: row * DateTime.daysPerWeek));
-          return InternalDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
+          return FloatingDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
         });
 
         final content = Column(
@@ -126,7 +126,7 @@ class MonthBody extends StatelessWidget {
 ///
 /// It contains the [WeekDayHeaders], the [MultiDayEventWidget], the [HorizontalDragTarget] and the [MultiDayDraggable].
 class MonthWeek extends StatelessWidget {
-  final InternalDateTimeRange internalRange;
+  final FloatingDateTimeRange internalRange;
   final HorizontalConfiguration configuration;
   final ViewController viewController;
   const MonthWeek({
@@ -199,8 +199,8 @@ class MonthWeek extends StatelessWidget {
 /// Built only when a custom [MonthBodyComponents.monthDayCellBuilder] is set, and
 /// painted below the grid and the day content so cell styling sits behind them.
 class _MonthDayCellBackground extends StatelessWidget {
-  final List<InternalDateTimeRange> weekRanges;
-  final InternalDateTime focusMonthStart;
+  final List<FloatingDateTimeRange> weekRanges;
+  final FloatingDateTime focusMonthStart;
 
   const _MonthDayCellBackground({required this.weekRanges, required this.focusMonthStart});
 

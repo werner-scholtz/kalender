@@ -32,9 +32,9 @@ abstract class EventSnapStrategy {
   /// [cursorDate] is where the cursor sits, [startOfDay] is the start of the day
   /// it sits in, and [snapIntervalMinutes] comes from
   /// [KalenderSnapping.snapIntervalMinutes].
-  InternalDateTime snap({
-    required InternalDateTime cursorDate,
-    required InternalDateTime startOfDay,
+  FloatingDateTime snap({
+    required FloatingDateTime cursorDate,
+    required FloatingDateTime startOfDay,
     required int snapIntervalMinutes,
   });
 }
@@ -44,9 +44,9 @@ class IntervalSnapStrategy extends EventSnapStrategy {
   const IntervalSnapStrategy();
 
   @override
-  InternalDateTime snap({
-    required InternalDateTime cursorDate,
-    required InternalDateTime startOfDay,
+  FloatingDateTime snap({
+    required FloatingDateTime cursorDate,
+    required FloatingDateTime startOfDay,
     required int snapIntervalMinutes,
   }) {
     final minutes = cursorDate.difference(startOfDay).inMinutes;
@@ -67,9 +67,9 @@ class NoSnapStrategy extends EventSnapStrategy {
   const NoSnapStrategy();
 
   @override
-  InternalDateTime snap({
-    required InternalDateTime cursorDate,
-    required InternalDateTime startOfDay,
+  FloatingDateTime snap({
+    required FloatingDateTime cursorDate,
+    required FloatingDateTime startOfDay,
     required int snapIntervalMinutes,
   }) {
     return cursorDate;

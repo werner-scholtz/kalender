@@ -27,7 +27,7 @@ void main() {
     });
 
     test('Querying with an unknown location registers it on-demand', () {
-      final range = InternalDateTimeRange(start: InternalDateTime(2024, 1, 15), end: InternalDateTime(2024, 1, 16));
+      final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 15), end: FloatingDateTime(2024, 1, 16));
       final newLocation = getLocation('Asia/Tokyo');
       controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, range, location: newLocation);
       expect(
@@ -108,9 +108,9 @@ void main() {
       controller.removeEvent(event);
 
       for (final day in [10, 11, 12]) {
-        final dayRange = InternalDateTimeRange(
-          start: InternalDateTime(2024, 1, day),
-          end: InternalDateTime(2024, 1, day + 1),
+        final dayRange = FloatingDateTimeRange(
+          start: FloatingDateTime(2024, 1, day),
+          end: FloatingDateTime(2024, 1, day + 1),
         );
         expect(
           controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, dayRange),
@@ -351,7 +351,7 @@ void main() {
       final end = DateTime.utc(2024, 9, 1, 11);
       final event = KalenderEvent(start: start, end: end);
       controller.addEvent(event);
-      final range = InternalDateTimeRange(start: InternalDateTime(2024, 9, 10), end: InternalDateTime(2024, 9, 11));
+      final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 9, 10), end: FloatingDateTime(2024, 9, 11));
       expect(controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, range), isNot(contains(event)));
     });
 
@@ -362,7 +362,7 @@ void main() {
         return KalenderEvent(start: start, end: end);
       });
       controller.addEvents(events);
-      final range = InternalDateTimeRange(start: InternalDateTime(2024, 10, 5), end: InternalDateTime(2024, 10, 6));
+      final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 10, 5), end: FloatingDateTime(2024, 10, 6));
       final result = controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, range);
       for (final event in events) {
         expect(result, contains(event));
@@ -375,7 +375,7 @@ void main() {
       final event = KalenderEvent(start: start, end: end);
       controller.addEvent(event);
       controller.removeEvent(event);
-      final range = InternalDateTimeRange(start: InternalDateTime(2024, 11, 1), end: InternalDateTime(2024, 11, 2));
+      final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 11, 1), end: FloatingDateTime(2024, 11, 2));
       expect(controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, range), isNot(contains(event)));
     });
 
@@ -390,13 +390,13 @@ void main() {
       final updatedEvent = KalenderEvent(start: newStart, end: newEnd);
       controller.updateEvent(event: event, updatedEvent: updatedEvent);
 
-      final oldRange = InternalDateTimeRange(
-        start: InternalDateTime(2024, 12, 1),
-        end: InternalDateTime(2024, 12, 2),
+      final oldRange = FloatingDateTimeRange(
+        start: FloatingDateTime(2024, 12, 1),
+        end: FloatingDateTime(2024, 12, 2),
       );
-      final newRange = InternalDateTimeRange(
-        start: InternalDateTime(2024, 12, 20),
-        end: InternalDateTime(2024, 12, 21),
+      final newRange = FloatingDateTimeRange(
+        start: FloatingDateTime(2024, 12, 20),
+        end: FloatingDateTime(2024, 12, 21),
       );
       expect(
         controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, oldRange),
@@ -410,7 +410,7 @@ void main() {
       final end = DateTime.utc(2024, 9, 5, 11);
       final event = KalenderEvent(start: start, end: end);
       controller.addEvent(event);
-      final range = InternalDateTimeRange(start: InternalDateTime(2024, 9, 5), end: InternalDateTime(2024, 9, 6));
+      final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 9, 5), end: FloatingDateTime(2024, 9, 6));
       final result = controller.eventsFromDateTimeRange(
         multiDayRule: kDefaultMultiDayRule,
         range,
@@ -432,9 +432,9 @@ void main() {
         final id = controller.addEvent(event);
         expect(controller.byId(id), event, reason: 'Event should be retrievable by its id after being added.');
 
-        final range = InternalDateTimeRange(
-          start: InternalDateTime.fromExternal(start, location: location),
-          end: InternalDateTime.fromExternal(end, location: location),
+        final range = FloatingDateTimeRange(
+          start: FloatingDateTime.fromExternal(start, location: location),
+          end: FloatingDateTime.fromExternal(end, location: location),
         );
         expect(
           controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, range, location: location),
@@ -467,9 +467,9 @@ void main() {
         final id = controller.addEvent(event);
         expect(controller.byId(id), event, reason: 'Event should be retrievable by its id after being added.');
 
-        final range = InternalDateTimeRange(
-          start: InternalDateTime.fromExternal(start, location: location),
-          end: InternalDateTime.fromExternal(end, location: location),
+        final range = FloatingDateTimeRange(
+          start: FloatingDateTime.fromExternal(start, location: location),
+          end: FloatingDateTime.fromExternal(end, location: location),
         );
         expect(
           controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, range, location: location),
@@ -502,9 +502,9 @@ void main() {
         final id = controller.addEvent(event);
         expect(controller.byId(id), event, reason: 'Event should be retrievable by its id after being added.');
 
-        final range = InternalDateTimeRange(
-          start: InternalDateTime.fromExternal(start, location: location),
-          end: InternalDateTime.fromExternal(end, location: location),
+        final range = FloatingDateTimeRange(
+          start: FloatingDateTime.fromExternal(start, location: location),
+          end: FloatingDateTime.fromExternal(end, location: location),
         );
         expect(
           controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, range, location: location),
@@ -563,13 +563,13 @@ void main() {
         expect(updatedEvent.id, id, reason: 'Updated event should retain the original id.');
         expect(controller.byId(id), updatedEvent, reason: 'Updated event should be retrievable by original id.');
 
-        final oldRange = InternalDateTimeRange(
-          start: InternalDateTime.fromExternal(start, location: location),
-          end: InternalDateTime.fromExternal(end, location: location),
+        final oldRange = FloatingDateTimeRange(
+          start: FloatingDateTime.fromExternal(start, location: location),
+          end: FloatingDateTime.fromExternal(end, location: location),
         );
-        final newRange = InternalDateTimeRange(
-          start: InternalDateTime.fromExternal(newStart, location: location),
-          end: InternalDateTime.fromExternal(newEnd, location: location),
+        final newRange = FloatingDateTimeRange(
+          start: FloatingDateTime.fromExternal(newStart, location: location),
+          end: FloatingDateTime.fromExternal(newEnd, location: location),
         );
         expect(
           controller.eventsFromDateTimeRange(multiDayRule: kDefaultMultiDayRule, oldRange, location: location),

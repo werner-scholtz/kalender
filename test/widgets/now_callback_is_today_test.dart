@@ -11,9 +11,9 @@ void main() {
   // ──────────────────────────────────────────────────────────────────────
   // Shared dates: a fixed week with a known "today" override.
   // ──────────────────────────────────────────────────────────────────────
-  final monday = InternalDateTime(2026, 4, 13); // The callback "today"
-  final tuesday = InternalDateTime(2026, 4, 14);
-  final wednesday = InternalDateTime(2026, 4, 15);
+  final monday = FloatingDateTime(2026, 4, 13); // The callback "today"
+  final tuesday = FloatingDateTime(2026, 4, 14);
+  final wednesday = FloatingDateTime(2026, 4, 15);
 
   NowCallback nowCallbackMonday() => () => DateTime(2026, 4, 13, 14, 30);
 
@@ -36,7 +36,7 @@ void main() {
     final viewController = MultiDayViewController(
       viewConfiguration: viewConfiguration,
       internalVisibleRange: ValueNotifier(
-        InternalDateTimeRange(start: monday, end: monday.endOfWeek()),
+        FloatingDateTimeRange(start: monday, end: monday.endOfWeek()),
       ),
       visibleEvents: ValueNotifier(<KalenderEvent>{}),
       location: location,
@@ -82,7 +82,7 @@ void main() {
 
     testWidgets('falls back to location-based isToday when callback is null', (tester) async {
       // With no callback, isToday uses DateTime.now() — only "real today" gets highlighted.
-      final realToday = InternalDateTime.fromDateTime(DateTime.now()).startOfDay;
+      final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
       final notToday = realToday.add(const Duration(days: 1));
 
       await pumpAndSettleWithMaterialApp(
@@ -141,7 +141,7 @@ void main() {
     });
 
     testWidgets('falls back to location-based isToday when callback is null', (tester) async {
-      final realToday = InternalDateTime.fromDateTime(DateTime.now()).startOfDay;
+      final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
       final notToday = realToday.add(const Duration(days: 2));
 
       await pumpAndSettleWithMaterialApp(
@@ -185,7 +185,7 @@ void main() {
     });
 
     testWidgets('falls back to location-based isToday when callback is null', (tester) async {
-      final realToday = InternalDateTime.fromDateTime(DateTime.now()).startOfDay;
+      final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
       final notToday = realToday.add(const Duration(days: 1));
 
       await pumpAndSettleWithMaterialApp(

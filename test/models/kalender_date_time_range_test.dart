@@ -42,9 +42,9 @@ void main() {
       expect(a, isNot(KalenderDateTimeRange(start: start.subtract(const Duration(hours: 1)), end: end)));
     });
 
-    test('an InternalDateTimeRange with the same values is not equal', () {
+    test('an FloatingDateTimeRange with the same values is not equal', () {
       final range = KalenderDateTimeRange(start: start, end: end);
-      expect(range, isNot(InternalDateTimeRange(start: start, end: end)));
+      expect(range, isNot(FloatingDateTimeRange(start: start, end: end)));
     });
 
     test('toString names both ends', () {

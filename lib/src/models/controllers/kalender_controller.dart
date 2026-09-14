@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:kalender/src/extensions/internal_date_time_range.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/floating_date_time_range.dart';
 import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time.dart';
@@ -32,11 +32,11 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   ViewController? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
-  /// The internal [InternalDateTimeRange] that is currently visible.
+  /// The internal [FloatingDateTimeRange] that is currently visible.
   ///
-  /// See [InternalDateTimeRange] for more information.
-  late final _internalDateTimeRange = ValueNotifier<InternalDateTimeRange?>(null);
-  ValueNotifier<InternalDateTimeRange?> get internalDateTimeRange => _internalDateTimeRange;
+  /// See [FloatingDateTimeRange] for more information.
+  late final _internalDateTimeRange = ValueNotifier<FloatingDateTimeRange?>(null);
+  ValueNotifier<FloatingDateTimeRange?> get internalDateTimeRange => _internalDateTimeRange;
   void _updateVisibleDateTimeRange() {
     final newRange = _internalDateTimeRange.value?.forLocation(location: _viewController?.location);
     visibleDateTimeRange.value = newRange;

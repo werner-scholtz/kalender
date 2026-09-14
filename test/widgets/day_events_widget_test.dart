@@ -7,7 +7,7 @@ import '../utilities.dart';
 
 void main() {
   final start = DateTime(2025, 3, 24);
-  final internalStart = InternalDateTime.fromDateTime(start);
+  final internalStart = FloatingDateTime.fromDateTime(start);
 
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -40,7 +40,7 @@ void main() {
     viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
       internalVisibleRange: ValueNotifier(
-        InternalDateTimeRange(start: internalStart.startOfDay, end: internalStart.endOfDay),
+        FloatingDateTimeRange(start: internalStart.startOfDay, end: internalStart.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),
     );
@@ -51,7 +51,7 @@ void main() {
   Future<void> pumpEventsRow(
     WidgetTester tester, {
     MultiDayBodyConfiguration configuration = const MultiDayBodyConfiguration(),
-    InternalDateTimeRange? range,
+    FloatingDateTimeRange? range,
     TileComponents? tileComponents,
     double width = 700,
   }) async {

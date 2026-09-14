@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:kalender/src/extensions/internal_date_time_range.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/kalender_controller.dart';
+import 'package:kalender/src/models/floating_date_time_range.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
@@ -21,8 +21,8 @@ class Tile extends StatefulWidget {
   /// The builder that builds the tile widget when dragging.
   final TileWhenDraggingBuilder? tileWhenDraggingBuilder;
 
-  /// The [InternalDateTimeRange] that the current view is displaying.
-  final InternalDateTimeRange dateTimeRange;
+  /// The [FloatingDateTimeRange] that the current view is displaying.
+  final FloatingDateTimeRange dateTimeRange;
 
   /// Creates an instance of [Tile].
   const Tile({

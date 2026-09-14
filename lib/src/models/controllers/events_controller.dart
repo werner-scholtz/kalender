@@ -81,7 +81,7 @@ abstract class EventsController with ChangeNotifier {
   /// view's [ViewConfiguration.multiDayRule]; an event overriding it with
   /// [KalenderEvent.multiDayRule] takes precedence.
   Iterable<KalenderEvent> eventsFromDateTimeRange(
-    InternalDateTimeRange dateTimeRange, {
+    FloatingDateTimeRange dateTimeRange, {
     required MultiDayRule multiDayRule,
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,

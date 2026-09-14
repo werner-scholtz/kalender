@@ -308,7 +308,7 @@ void main() {
       final renderBox = tester.renderObject(find.byType(VerticalDragTarget)) as RenderBox;
       final origin = renderBox.localToGlobal(Offset.zero);
 
-      final result = state.calculateCursorDateTime(Offset(origin.dx - 100, origin.dy + 50)) as InternalDateTime?;
+      final result = state.calculateCursorDateTime(Offset(origin.dx - 100, origin.dy + 50)) as FloatingDateTime?;
       expect(result, isNotNull);
       expect(result!.year, equals(2025));
       expect(result.month, equals(1));
@@ -320,7 +320,7 @@ void main() {
       final renderBox = tester.renderObject(find.byType(VerticalDragTarget)) as RenderBox;
       final origin = renderBox.localToGlobal(Offset.zero);
 
-      final result = state.calculateCursorDateTime(Offset(origin.dx + 10000, origin.dy + 50)) as InternalDateTime?;
+      final result = state.calculateCursorDateTime(Offset(origin.dx + 10000, origin.dy + 50)) as FloatingDateTime?;
       expect(result, isNotNull);
       expect(result!.year, equals(2025));
       expect(result.month, equals(1));
@@ -333,7 +333,7 @@ void main() {
       final origin = renderBox.localToGlobal(Offset.zero);
 
       for (final dx in [-1.0, -10.0, -50.0, -100.0, -500.0]) {
-        final result = state.calculateCursorDateTime(Offset(origin.dx + dx, origin.dy + 50)) as InternalDateTime?;
+        final result = state.calculateCursorDateTime(Offset(origin.dx + dx, origin.dy + 50)) as FloatingDateTime?;
         expect(result, isNotNull, reason: 'dx=$dx should return a date');
         expect(result!.day, equals(6), reason: 'dx=$dx should map to Jan 6 (first visible day)');
       }
@@ -350,7 +350,7 @@ void main() {
 
       for (var col = 0; col < 7; col++) {
         final cx = origin.dx + (col + 0.5) * dayWidth;
-        final result = state.calculateCursorDateTime(Offset(cx, origin.dy + 50)) as InternalDateTime?;
+        final result = state.calculateCursorDateTime(Offset(cx, origin.dy + 50)) as FloatingDateTime?;
         expect(result, isNotNull, reason: 'col=$col');
         expect(result!.month, equals(1), reason: 'col=$col should be January');
         expect(result.day, equals(expectedDays[col]), reason: 'col=$col should be Jan ${expectedDays[col]}');
@@ -371,7 +371,7 @@ void main() {
       final state = await _pumpWeekView(tester, eventsController: ec);
 
       final event = ec.events.first;
-      final cursor = InternalDateTime(2025, 1, 6, 14, 0);
+      final cursor = FloatingDateTime(2025, 1, 6, 14, 0);
       final result = state.resizeEvent(event, ResizeDirection.bottom, cursor);
 
       expect(result, isNotNull);
@@ -389,7 +389,7 @@ void main() {
 
       final event = ec.events.first;
       // Place cursor at 11:00 (between original start and end)
-      final cursor = InternalDateTime(2025, 1, 6, 11, 0);
+      final cursor = FloatingDateTime(2025, 1, 6, 11, 0);
       final result = state.resizeEvent(event, ResizeDirection.top, cursor);
 
       expect(result, isNotNull);
@@ -406,7 +406,7 @@ void main() {
       final state = await _pumpWeekView(tester, eventsController: ec);
 
       final event = ec.events.first;
-      final cursor = InternalDateTime(2025, 1, 6, 14, 0);
+      final cursor = FloatingDateTime(2025, 1, 6, 14, 0);
       expect(state.resizeEvent(event, ResizeDirection.left, cursor), isNull);
     });
 
@@ -416,7 +416,7 @@ void main() {
       final state = await _pumpWeekView(tester, eventsController: ec);
 
       final event = ec.events.first;
-      final cursor = InternalDateTime(2025, 1, 6, 14, 0);
+      final cursor = FloatingDateTime(2025, 1, 6, 14, 0);
       expect(state.resizeEvent(event, ResizeDirection.right, cursor), isNull);
     });
   });
@@ -453,7 +453,7 @@ void main() {
       final renderBox = tester.renderObject(finder.first) as RenderBox;
       final origin = renderBox.localToGlobal(Offset.zero);
 
-      final result = state.calculateCursorDateTime(Offset(origin.dx - 100, origin.dy + 10)) as InternalDateTime?;
+      final result = state.calculateCursorDateTime(Offset(origin.dx - 100, origin.dy + 10)) as FloatingDateTime?;
       expect(result, isNotNull);
       // First visible row of Jan 2025 starts on Dec 30, 2024 (Monday)
       expect(result!.day, equals(30));
@@ -468,7 +468,7 @@ void main() {
       final renderBox = tester.renderObject(finder.first) as RenderBox;
       final origin = renderBox.localToGlobal(Offset.zero);
 
-      final result = state.calculateCursorDateTime(Offset(origin.dx + 10000, origin.dy + 10)) as InternalDateTime?;
+      final result = state.calculateCursorDateTime(Offset(origin.dx + 10000, origin.dy + 10)) as FloatingDateTime?;
       expect(result, isNotNull);
       // Last date of first row = Jan 5, 2025 (Sunday)
       expect(result!.day, equals(5));
@@ -490,7 +490,7 @@ void main() {
 
       for (var col = 0; col < 7; col++) {
         final cx = origin.dx + (col + 0.5) * dayWidth;
-        final result = state.calculateCursorDateTime(Offset(cx, origin.dy + 10)) as InternalDateTime?;
+        final result = state.calculateCursorDateTime(Offset(cx, origin.dy + 10)) as FloatingDateTime?;
         expect(result, isNotNull, reason: 'col=$col');
         expect(result!.day, equals(expectedDays[col]), reason: 'col=$col should be day ${expectedDays[col]}');
         expect(result.month, equals(expectedMonths[col]), reason: 'col=$col should be month ${expectedMonths[col]}');
@@ -532,7 +532,7 @@ void main() {
 
       final event = ec.events.first;
       // Move to Jan 9
-      final cursor = InternalDateTime(2025, 1, 9);
+      final cursor = FloatingDateTime(2025, 1, 9);
       final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);
@@ -549,7 +549,7 @@ void main() {
       final event = ec.events.first;
       expect(event.spansMultipleDays(location: null, defaultRule: kDefaultMultiDayRule), isTrue);
 
-      final cursor = InternalDateTime(2025, 1, 9);
+      final cursor = FloatingDateTime(2025, 1, 9);
       final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);
@@ -572,7 +572,7 @@ void main() {
 
       final event = ec.events.first;
       // Jump to Jan 20
-      final cursor = InternalDateTime(2025, 1, 20);
+      final cursor = FloatingDateTime(2025, 1, 20);
       final result = state.rescheduleEvent(event, cursor) as KalenderEvent?;
 
       expect(result, isNotNull);

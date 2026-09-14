@@ -34,7 +34,7 @@ abstract class EventLayoutStrategy {
   /// The delegate that lays out [events] in the column for [date].
   EventLayoutDelegate createDelegate({
     required Iterable<KalenderEvent> events,
-    required InternalDateTime date,
+    required FloatingDateTime date,
     required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
@@ -50,7 +50,7 @@ class OverlapLayoutStrategy extends EventLayoutStrategy {
   @override
   EventLayoutDelegate createDelegate({
     required Iterable<KalenderEvent> events,
-    required InternalDateTime date,
+    required FloatingDateTime date,
     required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
@@ -82,7 +82,7 @@ class SideBySideLayoutStrategy extends EventLayoutStrategy {
   @override
   EventLayoutDelegate createDelegate({
     required Iterable<KalenderEvent> events,
-    required InternalDateTime date,
+    required FloatingDateTime date,
     required KalenderTimeRange timeOfDayRange,
     required double heightPerMinute,
     required double? minimumTileHeight,
@@ -162,7 +162,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   });
 
   /// The date for which the events are laid out.
-  final InternalDateTime date;
+  final FloatingDateTime date;
 
   /// The location for which the events are laid out.
   final Location? location;
@@ -208,8 +208,8 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// back-to-back events (where one ends exactly when the next begins) get
   /// bit-identical boundaries, so they never register as overlapping because of
   /// floating point differences.
-  double _offsetFromDayStart(InternalDateTime instant) {
-    final dateStart = timeOfDayRange.start.toInternalDateTime(date);
+  double _offsetFromDayStart(FloatingDateTime instant) {
+    final dateStart = timeOfDayRange.start.toFloatingDateTime(date);
     final difference = instant.difference(dateStart);
     return difference.inSeconds * heightPerMinute / 60;
   }

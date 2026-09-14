@@ -18,19 +18,19 @@ mixin EventTileUtils {
   /// typically a single day's range.
   ///
   /// The values are **wall-clock** [DateTime]s (local or [TZDateTime]),
-  /// not UTC. See [internalTileRange] to obtain an [InternalDateTimeRange].
+  /// not UTC. See [internalTileRange] to obtain an [FloatingDateTimeRange].
   KalenderDateTimeRange get tileRange;
 
-  /// Converts [tileRange] into an [InternalDateTimeRange] using the
+  /// Converts [tileRange] into an [FloatingDateTimeRange] using the
   /// current [LocationProvider].
   ///
   /// This is useful when mixin helpers need DST-safe arithmetic on the
   /// tile's date boundaries (e.g. [DayEventTileUtils.eventRangeOnDate]).
-  InternalDateTimeRange internalTileRange(BuildContext context) {
+  FloatingDateTimeRange internalTileRange(BuildContext context) {
     final location = context.location;
-    return InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(tileRange.start, location: location),
-      end: InternalDateTime.fromExternal(tileRange.end, location: location),
+    return FloatingDateTimeRange(
+      start: FloatingDateTime.fromExternal(tileRange.start, location: location),
+      end: FloatingDateTime.fromExternal(tileRange.end, location: location),
     );
   }
 }
@@ -83,22 +83,22 @@ mixin DayEventTileUtils implements EventTileUtils {
   KalenderDateTimeRange get tileRange;
 
   @override
-  InternalDateTimeRange internalTileRange(BuildContext context) {
+  FloatingDateTimeRange internalTileRange(BuildContext context) {
     final location = context.location;
-    return InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(tileRange.start, location: location),
-      end: InternalDateTime.fromExternal(tileRange.end, location: location),
+    return FloatingDateTimeRange(
+      start: FloatingDateTime.fromExternal(tileRange.start, location: location),
+      end: FloatingDateTime.fromExternal(tileRange.end, location: location),
     );
   }
 
-  /// Get the [InternalDateTimeRange] of the event clipped to the current display date.
+  /// Get the [FloatingDateTimeRange] of the event clipped to the current display date.
   ///
   /// This returns the portion of the event that falls within the current
   /// tile's date, which is useful for events that span multiple days but
   /// you only want the portion visible on the current day.
   ///
   /// Returns the event's time range intersected with the tile's date.
-  InternalDateTimeRange eventRangeOnDate(BuildContext context) {
+  FloatingDateTimeRange eventRangeOnDate(BuildContext context) {
     final location = context.location;
     return event.internalRange(location: location).dateTimeRangeOnDate(internalTileRange(context).start.startOfDay)!;
   }
@@ -133,7 +133,7 @@ mixin DayEventTileUtils implements EventTileUtils {
     final eventRangeOnDate = event
         .internalRange(location: context.location)
         .dateTimeRangeOnDate(internalTileRange(context).start.startOfDay)!;
-    final range = InternalDateTimeRange(
+    final range = FloatingDateTimeRange(
       start: eventRangeOnDate.start.subtract(before),
       end: eventRangeOnDate.end.add(after),
     );
@@ -223,11 +223,11 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
   KalenderDateTimeRange get tileRange;
 
   @override
-  InternalDateTimeRange internalTileRange(BuildContext context) {
+  FloatingDateTimeRange internalTileRange(BuildContext context) {
     final location = context.location;
-    return InternalDateTimeRange(
-      start: InternalDateTime.fromExternal(tileRange.start, location: location),
-      end: InternalDateTime.fromExternal(tileRange.end, location: location),
+    return FloatingDateTimeRange(
+      start: FloatingDateTime.fromExternal(tileRange.start, location: location),
+      end: FloatingDateTime.fromExternal(tileRange.end, location: location),
     );
   }
 
@@ -252,7 +252,7 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
   }) {
     final eventsController = context.eventsController;
     final range = event.internalRange(location: context.location);
-    final searcRange = InternalDateTimeRange(
+    final searcRange = FloatingDateTimeRange(
       start: range.start.subtract(before),
       end: range.end.add(after),
     );
@@ -294,7 +294,7 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
     // visible in this tile (events can start before / end after the tile).
     final start = event.internalStart(location: context.location);
     final end = event.internalEnd(location: context.location);
-    final range = InternalDateTimeRange(
+    final range = FloatingDateTimeRange(
       start: start.isBefore(tileRange.start) ? tileRange.start : start,
       end: end.isAfter(tileRange.end) ? tileRange.end : end,
     );
@@ -303,7 +303,7 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
     // Clamp so a tap on the trailing edge (dx == width) or just outside the tile
     // resolves to a day within the visible range rather than one day past it.
     final dateClicked = (localPosition.dx ~/ (renderBox.size.width / numberOfDays)).clamp(0, numberOfDays - 1);
-    final date = InternalDateTime.fromDateTime(range.start.copyWith(day: range.start.day + dateClicked))
+    final date = FloatingDateTime.fromDateTime(range.start.copyWith(day: range.start.day + dateClicked))
         .startOfDay
         .forLocation(location: context.location);
     return date;

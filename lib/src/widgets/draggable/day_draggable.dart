@@ -8,7 +8,7 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 /// - These draggable widgets are used to create new events.
 ///
 class DayDraggable extends StatefulWidget {
-  final InternalDateTimeRange visibleDateTimeRange;
+  final FloatingDateTimeRange visibleDateTimeRange;
   final KalenderTimeRange timeOfDayRange;
   final double pageHeight;
 
@@ -88,7 +88,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   /// Notify the callbacks about the tap / longPress.
-  void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
+  void _onTap(BuildContext context, FloatingDateTime date, Offset localPosition) {
     final dateTime = _calculateTimeAndDate(date, localPosition);
     callbacks?.onTapped?.call(dateTime.forLocation(location: context.location));
 
@@ -103,7 +103,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     );
   }
 
-  void _onLongPress(BuildContext context, InternalDateTime date, Offset position) {
+  void _onLongPress(BuildContext context, FloatingDateTime date, Offset position) {
     final dateTime = _calculateTimeAndDate(date, position);
     callbacks?.onLongPressed?.call(dateTime.forLocation(location: context.location));
 
@@ -114,7 +114,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     );
   }
 
-  void _onSecondaryTap(BuildContext context, InternalDateTime date, Offset localPosition) {
+  void _onSecondaryTap(BuildContext context, FloatingDateTime date, Offset localPosition) {
     final dateTime = _calculateTimeAndDate(date, localPosition);
     callbacks?.onSecondaryTapped?.call(dateTime.forLocation(location: context.location));
 
@@ -129,7 +129,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     );
   }
 
-  void _onSecondaryLongPress(BuildContext context, InternalDateTime date, Offset position) {
+  void _onSecondaryLongPress(BuildContext context, FloatingDateTime date, Offset position) {
     final dateTime = _calculateTimeAndDate(date, position);
     callbacks?.onSecondaryLongPressed?.call(dateTime.forLocation(location: context.location));
 
@@ -141,21 +141,21 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   @override
-  InternalDateTimeRange calculateDateTimeRange(InternalDateTime date, Offset localPosition) {
+  FloatingDateTimeRange calculateDateTimeRange(FloatingDateTime date, Offset localPosition) {
     final start = _calculateTimeAndDate(date, localPosition);
     final snapInterval = context.snapping.snapIntervalMinutes;
     final end = start.copyWith(minute: start.minute + snapInterval);
-    return InternalDateTimeRange(start: start, end: end);
+    return FloatingDateTimeRange(start: start, end: end);
   }
 
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
-  InternalDateTime _calculateTimeAndDate(InternalDateTime date, Offset localPosition) {
+  FloatingDateTime _calculateTimeAndDate(FloatingDateTime date, Offset localPosition) {
     // Calculate the duration from the top of the page to the localPosition.
     final durationFromStart = localPosition.dy ~/ context.heightPerMinute;
     final durationFromTop = Duration(minutes: durationFromStart.round());
 
     // Calculate the start of the day.
-    final startOfDay = widget.timeOfDayRange.start.toInternalDateTime(date);
+    final startOfDay = widget.timeOfDayRange.start.toFloatingDateTime(date);
 
     // Calculate dateTime of the cursor.
     final startOfEvent = startOfDay.add(durationFromTop);
@@ -171,7 +171,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   @override
-  TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition) {
+  TapDetail createTapDetail(BuildContext context, FloatingDateTimeRange range, Offset localPosition) {
     return DayDetail(
       date: range.start.forLocation(location: context.location),
       renderBox: context.findRenderObject() as RenderBox,

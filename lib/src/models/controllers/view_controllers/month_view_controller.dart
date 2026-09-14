@@ -6,7 +6,7 @@ class MonthViewController extends ViewController {
     required this.viewConfiguration,
     required super.internalVisibleRange,
     required this.visibleEvents,
-    InternalDateTime? initialDate,
+    FloatingDateTime? initialDate,
     super.location,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;

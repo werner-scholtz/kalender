@@ -88,7 +88,7 @@ void main() {
 
     final last = viewController.viewConfiguration.pageIndexCalculator
         .dateTimeRangeFromIndex(viewController.numberOfPages - 1, null);
-    expect(last.start, InternalDateTime(2025, 6, 7), reason: 'the last column is the last day of the range');
+    expect(last.start, FloatingDateTime(2025, 6, 7), reason: 'the last column is the last day of the range');
   });
 
   testWidgets('paginated schedule renders a single-month range', (tester) async {

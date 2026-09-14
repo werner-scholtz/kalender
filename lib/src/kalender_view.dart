@@ -87,7 +87,7 @@ class KalenderViewState extends State<KalenderView> {
     // Create the initial view controller.
     late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
     final initialDateTime = widget.viewConfiguration.initialDateTime ?? now;
-    final initialDate = InternalDateTime.fromExternal(initialDateTime, location: widget.location);
+    final initialDate = FloatingDateTime.fromExternal(initialDateTime, location: widget.location);
     _viewController = _createViewController(initialDate: initialDate);
 
     // Attach the view controller when the widget is initialized.
@@ -136,7 +136,7 @@ class KalenderViewState extends State<KalenderView> {
       // Resolve the date: explicit initialDateTime wins, then the resolver, then
       // the enum policy.
       final initialDate = newConfig.initialDateTime != null
-          ? InternalDateTime.fromDateTime(newConfig.initialDateTime!)
+          ? FloatingDateTime.fromDateTime(newConfig.initialDateTime!)
           : (newConfig.dateResolver?.call(context) ?? _resolveDate(newConfig.dateTransition, context));
 
       // Resolve the vertical state (multi-day views only): resolver wins, else enum.
@@ -197,7 +197,7 @@ class KalenderViewState extends State<KalenderView> {
 
     final config = controller.viewConfiguration;
     final date =
-        config is MonthViewConfiguration ? InternalDateTime.fromDateTime(range.dominantMonthDate) : range.start;
+        config is MonthViewConfiguration ? FloatingDateTime.fromDateTime(range.dominantMonthDate) : range.start;
 
     final multiDay = controller is MultiDayViewController ? controller : null;
     final snapshot = ViewSnapshot(
@@ -210,7 +210,7 @@ class KalenderViewState extends State<KalenderView> {
     if (multiDay != null) _lastMultiDaySnapshot = snapshot;
   }
 
-  InternalDateTime _resolveDate(DateTransition transition, ViewTransitionContext context) {
+  FloatingDateTime _resolveDate(DateTransition transition, ViewTransitionContext context) {
     return switch (transition) {
       DateTransition.carryFocus => kCarryFocusDate(context),
       DateTransition.restorePerView =>
@@ -238,7 +238,7 @@ class KalenderViewState extends State<KalenderView> {
 
   /// Create the [ViewController] based on the [ViewConfiguration].
   ViewController _createViewController({
-    required InternalDateTime initialDate,
+    required FloatingDateTime initialDate,
     KalenderTime? initialTimeOfDay,
     double? initialHeightPerMinute,
   }) {

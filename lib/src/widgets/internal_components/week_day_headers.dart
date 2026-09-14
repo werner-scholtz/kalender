@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:kalender/src/extensions/internal_date_time.dart';
+import 'package:kalender/src/models/floating_date_time.dart';
 
 /// A row of weekday headers for a week in the month view.
 class WeekDayHeaders extends StatelessWidget {
   final List<DateTime> dates;
-  final Widget Function(BuildContext context, InternalDateTime date) dayHeaderBuilder;
+  final Widget Function(BuildContext context, FloatingDateTime date) dayHeaderBuilder;
   const WeekDayHeaders({super.key, required this.dates, required this.dayHeaderBuilder});
 
   @override
@@ -17,7 +17,7 @@ class WeekDayHeaders extends StatelessWidget {
               .map(
                 (date) => ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: constraints.maxWidth / dates.length),
-                  child: dayHeaderBuilder.call(context, InternalDateTime.fromDateTime(date)),
+                  child: dayHeaderBuilder.call(context, FloatingDateTime.fromDateTime(date)),
                 ),
               )
               .toList(),

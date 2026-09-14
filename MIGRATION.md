@@ -33,6 +33,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`. |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
 | [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
@@ -44,6 +45,27 @@ The sections below cover what is left after the fixes have run.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.30.x → v0.31.0
+
+### The two layout date types are renamed
+
+`InternalDateTime` is now `FloatingDateTime` and `InternalDateTimeRange` is now
+`FloatingDateTimeRange`. Floating is the term RFC 5545 uses for a date and time
+that names no timezone, which is what these two hold. Nothing about their
+behaviour changes.
+
+`KalenderTime.toInternalDateTime` is `toFloatingDateTime` for the same reason.
+
+`dart fix --apply` performs all three renames.
+
+```dart
+// Before
+InternalDateTimeRange rangeFor(InternalDateTime date) => date.dayRange;
+
+// After
+FloatingDateTimeRange rangeFor(FloatingDateTime date) => date.dayRange;
+```
 
 ## v0.29.x → v0.30.0
 

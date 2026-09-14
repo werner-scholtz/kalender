@@ -162,7 +162,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   }
 
   @override
-  InternalDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
+  FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
     // Calculate the relative cursor position.
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
@@ -185,13 +185,13 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
     final date = viewController.dateTimeFromIndex(itemIndex);
 
     if (date == null) return null;
-    return InternalDateTime.fromDateTime(date);
+    return FloatingDateTime.fromDateTime(date);
   }
 
   @override
-  KalenderEvent? rescheduleEvent(KalenderEvent event, InternalDateTime cursorDateTime) {
+  KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime) {
     // The highlight marks whole rows, so it stays anchored to the target day.
-    widget.viewController.highlightedDateTimeRange.value = InternalDateTimeRange(
+    widget.viewController.highlightedDateTimeRange.value = FloatingDateTimeRange(
       start: cursorDateTime,
       end: cursorDateTime.add(event.duration),
     );

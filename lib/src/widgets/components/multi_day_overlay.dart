@@ -16,7 +16,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 typedef MultiDayOverlayEventTileBuilder = MultiDayEventOverlayTile Function(
   BuildContext context,
   KalenderEvent event,
-  InternalDateTimeRange internalRange,
+  FloatingDateTimeRange internalRange,
   VoidCallback dismissOverlay,
 );
 
@@ -289,7 +289,7 @@ class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
 
 class MultiDayOverlay extends StatelessWidget {
   /// The date for which the widget is created.
-  final InternalDateTime date;
+  final FloatingDateTime date;
 
   /// All the events that should be displayed for the given [date].
   final List<KalenderEvent> events;

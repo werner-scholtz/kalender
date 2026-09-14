@@ -40,7 +40,7 @@ enum ZoomTransition {
 }
 
 /// Resolves the initial date for the incoming view. Overrides [DateTransition].
-typedef DateResolver = InternalDateTime Function(ViewTransitionContext transition);
+typedef DateResolver = FloatingDateTime Function(ViewTransitionContext transition);
 
 /// Resolves the initial time-of-day for the incoming multi-day view. Overrides
 /// [ScrollTransition]. Return `null` to use the view's `initialTimeOfDay`.
@@ -56,7 +56,7 @@ class ViewSnapshot {
   const ViewSnapshot({required this.date, this.timeOfDay, this.heightPerMinute});
 
   /// The representative date the view was showing.
-  final InternalDateTime date;
+  final FloatingDateTime date;
 
   /// The time-of-day at the top of the viewport, or `null` for views without a
   /// vertical scroll (month/schedule).
@@ -95,7 +95,7 @@ class ViewTransitionContext {
 /// [kDefaultToSchedule] based on the view being switched *to*. Exposed so a
 /// custom [DateResolver] can build on the default behaviour, e.g.
 /// `dateResolver: (transition) => nextBusinessDay(kCarryFocusDate(transition))`.
-InternalDateTime kCarryFocusDate(ViewTransitionContext transition) {
+FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
   final old = transition.oldViewController;
   return switch (transition.newViewConfiguration) {
     MonthViewConfiguration _ => kDefaultToMonthly(old),
@@ -111,24 +111,24 @@ InternalDateTime kCarryFocusDate(ViewTransitionContext transition) {
 }
 
 /// Carry-focus date when switching **to** a month view, derived from [old].
-InternalDateTime kDefaultToMonthly(ViewController old) {
+FloatingDateTime kDefaultToMonthly(ViewController old) {
   final oldRange = old.internalVisibleRange.value!;
   return switch (old.viewConfiguration) {
-    MonthViewConfiguration _ => InternalDateTime.fromDateTime(oldRange.dominantMonthDate),
+    MonthViewConfiguration _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
     MultiDayViewConfiguration _ => oldRange.start,
     ScheduleViewConfiguration _ => oldRange.start,
-    _ => InternalDateTime.fromDateTime(oldRange.dominantMonthDate),
+    _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
   };
 }
 
 /// Carry-focus date when switching **to** a weekly (multi-day) view.
-InternalDateTime kDefaultToWeekly(ViewController old) => old.internalVisibleRange.value!.start;
+FloatingDateTime kDefaultToWeekly(ViewController old) => old.internalVisibleRange.value!.start;
 
 /// Carry-focus date when switching **to** a daily view, derived from [old].
-InternalDateTime kDefaultToDaily(ViewController old) {
+FloatingDateTime kDefaultToDaily(ViewController old) {
   final oldRange = old.internalVisibleRange.value!;
   return switch (old.viewConfiguration) {
-    MonthViewConfiguration _ => InternalDateTime.fromDateTime(oldRange.dominantMonthDate),
+    MonthViewConfiguration _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
     MultiDayViewConfiguration _ => oldRange.start,
     ScheduleViewConfiguration _ => oldRange.start,
     _ => oldRange.start,
@@ -136,4 +136,4 @@ InternalDateTime kDefaultToDaily(ViewController old) {
 }
 
 /// Carry-focus date when switching **to** a schedule view.
-InternalDateTime kDefaultToSchedule(ViewController old) => old.internalVisibleRange.value!.start;
+FloatingDateTime kDefaultToSchedule(ViewController old) => old.internalVisibleRange.value!.start;

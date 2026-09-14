@@ -121,7 +121,7 @@ class DayHeader extends StatelessWidget {
     final style = (KalenderTheme.of(context).dayHeaderStyle ?? const DayHeaderStyle()).merge(this.style);
     final components = context.components.multiDayComponents.headerComponents;
 
-    final localDate = InternalDateTime.fromExternal(date, location: context.location);
+    final localDate = FloatingDateTime.fromExternal(date, location: context.location);
     final displayDate = localDate.forLocation(location: context.location);
 
     final numberText = Text(
