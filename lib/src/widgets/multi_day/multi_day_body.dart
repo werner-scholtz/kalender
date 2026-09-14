@@ -249,7 +249,6 @@ class _MultiDayPageState extends State<MultiDayPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: when switching location the current page is sometimes not correct.
     return LinkedPageView.builder(
       key: ObjectKey(widget.viewController.pageController),
       padEnds: false,

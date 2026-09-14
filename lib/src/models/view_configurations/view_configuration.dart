@@ -52,19 +52,20 @@ abstract class ViewConfiguration {
   /// with [KalenderEvent.multiDayRule].
   final MultiDayRule multiDayRule;
 
-  /// The selected date to start the view from.
+  /// The date the view opens on when the calendar is first built.
   ///
-  /// If this is provided, it takes precedence over [dateResolver] / [dateTransition]
-  /// when switching between view configurations.
+  /// Read only at startup. On a view switch or a change of location the date comes from [dateResolver] or
+  /// [dateTransition] instead. To move a built calendar to a date, call `KalenderController.jumpToDate` or
+  /// `KalenderController.animateToDate`.
   final DateTime? initialDateTime;
 
-  /// How the visible date is chosen when switching to this view from another.
+  /// How the visible date is chosen when switching to this view from another, or when the calendar's location
+  /// changes.
   ///
-  /// Defaults to [DateTransition.carryFocus]. Overridden by [dateResolver] when
-  /// that is provided, and by [initialDateTime] when that is set.
+  /// Defaults to [DateTransition.carryFocus]. Overridden by [dateResolver] when that is provided.
   final DateTransition dateTransition;
 
-  /// An optional resolver for the visible date on a view switch.
+  /// An optional resolver for the visible date on a view switch or a change of location.
   ///
   /// When non-null it overrides [dateTransition], allowing arbitrary logic (e.g.
   /// "snap to the next business day"). See [kCarryFocusDate] to reuse the default.

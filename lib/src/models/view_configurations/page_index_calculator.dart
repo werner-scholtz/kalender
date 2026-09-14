@@ -3,8 +3,6 @@ import 'package:kalender/src/models/view_configurations/month_view_configuration
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
-// TODO: these will also need to be refactored to work with TZDateTime and Locations.
-
 /// Calculates page indices and date ranges for paginated calendar views.
 ///
 /// This class provides the logic to translate between dates and page indices
