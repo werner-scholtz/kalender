@@ -1,9 +1,3 @@
-// This file is part of kalender.
-//
-// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-//
-// SPDX-License-Identifier: MIT
-
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -55,6 +49,19 @@ void main() {
     test('an absolute src on an img tag is left alone', () {
       const absolute = '<img src="https://img.shields.io/pub/v/kalender.svg" alt="pub.dev version">';
       expect(pinRelativeLinks(absolute, repo, tag), absolute);
+    });
+
+    test("a guide's links resolve against the guide's directory", () {
+      expect(
+        pinRelativeLinks(
+          '[views](views.md#shared-options) [index](../README.md) [demo](../examples/web_demo)',
+          repo,
+          tag,
+          path: 'doc/events.md',
+        ),
+        '[views]($repo/blob/$tag/doc/views.md#shared-options) [index]($repo/blob/$tag/README.md) '
+        '[demo]($repo/blob/$tag/examples/web_demo)',
+      );
     });
 
     test('anchor-only table of contents links are left alone', () {
@@ -150,28 +157,6 @@ void main() {
       expect(leftoverProblems('README.md', content, repo, allowUnpinnedLinks: false), hasLength(1));
       expect(leftoverProblems('CHANGELOG.md', content, repo, allowUnpinnedLinks: true), isEmpty);
     });
-
-    test('a relative link is allowed when the file keeps them', () {
-      const content = 'see [views](views.md#views)\nand the [index](../README.md)';
-      expect(leftoverProblems('doc/events.md', content, repo, allowUnpinnedLinks: false), hasLength(2));
-      expect(
-        leftoverProblems('doc/events.md', content, repo, allowUnpinnedLinks: false, allowRelativeLinks: true),
-        isEmpty,
-      );
-    });
-
-    test('a main branch reference is still reported when relative links are allowed', () {
-      const content = '[strategy]($repo/blob/main/examples/advanced_example/lib/layout_strategy.dart)';
-      final problems = leftoverProblems(
-        'doc/layout.md',
-        content,
-        repo,
-        allowUnpinnedLinks: false,
-        allowRelativeLinks: true,
-      );
-      expect(problems, hasLength(1));
-      expect(problems.single, startsWith('doc/layout.md:1:'));
-    });
   });
 
   group('docFiles', () {
@@ -182,7 +167,10 @@ void main() {
       File('${directory.path}/appearance.md').writeAsStringSync('');
       File('${directory.path}/notes.txt').writeAsStringSync('');
 
-      expect(docFiles(directory).map((path) => path.split(Platform.pathSeparator).last), ['appearance.md', 'views.md']);
+      expect(
+        docFiles(directory).map((path) => path.split(Platform.pathSeparator).last),
+        ['appearance.md', 'views.md'],
+      );
     });
 
     test('an absent directory yields nothing', () {
@@ -215,18 +203,11 @@ void main() {
       expect(leftoverProblems('CHANGELOG.md', changelog, repoUrl, allowUnpinnedLinks: true, package: package), isEmpty);
     });
 
-    test('the real guides rewrite cleanly and keep their relative links', () {
+    test('the real guides rewrite cleanly', () {
       for (final path in docFiles()) {
-        final rewritten = pinAll(File(path).readAsStringSync());
+        final rewritten = pinRelativeLinks(pinAll(File(path).readAsStringSync()), repoUrl, tag, path: path);
         expect(
-          leftoverProblems(
-            path,
-            rewritten,
-            repoUrl,
-            allowUnpinnedLinks: false,
-            allowRelativeLinks: true,
-            package: package,
-          ),
+          leftoverProblems(path, rewritten, repoUrl, allowUnpinnedLinks: false, package: package),
           isEmpty,
           reason: '$path still has an unpinned link after the rewrite',
         );
