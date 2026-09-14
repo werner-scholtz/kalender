@@ -13,6 +13,12 @@ on:
   push:
     branches: [main, main-wip]
 
+# A new push to a pull request cancels that pull request's older run. Each push to
+# main gets its own group, so every merge is checked.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   analyze: # Separate job for analysis
     runs-on: ubuntu-latest
