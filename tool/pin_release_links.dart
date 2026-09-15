@@ -15,7 +15,8 @@
 // the runner and never pushes it.
 //
 // The guides under doc/ are also the topic pages of the API reference. A relative
-// link in a guide is resolved against the guide's own directory.
+// link in a guide is resolved against the guide's own directory, and a link to a
+// guide that has a topic page points at that topic page.
 //
 // Usage: dart run tool/pin_release_links.dart v0.24.0
 //
@@ -63,7 +64,14 @@ String packageName(String pubspec) {
 /// image that survives shows the default branch instead of the tag.
 ///
 /// Links resolve against the directory of [path], the file [content] was read from.
-String pinRelativeLinks(String content, String repoUrl, String tag, {String path = 'README.md'}) {
+/// A link to a guide in [topicPages] points at that guide's API reference topic page.
+String pinRelativeLinks(
+  String content,
+  String repoUrl,
+  String tag, {
+  String path = 'README.md',
+  Map<String, String> topicPages = const {},
+}) {
   final rawBase = repoUrl.replaceFirst('https://github.com/', 'https://raw.githubusercontent.com/');
   String resolve(String target) => Uri.parse(path).resolve(target).path;
   return content
@@ -72,7 +80,22 @@ String pinRelativeLinks(String content, String repoUrl, String tag, {String path
         htmlImageTag,
         (m) => m[0]!.replaceAllMapped(relativeHtmlSrc, (src) => 'src="$rawBase/$tag/${resolve(src[1]!)}"'),
       )
-      .replaceAllMapped(relativeLink, (m) => ']($repoUrl/blob/$tag/${resolve(m[1]!)}${m[2] ?? ''})');
+      .replaceAllMapped(relativeLink, (m) {
+        final target = resolve(m[1]!);
+        return '](${topicPages[target] ?? '$repoUrl/blob/$tag/$target'}${m[2] ?? ''})';
+      });
+}
+
+/// The API reference topic page of each guide named in [dartdocOptions], keyed by the guide's path.
+///
+/// Reads the `markdown:` entry of each category in `dartdoc_options.yaml`.
+Map<String, String> topicPageUrls(String dartdocOptions, String package, String tag) {
+  final version = tag.startsWith('v') ? tag.substring(1) : tag;
+  final categories = RegExp(r'^\s*"([^"]+)":\s*\n\s*markdown:\s*(\S+)\s*$', multiLine: true);
+  return {
+    for (final m in categories.allMatches(dartdocOptions))
+      m[2]!: 'https://pub.dev/documentation/$package/$version/topics/${Uri.encodeComponent(m[1]!)}-topic.html',
+  };
 }
 
 /// A pub.dev API documentation link for [package] on the `latest` version.
@@ -159,6 +182,10 @@ void main(List<String> args) {
   final pubspec = File('pubspec.yaml').readAsStringSync();
   final repoUrl = repositoryUrl(pubspec);
   final package = packageName(pubspec);
+  final dartdocOptions = File('dartdoc_options.yaml');
+  final topicPages = dartdocOptions.existsSync()
+      ? topicPageUrls(dartdocOptions.readAsStringSync(), package, tag)
+      : const <String, String>{};
 
   /// Everything except the changelog, whose historical entries are pinned separately.
   String pinAll(String content) => pinPubDevDocs(pinBranchUrls(content, repoUrl, tag), package, tag);
@@ -174,7 +201,7 @@ void main(List<String> args) {
     for (final doc in docFiles())
       (
         path: doc,
-        rewrite: (content) => pinRelativeLinks(pinAll(content), repoUrl, tag, path: doc),
+        rewrite: (content) => pinRelativeLinks(pinAll(content), repoUrl, tag, path: doc, topicPages: topicPages),
         allowUnpinnedLinks: false,
       ),
   ];

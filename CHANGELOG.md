@@ -42,6 +42,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - The schedule view builds its list of items once when it first appears, not twice.
 - A schedule view given a different events controller stops listening to the previous one.
 - The declared minimum Dart version is 3.10.0, which `timezone` already required.
+- A link from one guide to another in the API reference opens that guide's topic page rather than GitHub.
 
 ## 0.30.0
 

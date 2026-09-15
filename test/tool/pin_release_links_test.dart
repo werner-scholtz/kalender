@@ -17,7 +17,8 @@ import '../../tool/pin_release_links.dart'
         pinChangelog,
         pinPubDevDocs,
         pinRelativeLinks,
-        repositoryUrl;
+        repositoryUrl,
+        topicPageUrls;
 
 const repo = 'https://github.com/werner-scholtz/kalender';
 const tag = 'v9.9.9';
@@ -78,6 +79,48 @@ void main() {
     test('absolute links are left alone', () {
       const absolute = '[demo](https://werner-scholtz.github.io/kalender/)';
       expect(pinRelativeLinks(absolute, repo, tag), absolute);
+    });
+
+    test('a link to a guide with a topic page points at the topic page and keeps its anchor', () {
+      const interaction = 'https://pub.dev/documentation/kalender/9.9.9/topics/Interaction-topic.html';
+      expect(
+        pinRelativeLinks(
+          '[zoom](interaction.md#zoom) [guides](README.md) [demo](../examples/web_demo)',
+          repo,
+          tag,
+          path: 'doc/views.md',
+          topicPages: const {'doc/interaction.md': interaction},
+        ),
+        '[zoom]($interaction#zoom) [guides]($repo/blob/$tag/doc/README.md) [demo]($repo/blob/$tag/examples/web_demo)',
+      );
+    });
+  });
+
+  group('topicPageUrls', () {
+    test("maps each category's guide to its topic page on the released version", () {
+      const options = '''
+dartdoc:
+  categories:
+    "Views":
+      markdown: doc/views.md
+    "Controllers and callbacks":
+      markdown: doc/controllers-and-callbacks.md
+  categoryOrder:
+    - Views
+''';
+      expect(topicPageUrls(options, 'kalender', tag), {
+        'doc/views.md': 'https://pub.dev/documentation/kalender/9.9.9/topics/Views-topic.html',
+        'doc/controllers-and-callbacks.md':
+            'https://pub.dev/documentation/kalender/9.9.9/topics/Controllers%20and%20callbacks-topic.html',
+      });
+    });
+
+    test('every guide named in the real dartdoc_options.yaml exists', () {
+      final pages = topicPageUrls(File('dartdoc_options.yaml').readAsStringSync(), 'kalender', tag);
+      expect(pages, isNotEmpty);
+      for (final guide in pages.keys) {
+        expect(File(guide).existsSync(), isTrue, reason: guide);
+      }
     });
   });
 
@@ -206,14 +249,24 @@ void main() {
       expect(leftoverProblems('CHANGELOG.md', changelog, repoUrl, allowUnpinnedLinks: true, package: package), isEmpty);
     });
 
-    test('the real guides rewrite cleanly', () {
+    test('the real guides rewrite cleanly and link each other through their topic pages', () {
+      final topicPages = topicPageUrls(File('dartdoc_options.yaml').readAsStringSync(), package, tag);
       for (final path in docFiles()) {
-        final rewritten = pinRelativeLinks(pinAll(File(path).readAsStringSync()), repoUrl, tag, path: path);
+        final rewritten = pinRelativeLinks(
+          pinAll(File(path).readAsStringSync()),
+          repoUrl,
+          tag,
+          path: path,
+          topicPages: topicPages,
+        );
         expect(
           leftoverProblems(path, rewritten, repoUrl, allowUnpinnedLinks: false, package: package),
           isEmpty,
           reason: '$path still has an unpinned link after the rewrite',
         );
+        for (final guide in topicPages.keys) {
+          expect(rewritten, isNot(contains('$repoUrl/blob/$tag/$guide')), reason: '$path links to $guide on GitHub');
+        }
       }
     });
   });
