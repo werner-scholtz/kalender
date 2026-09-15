@@ -19,7 +19,7 @@
 /// call `toDateTimeRange()` or `toKalenderDateTimeRange()`.
 ///
 /// {@category Dates and times}
-class KalenderDateTimeRange {
+final class KalenderDateTimeRange {
   /// Creates a [KalenderDateTimeRange].
   KalenderDateTimeRange({required this.start, required this.end}) : assert(!start.isAfter(end));
 
@@ -33,10 +33,7 @@ class KalenderDateTimeRange {
   Duration get duration => end.difference(start);
 
   @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is KalenderDateTimeRange && other.start == start && other.end == end;
-  }
+  bool operator ==(Object other) => other is KalenderDateTimeRange && other.start == start && other.end == end;
 
   @override
   int get hashCode => Object.hash(start, end);

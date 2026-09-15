@@ -35,7 +35,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override needs a hand edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override needs a hand edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. The five value types are `final` classes. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Calendar*` types are renamed to `Kalender*`, and the controller members and `calendarLocale` follow. `CalendarView` and `CalendarViewState` are removed. `KalenderDateTimeRange` and `KalenderTime` replace Material's `DateTimeRange` and `TimeOfDay`, and `InternalDateTimeRange` no longer extends `DateTimeRange`. `TimeOfDayRange` and `TimeOfDayStringBuilder` become `KalenderTimeRange` and `KalenderTimeStringBuilder`, and `TimeOfDayExtension` is removed. `CalendarEvent` and `PageIndexCalculator` take `start` and `end`. The schedule view reports ranges in the calendar's location. |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
@@ -200,6 +200,25 @@ setState(() => config = MultiDayViewConfiguration.week(initialDateTime: date));
 
 // After
 kalenderController.jumpToDate(date);
+```
+
+### The value types are `final` classes
+
+`KalenderDateTimeRange`, `KalenderTime`, `KalenderTimeRange`, `FloatingDateTime`
+and `FloatingDateTimeRange` can no longer be extended or implemented. Hold a
+value instead. There is nothing for `dart fix` to rename.
+
+```dart
+// Before
+class WorkingHours extends KalenderTimeRange {
+  WorkingHours() : super(start: const KalenderTime(hour: 9, minute: 0), end: const KalenderTime(hour: 17, minute: 0));
+}
+
+// After
+final workingHours = KalenderTimeRange(
+  start: const KalenderTime(hour: 9, minute: 0),
+  end: const KalenderTime(hour: 17, minute: 0),
+);
 ```
 
 ## v0.29.x → v0.30.0

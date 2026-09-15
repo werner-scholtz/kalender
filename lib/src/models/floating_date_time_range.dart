@@ -12,7 +12,7 @@ import 'package:kalender/kalender.dart';
 /// [forLocation] to convert to a [KalenderDateTimeRange].
 ///
 /// {@category Dates and times}
-class FloatingDateTimeRange {
+final class FloatingDateTimeRange {
   /// Creates a [FloatingDateTimeRange] instance.
   FloatingDateTimeRange({required DateTime start, required DateTime end})
     : start = FloatingDateTime.fromDateTime(start),
@@ -173,10 +173,7 @@ class FloatingDateTimeRange {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is FloatingDateTimeRange && other.start == start && other.end == end;
-  }
+  bool operator ==(Object other) => other is FloatingDateTimeRange && other.start == start && other.end == end;
 
   @override
   int get hashCode => Object.hash(start, end);
