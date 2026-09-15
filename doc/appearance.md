@@ -87,10 +87,9 @@ the package's own behavior, so set only what you want to change.
 </details>
 
 > [!WARNING]
-> `resizeDragAnchorStrategy` is left out above on purpose. It defaults to a
-> pointer anchor, and setting it to `childDragAnchorStrategy` makes a vertical
-> resize jump to the neighbouring day on the smallest sideways movement. Change
-> it only if you have a reason to.
+> The snippet above omits `resizeDragAnchorStrategy`. It defaults to a pointer
+> anchor. Setting it to `childDragAnchorStrategy` makes a vertical resize jump to
+> the neighbouring day on the smallest sideways movement.
 
 ### ScheduleTileComponents
 
@@ -290,8 +289,7 @@ the theme registered on `ThemeData`, so a scope can change one thing without
 restating the rest.
 
 This is an `InheritedTheme`, so it also reaches widgets the calendar builds into
-an `Overlay`, such as the tile that follows a drag. Those are not descendants of
-your calendar, so an ordinary inherited widget would not reach them.
+an `Overlay`, such as the tile that follows a drag.
 
 ### How a style is resolved
 
@@ -306,11 +304,11 @@ it leaves null.
 > [!NOTE]
 > Gutter widths are not styles. The month week number column and the multi-day timeline are drawn in the body and reserved again in the header, so the calendar measures each once and both halves read that number. A `KalenderTheme` scoped inside one half restyles the gutter there without resizing it. Set the width with `MonthBodyComponents.weekNumberWidth` or `MultiDayBodyComponents.timelineWidth`.
 
-Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `lerp`, switching themes transitions the calendar's colors along with the rest of the app. A `KalenderTheme` scope does not animate on its own, since it is a plain widget rather than part of `ThemeData`.
+Switching themes transitions the calendar's colors along with the rest of the app. A `KalenderTheme` scope does not animate.
 
 ### The overflow overlay
 
-The overlay that opens from the `+3` button, which stands in for events that do not fit, is themed the same way. Its card and close button take Flutter's own `CardThemeData` and `ButtonStyle`, so anything you can do to a `Card` or an `IconButton` you can do here.
+The overlay that opens from the `+3` button, which stands in for events that do not fit, is themed the same way. Its card and close button take Flutter's own `CardThemeData` and `ButtonStyle`.
 
 <!-- snippet: expression -->
 ```dart
@@ -328,7 +326,7 @@ KalenderThemeData(
 )
 ```
 
-`closeButtonStyle` merges over the defaults of a filled tonal icon button, so it only has to set what it wants to change.
+`closeButtonStyle` merges over the defaults of a filled tonal icon button, so set only the fields you change.
 
 ## Appearance / Custom Components
 

@@ -127,8 +127,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
       children: [
         Row(
           children: [
-            // The visible range drives the label, so it follows every scroll,
-            // page change and view switch without any extra wiring.
+            // The visible range drives the label, so it updates on every scroll,
+            // page change and view switch.
             ValueListenableBuilder(
               valueListenable: kalenderController.visibleDateTimeRange,
               builder: (context, range, child) {

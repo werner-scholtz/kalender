@@ -37,7 +37,7 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 - **Controllers and callbacks.** Navigate from code, and react to taps, creation and changes.
 - **Replaceable, not just configurable.** Swap any widget, or keep it and restyle it.
 - **Material 3 by default.** Follows your app's theme with no setup.
-- **Timezone aware.** Events stored as UTC, shown in any IANA location. Tested under a matrix of timezones.
+- **Timezone aware.** Events stored as UTC, shown in any IANA location. Tested in six timezones.
 - **Localized.** Day and month names from intl, and every string replaceable.
 
 ## Installation
