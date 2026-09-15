@@ -38,7 +38,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `MonthViewConfiguration.copyWith` applies the `initialDateTime` it is given.
 - `MultiDayEventOverlayTile.tileKey` matches the tiles in the multi-day overlay.
 - Changing the calendar's location keeps the date on screen.
-- A drag that creates or resizes an event stops at the end of `timeOfDayRange`.
+- An event created, resized or rescheduled in the multi-day body stays within `timeOfDayRange`.
 - The schedule view builds its list of items once when it first appears, not twice.
 - A schedule view given a different events controller stops listening to the previous one.
 - The declared minimum Dart version is 3.10.0, which `timezone` already required.

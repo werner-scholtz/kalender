@@ -11,20 +11,29 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 
 import '../utilities.dart';
 
-/// A create or resize drag stops at the end of `timeOfDayRange`.
+/// Creating, resizing and rescheduling stop at the bottom of the day, which is the start of `timeOfDayRange` plus
+/// its `duration`.
 void main() {
-  // 08:00 to 17:40 is 580 minutes, not a whole number of 15-minute intervals.
-  final timeOfDayRange = KalenderTimeRange(
+  final monday = DateTime(2025, 6, 2);
+  final wednesday = monday.add(const Duration(days: 2));
+
+  // Draws 581 minutes, not a whole number of 15-minute intervals.
+  final to1740 = KalenderTimeRange(
     start: const KalenderTime(hour: 8, minute: 0),
     end: const KalenderTime(hour: 17, minute: 40),
   );
-  final monday = DateTime(2025, 6, 2);
+
+  // Draws 600 minutes, so the bottom of the day is 18:00.
+  final to1759 = KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 17, minute: 59),
+  );
 
   late DefaultEventsController eventsController;
 
   setUp(() => eventsController = DefaultEventsController());
 
-  Future<Rect> pumpWeek(WidgetTester tester) async {
+  Future<Rect> pumpWeek(WidgetTester tester, KalenderTimeRange timeOfDayRange) async {
     tester.view.physicalSize = const Size(800, 1400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -63,8 +72,10 @@ void main() {
     return tester.getRect(find.byType(MultiDayBody));
   }
 
-  // One pixel per minute from 08:00, so 579 is the last pixel before 17:40.
-  double lastPixel(Rect body) => body.top + 579;
+  // One pixel per minute from 08:00.
+  double lastPixel(Rect body, KalenderTimeRange range) => body.top + range.duration.inMinutes - 1;
+
+  (int, int) hourMinute(DateTime dateTime) => (dateTime.hour, dateTime.minute);
 
   Future<void> dragTo(WidgetTester tester, Offset from, Offset to) async {
     final gesture = await tester.startGesture(from);
@@ -77,32 +88,66 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('a create drag to the last pixel ends at the end of the day', (tester) async {
-    final body = await pumpWeek(tester);
-    final x = body.left + body.width * 0.6;
+  for (final (range, bottom) in [(to1740, (17, 41)), (to1759, (18, 0))]) {
+    final name = '${range.end.hour}:${range.end.minute}';
 
-    await dragTo(tester, Offset(x, body.top + 300), Offset(x, lastPixel(body)));
+    testWidgets('a create drag to the last pixel of a day ending $name ends at $bottom', (tester) async {
+      final body = await pumpWeek(tester, range);
+      final x = body.left + body.width * 0.6;
 
-    final end = eventsController.events.single.floatingEnd();
-    expect((end.hour, end.minute), (17, 40));
+      await dragTo(tester, Offset(x, body.top + 300), Offset(x, lastPixel(body, range)));
+
+      expect(hourMinute(eventsController.events.single.floatingEnd()), bottom);
+    });
+
+    testWidgets('a resize drag to the last pixel of a day ending $name ends at $bottom', (tester) async {
+      final id = eventsController.addEvent(
+        KalenderEvent(start: wednesday.copyWith(hour: 16), end: wednesday.copyWith(hour: 17)),
+      );
+      final body = await pumpWeek(tester, range);
+
+      final tile = find.byKey(DayEventTile.tileKey(id));
+      await tester.hoverOn(tile, await tester.createMouseGesture());
+      final bottomHandle = find.descendant(of: tile, matching: find.byKey(ResizeDetector.endResizeDraggableKey(id)));
+      expect(bottomHandle, findsOneWidget);
+
+      final handle = tester.getCenter(bottomHandle);
+      await dragTo(tester, handle, Offset(handle.dx, lastPixel(body, range)));
+
+      expect(hourMinute(eventsController.events.single.floatingEnd()), bottom);
+    });
+  }
+
+  testWidgets('a create drag picked up at the last pixel stays within the day', (tester) async {
+    final body = await pumpWeek(tester, to1740);
+    final bottom = Offset(body.left + body.width * 0.6, lastPixel(body, to1740));
+
+    // Sideways, so the drag starts while the pointer stays on the last pixel.
+    final gesture = await tester.startGesture(bottom);
+    await tester.pump();
+    await gesture.moveTo(bottom.translate(20, 0));
+    await tester.pump();
+    await gesture.moveTo(bottom);
+    await tester.pump();
+    await gesture.up();
+    await tester.pumpAndSettle();
+
+    final event = eventsController.events.single;
+    expect(hourMinute(event.floatingEnd()), (17, 41));
+    expect(event.floatingStart().isBefore(event.floatingEnd()), isTrue);
   });
 
-  testWidgets('a resize drag to the last pixel ends at the end of the day', (tester) async {
-    final wednesday = monday.add(const Duration(days: 2));
+  testWidgets('rescheduling an event as long as the day keeps it within the day', (tester) async {
     final id = eventsController.addEvent(
-      KalenderEvent(start: wednesday.copyWith(hour: 16), end: wednesday.copyWith(hour: 17)),
+      KalenderEvent(start: wednesday.copyWith(hour: 8), end: wednesday.copyWith(hour: 18)),
     );
-    final body = await pumpWeek(tester);
+    await pumpWeek(tester, to1759);
 
-    final tile = find.byKey(DayEventTile.tileKey(id));
-    await tester.hoverOn(tile, await tester.createMouseGesture());
-    final bottomHandle = find.descendant(of: tile, matching: find.byKey(ResizeDetector.endResizeDraggableKey(id)));
-    expect(bottomHandle, findsOneWidget);
+    final tile = tester.getCenter(find.byKey(DayEventTile.tileKey(id)));
+    await dragTo(tester, tile, tile.translate(0, 100));
 
-    final handle = tester.getCenter(bottomHandle);
-    await dragTo(tester, handle, Offset(handle.dx, lastPixel(body)));
-
-    final end = eventsController.events.single.floatingEnd();
-    expect((end.hour, end.minute), (17, 40));
+    final event = eventsController.events.single;
+    expect(hourMinute(event.floatingStart()), (8, 0));
+    expect(hourMinute(event.floatingEnd()), (18, 0));
   });
 }
