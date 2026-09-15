@@ -8,12 +8,12 @@
 
 // Replicates the GitHub Actions timezone matrix locally.
 // Usage (from the repo root):
-//   dart tool/test_timezones.dart [flutter-test-args...]
+//   dart tool/test_timezones_linux.dart [flutter-test-args...]
 //
 // Examples:
-//   dart tool/test_timezones.dart
-//   dart tool/test_timezones.dart test/models/floating_date_time_test.dart
-//   dart tool/test_timezones.dart --name "startOfDay"
+//   dart tool/test_timezones_linux.dart
+//   dart tool/test_timezones_linux.dart test/models/floating_date_time_test.dart
+//   dart tool/test_timezones_linux.dart --name "startOfDay"
 // ignore_for_file: avoid_print
 
 import 'dart:io';

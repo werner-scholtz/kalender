@@ -36,11 +36,17 @@ jobs:
           [ "$version" = "$tag" ] \
             || { echo "::error::pubspec.yaml is $version but the tag is $tag"; exit 1; }
 
+      # Pinning writes the version into CHANGELOG.md links, which satisfies pub's
+      # own changelog check, so the heading is checked here instead.
+      - name: Check the changelog has a heading for the version
+        run: |
+          version=$(grep -m1 '^version:' pubspec.yaml | cut -d' ' -f2)
+          grep -qx "## ${version%%-*}" CHANGELOG.md \
+            || { echo "::error::CHANGELOG.md has no '## ${version%%-*}' heading"; exit 1; }
+
       # Supplies the pub.dev credential. Every step runs the Dart that comes with
       # the Flutter below.
       - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: 3.13.2
 
       - uses: subosito/flutter-action@v2
         with:

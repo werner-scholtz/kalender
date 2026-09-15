@@ -11,7 +11,8 @@
 // repository links against the default branch, so the page of an old version
 // links to newer documentation. The publish workflow runs this script before
 // packaging so every published version keeps linking to its own documentation.
-// The rewrite only touches the working tree, nothing is committed.
+// The rewrite only touches the working tree. The publish workflow commits it in
+// the runner and never pushes it.
 //
 // The guides under doc/ are also the topic pages of the API reference. A relative
 // link in a guide is resolved against the guide's own directory.

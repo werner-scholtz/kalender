@@ -23,6 +23,7 @@ const header = '''
 
 final _shebang = RegExp(r'#!.*\n');
 final _leadingNewlines = RegExp(r'^\n+');
+final _outdatedHeader = RegExp(r'// This file is part of kalender\.\n(?://.*\n)*?// SPDX-License-Identifier: .*\n');
 
 String _body(String content) {
   final shebang = _shebang.matchAsPrefix(content);
@@ -33,10 +34,15 @@ String _body(String content) {
 bool hasHeader(String content) => _body(content).startsWith(header);
 
 /// [content] with [header] added, or [content] unchanged when it already has it.
+///
+/// An outdated header is replaced.
 String withHeader(String content) {
   if (hasHeader(content)) return content;
   final shebang = _shebang.matchAsPrefix(content)?[0];
-  return [if (shebang != null) '$shebang\n', header, '\n', _body(content)].join();
+  var body = _body(content);
+  final outdated = _outdatedHeader.matchAsPrefix(body);
+  if (outdated != null) body = body.substring(outdated.end).replaceFirst(_leadingNewlines, '');
+  return [if (shebang != null) '$shebang\n', header, '\n', body].join();
 }
 
 void main(List<String> args) {

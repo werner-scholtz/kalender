@@ -22,6 +22,19 @@ void main() {
       final content = "$header\nimport 'dart:io';\n";
       expect(withHeader(content), content);
     });
+
+    test('replaces an outdated header', () {
+      final outdated = header.replaceFirst('2023', '2022');
+      expect(withHeader("$outdated\nimport 'dart:io';\n"), "$header\nimport 'dart:io';\n");
+    });
+
+    test('replaces an outdated header after a shebang', () {
+      final outdated = header.replaceFirst('MIT', 'BSD-3-Clause');
+      expect(
+        withHeader('#!/usr/bin/env dart\n\n$outdated\nvoid main() {}\n'),
+        '#!/usr/bin/env dart\n\n$header\nvoid main() {}\n',
+      );
+    });
   });
 
   group('hasHeader', () {

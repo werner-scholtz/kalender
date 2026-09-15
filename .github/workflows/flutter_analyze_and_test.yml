@@ -36,8 +36,7 @@ jobs:
         shell: bash
         working-directory: ./
 
-      # Uses the width from analysis_options.yaml. The examples have their own
-      # and are formatted by the analyze_examples.yml workflow.
+      # Uses the width from analysis_options.yaml. The examples are not checked.
       - name: Formatting check
         run: dart format --output=none --set-exit-if-changed lib test tool benchmark
         shell: bash
