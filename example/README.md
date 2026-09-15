@@ -1,7 +1,7 @@
 # Example
 
 A complete calendar, using only the base `KalenderEvent` class with no custom fields.
-Tapping an empty slot creates an event, and events can be dragged and resized.
+Tapping an empty slot creates an event, which takes a long press on a phone or tablet. Events can be dragged and resized.
 
 <!-- snippet: file -->
 ```dart

@@ -104,6 +104,11 @@ in an override.
 `KalenderEvent.dateTimeRange`, `KalenderController.visibleDateTimeRange` and the
 `onPageChanged` callback keep their names.
 
+A member keeps a `floating` prefix where its class also holds or passes on
+wall-clock values, as `KalenderEvent`, `KalenderController`,
+`PageIndexCalculator`, `MonthWeek` and `MultiDayEventOverlayTile` do. Elsewhere
+the member is `range`.
+
 A view controller subclass that declares `super.internalVisibleRange` in its
 constructor renames it to `super.floatingVisibleRange` by hand. The analyzer
 reports it as an undefined parameter.
@@ -230,7 +235,8 @@ The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now.
 `ViewController`'s changes type as well as name. `KalenderController.visibleDateTimeRange`
 is a `KalenderDateTimeRange` and `ViewController`'s is an `InternalDateTimeRange`, so
 check which one a call site holds. A member carrying the internal layout space says
-`internal` in its name now.
+`internal` in its name now. 0.31.0 renames these to `floating`, see
+[v0.30.x → v0.31.0](#v030x--v0310).
 
 `MultiDayRule.calendarDays` is unchanged. A calendar day is a unit of time, not a
 reference to the type.

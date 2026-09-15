@@ -48,13 +48,14 @@ MaterialApp(
 )
 ```
 
-It can be set either way: on a single `KalenderView` through `KalenderComponents`, or
+It can be set on a single `KalenderView` by wrapping it in a `KalenderTheme`, or
 once for the whole app through [`KalenderThemeData`](appearance.md#theming).
 
 ### Custom text
 
-Every string the calendar writes can be replaced with a string builder on the
-matching `*Components` class. Each one receives the `BuildContext`, so it can read
+Apart from the week number tooltip, every string the calendar writes can be
+replaced with a string builder on the matching `*Components` class. Each one
+receives the `BuildContext`, so it can read
 the calendar's own locale with `context.kalenderLocale`, which is not necessarily
 the app's locale. intl takes a string, so pass `toLanguageTag()`:
 
