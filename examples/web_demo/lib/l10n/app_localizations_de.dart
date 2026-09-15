@@ -144,16 +144,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete => 'Löschen';
 
   @override
-  String get preReleaseTitle => 'Vorab-Beispiel';
+  String get aboutTitle => 'Über diese Demo';
 
   @override
-  String get preReleaseContent => 'Dies ist ein Vorab-Beispiel für v0.17.0, das noch nicht veröffentlicht wurde.';
+  String get aboutContent =>
+      'Diese Demo zeigt das Paket kalender. Erstellte oder geänderte Termine bleiben in diesem Browser-Tab und gehen beim Neuladen der Seite verloren.';
 
   @override
   String get gotIt => 'Verstanden';
 
   @override
-  String get preReleaseInfo => 'Vorab-Info';
+  String get aboutInfo => 'Über diese Demo';
 
   @override
   String get language => 'Sprache';

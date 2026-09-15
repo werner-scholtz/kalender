@@ -144,16 +144,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get delete => 'Eliminar';
 
   @override
-  String get preReleaseTitle => 'Exemplo pré-lançamento';
+  String get aboutTitle => 'Sobre esta demonstração';
 
   @override
-  String get preReleaseContent => 'Este é um exemplo pré-lançamento para v0.17.0 que ainda não foi publicado.';
+  String get aboutContent =>
+      'Esta demonstração mostra o pacote kalender. Os eventos que criar ou alterar ficam neste separador do navegador e perdem-se ao recarregar a página.';
 
   @override
   String get gotIt => 'Entendido';
 
   @override
-  String get preReleaseInfo => 'Info pré-lançamento';
+  String get aboutInfo => 'Sobre esta demonstração';
 
   @override
   String get language => 'Idioma';

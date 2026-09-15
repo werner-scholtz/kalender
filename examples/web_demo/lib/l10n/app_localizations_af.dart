@@ -144,17 +144,17 @@ class AppLocalizationsAf extends AppLocalizations {
   String get delete => 'Verwyder';
 
   @override
-  String get preReleaseTitle => 'Vooraf-vrystellingsvoorbeeld';
+  String get aboutTitle => 'Oor hierdie demo';
 
   @override
-  String get preReleaseContent =>
-      'Hierdie is \'n vooraf-vrystellingsvoorbeeld vir v0.17.0 wat nog nie vrygestel is nie.';
+  String get aboutContent =>
+      'Hierdie demo wys die kalender-pakket. Gebeure wat jy skep of verander, bly in hierdie blaaieroortjie en gaan verlore wanneer jy die bladsy herlaai.';
 
   @override
   String get gotIt => 'Verstaan';
 
   @override
-  String get preReleaseInfo => 'Vooraf-vrystellingsinfo';
+  String get aboutInfo => 'Oor hierdie demo';
 
   @override
   String get language => 'Taal';

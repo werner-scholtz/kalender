@@ -7,7 +7,7 @@
   <!--
     Custom dashboard for github-action-benchmark data.
 
-    Source of truth: benchmark/dashboard/index.html (deployed to gh-pages/dev/bench/index.html by
+    Source of truth: benchmark/dashboard/, with Chart.js 4.4.1 from npm (deployed to gh-pages/dev/bench/ by
     .github/workflows/deploy_dashboard.yml). github-action-benchmark only writes its default
     index.html when one does not already exist, so this custom page persists; benchmark runs only
     update the sibling data.js.
@@ -19,7 +19,7 @@
       3. Frame charts grouped by view · workload, with one line per event-count scenario, so the
          same operation (e.g. Week · loading) is compared across 10 vs 50 events/day on one chart.
   -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="chart.umd.js"></script>
   <style>
     :root { color-scheme: light dark; }
     body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; background: #fafafa; color: #1f2937; }

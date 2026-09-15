@@ -18,7 +18,7 @@ import 'package:web_demo/widgets/toolbar/text_direction_button.dart';
 import 'package:web_demo/widgets/toolbar/theme_button.dart';
 import 'package:web_demo/widgets/toolbar/view_type_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:web_demo/widgets/toolbar/warning_button.dart';
+import 'package:web_demo/widgets/toolbar/about_button.dart';
 
 import 'timezone/stub.dart'
     if (dart.library.js_interop) 'timezone/browser.dart'
@@ -127,7 +127,7 @@ class MobileHomePage extends StatelessWidget {
         ),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 12),
         actions: const [
-          WarningButton(),
+          AboutButton(),
           SizedBox(width: 4),
           ThemeButton(),
           SizedBox(width: 4),
