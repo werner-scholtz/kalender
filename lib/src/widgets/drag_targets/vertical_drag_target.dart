@@ -290,7 +290,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final cursorDateTime = FloatingDateTime.fromDateTime(startOfDate.add(duration));
     if (timeOfDayRange.coversWholeDay) return cursorDateTime;
 
-    final endOfDate = timeOfDayRange.end.toFloatingDateTime(cursorDate);
+    final endOfDate = startOfDate.add(timeOfDayRange.duration);
     if (cursorDateTime.isBefore(startOfDate)) return startOfDate;
     if (cursorDateTime.isAfter(endOfDate)) return endOfDate;
     return cursorDateTime;
@@ -312,7 +312,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       start = cursorDateTime;
     } else {
       final startOfDate = timeOfDayRange.start.toFloatingDateTime(cursorDateTime);
-      final endOfDate = timeOfDayRange.end.toFloatingDateTime(cursorDateTime);
+      final endOfDate = startOfDate.add(timeOfDayRange.duration);
       if (cursorDateTime.isBefore(startOfDate)) {
         start = startOfDate;
       } else if (cursorDateTime.add(event.duration).isAfter(endOfDate)) {

@@ -152,9 +152,21 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
 
   @override
   FloatingDateTimeRange calculateFloatingRange(FloatingDateTime date, Offset localPosition) {
-    final start = _calculateTimeAndDate(date, localPosition);
+    var start = _calculateTimeAndDate(date, localPosition);
     final snapInterval = context.snapping.snapIntervalMinutes;
-    final end = start.copyWith(minute: start.minute + snapInterval);
+    var end = start.copyWith(minute: start.minute + snapInterval);
+
+    final timeOfDayRange = widget.timeOfDayRange;
+    if (!timeOfDayRange.coversWholeDay) {
+      final startOfDay = timeOfDayRange.start.toFloatingDateTime(date);
+      final endOfDay = startOfDay.add(timeOfDayRange.duration);
+      if (end.isAfter(endOfDay)) end = endOfDay;
+      if (!start.isBefore(end)) {
+        final earlier = end.subtract(Duration(minutes: snapInterval));
+        start = earlier.isBefore(startOfDay) ? startOfDay : earlier;
+      }
+    }
+
     return FloatingDateTimeRange(start: start, end: end);
   }
 
