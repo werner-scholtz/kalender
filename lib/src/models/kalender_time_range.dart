@@ -13,7 +13,7 @@ import 'package:kalender/src/models/kalender_time.dart';
 /// - The [start] time must not be after the [end] time.
 ///
 /// {@category Dates and times}
-class KalenderTimeRange {
+final class KalenderTimeRange {
   KalenderTimeRange({required this.start, required this.end})
     : assert(start.hour <= end.hour),
       assert(start.hour == end.hour ? start.minute <= end.minute : true);
@@ -100,10 +100,7 @@ class KalenderTimeRange {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is KalenderTimeRange && other.start == start && other.end == end;
-  }
+  bool operator ==(Object other) => other is KalenderTimeRange && other.start == start && other.end == end;
 
   @override
   int get hashCode => Object.hash(start, end);

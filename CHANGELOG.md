@@ -22,6 +22,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `MonthViewConfiguration.copyWith` takes `initialDateTime` rather than `selectedDate`.
 - `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
+- `KalenderDateTimeRange`, `KalenderTime`, `KalenderTimeRange`, `FloatingDateTime` and `FloatingDateTimeRange` are `final` classes.
 - The deprecated `BuildContext.calendarLocale` is removed.
 - The minimum Dart version is 3.10.0.
 

@@ -15,7 +15,7 @@ import 'package:kalender/kalender.dart';
 /// convert back.
 ///
 /// {@category Dates and times}
-class FloatingDateTime extends DateTime {
+final class FloatingDateTime extends DateTime {
   /// Creates a [FloatingDateTime] instance.
   FloatingDateTime(
     super.year, [
