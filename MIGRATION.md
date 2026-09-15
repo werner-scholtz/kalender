@@ -4,8 +4,8 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 ## Before you start: run `dart fix`
 
-Kalender ships data-driven fixes, so most renames are applied for you. Upgrade the
-package first, then run `dart fix` from your project root:
+Kalender ships fixes for `dart fix`, so most renames are applied for you. Upgrade
+the package first, then run it from your project root:
 
 ```bash
 flutter pub upgrade kalender
@@ -14,17 +14,12 @@ dart fix --apply                # apply
 ```
 
 Fixes cover changes made in 0.29.0 and later. Upgrading from anything earlier is
-by hand, since those renames were never given fix data. Inside the covered range
-it is safe to run across several versions at once, because the fixes ship with the
-version you upgraded to and describe the members it replaced.
-
-Coverage only grows forward: every rename from here on ships with one.
+by hand. Inside the covered range it is safe to run across several versions at
+once.
 
 What it does not do:
 
 - Values it cannot rewrite safely, such as a `String` locale becoming a `Locale`.
-  Splitting `'en_US'` into `Locale('en', 'US')` is not something a fix can express,
-  and a wrong guess would compile.
 - A replacement that is an expression rather than another member.
 - The body of a method you override. The signature is rewritten and the body is
   not, so finish the edit where the compiler points.
@@ -35,7 +30,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override needs a hand edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. The five value types are `final` classes. |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override and a `super.internalVisibleRange` constructor parameter need a hand edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. The five value types are `final` classes. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Calendar*` types are renamed to `Kalender*`, and the controller members and `calendarLocale` follow. `CalendarView` and `CalendarViewState` are removed. `KalenderDateTimeRange` and `KalenderTime` replace Material's `DateTimeRange` and `TimeOfDay`, and `InternalDateTimeRange` no longer extends `DateTimeRange`. `TimeOfDayRange` and `TimeOfDayStringBuilder` become `KalenderTimeRange` and `KalenderTimeStringBuilder`, and `TimeOfDayExtension` is removed. `CalendarEvent` and `PageIndexCalculator` take `start` and `end`. The schedule view reports ranges in the calendar's location. |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
@@ -104,14 +99,17 @@ in an override.
 `KalenderEvent.dateTimeRange`, `KalenderController.visibleDateTimeRange` and the
 `onPageChanged` callback keep their names.
 
-A member keeps a `floating` prefix where its class also holds or passes on
-wall-clock values, as `KalenderEvent`, `KalenderController`,
-`PageIndexCalculator`, `MonthWeek` and `MultiDayEventOverlayTile` do. Elsewhere
-the member is `range`.
-
 A view controller subclass that declares `super.internalVisibleRange` in its
 constructor renames it to `super.floatingVisibleRange` by hand. The analyzer
 reports it as an undefined parameter.
+
+```dart
+// Before
+MyViewController({required super.internalVisibleRange});
+
+// After
+MyViewController({required super.floatingVisibleRange});
+```
 
 ### The body of a `MultiDayLayoutStrategy.generateFrame` override
 

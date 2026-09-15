@@ -1,7 +1,7 @@
 # Kalender documentation
 
-Guides for [kalender](../README.md). Start with [Views](views.md) if you are new,
-it covers the choice every calendar has to make first.
+Guides for [kalender](../README.md). Start with [Views](views.md) if you are new.
+It covers which view to show.
 
 | Guide | Covers |
 | --- | --- |
