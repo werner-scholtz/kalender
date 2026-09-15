@@ -12,6 +12,7 @@ on:
       - 'benchmark/**'
       - 'examples/testing/**'
       - 'pubspec.yaml'
+      - '.fvmrc'
       - '.github/workflows/performance_profiling.yml'
   # PRs only run when labelled `profile` (see the job-level `if` below), so this
   # does not run for every PR.
