@@ -261,9 +261,9 @@ The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 **Seven `TODO` comments ship in `lib/`.** None is a confirmed defect. Grouped by what they touch.
 
-*Rebuild cost.* `schedule_body.dart:42` and `:102` both flag rebuilds that may be unnecessary, and `kalender_view.dart:80` wants a field to become a `ValueNotifier`. Measure before changing any of them, as Performance below says.
+*Rebuild cost.* `schedule_body.dart:50` and `:110` both flag rebuilds that may be unnecessary, and `kalender_view.dart:88` wants a field to become a `ValueNotifier`. Measure before changing any of them, as Performance below says.
 
-*Structure.* `multi_day_body.dart:12` wants the split between content and header removed, `view_controller.dart:33` notes a value is created where it could be passed in, `kalender_callbacks.dart:66` asks how the callbacks interact with the draggables, and `event_layout_delegate.dart:427` asks whether a hard-coded value should be adjustable.
+*Structure.* `multi_day_body.dart:18` wants the split between content and header removed, `view_controller.dart:41` notes a value is created where it could be passed in, `kalender_callbacks.dart:74` asks how the callbacks interact with the draggables, and `event_layout_delegate.dart:443` asks whether a hard-coded value should be adjustable.
 
 ### Tests
 
