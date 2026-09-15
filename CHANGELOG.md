@@ -9,15 +9,17 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `KalenderTime.toInternalDateTime` is renamed to `toFloatingDateTime`.
 - `KalenderEvent.internalStart`, `internalEnd` and `internalRange` are renamed to `floatingStart`, `floatingEnd` and `floatingRange`.
 - `KalenderController.internalDateTimeRange` is renamed to `floatingRange`.
-- `ViewController.internalVisibleRange` is renamed to `floatingVisibleRange`.
+- `ViewController.internalVisibleRange` is renamed to `floatingVisibleRange`, in the view controller constructors too.
 - `ScheduleViewController.highlightedDateTimeRange` is renamed to `highlightedRange`.
 - `EventsController.eventsFromDateTimeRange` is renamed to `eventsInRange`.
 - `EventStore.eventIdsFromDateTimeRange` is renamed to `eventIdsInRange`.
 - `PageIndexCalculator.dateTimeRangeFromIndex`, `dateTimeRangeFromDate` and `internalRange` are renamed to `rangeFromIndex`, `rangeFromDate` and `floatingRange`.
 - `EventTileUtils.internalTileRange` is renamed to `floatingTileRange`.
-- `DragTargetUtils.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` are renamed to `calculateRangeFromStart` and `calculateRangeFromEnd`.
+- `DragTargetUtilities.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` are renamed to `calculateRangeFromStart` and `calculateRangeFromEnd`.
 - `FloatingDateTimeRange.dateTimeRangeOnDate` is renamed to `rangeOnDate`.
 - `ResizeHandleDetails`, `MultiDayLayoutFrame`, `MultiDayLayout`, `ScheduleTileHighlight` and `SchedulePositionList` rename their `dateTimeRange` to `range`.
+- `MonthWeek.internalRange` is renamed to `floatingRange`.
+- `MonthViewConfiguration.copyWith` takes `initialDateTime` rather than `selectedDate`.
 - `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
 - The deprecated `BuildContext.calendarLocale` is removed.
@@ -34,6 +36,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 
 ### Fixes
 
+- `MonthViewConfiguration.copyWith` applies the `initialDateTime` it is given.
 - `MultiDayEventOverlayTile.tileKey` matches the tiles in the multi-day overlay.
 - Changing the calendar's location keeps the date on screen.
 - A drag that creates or resizes an event stops at the end of `timeOfDayRange`.
@@ -66,7 +69,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 - `InternalDateTimeRange.fromDateTimeRange` takes a `KalenderDateTimeRange`.
 - `KalenderEvent` and `KalenderEvent.copyWithData` take `start` and `end` rather than `dateTimeRange`.
 - `PageIndexCalculator` and its subclasses take `start` and `end` rather than `dateTimeRange`.
-- `DragTargetUtils.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` take an `InternalDateTimeRange`.
+- `DragTargetUtilities.calculateDateTimeRangeFromStart` and `calculateDateTimeRangeFromEnd` take an `InternalDateTimeRange`.
 - `EventTileUtils.eventRangeOnDate` returns an `InternalDateTimeRange`.
 - `ResizeHandleDetails.dateTimeRange` is an `InternalDateTimeRange`.
 

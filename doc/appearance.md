@@ -418,7 +418,7 @@ Pass a `KalenderComponents` object to `KalenderView` to override the default wid
       leadingDateBuilder: (context, date) => Container(),
 
       // Wraps a row to highlight it as the drop target during a drag.
-      scheduleTileHighlightBuilder: (context, date, dateTimeRange, child) =>
+      scheduleTileHighlightBuilder: (context, date, range, child) =>
           Container(child: child),
 
       // Optional: builder for days with no events.

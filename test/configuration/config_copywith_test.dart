@@ -15,6 +15,19 @@ import 'package:kalender/kalender.dart';
 // "update the copied field" test.
 void main() {
   group('view configuration copyWith round-trips', () {
+    group('MonthViewConfiguration', () {
+      final config = MonthViewConfiguration.singleMonth(initialDateTime: DateTime(2025, 1, 1));
+
+      test('preserves initialDateTime when copying another field', () {
+        expect(config.copyWith(showWeekNumbers: true).initialDateTime, DateTime(2025, 1, 1));
+      });
+
+      test('updates the copied field', () {
+        expect(config.copyWith(initialDateTime: DateTime(2026, 2, 2)).initialDateTime, DateTime(2026, 2, 2));
+        expect(config.copyWith(showWeekNumbers: true).showWeekNumbers, isTrue);
+      });
+    });
+
     group('MonthBodyConfiguration', () {
       const config = MonthBodyConfiguration(eventPadding: EdgeInsets.all(7), tileHeight: 40);
 

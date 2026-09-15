@@ -84,10 +84,11 @@ in an override.
 | `PageIndexCalculator.dateTimeRangeFromDate` | `rangeFromDate` |
 | `PageIndexCalculator.internalRange` | `floatingRange` |
 | `EventTileUtils.internalTileRange` | `floatingTileRange` |
-| `DragTargetUtils.calculateDateTimeRangeFromStart` | `calculateRangeFromStart` |
-| `DragTargetUtils.calculateDateTimeRangeFromEnd` | `calculateRangeFromEnd` |
+| `DragTargetUtilities.calculateDateTimeRangeFromStart` | `calculateRangeFromStart` |
+| `DragTargetUtilities.calculateDateTimeRangeFromEnd` | `calculateRangeFromEnd` |
 | `FloatingDateTimeRange.dateTimeRangeOnDate` | `rangeOnDate` |
 | `ResizeHandleDetails.dateTimeRange` | `range` |
+| `ResizeHandleDetails(dateTimeRange:)` | `range:` |
 | `MultiDayLayoutFrame.dateTimeRange` | `range` |
 | `ScheduleTileHighlight.dateTimeRange` | `range` |
 | `MultiDayLayout.dateTimeRange` | `range` |
@@ -95,9 +96,17 @@ in an override.
 | `MultiDayLayoutStrategy.generateFrame(visibleDateTimeRange:)` | `visibleRange:` |
 | `defaultMultiDayFrameGenerator(visibleDateTimeRange:)` | `visibleRange:` |
 | `MultiDayEventOverlayTile(dateTimeRange:)` | `floatingRange:` |
+| `MonthWeek.internalRange` | `floatingRange` |
+| `MonthWeek(internalRange:)` | `floatingRange:` |
+| `ViewController(internalVisibleRange:)` and its subclasses | `floatingVisibleRange:` |
+| `MonthViewConfiguration.copyWith(selectedDate:)` | `initialDateTime:` |
 
 `KalenderEvent.dateTimeRange`, `KalenderController.visibleDateTimeRange` and the
 `onPageChanged` callback keep their names.
+
+A view controller subclass that declares `super.internalVisibleRange` in its
+constructor renames it to `super.floatingVisibleRange` by hand. The analyzer
+reports it as an undefined parameter.
 
 ### The body of a `MultiDayLayoutStrategy.generateFrame` override
 
