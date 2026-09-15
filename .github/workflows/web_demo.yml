@@ -34,7 +34,7 @@ jobs:
         with:
           cache: true
           flutter-version-file: .fvmrc
-      - run: flutter build web --release --wasm --base-href /kalender/
+      - run: flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
         shell: bash
         working-directory: examples/web_demo
 

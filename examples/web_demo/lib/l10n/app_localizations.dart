@@ -357,17 +357,17 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
-  /// No description provided for @preReleaseTitle.
+  /// No description provided for @aboutTitle.
   ///
   /// In en, this message translates to:
-  /// **'Pre-release Example'**
-  String get preReleaseTitle;
+  /// **'About this demo'**
+  String get aboutTitle;
 
-  /// No description provided for @preReleaseContent.
+  /// No description provided for @aboutContent.
   ///
   /// In en, this message translates to:
-  /// **'This is a pre-release example for v0.17.0 which is not yet released.'**
-  String get preReleaseContent;
+  /// **'This demo shows the kalender package. Events you create or change stay in this browser tab and are lost when you reload the page.'**
+  String get aboutContent;
 
   /// No description provided for @gotIt.
   ///
@@ -375,11 +375,11 @@ abstract class AppLocalizations {
   /// **'Got it'**
   String get gotIt;
 
-  /// No description provided for @preReleaseInfo.
+  /// No description provided for @aboutInfo.
   ///
   /// In en, this message translates to:
-  /// **'Pre-release info'**
-  String get preReleaseInfo;
+  /// **'About this demo'**
+  String get aboutInfo;
 
   /// No description provided for @language.
   ///

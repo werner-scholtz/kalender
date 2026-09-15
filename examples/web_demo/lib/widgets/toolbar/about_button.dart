@@ -7,8 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:web_demo/utils.dart';
 
-class WarningButton extends StatelessWidget {
-  const WarningButton({super.key});
+class AboutButton extends StatelessWidget {
+  const AboutButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +18,9 @@ class WarningButton extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
           icon: Icon(Icons.info_outline, color: colorScheme.primary, size: 32),
-          title: Text(context.l10n.preReleaseTitle),
+          title: Text(context.l10n.aboutTitle),
           titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          content: Text(context.l10n.preReleaseContent),
+          content: Text(context.l10n.aboutContent),
           contentTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -35,7 +35,7 @@ class WarningButton extends StatelessWidget {
         ),
       ),
       icon: Icon(Icons.info_outline, color: colorScheme.onSurfaceVariant),
-      tooltip: context.l10n.preReleaseInfo,
+      tooltip: context.l10n.aboutInfo,
     );
   }
 }

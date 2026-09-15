@@ -1,15 +1,15 @@
 name: Deploy benchmark dashboard
 
-# Deploys the custom benchmark dashboard page to gh-pages/dev/bench/index.html.
-# Decoupled from the benchmark runs so it never races on data.js — it touches
-# only index.html. github-action-benchmark won't overwrite an existing
-# index.html, so once deployed this custom page persists.
+# Deploys the custom benchmark dashboard page and its copy of Chart.js to
+# gh-pages/dev/bench. Decoupled from the benchmark runs so it never races on
+# data.js, since it touches only the files below. github-action-benchmark won't
+# overwrite an existing index.html, so once deployed this custom page persists.
 
 on:
   push:
     branches: [main]
     paths:
-      - benchmark/dashboard/index.html
+      - benchmark/dashboard/**
       - .github/workflows/deploy_dashboard.yml
   workflow_dispatch:
 
@@ -39,21 +39,26 @@ jobs:
           # branches: `git checkout gh-pages` swaps the working tree to the orphan
           # branch (no benchmark/dashboard/), so reading from the object store via
           # `git show` is what survives it.
-          git show "$GITHUB_SHA":benchmark/dashboard/index.html > "$RUNNER_TEMP/index.html"
+          files="index.html chart.umd.js chart.js-LICENSE.md"
+          for file in $files; do
+            git show "$GITHUB_SHA:benchmark/dashboard/$file" > "$RUNNER_TEMP/$file"
+          done
 
           # Re-fetch and retry on push rejection. A benchmark run may push data.js
           # to gh-pages concurrently; rebasing onto the latest tip each attempt
-          # lets our index.html-only change apply cleanly (different file).
+          # lets our change apply cleanly (different files).
           for attempt in 1 2 3 4 5; do
             git fetch origin gh-pages
             git checkout -B gh-pages origin/gh-pages
             mkdir -p dev/bench
-            cp "$RUNNER_TEMP/index.html" dev/bench/index.html
-            if git diff --quiet -- dev/bench/index.html; then
+            for file in $files; do
+              cp "$RUNNER_TEMP/$file" "dev/bench/$file"
+              git add "dev/bench/$file"
+            done
+            if git diff --cached --quiet -- dev/bench; then
               echo "Dashboard already up to date."
               exit 0
             fi
-            git add dev/bench/index.html
             git commit -m "Deploy benchmark dashboard"
             if git push origin gh-pages; then
               echo "Dashboard deployed."
