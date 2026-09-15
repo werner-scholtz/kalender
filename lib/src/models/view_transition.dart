@@ -86,7 +86,7 @@ class ViewSnapshot {
   final double? heightPerMinute;
 }
 
-/// The inputs available when resolving how a view switch should transfer state.
+/// The inputs available when resolving how a view switch or a location change should transfer state.
 ///
 /// {@category Views}
 class ViewTransitionContext {
@@ -95,6 +95,7 @@ class ViewTransitionContext {
     required this.newViewConfiguration,
     required this.byView,
     required this.lastMultiDay,
+    this.locationChanged = false,
   });
 
   /// The controller of the view being switched away from.
@@ -109,6 +110,10 @@ class ViewTransitionContext {
   /// The most recent multi-day snapshot, kept even across an intermediate view
   /// without scroll (e.g. Week → Month → Week).
   final ViewSnapshot? lastMultiDay;
+
+  /// Whether the calendar's location changed. A location change runs the resolvers even when the view
+  /// configuration stays the same.
+  final bool locationChanged;
 }
 
 /// The "carry the current focus forward" date used by [DateTransition.carryFocus].

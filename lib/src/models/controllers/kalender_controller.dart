@@ -24,7 +24,7 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 /// {@category Controllers and callbacks}
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
   KalenderController() : id = _nextId++ {
-    _floatingRange.addListener(_updateVisibleDateTimeRange);
+    _floatingVisibleRange.addListener(_updateVisibleDateTimeRange);
   }
 
   static int _nextId = 0;
@@ -43,10 +43,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// The [FloatingDateTimeRange] that is currently visible.
   ///
   /// See [FloatingDateTimeRange] for more information.
-  late final _floatingRange = ValueNotifier<FloatingDateTimeRange?>(null);
-  ValueNotifier<FloatingDateTimeRange?> get floatingRange => _floatingRange;
+  late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
+  ValueNotifier<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
-    final newRange = _floatingRange.value?.forLocation(location: _viewController?.location);
+    final newRange = _floatingVisibleRange.value?.forLocation(location: _viewController?.location);
     visibleDateTimeRange.value = newRange;
   }
 
@@ -109,7 +109,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
     _viewController = viewController;
     final visibleRange = viewController.floatingVisibleRange.value!;
-    _floatingRange.value = visibleRange;
+    _floatingVisibleRange.value = visibleRange;
     final newRange = visibleRange.forLocation(location: viewController.location);
     visibleDateTimeRange.value = null;
     visibleDateTimeRange.value = newRange;
@@ -207,7 +207,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   @override
   void dispose() {
-    _floatingRange.removeListener(_updateVisibleDateTimeRange);
+    _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _detachVisibleTimeOfDay();
     visibleTimeOfDay.dispose();
     super.dispose();

@@ -64,7 +64,7 @@ void main() {
         expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(2));
 
         // Check that the overlay always renders within the calendar view bounds.
-        final visibleDates = kalenderController.floatingRange.value!.dates();
+        final visibleDates = kalenderController.floatingVisibleRange.value!.dates();
         final datesToTest = [visibleDates[0], visibleDates[1]];
         for (final date in datesToTest) {
           final button = find.byKey(MultiDayPortalOverlayButton.getKey(date));

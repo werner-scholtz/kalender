@@ -336,7 +336,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        kalenderController.floatingRange.value = FloatingDateTimeRange(start: start, end: end);
+        kalenderController.floatingVisibleRange.value = FloatingDateTimeRange(start: start, end: end);
       }
 
       // Update the visible events based on the current item positions.

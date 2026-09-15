@@ -8,7 +8,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `InternalDateTimeRange` is renamed to `FloatingDateTimeRange`.
 - `KalenderTime.toInternalDateTime` is renamed to `toFloatingDateTime`.
 - `KalenderEvent.internalStart`, `internalEnd` and `internalRange` are renamed to `floatingStart`, `floatingEnd` and `floatingRange`.
-- `KalenderController.internalDateTimeRange` is renamed to `floatingRange`.
+- `KalenderController.internalDateTimeRange` is renamed to `floatingVisibleRange`.
 - `ViewController.internalVisibleRange` is renamed to `floatingVisibleRange`, in the view controller constructors too.
 - `ScheduleViewController.highlightedDateTimeRange` is renamed to `highlightedRange`.
 - `EventsController.eventsFromDateTimeRange` is renamed to `eventsInRange`.
@@ -31,6 +31,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 
 ### Features
 
+- `ViewTransitionContext.locationChanged` says whether the resolvers run because the location changed.
 - `dart fix --apply` applies this release's renames.
 
 ### Fixes

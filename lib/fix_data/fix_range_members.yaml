@@ -7,7 +7,7 @@
 
 version: 1
 transforms:
-  - title: "Rename to 'floatingRange'"
+  - title: "Rename to 'floatingVisibleRange'"
     date: 2026-09-12
     element:
       uris: [ 'package:kalender/kalender.dart' ]
@@ -15,7 +15,17 @@ transforms:
       inClass: 'KalenderController'
     changes:
       - kind: 'rename'
-        newName: 'floatingRange'
+        newName: 'floatingVisibleRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      getter: 'floatingRange'
+      inClass: 'KalenderController'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingVisibleRange'
 
   - title: "Rename to 'floatingStart'"
     date: 2026-09-12
