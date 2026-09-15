@@ -15,6 +15,8 @@ Switch between views by passing a different `ViewConfiguration` to `KalenderView
 
 For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. Each overrides the matching enum. `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
 
+`initialDateTime` is only used when the calendar is first built. To show a fixed date on a switch, return it from a `dateResolver`. The resolvers also run when the location changes, which `transition.locationChanged` reports.
+
 ## Shared options
 
 All configurations accept:

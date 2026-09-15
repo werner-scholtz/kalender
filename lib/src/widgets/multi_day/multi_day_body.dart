@@ -271,7 +271,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
               )
             : visibleRange;
         final controller = context.kalenderController;
-        controller.floatingRange.value = range;
+        controller.floatingVisibleRange.value = range;
 
         // Update the visible events for the new page index.
         _updateVisibleEvents(index, context.location);

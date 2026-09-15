@@ -49,7 +49,7 @@ void main() {
       ),
     );
 
-    final date = kalenderController.floatingRange.value!.dates().first;
+    final date = kalenderController.floatingVisibleRange.value!.dates().first;
     await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
     await tester.pumpAndSettle();
     expect(find.byType(MultiDayOverlay), findsOne);

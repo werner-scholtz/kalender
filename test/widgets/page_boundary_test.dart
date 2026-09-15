@@ -37,7 +37,7 @@ void main() {
   }
 
   bool visibleRangeContains(DateTime date) {
-    final range = kalenderController.floatingRange.value!;
+    final range = kalenderController.floatingVisibleRange.value!;
     return range.dates().any((d) => d.year == date.year && d.month == date.month && d.day == date.day);
   }
 
@@ -72,7 +72,7 @@ void main() {
     kalenderController.jumpToDate(DateTime(2025, 6, 15));
     await tester.pumpAndSettle();
 
-    final range = kalenderController.floatingRange.value!;
+    final range = kalenderController.floatingVisibleRange.value!;
     expect(range.dominantMonthDate.month, 6, reason: 'The last month of the range should be reachable');
   });
 

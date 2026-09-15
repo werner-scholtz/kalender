@@ -488,7 +488,7 @@ extension ViewControllerUtilities on WidgetTester {
       reason: 'Event ${event.id} should be in the visible events after animating to it',
     );
     expect(
-      event.floatingStart().isWithin(controller.floatingRange.value!, includeEnd: true),
+      event.floatingStart().isWithin(controller.floatingVisibleRange.value!, includeEnd: true),
       isTrue,
       reason: 'Event start ${event.start} should be within the visible range after animating to it',
     );
@@ -507,7 +507,7 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
     // Check if the visible range start is the same as the dateTime.
     expect(
-      controller.floatingRange.value!.start,
+      controller.floatingVisibleRange.value!.start,
       dateTime,
       reason: 'Calling the $function should set the change the visible range start to $dateTime',
     );
@@ -534,11 +534,11 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
 
     expect(
-      dateTime.isWithin(controller.floatingRange.value!, includeEnd: true),
+      dateTime.isWithin(controller.floatingVisibleRange.value!, includeEnd: true),
       isTrue,
       reason:
           'Calling the $function should include the $dateTime date in the visible range, '
-          'which is ${controller.floatingRange.value}',
+          'which is ${controller.floatingVisibleRange.value}',
     );
 
     // If an event is provided, check if it is visible.

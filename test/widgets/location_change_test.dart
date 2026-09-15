@@ -45,7 +45,7 @@ void main() {
     );
   }
 
-  FloatingDateTime visibleStart() => kalenderController.floatingRange.value!.start;
+  FloatingDateTime visibleStart() => kalenderController.floatingVisibleRange.value!.start;
 
   testWithTimeZones(
     body: (timezone, _) {
@@ -97,6 +97,22 @@ void main() {
           await pumpView(tester, config, tokyo);
 
           expect(visibleStart(), beforeSwitch);
+        });
+
+        testWidgets('tells a dateResolver whether the location changed', (tester) async {
+          final locationChanged = <bool>[];
+          FloatingDateTime record(ViewTransitionContext transition) {
+            locationChanged.add(transition.locationChanged);
+            return kCarryFocusDate(transition);
+          }
+
+          final week = MultiDayViewConfiguration.week(displayRange: displayRange, dateResolver: record);
+          final day = MultiDayViewConfiguration.singleDay(displayRange: displayRange, dateResolver: record);
+          await pumpView(tester, week, newYork);
+          await pumpView(tester, week, tokyo);
+          await pumpView(tester, day, tokyo);
+
+          expect(locationChanged, [true, false]);
         });
 
         testWidgets('the schedule files each event under its day in the new location', (tester) async {

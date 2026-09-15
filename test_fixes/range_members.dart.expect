@@ -9,7 +9,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
-FloatingDateTimeRange? controllerRange(KalenderController c) => c.floatingRange.value;
+FloatingDateTimeRange? controllerRange(KalenderController c) => c.floatingVisibleRange.value;
+FloatingDateTimeRange? controllerRangeFromDevRelease(KalenderController c) => c.floatingVisibleRange.value;
 FloatingDateTime eventStart(KalenderEvent e) => e.floatingStart();
 FloatingDateTime eventEnd(KalenderEvent e) => e.floatingEnd();
 FloatingDateTimeRange eventRange(KalenderEvent e) => e.floatingRange();
