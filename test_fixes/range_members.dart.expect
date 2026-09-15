@@ -90,3 +90,46 @@ MultiDayLayoutFrame throughBase(MultiDayLayoutStrategy strategy, FloatingDateTim
       location: null,
       cache: null,
     );
+
+FloatingDateTimeRange fromStart(DragTargetUtilities<StatefulWidget> u, FloatingDateTimeRange r, DateTime d) =>
+    u.calculateRangeFromStart(r, d);
+FloatingDateTimeRange fromEnd(DragTargetUtilities<StatefulWidget> u, FloatingDateTimeRange r, DateTime d) =>
+    u.calculateRangeFromEnd(r, d);
+FloatingDateTimeRange tileRange(EventTileUtils u, BuildContext context) => u.floatingTileRange(context);
+
+ValueNotifier<FloatingDateTimeRange?> highlightRange(ScheduleTileHighlight h) => h.range;
+FloatingDateTimeRange layoutRange(MultiDayLayout l) => l.range;
+FloatingDateTimeRange positionListRange(SchedulePositionList p) => p.range;
+
+ResizeHandleDetails handleDetails(KalenderEvent e, KalenderInteraction i, FloatingDateTimeRange r) => ResizeHandleDetails(
+      event: e,
+      interaction: i,
+      range: r,
+      size: Size.zero,
+      axis: Axis.vertical,
+      isImprecise: false,
+    );
+
+Widget overlayTile(KalenderEvent e, TileComponents c, FloatingDateTimeRange r) => MultiDayEventOverlayTile(
+      event: e,
+      tileComponents: c,
+      floatingRange: r,
+      resizeAxis: null,
+      dismissOverlay: null,
+    );
+
+Widget monthWeek(FloatingDateTimeRange r, HorizontalConfiguration c, ViewController v) =>
+    MonthWeek(floatingRange: r, configuration: c, viewController: v);
+FloatingDateTimeRange monthWeekRange(MonthWeek w) => w.floatingRange;
+
+typedef Visible = ValueNotifier<FloatingDateTimeRange?>;
+typedef Events = ValueNotifier<Set<KalenderEvent>>;
+
+MonthViewController month(MonthViewConfiguration c, Visible r, Events e) =>
+    MonthViewController(viewConfiguration: c, floatingVisibleRange: r, visibleEvents: e);
+MultiDayViewController multiDay(MultiDayViewConfiguration c, Visible r, Events e) =>
+    MultiDayViewController(viewConfiguration: c, floatingVisibleRange: r, visibleEvents: e);
+ScheduleViewController continuous(ScheduleViewConfiguration c, Visible r, Events e, FloatingDateTime d) =>
+    ContinuousScheduleViewController(viewConfiguration: c, floatingVisibleRange: r, visibleEvents: e, initialDate: d);
+ScheduleViewController paginated(ScheduleViewConfiguration c, Visible r, Events e, FloatingDateTime d) =>
+    PaginatedScheduleViewController(viewConfiguration: c, floatingVisibleRange: r, visibleEvents: e, initialDate: d);

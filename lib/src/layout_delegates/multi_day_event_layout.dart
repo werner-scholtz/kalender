@@ -130,7 +130,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   // Take the text direction into account to determine the order of the dates.
   final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
 
-  // Precompute each event's internal range and sort keys once. The sort runs its
+  // Precompute each event's floating range and sort keys once. The sort runs its
   // comparator O(N log N) times, and the old comparator recomputed timezone
   // conversions (floatingStart/floatingRange) on every call. That dominated the
   // cost when many events share a duration, because the tie-breaker then runs on

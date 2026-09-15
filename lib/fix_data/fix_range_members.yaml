@@ -132,7 +132,7 @@ transforms:
     element:
       uris: [ 'package:kalender/kalender.dart' ]
       method: 'calculateDateTimeRangeFromStart'
-      inClass: 'DragTargetUtils'
+      inClass: 'DragTargetUtilities'
     changes:
       - kind: 'rename'
         newName: 'calculateRangeFromStart'
@@ -142,7 +142,7 @@ transforms:
     element:
       uris: [ 'package:kalender/kalender.dart' ]
       method: 'calculateDateTimeRangeFromEnd'
-      inClass: 'DragTargetUtils'
+      inClass: 'DragTargetUtilities'
     changes:
       - kind: 'rename'
         newName: 'calculateRangeFromEnd'
@@ -166,6 +166,104 @@ transforms:
     changes:
       - kind: 'rename'
         newName: 'range'
+
+  - title: "Rename to 'range'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'ResizeHandleDetails'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTimeRange'
+        newName: 'range'
+
+  - title: "Rename to 'floatingRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      field: 'internalRange'
+      inClass: 'MonthWeek'
+    changes:
+      - kind: 'rename'
+        newName: 'floatingRange'
+
+  - title: "Rename to 'floatingRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MonthWeek'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'internalRange'
+        newName: 'floatingRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'ViewController'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'internalVisibleRange'
+        newName: 'floatingVisibleRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MonthViewController'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'internalVisibleRange'
+        newName: 'floatingVisibleRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MultiDayViewController'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'internalVisibleRange'
+        newName: 'floatingVisibleRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'ScheduleViewController'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'internalVisibleRange'
+        newName: 'floatingVisibleRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'ContinuousScheduleViewController'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'internalVisibleRange'
+        newName: 'floatingVisibleRange'
+
+  - title: "Rename to 'floatingVisibleRange'"
+    date: 2026-09-15
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'PaginatedScheduleViewController'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'internalVisibleRange'
+        newName: 'floatingVisibleRange'
 
   - title: "Rename to 'range'"
     date: 2026-09-12

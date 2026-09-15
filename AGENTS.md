@@ -18,7 +18,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/src/models/controllers/` | `KalenderController` (ChangeNotifier), `EventsController` (abstract), `ViewController` (abstract), view-specific controllers |
 | `lib/src/models/providers/` | InheritedWidget providers (`KalenderControllerProvider`, `EventsControllerProvider`, `Components`, `Callbacks`, `Interaction`, `Snapping`, `HeightPerMinute`, `TileComponentProvider`, `LocaleProvider`, `LocationProvider`) |
 | `lib/src/models/components/` | Customizable builder classes: `TileComponents`, `KalenderComponents`, view-specific components and styles |
-| `lib/src/models/mixins/` | Reusable mixins: `KalenderNavigationFunctions`, `DragTargetUtils`, `EventTileUtils`, `NewEvent`, `SnapPoints`, `ScheduleMap` |
+| `lib/src/models/mixins/` | Reusable mixins: `KalenderNavigationFunctions`, `DragTargetUtilities`, `EventTileUtils`, `NewEvent`, `SnapPoints`, `ScheduleMap` |
 | `lib/src/models/view_configurations/` | `ViewConfiguration` (abstract base), `MultiDayViewConfiguration`, `MonthViewConfiguration`, `ScheduleViewConfiguration` |
 | `lib/src/models/kalender_events/` | `KalenderEvent` base class (extensible via subclassing) |
 | `lib/src/widgets/` | UI widgets by view (`month/`, `multi_day/`, `schedule/`) plus shared (`components/`, `event_tiles/`, `draggable/`, `drag_targets/`) |
@@ -264,6 +264,8 @@ A type change with no rename has nothing to trigger on, since kalender cannot de
 So a parameter reshape, which is the shape a signature change usually takes, fixes every call site and leaves every subclass to be edited by hand. Say so in the migration guide for any change to a `@mustBeOverridden` member.
 
 **A `renameParameter` reaches only the element it names.** A transform on `defaultMultiDayFrameGenerator` does not rename the same parameter on `MultiDayLayoutStrategy.generateFrame`. Give each function and method an app calls or overrides its own transform, and give a probe override a body that uses the parameter, or the body edit stays hidden.
+
+**A `renameParameter` on a constructor does not reach a `super.` parameter** declared by a subclass constructor. That declaration is a hand edit the migration guide has to carry.
 
 **Every fix is tested.** The fixture pair lives in `test_fixes/<name>.dart` and `<name>.dart.expect`, and CI runs:
 

@@ -25,7 +25,7 @@ did. Together they are how the calendar connects to the rest of your app.
 | `replaceEvents(events)`              | Replace every stored event with the given list, returns `List<String>` of ids                                                  |
 | `byId(id)`                           | Return the event with the given `String` id, or `null`                                                                         |
 | `clearEvents()`                      | Remove all events                                                                                                              |
-| `eventsInRange(range)`     | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
+| `eventsInRange(range)`               | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
 
 `eventsInRange` takes a `FloatingDateTimeRange`, not a `KalenderDateTimeRange`.
 Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.

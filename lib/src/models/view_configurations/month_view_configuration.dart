@@ -49,7 +49,7 @@ class MonthViewConfiguration extends ViewConfiguration {
 
   MonthViewConfiguration copyWith({
     String? name,
-    DateTime? selectedDate,
+    DateTime? initialDateTime,
     DateTransition? dateTransition,
     DateResolver? dateResolver,
     NowCallback? nowCallback,
@@ -59,7 +59,7 @@ class MonthViewConfiguration extends ViewConfiguration {
   }) {
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
-      initialDateTime: initialDateTime ?? initialDateTime,
+      initialDateTime: initialDateTime ?? this.initialDateTime,
       dateTransition: dateTransition ?? this.dateTransition,
       dateResolver: dateResolver ?? this.dateResolver,
       nowCallback: nowCallback ?? this.nowCallback,
