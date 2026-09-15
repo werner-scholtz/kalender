@@ -23,15 +23,17 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
 - The deprecated `BuildContext.calendarLocale` is removed.
+- The minimum Dart version is 3.10.0.
 
 ### Behavior Changes
 
-- `initialDateTime` only applies when the calendar is first built, not on a view switch.
+- `initialDateTime` only applies when the calendar is first built, not on a view switch or a location change.
 - Rebuilding a view configuration with a different `initialDateTime` no longer moves a calendar that is already built.
 
 ### Features
 
 - `dart fix --apply` applies this release's renames.
+- `dart fix` does not rename a parameter's uses in a `generateFrame` override body, `super.internalVisibleRange` in a view controller subclass, or `context.calendarLocale`.
 
 ### Fixes
 
@@ -41,7 +43,6 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - An event created, resized or rescheduled in the multi-day body stays within `timeOfDayRange`.
 - The schedule view builds its list of items once when it first appears, not twice.
 - A schedule view given a different events controller stops listening to the previous one.
-- The declared minimum Dart version is 3.10.0, which `timezone` already required.
 - A link from one guide to another in the API reference opens that guide's topic page rather than GitHub.
 
 ## 0.30.0
@@ -177,7 +178,7 @@ See [MIGRATION.md](MIGRATION.md#v026x--v0270) for what to change.
 - `builder` and `fromContext` are removed from `DayHeader`, `WeekNumber`, `WeekDayHeader`, `MonthGrid`, `MonthDayHeader` and `MonthDayCell`. `MonthDayCell.shadeAdjacentMonths` stays.
 - The schedule builders take a `BuildContext` first: `leadingDateBuilder`, `scheduleTileHighlightBuilder`, `emptyItemBuilder` and `monthItemBuilder`. `ScheduleComponents` gained `buildLeadingDate` and `buildScheduleTileHighlight`, and `ScheduleDate.builder` and `ScheduleTileHighlight.builder` are removed.
 - The tile builders take a `BuildContext` first: `tileBuilder`, `overlayTileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder` and `dropTargetTile`, along with the four `default*` functions.
-- `ResizeHandlePositioner` takes a `BuildContext` and a `ResizeHandleDetails` and returns a `Widget`. `ResizeHandles` is removed, its six values and seven helpers moving to `ResizeHandleDetails`.
+- `ResizeHandlePositioner` takes a `BuildContext` and a `ResizeHandleDetails` and returns a `Widget`. `ResizeHandles` is removed, its six values and nine helpers moving to `ResizeHandleDetails`.
 - `ResizeHandles.startResizeDraggableKey` and `endResizeDraggableKey` move to `ResizeDetector`, the widget they key.
 - `ResizeHandleDetails.resizeHandle` resolves the handle widgets from the context rather than from a `tileComponents` field, and its axis is optional.
 - `ResizeHandles.builder` is replaced by `TileComponents.buildResizeHandles`. `DefaultResizeHandles` takes a `ResizeHandleDetails`.
