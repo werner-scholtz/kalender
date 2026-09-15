@@ -21,7 +21,6 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - `MultiDayLayoutStrategy.generateFrame` and `defaultMultiDayFrameGenerator` take `visibleRange` rather than `visibleDateTimeRange`.
 - `MultiDayEventOverlayTile` takes `floatingRange` rather than `dateTimeRange`.
 - The deprecated `BuildContext.calendarLocale` is removed.
-- The minimum Dart version is 3.10.0.
 
 ### Behavior Changes
 
@@ -39,6 +38,7 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 - A drag that creates or resizes an event stops at the end of `timeOfDayRange`.
 - The schedule view builds its list of items once when it first appears, not twice.
 - A schedule view given a different events controller stops listening to the previous one.
+- The declared minimum Dart version is 3.10.0, which `timezone` already required.
 
 ## 0.30.0
 

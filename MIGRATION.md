@@ -160,7 +160,9 @@ Locale? locale = context.kalenderLocale;
 
 A view switch no longer returns to the incoming configuration's
 `initialDateTime`. To force a date when switching to a view, return it from a
-`dateResolver`:
+`dateResolver`. A `dateResolver` also runs when the location changes, where the
+view stays the same. Return `kCarryFocusDate` in that case to keep the date on
+screen:
 
 ```dart
 // Before
@@ -169,7 +171,10 @@ MultiDayViewConfiguration.singleDay(initialDateTime: DateTime(2025, 1, 1))
 // After
 MultiDayViewConfiguration.singleDay(
   initialDateTime: DateTime(2025, 1, 1),
-  dateResolver: (_) => FloatingDateTime.fromDateTime(DateTime(2025, 1, 1)),
+  dateResolver: (transition) {
+    final sameView = transition.oldViewController.viewConfiguration.name == transition.newViewConfiguration.name;
+    return sameView ? kCarryFocusDate(transition) : FloatingDateTime.fromDateTime(DateTime(2025, 1, 1));
+  },
 )
 ```
 
