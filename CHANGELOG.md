@@ -1,3 +1,20 @@
+## 0.31.1
+
+### Fixes
+
+- The month grid draws its lines again at the default thickness of `0`, which is a hairline. It has drawn nothing since 0.25.0.
+- The guide index in the API reference links to each guide's topic page rather than to the repository.
+
+### Documentation
+
+- `MIGRATION.md` names the diagnostics to pass to `dart fix --code`, and says that a `const` call of a renamed class, and a parameter added to a method you override, are not rewritten.
+- `MIGRATION.md` covers calling `toDateTime` on a Material `TimeOfDay` of your own, and a builder passed as a constructor tear-off.
+- `doc/layout.md` states that a custom `performLayout` must guard `layoutChild` and `positionChild` with `hasChild`.
+
+### Examples
+
+- The advanced example's layout delegate guards `layoutChild` and `positionChild` with `hasChild`, so it no longer asserts when a tile is culled.
+
 ## 0.31.0
 
 See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
