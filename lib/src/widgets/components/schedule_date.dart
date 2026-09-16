@@ -104,7 +104,8 @@ class ScheduleDate extends StatelessWidget {
     );
 
     final button = DayNumber(
-      number: Text(date.day.toString(), style: style.numberTextStyle),
+      text: date.day.toString(),
+      textStyle: style.numberTextStyle,
       isToday: context.isToday(date),
       todayKey: todayKey,
     );

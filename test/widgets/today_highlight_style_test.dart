@@ -64,5 +64,7 @@ void main() {
     );
 
     expect(todayColors(tester), (background, foreground));
+    final number = find.descendant(of: find.byKey(MonthDayHeader.todayKey), matching: find.byType(Text));
+    expect(tester.widget<Text>(number).style?.color, foreground, reason: 'the number text sets its own color');
   });
 }

@@ -168,6 +168,8 @@ class KalenderCallbacks {
     OnLongPressedWithDetail? onLongPressedWithDetail,
     OnLongPressed? onSecondaryLongPressed,
     OnLongPressedWithDetail? onSecondaryLongPressedWithDetail,
+    OnWillAcceptWithDetailsVertical? onWillAcceptWithDetailsVertical,
+    OnWillAcceptWithDetailsHorizontal? onWillAcceptWithDetailsHorizontal,
   }) {
     return KalenderCallbacks(
       onEventTapped: onEventTapped ?? this.onEventTapped,
@@ -189,6 +191,8 @@ class KalenderCallbacks {
       onLongPressedWithDetail: onLongPressedWithDetail ?? this.onLongPressedWithDetail,
       onSecondaryLongPressed: onSecondaryLongPressed ?? this.onSecondaryLongPressed,
       onSecondaryLongPressedWithDetail: onSecondaryLongPressedWithDetail ?? this.onSecondaryLongPressedWithDetail,
+      onWillAcceptWithDetailsVertical: onWillAcceptWithDetailsVertical ?? this.onWillAcceptWithDetailsVertical,
+      onWillAcceptWithDetailsHorizontal: onWillAcceptWithDetailsHorizontal ?? this.onWillAcceptWithDetailsHorizontal,
       // ignore: deprecated_member_use_from_same_package
     );
   }

@@ -125,12 +125,12 @@ class DayHeader extends StatelessWidget {
     final localDate = FloatingDateTime.fromExternal(date, location: context.location);
     final displayDate = localDate.forLocation(location: context.location);
 
-    final numberText = Text(
-      components.dayHeaderNumberStringBuilder?.call(context, displayDate) ?? date.day.toString(),
-      style: style.numberTextStyle,
+    final button = DayNumber(
+      text: components.dayHeaderNumberStringBuilder?.call(context, displayDate) ?? date.day.toString(),
+      textStyle: style.numberTextStyle,
+      isToday: context.isToday(localDate),
+      todayKey: todayKey,
     );
-
-    final button = DayNumber(number: numberText, isToday: context.isToday(localDate), todayKey: todayKey);
 
     final dayName = Text(
       components.dayHeaderStringBuilder?.call(context, displayDate) ?? localDate.dayNameShortLocalized(context.locale),

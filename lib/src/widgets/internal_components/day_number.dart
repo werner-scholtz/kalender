@@ -76,12 +76,22 @@ class DayNumberStyle with Diagnosticable {
 /// button, so `onPressed` is always null and the highlight has to set the
 /// disabled colors to stay tonal.
 class DayNumber extends StatelessWidget {
-  const DayNumber({super.key, required this.number, required this.isToday, required this.todayKey, this.size});
+  const DayNumber({
+    super.key,
+    required this.text,
+    this.textStyle,
+    required this.isToday,
+    required this.todayKey,
+    this.size,
+  });
 
-  /// The day number itself, already styled by the calling component.
-  final Widget number;
+  /// The day number itself.
+  final String text;
 
-  /// Whether [number] is today, and so should be highlighted.
+  /// The style of [text]. Its color is replaced by [DayNumberStyle.todayForegroundColor] when [isToday].
+  final TextStyle? textStyle;
+
+  /// Whether [text] is today, and so should be highlighted.
   final bool isToday;
 
   /// The key applied when [isToday]. Each component passes its own, so tests
@@ -99,7 +109,7 @@ class DayNumber extends StatelessWidget {
     if (!isToday) {
       return IconButton(
         onPressed: null,
-        icon: number,
+        icon: Text(text, style: textStyle),
         visualDensity: VisualDensity.compact,
         padding: padding,
         constraints: constraints,
@@ -110,7 +120,7 @@ class DayNumber extends StatelessWidget {
     return IconButton.filledTonal(
       key: todayKey,
       onPressed: null,
-      icon: number,
+      icon: Text(text, style: (textStyle ?? const TextStyle()).copyWith(color: style.todayForegroundColor)),
       visualDensity: VisualDensity.compact,
       padding: padding,
       constraints: constraints,
