@@ -22,6 +22,8 @@ Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 
 To create a custom strategy, subclass `EventLayoutDelegate`. See [`CustomSideBySideLayoutDelegate`](../examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
 
+`performLayout` must guard `layoutChild` and `positionChild` with `hasChild`. The day view builds only the tiles inside the visible scroll window, while the delegate receives every event of the day, so an event outside that window has no child. Calculate from every event, since a tile's width depends on partners that may be off screen, and lay out only the ones that were built.
+
 Here is a minimal implementation:
 
 <!-- snippet: file -->
