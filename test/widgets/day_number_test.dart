@@ -24,7 +24,7 @@ void main() {
           body: Builder(
             builder: (context) {
               colorScheme = Theme.of(context).colorScheme;
-              return DayNumber(number: const Text('15'), isToday: isToday, todayKey: todayKey, size: size);
+              return DayNumber(text: '15', isToday: isToday, todayKey: todayKey, size: size);
             },
           ),
         ),
@@ -62,6 +62,7 @@ void main() {
       reason: 'a disabled button would otherwise paint onSurface at 12% opacity',
     );
     expect(style?.foregroundColor?.resolve({WidgetState.disabled}), colorScheme.onSecondaryContainer);
+    expect(tester.widget<Text>(find.text('15')).style?.color, colorScheme.onSecondaryContainer);
   });
 
   testWidgets('a day that is not today is not given a background', (tester) async {

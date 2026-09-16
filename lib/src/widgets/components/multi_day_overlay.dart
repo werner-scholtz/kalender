@@ -476,7 +476,8 @@ class MultiDayOverlay extends StatelessWidget {
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: DayNumber(
-                                  number: Text(date.day.toString(), style: style.dateTextStyle),
+                                  text: date.day.toString(),
+                                  textStyle: style.dateTextStyle,
                                   isToday: context.isToday(date),
                                   todayKey: todayKey,
                                 ),

@@ -4,6 +4,7 @@
 
 - `KalenderCallbacks.copyWith` keeps `onWillAcceptWithDetailsVertical` and `onWillAcceptWithDetailsHorizontal`. It took neither and forwarded neither, so a copy dropped both.
 - `KalenderController.animateToEvent` passes `pageDuration`, `pageCurve`, `scrollDuration` and `scrollCurve` to the view controller. It accepted all four and forwarded none.
+- `DayNumberStyle.todayForegroundColor` colors the today number. The number text set its own color, which took precedence.
 
 ## 0.31.2
 
