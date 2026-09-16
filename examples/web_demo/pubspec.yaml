@@ -68,6 +68,18 @@ flutter:
   assets:
     - packages/timezone/data/latest.tzf
 
+  # Declaring Roboto stops the engine adding its own family pointing at
+  # fonts.gstatic.com, which it downloads on every load. Apache 2.0, taken from
+  # the Flutter SDK's material_fonts.
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf
+        - asset: fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: fonts/Roboto-Bold.ttf
+          weight: 700
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
