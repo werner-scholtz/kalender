@@ -7,6 +7,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/floating_date_time.dart';
 import 'package:kalender/src/models/floating_date_time_range.dart';
 import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
@@ -97,6 +98,58 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _internalFocus = false;
     _selectedEventId = null;
     selectedEvent.value = null;
+  }
+
+  /// The selected days, or null when nothing is selected.
+  ///
+  /// Always whole days: [FloatingDateTimeRange.start] is midnight of the first
+  /// selected day and [FloatingDateTimeRange.end] is midnight after the last.
+  final selectedRange = ValueNotifier<FloatingDateTimeRange?>(null);
+
+  /// Selects the day of [date].
+  ///
+  /// When [navigate] is true and the day is not visible, the view moves to it.
+  void selectDate(DateTime date, {bool navigate = false}) {
+    final day = FloatingDateTime.fromExternal(date, location: _viewController?.location).startOfDay;
+    _select(
+      FloatingDateTimeRange(start: day, end: day.endOfDay),
+      navigate: navigate,
+    );
+  }
+
+  /// Selects every day [range] covers.
+  ///
+  /// An end at midnight does not include that day, the same as an event ending at midnight. A range that starts and
+  /// ends at the same moment selects that day.
+  ///
+  /// When [navigate] is true and the first day is not visible, the view moves to it.
+  void selectRange(KalenderDateTimeRange range, {bool navigate = false}) {
+    final location = _viewController?.location;
+    final start = FloatingDateTime.fromExternal(range.start, location: location);
+    final end = FloatingDateTime.fromExternal(range.end, location: location);
+    final endsAtMidnight = end.isAtSameMomentAs(end.startOfDay) && end.isAfter(start);
+    _select(
+      FloatingDateTimeRange(start: start.startOfDay, end: endsAtMidnight ? end : end.endOfDay),
+      navigate: navigate,
+    );
+  }
+
+  void _select(FloatingDateTimeRange range, {required bool navigate}) {
+    selectedRange.value = range;
+
+    if (!navigate) return;
+    final visible = _floatingVisibleRange.value;
+    if (visible != null && range.start.isWithin(visible)) return;
+    animateToDate(range.start.forLocation(location: _viewController?.location));
+  }
+
+  /// Clears the selection.
+  void deselectRange() => selectedRange.value = null;
+
+  /// Whether [date] falls on a selected day.
+  bool isDateSelected(FloatingDateTime date) {
+    final range = selectedRange.value;
+    return range != null && date.isWithin(range);
   }
 
   bool isAttachedTo(ViewController viewController) {
@@ -217,6 +270,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _detachVisibleTimeOfDay();
     visibleTimeOfDay.dispose();
+    selectedRange.dispose();
     super.dispose();
   }
 }

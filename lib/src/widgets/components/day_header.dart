@@ -126,6 +126,7 @@ class DayHeader extends StatelessWidget {
     final displayDate = localDate.forLocation(location: context.location);
 
     final button = DayNumber(
+      date: localDate,
       text: components.dayHeaderNumberStringBuilder?.call(context, displayDate) ?? date.day.toString(),
       textStyle: style.numberTextStyle,
       isToday: context.isToday(localDate),

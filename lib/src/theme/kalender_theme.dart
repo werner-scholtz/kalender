@@ -159,6 +159,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       dayNumberStyle: DayNumberStyle(
         todayBackgroundColor: palette.highlight,
         todayForegroundColor: palette.onHighlight,
+        selectedBorder: BorderSide(color: palette.accent, width: 2),
       ),
       monthGridStyle: MonthGridStyle(color: palette.surface, thickness: 0),
       monthDayHeaderStyle: MonthDayHeaderStyle(

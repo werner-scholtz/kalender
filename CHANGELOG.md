@@ -1,3 +1,14 @@
+## 0.32.0
+
+### Features
+
+- `KalenderController.selectDate`, `selectRange` and `deselectRange` select days, and `KalenderController.selectedRange` holds the selection.
+- `DayNumberStyle.selectedBackgroundColor`, `selectedForegroundColor`, `selectedBorder` and `todayBorder` style a selected day number and today. A selected day gets a ring by default.
+
+### Examples
+
+- `examples/example/lib/selection_demo.dart` shows date selection.
+
 ## 0.31.3
 
 ### Fixes
