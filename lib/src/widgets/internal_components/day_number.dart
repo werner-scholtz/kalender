@@ -140,7 +140,8 @@ class DayNumberStyle with Diagnosticable {
 /// month day header, the schedule date, and the multi-day overlay.
 ///
 /// It is never interactive. It is a label that happens to be drawn like a button, so `onPressed` is always null and
-/// the highlight has to set the disabled colors.
+/// the highlight has to set the disabled colors. It ignores pointers, so a tap reaches the cell or gesture detector
+/// around it.
 class DayNumber extends StatefulWidget {
   const DayNumber({
     super.key,
@@ -210,7 +211,9 @@ class _DayNumberState extends State<DayNumber> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => IgnorePointer(child: _buildButton(context));
+
+  Widget _buildButton(BuildContext context) {
     final isToday = widget.isToday;
     var textStyle = widget.textStyle;
     ButtonStyle? buttonStyle;

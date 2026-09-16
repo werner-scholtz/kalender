@@ -170,22 +170,33 @@ class WeekNumber extends StatelessWidget {
     final style = (KalenderTheme.of(context).weekNumberStyle ?? const WeekNumberStyle()).merge(weekNumberStyle);
     final padding = style.padding ?? const EdgeInsets.symmetric(horizontal: 4);
     final buttonSize = style.buttonSize;
+    final tooltip = style.tooltip;
+    final longPressTaken =
+        context.dependOnInheritedWidgetOfExactType<Callbacks>()?.callbacks?.weekNumber?.onLongPress != null;
+
+    final button = IconButton.filledTonal(
+      onPressed: null,
+      visualDensity: VisualDensity.compact,
+      padding: buttonSize == null ? null : EdgeInsets.zero,
+      constraints: buttonSize == null ? null : BoxConstraints.tight(buttonSize),
+      // The gutter is sized by the calendar, not by this label, so a range
+      // spanning two weeks wraps. Without this the short second line sits
+      // against the leading edge.
+      icon: Text(weekNumber, textAlign: TextAlign.center, style: style.textStyle),
+    );
 
     return Align(
       alignment: style.alignment ?? Alignment.center,
       child: Padding(
         padding: padding,
-        child: IconButton.filledTonal(
-          tooltip: style.tooltip,
-          onPressed: null,
-          visualDensity: VisualDensity.compact,
-          padding: buttonSize == null ? null : EdgeInsets.zero,
-          constraints: buttonSize == null ? null : BoxConstraints.tight(buttonSize),
-          // The gutter is sized by the calendar, not by this label, so a range
-          // spanning two weeks wraps. Without this the short second line sits
-          // against the leading edge.
-          icon: Text(weekNumber, textAlign: TextAlign.center, style: style.textStyle),
-        ),
+        child: tooltip == null
+            ? button
+            : Tooltip(
+                message: tooltip,
+                // A long press callback on the week number takes the gesture, so the tooltip only shows on hover.
+                triggerMode: longPressTaken ? TooltipTriggerMode.manual : null,
+                child: button,
+              ),
       ),
     );
   }

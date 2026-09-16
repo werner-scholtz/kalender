@@ -115,6 +115,18 @@ class KalenderCallbacks {
   /// When overriding this please see [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
   final OnWillAcceptWithDetailsHorizontal? onWillAcceptWithDetailsHorizontal;
 
+  /// The gestures on a date label: the day number and day name in the day header, the month day header, the schedule
+  /// date and the multi-day overlay.
+  ///
+  /// Also reported for a label built by a custom builder.
+  final GestureCallbacks<DayDetail>? dateLabel;
+
+  /// The gestures on a week number, in the multi-day header and the month view.
+  ///
+  /// [MultiDayDetail.dateTimeRange] is the range the week number shows. Also reported for a week number built by a
+  /// custom builder.
+  final GestureCallbacks<MultiDayDetail>? weekNumber;
+
   /// Creates a set of callbacks for the [KalenderView].
   const KalenderCallbacks({
     this.onEventTapped,
@@ -138,6 +150,8 @@ class KalenderCallbacks {
     this.onSecondaryLongPressedWithDetail,
     this.onWillAcceptWithDetailsVertical,
     this.onWillAcceptWithDetailsHorizontal,
+    this.dateLabel,
+    this.weekNumber,
   });
 
   bool get hasOnEventTapped => onEventTapped != null || onEventTappedWithDetail != null;
@@ -170,6 +184,8 @@ class KalenderCallbacks {
     OnLongPressedWithDetail? onSecondaryLongPressedWithDetail,
     OnWillAcceptWithDetailsVertical? onWillAcceptWithDetailsVertical,
     OnWillAcceptWithDetailsHorizontal? onWillAcceptWithDetailsHorizontal,
+    GestureCallbacks<DayDetail>? dateLabel,
+    GestureCallbacks<MultiDayDetail>? weekNumber,
   }) {
     return KalenderCallbacks(
       onEventTapped: onEventTapped ?? this.onEventTapped,
@@ -193,6 +209,8 @@ class KalenderCallbacks {
       onSecondaryLongPressedWithDetail: onSecondaryLongPressedWithDetail ?? this.onSecondaryLongPressedWithDetail,
       onWillAcceptWithDetailsVertical: onWillAcceptWithDetailsVertical ?? this.onWillAcceptWithDetailsVertical,
       onWillAcceptWithDetailsHorizontal: onWillAcceptWithDetailsHorizontal ?? this.onWillAcceptWithDetailsHorizontal,
+      dateLabel: dateLabel ?? this.dateLabel,
+      weekNumber: weekNumber ?? this.weekNumber,
       // ignore: deprecated_member_use_from_same_package
     );
   }
@@ -330,6 +348,51 @@ typedef OnWillAcceptWithDetailsHorizontal =
       KalenderController controller,
       HorizontalConfiguration configuration,
     );
+
+/// A callback for a gesture on one part of the calendar.
+///
+/// {@category Controllers and callbacks}
+typedef OnGesture<T extends TapDetail> = void Function(T detail);
+
+/// The gestures reported for one part of the calendar, such as [KalenderCallbacks.dateLabel].
+///
+/// The part only listens for the gestures that are set.
+///
+/// {@category Controllers and callbacks}
+class GestureCallbacks<T extends TapDetail> {
+  /// Creates a set of gesture callbacks.
+  const GestureCallbacks({this.onTap, this.onSecondaryTap, this.onLongPress, this.onSecondaryLongPress});
+
+  /// Called when the part is tapped.
+  final OnGesture<T>? onTap;
+
+  /// Called when the part is tapped with the secondary button.
+  final OnGesture<T>? onSecondaryTap;
+
+  /// Called when the part is long pressed.
+  final OnGesture<T>? onLongPress;
+
+  /// Called when the part is long pressed with the secondary button.
+  final OnGesture<T>? onSecondaryLongPress;
+
+  /// Whether any callback is set.
+  bool get hasAny => onTap != null || onSecondaryTap != null || onLongPress != null || onSecondaryLongPress != null;
+
+  /// Creates a copy with the given callbacks replaced.
+  GestureCallbacks<T> copyWith({
+    OnGesture<T>? onTap,
+    OnGesture<T>? onSecondaryTap,
+    OnGesture<T>? onLongPress,
+    OnGesture<T>? onSecondaryLongPress,
+  }) {
+    return GestureCallbacks<T>(
+      onTap: onTap ?? this.onTap,
+      onSecondaryTap: onSecondaryTap ?? this.onSecondaryTap,
+      onLongPress: onLongPress ?? this.onLongPress,
+      onSecondaryLongPress: onSecondaryLongPress ?? this.onSecondaryLongPress,
+    );
+  }
+}
 
 /// {@category Controllers and callbacks}
 abstract class TapDetail {

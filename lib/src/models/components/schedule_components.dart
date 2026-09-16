@@ -7,8 +7,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
+import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/components/schedule_date.dart';
 import 'package:kalender/src/widgets/components/schedule_tile_highlight.dart';
+import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 
 /// A class containing custom widget builders for the `ScheduleBody`.
 ///
@@ -47,7 +49,10 @@ class ScheduleComponents {
 
   /// Builds the leading date, with [leadingDateBuilder] when set.
   Widget buildLeadingDate(BuildContext context, FloatingDateTime date) {
-    return leadingDateBuilder?.call(context, date) ?? ScheduleDate(date: date);
+    return DateLabelGestures(
+      date: date.forLocation(location: context.location),
+      child: leadingDateBuilder?.call(context, date) ?? ScheduleDate(date: date),
+    );
   }
 
   /// Wraps [child] in the highlight, with [scheduleTileHighlightBuilder] when set.

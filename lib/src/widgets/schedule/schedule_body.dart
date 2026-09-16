@@ -388,12 +388,15 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                   ) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
-              final child = ListTile(
-                minLeadingWidth: 0,
-                leading: leadingSlot(leading),
-                title: components.emptyItemBuilder?.call(
-                  context,
-                  date.dayRange.forLocation(location: context.location),
+              final child = _EmptyDayGestures(
+                date: date,
+                child: ListTile(
+                  minLeadingWidth: 0,
+                  leading: leadingSlot(leading),
+                  title: components.emptyItemBuilder?.call(
+                    context,
+                    date.dayRange.forLocation(location: context.location),
+                  ),
                 ),
               );
               return components.buildScheduleTileHighlight(context, date, viewController.highlightedRange, child);
@@ -437,6 +440,50 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Reports the [KalenderCallbacks.onTapped] family for an empty day, the way an empty month cell does.
+class _EmptyDayGestures extends StatelessWidget {
+  const _EmptyDayGestures({required this.date, required this.child});
+
+  final FloatingDateTime date;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final callbacks = context.callbacks;
+    if (callbacks == null) return child;
+
+    void Function(Offset)? report(void Function(DateTime)? plain, void Function(TapDetail)? withDetail) {
+      if (plain == null && withDetail == null) return null;
+      return (localOffset) {
+        plain?.call(date.forLocation(location: context.location));
+        withDetail?.call(
+          MultiDayDetail(
+            dateTimeRange: date.dayRange.forLocation(location: context.location),
+            renderBox: context.findRenderObject()! as RenderBox,
+            localOffset: localOffset,
+          ),
+        );
+      };
+    }
+
+    final onTap = report(callbacks.onTapped, callbacks.onTappedWithDetail);
+    final onSecondaryTap = report(callbacks.onSecondaryTapped, callbacks.onSecondaryTappedWithDetail);
+    final onLongPress = report(callbacks.onLongPressed, callbacks.onLongPressedWithDetail);
+    final onSecondaryLongPress = report(callbacks.onSecondaryLongPressed, callbacks.onSecondaryLongPressedWithDetail);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapUp: onTap == null ? null : (details) => onTap(details.localPosition),
+      onSecondaryTapUp: onSecondaryTap == null ? null : (details) => onSecondaryTap(details.localPosition),
+      onLongPressStart: onLongPress == null ? null : (details) => onLongPress(details.localPosition),
+      onSecondaryLongPressStart: onSecondaryLongPress == null
+          ? null
+          : (details) => onSecondaryLongPress(details.localPosition),
+      child: child,
     );
   }
 }

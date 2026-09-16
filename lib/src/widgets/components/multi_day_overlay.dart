@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/day_number.dart';
+import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
@@ -468,19 +469,25 @@ class MultiDayOverlay extends StatelessWidget {
                             children: [
                               Align(
                                 alignment: Alignment.topCenter,
-                                child: Text(
-                                  style.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
-                                  style: style.dayNameTextStyle,
+                                child: DateLabelGestures(
+                                  date: date.forLocation(location: context.location),
+                                  child: Text(
+                                    style.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
+                                    style: style.dayNameTextStyle,
+                                  ),
                                 ),
                               ),
                               Align(
                                 alignment: Alignment.bottomCenter,
-                                child: DayNumber(
-                                  date: date,
-                                  text: date.day.toString(),
-                                  textStyle: style.dateTextStyle,
-                                  isToday: context.isToday(date),
-                                  todayKey: todayKey,
+                                child: DateLabelGestures(
+                                  date: date.forLocation(location: context.location),
+                                  child: DayNumber(
+                                    date: date,
+                                    text: date.day.toString(),
+                                    textStyle: style.dateTextStyle,
+                                    isToday: context.isToday(date),
+                                    todayKey: todayKey,
+                                  ),
                                 ),
                               ),
                               Align(
