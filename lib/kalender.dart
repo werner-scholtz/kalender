@@ -57,6 +57,7 @@ export 'package:kalender/src/models/components/string_builders.dart';
 export 'package:kalender/src/models/components/tile_components.dart';
 export 'package:kalender/src/widgets/components/schedule_date.dart';
 export 'package:kalender/src/widgets/components/schedule_tile_highlight.dart';
+export 'package:kalender/src/widgets/internal_components/day_number.dart' show DayNumberStyle;
 export 'package:kalender/src/widgets/components/day_header.dart';
 export 'package:kalender/src/widgets/components/day_separator.dart';
 export 'package:kalender/src/widgets/components/hour_lines.dart';

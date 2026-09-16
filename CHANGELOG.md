@@ -1,3 +1,14 @@
+## 0.31.2
+
+### Fixes
+
+- The today highlight behind a day number can be styled through `KalenderThemeData.dayNumberStyle`. It read the Material `ColorScheme` directly, so nothing could change it.
+- The web demo makes no third-party font requests. It bundles Roboto, which the engine otherwise downloads from `fonts.gstatic.com` on every load, and points `fontFallbackBaseUrl` at its own origin.
+
+### Documentation
+
+- The examples table and the guide index each have one home, with the other copies pointing at it.
+
 ## 0.31.1
 
 ### Features
