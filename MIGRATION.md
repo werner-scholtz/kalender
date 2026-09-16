@@ -19,9 +19,13 @@ applies lint fixes such as `unused_import` and `unnecessary_null_checks`, which
 are computed against code the analyzer cannot fully resolve and can delete code
 you still need.
 
-Fixes cover changes made in 0.28.0 and later. Upgrading from anything earlier is
-by hand. Inside the covered range it is safe to run across several versions at
-once.
+Fixes cover changes made in 0.28.0 and later, plus `CalendarEvent.copyWith` from
+0.26.0. Upgrading from anything earlier is by hand. Inside the covered range it
+is safe to run across several versions at once.
+
+0.27.0 is not covered. Its one change is that every builder takes a
+`BuildContext`, and a builder is a function you pass, whose parameter list no
+fix can rewrite.
 
 What it does not do:
 
@@ -1108,6 +1112,8 @@ Set it above the calendar rather than on a `KalenderTheme` scoped to the header 
 ### `CalendarEvent.copyWith` becomes `copyWithData`
 
 Every subclass changes. `copyWith` is gone from `CalendarEvent`, so an override of it no longer compiles.
+
+`dart fix` renames the override and its call sites, which is the one change in this upgrade it covers. The body is yours to finish.
 
 Rebuild only the fields your subclass adds:
 

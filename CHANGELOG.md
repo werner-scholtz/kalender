@@ -3,6 +3,7 @@
 ### Features
 
 - `dart fix --apply` reaches back to 0.28.0: the twelve `default*` constants that took a `k` prefix, `CreateEventGesture`, and the two tap callback typedefs that lost their plural.
+- `dart fix --apply` renames `CalendarEvent.copyWith` to `copyWithData`, from 0.26.0.
 
 ### Fixes
 

@@ -14,3 +14,14 @@ final event = CalendarEvent(dateTimeRange: range);
 // An argument that is not a variable is copied into both parameters.
 KalenderDateTimeRange makeRange() => KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
 final computed = CalendarEvent(dateTimeRange: makeRange());
+
+// copyWith became copyWithData in 0.26.0. The override and both call sites are renamed.
+class MyEvent extends KalenderEvent<int> {
+  MyEvent({required super.start, required super.end, super.data});
+
+  @override
+  MyEvent copyWith({int? data}) => MyEvent(start: start, end: end, data: data ?? this.data);
+}
+
+MyEvent onSubclass(MyEvent event) => event.copyWith(data: 1);
+KalenderEvent<int> onBase(KalenderEvent<int> event) => event.copyWith(data: 1);
