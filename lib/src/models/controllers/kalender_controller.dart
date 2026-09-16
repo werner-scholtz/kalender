@@ -197,7 +197,14 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    return viewController?.animateToEvent(event, centerEvent: centerEvent);
+    return viewController?.animateToEvent(
+      event,
+      pageDuration: pageDuration,
+      pageCurve: pageCurve,
+      scrollDuration: scrollDuration,
+      scrollCurve: scrollCurve,
+      centerEvent: centerEvent,
+    );
   }
 
   @override
