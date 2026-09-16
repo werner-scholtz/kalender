@@ -31,7 +31,7 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 ## Features
 
 - **Four views, one widget.** Day, Multi-day, Month and Schedule.
-- **Reschedule by hand.** Drag, resize and zoom, on mouse, stylus, trackpad or touch.
+- **Reschedule manually.** Drag, resize and zoom, on mouse, stylus, trackpad or touch.
 - **Snapping you control.** To an interval, the time indicator, other events, or your own rule.
 - **No fixed event model.** Subclass `KalenderEvent` and read your own fields anywhere.
 - **Controllers and callbacks.** Navigate from code, and react to taps, creation and changes.

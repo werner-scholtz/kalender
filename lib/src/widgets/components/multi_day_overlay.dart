@@ -405,8 +405,8 @@ class MultiDayOverlay extends StatelessWidget {
 
   /// Determines the height of the header, never taller than the space available.
   ///
-  /// The header does not get the whole overlay: [cardMargin] and the gap between
-  /// the header and the event list come out of it first. Clamping against the
+  /// The header does not get the whole overlay: [cardMargin] and the spacing
+  /// between the header and the event list come out of it first. Clamping against the
   /// full height instead lets the column overflow by up to that much.
   double _determineHeaderHeight(BoxConstraints constraints, MultiDayOverlayStyle style, EdgeInsetsGeometry cardMargin) {
     final available = constraints.maxHeight - cardMargin.vertical - _columnSpacing;
@@ -415,7 +415,7 @@ class MultiDayOverlay extends StatelessWidget {
 
   static const defaultHeaderHeight = 80.0;
 
-  /// The gap between the header and the event list.
+  /// The spacing between the header and the event list.
   static const _columnSpacing = 8.0;
 
   /// The margin a [Card] uses when neither the style nor the theme sets one.
