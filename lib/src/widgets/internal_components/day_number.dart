@@ -4,7 +4,67 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
+
+/// The [DayNumberStyle] class is used by the [DayNumber] widget.
+///
+/// {@category Appearance}
+class DayNumberStyle with Diagnosticable {
+  const DayNumberStyle({this.todayBackgroundColor, this.todayForegroundColor});
+
+  /// The color behind the day number when it is today.
+  final Color? todayBackgroundColor;
+
+  /// The color of the day number when it is today.
+  final Color? todayForegroundColor;
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  DayNumberStyle copyWith({Color? todayBackgroundColor, Color? todayForegroundColor}) {
+    return DayNumberStyle(
+      todayBackgroundColor: todayBackgroundColor ?? this.todayBackgroundColor,
+      todayForegroundColor: todayForegroundColor ?? this.todayForegroundColor,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  DayNumberStyle merge(DayNumberStyle? other) {
+    if (other == null) return this;
+    return DayNumberStyle(
+      todayBackgroundColor: other.todayBackgroundColor ?? todayBackgroundColor,
+      todayForegroundColor: other.todayForegroundColor ?? todayForegroundColor,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b].
+  static DayNumberStyle? lerp(DayNumberStyle? a, DayNumberStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return DayNumberStyle(
+      todayBackgroundColor: Color.lerp(a?.todayBackgroundColor, b?.todayBackgroundColor, t),
+      todayForegroundColor: Color.lerp(a?.todayForegroundColor, b?.todayForegroundColor, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is DayNumberStyle &&
+        other.todayBackgroundColor == todayBackgroundColor &&
+        other.todayForegroundColor == todayForegroundColor;
+  }
+
+  @override
+  int get hashCode => Object.hash(todayBackgroundColor, todayForegroundColor);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(ColorProperty('todayBackgroundColor', todayBackgroundColor, defaultValue: null));
+    properties.add(ColorProperty('todayForegroundColor', todayForegroundColor, defaultValue: null));
+  }
+}
 
 /// The day number shown by the date components, highlighted when it is today.
 ///
@@ -46,7 +106,7 @@ class DayNumber extends StatelessWidget {
       );
     }
 
-    final colorScheme = Theme.of(context).colorScheme;
+    final style = KalenderTheme.of(context).dayNumberStyle ?? const DayNumberStyle();
     return IconButton.filledTonal(
       key: todayKey,
       onPressed: null,
@@ -57,8 +117,8 @@ class DayNumber extends StatelessWidget {
       // Without this the button paints with the disabled colors, which greys
       // the highlight out and reads as "unavailable" rather than "today".
       style: IconButton.styleFrom(
-        disabledBackgroundColor: colorScheme.secondaryContainer,
-        disabledForegroundColor: colorScheme.onSecondaryContainer,
+        disabledBackgroundColor: style.todayBackgroundColor,
+        disabledForegroundColor: style.todayForegroundColor,
       ),
     );
   }

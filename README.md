@@ -127,18 +127,10 @@ For a real app you almost always want custom fields on your events. See [Custom 
 
 ## Examples
 
-Runnable apps in [`examples/`](examples/README.md):
-
-| Example | Shows |
-| --- | --- |
-| [Basic](https://github.com/werner-scholtz/kalender/tree/main/examples/example) | All view types with a toolbar, sample events, and custom tiles. Start here. |
-| [Advanced](https://github.com/werner-scholtz/kalender/tree/main/examples/advanced_example) | A custom event layout with a lane per person, zoom, and tap-location-aware event creation. |
-| [Recurrence](https://github.com/werner-scholtz/kalender/tree/main/examples/recurrence) | Recurring events built on top of the package, which has no recurrence of its own. |
-| [ICS](https://github.com/werner-scholtz/kalender/tree/main/examples/ics) | Importing and exporting `.ics` files, expanding `RRULE` recurrence lazily over the visible range. |
-| [Riverpod](https://github.com/werner-scholtz/kalender/tree/main/examples/riverpod) | Sharing the controllers and the selected view through providers. |
-| [intl4x](https://github.com/werner-scholtz/kalender/tree/main/examples/intl4x) | The calendar's localized strings rendered with intl4x instead of intl. |
-| [material_ui](https://github.com/werner-scholtz/kalender/tree/main/examples/material_ui) | The calendar inside an app that uses the standalone `material_ui` package. |
-| [Web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/): every option, theming, locales, and a split view. |
+Ten runnable apps live in [`examples/`](examples/README.md), each a standalone
+project that builds against the working tree. Start with
+[example](examples/example), which shows the pieces most apps need. The
+[examples index](examples/README.md) says what each one answers.
 
 ---
 

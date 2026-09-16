@@ -3,15 +3,8 @@
 Guides for [kalender](../README.md). Start with [Views](views.md) if you are new.
 It covers which view to show.
 
-| Guide | Covers |
-| --- | --- |
-| [Views](views.md) | The three view families, what carries over when you switch, and each view's configuration class. |
-| [Events](events.md) | Attaching your own data by subclassing `KalenderEvent`, updating events, and what counts as multi-day. |
-| [Interaction](interaction.md) | Creating, rescheduling, resizing, snapping and zooming. |
-| [Controllers & Callbacks](controllers-and-callbacks.md) | Driving the calendar from code, reacting to what the user did, and building a toolbar around it. |
-| [Appearance](appearance.md) | Event tiles, theming, and replacing the default components. |
-| [Layout](layout.md) | Where tiles are placed and sized. Advanced, only needed for a custom strategy. |
-| [Timezones & Locales](timezones-and-locales.md) | Displaying a timezone, localized names, and replacing the calendar's text. |
+The [readme](../README.md#documentation) lists all seven with what each covers.
+The files themselves are in this directory.
 
 The API reference is on
 [pub.dev](https://pub.dev/documentation/kalender/latest/kalender/kalender-library.html).

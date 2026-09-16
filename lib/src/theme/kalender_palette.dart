@@ -23,6 +23,12 @@ class KalenderPalette {
   /// The time indicator.
   final Color error;
 
+  /// The today highlight behind a day number.
+  final Color highlight;
+
+  /// The day number inside the today highlight.
+  final Color onHighlight;
+
   /// Day names, weekday headers and the schedule's dates.
   final TextStyle? small;
 
@@ -37,6 +43,8 @@ class KalenderPalette {
     required this.surface,
     required this.accent,
     required this.error,
+    required this.highlight,
+    required this.onHighlight,
     this.small,
     this.medium,
     this.label,
@@ -51,6 +59,8 @@ class KalenderPalette {
       surface: theme.colorScheme.surfaceContainerHighest,
       accent: theme.colorScheme.primary,
       error: theme.colorScheme.error,
+      highlight: theme.colorScheme.secondaryContainer,
+      onHighlight: theme.colorScheme.onSecondaryContainer,
       small: theme.textTheme.bodySmall,
       medium: theme.textTheme.bodyMedium,
       label: theme.textTheme.labelMedium,
@@ -64,11 +74,13 @@ class KalenderPalette {
         other.surface == surface &&
         other.accent == accent &&
         other.error == error &&
+        other.highlight == highlight &&
+        other.onHighlight == onHighlight &&
         other.small == small &&
         other.medium == medium &&
         other.label == label;
   }
 
   @override
-  int get hashCode => Object.hash(surface, accent, error, small, medium, label);
+  int get hashCode => Object.hash(surface, accent, error, highlight, onHighlight, small, medium, label);
 }
