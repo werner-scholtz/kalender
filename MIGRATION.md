@@ -10,8 +10,14 @@ the package first, then run it from your project root:
 ```bash
 flutter pub upgrade kalender
 dart fix --dry-run              # preview
-dart fix --apply                # apply
+dart fix --code=undefined_class,undefined_function,undefined_identifier,undefined_method,undefined_getter,undefined_named_parameter,undefined_extension_getter,missing_required_argument,invalid_override --apply
 ```
+
+Those are the diagnostics kalender's own fixes attach to. Limit the run to them.
+A project mid-upgrade does not compile, and `dart fix --apply` on its own also
+applies lint fixes such as `unused_import` and `unnecessary_null_checks`, which
+are computed against code the analyzer cannot fully resolve and can delete code
+you still need.
 
 Fixes cover changes made in 0.29.0 and later. Upgrading from anything earlier is
 by hand. Inside the covered range it is safe to run across several versions at
@@ -23,8 +29,13 @@ What it does not do:
 - A replacement that is an expression rather than another member.
 - The body of a method you override. The signature is rewritten and the body is
   not, so finish the edit where the compiler points.
+- A parameter added to a method you override. The rename is applied and the new
+  parameter is not, so the override still fails to compile.
 - An extension member called without naming the extension, such as
   `context.calendarLocale`.
+- A `const` call of a renamed class. `CalendarSnapping(...)` is rewritten and
+  `const CalendarSnapping(...)` is not, because the analyzer reports a different
+  diagnostic for it. Search for the old names once the fixes have run.
 
 The sections below cover what is left after the fixes have run.
 
@@ -387,8 +398,19 @@ a `KalenderTime` now.
 
 ### `TimeOfDayExtension` is removed
 
-`toInternalDateTime` and `toDateTime` are methods on `KalenderTime`, so the calls
-are unchanged and only the type they are called on differs.
+`toInternalDateTime` and `toDateTime` are methods on `KalenderTime`, so a call on
+a value that came from kalender is unchanged and only the type differs.
+
+A call on a Material `TimeOfDay` of your own has no replacement, since the
+extension that carried it is gone. Convert first:
+
+```dart
+// Before
+final dateTime = timeOfDay.toDateTime(date);
+
+// After, with package:kalender/material.dart imported
+final dateTime = timeOfDay.toKalenderTime().toDateTime(date);
+```
 
 ### `CalendarEvent` takes `start` and `end`
 
@@ -826,6 +848,19 @@ The package's own `defaultTileBuilder`, `defaultTileWhenDraggingBuilder`,
 `defaultFeedbackTileBuilder` and `defaultDropTargetBuilder` gained the context
 the same way. Passing one as a tear-off needs no change. Calling one inside a
 builder of your own means passing the context along.
+
+A builder passed as a constructor tear-off no longer matches, since a constructor
+cannot take a parameter it does not use. Make it a static function that ignores
+the context:
+
+```dart
+// Before
+tileBuilder: MyTile.new,
+
+// After
+static Widget build(BuildContext context, KalenderEvent event, DateTimeRange tileRange) =>
+    MyTile(event: event, tileRange: tileRange);
+```
 
 Four cases need more than the signature change.
 
@@ -1452,6 +1487,8 @@ Only affects you if you implement `EventsController` yourself. The method sorts 
 ```
 
 Pass it on to `event.spansMultipleDays(location: location, defaultRule: multiDayRule)`. Callers supply the current view's `ViewConfiguration.multiDayRule`.
+
+`dart fix` renames this method in 0.31.0 but cannot add the parameter, so an override upgraded across both versions compiles only once the parameter is added by hand.
 
 ## v0.22.x → v0.23.0
 
