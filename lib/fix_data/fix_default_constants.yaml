@@ -1,0 +1,128 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultTileHeight'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultTileHeight'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultTileHeight'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultNewEventDuration'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultNewEventDuration'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultNewEventDuration'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultShowMultiDayEvents'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultShowMultiDayEvents'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultShowMultiDayEvents'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultEventLayoutStrategy'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultEventLayoutStrategy'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultEventLayoutStrategy'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultMultiDayLayoutStrategy'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultMultiDayLayoutStrategy'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultMultiDayLayoutStrategy'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultFirstDayOfWeek'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultFirstDayOfWeek'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultFirstDayOfWeek'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultShowEventTiles'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultShowEventTiles'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultShowEventTiles'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultInitialTimeOfDay'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultInitialTimeOfDay'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultInitialTimeOfDay'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultHeightPerMinute'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultHeightPerMinute'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultHeightPerMinute'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultHorizontalPadding'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultHorizontalPadding'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultHorizontalPadding'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultMultiDayRule'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultMultiDayRule'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultMultiDayRule'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
+  - title: "Rename to 'kDefaultSnapStrategy'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      variable: 'defaultSnapStrategy'
+    changes:
+      - kind: 'rename'
+        newName: 'kDefaultSnapStrategy'

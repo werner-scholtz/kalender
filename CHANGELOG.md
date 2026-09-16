@@ -1,5 +1,9 @@
 ## 0.31.1
 
+### Features
+
+- `dart fix --apply` reaches back to 0.28.0: the twelve `default*` constants that took a `k` prefix, `CreateEventGesture`, and the two tap callback typedefs that lost their plural.
+
 ### Fixes
 
 - The month grid draws its lines again at the default thickness of `0`, which is a hairline. It has drawn nothing since 0.25.0.

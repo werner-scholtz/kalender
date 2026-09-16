@@ -19,7 +19,7 @@ applies lint fixes such as `unused_import` and `unnecessary_null_checks`, which
 are computed against code the analyzer cannot fully resolve and can delete code
 you still need.
 
-Fixes cover changes made in 0.29.0 and later. Upgrading from anything earlier is
+Fixes cover changes made in 0.28.0 and later. Upgrading from anything earlier is
 by hand. Inside the covered range it is safe to run across several versions at
 once.
 
@@ -654,6 +654,8 @@ CalendarInteraction(
 );
 ```
 
+`dart fix` applies this, to the type and to each value.
+
 ### The tap callbacks drop their `RenderBox`
 
 `TapDetail.renderBox` carries the same object the parameter did, so it was a
@@ -720,11 +722,13 @@ OnLongPressedWithDetail onLongPressed = (detail) { ... };
 `OnWillAcceptWithDetailsVertical` and `OnWillAcceptWithDetailsHorizontal` keep
 the plural, since they carry a `DragTargetDetails`.
 
+`dart fix` applies both renames.
+
 ### The `default*` constants take a `k` prefix
 
-Twelve public top-level constants are renamed, which is a find and replace where
-you name one. Four already carried the prefix and are unchanged, and the
-`default*` top-level functions keep their names.
+Twelve public top-level constants are renamed, which `dart fix` applies. Four
+already carried the prefix and are unchanged, and the `default*` top-level
+functions keep their names.
 
 | Before | After |
 | --- | --- |
