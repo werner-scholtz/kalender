@@ -1,3 +1,28 @@
+## 0.31.1
+
+### Features
+
+- `dart fix --apply` reaches back to 0.28.0: the twelve `default*` constants that took a `k` prefix, `CreateEventGesture`, and the two tap callback typedefs that lost their plural.
+- `dart fix --apply` renames `CalendarEvent.copyWith` to `copyWithData`, from 0.26.0.
+
+### Fixes
+
+- The month grid draws its lines again at the default thickness of `0`, which is a hairline. It has drawn nothing since 0.25.0.
+- The time indicator sits on the right day column in a free scrolling view, rather than only when today is the leading day.
+- The time indicator is removed once today's column leaves the viewport, rather than staying where it was last drawn.
+- The time indicator is not built when today falls outside the view's display range.
+- The guide index in the API reference links to each guide's topic page rather than to the repository.
+
+### Documentation
+
+- `MIGRATION.md` names the diagnostics to pass to `dart fix --code`, and says that a `const` call of a renamed class, and a parameter added to a method you override, are not rewritten.
+- `MIGRATION.md` covers calling `toDateTime` on a Material `TimeOfDay` of your own, and a builder passed as a constructor tear-off.
+- `doc/layout.md` states that a custom `performLayout` must guard `layoutChild` and `positionChild` with `hasChild`.
+
+### Examples
+
+- The advanced example's layout delegate guards `layoutChild` and `positionChild` with `hasChild`, so it no longer asserts when a tile is culled.
+
 ## 0.31.0
 
 See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.

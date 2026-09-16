@@ -16,7 +16,8 @@
 //
 // The guides under doc/ are also the topic pages of the API reference. A relative
 // link in a guide is resolved against the guide's own directory, and a link to a
-// guide that has a topic page points at that topic page.
+// guide that has a topic page points at that topic page. The README's guide index
+// is rewritten the same way.
 //
 // Usage: dart run tool/pin_release_links.dart v0.24.0
 //
@@ -193,7 +194,7 @@ void main(List<String> args) {
   final rewrites = <({String path, String Function(String) rewrite, bool allowUnpinnedLinks})>[
     (
       path: 'README.md',
-      rewrite: (content) => pinRelativeLinks(pinAll(content), repoUrl, tag),
+      rewrite: (content) => pinRelativeLinks(pinAll(content), repoUrl, tag, topicPages: topicPages),
       allowUnpinnedLinks: false,
     ),
     (path: 'example/README.md', rewrite: pinAll, allowUnpinnedLinks: false),

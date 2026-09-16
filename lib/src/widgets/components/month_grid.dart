@@ -27,6 +27,8 @@ class MonthGridStyle with Diagnosticable {
   final Color? color;
 
   /// The thickness of the month grid lines.
+  ///
+  /// A thickness of `0` draws a hairline, one device pixel wide.
   final double? thickness;
 
   /// Creates a copy of this style with the given fields replaced with the new values.
@@ -81,15 +83,30 @@ class MonthGrid extends StatelessWidget {
     final style = (KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle()).merge(this.style);
     final thickness = style.thickness ?? 0;
     final color = style.color;
+    // Painting each line as a BorderSide keeps a thickness of 0 a hairline, and
+    // matches the week number gutter, which builds a BorderSide from this style.
+    final side = color == null ? null : BorderSide(color: color, width: thickness);
     return Stack(
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [for (int i = 0; i < 8; i++) Container(width: thickness, color: color)],
+          children: [
+            for (int i = 0; i < 8; i++)
+              Container(
+                width: thickness,
+                decoration: side == null ? null : BoxDecoration(border: Border(left: side)),
+              ),
+          ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [for (int i = 0; i < numberOfRows + 1; i++) Container(height: thickness, color: color)],
+          children: [
+            for (int i = 0; i < numberOfRows + 1; i++)
+              Container(
+                height: thickness,
+                decoration: side == null ? null : BoxDecoration(border: Border(bottom: side)),
+              ),
+          ],
         ),
       ],
     );

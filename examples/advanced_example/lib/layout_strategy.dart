@@ -153,15 +153,19 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
           tileWidth = rect.width - (tileXOffset - rect.left);
         }
 
-        // Layout the tile.
-        layoutChild(id, BoxConstraints.tightFor(width: tileWidth, height: data.height));
+        // Layout the tile if it was built. The offset and width maths runs for
+        // every event, including culled ones, so an on-screen tile stays aligned
+        // with an off-screen partner it overlaps.
+        if (hasChild(id)) {
+          layoutChild(id, BoxConstraints.tightFor(width: tileWidth, height: data.height));
+        }
 
         tiles[id] = Offset(tileXOffset, data.top);
         tileWidths[id] = tileWidth;
       }
 
       for (final tile in tiles.entries) {
-        positionChild(tile.key, tile.value);
+        if (hasChild(tile.key)) positionChild(tile.key, tile.value);
       }
     }
   }

@@ -10,12 +10,22 @@ the package first, then run it from your project root:
 ```bash
 flutter pub upgrade kalender
 dart fix --dry-run              # preview
-dart fix --apply                # apply
+dart fix --code=undefined_class,undefined_function,undefined_identifier,undefined_method,undefined_getter,undefined_named_parameter,undefined_extension_getter,missing_required_argument,invalid_override --apply
 ```
 
-Fixes cover changes made in 0.29.0 and later. Upgrading from anything earlier is
-by hand. Inside the covered range it is safe to run across several versions at
-once.
+Those are the diagnostics kalender's own fixes attach to. Limit the run to them.
+A project mid-upgrade does not compile, and `dart fix --apply` on its own also
+applies lint fixes such as `unused_import` and `unnecessary_null_checks`, which
+are computed against code the analyzer cannot fully resolve and can delete code
+you still need.
+
+Fixes cover changes made in 0.28.0 and later, plus `CalendarEvent.copyWith` from
+0.26.0. Upgrading from anything earlier is manual. Inside the covered range it
+is safe to run across several versions at once.
+
+0.27.0 is not covered. Its one change is that every builder takes a
+`BuildContext`, and a builder is a function you pass, whose parameter list no
+fix can rewrite.
 
 What it does not do:
 
@@ -23,14 +33,19 @@ What it does not do:
 - A replacement that is an expression rather than another member.
 - The body of a method you override. The signature is rewritten and the body is
   not, so finish the edit where the compiler points.
+- A parameter added to a method you override. The rename is applied and the new
+  parameter is not, so the override still fails to compile.
 - An extension member called without naming the extension, such as
   `context.calendarLocale`.
+- A `const` call of a renamed class. `CalendarSnapping(...)` is rewritten and
+  `const CalendarSnapping(...)` is not, because the analyzer reports a different
+  diagnostic for it. Search for the old names once the fixes have run.
 
 The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override and a `super.internalVisibleRange` constructor parameter need a hand edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. The five value types are `final` classes. |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override and a `super.internalVisibleRange` constructor parameter need a manual edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. The five value types are `final` classes. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Calendar*` types are renamed to `Kalender*`, and the controller members and `calendarLocale` follow. `CalendarView` and `CalendarViewState` are removed. `KalenderDateTimeRange` and `KalenderTime` replace Material's `DateTimeRange` and `TimeOfDay`, and `InternalDateTimeRange` no longer extends `DateTimeRange`. `TimeOfDayRange` and `TimeOfDayStringBuilder` become `KalenderTimeRange` and `KalenderTimeStringBuilder`, and `TimeOfDayExtension` is removed. `CalendarEvent` and `PageIndexCalculator` take `start` and `end`. The schedule view reports ranges in the calendar's location. |
 | [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
 | [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
@@ -100,7 +115,7 @@ in an override.
 `onPageChanged` callback keep their names.
 
 A view controller subclass that declares `super.internalVisibleRange` in its
-constructor renames it to `super.floatingVisibleRange` by hand. The analyzer
+constructor renames it to `super.floatingVisibleRange` manually. The analyzer
 reports it as an undefined parameter.
 
 ```dart
@@ -114,7 +129,7 @@ MyViewController({required super.floatingVisibleRange});
 ### The body of a `MultiDayLayoutStrategy.generateFrame` override
 
 `dart fix` renames the parameter in your override's signature, not where the body
-uses it. Rename those uses by hand. The analyzer reports each one as an undefined
+uses it. Rename those uses manually. The analyzer reports each one as an undefined
 name.
 
 ```dart
@@ -158,7 +173,7 @@ MultiDayLayoutFrame generateFrame({
 ### `BuildContext.calendarLocale` is removed
 
 `dart fix` renames `KalenderLocale(context).calendarLocale`. Change
-`context.calendarLocale` by hand.
+`context.calendarLocale` manually.
 
 ```dart
 // Before
@@ -387,8 +402,19 @@ a `KalenderTime` now.
 
 ### `TimeOfDayExtension` is removed
 
-`toInternalDateTime` and `toDateTime` are methods on `KalenderTime`, so the calls
-are unchanged and only the type they are called on differs.
+`toInternalDateTime` and `toDateTime` are methods on `KalenderTime`, so a call on
+a value that came from kalender is unchanged and only the type differs.
+
+A call on a Material `TimeOfDay` of your own has no replacement, since the
+extension that carried it is gone. Convert first:
+
+```dart
+// Before
+final dateTime = timeOfDay.toDateTime(date);
+
+// After, with package:kalender/material.dart imported
+final dateTime = timeOfDay.toKalenderTime().toDateTime(date);
+```
 
 ### `CalendarEvent` takes `start` and `end`
 
@@ -408,12 +434,12 @@ KalenderEvent(start: range.start, end: range.end)
 
 The fix copies the argument into both parameters. Where the argument is an
 expression rather than a variable, that expression appears twice and is evaluated
-twice, so rewrite those call sites by hand.
+twice, so rewrite those call sites manually.
 
 `dateTimeRange` survives as a getter, so `event.dateTimeRange` still returns a
 `KalenderDateTimeRange`. `event.start` and `event.end` are usually what you want.
 
-**Every subclass changes by hand.** `copyWithData` carries `@mustBeOverridden`, and
+**Every subclass changes manually.** `copyWithData` carries `@mustBeOverridden`, and
 a fix rewrites call sites rather than the declarations in your own code, so the
 compiler points at each one:
 
@@ -465,7 +491,7 @@ month view.
 
 A file constructing two or more subclasses directly stops `dart fix` with an
 analysis server error. The run then applies nothing, in that file or any other, and
-does not exit on its own. Change those call sites by hand, or run `dart fix` over
+does not exit on its own. Change those call sites manually, or run `dart fix` over
 one file at a time. Constructing one subclass per file is unaffected, and so is any
 number of events.
 
@@ -632,6 +658,8 @@ CalendarInteraction(
 );
 ```
 
+`dart fix` applies this, to the type and to each value.
+
 ### The tap callbacks drop their `RenderBox`
 
 `TapDetail.renderBox` carries the same object the parameter did, so it was a
@@ -698,11 +726,13 @@ OnLongPressedWithDetail onLongPressed = (detail) { ... };
 `OnWillAcceptWithDetailsVertical` and `OnWillAcceptWithDetailsHorizontal` keep
 the plural, since they carry a `DragTargetDetails`.
 
+`dart fix` applies both renames.
+
 ### The `default*` constants take a `k` prefix
 
-Twelve public top-level constants are renamed, which is a find and replace where
-you name one. Four already carried the prefix and are unchanged, and the
-`default*` top-level functions keep their names.
+Twelve public top-level constants are renamed, which `dart fix` applies. Four
+already carried the prefix and are unchanged, and the `default*` top-level
+functions keep their names.
 
 | Before | After |
 | --- | --- |
@@ -826,6 +856,19 @@ The package's own `defaultTileBuilder`, `defaultTileWhenDraggingBuilder`,
 `defaultFeedbackTileBuilder` and `defaultDropTargetBuilder` gained the context
 the same way. Passing one as a tear-off needs no change. Calling one inside a
 builder of your own means passing the context along.
+
+A builder passed as a constructor tear-off no longer matches, since a constructor
+cannot take a parameter it does not use. Make it a static function that ignores
+the context:
+
+```dart
+// Before
+tileBuilder: MyTile.new,
+
+// After
+static Widget build(BuildContext context, KalenderEvent event, DateTimeRange tileRange) =>
+    MyTile(event: event, tileRange: tileRange);
+```
 
 Four cases need more than the signature change.
 
@@ -1069,6 +1112,8 @@ Set it above the calendar rather than on a `KalenderTheme` scoped to the header 
 ### `CalendarEvent.copyWith` becomes `copyWithData`
 
 Every subclass changes. `copyWith` is gone from `CalendarEvent`, so an override of it no longer compiles.
+
+`dart fix` renames the override and its call sites, which is the one change in this upgrade it covers. The body is yours to finish.
 
 Rebuild only the fields your subclass adds:
 
@@ -1453,6 +1498,8 @@ Only affects you if you implement `EventsController` yourself. The method sorts 
 
 Pass it on to `event.spansMultipleDays(location: location, defaultRule: multiDayRule)`. Callers supply the current view's `ViewConfiguration.multiDayRule`.
 
+`dart fix` renames this method in 0.31.0 but cannot add the parameter, so an override upgraded across both versions compiles only once the parameter is added manually.
+
 ## v0.22.x → v0.23.0
 
 Nothing here stops existing code from compiling. The old fields still work and are deprecated, and the changes that need action are ones that alter what the calendar renders.
@@ -1461,7 +1508,7 @@ Nothing here stops existing code from compiling. The old fields still work and a
 
 The `String Function(...)` fields on the component style classes moved to the matching `*Components` class, and each now takes a `BuildContext` as its first argument.
 
-They are formatting hooks, not visual style. Since 0.21.0 the style classes also live inside `KalenderThemeData`, a `ThemeExtension`, where a function field cannot interpolate during a theme animation and an inline lambda breaks the style's value equality on every rebuild. The `BuildContext` closes an older gap too: a custom builder could not read the calendar's locale, while the package's own defaults could.
+They are formatting hooks, not visual style. Since 0.21.0 the style classes also live inside `KalenderThemeData`, a `ThemeExtension`, where a function field cannot interpolate during a theme animation and an inline lambda breaks the style's value equality on every rebuild. The `BuildContext` closes an older limitation too: a custom builder could not read the calendar's locale, while the package's own defaults could.
 
 | Old | New |
 | --- | --- |
@@ -1563,7 +1610,7 @@ MultiDayBodyComponents(
 )
 ```
 
-**If you provide a fully custom `timeline` widget:** the body now fixes the gutter to `timelineWidth`, so you no longer need to make your widget's width match by hand. Build the timeline to fill the given width, and set the width with either `TimelineStyle(width: …)` or a `timelineWidth` builder.
+**If you provide a fully custom `timeline` widget:** the body now fixes the gutter to `timelineWidth`, so you no longer need to make your widget's width match manually. Build the timeline to fill the given width, and set the width with either `TimelineStyle(width: …)` or a `timelineWidth` builder.
 
 A new `TimelineStyle.width` field lets you set the gutter width directly without a builder:
 ```dart

@@ -8,6 +8,11 @@
 
 // `context.calendarLocale` is not rewritten. See fix_kalender_locale.yaml.
 
+// A `const` call of a renamed class is not rewritten either. The removed name
+// reports `creation_with_non_type`, which data-driven fixes do not act on, while
+// the same call without `const` reports `undefined_function` and is rewritten.
+// MIGRATION.md says so under "Before you start".
+
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
@@ -19,6 +24,9 @@ CalendarEvent? event;
 CalendarHeader? header;
 CalendarInteraction? interaction;
 CalendarSnapping? snapping;
+
+Object? invocation = CalendarSnapping();
+Object? constInvocation = const CalendarSnapping();
 
 Locale? localeOf(BuildContext context) => context.calendarLocale;
 Locale? namedExtension(BuildContext context) => CalendarLocale(context).calendarLocale;

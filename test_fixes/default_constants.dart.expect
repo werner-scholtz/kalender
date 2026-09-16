@@ -1,0 +1,25 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
+// The input for `fix_default_constants.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:kalender/kalender.dart';
+
+double tileHeight = kDefaultTileHeight;
+Duration newEventDuration = kDefaultNewEventDuration;
+bool showMultiDayEvents = kDefaultShowMultiDayEvents;
+EventLayoutStrategy eventLayoutStrategy = kDefaultEventLayoutStrategy;
+MultiDayLayoutStrategy multiDayLayoutStrategy = kDefaultMultiDayLayoutStrategy;
+int firstDayOfWeek = kDefaultFirstDayOfWeek;
+bool showEventTiles = kDefaultShowEventTiles;
+KalenderTime initialTimeOfDay = kDefaultInitialTimeOfDay;
+double heightPerMinute = kDefaultHeightPerMinute;
+EdgeInsets horizontalPadding = kDefaultHorizontalPadding;
+MultiDayRule multiDayRule = kDefaultMultiDayRule;
+EventSnapStrategy snapStrategy = kDefaultSnapStrategy;
+
+MultiDayViewConfiguration inArgument() =>
+    MultiDayViewConfiguration.week(initialHeightPerMinute: kDefaultHeightPerMinute);

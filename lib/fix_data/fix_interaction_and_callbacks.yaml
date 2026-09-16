@@ -1,0 +1,38 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/470
+  - title: "Rename to 'EventInteractionGesture'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      enum: 'CreateEventGesture'
+    changes:
+      - kind: 'rename'
+        newName: 'EventInteractionGesture'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/471
+  - title: "Rename to 'OnTappedWithDetail'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      typedef: 'OnTappedWithDetails'
+    changes:
+      - kind: 'rename'
+        newName: 'OnTappedWithDetail'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/471
+  - title: "Rename to 'OnLongPressedWithDetail'"
+    date: 2026-08-18
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      typedef: 'OnLongPressedWithDetails'
+    changes:
+      - kind: 'rename'
+        newName: 'OnLongPressedWithDetail'

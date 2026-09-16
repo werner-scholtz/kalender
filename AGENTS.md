@@ -137,7 +137,7 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 - `KalenderEvent` is the base class: extend it to attach custom data (title, colour, etc.).
 - Events store UTC internally (`start` and `end` as `DateTime` in UTC). Use `floatingStart()`/`floatingEnd()` for calendar-position access.
 - Event IDs are `String` (10-char random alphanumeric, auto-generated).
-- Override `copyWithData()`, `==`, and `hashCode` in subclasses. `copyWithData` carries `@mustBeOverridden`, and `KalenderEvent` reapplies `id`, `interaction` and `multiDayRule` through `carryOver` afterwards, so a subclass never forwards those by hand.
+- Override `copyWithData()`, `==`, and `hashCode` in subclasses. `copyWithData` carries `@mustBeOverridden`, and `KalenderEvent` reapplies `id`, `interaction` and `multiDayRule` through `carryOver` afterwards, so a subclass never forwards those manually.
 - `EventInteraction` controls per-event permissions (resizing, rescheduling).
 - `layoutEquals()` is used for render optimisation: returns true if the event occupies the same visual space.
 
@@ -239,7 +239,7 @@ A message without a version has no deadline and will sit there for years. `lib/`
 
 ### Automating a migration
 
-**Ship a fix for everything that can carry one.** A migration step a user performs by hand is a step some users will not perform. Data-driven fixes live in `lib/fix_data/fix_*.yaml` and ship inside the package, so `dart fix --apply` in a user's project applies them. The format is at https://dart.dev/go/data-driven-fixes.
+**Ship a fix for everything that can carry one.** A migration step a user performs manually is a step some users will not perform. Data-driven fixes live in `lib/fix_data/fix_*.yaml` and ship inside the package, so `dart fix --apply` in a user's project applies them. The format is at https://dart.dev/go/data-driven-fixes.
 
 What a fix can do:
 
@@ -247,7 +247,7 @@ What a fix can do:
 - Rename, add or remove a named parameter.
 - Derive a new argument from an old one, so one parameter can become two. `KalenderEvent(dateTimeRange: r)` to `KalenderEvent(start: r.start, end: r.end)` is an `addParameter` pair with `argumentValue.expression` reading `arguments[dateTimeRange]`, plus a `removeParameter`.
 
-What it cannot do: rewrite the body of an override, or reshape an override's parameters. Both are hand edits the migration guide has to carry.
+What it cannot do: rewrite the body of an override, or reshape an override's parameters. Both are manual edits the migration guide has to carry.
 
 A type change with no rename has nothing to trigger on, since kalender cannot deprecate another package's type. Rename the parameter alongside the type change and the fix can wrap the old value.
 
@@ -261,11 +261,11 @@ A type change with no rename has nothing to trigger on, since kalender cannot de
 | `renameParameter` | yes | yes | no, references to the parameter are left undefined |
 | `addParameter` with `removeParameter` | yes | no, reported as `invalid_override` | not applicable |
 
-So a parameter reshape, which is the shape a signature change usually takes, fixes every call site and leaves every subclass to be edited by hand. Say so in the migration guide for any change to a `@mustBeOverridden` member.
+So a parameter reshape, which is the shape a signature change usually takes, fixes every call site and leaves every subclass to be edited manually. Say so in the migration guide for any change to a `@mustBeOverridden` member.
 
 **A `renameParameter` reaches only the element it names.** A transform on `defaultMultiDayFrameGenerator` does not rename the same parameter on `MultiDayLayoutStrategy.generateFrame`. Give each function and method an app calls or overrides its own transform, and give a probe override a body that uses the parameter, or the body edit stays hidden.
 
-**A `renameParameter` on a constructor does not reach a `super.` parameter** declared by a subclass constructor. That declaration is a hand edit the migration guide has to carry.
+**A `renameParameter` on a constructor does not reach a `super.` parameter** declared by a subclass constructor. That declaration is a manual edit the migration guide has to carry.
 
 **Every fix is tested.** The fixture pair lives in `test_fixes/<name>.dart` and `<name>.dart.expect`, and CI runs:
 

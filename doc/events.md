@@ -160,7 +160,7 @@ KalenderEvent(
 )
 ```
 
-`KalenderEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. You never forward it by hand: `copyWithData` rebuilds only the fields your subclass adds, and `KalenderEvent` reapplies the rule, the id and the interaction config afterwards. Accept `super.multiDayRule` in the constructor so an event can be given one.
+`KalenderEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. You never forward it manually: `copyWithData` rebuilds only the fields your subclass adds, and `KalenderEvent` reapplies the rule, the id and the interaction config afterwards. Accept `super.multiDayRule` in the constructor so an event can be given one.
 
 `spansMultipleDays` returns whether an event counts as multi-day, applying the same rules the calendar does:
 

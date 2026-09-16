@@ -37,3 +37,16 @@ transforms:
               value: 'arguments[dateTimeRange]'
       - kind: 'removeParameter'
         name: 'dateTimeRange'
+
+  # Changes made in https://github.com/werner-scholtz/kalender/pull/433
+  # inClass names the class as it stands today. The receiver's type is resolved,
+  # so the old name matches nothing here.
+  - title: "Rename to 'copyWithData'"
+    date: 2026-08-04
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      method: 'copyWith'
+      inClass: 'KalenderEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'copyWithData'
