@@ -56,12 +56,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   /// The [MultiDayViewController] that controls the calendar view.
   MultiDayViewController? viewController;
 
-  /// The threshold for hiding the time indicator when it's off-screen.
-  ///
-  /// When the page offset is beyond this threshold (in either direction),
-  /// the time indicator will be hidden to improve performance.
-  static const double _visibilityThreshold = 1.0;
-
   /// Timer that triggers periodically to check if the day has changed.
   Timer? _dateCheckTimer;
 
@@ -71,26 +65,48 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   /// point for positioning the time indicator.
   late int todayPageNumber;
 
-  /// The index of today's date on the page that contains it.
+  /// The index of today's date on the page that contains it, or `-1` when today
+  /// falls outside the view's display range.
   late int todayIndex;
 
-  /// The current page offset relative to today's page.
+  /// The number of days one page covers.
   ///
-  /// This value represents how far the current view has scrolled from
-  /// the page containing today's date. A value of 0 means today's page
-  /// is fully visible, positive values mean we're viewing future dates,
-  /// and negative values mean we're viewing past dates.
-  late double pageOffset;
+  /// A free scrolling view pages by the day while showing several at a time, so
+  /// this is not the number of days on screen.
+  late int daysPerPage;
+
+  /// Days between the left edge of the viewport and the start of today.
+  ///
+  /// Negative when today has scrolled off the leading edge. The indicator is on
+  /// screen while this is greater than `-1` and less than the number of days the
+  /// viewport shows.
+  late double daysFromLeftEdge;
+
+  /// The number of days the viewport shows.
+  int get _visibleDays => widget.viewController.viewConfiguration.numberOfDays;
+
+  /// Whether a day starting [days] from the left edge overlaps the viewport.
+  bool _isVisible(double days) => todayIndex >= 0 && days > -1 && days < _visibleDays;
+
+  /// The current page, read from the controller rather than from the page offset
+  /// notifier, which counts viewports and so does not count pages when they are
+  /// narrower than one.
+  double _currentPage() {
+    final controller = widget.viewController.pageController;
+    if (controller.hasClients && controller.positions.length == 1 && controller.position.hasPixels) {
+      return controller.page ?? widget.initialPage.toDouble();
+    }
+    return widget.initialPage.toDouble();
+  }
+
+  /// Days between the left edge of the viewport and the start of today.
+  double _daysFromLeftEdge() => (todayPageNumber - _currentPage()) * daysPerPage + todayIndex;
 
   /// The calculated left position for the time indicator.
   ///
-  /// This position is calculated based on the page offset and page width,
-  /// determining where the time indicator should be positioned horizontally
-  /// to align with the current day column.
-  ///
   /// This will adjust the calculated left position for RTL layouts.
   double left(double pageWidth, double dayWidth) {
-    var left = (pageOffset * pageWidth) + (todayIndex * dayWidth);
+    var left = daysFromLeftEdge * dayWidth;
 
     if (Directionality.of(context) == TextDirection.rtl) {
       // In RTL mode, we need to adjust the left position to account for the reversed layout.
@@ -105,7 +121,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _setup();
-    pageOffset = (todayPageNumber - widget.initialPage).toDouble();
   }
 
   @override
@@ -134,19 +149,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     viewController = widget.viewController;
     viewController?.pageOffset.addListener(_listener);
     _setupDailyTimer();
-
-    var currentOffset = widget.viewController.pageOffset.value;
-    final pageController = widget.viewController.pageController;
-
-    if (pageController.hasClients && pageController.position.hasPixels) {
-      currentOffset = pageController.page ?? currentOffset;
-    } else if (currentOffset == 0.0) {
-      // Fallback to initialPage if the page controller hasn't laid out yet
-      // and haven't emitted any scroll position updates.
-      currentOffset = widget.initialPage.toDouble();
-    }
-
-    pageOffset = todayPageNumber - currentOffset;
+    daysFromLeftEdge = _daysFromLeftEdge();
   }
 
   /// Listener callback that triggers a rebuild when the page offset changes.
@@ -154,12 +157,13 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   /// This ensures the time indicator position is updated in real-time
   /// as the user scrolls through different pages.
   void _listener() {
-    pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
+    final previous = daysFromLeftEdge;
+    daysFromLeftEdge = _daysFromLeftEdge();
 
-    // If the time indicator is off-screen, we can skip the rebuild to improve performance.
-    // We still need to rebuild if the time indicator is within the visibility threshold
-    // to ensure it appears/disappears correctly when scrolling into and out of view.
-    if (pageOffset < -_visibilityThreshold || pageOffset > _visibilityThreshold) return;
+    // Skip the rebuild while the indicator is off-screen both before and after,
+    // and take it when either side is on-screen so it is repainted on the frame
+    // it enters or leaves the viewport.
+    if (!_isVisible(previous) && !_isVisible(daysFromLeftEdge)) return;
 
     setState(() {});
   }
@@ -176,7 +180,9 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
     todayPageNumber = pageNavigation.indexFromDate(today, widget.viewController.location);
     final range = pageNavigation.rangeFromIndex(todayPageNumber, widget.viewController.location);
-    todayIndex = range.dates().indexOf(now);
+    final dates = range.dates();
+    daysPerPage = dates.length;
+    todayIndex = dates.indexOf(now);
   }
 
   /// Sets up a timer that reliably triggers every minute to check if the date has changed.
@@ -202,7 +208,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
 
     // Only trigger a rebuild if the day actually changed
     if (oldPageNumber != todayPageNumber || oldIndex != todayIndex) {
-      pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
+      daysFromLeftEdge = _daysFromLeftEdge();
       if (mounted) {
         setState(() {});
       }
@@ -214,7 +220,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     return LayoutBuilder(
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;
-        final dayWidth = pageWidth / widget.viewController.viewConfiguration.numberOfDays;
+        final dayWidth = pageWidth / _visibleDays;
 
         final left = this.left(pageWidth, dayWidth);
         final right = pageWidth - left - dayWidth;
@@ -226,8 +232,8 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
               right: right,
               top: 0,
               bottom: 0,
-              // Hide the time indicator when it's completely off-screen (more than 1 page away)
-              child: pageOffset <= -_visibilityThreshold || pageOffset >= _visibilityThreshold
+              // Hide the time indicator when today's column is off-screen.
+              child: !_isVisible(daysFromLeftEdge)
                   ? const SizedBox.shrink()
                   : widget.childOverride ??
                         context.components.multiDayComponents.bodyComponents.buildTimeIndicator(

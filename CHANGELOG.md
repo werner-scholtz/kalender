@@ -8,6 +8,9 @@
 ### Fixes
 
 - The month grid draws its lines again at the default thickness of `0`, which is a hairline. It has drawn nothing since 0.25.0.
+- The time indicator sits on the right day column in a free scrolling view, rather than only when today is the leading day.
+- The time indicator is removed once today's column leaves the viewport, rather than staying where it was last drawn.
+- The time indicator is not built when today falls outside the view's display range.
 - The guide index in the API reference links to each guide's topic page rather than to the repository.
 
 ### Documentation

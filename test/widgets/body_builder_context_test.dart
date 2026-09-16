@@ -29,6 +29,9 @@ void main() {
       kalenderController: kalenderController,
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
+        // Pin "now" inside the display range, so the time indicator is on screen.
+        initialDateTime: DateTime(2025, 1, 15),
+        nowCallback: () => DateTime(2025, 1, 15, 12),
       ),
       components: components,
       header: KalenderHeader(multiDayTileComponents: tiles),
