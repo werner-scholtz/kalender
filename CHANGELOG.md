@@ -35,7 +35,6 @@ See [MIGRATION.md](MIGRATION.md#v030x--v0310) for what to change.
 
 - `ViewTransitionContext.locationChanged` says whether the resolvers run because the location changed.
 - `dart fix --apply` applies this release's renames.
-- `dart fix` does not rename a parameter's uses in a `generateFrame` override body, `super.internalVisibleRange` in a view controller subclass, or `context.calendarLocale`.
 
 ### Fixes
 
