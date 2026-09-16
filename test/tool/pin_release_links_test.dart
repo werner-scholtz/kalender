@@ -236,8 +236,17 @@ dartdoc:
     String pinAll(String content) => pinPubDevDocs(pinBranchUrls(content, repoUrl, tag), package, tag);
 
     test('the real README, example README and CHANGELOG rewrite cleanly', () {
-      final readme = pinRelativeLinks(pinAll(File('README.md').readAsStringSync()), repoUrl, tag);
+      final topicPages = topicPageUrls(File('dartdoc_options.yaml').readAsStringSync(), package, tag);
+      final readme = pinRelativeLinks(
+        pinAll(File('README.md').readAsStringSync()),
+        repoUrl,
+        tag,
+        topicPages: topicPages,
+      );
       expect(leftoverProblems('README.md', readme, repoUrl, allowUnpinnedLinks: false, package: package), isEmpty);
+      for (final guide in topicPages.keys) {
+        expect(readme, isNot(contains('$repoUrl/blob/$tag/$guide')), reason: 'README.md links to $guide on GitHub');
+      }
 
       final example = pinAll(File('example/README.md').readAsStringSync());
       expect(
