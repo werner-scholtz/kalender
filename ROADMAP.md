@@ -233,23 +233,39 @@ Publishing validates the package again, now that pub.dev accepts a metadata requ
 
 ### 0.32.0, planned
 
-New features wait for this release, so 0.31.0 stays a release of renames with one migration to read.
+A release that adds and does not break, built around selection. It has no migration section.
 
-**The defaults an app cannot reach.** A `material_ui` app, or any app that installs no Material, can already supply every style through the `KalenderTheme` widget without `ThemeExtension`, so it is expected to bring its own colours. What it could not do was reach a default that sat behind no style field at all. There was one: the tonal today highlight behind a day number read the Material `ColorScheme` directly. 0.31.2 put it behind `KalenderThemeData.dayNumberStyle`. `KalenderPalette` stays private, since making it public would only save an app from naming the styles it already has to name, and a second way to set the same values is worth less than the one that already works. This leaves [#491](https://github.com/werner-scholtz/kalender/issues/491) resting on the `intl` timeline formatting alone.
+**Selection, held by the controller.** An app selects through `KalenderController`: `selectDate`, `selectRange` and `deselectRange`, with the selection in `selectedRange`. The controller holds it rather than a predicate the app passes in, since a predicate gives the day numbers nothing to listen to, and [#215](https://github.com/werner-scholtz/kalender/issues/215) and [#264](https://github.com/werner-scholtz/kalender/issues/264) need to read the selection rather than test one day at a time. On the controller it also survives a view switch. A selection is whole days, and its range ends at the start of the next day like every other range in the package, so a selection read back and passed in again is unchanged. The calendar draws it on the day number in the month view, the day header, the schedule and the overlay, with a ring by default, and a day number rebuilds only when its own state changes. This is the selection half of [#262](https://github.com/werner-scholtz/kalender/issues/262).
 
-**An example of the calendar in an app that installs no Material.** `examples/material_ui` proved the value type breaks by building them rather than predicting them, and the same treatment is what would show whether an app on `WidgetsApp` or `CupertinoApp` can render the calendar at all, importing neither `package:flutter/material.dart` nor `package:kalender/material.dart` and theming it through `KalenderTheme`. Two things are known to be in the way today, both in the default components rather than the engine: the day number builds an `IconButton` and the multi-day overflow button an `InkWell`, and each needs a `Material` ancestor the app no longer supplies. `Card` supplies its own, and `MaterialLocalizations` is already an optional lookup. Whether the fix is to wrap those two, to replace them, or to tell the app to wrap the calendar, is for the example to answer.
+**Taps on dates and week numbers.** Nothing reported a tap on a day number, a day name or a week number, and in the month view the day number kept the tap from reaching its cell. `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses, one `GestureCallbacks` group per part, so the callbacks do not grow by eight fields for every part that reports gestures. An empty day in the schedule reports the `onTapped` callbacks, the way an empty month cell does.
 
-**Days as selectable things, with a way to show a chosen day's events.** [#264](https://github.com/werner-scholtz/kalender/issues/264), [#215](https://github.com/werner-scholtz/kalender/issues/215), [#262](https://github.com/werner-scholtz/kalender/issues/262) for the month and [#89](https://github.com/werner-scholtz/kalender/issues/89) describe one feature in the shape of [table_calendar](https://pub.dev/packages/table_calendar): a grid of days, selection including ranges, markers for days with events, and the chosen day's events shown below the grid or in the overlay card. kalender has the page arithmetic, the grid, `eventsInRange`, location handling and the overlay. It lacks selection as a concept the calendar knows, events drawn as markers rather than tiles, and a compact grid view. It may take more than one release.
+**The calendar does not select on its own.** An app selects from the callbacks, so it always knows what changed, and there is no selection-changed callback. Selecting on tap, a range by dragging across days ([#89](https://github.com/werner-scholtz/kalender/issues/89)), and a selection drawn behind a cell wait for 0.33.0.
 
-One question comes before any code: is it a new view inside `KalenderView`, or a separate widget that shares kalender's controllers? The answer decides whether it waits on a view registry. The rest follow from it. Does selection cover ranges and several days, and does the app or `KalenderController` hold it? How does a day show that it has events? What shows the chosen day's events? Do the two-week and week grids come too? Can an event be dragged between days in the grid? It also has to answer what kalender adds over table_calendar for this shape: timezones, one shared events controller, drag and drop, and consistency with the other views.
+**Five smaller items.**
 
-**The rest of composability, a view registry and cell slots, shaped by that feature** rather than designed on its own. See Composability below.
+- [#215](https://github.com/werner-scholtz/kalender/issues/215): open the day overlay for any date, not only through the "+N more" button.
+- [#259](https://github.com/werner-scholtz/kalender/issues/259): a drag that starts on an unmodifiable event creates an event instead of doing nothing.
+- [#280](https://github.com/werner-scholtz/kalender/issues/280): animated transitions between views, opt-in and off by default.
+- `ResizeHandleDetails` carries the calendar's location, so `showStart` and `showEnd` stop falling back to the device timezone.
+- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` decide which tiles are built but not where they are drawn, which has been true since 0.19.1. Either culling uses the geometry placement uses, or the two are deprecated.
+
+### 0.33.0, planned
+
+**Composability, as a pairing problem.** [#264](https://github.com/werner-scholtz/kalender/issues/264) raised the question of whether a compact month grid is a view inside `KalenderView` or a separate widget sharing its controllers. The code answers neither. `KalenderBody` and `KalenderHeader` each take every view's tile components and configuration and switch on the controller type, so most of what they are given is unused at any moment, and a month configuration, controller, header and body that belong together are never expressed as a set. `TabBar` and `TabBarView` have the same shape: two widgets, one shared controller, and an assertion when they disagree. kalender has the shared controller and lacks the pairing.
+
+Registering views as sets of a header and a body is the shape to explore, with the built-in views registered by default. It is the view registry and the pairing at once, and an app adds a view by adding an entry. One question comes first: once views are registered, is `viewConfiguration` still what picks the active view, or does each entry carry its own configuration? The answer changes how every app constructs a calendar, so 0.33.0 most likely breaks.
+
+What waits on it:
+
+- A view registry, for [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264).
+- Cell and background slots in the multi-day body, for [#89](https://github.com/werner-scholtz/kalender/issues/89), the multi-day half of [#262](https://github.com/werner-scholtz/kalender/issues/262), and a selection drawn behind a cell.
+- The calendar selecting on its own.
 
 ### The next breaking window
 
 Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
 
-Nothing is queued. 0.31.0 took the `internal` naming sweep and the rename of `InternalDateTimeRange`.
+Nothing is queued beyond 0.33.0, which most likely breaks for composability.
 
 ### Theming, still open
 
@@ -261,6 +277,10 @@ The question per field is whether it reaches something an app cannot otherwise r
 
 The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
+**The defaults an app cannot reach.** A `material_ui` app, or any app that installs no Material, can already supply every style through the `KalenderTheme` widget without `ThemeExtension`, so it is expected to bring its own colours. What it could not do was reach a default that sat behind no style field at all. There was one: the tonal today highlight behind a day number read the Material `ColorScheme` directly. 0.31.2 put it behind `KalenderThemeData.dayNumberStyle`. `KalenderPalette` stays private, since making it public would only save an app from naming the styles it already has to name, and a second way to set the same values is worth less than the one that already works. This leaves [#491](https://github.com/werner-scholtz/kalender/issues/491) resting on the `intl` timeline formatting alone.
+
+**An example of the calendar in an app that installs no Material.** `examples/material_ui` proved the value type breaks by building them rather than predicting them, and the same treatment is what would show whether an app on `WidgetsApp` or `CupertinoApp` can render the calendar at all, importing neither `package:flutter/material.dart` nor `package:kalender/material.dart` and theming it through `KalenderTheme`. Two things are known to be in the way today, both in the default components rather than the engine: the day number builds an `IconButton` and the multi-day overflow button an `InkWell`, and each needs a `Material` ancestor the app no longer supplies. `Card` supplies its own, and `MaterialLocalizations` is already an optional lookup. Whether the fix is to wrap those two, to replace them, or to tell the app to wrap the calendar, is for the example to answer.
+
 ### Known defects
 
 **Seven `TODO` comments ship in `lib/`.** None is a confirmed defect. Grouped by what they touch.
@@ -271,33 +291,33 @@ The missing `ResizeHandleStyle` moved to 0.28.0 above.
 
 ### Tests
 
-Coverage is 92.2% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0. It gates the composability work below, and that gate is now met.
+Coverage is 93.7% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0.
 
 Both columns are line coverage of the directory and everything under it, measured with `flutter test --coverage`.
 
 | Area | 0.24.0 | Now | What is missing |
 |---|---|---|---|
-| `models/` | 87% | 90% | Recovered, and past the 0.24.0 figure, once the directory below was covered. |
+| `models/` | 87% | 93% | Recovered, and past the 0.24.0 figure, once the directory below was covered. |
 | `models/components/` | not tracked | 98% | Done. `copyWith`, `==` and `hashCode` on the nine components classes had no test at all. What is left is six bare `@override` lines that lcov counts and no test can reach. |
-| `models/mixins/` | 84% | 86% | No targeted work yet. |
-| `models/view_configurations/` | 83% | 83% | `schedule_view_configuration.dart` at 42%. |
-| `widgets/drag_targets/` | 71% | 91% | Done. `schedule_drag_target.dart` went from 10 of its 87 lines to 82, which covered the whole reschedule path in the schedule view. |
-| `widgets/event_tiles/` | 81% | 82% | Barely moved. `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 38%. |
+| `models/mixins/` | 84% | 86% | No targeted work yet. `schedule_map.dart` at 71%. |
+| `models/view_configurations/` | 83% | 91% | `schedule_view_configuration.dart` is covered. `month_view_configuration.dart` at 72%. |
+| `widgets/drag_targets/` | 71% | 92% | Done. `schedule_drag_target.dart` went from 10 of its 87 lines to 82, which covered the whole reschedule path in the schedule view. |
+| `widgets/event_tiles/` | 81% | 95% | `multi_day_overlay_tile.dart` and `schedule_tile.dart` are covered. `multi_day_tile.dart` at 77%. |
 | `theme/` | 78% | 92% | Done. 0.25.0 rewrote this code and tested it, taking it from the lowest covered area to one of the highest. |
 
-The rest runs from 79% to 100% with nothing far below.
+The rest runs from 86% to 100% with nothing far below.
 
 **CI runs every job on the Flutter version in `.fvmrc`**, so `examples/material_ui` runs on the release that moved Material out, which is the point of it. A job on the newest stable reports a break before `.fvmrc` moves. The declared Flutter minimum has had its own job since 0.30.0.
 
 **The Dart bound is `>=3.10.0`**, the version `timezone` already required. Raising it switched `dart format` to the tall style, since the formatter picks its style from the package language version.
 
-Both areas the 0.24.0 backfill named are now closed, so the coverage gate on the composability work below is met. What is left is smaller and spread out: `schedule_view_configuration.dart` at 42%, `multi_day_overlay_tile.dart` at 31% and `schedule_tile.dart` at 38%.
+Both areas the 0.24.0 backfill named are closed, and so are the three files named after them, so the coverage gate on the composability work in 0.33.0 is met. What is left is smaller and spread out: `schedule_map.dart` at 71%, `month_view_configuration.dart` at 72% and `multi_day_tile.dart` at 77%.
 
 The pattern from 0.24.0 held again, in that raising coverage turned something up. Covering the schedule drag target showed that a drop took the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day landed at midnight. The multi-day header already kept it, and the schedule uses the same path in 0.28.0. The components classes were sound: the tests found no dropped field, which matches the audit done during 0.27.0.
 
 ### Composability
 
-It reshapes public API, so the shape has to settle before 1.0.0. The coverage gate it waited on is met, and 0.32.0 starts on it through the feature planned there.
+It reshapes public API, so the shape has to settle before 1.0.0. The coverage gate it waited on is met, and 0.33.0 takes it up.
 
 Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. The state layer was the second, public since 0.29.0 as `KalenderScope`. Two pieces are unbuilt.
 
@@ -314,13 +334,13 @@ Most of the open issues should land before 1.0.0 rather than after it. Each one 
 
 | Issue | Needs |
 |---|---|
-| [#215](https://github.com/werner-scholtz/kalender/issues/215) a portal for every cell in the month body | A way to open the day overlay for any date. It exists only for days whose events overflow, and only the "+N more" button opens it. |
-| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. |
-| [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. Buildable in the month view today, not in the multi-day body. |
+| [#215](https://github.com/werner-scholtz/kalender/issues/215) a portal for every cell in the month body | A way to open the day overlay for any date. It exists only for days whose events overflow, and only the "+N more" button opens it. Planned for 0.32.0. |
+| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. Selection lands in 0.32.0, the slots in 0.33.0. |
+| [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. It lands in 0.32.0 on the day number. Drawing it on a multi-day body cell needs the slots in 0.33.0. |
 | [#40](https://github.com/werner-scholtz/kalender/issues/40) yearly view | A view registry. |
 | [#264](https://github.com/werner-scholtz/kalender/issues/264) mobile month view | A view registry. A grid of days over a list, not a configuration of the current month view. |
 
-Selection is the thread through the middle three. There is no `selectedDate` on the controller and no `isSelected` on a cell, so it is app owned today, and one addition serves all of them. #264, #215, #262 and #89 are planned together in 0.32.0.
+Selection is the thread through the middle three. 0.32.0 adds it to the controller, and 0.33.0 adds the structure the rest waits on.
 
 **Independent.** These wait on nothing and can land in any release.
 
@@ -328,8 +348,8 @@ Selection is the thread through the middle three. There is no `selectedDate` on 
 |---|---|
 | [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A set of visible weekdays on the view configuration. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. Scoped below. |
 | [#98](https://github.com/werner-scholtz/kalender/issues/98) named and uneditable time regions | A second thing the calendar draws besides events, that events sit on top of. The largest new model here. |
-| [#259](https://github.com/werner-scholtz/kalender/issues/259) drag to create over a locked event | A drag starting on an unmodifiable event should fall through to creation instead of doing nothing. Mostly behavior. |
-| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `KalenderView`. |
+| [#259](https://github.com/werner-scholtz/kalender/issues/259) drag to create over a locked event | A drag starting on an unmodifiable event should fall through to creation instead of doing nothing. Mostly behavior. Planned for 0.32.0. |
+| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `KalenderView`. Planned for 0.32.0. |
 
 **Arbitrary visible weekdays, [#90](https://github.com/werner-scholtz/kalender/issues/90), needs the page to stop being one date range.** 0.26.0 covers the contiguous case with `numberOfDays` on `week` and `workWeek`, which is what the reporter of [#444](https://github.com/werner-scholtz/kalender/issues/444) asked for. Every contiguous span starting on `firstDayOfWeek` is expressible that way, so what a set of weekdays adds is the non-contiguous case, Monday, Wednesday and Friday, and a span that starts somewhere other than `firstDayOfWeek`.
 
