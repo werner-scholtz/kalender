@@ -258,6 +258,27 @@ void main() {
       );
     });
 
+    testWidgets('the month grid paints its lines at the default thickness', (tester) async {
+      await pumpMonthView(tester, DateTime(2025, 1));
+
+      final context = tester.element(find.byType(MonthGrid));
+      final color = KalenderTheme.of(context).monthGridStyle!.color!;
+
+      // The default thickness is 0, which paints a hairline rather than nothing.
+      expect(tester.renderObject(find.byType(MonthGrid)), paints..path(color: color, style: PaintingStyle.stroke));
+    });
+
+    testWidgets('the month grid paints a filled line when given a thickness', (tester) async {
+      const color = Color(0xFF00FF00);
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        theme: const KalenderThemeData(monthGridStyle: MonthGridStyle(color: color, thickness: 2)),
+      );
+
+      expect(tester.renderObject(find.byType(MonthGrid)), paints..path(color: color, style: PaintingStyle.fill));
+    });
+
     testWidgets('the month week number sits at the top of its row by default', (tester) async {
       // The theme leaves alignment null, so the month's own top alignment
       // applies. Every other week number centres itself instead.
