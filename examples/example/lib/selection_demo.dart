@@ -101,6 +101,7 @@ class _SelectionDemoState extends State<SelectionDemo> {
 
   var tapMode = TapMode.day;
   var navigate = false;
+  var labelOpensOverlay = false;
   var look = Look.ring;
   DateTime? rangeAnchor;
   String lastCall = '';
@@ -163,6 +164,11 @@ class _SelectionDemoState extends State<SelectionDemo> {
     );
   }
 
+  void showDayOverlay(DateTime date) {
+    kalenderController.showDayOverlay(date, navigate: navigate);
+    setState(() => lastCall = 'controller.showDayOverlay(${_date(date)}, navigate: $navigate)');
+  }
+
   void onTapped(DateTime date) {
     switch (tapMode) {
       case TapMode.day:
@@ -195,7 +201,9 @@ class _SelectionDemoState extends State<SelectionDemo> {
                 viewConfiguration: viewConfiguration,
                 callbacks: KalenderCallbacks(
                   onTapped: onTapped,
-                  dateLabel: GestureCallbacks(onTap: (detail) => onTapped(detail.date)),
+                  dateLabel: GestureCallbacks(
+                    onTap: (detail) => labelOpensOverlay ? showDayOverlay(detail.date) : onTapped(detail.date),
+                  ),
                   weekNumber: GestureCallbacks(onTap: (detail) => selectRange(detail.dateTimeRange)),
                   onEventChanged: (event, updatedEvent) =>
                       eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
@@ -236,9 +244,7 @@ class _SelectionDemoState extends State<SelectionDemo> {
             valueListenable: kalenderController.visibleDateTimeRange,
             builder: (context, range, _) {
               if (range == null) return const SizedBox.shrink();
-              final date = viewConfiguration is MonthViewConfiguration
-                  ? FloatingDateTimeRange.fromDateTimeRange(range).dominantMonthDate
-                  : range.start;
+              final date = FloatingDateTimeRange.fromDateTimeRange(range).dominantMonthDate;
               return Text('${date.monthNameLocalized()} ${date.year}', style: Theme.of(context).textTheme.titleMedium);
             },
           ),
@@ -343,9 +349,31 @@ class _SelectionDemoState extends State<SelectionDemo> {
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text('navigate: true'),
-          subtitle: const Text('Moves the view when the first selected day is not visible.'),
+          subtitle: const Text('Moves the view when the day is not visible.'),
           value: navigate,
           onChanged: (value) => setState(() => navigate = value),
+        ),
+        heading('Day overlay'),
+        ValueListenableBuilder(
+          valueListenable: kalenderController.openDayOverlay,
+          builder: (context, day, _) => Text('controller.openDayOverlay: ${day == null ? 'null' : _date(day)}'),
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('A date label opens the overlay'),
+          value: labelOpensOverlay,
+          onChanged: (value) => setState(() => labelOpensOverlay = value),
+        ),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            OutlinedButton(onPressed: () => showDayOverlay(today), child: const Text('Today')),
+            OutlinedButton(
+              onPressed: () => showDayOverlay(today.add(const Duration(days: 45))),
+              child: const Text('In 45 days'),
+            ),
+          ],
         ),
         heading('Look'),
         RadioGroup<Look>(

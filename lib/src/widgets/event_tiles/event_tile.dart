@@ -11,10 +11,12 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_gesture_detector.dart';
+import 'package:kalender/src/widgets/event_tiles/tile_interaction.dart';
 
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
+import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// The function that is called when the event is tapped.
 typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
@@ -109,9 +111,10 @@ abstract class EventTile extends StatelessWidget {
     // enabled. It carries a mouse region, a selection listener and a size read
     // per tile, so skipping it for read-only calendars avoids that per-tile
     // cost entirely.
-    final showResizeHandles = resizeAxis != null && context.interaction.allowResizing;
+    final interaction = context.interaction;
+    final showResizeHandles = resizeAxis != null && interaction.allowResizing;
 
-    return TileGestureDetector(
+    final tile = TileGestureDetector(
       gestureDetectorKey: gestureKey,
       onTapUp: onTapUp,
       onSecondaryTapUp: onSecondaryTapUp,
@@ -126,5 +129,13 @@ abstract class EventTile extends StatelessWidget {
               ],
             ),
     );
+
+    final location = context.location;
+    final canResize =
+        showResizeHandles &&
+        (event.canResizeStart(interaction, floatingRange, location: location) ||
+            event.canResizeEnd(interaction, floatingRange, location: location));
+    if (event.canReschedule(interaction) || canResize) return tile;
+    return TranslucentPointer(child: tile);
   }
 }

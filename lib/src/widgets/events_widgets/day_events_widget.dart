@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
@@ -22,12 +23,16 @@ class MultiDayEventsRow extends StatelessWidget {
   /// The controller for the multi-day view.
   final MultiDayViewController viewController;
 
+  /// The height of the page.
+  final double pageHeight;
+
   /// Creates a new instance of the [MultiDayEventsRow] widget.
   const MultiDayEventsRow({
     super.key,
     required this.configuration,
     required this.floatingRange,
     required this.viewController,
+    required this.pageHeight,
   });
 
   /// A key used to identify the day events widget.
@@ -50,6 +55,7 @@ class MultiDayEventsRow extends StatelessWidget {
                 viewConfiguration: viewController.viewConfiguration,
                 cache: viewController.cache,
                 heightPerMinute: context.heightPerMinute,
+                pageHeight: pageHeight,
                 scrollController: viewController.scrollController,
                 kalenderController: context.kalenderController,
               ),
@@ -85,6 +91,9 @@ class DayEventsColumn extends StatefulWidget {
 
   final double heightPerMinute;
 
+  /// The height of the page.
+  final double pageHeight;
+
   /// The vertical scroll controller of the multi-day body.
   ///
   /// Used to only build the event tiles whose time band is within the visible
@@ -105,6 +114,7 @@ class DayEventsColumn extends StatefulWidget {
     required this.location,
     required this.cache,
     required this.heightPerMinute,
+    required this.pageHeight,
     required this.scrollController,
     required this.kalenderController,
   });
@@ -117,9 +127,9 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   /// The events that are displayed on the day.
   List<KalenderEvent> _events = [];
 
-  /// The (top, bottom) pixel band of each event in [_events], used to decide
-  /// which events fall inside the visible scroll window.
-  List<(double, double)> _bands = const [];
+  /// The (top, bottom) pixel band of each event in [_events] by index, used to decide which events fall inside
+  /// the visible scroll window. An event the delegate lays out no data for has no band and is never built.
+  Map<int, (double, double)> _bands = const {};
 
   /// The indices into [_events] whose tiles are currently built. Only events
   /// within the visible scroll window (plus an overscan margin) are built.
@@ -156,8 +166,9 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
     final didUpdateLocation = oldWidget.location != widget.location;
     final didUpdateHeightPerMinute = oldWidget.heightPerMinute != widget.heightPerMinute;
+    final didUpdateConfiguration = oldWidget.configuration != widget.configuration;
 
-    if (didUpdateLocation || didUpdateHeightPerMinute) {
+    if (didUpdateLocation || didUpdateHeightPerMinute || didUpdateConfiguration) {
       widget.cache.clearAll();
       setState(() {
         _events = _sort(_queryEvents());
@@ -207,12 +218,12 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     }
   }
 
-  /// Computes the (top, bottom) pixel band of each event, matching the layout
-  /// delegate's geometry so culling lines up with what is actually drawn.
-  List<(double, double)> _computeBands(List<KalenderEvent> events) {
-    if (events.isEmpty) return const [];
+  /// Computes the (top, bottom) pixel band of each event with
+  /// [EventLayoutDelegate.calculateVerticalLayoutData], so culling lines up with what is drawn.
+  Map<int, (double, double)> _computeBands(List<KalenderEvent> events) {
+    if (events.isEmpty) return const {};
     final delegate = widget.configuration.eventLayoutStrategy.createDelegate(
-      events: const [],
+      events: events,
       date: widget.date,
       timeOfDayRange: widget.viewConfiguration.timeOfDayRange,
       heightPerMinute: widget.heightPerMinute,
@@ -220,13 +231,10 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
       cache: widget.cache,
       location: widget.location,
     );
-    return [
-      for (final event in events)
-        (
-          delegate.calculateDistanceFromStart(event),
-          delegate.calculateDistanceFromStart(event) + delegate.calculateHeight(event),
-        ),
-    ];
+    return {
+      for (final data in delegate.calculateVerticalLayoutData(Size(0, widget.pageHeight)))
+        if (data.id >= 0 && data.id < events.length) data.id: (data.top, data.bottom),
+    };
   }
 
   /// The indices of the events whose band intersects the visible scroll window
@@ -234,24 +242,19 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   /// not attached yet.
   Set<int> _computeVisibleIndices() {
     final controller = widget.scrollController;
-    if (!controller.hasClients || controller.positions.length != 1) {
-      return {for (var i = 0; i < _events.length; i++) i};
-    }
+    if (!controller.hasClients || controller.positions.length != 1) return _bands.keys.toSet();
 
     final position = controller.position;
     // The viewport/pixels are not available until the scroll view has been laid
     // out. Until then build everything; the post-frame callback re-culls.
-    if (!position.hasViewportDimension || !position.hasPixels) {
-      return {for (var i = 0; i < _events.length; i++) i};
-    }
+    if (!position.hasViewportDimension || !position.hasPixels) return _bands.keys.toSet();
     final overscan = position.viewportDimension * 0.5;
     final windowTop = position.pixels - overscan;
     final windowBottom = position.pixels + position.viewportDimension + overscan;
 
     final visible = <int>{};
-    for (var i = 0; i < _bands.length; i++) {
-      final (top, bottom) = _bands[i];
-      if (bottom >= windowTop && top <= windowBottom) visible.add(i);
+    for (final MapEntry(key: index, value: (top, bottom)) in _bands.entries) {
+      if (bottom >= windowTop && top <= windowBottom) visible.add(index);
     }
 
     // Keep a selected (being dragged/resized) event built even when it scrolls
@@ -259,7 +262,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     final selectedId = widget.kalenderController.selectedEventId;
     if (selectedId != null) {
       final index = _events.indexWhere((event) => event.id == selectedId);
-      if (index != -1) visible.add(index);
+      if (_bands.containsKey(index)) visible.add(index);
     }
 
     return visible;
@@ -297,7 +300,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     // The tile range is the same for every tile in this column, so compute it
     // once instead of allocating a new range per event.
     final tileRange = widget.date.dayRange;
-    final eventsWidget = CustomMultiChildLayout(
+    final eventsWidget = _DayTileLayout(
       delegate: layoutStrategy.createDelegate(
         events: _events,
         date: widget.date,
@@ -467,5 +470,39 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
         return LayoutId(id: item.$1, child: drawTile ? dropTarget.call(context, latest ?? event) : const SizedBox());
       }).toList(),
     );
+  }
+}
+
+/// Lays out the tiles of a day column.
+///
+/// A tile that lets the pointer through passes it to the calendar behind the column, not to a tile beneath it.
+class _DayTileLayout extends CustomMultiChildLayout {
+  const _DayTileLayout({required super.delegate, super.children});
+
+  @override
+  RenderCustomMultiChildLayoutBox createRenderObject(BuildContext context) {
+    return _RenderDayTileLayout(delegate: delegate);
+  }
+}
+
+class _RenderDayTileLayout extends RenderCustomMultiChildLayoutBox {
+  _RenderDayTileLayout({required super.delegate});
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    var child = lastChild;
+    while (child != null) {
+      final parentData = child.parentData! as MultiChildLayoutParentData;
+      final entries = result.path.length;
+      final isHit = result.addWithPaintOffset(
+        offset: parentData.offset,
+        position: position,
+        hitTest: (result, transformed) => child!.hitTest(result, position: transformed),
+      );
+      if (isHit) return true;
+      if (result.path.length > entries) return false;
+      child = parentData.previousSibling;
+    }
+    return false;
   }
 }

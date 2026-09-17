@@ -21,3 +21,21 @@ class RenderPassThroughPointer extends RenderProxyBox {
   @override
   bool hitTest(BoxHitTestResult result, {required Offset position}) => false;
 }
+
+/// A widget whose child receives pointer events, and the widgets behind it receive them as well.
+class TranslucentPointer extends SingleChildRenderObjectWidget {
+  const TranslucentPointer({required super.child, super.key});
+
+  @override
+  RenderTranslucentPointer createRenderObject(BuildContext context) => RenderTranslucentPointer();
+}
+
+class RenderTranslucentPointer extends RenderProxyBox {
+  RenderTranslucentPointer({RenderBox? child}) : super(child);
+
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    super.hitTest(result, position: position);
+    return false;
+  }
+}

@@ -14,6 +14,7 @@ import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
+import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 import 'package:timezone/timezone.dart';
 
 /// The [KalenderController] is used to controller a single [KalenderView].
@@ -157,8 +158,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   }
 
   void _navigateTo(FloatingDateTime day) {
-    final visible = _floatingVisibleRange.value;
-    if (visible != null && day.isWithin(visible)) return;
+    if (_isVisible(day)) return;
     animateToDate(day.forLocation(location: _viewController?.location));
   }
 
@@ -174,6 +174,57 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
       if (_viewController == viewController) _navigateTo(days.start);
     });
   }
+
+  /// The day whose overlay is open, or null when none is.
+  ///
+  /// [showDayOverlay], [hideDayOverlay] and the "+N more" button change it.
+  final openDayOverlay = ValueNotifier<FloatingDateTime?>(null);
+
+  /// Opens the overlay listing the events of the day of [date].
+  ///
+  /// Every visible day in the month view and the multi-day header has one. One overlay is open at a time.
+  ///
+  /// A day that is not visible opens nothing, unless [navigate] is true, which moves the view to it first.
+  Future<void> showDayOverlay(DateTime date, {bool navigate = false}) async {
+    if (_isDisposed) return;
+    final location = _viewController?.location;
+    final day = FloatingDateTime.fromExternal(date, location: location).startOfDay;
+
+    if (_viewController?.viewConfiguration is ScheduleViewConfiguration) {
+      debugPrint('KalenderController.showDayOverlay: the schedule view has no day overlay.');
+      return;
+    }
+
+    if (!_isVisible(day)) {
+      if (!navigate) {
+        debugPrint('KalenderController.showDayOverlay: $day is not visible. Pass navigate: true to move to it first.');
+        return;
+      }
+      await animateToDate(day.forLocation(location: location));
+      await WidgetsBinding.instance.endOfFrame;
+      if (_isDisposed) return;
+      if (!_isVisible(day)) {
+        debugPrint('KalenderController.showDayOverlay: the view cannot move to $day.');
+        return;
+      }
+    }
+
+    openDayOverlay.value = day;
+  }
+
+  /// Whether [day] is on screen in the attached view.
+  bool _isVisible(FloatingDateTime day) {
+    final visible = _floatingVisibleRange.value;
+    return isAttached && visible != null && day.isWithin(visible);
+  }
+
+  /// Closes the open day overlay.
+  void hideDayOverlay() {
+    if (_isDisposed) return;
+    openDayOverlay.value = null;
+  }
+
+  bool _isDisposed = false;
 
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;
@@ -295,6 +346,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _detachVisibleTimeOfDay();
     visibleTimeOfDay.dispose();
     selectedRange.dispose();
+    openDayOverlay.dispose();
+    _isDisposed = true;
     super.dispose();
   }
 }

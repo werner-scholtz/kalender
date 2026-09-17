@@ -81,6 +81,7 @@ void main() {
               configuration: configuration,
               floatingRange: displayRange,
               viewController: viewController,
+              pageHeight: 0.7 * Duration.minutesPerDay,
             ),
           ),
         ),

@@ -11,6 +11,7 @@ import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_interaction.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:kalender/src/widgets/event_tiles/tile_interaction.dart';
 
 /// A widget that makes the event tile draggable for rescheduling.
 class TileDraggable extends StatelessWidget {
@@ -49,10 +50,7 @@ class TileDraggable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // If rescheduling is not allowed, return the child directly.
-    if (!context.interaction.allowRescheduling || !event.interaction.allowRescheduling) {
-      return child;
-    }
+    if (!event.canReschedule(context.interaction)) return child;
 
     return switch (context.interaction.modifyEventGesture) {
       EventInteractionGesture.tap => Draggable.new,

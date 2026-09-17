@@ -159,8 +159,6 @@ class EventLayoutDelegateCache {
 ///
 /// The [EventLayoutDelegate] has some helper methods:
 ///
-/// * [calculateHeight] - Calculates the height of an item based on the [Duration] and [heightPerMinute] of the event.
-/// * [calculateDistanceFromStart] - Calculates the distance from the start of the day to the start of the [KalenderEvent].
 /// * [calculateVerticalLayoutData] - Calculates the top and bottom of each event.
 /// * [groupVerticalLayoutData] - Groups the [VerticalLayoutData] into horizontal groups.
 ///
@@ -208,6 +206,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   ///
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
+  @Deprecated('Not used by the calendar. Use calculateVerticalLayoutData. Will be removed in 0.33.0.')
   double calculateHeight(KalenderEvent event) {
     final durationOnDate = event.floatingRange(location: location).rangeOnDate(date)?.duration ?? Duration.zero;
     final height = durationOnDate.inSeconds * heightPerMinute / 60;
@@ -235,6 +234,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// [event] - The event to calculate the distance from.
   ///
   /// * Note: this takes into account the [KalenderTimeRange] of the [EventLayoutDelegate].
+  @Deprecated('Not used by the calendar. Use calculateVerticalLayoutData. Will be removed in 0.33.0.')
   double calculateDistanceFromStart(KalenderEvent event) {
     final eventStart = event.floatingRange(location: location).rangeOnDate(date)?.start ?? date.startOfDay;
     return _offsetFromDayStart(eventStart);

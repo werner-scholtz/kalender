@@ -190,6 +190,53 @@ void main() {
       expect(weekRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(monthRange!.start)));
     });
 
+    testWidgets('month → week opens on a week of the month when the first days of the week differ', (tester) async {
+      // September 2026 starts on a Tuesday, so a grid starting on Sunday begins on 30 August, which falls in the
+      // Monday week of 24 August.
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(
+          name: 'Month',
+          displayRange: calendarRange,
+          firstDayOfWeek: DateTime.sunday,
+          initialDateTime: DateTime(2026, 9, 15),
+        ),
+        withBody: true,
+      );
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2026, 8, 30));
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(
+          name: 'Week',
+          displayRange: calendarRange,
+          firstDayOfWeek: DateTime.monday,
+        ),
+      );
+
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2026, 8, 31));
+    });
+
+    testWidgets('month → paginated schedule opens on the month', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(
+          name: 'Month',
+          displayRange: calendarRange,
+          firstDayOfWeek: DateTime.sunday,
+          initialDateTime: DateTime(2026, 9, 15),
+        ),
+        withBody: true,
+      );
+
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.paginated(name: 'Schedule', displayRange: calendarRange),
+      );
+
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2026, 9, 1));
+    });
+
     testWidgets('week → day', (tester) async {
       await pumpCalendarView(
         tester,
@@ -408,6 +455,51 @@ void main() {
   // Edge cases
   // ---------------------------------------------------------------------------
   group('Edge cases', () {
+    testWidgets('month → week → month when the range starts after the first day of its first week', (tester) async {
+      // January 2025 starts on a Wednesday, so its first week starts on 30 December, before the range.
+      final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 6));
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(
+          name: 'Month',
+          displayRange: range,
+          initialDateTime: DateTime(2025, 1, 15),
+        ),
+        withBody: true,
+      );
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: range),
+      );
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2024, 12, 30));
+
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: range),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(kalenderController.floatingVisibleRange.value!.dominantMonthDate, DateTime.utc(2025));
+    });
+
+    testWidgets('week → paginated schedule when the week starts before the range', (tester) async {
+      final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 6));
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: range, initialDateTime: DateTime(2025)),
+        withBody: true,
+      );
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2024, 12, 30));
+
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.paginated(name: 'Schedule', displayRange: range),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2025));
+    });
+
     testWidgets('rapid configuration changes do not crash', (tester) async {
       await pumpCalendarView(
         tester,
