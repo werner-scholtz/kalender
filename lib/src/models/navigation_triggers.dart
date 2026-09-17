@@ -28,7 +28,7 @@ class PageTriggerConfiguration {
       animationCurve = Curves.easeInOut,
       triggerWidth = null;
 
-  /// The widget that is rendered above the top page trigger.
+  /// The delay before the page trigger is activated.
   final Duration triggerDelay;
 
   /// The duration of the page animation.

@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 
 mixin KalenderNavigationFunctions {
-  /// Jump to the given [DateTime].
+  /// Jump to the given [page].
   void jumpToPage(int page);
 
   /// Jump to the given [DateTime].

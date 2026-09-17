@@ -34,11 +34,8 @@ class HorizontalDragTarget extends StatefulWidget {
   @override
   State<HorizontalDragTarget> createState() => _HorizontalDragTargetState();
 
-  /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
-  /// This can be overridden by providing a custom implementation via [KalenderCallbacks.onWillAcceptWithDetailsHorizontal].
-  ///
-  /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
-  /// The checks performed for each are detailed in the respective sections below.
+  /// The default [KalenderCallbacks.onWillAcceptWithDetailsHorizontal]. Accepts [Create], [Resize] and
+  /// [Reschedule] payloads.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
     KalenderController controller,

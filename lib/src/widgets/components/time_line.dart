@@ -142,8 +142,6 @@ class TimelineStyle with Diagnosticable {
   /// measured from the widest label plus [textPadding].
   final double? width;
 
-  /// The function that will be used to build the string.
-
   /// The decoration for the event start time.
   final Decoration? startDecoration;
 

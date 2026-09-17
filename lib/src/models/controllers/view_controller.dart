@@ -46,7 +46,6 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// The cache used for the multi-day event layout.
   final MultiDayLayoutFrameCache multiDayCache = MultiDayLayoutFrameCache();
 
-  /// Jump to the given [DateTime].
   @override
   void jumpToPage(int page);
 

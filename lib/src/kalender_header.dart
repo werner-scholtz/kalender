@@ -10,7 +10,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// {@category Views}
 class KalenderHeader extends StatefulWidget {
-  /// The callbacks used by the [KalenderBody].
+  /// The callbacks used by the [KalenderHeader].
   ///
   /// This provides a way to override the [KalenderCallbacks] passed to the [KalenderView].
   final KalenderCallbacks? callbacks;

@@ -411,7 +411,6 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
   /// small set of pages.
   final bool keepPagesAlive;
 
-  /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayBodyConfiguration({
     super.showMultiDayEvents,
     super.horizontalPadding,

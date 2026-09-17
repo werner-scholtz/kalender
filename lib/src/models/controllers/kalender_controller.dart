@@ -272,7 +272,6 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _visibleTimeOfDayForwarder = null;
   }
 
-  /// Jump to the given [DateTime].
   @override
   void jumpToPage(int page) {
     viewController?.jumpToPage(page);

@@ -225,7 +225,6 @@ extension ProviderContext on BuildContext {
   /// Retrieve the height per minute.
   double get heightPerMinute => HeightPerMinute.of(this);
 
-  /// Retrieve the [Location] of the calendar.
   /// The rule deciding which events belong in the multi-day header.
   ///
   /// Comes from the current view's [ViewConfiguration.multiDayRule], falling
@@ -233,6 +232,7 @@ extension ProviderContext on BuildContext {
   MultiDayRule get multiDayRule =>
       kalenderController.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
 
+  /// Retrieve the [Location] of the calendar.
   Location? get location => LocationProvider.of(this);
   ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
   bool get hasLocation => location != null;

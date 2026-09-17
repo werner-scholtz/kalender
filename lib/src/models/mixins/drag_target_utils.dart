@@ -200,7 +200,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Resize an event.
   KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime);
 
-  /// Reschedule an event.
+  /// The event being created.
   KalenderEvent? createEvent(FloatingDateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
   /// Resolves the latest version of the [event] from the [EventsController],
