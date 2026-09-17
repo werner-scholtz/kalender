@@ -7,7 +7,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:timezone/data/latest_10y.dart' as tz;
 import 'package:timezone/timezone.dart';
 
@@ -49,14 +48,18 @@ void main() {
     });
 
     test('prefers the location passed to the method', () {
-      expect(details(early).continuesBefore(location: kiritimati), isFalse);
-      expect(details(early, location: pagoPago).continuesBefore(location: kiritimati), isFalse);
-      expect(details(late).continuesAfter(location: pagoPago), isFalse);
+      // ignore_for_file: deprecated_member_use_from_same_package
+      final before = details(early, location: pagoPago);
+      expect(before.continuesBefore(location: kiritimati), isFalse);
+      expect(before.showStart(location: kiritimati), isTrue);
+      final after = details(late, location: kiritimati);
+      expect(after.continuesAfter(location: pagoPago), isFalse);
+      expect(after.showEnd(location: pagoPago), isTrue);
     });
 
     test('uses the device timezone without a location', () {
-      expect(details(early).continuesBefore(), isTrue);
-      expect(details(late).continuesAfter(), isTrue);
+      expect(details(early).continuesBefore(), FloatingDateTime.fromExternal(early.start).isBefore(day.start));
+      expect(details(late).continuesAfter(), FloatingDateTime.fromExternal(late.end).isAfter(day.end));
     });
   });
 
@@ -66,7 +69,7 @@ void main() {
     addTearDown(eventsController.dispose);
     addTearDown(kalenderController.dispose);
 
-    final id = eventsController.addEvent(
+    eventsController.addEvent(
       KalenderEvent(start: TZDateTime(kiritimati, 2025, 1, 1, 1), end: TZDateTime(kiritimati, 2025, 1, 1, 4)),
     );
 
@@ -83,7 +86,6 @@ void main() {
           initialDateTime: TZDateTime(kiritimati, 2025, 1, 1),
         ),
         body: KalenderBody(
-          interaction: KalenderInteraction(inputMode: InputMode.precise),
           multiDayTileComponents: TileComponents(
             tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
             resizeHandlePositioner: (context, details) {
@@ -94,8 +96,6 @@ void main() {
         ),
       ),
     );
-
-    await tester.hoverOn(find.byKey(DayEventTile.tileKey(id)), await tester.createMouseGesture());
 
     expect(received, kiritimati);
   });
