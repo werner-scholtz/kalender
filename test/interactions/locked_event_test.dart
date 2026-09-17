@@ -13,7 +13,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show
 
 import '../utilities.dart';
 
-/// #259: a drag starting on an event that can't be rescheduled, resized or tapped creates an event.
+/// #259: a drag starting on an event that can't be rescheduled or resized creates an event.
 void main() {
   final start = DateTime(2025, 3, 24);
   final range = KalenderDateTimeRange(start: start, end: DateTime(2025, 4, 30));
@@ -208,14 +208,14 @@ void main() {
   });
 
   group('An event that does something', () {
-    testWidgets('does not create an event when it can be tapped', (tester) async {
+    testWidgets('creates an event when it can only be tapped, and still reports the tap', (tester) async {
       final id = addEvent();
       await pump(tester, week, tapCallback: true);
 
       final tile = find.byKey(DayEventTile.tileKey(id));
       await tester.drag(tile, const Offset(0, 100));
       await tester.pumpAndSettle();
-      expect(created, isEmpty);
+      expect(created, hasLength(1));
 
       await tester.tap(tile);
       await tester.pumpAndSettle();

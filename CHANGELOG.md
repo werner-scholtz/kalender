@@ -10,7 +10,7 @@
 ### Fixes
 
 - Tapping the day number in a month cell reaches `onTapped`.
-- A press on an event that can't be rescheduled, resized or tapped reaches the calendar behind it.
+- A press on an event that can't be rescheduled or resized reaches the calendar behind it.
 
 ### Fixes
 
