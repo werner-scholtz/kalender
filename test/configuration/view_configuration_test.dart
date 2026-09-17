@@ -395,7 +395,7 @@ void main() {
     });
 
     test('paginated (uninitialized)', () async {
-      final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
+      final viewConfiguration = ScheduleViewConfiguration.paginated(displayRange: displayRange);
       final viewController = PaginatedScheduleViewController(
         viewConfiguration: viewConfiguration,
         floatingVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),

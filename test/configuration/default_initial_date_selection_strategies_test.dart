@@ -258,7 +258,7 @@ void main() {
       });
     });
 
-    // ── kDefaultInitialDateSelectionStrategy (routing) ───────────────────
+    // ── kCarryFocusDate (routing) ────────────────────────────────────────
     //
     // Verifies that the general router delegates to the correct specific strategy
     // for each target ViewConfiguration type.  Using relational assertions
