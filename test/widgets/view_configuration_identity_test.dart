@@ -141,7 +141,7 @@ void main() {
       expect(identical(kalenderController.viewController, first), isTrue);
     });
 
-    testWidgets('the layout caches are discarded', (tester) async {
+    testWidgets('the layout caches survive a rebuild', (tester) async {
       await pumpAndSettleWithMaterialApp(tester, build(week()));
       final firstCache = kalenderController.viewController!.cache;
       final firstFrameCache = kalenderController.viewController!.multiDayCache;

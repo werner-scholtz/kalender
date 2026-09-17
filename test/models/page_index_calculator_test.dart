@@ -286,7 +286,6 @@ void main() {
       test('test floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
         expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
-        expect(true, true);
       });
     });
 
