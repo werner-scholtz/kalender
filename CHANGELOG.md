@@ -23,7 +23,7 @@
 - A calendar shorter than its header lays out without errors.
 - `kDefaultToWeekly` and `kDefaultToSchedule` carry the first day of the month when switching from the month view.
 - The "+N more" buttons sit under their own day in right-to-left layouts.
-- The month view and the paginated schedule view open their first page for a date before the display range, such as the week carried by a view switch.
+- The month view and the paginated schedule view open their first page for a date before the display range.
 
 ### Fixes
 

@@ -482,6 +482,24 @@ void main() {
       expect(kalenderController.floatingVisibleRange.value!.dominantMonthDate, DateTime.utc(2025));
     });
 
+    testWidgets('week → paginated schedule when the week starts before the range', (tester) async {
+      final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 6));
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: range, initialDateTime: DateTime(2025)),
+        withBody: true,
+      );
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2024, 12, 30));
+
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.paginated(name: 'Schedule', displayRange: range),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2025));
+    });
+
     testWidgets('rapid configuration changes do not crash', (tester) async {
       await pumpCalendarView(
         tester,

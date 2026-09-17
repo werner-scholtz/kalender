@@ -356,7 +356,7 @@ class CustomIndexCalculator extends PageIndexCalculator {
 /// Calculates page indices and date ranges for a month view.
 ///
 /// {@category Views}
-class MonthIndexCalculator extends PageIndexCalculator {
+class MonthIndexCalculator extends PageIndexCalculator with _MonthPages {
   /// The default number of rows to display in a month view.
   static const numberOfRows = 5;
 
@@ -394,34 +394,9 @@ class MonthIndexCalculator extends PageIndexCalculator {
     return FloatingDateTimeRange(start: start, end: end);
   }
 
-  @override
-  int indexFromDate(DateTime date, Location? location) {
-    date = FloatingDateTime.fromExternal(date, location: location).startOfDay;
-    final floatingRange = this.floatingRange(location);
-    if (date.isBefore(floatingRange.start)) return 0;
-    final dateTimeRange = FloatingDateTimeRange(start: floatingRange.start, end: date);
-    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location) - 1);
-  }
-
   /// Returns the number of rows that need to be displayed for the given [range].
   int numberOfRowsForRange(FloatingDateTimeRange range) {
     return range.dates().length ~/ DateTime.daysPerWeek;
-  }
-
-  @override
-  int numberOfPages(Location? location) {
-    final floatingRange = this.floatingRange(location);
-    return floatingRange.monthDifference;
-  }
-
-  @override
-  FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-    final start = floatingRange.start.startOfMonth;
-    final end = floatingRange.end.startOfMonth == floatingRange.end
-        ? floatingRange.end.startOfMonth
-        : floatingRange.end.endOfMonth;
-    return FloatingDateTimeRange(start: start, end: end);
   }
 
   @override
@@ -472,7 +447,7 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
 }
 
 /// {@category Views}
-class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
+class PaginatedScheduleIndexCalculator extends PageIndexCalculator with _MonthPages {
   PaginatedScheduleIndexCalculator({required super.start, required super.end});
 
   @override
@@ -484,34 +459,32 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
   }
 
   @override
-  int indexFromDate(DateTime date, Location? location) {
-    date = FloatingDateTime.fromExternal(date, location: location).startOfDay;
-    final floatingRange = this.floatingRange(location);
-    if (date.isBefore(floatingRange.start)) return 0;
-    final dateTimeRange = FloatingDateTimeRange(start: floatingRange.start, end: date);
-    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location) - 1);
-  }
-
-  @override
-  int numberOfPages(Location? location) {
-    final floatingRange = this.floatingRange(location);
-    return floatingRange.monthDifference;
-  }
-
-  @override
-  FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-    final start = floatingRange.start.startOfMonth;
-    final end = floatingRange.end.startOfMonth == floatingRange.end
-        ? floatingRange.end.startOfMonth
-        : floatingRange.end.endOfMonth;
-    return FloatingDateTimeRange(start: start, end: end);
-  }
-
-  @override
   bool operator ==(Object other) =>
       identical(this, other) || other is PaginatedScheduleIndexCalculator && other.start == start && other.end == end;
 
   @override
   int get hashCode => Object.hash(PaginatedScheduleIndexCalculator, start, end);
+}
+
+/// One page per month, from the first month of the range to the last.
+mixin _MonthPages on PageIndexCalculator {
+  @override
+  int indexFromDate(DateTime date, Location? location) {
+    final day = FloatingDateTime.fromExternal(date, location: location);
+    final start = floatingRange(location).start;
+    final lastPage = numberOfPages(location) - 1;
+    if (lastPage < 0) return 0;
+    final months = (day.year - start.year) * DateTime.monthsPerYear + day.month - start.month;
+    return months.clamp(0, lastPage);
+  }
+
+  @override
+  int numberOfPages(Location? location) => floatingRange(location).monthDifference;
+
+  @override
+  FloatingDateTimeRange floatingRange(Location? location) {
+    final range = rawRange(location);
+    final end = range.end.startOfMonth == range.end ? range.end : range.end.endOfMonth;
+    return FloatingDateTimeRange(start: range.start.startOfMonth, end: end);
+  }
 }
