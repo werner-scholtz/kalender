@@ -336,7 +336,6 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   /// The [ValueNotifier] that contains the event being dragged.
   final ValueNotifier<KalenderEvent?> eventBeingDragged;
 
-  /// The visibleDataTimeRange.
   final ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange;
 
   /// Creates a new [TimeLine] widget.
@@ -375,10 +374,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
       final pos = offset;
       offset += range.duration.inMinutes * heightPerMinute;
 
-      // Always skip the first item.
       if (index == 0) return null;
 
-      // The time to display is the next hour.
       final displayTime = range.start;
       final text = timelineString(context, displayTime);
 
@@ -405,23 +402,18 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
         return ValueListenableBuilder(
           valueListenable: eventBeingDragged,
           builder: (context, eventBeingDragged, child) {
-            // Ensure that there is a event being dragged.
             if (eventBeingDragged == null) return const SizedBox();
 
-            // Multi-day events belong in the header, not the body.
-            // Don't show timeline tooltips for them.
             if (eventBeingDragged.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
               return const SizedBox();
             }
 
-            // Ensure that the event is visible.
             final eventRange = eventBeingDragged.floatingRange(location: context.location);
             if (!eventRange.overlaps(FloatingDateTimeRange.fromDateTimeRange(visibleRange))) return const SizedBox();
 
             final start = eventBeingDragged.floatingStart(location: context.location);
             final end = eventBeingDragged.floatingEnd(location: context.location);
 
-            // Calculate the top and bottom values.
             final startTop =
                 start.difference(timeOfDayRange.start.toFloatingDateTime(start)).inMinutes * heightPerMinute;
             final endTop = end.difference(timeOfDayRange.start.toFloatingDateTime(end)).inMinutes * heightPerMinute;

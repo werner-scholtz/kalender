@@ -43,21 +43,10 @@ class Tile extends StatefulWidget {
   State<Tile> createState() => _TileState();
 }
 
-/// The state for the Tile widget.
-///
-/// This state listens to the calendar controller to determine if the event is being dragged,
-/// and rebuilds the widget accordingly.
 class _TileState extends State<Tile> {
-  /// The current event associated with the tile.
   late KalenderEvent _event = widget.initialEvent;
-
-  /// The calendar controller.
   KalenderController? _controller;
-
-  /// The events controller.
   EventsController? _eventsController;
-
-  /// Whether the event is being dragged.
   bool _isDragging = false;
 
   @override
@@ -88,7 +77,6 @@ class _TileState extends State<Tile> {
 
   /// The listener for the calendar controller's selected event.
   void _calendarControllerListener() {
-    // Check if the dragging state has changed.
     final isDragging = _controller?.selectedEventId == widget.initialEvent.id && (_controller?.internalFocus ?? false);
     if (_isDragging == isDragging) return;
     if (mounted) setState(() => _isDragging = isDragging);

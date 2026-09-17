@@ -69,7 +69,7 @@ typedef EventIdToEvent = Map<String, KalenderEvent>;
 class DefaultEventStore extends EventStore {
   /// Predefined locations for optimizations.
   ///
-  /// Requesting a location that is not in this list will generate its own date map on demand not a great solution for performance.
+  /// Locations not listed here get their index built on first use.
   final List<Location> locations;
 
   /// Map of the [DateTime] and event ids.
@@ -101,13 +101,11 @@ class DefaultEventStore extends EventStore {
   @override
   KalenderEvent? byId(String id) => idEvent[id];
 
-  /// Clear the [locationDateIdMap] and [idEvent] maps.
   @override
   void clear() {
     locationDateIdMap.clear();
     idEvent.clear();
 
-    // Re-add the default locations.
     locationDateIdMap.addAll({
       defaultLocation: DateToEventIds(),
       for (final location in locations) location.name: DateToEventIds(),
@@ -170,10 +168,8 @@ class DefaultEventStore extends EventStore {
   @override
   Set<String> eventIdsInRange(FloatingDateTimeRange range, Location? location) {
     final locationString = location?.name ?? defaultLocation;
-    // Ensure the location exists in the map.
     final hasLocation = hasDateToEventIds(locationString);
 
-    // If the location does not exist, populate it.
     if (!hasLocation) {
       locations.add(location!);
       populateLocation(location);
@@ -202,10 +198,8 @@ class DefaultEventStore extends EventStore {
 
   /// Populate all predefined locations in the [locationDateIdMap].
   void populateAllLocations() {
-    // Populate the default location.
     populateLocation(null);
 
-    // Populate the predefined locations.
     for (final locations in locations) {
       populateLocation(locations);
     }
@@ -216,13 +210,10 @@ class DefaultEventStore extends EventStore {
 
   /// Populate the [locationDateIdMap] with a new [location] if it does not exist.
   void populateLocation(Location? location) {
-    // If the location is null, use the default location.
     final locationString = location?.name ?? defaultLocation;
 
-    // Add the location if it does not exist.
     if (!hasDateToEventIds(locationString)) locationDateIdMap[locationString] = DateToEventIds();
 
-    // Add all existing events to the new location.
     for (final event in idEvent.values) {
       addEventToLocation(location, event);
     }

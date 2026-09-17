@@ -36,7 +36,6 @@ class TileDraggable extends StatelessWidget {
   /// The child widget to be made draggable.
   final Widget child;
 
-  /// Creates a tile draggable widget.
   const TileDraggable({
     super.key,
     required this.event,
@@ -98,7 +97,6 @@ class FeedbackWidget extends StatefulWidget {
   /// A notifier that provides the size of the feedback widget.
   final ValueNotifier<Size> feedbackWidgetSizeNotifier;
 
-  /// Creates a feedback widget for event dragging.
   const FeedbackWidget({
     super.key,
     required this.event,
@@ -111,15 +109,9 @@ class FeedbackWidget extends StatefulWidget {
   State<FeedbackWidget> createState() => _FeedbackWidgetState();
 }
 
-/// The state for the feedback widget.
-///
-/// This state listens to the size notifier and rebuilds the widget when the size changes.
-/// It also listens to the events controller and rebuilds when the underlying event is updated.
 class _FeedbackWidgetState extends State<FeedbackWidget> {
-  /// The size of the feedback widget.
   Size _size = const Size(0, 0);
 
-  /// The current event associated with the feedback widget.
   late KalenderEvent _event = widget.event;
 
   @override
@@ -143,7 +135,6 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
     if (widget.feedbackWidgetSizeNotifier.value == Size.zero) return;
     if (widget.feedbackWidgetSizeNotifier.value == _size) return;
 
-    // Update the size only if it has changed.
     setState(() => _size = widget.feedbackWidgetSizeNotifier.value);
   }
 

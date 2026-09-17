@@ -126,7 +126,6 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
                 return direction.horizontal;
               },
               onReschedule: (event) {
-                // Set the size of the feedback widget.
                 context.feedbackWidgetSizeNotifier.value = Size(
                   min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length),
                   tileHeight,
@@ -141,7 +140,6 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
           onAcceptWithDetails: onAcceptWithDetails,
           onLeave: onLeave,
           builder: (context, candidateData, rejectedData) {
-            // Check if the candidateData is null.
             if (candidateData.firstOrNull == null) return const SizedBox();
 
             final rightTrigger = CursorNavigationTrigger.page(
@@ -174,11 +172,9 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
 
   @override
   FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
-    // Calculate the relative cursor position.
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
 
-    // Clamp the index to valid bounds to handle cursor positions over edge areas.
     final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
 
     final date = Directionality.of(context) == TextDirection.ltr

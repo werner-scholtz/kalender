@@ -92,7 +92,6 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   /// The style of the resize handles laid out by [DefaultResizeHandles].
   final ResizeHandleStyle? resizeHandleStyle;
 
-  /// Creates a new [KalenderThemeData].
   const KalenderThemeData({
     this.dayHeaderStyle,
     this.timelineStyle,
@@ -392,7 +391,6 @@ class KalenderTheme extends InheritedTheme {
   /// The styles applied to the calendars below this widget.
   final KalenderThemeData data;
 
-  /// Creates a [KalenderTheme].
   const KalenderTheme({super.key, required this.data, required super.child});
 
   /// The effective theme for [context].

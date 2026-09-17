@@ -20,7 +20,6 @@
 ///
 /// {@category Dates and times}
 final class KalenderDateTimeRange {
-  /// Creates a [KalenderDateTimeRange].
   KalenderDateTimeRange({required this.start, required this.end}) : assert(!start.isAfter(end));
 
   /// The start of the range.

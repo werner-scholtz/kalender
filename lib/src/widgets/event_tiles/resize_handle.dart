@@ -27,17 +27,12 @@ class ResizeHandleWidget extends StatefulWidget {
   /// The axis along which the resize handles are positioned.
   final Axis axis;
 
-  /// Creates an instance of [ResizeHandleWidget].
   const ResizeHandleWidget({super.key, required this.event, required this.floatingRange, this.axis = Axis.vertical});
 
   @override
   State<ResizeHandleWidget> createState() => _ResizeHandleWidgetState();
 }
 
-/// The state for the ResizeHandleWidget.
-///
-/// This state listens to the calendar controller to show or hide the resize handles
-/// based on user interaction.
 class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// The calendar controller (nullable to handle dispose before initialization).
   KalenderController? _controller;
@@ -87,10 +82,6 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
     super.dispose();
   }
 
-  /// The listener for the calendar controller's selected event.
-  ///
-  /// This listener updates the visibility of the resize handles based on whether the current event
-  /// is selected or if an internal drag operation is in progress.
   void listener() {
     final controller = _controller;
     if (controller == null) return;
@@ -182,7 +173,6 @@ class ResizeDetector extends StatelessWidget {
   /// The event associated with the resize handle.
   final KalenderEvent event;
 
-  /// Creates an instance of [ResizeDetector].
   const ResizeDetector({super.key, required this.event, required this.direction});
 
   /// A key used to identify the start resize handle.

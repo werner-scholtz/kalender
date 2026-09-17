@@ -11,13 +11,6 @@ import 'package:kalender/src/widgets/internal_components/day_overlay.dart';
 
 /// A function that returns a [MultiDayOverlayPortal].
 ///
-/// [date] is the date for which the widget is created.
-/// [events] are all the events that can be displayed for the given [date]. (They are not necessarily all displayed.)
-/// [numberOfHiddenRows] is the number of hidden rows.
-/// [tileHeight] is the height of the tile.
-/// [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] MultiDayEventLayoutWidget.
-/// [overlayBuilders] is the builders for the overlay event tile.
-///
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}

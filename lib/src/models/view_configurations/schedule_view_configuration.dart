@@ -105,7 +105,6 @@ const kDefaultScheduleLeadingWidth = 56.0;
 
 /// {@category Views}
 class ScheduleBodyConfiguration {
-  /// Creates a new [ScheduleBodyConfiguration].
   ScheduleBodyConfiguration({
     this.emptyDay = kDefaultEmptyDayBehavior,
     this.leadingWidth = kDefaultScheduleLeadingWidth,
@@ -117,9 +116,6 @@ class ScheduleBodyConfiguration {
        scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
 
   /// The behavior of empty days in the schedule view.
-  /// - [EmptyDayBehavior.show]: Show every empty day in the schedule view.
-  /// - [EmptyDayBehavior.showOnlyToday]: Show only today when it has no events.
-  /// - [EmptyDayBehavior.hide]: Hide every empty day in the schedule view.
   final EmptyDayBehavior emptyDay;
 
   /// The width of the leading (date) column, shared by every row so the event

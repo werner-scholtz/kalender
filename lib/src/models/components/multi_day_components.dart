@@ -58,8 +58,6 @@ class MultiDayComponents {
 
 /// The component builders used by the [MultiDayHeader].
 ///
-/// - Using these will override the respective default components.
-///
 /// {@category Appearance}
 class MultiDayHeaderComponents {
   /// A function that builds the day header widget.
@@ -89,7 +87,6 @@ class MultiDayHeaderComponents {
   /// A group of builders for the overlay widgets.
   final OverlayBuilders? overlayBuilders;
 
-  /// Creates overrides for the default components used by the [MultiDayHeader].
   const MultiDayHeaderComponents({
     this.dayHeaderBuilder,
     this.dayHeaderStringBuilder,
@@ -167,8 +164,6 @@ class MultiDayHeaderComponents {
 
 /// The component builders used by the [MultiDayBody].
 ///
-/// - Using these will override the respective default components.
-///
 /// {@category Appearance}
 class MultiDayBodyComponents {
   /// A function that builds the hour lines widget.
@@ -217,7 +212,6 @@ class MultiDayBodyComponents {
   /// A function that builds the bottom trigger widget.
   final VerticalTriggerWidgetBuilder? bottomTriggerBuilder;
 
-  /// Creates overrides for the default components used by the [MultiDayBody].
   const MultiDayBodyComponents({
     this.hourLines,
     this.timeline,

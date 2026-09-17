@@ -17,10 +17,6 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
 ///
-/// The [event] is the event that is being displayed.
-/// The [floatingRange] is the range for which the event is displayed.
-/// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
-///
 /// {@category Appearance}
 typedef MultiDayOverlayEventTileBuilder =
     MultiDayEventOverlayTile Function(
@@ -36,14 +32,6 @@ typedef MultiDayOverlayEventTileBuilder =
 typedef RenderBoxCallback = RenderBox Function();
 
 /// A function that returns a [MultiDayOverlay] widget.
-///
-/// The [date] is the date for which the widget is created.
-/// The [events] are all the events that should be displayed for the given [date].
-/// The [tileHeight] is the height of the tile.
-/// The [portalController] is the controller for the overlay portal.
-/// The [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] for the `MultiDayEventLayoutWidget`.
-/// The [getOverlayPortalRenderBox] is the function that returns the [RenderBox] for the [MultiDayOverlay].
-/// The [overlayTileBuilder] is the builder for the overlay event tile.
 ///
 /// Resolve the style with [KalenderTheme].
 ///
@@ -387,7 +375,6 @@ class MultiDayOverlay extends StatelessWidget {
     final portalRenderBox = getOverlayPortalRenderBox();
     final multiDayEventsLayoutSize = getMultiDayEventLayoutRenderBox().size;
 
-    // Get the position of the portal widget.
     final portalWidth = portalRenderBox.size.width;
     final portalPosition = portalRenderBox.localToGlobal(Offset.zero);
 

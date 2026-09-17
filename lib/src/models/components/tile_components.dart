@@ -20,15 +20,6 @@ import 'package:kalender/src/widgets/components/resize_handles.dart' show Defaul
 
 /// The components used by the [MultiDayBody]/[MonthBody] to render the event tiles.
 ///
-/// See [Draggable] for more information on how the components are used.
-/// - [tileBuilder]
-/// - [tileWhenDraggingBuilder]
-/// - [feedbackTileBuilder]
-/// - [dragAnchorStrategy]
-///
-/// The [dropTargetTile] is an extra component used to display where the event will be dropped.
-/// The [verticalResizeHandle] is an extra component used to display the resize handle.
-///
 /// {@category Appearance}
 class TileComponents {
   /// The default builder for stationary event tiles.
@@ -172,8 +163,6 @@ class ScheduleTileComponents extends TileComponents {
 
 /// The default builder for the event tiles.
 ///
-/// [event] is the event that the tile will be built for.
-///
 /// [tileRange] is the wall-clock [KalenderDateTimeRange] of the view the tile will be displayed in.
 /// The values are local [DateTime]s (or `TZDateTime`s when a timezone location is set).
 ///
@@ -182,22 +171,15 @@ typedef TileBuilder = Widget Function(BuildContext context, KalenderEvent event,
 
 /// The builder for the event tile when dragging.
 ///
-/// [event] is the event that the tile will be built for.
-///
 /// {@category Appearance}
 typedef TileWhenDraggingBuilder = Widget Function(BuildContext context, KalenderEvent event);
 
 /// The builder for the feedback tile. (When dragging)
 ///
-/// [event] is the event that the tile will be built for.
-/// [dropTargetWidgetSize] is the size of the drop target widget.
-///
 /// {@category Appearance}
 typedef FeedbackTileBuilder = Widget Function(BuildContext context, KalenderEvent event, Size dropTargetWidgetSize);
 
 /// The builder for the drop target event tile.
-///
-/// [event] is the event that the tile will be built for.
 ///
 /// {@category Appearance}
 typedef TileDropTargetBuilder = Widget Function(BuildContext context, KalenderEvent event);

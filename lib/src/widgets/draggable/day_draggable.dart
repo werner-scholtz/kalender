@@ -11,8 +11,6 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 /// This widget generates draggable widgets for each visible day.
-/// - These draggable widgets are used to create new events.
-///
 class DayDraggable extends StatefulWidget {
   final FloatingDateTimeRange visibleRange;
   final KalenderTimeRange timeOfDayRange;
@@ -172,17 +170,13 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
 
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
   FloatingDateTime _calculateTimeAndDate(FloatingDateTime date, Offset localPosition) {
-    // Calculate the duration from the top of the page to the localPosition.
     final durationFromStart = localPosition.dy ~/ context.heightPerMinute;
     final durationFromTop = Duration(minutes: durationFromStart.round());
 
-    // Calculate the start of the day.
     final startOfDay = widget.timeOfDayRange.start.toFloatingDateTime(date);
 
-    // Calculate dateTime of the cursor.
     final startOfEvent = startOfDay.add(durationFromTop);
 
-    // Snap the datetime based on the snap strategy.
     final snappedDateTime = context.snapping.eventSnapStrategy.snap(
       cursorDate: startOfEvent,
       startOfDay: startOfDay,

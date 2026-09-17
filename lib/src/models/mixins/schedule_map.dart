@@ -7,20 +7,12 @@
 import 'package:kalender/kalender_extensions.dart';
 
 /// A map of all the items in the list.
-/// [ListItem] is the type of the item.
-///   * [EventItem] is the type of the event item.
-///   * [MonthItem] is the type of the month item.
-///   * [EmptyItem] is the type of the empty item.
 typedef IndexItem = Map<int, ListItem>;
 
 /// A map of all the item indices to the date time.
-/// [int] is the index of the item.
-/// [FloatingDateTime] is the date time of the item.
 typedef IndexItemDateTime = Map<int, FloatingDateTime>;
 
 /// A map of all the date times to the item index.
-/// [FloatingDateTime] is the date time of the item.
-/// [int] is the index of the item.
 typedef DateTimeItemIndex = Map<FloatingDateTime, int>;
 
 /// A abstract class that represents a list item.
@@ -72,11 +64,6 @@ mixin ScheduleMap {
   int itemCountForPage(int pageIndex) => indexItem(pageIndex).length;
 
   /// Add an item to the map.
-  ///
-  /// [pageIndex] is the page index to add the item to.
-  /// [item] is the item to add.
-  /// [date] is the date to add.
-  /// [isFirst] is whether the item is the first item of the date.
   void addItemForPage({
     required ListItem item,
     required FloatingDateTime date,
@@ -105,9 +92,6 @@ mixin ScheduleMap {
   }
 
   /// Get the [FloatingDateTime] for the given pageIndex and itemIndex.
-  ///
-  /// [pageIndex] is the page index to get the date for.
-  /// [itemIndex] is the item index to get the date for.
   FloatingDateTime? dateTimeFromIndexForPage(int pageIndex, int itemIndex) => itemIndexDateTime(pageIndex)[itemIndex];
 
   /// A map of all the pageIndexes to DateTimeItemIndices.

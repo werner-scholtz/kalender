@@ -34,8 +34,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   final KalenderTimeRange timeOfDayRange;
 
   /// The first day of the week.
-  ///
-  /// This can be [DateTime.monday], [DateTime.saturday] or [DateTime.sunday].
   final int firstDayOfWeek;
 
   /// The number of days that can be displayed by [MultiDayBody] widgets using this configuration.
@@ -423,7 +421,6 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
     this.keepPagesAlive = false,
   });
 
-  /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
   MultiDayBodyConfiguration copyWith({
     bool? showMultiDayEvents,
     EdgeInsets? horizontalPadding,
@@ -461,7 +458,6 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
 ///
 /// {@category Views}
 class MultiDayHeaderConfiguration extends HorizontalConfiguration {
-  /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayHeaderConfiguration({
     super.showTiles = kDefaultShowEventTiles,
     super.tileHeight = kDefaultTileHeight,
@@ -472,7 +468,6 @@ class MultiDayHeaderConfiguration extends HorizontalConfiguration {
     super.allowSingleDayEvents = false,
   });
 
-  /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   @override
   MultiDayHeaderConfiguration copyWith({
     double? tileHeight,

@@ -41,13 +41,6 @@ class KalenderBody extends StatefulWidget {
   /// The snapping that will be used by the [KalenderBody].
   final KalenderSnapping? snapping;
 
-  /// Creates a KalenderBody widget.
-  ///
-  /// This creates the correct body based on the [ViewController] inside the [KalenderController]
-  /// - [MultiDayBody]
-  /// - [MonthBody]
-  /// - [ScheduleBody]
-  ///
   const KalenderBody({
     super.key,
     this.callbacks,

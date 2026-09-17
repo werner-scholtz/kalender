@@ -24,7 +24,6 @@ typedef MonthDayHeaderBuilder = Widget Function(BuildContext context, DateTime d
 ///
 /// {@category Appearance}
 class MonthDayHeaderStyle with Diagnosticable {
-  /// Creates a new [MonthDayHeaderStyle].
   const MonthDayHeaderStyle({this.numberTextStyle, this.buttonSize, this.margin});
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.

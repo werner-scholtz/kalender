@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 
 /// Builds the background of a single day cell in the month body.
 ///
@@ -46,8 +45,7 @@ class MonthDayCellDetails {
 
 /// Renders the background of a single day cell in the month body.
 ///
-/// The default is an empty cell. Provide a [MonthDayCellBuilder] via
-/// [MonthBodyComponents.monthDayCellBuilder] to customize it.
+/// The default is an empty cell.
 ///
 /// {@category Appearance}
 class MonthDayCell extends StatelessWidget {

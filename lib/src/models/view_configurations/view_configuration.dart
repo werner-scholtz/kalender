@@ -39,8 +39,6 @@ typedef NowCallback = DateTime Function();
 
 /// The base class for all [ViewConfiguration]s.
 ///
-/// [ViewConfiguration]s are used to configure the view of the calendar.
-///
 /// {@category Views}
 abstract class ViewConfiguration {
   const ViewConfiguration({

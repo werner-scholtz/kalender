@@ -46,9 +46,6 @@ String _formatLocalized(DateFormat Function() format, DateTime date, Locale? loc
 extension DateTimeExtensions on DateTime {
   /// Gets the day name in a specific locale.
   ///
-  /// The [locale] parameter allows you to specify the desired locale.
-  /// If not provided, it uses the system locale.
-  ///
   /// Requires `initializeDateFormatting()` from `package:intl/date_symbol_data_local.dart` to have been awaited,
   /// unless [locale] is null or `en_US`. Throws a [FlutterError] naming the missing call otherwise.
   ///

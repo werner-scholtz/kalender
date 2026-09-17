@@ -26,7 +26,6 @@ class MultiDayEventsRow extends StatelessWidget {
   /// The height of the page.
   final double pageHeight;
 
-  /// Creates a new instance of the [MultiDayEventsRow] widget.
   const MultiDayEventsRow({
     super.key,
     required this.configuration,
@@ -101,7 +100,6 @@ class DayEventsColumn extends StatefulWidget {
   /// event built even when it scrolls out of view.
   final KalenderController kalenderController;
 
-  /// Creates a new instance of the [DayEventsColumn] widget.
   const DayEventsColumn({
     super.key,
     required this.eventsController,
@@ -397,23 +395,18 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
 
   void _update() {
     final selectedEvent = widget.controller.selectedEvent.value;
-    // This ensures that we do not rebuild the widget if the selected event is the same as the current one.
     if (selectedEvent == _selectedEvent) return;
 
-    // If the selected event is null, we reset the state.
     if (selectedEvent == null) {
       setState(() => _selectedEvent = null);
       return;
     }
 
-    // If the selected event does not overlap with the current date.
     if (!selectedEvent.floatingRange(location: widget.location).overlaps(widget.date.dayRange)) {
-      // We need to check if the _selectedEvent is null, if it is not, we reset the state.
       if (_selectedEvent != null) setState(() => _selectedEvent = null);
       return;
     }
 
-    // If the configuration does not allow multi-day events and the selected event is a multi-day event, clear the state.
     if (!widget.configuration.showMultiDayEvents &&
         selectedEvent.spansMultipleDays(
           location: widget.location,
@@ -431,18 +424,14 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     final controller = context.kalenderController;
 
-    // If there is no event being dragged, return an empty widget.
     final event = _selectedEvent;
     if (event == null) return const SizedBox();
 
     final eventList = widget.events.toList();
-    // Find the index of the selected event.
     final index = eventList.indexWhere((e) => e.id == controller.selectedEventId);
     if (index != -1) {
-      // If it exists override it with the selectedEvent.
       eventList[index] = event;
     } else {
-      // Else add it at the start of the list.
       eventList.insert(0, event);
     }
 

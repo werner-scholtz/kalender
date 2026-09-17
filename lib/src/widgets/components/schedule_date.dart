@@ -22,7 +22,6 @@ typedef ScheduleDateBuilder = Widget Function(BuildContext context, FloatingDate
 ///
 /// {@category Appearance}
 class ScheduleDateStyle with Diagnosticable {
-  /// Creates a new [ScheduleDateStyle].
   const ScheduleDateStyle({this.textStyle, this.numberTextStyle});
 
   /// The [TextStyle] used by the [ScheduleDate] widget to display the name of the day.
@@ -85,10 +84,6 @@ class ScheduleDate extends StatelessWidget {
   final FloatingDateTime date;
   final ScheduleDateStyle? style;
 
-  /// Create a new [ScheduleDate].
-  ///
-  /// The [date] is the date that will be displayed.
-  /// The [style] is the style of the [ScheduleDate].
   const ScheduleDate({super.key, required this.date, this.style});
 
   @override

@@ -184,7 +184,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     final circleWidth = style.circleSize?.width ?? 10;
     final circleHeight = style.circleSize?.height ?? 10;
 
-    // This ignore pointer is needed so that users can interact with the event tiles and other components that are behind the time indicator.
+    // Pointer events go to the tiles below.
     return IgnorePointer(
       child: Stack(
         clipBehavior: Clip.none,

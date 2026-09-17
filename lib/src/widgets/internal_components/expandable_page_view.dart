@@ -73,7 +73,6 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   @override
   void initState() {
     super.initState();
-    // Initialize the heights with a default value.
     _heights = List.filled(widget.itemCount, _defaultItemHeight, growable: true);
 
     final (first, last) = _computeVisibleRange();

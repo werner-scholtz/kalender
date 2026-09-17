@@ -35,11 +35,6 @@ class MultiDayBody extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
 
-  /// Creates a new [MultiDayBody].
-  ///
-  /// This widget is used to display events in a day/week view format.
-  ///
-  /// This widget is intended to be the body of a [KalenderView].
   const MultiDayBody({super.key, this.configuration});
 
   /// The key used to identify the [SingleChildScrollView] of the [MultiDayBody].
@@ -63,7 +58,6 @@ class MultiDayBody extends StatelessWidget {
 
     final configuration = this.configuration ?? const MultiDayBodyConfiguration();
 
-    // Calculate the height of the page.
     final pageHeight = context.heightPerMinute * timeOfDayRange.duration.inMinutes;
 
     // Measured once by the calendar and shared with the header and the drag
@@ -125,9 +119,6 @@ class MultiDayBody extends StatelessWidget {
             ),
           ),
         ),
-        // The DayDragTarget is positioned on top of the content.
-        // It should not scroll with the content or move with the page view.
-        // It should always be positioned at the top of the page.
         Positioned.fill(
           child: Row(
             children: [
@@ -166,10 +157,7 @@ class MultiDayBody extends StatelessWidget {
 class MultiDayPage extends StatefulWidget {
   final EventsController eventsController;
 
-  /// The [MultiDayViewController] that will be used by the [MultiDayPage].
   final MultiDayViewController viewController;
-
-  /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayPage].
   final MultiDayBodyConfiguration configuration;
 
   /// The height of the page.
@@ -178,7 +166,6 @@ class MultiDayPage extends StatefulWidget {
   /// The initial location used to calculate the visible events.
   final Location? location;
 
-  /// Creates a new [MultiDayPage].
   const MultiDayPage({
     super.key,
     required this.eventsController,
@@ -262,7 +249,6 @@ class _MultiDayPageState extends State<MultiDayPage> {
       itemCount: widget.viewController.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (index) {
-        // Update the visible date time range based on the page index.
         final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);
         final range = _isFreeScroll
             ? FloatingDateTimeRange(
@@ -272,22 +258,17 @@ class _MultiDayPageState extends State<MultiDayPage> {
             : visibleRange;
         final controller = context.kalenderController;
         controller.floatingVisibleRange.value = range;
-
-        // Update the visible events for the new page index.
         _updateVisibleEvents(index, context.location);
 
-        // Call the onPageChanged callback if it was provided.
         final callbacks = context.callbacks;
         callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {
-        // Calculate the visible date time range for the current page index.
         final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);
         final page = Stack(
           key: MultiDayPage.contentKey,
           clipBehavior: Clip.none,
           children: [
-            // HourLines are positioned behind the events.
             Positioned.fill(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -297,8 +278,6 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 ),
               ),
             ),
-
-            // The draggable area for the creating events.
             Positioned.fill(
               child: DayDraggable(
                 visibleRange: visibleRange,
@@ -306,8 +285,6 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 pageHeight: widget.pageHeight,
               ),
             ),
-
-            // The events row that displays the events for the current page.
             Positioned.fill(
               child: MultiDayEventsRow(
                 configuration: widget.configuration,
