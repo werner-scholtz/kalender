@@ -9,22 +9,15 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
-/// The month grid puts the week number at the top of its row rather than
-/// centring it, which is where every other week number sits.
+/// The month week number sits at the top of its row.
 const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter);
 
-/// The style the month week number is drawn with.
-///
-/// [KalenderThemeData.weekNumberStyle] wins over the top alignment, resolved from
-/// the nearest scope like every other style.
+/// [_monthWeekNumberDefaults] with [KalenderThemeData.weekNumberStyle] merged in.
 WeekNumberStyle _resolveStyle(BuildContext context) {
   return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle);
 }
 
-/// The width the calendar measured for the week number column.
-///
-/// Falls back to measuring where there is no [GutterWidths], which is the case
-/// outside a [KalenderView].
+/// The week number column width from [GutterWidths], or a measurement outside a [KalenderView].
 double _width(BuildContext context) {
   return GutterWidths.maybeOf(context)?.weekNumber ??
       context.components.monthComponents.bodyComponents.buildWeekNumberWidth(context);

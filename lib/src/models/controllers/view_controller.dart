@@ -36,8 +36,6 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// The [KalenderEvent]s that are currently visible.
   ValueNotifier<Set<KalenderEvent>> get visibleEvents;
 
-  // TODO: this can be passed between ViewControllers, but for now it is created here.
-
   /// The cache used by the event layout delegate.
   final EventLayoutDelegateCache cache = EventLayoutDelegateCache();
 

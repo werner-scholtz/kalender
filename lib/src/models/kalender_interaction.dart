@@ -14,17 +14,7 @@ const kDefaultSnapStrategy = EventSnapStrategy.interval();
 
 /// Decides where a dragged event lands, given the position of the cursor.
 ///
-/// Set it on [KalenderSnapping.eventSnapStrategy]:
-///
-/// ```dart
-/// KalenderSnapping(
-///   eventSnapStrategy: const EventSnapStrategy.none(),
-/// )
-/// ```
-///
-/// This is a class rather than a function so that it has value equality.
-/// [KalenderSnapping] is compared with `==` to decide whether the calendar needs
-/// to rebuild, and a function field would defeat that.
+/// Set on [KalenderSnapping.eventSnapStrategy], which is compared with `==`, so subclasses define `==` and `hashCode`.
 ///
 /// {@category Interaction}
 abstract class EventSnapStrategy {
@@ -130,20 +120,7 @@ enum EventInteractionGesture {
   longPress,
 }
 
-/// The [KalenderInteraction] class defines the interaction settings for the calendar.
-///
-/// This class allows you to configure various aspects of how users can interact with the calendar,
-/// such as resizing, rescheduling, and creating events. It also provides settings for snapping
-/// events to specific intervals or other events.
-///
-/// Example usage:
-/// ```dart
-/// KalenderInteraction(
-///   allowResizing: true,
-///   allowRescheduling: true,
-///   allowEventCreation: true,
-/// );
-/// ```
+/// What users may do with the calendar: resize, reschedule and create events, and with which gestures.
 ///
 /// {@category Interaction}
 class KalenderInteraction {
@@ -174,10 +151,6 @@ class KalenderInteraction {
   static const defaultInputMode = InputMode.auto;
 
   /// Whether to allow horizontal resize handles in [InputMode.imprecise] mode.
-  ///
-  /// By default, horizontal resize handles are hidden for imprecise input because
-  /// they are too small to interact with reliably using touch.
-  /// Set this to `true` to enable them.
   final bool allowHorizontalImpreciseResize;
   static const defaultAllowHorizontalImpreciseResize = false;
 
@@ -252,20 +225,7 @@ class KalenderInteraction {
   );
 }
 
-/// The [EventInteraction] class defines the interaction settings for individual calendar events.
-///
-/// This class allows you to configure how users can interact with specific events,
-/// such as resizing the start/end times and rescheduling. Unlike [KalenderInteraction] which
-/// applies globally, [EventInteraction] is applied per event for fine-grained control.
-///
-/// Example usage:
-/// ```dart
-/// EventInteraction(
-///   allowStartResize: true,
-///   allowEndResize: true,
-///   allowRescheduling: true,
-/// );
-/// ```
+/// What users may do with one event: resize its start, resize its end and reschedule it.
 ///
 /// {@category Interaction}
 class EventInteraction {
@@ -308,20 +268,7 @@ class EventInteraction {
   int get hashCode => Object.hash(allowStartResize, allowEndResize, allowRescheduling);
 }
 
-/// The [KalenderSnapping] class defines the snapping settings for the calendar.
-///
-/// This class allows you to configure various aspects of how events snap to specific intervals
-/// or other events in the calendar.
-///
-/// Example usage:
-/// ```dart
-/// KalenderSnapping(
-///   snapIntervalMinutes: 15,
-///   snapToTimeIndicator: true,
-///   snapToOtherEvents: true,
-///   snapRange: Duration(minutes: 10),
-/// );
-/// ```
+/// How a dragged or resized event snaps to time intervals, the time indicator and other events.
 ///
 /// {@category Interaction}
 class KalenderSnapping {

@@ -22,10 +22,6 @@ class KalenderCallbacks {
   final OnEventTapped? onEventTapped;
 
   /// The callback for when an event is tapped, with details.
-  ///
-  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail], the [GestureDetector] is not enabled,
-  /// and a gesture detector inside your own tile receives the gesture instead. See [DayEventTileUtils] and
-  /// [MultiDayEventTileUtils] for tiles that resolve the tapped position themselves.
   final OnEventTappedWithDetail? onEventTappedWithDetail;
 
   /// The callback for when an event is secondary tapped.
@@ -36,8 +32,7 @@ class KalenderCallbacks {
 
   /// The callback for when an event is about to be created.
   ///
-  /// This is used by a [Draggable] or [LongPressDraggable] to create a new event.
-  /// * If you provide [onEventCreateWithDetail] then that will be used instead.
+  /// Not called when [onEventCreateWithDetail] is set.
   final OnEventCreate? onEventCreate;
 
   /// The callback for when an event is about to be created.
@@ -65,32 +60,24 @@ class KalenderCallbacks {
   final OnTapped? onTapped;
 
   /// The callback for when a user taps on the calendar with details.
-  ///
-  /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnTappedWithDetail? onTappedWithDetail;
 
   /// The callback for when a user secondary taps on the calendar.
   final OnTapped? onSecondaryTapped;
 
   /// The callback for when a user secondary taps on the calendar with details.
-  ///
-  /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnTappedWithDetail? onSecondaryTappedWithDetail;
 
   /// The callback for when a user long presses on the calendar.
   final OnLongPressed? onLongPressed;
 
   /// The callback for when a user long presses on the calendar with details.
-  ///
-  /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnLongPressedWithDetail? onLongPressedWithDetail;
 
   /// The callback for when a user secondary long presses on the calendar.
   final OnLongPressed? onSecondaryLongPressed;
 
   /// The callback for when a user secondary long presses on the calendar with details.
-  ///
-  /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnLongPressedWithDetail? onSecondaryLongPressedWithDetail;
 
   /// The callback for when a drag target is evaluating whether to accept a draggable, on a vertical view.
@@ -357,6 +344,8 @@ class GestureCallbacks<T extends TapDetail> {
   }
 }
 
+/// The detail of a gesture on the calendar, a [DayDetail] or a [MultiDayDetail] depending on the calendar view.
+///
 /// {@category Controllers and callbacks}
 abstract class TapDetail {
   /// The render box of the gesture detector that was tapped.

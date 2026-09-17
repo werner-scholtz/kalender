@@ -96,10 +96,6 @@ class ScheduleViewConfiguration extends ViewConfiguration {
 
 /// The default width of the leading (date) column in the schedule view.
 ///
-/// A fixed width keeps every row's event tile aligned regardless of whether the
-/// row shows a date, and independent of the day name, day-number digits, locale,
-/// or text scale.
-///
 /// {@category Views}
 const kDefaultScheduleLeadingWidth = 56.0;
 
@@ -118,8 +114,7 @@ class ScheduleBodyConfiguration {
   /// The behavior of empty days in the schedule view.
   final EmptyDayBehavior emptyDay;
 
-  /// The width of the leading (date) column, shared by every row so the event
-  /// tiles line up. Defaults to [kDefaultScheduleLeadingWidth].
+  /// The width of the leading (date) column, the same for every row. Defaults to [kDefaultScheduleLeadingWidth].
   final double leadingWidth;
 
   /// The configuration for the page navigation triggers.

@@ -31,22 +31,9 @@ class MonthItem extends ListItem {}
 /// A class that represents an empty item.
 class EmptyItem extends ListItem {}
 
-/// A mixin that manages mappings between page indices, list items, and their associated dates
-/// for paginated or scrollable calendar views.
+/// Maps page indices to list items, item indices to dates and dates to item indices for schedule views.
 ///
-/// This mixin provides utility methods and data structures to efficiently map between:
-/// - Page indices and their items
-/// - Item indices and their associated dates
-/// - Dates and their corresponding item indices
-/// - Month boundaries within pages
-///
-/// It is intended for use in calendar or schedule views that need to quickly look up
-/// items or dates for a given page, index, or month.
-///
-/// Example usage:
-///   - Always populate the maps for a given number of pages with [populateMaps] before using them.
-///   - Add items to a page with [addItemForPage].
-///   - Query for item indices, dates, or month boundaries as needed.
+/// Call [populateMaps] before any other member.
 mixin ScheduleMap {
   Location? get location;
 
@@ -143,13 +130,15 @@ mixin ScheduleMap {
     return monthIndices;
   }
 
-  /// Get the month index for the given pageIndex and date.
+  /// Returns the item index of the month header for the month of [date] on [pageIndex], or `null` when there is
+  /// none.
   int? monthIndexFromDateTime(int pageIndex, FloatingDateTime date) {
     final monthIndicesForPage = monthIndices(pageIndex);
     return monthIndicesForPage[date.startOfMonth];
   }
 
-  /// Get the month index for the given pageIndex and date.
+  /// Returns the item index of the month header on [pageIndex] closest to [date], or 0 when the page has no month
+  /// headers.
   int closestMonthIndex(int pageIndex, FloatingDateTime date) {
     final monthIndicesForPage = monthIndices(pageIndex);
     if (monthIndicesForPage.isEmpty) return 0;

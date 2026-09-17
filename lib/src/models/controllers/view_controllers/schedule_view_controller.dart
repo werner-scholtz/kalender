@@ -70,10 +70,6 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   void clear() => clearPage(currentPage);
 
   /// Find the initial scroll index for the given date.
-  ///
-  /// Normalizes with the view's [location] (matching how the map is keyed and how
-  /// [indexFromDateTime]/[closestIndex] look up), and never writes a fallback back
-  /// into the authoritative date→index map.
   int initialScrollIndex(DateTime date) {
     final normalized = FloatingDateTime.fromExternal(date, location: location).startOfDay;
     return dateTimeItemIndex(currentPage)[normalized] ?? closestIndex(normalized);
@@ -267,9 +263,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   Future<void> jumpToDate(DateTime date) async {
     final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
-    // Since jump to page does not build the page immediately,
-    // and I'm currently unaware of a way to reliably wait for the page to be built,
-    // I will just be using _animateToPage with hardcoded values for now.
+    // animateToPage builds the page before the index scroll. jumpToPage does not.
     await _animateToPage(pageIndex, duration: const Duration(milliseconds: 100), curve: Curves.linear);
     final index = indexFromDateTime(date) ?? closestIndex(date);
     await _animateToIndex(index, duration: const Duration(milliseconds: 100), curve: Curves.linear);

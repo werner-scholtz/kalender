@@ -20,11 +20,6 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// - [_MultiDayHeader] this is used for a body that displays multiple days.
 /// - [_FreeScrollHeader] this is used for a body that scrolls freely.
 ///
-/// The single-day and multi-day headers use an [ExpandablePageView] to size the
-/// header to the current page. The free-scroll header instead renders one
-/// continuous band (see [_FreeScrollMultiDayBand]) so multi-day events can span
-/// day columns.
-///
 /// {@category Views}
 class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
@@ -381,10 +376,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
           if (mounted) _maybeReanchor();
         });
 
-        // Built once per window, not on every scroll frame. The multi-day band
-        // layers a create-by-drag target behind the events and a drop/resize
-        // target in front, both over the window range so their day<->pixel
-        // mapping matches the events (same as the paged headers).
+        // Built once per window. The drag targets span the window range so they map days to pixels like the events.
         final content = SizedBox(
           width: bandWidth,
           child: Column(
@@ -427,11 +419,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
           ),
         );
 
-        // A non-scrolling horizontal viewport sizes its height to the content,
-        // lets the strip exceed the viewport width, and clips. The strip is
-        // parked at offset 0; the translate below does the windowing. Computing
-        // the translate here (not in a post-frame callback) keeps it in lockstep
-        // with a re-anchor so pages do not flicker.
+        // The strip stays at offset 0 and the translate below windows it, in the same build as a re-anchor.
         final band = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const NeverScrollableScrollPhysics(),
@@ -452,9 +440,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
 
         if (!widget.configuration.showTiles) return band;
 
-        // Page-edge auto-scroll: while a drag hovers the viewport edge, advance
-        // to the adjacent day. These triggers are anchored to the viewport (not
-        // the translated strip), so they stay reachable at the visible edge.
+        // Page-edge triggers anchored to the viewport, not the translated strip, so a drag at the edge can reach them.
         final pageTrigger = widget.configuration.pageTriggerConfiguration;
         Widget edgeTrigger({required bool leading}) {
           return CursorNavigationTrigger.page(

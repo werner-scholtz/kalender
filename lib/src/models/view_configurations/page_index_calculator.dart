@@ -11,29 +11,12 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 
 /// Calculates page indices and date ranges for paginated calendar views.
 ///
-/// This class provides the logic to translate between dates and page indices
-/// for different view types (day, week, month, schedule). It handles:
-/// - Converting dates to page indices for navigation
-/// - Calculating the date range displayed on a specific page
-/// - Determining the total number of pages available
-/// - Managing timezone-adjusted date ranges for calculations
-///
-/// Each view type (single day, week, month, etc.) has its own implementation
-/// that defines how dates map to pages based on the view's structure.
-///
-/// **Note:** Internal calculations are performed in UTC. Use [FloatingDateTime.forLocation]
-/// to convert results to the appropriate timezone.
+/// Each view type has its own implementation that maps dates to pages. Calculations are performed in UTC. Use
+/// [FloatingDateTime.forLocation] to convert results to a location.
 ///
 /// {@category Views}
 abstract class PageIndexCalculator {
-  /// The start of the range this calculator operates within.
-  ///
-  /// This is provided by the user and defines the bounds for navigation and display.
-  /// Note these bounds are not hard limits; the calendar may adjust them in certain circumstances.
-  /// - The week view may extend the range to ensure full weeks are displayed.
-  /// - The month view may adjust to show complete months.
-  ///
-  /// see [floatingRange] for the adjusted range used in calculations.
+  /// The start of the range, before a view aligns it to its page boundaries. See [floatingRange].
   final DateTime start;
 
   /// The end of the range this calculator operates within.
@@ -119,14 +102,11 @@ abstract class PageIndexCalculator {
   /// Calculates the page index of the [date].
   ///
   /// The returned index should be clamped between 0 and [numberOfPages] minus one.
-  /// [numberOfPages] is a count, while page indices are zero-based, so the last
-  /// valid index is `numberOfPages - 1`.
   int indexFromDate(DateTime date, Location? location);
 
   /// The number of pages that can be displayed.
   ///
-  /// This is a count (starting at 1), not an index. The last valid page index is
-  /// therefore `numberOfPages - 1`.
+  /// Page indices are zero-based, so the last valid index is `numberOfPages - 1`.
   int numberOfPages(Location? location);
 
   /// The adjusted range for a specific location.
@@ -430,6 +410,8 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
   int get hashCode => Object.hash(ContinuousScheduleIndexCalculator, start, end);
 }
 
+/// Calculates page indices and date ranges for a paginated schedule view.
+///
 /// {@category Views}
 class PaginatedScheduleIndexCalculator extends PageIndexCalculator with _MonthPages {
   PaginatedScheduleIndexCalculator({required super.start, required super.end});

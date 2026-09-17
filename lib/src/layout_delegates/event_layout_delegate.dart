@@ -25,10 +25,6 @@ export 'package:kalender/src/models/kalender_time_range.dart';
 /// )
 /// ```
 ///
-/// This is a class rather than a function so that it has value equality. Body
-/// configurations are compared with `==` to decide whether the calendar needs to
-/// rebuild, and a function field would defeat that.
-///
 /// {@category Layout}
 abstract class EventLayoutStrategy {
   const EventLayoutStrategy();
@@ -203,11 +199,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
 
   /// The pixel offset of [instant] from the top of the day.
   ///
-  /// Both the top and bottom of an event are derived from this single
-  /// conversion. Computing them the same way is what guarantees that two
-  /// back-to-back events (where one ends exactly when the next begins) get
-  /// bit-identical boundaries, so they never register as overlapping because of
-  /// floating point differences.
+  /// The top and bottom of every tile come from this one conversion, so back-to-back tiles get identical boundaries.
   double _offsetFromDayStart(FloatingDateTime instant) {
     final dateStart = timeOfDayRange.start.toFloatingDateTime(date);
     final difference = instant.difference(dateStart);
@@ -264,9 +256,6 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     final eventEnd = range?.end ?? date.startOfDay;
 
     var top = _offsetFromDayStart(eventStart);
-    // Derive the bottom from the end instant with the same conversion as the
-    // top (not top + height), so a touching neighbour's top matches this bottom
-    // exactly and they are never treated as overlapping.
     var bottom = _offsetFromDayStart(eventEnd);
 
     if (minimumTileHeight != null && bottom - top < minimumTileHeight!) {
@@ -314,16 +303,9 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     return horizontalGroups;
   }
 
-  /// Finds the longest chain of overlapping events using depth-first search.
+  /// The length of the longest chain of overlapping entries in [verticalLayoutData].
   ///
-  /// This method determines the maximum number of events that overlap at any given time,
-  /// which is used to calculate the optimal width for each event tile in side-by-side layouts.
-  ///
-  /// This algorithm can get expensive, so it should be used sparingly.
-  ///
-  /// [verticalLayoutData] - The collection of vertical layout data for all events.
-  ///
-  /// Returns the length of the longest chain of overlapping events.
+  /// Uses a depth-first search, which is expensive for large inputs.
   int findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
     if (verticalLayoutData.isEmpty) return 0;
 
@@ -410,7 +392,6 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
           width = size.width / numberOfOverlaps;
           xOffset = width * (numberOfOverlaps - 1);
         } else {
-          // TODO: make this adjustable ?
           width = lastWidth / 1.8;
           xOffset = size.width - width;
         }

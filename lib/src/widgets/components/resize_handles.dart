@@ -191,8 +191,7 @@ class DefaultResizeHandles extends StatelessWidget {
     final isVertical = details.isVertical;
 
     if (isImprecise && !isVertical && !details.interaction.allowHorizontalImpreciseResize) {
-      // Horizontal resize handles are not supported by default for imprecise input.
-      // This is because they will be super small and hard to interact with.
+      // Horizontal handles are too small for imprecise input.
       return const SizedBox();
     }
 
