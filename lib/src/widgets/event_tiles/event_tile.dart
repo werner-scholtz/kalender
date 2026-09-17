@@ -15,6 +15,7 @@ import 'package:kalender/src/widgets/event_tiles/tile_gesture_detector.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
+import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// The function that is called when the event is tapped.
 typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
@@ -109,9 +110,10 @@ abstract class EventTile extends StatelessWidget {
     // enabled. It carries a mouse region, a selection listener and a size read
     // per tile, so skipping it for read-only calendars avoids that per-tile
     // cost entirely.
-    final showResizeHandles = resizeAxis != null && context.interaction.allowResizing;
+    final interaction = context.interaction;
+    final showResizeHandles = resizeAxis != null && interaction.allowResizing;
 
-    return TileGestureDetector(
+    final tile = TileGestureDetector(
       gestureDetectorKey: gestureKey,
       onTapUp: onTapUp,
       onSecondaryTapUp: onSecondaryTapUp,
@@ -126,5 +128,14 @@ abstract class EventTile extends StatelessWidget {
               ],
             ),
     );
+
+    final callbacks = context.callbacks;
+    final canReschedule = interaction.allowRescheduling && event.interaction.allowRescheduling;
+    final canResize = showResizeHandles && (event.interaction.allowStartResize || event.interaction.allowEndResize);
+    final canTap = callbacks != null && (callbacks.hasOnEventTapped || callbacks.hasOnEventSecondaryTapped);
+    if (canReschedule || canResize || canTap) return tile;
+
+    // The calendar behind the tile receives the pointer as well, so a drag here creates an event.
+    return TranslucentPointer(child: tile);
   }
 }
