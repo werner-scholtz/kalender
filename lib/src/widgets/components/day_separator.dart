@@ -106,7 +106,7 @@ class DaySeparator extends StatelessWidget {
     final bottomIndent = style.bottomIndent ?? 0;
 
     return Container(
-      margin: EdgeInsetsDirectional.only(start: topIndent, end: bottomIndent),
+      margin: EdgeInsets.only(top: topIndent, bottom: bottomIndent),
       width: width,
       color: color,
     );
