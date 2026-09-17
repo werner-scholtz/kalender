@@ -24,7 +24,6 @@ class MonthHeader extends StatelessWidget {
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
-    // final viewController = kalenderController.viewController as MonthViewController;
     final viewController = kalenderController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;

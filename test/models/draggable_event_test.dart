@@ -12,8 +12,6 @@ void main() {
   KalenderEvent makeEvent({String id = 'e1'}) =>
       KalenderEvent(id: id, start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10));
 
-  // ─── ResizeDirection ─────────────────────────────────────────────────────────
-
   group('ResizeDirection', () {
     test('top and bottom are vertical, not horizontal', () {
       for (final direction in [ResizeDirection.top, ResizeDirection.bottom]) {
@@ -29,40 +27,6 @@ void main() {
       }
     });
   });
-
-  // ─── Resize ──────────────────────────────────────────────────────────────────
-
-  group('Resize', () {
-    test('verticalResize / horizontalResize mirror the direction', () {
-      final vertical = Resize(event: makeEvent(), direction: ResizeDirection.top);
-      expect(vertical.verticalResize, isTrue);
-      expect(vertical.horizontalResize, isFalse);
-
-      final horizontal = Resize(event: makeEvent(), direction: ResizeDirection.right);
-      expect(horizontal.horizontalResize, isTrue);
-      expect(horizontal.verticalResize, isFalse);
-    });
-
-    test('updateDateTimeRange returns a new Resize with the updated event and same direction', () {
-      final original = Resize(
-        event: makeEvent(id: 'keep-me'),
-        direction: ResizeDirection.bottom,
-      );
-      final newRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 12));
-
-      final updated = original.updateDateTimeRange(newRange);
-
-      expect(updated.direction, equals(ResizeDirection.bottom));
-      expect(updated.event.start, equals(newRange.start));
-      expect(updated.event.end, equals(newRange.end));
-      // copyWith preserves the id so layout/selection lookups stay stable.
-      expect(updated.event.id, equals('keep-me'));
-      // The original is left untouched.
-      expect(original.event.end, equals(DateTime.utc(2024, 1, 15, 10)));
-    });
-  });
-
-  // ─── Create / Reschedule ─────────────────────────────────────────────────────
 
   group('Create / Reschedule', () {
     test('Create carries the controller id', () {

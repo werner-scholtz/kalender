@@ -78,7 +78,6 @@ class KalenderViewState extends State<KalenderView> {
   final Map<String, ViewSnapshot> _viewHistory = {};
   ViewSnapshot? _lastMultiDaySnapshot;
   // TODO: update this to be a valueNotifier.
-  late Locale? _locale = widget.locale;
   late final _location = ValueNotifier<Location?>(widget.location);
 
   @override
@@ -95,10 +94,7 @@ class KalenderViewState extends State<KalenderView> {
   void didUpdateWidget(covariant KalenderView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final didChangeLocale = _locale != widget.locale;
-    if (didChangeLocale) {
-      _locale = widget.locale;
-    }
+    final didChangeLocale = widget.locale != oldWidget.locale;
 
     final didChangeLocation = widget.location != oldWidget.location;
     if (didChangeLocation) {
@@ -280,7 +276,7 @@ class KalenderViewState extends State<KalenderView> {
     return LocationProvider(
       notifier: _location,
       child: LocaleProvider(
-        locale: _locale,
+        locale: widget.locale,
         child: Callbacks(
           callbacks: widget.callbacks,
           child: Components(

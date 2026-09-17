@@ -78,7 +78,6 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
-      // key: ValueKey(widget.viewController.hashCode),
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.viewConfiguration.pageIndexCalculator.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,

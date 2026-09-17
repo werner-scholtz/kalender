@@ -23,15 +23,6 @@ class Resize {
   final ResizeDirection direction;
 
   Resize({required this.event, required this.direction});
-
-  bool get verticalResize => direction.vertical;
-  bool get horizontalResize => direction.horizontal;
-
-  /// Updates the [Resize]'s [KalenderEvent] with the new [KalenderDateTimeRange].
-  Resize updateDateTimeRange(KalenderDateTimeRange dateTimeRange) {
-    final updatedEvent = event.withDateTimeRange(dateTimeRange);
-    return Resize(event: updatedEvent, direction: direction);
-  }
 }
 
 /// A class used by the [DragTargetUtilities] to determine that a [KalenderEvent] is being created.

@@ -4,11 +4,13 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:kalender/kalender.dart';
 
 mixin SnapPoints {
   /// A list of possible [DateTime] snap points that the event can snap to.
   final List<FloatingDateTime> _snapPoints = [];
+  @visibleForTesting
   List<FloatingDateTime> get snapPoints => _snapPoints.toList();
 
   /// Get the closest snap point to the [dateTime] within a [snapRange].

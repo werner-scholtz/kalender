@@ -137,24 +137,6 @@ mixin ScheduleMap {
     return monthIndicesForPage[date.startOfMonth];
   }
 
-  /// Returns the item index of the month header on [pageIndex] closest to [date], or 0 when the page has no month
-  /// headers.
-  int closestMonthIndex(int pageIndex, FloatingDateTime date) {
-    final monthIndicesForPage = monthIndices(pageIndex);
-    if (monthIndicesForPage.isEmpty) return 0;
-
-    final lastDate = monthIndicesForPage.keys.last;
-    final firstDate = monthIndicesForPage.keys.first;
-    if (date.isAfter(lastDate)) {
-      return monthIndicesForPage.values.last;
-    } else if (date.isBefore(firstDate)) {
-      return monthIndicesForPage.values.first;
-    } else {
-      // If the date is in between, we need to find the closest index.
-      return monthIndicesForPage.entries.reduce((a, b) => (a.key.isBefore(b.key) ? a : b)).value;
-    }
-  }
-
   /// Populate the maps with the given number of pages.
   void populateMaps(int numberOfPages) {
     _indexedIndexItems.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));

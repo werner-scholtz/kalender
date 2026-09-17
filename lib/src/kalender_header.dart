@@ -37,22 +37,17 @@ class KalenderHeader extends StatefulWidget {
 }
 
 class _KalenderHeaderState extends State<KalenderHeader> {
-  late KalenderCallbacks? _callbacks;
   late ValueNotifier<KalenderInteraction> _interaction;
 
   @override
   void initState() {
     super.initState();
-    _callbacks = widget.callbacks;
     _interaction = ValueNotifier(widget.interaction ?? KalenderInteraction());
   }
 
   @override
   void didUpdateWidget(covariant KalenderHeader oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.callbacks != widget.callbacks) {
-      _callbacks = widget.callbacks;
-    }
     if (oldWidget.interaction != widget.interaction) {
       _interaction.value = widget.interaction ?? KalenderInteraction();
     }
@@ -68,7 +63,7 @@ class _KalenderHeaderState extends State<KalenderHeader> {
   Widget build(BuildContext context) {
     final viewController = context.kalenderController.viewController;
     return Callbacks(
-      callbacks: _callbacks ?? context.callbacks,
+      callbacks: widget.callbacks ?? context.callbacks,
       child: switch (viewController) {
         MultiDayViewController() => Interaction(
           notifier: _interaction,

@@ -98,12 +98,10 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   KalenderTimeRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
 
   VerticalConfiguration get bodyConfiguration => widget.configuration;
-  bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
   PageTriggerConfiguration get pageTrigger => bodyConfiguration.pageTriggerConfiguration;
   ScrollTriggerConfiguration get scrollTrigger => bodyConfiguration.scrollTriggerConfiguration;
 
   KalenderSnapping get snapping => widget.snapping.value;
-  bool get snapToOtherEvents => snapping.snapToOtherEvents;
   int get snapIntervalMinutes => snapping.snapIntervalMinutes;
   bool get snapToTimeIndicator => snapping.snapToTimeIndicator;
   Duration get snapRange => snapping.snapRange;
@@ -145,7 +143,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   /// Update the snap points.
   void _updateSnapPoints() {
-    if (!snapToOtherEvents) return;
+    if (!snapping.snapToOtherEvents) return;
     clearSnapPoints();
     addEventSnapPoints(controller.visibleEvents.value, context.location);
   }
