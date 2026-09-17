@@ -190,6 +190,33 @@ void main() {
       expect(weekRange!.start.startOfDay, equals(FloatingDateTime.fromDateTime(monthRange!.start)));
     });
 
+    testWidgets('month → week opens on a week of the month when the first days of the week differ', (tester) async {
+      // September 2026 starts on a Tuesday, so a grid starting on Sunday begins on 30 August, which falls in the
+      // Monday week of 24 August.
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(
+          name: 'Month',
+          displayRange: calendarRange,
+          firstDayOfWeek: DateTime.sunday,
+          initialDateTime: DateTime(2026, 9, 15),
+        ),
+        withBody: true,
+      );
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2026, 8, 30));
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(
+          name: 'Week',
+          displayRange: calendarRange,
+          firstDayOfWeek: DateTime.monday,
+        ),
+      );
+
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2026, 8, 31));
+    });
+
     testWidgets('week → day', (tester) async {
       await pumpCalendarView(
         tester,

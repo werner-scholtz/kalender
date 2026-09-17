@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 
 /// The calendar header when in use should be able to throw a drop shadow on the body.
@@ -38,7 +40,7 @@ class KalenderLayoutDelegate extends MultiChildLayoutDelegate {
       final width = size.width;
       final height = size.height;
       final headerHeight = headerSize?.height ?? 0.0;
-      final maxHeight = height - headerHeight;
+      final maxHeight = math.max(0.0, height - headerHeight);
 
       final constraints = BoxConstraints(minWidth: width, maxWidth: width, maxHeight: maxHeight, minHeight: 0.0);
 

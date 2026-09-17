@@ -236,9 +236,7 @@ class _SelectionDemoState extends State<SelectionDemo> {
             valueListenable: kalenderController.visibleDateTimeRange,
             builder: (context, range, _) {
               if (range == null) return const SizedBox.shrink();
-              final date = viewConfiguration is MonthViewConfiguration
-                  ? FloatingDateTimeRange.fromDateTimeRange(range).dominantMonthDate
-                  : range.start;
+              final date = FloatingDateTimeRange.fromDateTimeRange(range).dominantMonthDate;
               return Text('${date.monthNameLocalized()} ${date.year}', style: Theme.of(context).textTheme.titleMedium);
             },
           ),

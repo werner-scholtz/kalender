@@ -152,10 +152,16 @@ FloatingDateTime kDefaultToMonthly(ViewController old) {
   };
 }
 
-/// Carry-focus date when switching **to** a weekly (multi-day) view.
+/// Carry-focus date when switching **to** a weekly (multi-day) view, derived from [old].
 ///
 /// {@category Views}
-FloatingDateTime kDefaultToWeekly(ViewController old) => old.floatingVisibleRange.value!.start;
+FloatingDateTime kDefaultToWeekly(ViewController old) {
+  final oldRange = old.floatingVisibleRange.value!;
+  return switch (old.viewConfiguration) {
+    MonthViewConfiguration _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
+    _ => oldRange.start,
+  };
+}
 
 /// Carry-focus date when switching **to** a daily view, derived from [old].
 ///
