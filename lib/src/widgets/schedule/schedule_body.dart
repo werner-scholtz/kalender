@@ -11,6 +11,7 @@ import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
+import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 /// A widget that displays events in a schedule/list format.
@@ -388,12 +389,15 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                   ) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
-              final child = ListTile(
-                minLeadingWidth: 0,
-                leading: leadingSlot(leading),
-                title: components.emptyItemBuilder?.call(
-                  context,
-                  date.dayRange.forLocation(location: context.location),
+              final child = _EmptyDayGestures(
+                date: date,
+                child: ListTile(
+                  minLeadingWidth: 0,
+                  leading: leadingSlot(leading),
+                  title: components.emptyItemBuilder?.call(
+                    context,
+                    date.dayRange.forLocation(location: context.location),
+                  ),
                 ),
               );
               return components.buildScheduleTileHighlight(context, date, viewController.highlightedRange, child);
@@ -437,6 +441,44 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Reports the [KalenderCallbacks.onTapped] family for an empty day, the way an empty month cell does.
+class _EmptyDayGestures extends StatelessWidget {
+  const _EmptyDayGestures({required this.date, required this.child});
+
+  final FloatingDateTime date;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final callbacks = Callbacks.maybeOf(context);
+    if (callbacks == null) return child;
+
+    OnGesture<MultiDayDetail>? report(void Function(DateTime)? plain, void Function(TapDetail)? withDetail) {
+      if (plain == null && withDetail == null) return null;
+      return (detail) {
+        plain?.call(date.forLocation(location: context.location));
+        withDetail?.call(detail);
+      };
+    }
+
+    return GestureCallbacksDetector<MultiDayDetail>(
+      callbacks: GestureCallbacks(
+        onTap: report(callbacks.onTapped, callbacks.onTappedWithDetail),
+        onSecondaryTap: report(callbacks.onSecondaryTapped, callbacks.onSecondaryTappedWithDetail),
+        onLongPress: report(callbacks.onLongPressed, callbacks.onLongPressedWithDetail),
+        onSecondaryLongPress: report(callbacks.onSecondaryLongPressed, callbacks.onSecondaryLongPressedWithDetail),
+      ),
+      detail: (renderBox, localOffset) => MultiDayDetail(
+        dateTimeRange: date.dayRange.forLocation(location: context.location),
+        renderBox: renderBox,
+        localOffset: localOffset,
+      ),
+      behavior: HitTestBehavior.opaque,
+      child: child,
     );
   }
 }

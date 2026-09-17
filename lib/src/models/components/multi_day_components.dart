@@ -16,6 +16,7 @@ import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/components/week_number.dart';
+import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
@@ -101,13 +102,20 @@ class MultiDayHeaderComponents {
 
   /// Builds a day header, with [dayHeaderBuilder] when set.
   Widget buildDayHeader(BuildContext context, DateTime date) {
-    return dayHeaderBuilder?.call(context, date) ?? DayHeader(date: date);
+    return DateLabelGestures(
+      date: date,
+      child: dayHeaderBuilder?.call(context, date) ?? DayHeader(date: date),
+    );
   }
 
   /// Builds a week number, with [weekNumberBuilder] when set.
   Widget buildWeekNumber(BuildContext context, KalenderDateTimeRange visibleDateTimeRange) {
-    return weekNumberBuilder?.call(context, visibleDateTimeRange) ??
-        WeekNumber(visibleDateTimeRange: visibleDateTimeRange);
+    return WeekNumberGestures(
+      range: visibleDateTimeRange,
+      child:
+          weekNumberBuilder?.call(context, visibleDateTimeRange) ??
+          WeekNumber(visibleDateTimeRange: visibleDateTimeRange),
+    );
   }
 
   /// Creates a copy of this with the given fields replaced.

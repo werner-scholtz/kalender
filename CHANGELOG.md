@@ -4,6 +4,12 @@
 
 - `KalenderController.selectDate`, `selectRange` and `deselectRange` select days, `selectedRange` holds the selection and `isDateSelected` checks a date against it.
 - `DayNumberStyle.selectedBackgroundColor`, `selectedForegroundColor`, `selectedBorder` and `todayBorder` style a selected day number and today. A selected day gets a ring by default.
+- `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses on date labels and week numbers, through `GestureCallbacks`.
+- An empty day in the schedule view reports the `onTapped` callbacks.
+
+### Fixes
+
+- Tapping the day number in a month cell reaches `onTapped`.
 
 ### Fixes
 

@@ -76,7 +76,12 @@ class _SelectionDemoState extends State<SelectionDemo> {
   static const initialTimeOfDay = KalenderTime(hour: 7, minute: 0);
 
   late final viewConfigurations = <ViewConfiguration>[
-    MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: now, nowCallback: () => now),
+    MonthViewConfiguration.singleMonth(
+      displayRange: displayRange,
+      initialDateTime: now,
+      nowCallback: () => now,
+      showWeekNumbers: true,
+    ),
     MultiDayViewConfiguration.week(
       displayRange: displayRange,
       firstDayOfWeek: 1,
@@ -190,6 +195,8 @@ class _SelectionDemoState extends State<SelectionDemo> {
                 viewConfiguration: viewConfiguration,
                 callbacks: KalenderCallbacks(
                   onTapped: onTapped,
+                  dateLabel: GestureCallbacks(onTap: (detail) => onTapped(detail.date)),
+                  weekNumber: GestureCallbacks(onTap: (detail) => selectRange(detail.dateTimeRange)),
                   onEventChanged: (event, updatedEvent) =>
                       eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
                 ),
@@ -203,10 +210,11 @@ class _SelectionDemoState extends State<SelectionDemo> {
                     ],
                   ),
                 ),
-                body: const KalenderBody(
+                body: KalenderBody(
                   multiDayTileComponents: tileComponents,
                   monthTileComponents: tileComponents,
                   scheduleTileComponents: scheduleTileComponents,
+                  scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
                 ),
               ),
             ),
@@ -264,7 +272,9 @@ class _SelectionDemoState extends State<SelectionDemo> {
       children: [
         Text('Selection', style: textTheme.titleLarge),
         const SizedBox(height: 4),
-        Text('The app selects through KalenderController. Tap a day, or use the buttons.', style: textTheme.bodySmall),
+        Text(
+            'The app selects through KalenderController. Tap a day, a day number or a week number, or use the buttons.',
+            style: textTheme.bodySmall),
         heading('controller.selectedRange'),
         ListenableBuilder(
           listenable: kalenderController.selectedRange,
