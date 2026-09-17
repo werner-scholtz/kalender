@@ -6,6 +6,7 @@
 - `DayNumberStyle.selectedBackgroundColor`, `selectedForegroundColor`, `selectedBorder` and `todayBorder` style a selected day number and today. A selected day gets a ring by default.
 - `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses on date labels and week numbers, through `GestureCallbacks`.
 - An empty day in the schedule view reports the `onTapped` callbacks.
+- `ResizeHandleDetails.location` holds the calendar's location. `continuesBefore`, `continuesAfter`, `showStart` and `showEnd` use it when given no location, where they used the device timezone.
 
 ### Fixes
 

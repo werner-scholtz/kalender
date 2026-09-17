@@ -50,6 +50,11 @@ class ResizeHandleDetails {
   /// When `false`, resize handles span the full width/height of the event tile.
   final bool isImprecise;
 
+  /// The location of the calendar.
+  ///
+  /// [continuesBefore], [continuesAfter], [showStart] and [showEnd] use it when they are given no location.
+  final Location? location;
+
   const ResizeHandleDetails({
     required this.event,
     required this.interaction,
@@ -57,6 +62,7 @@ class ResizeHandleDetails {
     required this.size,
     required this.axis,
     required this.isImprecise,
+    this.location,
   });
 
   /// Whether the axis is vertical.
@@ -66,10 +72,12 @@ class ResizeHandleDetails {
   EventInteraction get eventInteraction => event.interaction;
 
   /// Whether the event continues before the current date range.
-  bool continuesBefore({Location? location}) => event.floatingStart(location: location).isBefore(range.start);
+  bool continuesBefore({Location? location}) =>
+      event.floatingStart(location: location ?? this.location).isBefore(range.start);
 
   /// Whether the event continues after the current date range.
-  bool continuesAfter({Location? location}) => event.floatingEnd(location: location).isAfter(range.end);
+  bool continuesAfter({Location? location}) =>
+      event.floatingEnd(location: location ?? this.location).isAfter(range.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
   bool showStart({Location? location}) => event.canResizeStart(interaction, range, location: location);

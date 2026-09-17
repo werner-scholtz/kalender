@@ -162,6 +162,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
           size: _size,
           axis: widget.axis,
           isImprecise: isImprecise,
+          location: context.location,
         ),
       ),
     );
