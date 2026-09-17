@@ -12,3 +12,9 @@ Run it from this directory:
 ```sh
 flutter run
 ```
+
+`lib/selection_demo.dart` shows date selection:
+
+```sh
+flutter run -t lib/selection_demo.dart
+```

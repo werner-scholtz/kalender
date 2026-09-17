@@ -239,7 +239,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     MultiDayRule? multiDayRule,
   }) {
     final name0 = name ?? this.name;
-    final selectedDate0 = initialDateTime ?? this.initialDateTime;
+    final initialDateTime0 = initialDateTime ?? this.initialDateTime;
     final dateTransition0 = dateTransition ?? this.dateTransition;
     final dateResolver0 = dateResolver ?? this.dateResolver;
     final nowCallback0 = nowCallback ?? this.nowCallback;
@@ -256,7 +256,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     return switch (type) {
       MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
         name: name0,
-        initialDateTime: selectedDate0,
+        initialDateTime: initialDateTime0,
         dateTransition: dateTransition0,
         dateResolver: dateResolver0,
         nowCallback: nowCallback0,
@@ -272,7 +272,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       ),
       MultiDayViewType.week => MultiDayViewConfiguration.week(
         name: name0,
-        initialDateTime: selectedDate0,
+        initialDateTime: initialDateTime0,
         dateTransition: dateTransition0,
         dateResolver: dateResolver0,
         nowCallback: nowCallback0,
@@ -289,7 +289,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       ),
       MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
         name: name0,
-        initialDateTime: selectedDate0,
+        initialDateTime: initialDateTime0,
         dateTransition: dateTransition0,
         dateResolver: dateResolver0,
         nowCallback: nowCallback0,
@@ -305,7 +305,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       ),
       MultiDayViewType.custom => MultiDayViewConfiguration.custom(
         name: name0,
-        initialDateTime: selectedDate0,
+        initialDateTime: initialDateTime0,
         dateTransition: dateTransition0,
         dateResolver: dateResolver0,
         nowCallback: nowCallback0,
@@ -322,7 +322,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       ),
       MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
         name: name0,
-        initialDateTime: selectedDate0,
+        initialDateTime: initialDateTime0,
         dateTransition: dateTransition0,
         dateResolver: dateResolver0,
         nowCallback: nowCallback0,
@@ -386,7 +386,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   String toString() {
     return '''
     name: $name
-    selectedDate: $initialDateTime
+    initialDateTime: $initialDateTime
     dateTransition: $dateTransition
     timeOfDayRange: $timeOfDayRange
     displayRange: $dateTimeRange

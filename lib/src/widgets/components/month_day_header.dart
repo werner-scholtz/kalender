@@ -112,6 +112,7 @@ class MonthDayHeader extends StatelessWidget {
     return Padding(
       padding: style.margin ?? EdgeInsets.zero,
       child: DayNumber(
+        date: localDate,
         text: numberText,
         textStyle: style.numberTextStyle,
         isToday: context.isToday(localDate),

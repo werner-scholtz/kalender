@@ -7,12 +7,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/floating_date_time.dart';
 import 'package:kalender/src/models/floating_date_time_range.dart';
 import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
+import 'package:timezone/timezone.dart';
 
 /// The [KalenderController] is used to controller a single [KalenderView].
 /// It provides some useful functions for navigating the [KalenderView].
@@ -99,6 +101,80 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     selectedEvent.value = null;
   }
 
+  /// The selected days, or null when nothing is selected.
+  ///
+  /// Always whole days: [FloatingDateTimeRange.start] is midnight of the first selected day and
+  /// [FloatingDateTimeRange.end] is midnight after the last.
+  final selectedRange = ValueNotifier<FloatingDateTimeRange?>(null);
+
+  /// A selection made while no view is attached. [attach] resolves it in the view's location.
+  (KalenderDateTimeRange, {bool navigate})? _pendingSelection;
+
+  /// Selects the day of [date].
+  ///
+  /// When [navigate] is true and the day is not visible, the view moves to it.
+  void selectDate(DateTime date, {bool navigate = false}) {
+    selectRange(
+      KalenderDateTimeRange(start: date, end: date),
+      navigate: navigate,
+    );
+  }
+
+  /// Selects every day [range] covers.
+  ///
+  /// An end at midnight does not include that day, the same as an event ending at midnight. A range that starts and
+  /// ends at the same moment selects that day.
+  ///
+  /// When [navigate] is true and the first day is not visible, the view moves to it.
+  void selectRange(KalenderDateTimeRange range, {bool navigate = false}) {
+    final viewController = _viewController;
+    final days = _daysOf(range, viewController?.location);
+    selectedRange.value = days;
+    if (viewController == null) {
+      _pendingSelection = (range, navigate: navigate);
+    } else if (navigate) {
+      _navigateTo(days.start);
+    }
+  }
+
+  /// Clears the selection.
+  void deselectRange() {
+    _pendingSelection = null;
+    selectedRange.value = null;
+  }
+
+  /// Whether [date] falls on a selected day.
+  bool isDateSelected(DateTime date) {
+    final range = selectedRange.value;
+    return range != null && FloatingDateTime.fromExternal(date, location: _viewController?.location).isWithin(range);
+  }
+
+  FloatingDateTimeRange _daysOf(KalenderDateTimeRange range, Location? location) {
+    final start = FloatingDateTime.fromExternal(range.start, location: location);
+    final end = FloatingDateTime.fromExternal(range.end, location: location);
+    final endsAtMidnight = end.isAtSameMomentAs(end.startOfDay) && end.isAfter(start);
+    return FloatingDateTimeRange(start: start.startOfDay, end: endsAtMidnight ? end : end.endOfDay);
+  }
+
+  void _navigateTo(FloatingDateTime day) {
+    final visible = _floatingVisibleRange.value;
+    if (visible != null && day.isWithin(visible)) return;
+    animateToDate(day.forLocation(location: _viewController?.location));
+  }
+
+  void _resolvePendingSelection(ViewController viewController) {
+    final pending = _pendingSelection;
+    if (pending == null) return;
+    _pendingSelection = null;
+    final days = _daysOf(pending.$1, viewController.location);
+    selectedRange.value = days;
+    if (!pending.navigate) return;
+    // The view builds after attaching, so its pages exist only once the frame is done.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_viewController == viewController) _navigateTo(days.start);
+    });
+  }
+
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;
   }
@@ -113,6 +189,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     final newRange = visibleRange.forLocation(location: viewController.location);
     visibleDateTimeRange.value = null;
     visibleDateTimeRange.value = newRange;
+    _resolvePendingSelection(viewController);
 
     // Forward the visible time-of-day from multi-day views; null for views without
     // vertical scroll (month/schedule).
@@ -217,6 +294,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _detachVisibleTimeOfDay();
     visibleTimeOfDay.dispose();
+    selectedRange.dispose();
     super.dispose();
   }
 }
