@@ -63,6 +63,7 @@ mixin DayOverlayState<T extends StatefulWidget> on State<T> {
     _kalenderController = controller;
     controller?.openDayOverlay.addListener(_sync);
     portalController.openDayOverlay = controller?.openDayOverlay;
+    if (controller != null) _afterFrame(_sync);
   }
 
   @override
@@ -72,17 +73,14 @@ mixin DayOverlayState<T extends StatefulWidget> on State<T> {
     if (previous == overlayDate) return;
 
     portalController.date = overlayDate;
-    if (portalController.isShowing) {
-      portalController._close();
-      _hideAfterFrame(previous);
-    }
+    if (portalController.isShowing) _closeAfterFrame(previous);
   }
 
   @override
   void dispose() {
     final controller = _kalenderController;
     controller?.openDayOverlay.removeListener(_sync);
-    if (controller?.openDayOverlay.value == portalController.date) _hideAfterFrame(portalController.date);
+    if (controller?.openDayOverlay.value == portalController.date) _closeAfterFrame(portalController.date);
     super.dispose();
   }
 
@@ -92,12 +90,19 @@ mixin DayOverlayState<T extends StatefulWidget> on State<T> {
     open ? portalController._open() : portalController._close();
   }
 
-  /// Closes the overlay of [date] once the frame is done, so the notifier does not change while the tree is locked.
-  void _hideAfterFrame(FloatingDateTime date) {
-    final controller = _kalenderController;
-    if (controller == null) return;
+  /// Runs [callback] once the frame is done. The portal cannot open or close while the tree is built.
+  void _afterFrame(VoidCallback callback) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.openDayOverlay.value == date) controller.hideDayOverlay();
+      if (mounted) callback();
+    });
+  }
+
+  /// Closes the overlay of [date] once the frame is done.
+  void _closeAfterFrame(FloatingDateTime date) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = _kalenderController;
+      if (controller != null && controller.openDayOverlay.value == date) return controller.hideDayOverlay();
+      if (mounted && portalController.isShowing) portalController._close();
     });
   }
 }

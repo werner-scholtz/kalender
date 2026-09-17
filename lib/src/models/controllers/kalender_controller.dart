@@ -158,8 +158,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   }
 
   void _navigateTo(FloatingDateTime day) {
-    final visible = _floatingVisibleRange.value;
-    if (visible != null && day.isWithin(visible)) return;
+    if (_isVisible(day)) return;
     animateToDate(day.forLocation(location: _viewController?.location));
   }
 
@@ -187,6 +186,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   ///
   /// A day that is not visible opens nothing, unless [navigate] is true, which moves the view to it first.
   Future<void> showDayOverlay(DateTime date, {bool navigate = false}) async {
+    if (_isDisposed) return;
     final location = _viewController?.location;
     final day = FloatingDateTime.fromExternal(date, location: location).startOfDay;
 
@@ -195,8 +195,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
       return;
     }
 
-    final visible = _floatingVisibleRange.value;
-    if (visible == null || !day.isWithin(visible)) {
+    if (!_isVisible(day)) {
       if (!navigate) {
         debugPrint('KalenderController.showDayOverlay: $day is not visible. Pass navigate: true to move to it first.');
         return;
@@ -204,9 +203,19 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
       await animateToDate(day.forLocation(location: location));
       await WidgetsBinding.instance.endOfFrame;
       if (_isDisposed) return;
+      if (!_isVisible(day)) {
+        debugPrint('KalenderController.showDayOverlay: the view cannot move to $day.');
+        return;
+      }
     }
 
     openDayOverlay.value = day;
+  }
+
+  /// Whether [day] is on screen in the attached view.
+  bool _isVisible(FloatingDateTime day) {
+    final visible = _floatingVisibleRange.value;
+    return isAttached && visible != null && day.isWithin(visible);
   }
 
   /// Closes the open day overlay.

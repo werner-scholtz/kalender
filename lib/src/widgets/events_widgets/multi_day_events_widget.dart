@@ -362,6 +362,18 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     final numberOfColumns = widget.floatingRange.dates().length;
     final hasCustomPortal = overlayBuilders?.multiDayOverlayPortalBuilder != null;
     bool hasBuiltInPortal(int column) => !hasCustomPortal && (frame.columnRowMap[column] ?? -1) >= maxNumberOfRows;
+    Widget anchor(int column) {
+      final date = frame.dateFromColumn(column);
+      return DayOverlayAnchor(
+        key: ValueKey(date),
+        date: date,
+        events: () => frame.eventsForColumn(column),
+        tileHeight: widget.configuration.tileHeight,
+        getMultiDayEventLayoutRenderBox: getRenderBox,
+        overlayTileBuilder: _overlayEventTileBuilder,
+        overlayBuilders: overlayBuilders,
+      );
+    }
 
     // Every day has an overlay the controller can open. A day with a built-in "+N more" portal uses that one.
     // Frame columns count from the left in both directions.
@@ -369,19 +381,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       textDirection: TextDirection.ltr,
       children: [
         for (var column = 0; column < numberOfColumns; column++)
-          Expanded(
-            child: hasBuiltInPortal(column)
-                ? const SizedBox.shrink()
-                : DayOverlayAnchor(
-                    key: ValueKey(frame.dateFromColumn(column)),
-                    date: frame.dateFromColumn(column),
-                    events: () => frame.eventsForColumn(column),
-                    tileHeight: widget.configuration.tileHeight,
-                    getMultiDayEventLayoutRenderBox: getRenderBox,
-                    overlayTileBuilder: _overlayEventTileBuilder,
-                    overlayBuilders: overlayBuilders,
-                  ),
-          ),
+          Expanded(child: hasBuiltInPortal(column) ? const SizedBox.shrink() : anchor(column)),
       ],
     );
 

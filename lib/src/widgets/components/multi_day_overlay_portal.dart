@@ -35,7 +35,9 @@ typedef MultiDayOverlayPortalBuilder =
 
 /// A widget that manages the overlay portal for a single day.
 ///
-/// Inside a calendar the overlay opens and closes through [KalenderController.openDayOverlay].
+/// Inside a calendar the overlay opens and closes through [KalenderController.openDayOverlay]. One built by
+/// [OverlayBuilders.multiDayOverlayPortalBuilder] keeps its own overlay, and the controller opens the built-in
+/// overlay of that day.
 ///
 /// {@category Appearance}
 class MultiDayOverlayPortal extends StatefulWidget {

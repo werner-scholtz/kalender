@@ -145,6 +145,38 @@ void main() {
       expect(card(DateTime(2025, 3, 10)), findsOneWidget);
     });
 
+    testWidgets('opens nothing past the display range, even when asked to move', (tester) async {
+      await pump(tester);
+
+      await capturePrints(() async {
+        kalenderController.showDayOverlay(DateTime(2025, 9, 10), navigate: true);
+        await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
+      });
+
+      expect(find.byType(MultiDayOverlay), findsNothing);
+      expect(kalenderController.openDayOverlay.value, isNull);
+      expect(printed, [contains('cannot move')]);
+    });
+
+    testWidgets('opens nothing without a view', (tester) async {
+      await pump(tester);
+      await tester.pumpWidget(const SizedBox());
+      expect(kalenderController.isAttached, isFalse);
+
+      await capturePrints(() => kalenderController.showDayOverlay(busyDay));
+
+      expect(kalenderController.openDayOverlay.value, isNull);
+      expect(printed, [contains('is not visible')]);
+    });
+
+    testWidgets('a day that is open when the calendar builds shows its overlay', (tester) async {
+      kalenderController.openDayOverlay.value = floating(emptyDay);
+      await pump(tester);
+
+      expect(card(emptyDay), findsOneWidget);
+    });
+
     testWidgets('opens the overlay in the multi-day header', (tester) async {
       await pump(tester, configuration: week);
 
