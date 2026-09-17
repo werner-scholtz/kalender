@@ -7,6 +7,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
@@ -206,6 +207,14 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
 
+  /// The one overlay of this widget. It shows the open day while that day is in the widget's range.
+  final _portalController = OverlayPortalController();
+
+  /// The row of boxes the overlay card is positioned from, one per column.
+  final _anchorsKey = GlobalKey();
+
+  KalenderController? _kalenderController;
+
   /// The strategy that generates the layout frame for the events.
   MultiDayLayoutStrategy get multiDayLayoutStrategy => widget.configuration.multiDayLayoutStrategy;
 
@@ -228,6 +237,87 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final controller = context.kalenderController;
+    if (controller == _kalenderController) return;
+    _kalenderController?.openDayOverlay.removeListener(_onOpenDayChanged);
+    _kalenderController = controller..openDayOverlay.addListener(_onOpenDayChanged);
+    _syncOverlayAfterFrame();
+  }
+
+  @override
+  void dispose() {
+    final controller = _kalenderController;
+    controller?.openDayOverlay.removeListener(_onOpenDayChanged);
+    final day = _openDay;
+    if (controller != null && day != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (controller.openDayOverlay.value == day) controller.hideDayOverlay();
+      });
+    }
+    super.dispose();
+  }
+
+  /// The open day, when it is in the widget's range.
+  FloatingDateTime? get _openDay {
+    final day = _kalenderController?.openDayOverlay.value;
+    return day != null && day.isWithin(widget.floatingRange) ? day : null;
+  }
+
+  /// Opens or closes the overlay. The card follows [KalenderController.openDayOverlay] on its own.
+  void _onOpenDayChanged() {
+    final open = _openDay != null;
+    if (open == _portalController.isShowing) return;
+    open ? _portalController.show() : _portalController.hide();
+  }
+
+  /// The portal cannot open or close while the tree is built.
+  void _syncOverlayAfterFrame() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _onOpenDayChanged();
+    });
+  }
+
+  /// The column of [date], counting from the left.
+  int _columnOf(FloatingDateTime date) {
+    final days = date.difference(widget.floatingRange.start).inDays;
+    return widget.textDirection == TextDirection.ltr ? days : widget.floatingRange.dates().length - 1 - days;
+  }
+
+  RenderBox _anchorBox(int column) {
+    final row = _anchorsKey.currentContext!.findRenderObject()! as RenderFlex;
+    var child = row.firstChild!;
+    for (var i = 0; i < column; i++) {
+      child = row.childAfter(child)!;
+    }
+    return child;
+  }
+
+  Widget _buildOverlay(BuildContext context, MultiDayLayoutFrame frame) {
+    final controller = _kalenderController!;
+    return ValueListenableBuilder(
+      valueListenable: controller.openDayOverlay,
+      builder: (context, _, _) {
+        final day = _openDay;
+        if (day == null) return const SizedBox.shrink();
+        final column = _columnOf(day);
+        return buildDayOverlay(
+          context,
+          date: day,
+          events: frame.eventsForColumn(column),
+          tileHeight: widget.configuration.tileHeight,
+          portalController: DayOverlayController(openDayOverlay: controller.openDayOverlay, date: day),
+          overlayTileBuilder: _overlayEventTileBuilder,
+          getMultiDayEventLayoutRenderBox: getRenderBox,
+          getOverlayPortalRenderBox: () => _anchorBox(column),
+          overlayBuilders: widget.multiDayOverlayBuilders,
+        );
+      },
+    );
+  }
+
+  @override
   void didUpdateWidget(covariant MultiDayEventLayoutWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
@@ -239,6 +329,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     final didUpdate = shouldUpdateCache || oldWidget.floatingRange != widget.floatingRange;
 
     if (didUpdate) {
+      if (oldWidget.floatingRange != widget.floatingRange) _syncOverlayAfterFrame();
       _dateTimeRange = widget.floatingRange;
 
       if (shouldUpdateCache) {
@@ -360,80 +451,61 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
     final overlayBuilders = widget.multiDayOverlayBuilders;
     final numberOfColumns = widget.floatingRange.dates().length;
-    final hasCustomPortal = overlayBuilders?.multiDayOverlayPortalBuilder != null;
-    bool hasBuiltInPortal(int column) => !hasCustomPortal && (frame.columnRowMap[column] ?? -1) >= maxNumberOfRows;
-    Widget anchor(int column) {
-      final date = frame.dateFromColumn(column);
-      return DayOverlayAnchor(
-        key: ValueKey(date),
-        date: date,
-        events: () => frame.eventsForColumn(column),
-        tileHeight: widget.configuration.tileHeight,
-        getMultiDayEventLayoutRenderBox: getRenderBox,
-        overlayTileBuilder: _overlayEventTileBuilder,
-        overlayBuilders: overlayBuilders,
-      );
-    }
 
-    // Every day has an overlay the controller can open. A day with a built-in "+N more" portal uses that one.
     // Frame columns count from the left in both directions.
     final anchors = Row(
+      key: _anchorsKey,
       textDirection: TextDirection.ltr,
-      children: [
-        for (var column = 0; column < numberOfColumns; column++)
-          Expanded(child: hasBuiltInPortal(column) ? const SizedBox.shrink() : anchor(column)),
-      ],
+      children: [for (var column = 0; column < numberOfColumns; column++) const Expanded(child: SizedBox.shrink())],
     );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Stack(
-          children: [
-            multiDayEventsWidget,
-            PassThroughPointer(child: dropTargetWidget),
-          ],
-        ),
-        anchors,
-        if (frame.totalNumberOfRows > maxNumberOfRows)
-          Row(
-            textDirection: TextDirection.ltr,
-            children: (() {
-              return frame.columnRowMap.entries.map((entry) {
-                final column = entry.key;
-                final row = entry.value;
-                final date = frame.dateFromColumn(column);
-                final eventsForColumn = frame.eventsForColumn(column);
-                late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
+    return OverlayPortal(
+      controller: _portalController,
+      overlayChildBuilder: (context) => _buildOverlay(context, frame),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            children: [
+              multiDayEventsWidget,
+              PassThroughPointer(child: dropTargetWidget),
+            ],
+          ),
+          anchors,
+          if (frame.totalNumberOfRows > maxNumberOfRows)
+            Row(
+              textDirection: TextDirection.ltr,
+              children: (() {
+                return frame.columnRowMap.entries.map((entry) {
+                  final column = entry.key;
+                  final row = entry.value;
+                  final date = frame.dateFromColumn(column);
+                  late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
 
-                late final customPortal = overlayBuilders?.multiDayOverlayPortalBuilder?.call(
-                  context,
-                  date: date,
-                  events: eventsForColumn,
-                  numberOfHiddenRows: numberOfHiddenRows,
-                  tileHeight: widget.configuration.tileHeight,
-                  getMultiDayEventLayoutRenderBox: getRenderBox,
-                  overlayTileBuilder: _overlayEventTileBuilder,
-                  overlayBuilders: overlayBuilders,
-                );
-                late final overlayPortal = customPortal != null
-                    ? CustomOverlayPortalScope(child: customPortal)
-                    : MultiDayOverlayPortal(
-                        key: MultiDayOverlayPortal.getKey(date),
+                  late final overlayPortal =
+                      overlayBuilders?.multiDayOverlayPortalBuilder?.call(
+                        context,
                         date: date,
-                        events: eventsForColumn,
+                        events: frame.eventsForColumn(column),
                         numberOfHiddenRows: numberOfHiddenRows,
                         tileHeight: widget.configuration.tileHeight,
                         getMultiDayEventLayoutRenderBox: getRenderBox,
-                        overlayBuilders: widget.multiDayOverlayBuilders,
                         overlayTileBuilder: _overlayEventTileBuilder,
+                        overlayBuilders: overlayBuilders,
+                      ) ??
+                      MultiDayOverlayPortal(
+                        key: MultiDayOverlayPortal.getKey(date),
+                        date: date,
+                        numberOfHiddenRows: numberOfHiddenRows,
+                        overlayBuilders: overlayBuilders,
                       );
 
-                return Expanded(child: row >= maxNumberOfRows ? overlayPortal : const SizedBox.shrink());
-              }).toList();
-            })(),
-          ),
-      ],
+                  return Expanded(child: row >= maxNumberOfRows ? overlayPortal : const SizedBox.shrink());
+                }).toList();
+              })(),
+            ),
+        ],
+      ),
     );
   }
 

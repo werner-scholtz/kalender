@@ -304,11 +304,7 @@ void main() {
                 required overlayBuilders,
               }) => MultiDayOverlayPortal(
                 date: FloatingDateTime.fromDateTime(date),
-                events: events,
                 numberOfHiddenRows: numberOfHiddenRows,
-                tileHeight: tileHeight,
-                getMultiDayEventLayoutRenderBox: getMultiDayEventLayoutRenderBox,
-                overlayTileBuilder: overlayTileBuilder,
                 overlayBuilders: overlayBuilders,
               ),
         ),
