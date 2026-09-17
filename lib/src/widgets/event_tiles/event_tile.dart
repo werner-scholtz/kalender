@@ -130,14 +130,12 @@ abstract class EventTile extends StatelessWidget {
             ),
     );
 
-    final callbacks = context.callbacks;
     final location = context.location;
     final canResize =
         showResizeHandles &&
         (event.canResizeStart(interaction, floatingRange, location: location) ||
             event.canResizeEnd(interaction, floatingRange, location: location));
-    final canTap = callbacks != null && (callbacks.hasOnEventTapped || callbacks.hasOnEventSecondaryTapped);
-    if (event.canReschedule(interaction) || canResize || canTap) return tile;
+    if (event.canReschedule(interaction) || canResize) return tile;
     return TranslucentPointer(child: tile);
   }
 }
