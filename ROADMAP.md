@@ -241,13 +241,12 @@ A release that adds and does not break, built around selection. It has no migrat
 
 **The calendar does not select on its own.** An app selects from the callbacks, so it always knows what changed, and there is no selection-changed callback. Selecting on tap, a range by dragging across days ([#89](https://github.com/werner-scholtz/kalender/issues/89)), and a selection drawn behind a cell wait for 0.33.0.
 
-**Five smaller items.**
+**Four smaller items.**
 
 - [#215](https://github.com/werner-scholtz/kalender/issues/215): open the day overlay for any date, not only through the "+N more" button.
 - [#259](https://github.com/werner-scholtz/kalender/issues/259): a drag that starts on an unmodifiable event creates an event instead of doing nothing.
-- [#280](https://github.com/werner-scholtz/kalender/issues/280): animated transitions between views, opt-in and off by default.
 - `ResizeHandleDetails` carries the calendar's location, so `showStart` and `showEnd` stop falling back to the device timezone.
-- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` decide which tiles are built but not where they are drawn, which has been true since 0.19.1. Either culling uses the geometry placement uses, or the two are deprecated.
+- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` decided which tiles are built but not where they are drawn, which had been true since 0.19.1. Culling uses the geometry placement uses, and the two are deprecated for removal in 0.33.0.
 
 ### 0.33.0, planned
 
@@ -349,7 +348,7 @@ Selection is the thread through the middle three. 0.32.0 adds it to the controll
 | [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A set of visible weekdays on the view configuration. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. Scoped below. |
 | [#98](https://github.com/werner-scholtz/kalender/issues/98) named and uneditable time regions | A second thing the calendar draws besides events, that events sit on top of. The largest new model here. |
 | [#259](https://github.com/werner-scholtz/kalender/issues/259) drag to create over a locked event | A drag starting on an unmodifiable event should fall through to creation instead of doing nothing. Mostly behavior. Planned for 0.32.0. |
-| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `KalenderView`. Planned for 0.32.0. |
+| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `KalenderView`. |
 
 **Arbitrary visible weekdays, [#90](https://github.com/werner-scholtz/kalender/issues/90), needs the page to stop being one date range.** 0.26.0 covers the contiguous case with `numberOfDays` on `week` and `workWeek`, which is what the reporter of [#444](https://github.com/werner-scholtz/kalender/issues/444) asked for. Every contiguous span starting on `firstDayOfWeek` is expressible that way, so what a set of weekdays adds is the non-contiguous case, Monday, Wednesday and Friday, and a span that starts somewhere other than `firstDayOfWeek`.
 
