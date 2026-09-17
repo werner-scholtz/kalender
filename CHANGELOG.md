@@ -24,10 +24,10 @@
 - `kDefaultToWeekly` and `kDefaultToSchedule` carry the first day of the month when switching from the month view.
 - The "+N more" buttons sit under their own day in right-to-left layouts.
 - The month view and the paginated schedule view open their first page for a date before the display range.
-
-### Fixes
-
 - The continuous schedule's visible range ends at midnight after the last visible day.
+- `DaySeparatorStyle.topIndent` and `bottomIndent` shorten the separator from the top and the bottom, not from the sides.
+- An event tile keeps one listener per controller across dependency changes.
+- `OverlapLayoutDelegate.sortEvents` keeps the duration-then-start order for more than 32 events.
 
 ### Examples
 
