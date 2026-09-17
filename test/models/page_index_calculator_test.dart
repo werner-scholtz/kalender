@@ -345,6 +345,12 @@ void main() {
         expect(index, 11);
       });
 
+      test('test indexFromDate outside the range', () {
+        expect(calculator.indexFromDate(TZDateTime(location, 2019, 12, 30), location), 0);
+        expect(calculator.indexFromDate(TZDateTime(location, 2018, 6, 15), location), 0);
+        expect(calculator.indexFromDate(TZDateTime(location, 2021, 3, 1), location), 11);
+      });
+
       test('test numberOfPages', () {
         // The range spans 12 calendar months (Jan–Dec 2020), so there are 12 pages.
         final numberOfPages = calculator.numberOfPages(location);
@@ -441,6 +447,11 @@ void main() {
 
         index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 31), location);
         expect(index, 11);
+      });
+
+      test('test indexFromDate outside the range', () {
+        expect(calculator.indexFromDate(TZDateTime(location, 2019, 12, 30), location), 0);
+        expect(calculator.indexFromDate(TZDateTime(location, 2021, 3, 1), location), 11);
       });
 
       test('test numberOfPages', () {

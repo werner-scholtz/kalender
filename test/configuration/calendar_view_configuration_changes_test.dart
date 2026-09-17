@@ -455,6 +455,33 @@ void main() {
   // Edge cases
   // ---------------------------------------------------------------------------
   group('Edge cases', () {
+    testWidgets('month → week → month when the range starts after the first day of its first week', (tester) async {
+      // January 2025 starts on a Wednesday, so its first week starts on 30 December, before the range.
+      final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 6));
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(
+          name: 'Month',
+          displayRange: range,
+          initialDateTime: DateTime(2025, 1, 15),
+        ),
+        withBody: true,
+      );
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: range),
+      );
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2024, 12, 30));
+
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: range),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(kalenderController.floatingVisibleRange.value!.dominantMonthDate, DateTime.utc(2025));
+    });
+
     testWidgets('rapid configuration changes do not crash', (tester) async {
       await pumpCalendarView(
         tester,

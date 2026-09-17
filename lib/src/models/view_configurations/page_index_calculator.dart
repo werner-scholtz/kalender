@@ -398,6 +398,7 @@ class MonthIndexCalculator extends PageIndexCalculator {
   int indexFromDate(DateTime date, Location? location) {
     date = FloatingDateTime.fromExternal(date, location: location).startOfDay;
     final floatingRange = this.floatingRange(location);
+    if (date.isBefore(floatingRange.start)) return 0;
     final dateTimeRange = FloatingDateTimeRange(start: floatingRange.start, end: date);
     return dateTimeRange.monthDifference.clamp(0, numberOfPages(location) - 1);
   }
@@ -486,6 +487,7 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
   int indexFromDate(DateTime date, Location? location) {
     date = FloatingDateTime.fromExternal(date, location: location).startOfDay;
     final floatingRange = this.floatingRange(location);
+    if (date.isBefore(floatingRange.start)) return 0;
     final dateTimeRange = FloatingDateTimeRange(start: floatingRange.start, end: date);
     return dateTimeRange.monthDifference.clamp(0, numberOfPages(location) - 1);
   }
