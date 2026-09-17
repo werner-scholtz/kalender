@@ -251,6 +251,9 @@ abstract class HorizontalConfiguration {
 const kDefaultTileHeight = 24.0;
 
 /// {@category Interaction}
+@Deprecated(
+  'Not read by the calendar. A created event is as long as the drag that created it. Will be removed in 0.33.0.',
+)
 const kDefaultNewEventDuration = Duration(minutes: 30);
 
 /// {@category Views}
