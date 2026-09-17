@@ -15,6 +15,7 @@ import 'package:kalender/src/models/kalender_interaction.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
+import 'package:kalender/src/widgets/event_tiles/tile_interaction.dart';
 
 /// The builder that positions the resize handles of an event tile.
 ///
@@ -71,12 +72,10 @@ class ResizeHandleDetails {
   bool continuesAfter({Location? location}) => event.floatingEnd(location: location).isAfter(range.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
-  bool showStart({Location? location}) =>
-      interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore(location: location);
+  bool showStart({Location? location}) => event.canResizeStart(interaction, range, location: location);
 
   /// Whether to show the end resize handle, based on interaction settings and event continuation.
-  bool showEnd({Location? location}) =>
-      interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter(location: location);
+  bool showEnd({Location? location}) => event.canResizeEnd(interaction, range, location: location);
 
   /// The resize handle to use, resolved from the [TileComponents] of [context].
   ///

@@ -11,6 +11,7 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_gesture_detector.dart';
+import 'package:kalender/src/widgets/event_tiles/tile_interaction.dart';
 
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
@@ -130,12 +131,13 @@ abstract class EventTile extends StatelessWidget {
     );
 
     final callbacks = context.callbacks;
-    final canReschedule = interaction.allowRescheduling && event.interaction.allowRescheduling;
-    final canResize = showResizeHandles && (event.interaction.allowStartResize || event.interaction.allowEndResize);
+    final location = context.location;
+    final canResize =
+        showResizeHandles &&
+        (event.canResizeStart(interaction, floatingRange, location: location) ||
+            event.canResizeEnd(interaction, floatingRange, location: location));
     final canTap = callbacks != null && (callbacks.hasOnEventTapped || callbacks.hasOnEventSecondaryTapped);
-    if (canReschedule || canResize || canTap) return tile;
-
-    // The calendar behind the tile receives the pointer as well, so a drag here creates an event.
+    if (event.canReschedule(interaction) || canResize || canTap) return tile;
     return TranslucentPointer(child: tile);
   }
 }
