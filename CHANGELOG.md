@@ -3,6 +3,7 @@
 ### Deprecations
 
 - The `location` parameter of `ResizeHandleDetails.continuesBefore`, `continuesAfter`, `showStart` and `showEnd` is deprecated and is removed in 0.33.0. The details carry the location.
+- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` are deprecated and are removed in 0.33.0. Use `calculateVerticalLayoutData`.
 
 ### Features
 
@@ -16,6 +17,7 @@
 
 - Tapping the day number in a month cell reaches `onTapped`.
 - A press on an event that can't be rescheduled or resized reaches the calendar behind it.
+- The multi-day body picks the tiles to build from `calculateVerticalLayoutData`, the positions the tiles are drawn at.
 
 ### Fixes
 
