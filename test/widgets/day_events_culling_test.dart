@@ -106,11 +106,37 @@ void main() {
 
     expect(find.byKey(ValueKey(id)), findsOneWidget);
   });
+
+  testWidgets('culling drops an event the delegate draws off screen', (tester) async {
+    final id = addEvent(1);
+    await pumpSingleDay(tester, strategy: const _BottomStrategy());
+
+    expect(find.byKey(ValueKey(id)), findsNothing);
+  });
+
+  testWidgets('a configuration change recomputes the bands', (tester) async {
+    final id = addEvent(22);
+    await pumpSingleDay(tester);
+    expect(find.byKey(ValueKey(id)), findsNothing);
+
+    await pumpSingleDay(tester, strategy: const _TopStrategy());
+    expect(find.byKey(ValueKey(id)), findsOneWidget);
+  });
+
+  testWidgets('an event without layout data is not built', (tester) async {
+    final id = addEvent(9);
+    await pumpSingleDay(tester, strategy: const _SkipStrategy());
+
+    expect(find.byKey(ValueKey(id)), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }
 
-/// Draws every event in the first hour of the day.
-class _TopStrategy extends EventLayoutStrategy {
-  const _TopStrategy();
+/// A strategy whose delegate is [_Delegate] with the given [layout].
+class _Strategy extends EventLayoutStrategy {
+  const _Strategy(this.layout);
+
+  final List<VerticalLayoutData> Function(int count) layout;
 
   @override
   EventLayoutDelegate createDelegate({
@@ -122,7 +148,8 @@ class _TopStrategy extends EventLayoutStrategy {
     required EventLayoutDelegateCache? cache,
     required Location? location,
   }) {
-    return _TopDelegate(
+    return _Delegate(
+      layout: layout,
       events: events,
       date: date,
       heightPerMinute: heightPerMinute,
@@ -134,8 +161,9 @@ class _TopStrategy extends EventLayoutStrategy {
   }
 }
 
-class _TopDelegate extends OverlapLayoutDelegate {
-  _TopDelegate({
+class _Delegate extends OverlapLayoutDelegate {
+  _Delegate({
+    required this.layout,
     required super.events,
     required super.heightPerMinute,
     required super.date,
@@ -145,8 +173,33 @@ class _TopDelegate extends OverlapLayoutDelegate {
     required super.layoutCache,
   });
 
+  final List<VerticalLayoutData> Function(int count) layout;
+
   @override
-  List<VerticalLayoutData> calculateVerticalLayoutData(Size size) => [
-    for (var i = 0; i < events.length; i++) VerticalLayoutData(id: i, top: 0, bottom: 60),
+  List<VerticalLayoutData> calculateVerticalLayoutData(Size size) => layout(events.length);
+}
+
+/// Draws every event in the first hour of the day.
+class _TopStrategy extends _Strategy {
+  const _TopStrategy() : super(_layout);
+
+  static List<VerticalLayoutData> _layout(int count) => [
+    for (var i = 0; i < count; i++) VerticalLayoutData(id: i, top: 0, bottom: 60),
   ];
+}
+
+/// Draws every event in the last hour of the day.
+class _BottomStrategy extends _Strategy {
+  const _BottomStrategy() : super(_layout);
+
+  static List<VerticalLayoutData> _layout(int count) => [
+    for (var i = 0; i < count; i++) VerticalLayoutData(id: i, top: 1380, bottom: 1440),
+  ];
+}
+
+/// Lays out no event.
+class _SkipStrategy extends _Strategy {
+  const _SkipStrategy() : super(_layout);
+
+  static List<VerticalLayoutData> _layout(int count) => const [];
 }

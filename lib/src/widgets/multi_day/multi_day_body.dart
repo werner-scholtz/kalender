@@ -313,6 +313,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 configuration: widget.configuration,
                 floatingRange: visibleRange,
                 viewController: widget.viewController,
+                pageHeight: widget.pageHeight,
               ),
             ),
           ],
