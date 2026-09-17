@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
@@ -297,7 +298,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     // The tile range is the same for every tile in this column, so compute it
     // once instead of allocating a new range per event.
     final tileRange = widget.date.dayRange;
-    final eventsWidget = CustomMultiChildLayout(
+    final eventsWidget = _DayTileLayout(
       delegate: layoutStrategy.createDelegate(
         events: _events,
         date: widget.date,
@@ -467,5 +468,39 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
         return LayoutId(id: item.$1, child: drawTile ? dropTarget.call(context, latest ?? event) : const SizedBox());
       }).toList(),
     );
+  }
+}
+
+/// Lays out the tiles of a day column.
+///
+/// A tile that lets the pointer through passes it to the calendar behind the column, not to a tile beneath it.
+class _DayTileLayout extends CustomMultiChildLayout {
+  const _DayTileLayout({required super.delegate, super.children});
+
+  @override
+  RenderCustomMultiChildLayoutBox createRenderObject(BuildContext context) {
+    return _RenderDayTileLayout(delegate: delegate);
+  }
+}
+
+class _RenderDayTileLayout extends RenderCustomMultiChildLayoutBox {
+  _RenderDayTileLayout({required super.delegate});
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    var child = lastChild;
+    while (child != null) {
+      final parentData = child.parentData! as MultiChildLayoutParentData;
+      final entries = result.path.length;
+      final isHit = result.addWithPaintOffset(
+        offset: parentData.offset,
+        position: position,
+        hitTest: (result, transformed) => child!.hitTest(result, position: transformed),
+      );
+      if (isHit) return true;
+      if (result.path.length > entries) return false;
+      child = parentData.previousSibling;
+    }
+    return false;
   }
 }

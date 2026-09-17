@@ -58,6 +58,7 @@ void main() {
           onEventTapped: tapCallback ? tapped.add : null,
           onTapped: emptySpaceTaps.add,
         ),
+        header: KalenderHeader(interaction: interaction(gesture), multiDayTileComponents: components),
         body: KalenderBody(
           interaction: interaction(gesture),
           multiDayTileComponents: components,
@@ -105,6 +106,61 @@ void main() {
       await gesture.moveBy(const Offset(0, 50));
       await tester.pump();
       await gesture.up();
+      await tester.pumpAndSettle();
+
+      expect(created, hasLength(1));
+    });
+
+    testWidgets('creates an event when dragged over a movable event', (tester) async {
+      final movable = eventsController.addEvent(
+        KalenderEvent(
+          start: start.copyWith(day: 26, hour: 7),
+          end: start.copyWith(day: 26, hour: 11),
+          interaction: EventInteraction.allowAll(),
+        ),
+      );
+      final id = addEvent();
+      await pump(tester, week);
+
+      // The locked tile starts later, so the overlap layout draws it over the movable one.
+      final movableTile = find.byKey(DayEventTile.tileKey(movable));
+      final before = tester.getCenter(movableTile);
+      await tester.drag(find.byKey(DayEventTile.tileKey(id)), const Offset(0, 100));
+      await tester.pumpAndSettle();
+
+      expect(created, hasLength(1));
+      expect(tester.getCenter(movableTile), before);
+    });
+
+    testWidgets('creates an event when dragged in the week header', (tester) async {
+      final id = eventsController.addEvent(
+        KalenderEvent(
+          start: start.copyWith(day: 26),
+          end: start.copyWith(day: 28),
+          interaction: EventInteraction.allowNone(),
+        ),
+      );
+      await pump(tester, week);
+
+      final tile = find.byKey(MultiDayEventTile.tileKey(id));
+      await tester.drag(tile, Offset(tester.getSize(tile).width, 0));
+      await tester.pumpAndSettle();
+
+      expect(created, hasLength(1));
+    });
+
+    testWidgets('creates an event when every resize handle is hidden', (tester) async {
+      final id = eventsController.addEvent(
+        KalenderEvent(
+          start: start.copyWith(day: 20),
+          end: start.copyWith(day: 40),
+          interaction: EventInteraction(allowRescheduling: false),
+        ),
+      );
+      await pump(tester, week);
+
+      final tile = find.byKey(MultiDayEventTile.tileKey(id));
+      await tester.drag(tile, Offset(tester.getSize(tile).width / 7, 0));
       await tester.pumpAndSettle();
 
       expect(created, hasLength(1));
