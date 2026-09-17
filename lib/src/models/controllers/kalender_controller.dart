@@ -326,11 +326,6 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   }
 
   @override
-  String toString() {
-    return runtimeType.toString();
-  }
-
-  @override
   void dispose() {
     _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _detachVisibleTimeOfDay();

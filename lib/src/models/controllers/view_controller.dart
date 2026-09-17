@@ -43,43 +43,7 @@ abstract class ViewController with KalenderNavigationFunctions {
   final MultiDayLayoutFrameCache multiDayCache = MultiDayLayoutFrameCache();
 
   @override
-  void jumpToPage(int page);
-
-  @override
   FutureOr<void> jumpToDate(DateTime date);
 
-  @override
-  Future<void> animateToNextPage({Duration? duration, Curve? curve});
-
-  @override
-  Future<void> animateToPreviousPage({Duration? duration, Curve? curve});
-
-  @override
-  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve});
-
-  @override
-  Future<void> animateToDateTime(
-    DateTime date, {
-    Duration? pageDuration,
-    Curve? pageCurve,
-    Duration? scrollDuration,
-    Curve? scrollCurve,
-  });
-
-  @override
-  Future<void> animateToEvent(
-    KalenderEvent event, {
-    Duration? pageDuration,
-    Curve? pageCurve,
-    Duration? scrollDuration,
-    Curve? scrollCurve,
-    bool centerEvent = true,
-  });
-
   void dispose();
-
-  @override
-  String toString() {
-    return runtimeType.toString();
-  }
 }

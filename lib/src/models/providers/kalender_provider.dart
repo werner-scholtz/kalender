@@ -218,7 +218,6 @@ extension ProviderContext on BuildContext {
   /// Retrieve the [Location] of the calendar.
   Location? get location => LocationProvider.of(this);
   ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
-  bool get hasLocation => location != null;
 
   /// Whether [date] is today, honouring the view's `nowCallback` when set and
   /// otherwise the calendar's [location].

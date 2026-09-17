@@ -462,7 +462,7 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
         final overlapsLeft = tilesToLeft.where((e) => e.overlaps(data));
         final lastOverlapLeft = overlapsLeft.lastOrNull;
 
-        final double tileXOffset; // = childWidth * overlapsLeft;
+        final double tileXOffset;
         if (lastOverlapLeft != null) {
           tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
         } else {

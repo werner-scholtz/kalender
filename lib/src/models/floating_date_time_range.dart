@@ -59,9 +59,6 @@ final class FloatingDateTimeRange {
       if (next.isBefore(end) || (inclusive && next.isAtSameMomentAs(end))) {
         dates.add(next);
         current = next;
-      } else if (inclusive && next.isAtSameMomentAs(end)) {
-        dates.add(next);
-        current = next;
       } else {
         break;
       }

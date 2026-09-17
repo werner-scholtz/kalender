@@ -75,7 +75,6 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   bool get multiDayDragTarget => true;
 
   ViewController get viewController => controller.viewController!;
-  TileComponents get tileComponents => context.tileComponents;
   FloatingDateTimeRange get visibleRange => widget.visibleRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
   double get tileHeight => widget.configuration.tileHeight;
