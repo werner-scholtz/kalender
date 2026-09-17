@@ -19,7 +19,7 @@
 - A press on an event that can't be rescheduled or resized reaches the calendar behind it.
 - The multi-day body picks the tiles to build from `calculateVerticalLayoutData`, the positions the tiles are drawn at.
 - A calendar shorter than its header lays out without errors.
-- `kDefaultToWeekly` carries the first day of the month when switching from the month view, as `kDefaultToDaily` does.
+- `kDefaultToWeekly` and `kDefaultToSchedule` carry the first day of the month when switching from the month view.
 
 ### Fixes
 
