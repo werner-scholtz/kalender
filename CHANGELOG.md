@@ -1,12 +1,16 @@
 ## 0.32.0
 
+### Deprecations
+
+- The `location` parameter of `ResizeHandleDetails.continuesBefore`, `continuesAfter`, `showStart` and `showEnd` is deprecated and is removed in 0.33.0. The details carry the location.
+
 ### Features
 
 - `KalenderController.selectDate`, `selectRange` and `deselectRange` select days, `selectedRange` holds the selection and `isDateSelected` checks a date against it.
 - `DayNumberStyle.selectedBackgroundColor`, `selectedForegroundColor`, `selectedBorder` and `todayBorder` style a selected day number and today. A selected day gets a ring by default.
 - `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses on date labels and week numbers, through `GestureCallbacks`.
 - An empty day in the schedule view reports the `onTapped` callbacks.
-- `ResizeHandleDetails.location` holds the calendar's location. `continuesBefore`, `continuesAfter`, `showStart` and `showEnd` use it when given no location, where they used the device timezone.
+- `ResizeHandleDetails.location` holds the calendar's location. `continuesBefore`, `continuesAfter`, `showStart` and `showEnd` compare the event in it.
 
 ### Fixes
 

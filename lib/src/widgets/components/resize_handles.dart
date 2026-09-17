@@ -50,9 +50,9 @@ class ResizeHandleDetails {
   /// When `false`, resize handles span the full width/height of the event tile.
   final bool isImprecise;
 
-  /// The location of the calendar.
+  /// The location of the calendar, or null for the device timezone.
   ///
-  /// [continuesBefore], [continuesAfter], [showStart] and [showEnd] use it when they are given no location.
+  /// [continuesBefore], [continuesAfter], [showStart] and [showEnd] compare the event in it.
   final Location? location;
 
   const ResizeHandleDetails({
@@ -72,18 +72,22 @@ class ResizeHandleDetails {
   EventInteraction get eventInteraction => event.interaction;
 
   /// Whether the event continues before the current date range.
-  bool continuesBefore({Location? location}) =>
+  bool continuesBefore({@Deprecated(_locationParameter) Location? location}) =>
       event.floatingStart(location: location ?? this.location).isBefore(range.start);
 
   /// Whether the event continues after the current date range.
-  bool continuesAfter({Location? location}) =>
+  bool continuesAfter({@Deprecated(_locationParameter) Location? location}) =>
       event.floatingEnd(location: location ?? this.location).isAfter(range.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
-  bool showStart({Location? location}) => event.canResizeStart(interaction, range, location: location);
+  bool showStart({@Deprecated(_locationParameter) Location? location}) =>
+      event.canResizeStart(interaction, range, location: location ?? this.location);
 
   /// Whether to show the end resize handle, based on interaction settings and event continuation.
-  bool showEnd({Location? location}) => event.canResizeEnd(interaction, range, location: location);
+  bool showEnd({@Deprecated(_locationParameter) Location? location}) =>
+      event.canResizeEnd(interaction, range, location: location ?? this.location);
+
+  static const _locationParameter = 'The details carry the location. Will be removed in 0.33.0.';
 
   /// The resize handle to use, resolved from the [TileComponents] of [context].
   ///
@@ -180,11 +184,9 @@ class DefaultResizeHandles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final location = context.location;
-    if (!details.showStart(location: location) && !details.showEnd(location: location)) {
-      // If neither handle should be shown, return an empty widget.
-      return const SizedBox();
-    }
+    final showStart = details.showStart();
+    final showEnd = details.showEnd();
+    if (!showStart && !showEnd) return const SizedBox();
 
     final isImprecise = details.isImprecise;
     final isVertical = details.isVertical;
@@ -206,7 +208,7 @@ class DefaultResizeHandles extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (!hideStart && details.showStart(location: location))
+        if (!hideStart && showStart)
           isVertical
               ? Positioned(
                   top: 0,
@@ -217,7 +219,7 @@ class DefaultResizeHandles extends StatelessWidget {
                   child: details.startResizeDetector,
                 )
               : Positioned(left: 0, top: 0, bottom: 0, width: handleLength, child: details.startResizeDetector),
-        if (details.showEnd(location: location))
+        if (showEnd)
           isVertical
               ? Positioned(
                   bottom: 0,
