@@ -405,13 +405,11 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
 
   @override
   List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events) {
-    return events.toList()
-      ..sort((a, b) => b.duration.compareTo(a.duration))
-      ..sort(
-        (a, b) => b.duration.compareTo(a.duration) == 0
-            ? b.floatingStart(location: location).compareTo(a.floatingStart(location: location))
-            : 0,
-      );
+    return events.toList()..sort((a, b) {
+      final byDuration = b.duration.compareTo(a.duration);
+      if (byDuration != 0) return byDuration;
+      return b.floatingStart(location: location).compareTo(a.floatingStart(location: location));
+    });
   }
 
   @override
