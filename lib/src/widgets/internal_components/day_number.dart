@@ -6,8 +6,8 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/controllers/kalender_controller.dart';
 import 'package:kalender/src/models/floating_date_time.dart';
-import 'package:kalender/src/models/floating_date_time_range.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
@@ -176,16 +176,16 @@ class DayNumber extends StatefulWidget {
 }
 
 class _DayNumberState extends State<DayNumber> {
-  ValueNotifier<FloatingDateTimeRange?>? _selection;
+  KalenderController? _controller;
   var _isSelected = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final selection = context.kalenderController.selectedRange;
-    if (selection == _selection) return;
-    _selection?.removeListener(_onSelectionChanged);
-    _selection = selection..addListener(_onSelectionChanged);
+    final controller = context.kalenderController;
+    if (controller == _controller) return;
+    _controller?.selectedRange.removeListener(_onSelectionChanged);
+    _controller = controller..selectedRange.addListener(_onSelectionChanged);
     _isSelected = _computeIsSelected();
   }
 
@@ -197,14 +197,11 @@ class _DayNumberState extends State<DayNumber> {
 
   @override
   void dispose() {
-    _selection?.removeListener(_onSelectionChanged);
+    _controller?.selectedRange.removeListener(_onSelectionChanged);
     super.dispose();
   }
 
-  bool _computeIsSelected() {
-    final range = _selection?.value;
-    return range != null && widget.date.isWithin(range);
-  }
+  bool _computeIsSelected() => _controller!.isDateSelected(widget.date);
 
   // Rebuilds only when this day's state flips, not on every selection change.
   void _onSelectionChanged() {
@@ -214,51 +211,30 @@ class _DayNumberState extends State<DayNumber> {
 
   @override
   Widget build(BuildContext context) {
-    final constraints = widget.size == null ? null : BoxConstraints.tight(widget.size!);
-    final padding = widget.size == null ? null : EdgeInsets.zero;
     final isToday = widget.isToday;
+    var textStyle = widget.textStyle;
+    ButtonStyle? buttonStyle;
 
-    if (!isToday && !_isSelected) {
-      return IconButton(
-        onPressed: null,
-        icon: Text(widget.text, style: widget.textStyle),
-        visualDensity: VisualDensity.compact,
-        padding: padding,
-        constraints: constraints,
+    if (isToday || _isSelected) {
+      final style = KalenderTheme.of(context).dayNumberStyle ?? const DayNumberStyle();
+      T? pick<T>(T? selected, T? today) => (_isSelected ? selected : null) ?? (isToday ? today : null);
+      final foreground = pick(style.selectedForegroundColor, style.todayForegroundColor);
+      textStyle = (textStyle ?? const TextStyle()).copyWith(color: foreground);
+      // Without the disabled colors the button paints greyed out, which reads as "unavailable".
+      buttonStyle = IconButton.styleFrom(
+        disabledBackgroundColor: pick(style.selectedBackgroundColor, style.todayBackgroundColor),
+        disabledForegroundColor: foreground,
+        side: (isToday ? style.todayBorder : null) ?? (_isSelected ? style.selectedBorder : null),
       );
     }
 
-    final style = KalenderTheme.of(context).dayNumberStyle ?? const DayNumberStyle();
-    T? pick<T>(T? selected, T? today) => (_isSelected ? selected : null) ?? (isToday ? today : null);
-    final border = (isToday ? style.todayBorder : null) ?? (_isSelected ? style.selectedBorder : null);
-    final foreground = pick(style.selectedForegroundColor, style.todayForegroundColor);
-    final number = Text(widget.text, style: (widget.textStyle ?? const TextStyle()).copyWith(color: foreground));
-
-    // Without the disabled colors the button paints greyed out, which reads as "unavailable".
-    final buttonStyle = IconButton.styleFrom(
-      disabledBackgroundColor: pick(style.selectedBackgroundColor, style.todayBackgroundColor),
-      disabledForegroundColor: foreground,
-      side: border,
-    );
-
-    if (!isToday) {
-      return IconButton(
-        onPressed: null,
-        icon: number,
-        visualDensity: VisualDensity.compact,
-        padding: padding,
-        constraints: constraints,
-        style: buttonStyle,
-      );
-    }
-
-    return IconButton.filledTonal(
-      key: widget.todayKey,
+    return IconButton(
+      key: isToday ? widget.todayKey : null,
       onPressed: null,
-      icon: number,
+      icon: Text(widget.text, style: textStyle),
       visualDensity: VisualDensity.compact,
-      padding: padding,
-      constraints: constraints,
+      padding: widget.size == null ? null : EdgeInsets.zero,
+      constraints: widget.size == null ? null : BoxConstraints.tight(widget.size!),
       style: buttonStyle,
     );
   }

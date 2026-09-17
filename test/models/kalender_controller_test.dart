@@ -63,14 +63,14 @@ void main() {
 
     test('isDateSelected and deselectRange', () {
       controller.selectRange(KalenderDateTimeRange(start: DateTime(2025, 3, 15), end: DateTime(2025, 3, 17)));
-      expect(controller.isDateSelected(FloatingDateTime(2025, 3, 14, 23, 59)), isFalse);
-      expect(controller.isDateSelected(FloatingDateTime(2025, 3, 15)), isTrue);
-      expect(controller.isDateSelected(FloatingDateTime(2025, 3, 16, 23, 59)), isTrue);
-      expect(controller.isDateSelected(FloatingDateTime(2025, 3, 17)), isFalse);
+      expect(controller.isDateSelected(DateTime(2025, 3, 14, 23, 59)), isFalse);
+      expect(controller.isDateSelected(DateTime(2025, 3, 15)), isTrue);
+      expect(controller.isDateSelected(DateTime(2025, 3, 16, 23, 59)), isTrue);
+      expect(controller.isDateSelected(DateTime(2025, 3, 17)), isFalse);
 
       controller.deselectRange();
       expect(controller.selectedRange.value, isNull);
-      expect(controller.isDateSelected(FloatingDateTime(2025, 3, 15)), isFalse);
+      expect(controller.isDateSelected(DateTime(2025, 3, 15)), isFalse);
     });
   });
 }

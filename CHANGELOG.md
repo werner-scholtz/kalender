@@ -2,8 +2,12 @@
 
 ### Features
 
-- `KalenderController.selectDate`, `selectRange` and `deselectRange` select days, and `KalenderController.selectedRange` holds the selection.
+- `KalenderController.selectDate`, `selectRange` and `deselectRange` select days, `selectedRange` holds the selection and `isDateSelected` checks a date against it.
 - `DayNumberStyle.selectedBackgroundColor`, `selectedForegroundColor`, `selectedBorder` and `todayBorder` style a selected day number and today. A selected day gets a ring by default.
+
+### Fixes
+
+- The continuous schedule's visible range ends at midnight after the last visible day.
 
 ### Examples
 
