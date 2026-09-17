@@ -28,7 +28,6 @@ typedef ScheduleTileHighlightBuilder =
 
 /// {@category Appearance}
 class ScheduleTileHighlightStyle with Diagnosticable {
-  /// Creates a new [ScheduleTileHighlightStyle].
   const ScheduleTileHighlightStyle({this.decoration});
 
   /// The [BoxDecoration] used to style the highlight.

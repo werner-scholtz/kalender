@@ -12,7 +12,7 @@ import 'package:kalender/src/models/kalender_callbacks.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
-/// The [DayNumberStyle] class is used by the [DayNumber] widget.
+/// The style of the [DayNumber].
 ///
 /// A day that is both today and selected takes its colors from the selected values and its border from the today
 /// values, each falling back to the other when null.

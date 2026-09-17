@@ -33,7 +33,6 @@ class DayHeaderStyle with Diagnosticable {
   /// The main axis alignment of the [DayHeader].
   final MainAxisAlignment? mainAxisAlignment;
 
-  /// Creates a new [DayHeaderStyle].
   const DayHeaderStyle({this.textStyle, this.numberTextStyle, this.mainAxisAlignment});
 
   /// Creates a copy of this style with the given fields replaced with the new values.
@@ -100,10 +99,6 @@ class DayHeader extends StatelessWidget {
   /// The style of the [DayHeader].
   final DayHeaderStyle? style;
 
-  /// Create a new [DayHeader].
-  ///
-  /// The [date] is the date that will be displayed.
-  /// The [style] is the style of the [DayHeader].
   const DayHeader({super.key, required this.date, this.style});
 
   @override

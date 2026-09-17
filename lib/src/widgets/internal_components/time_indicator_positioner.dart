@@ -35,7 +35,6 @@ class TimeIndicatorPositioner extends StatefulWidget {
   /// An optional child widget to display within the positioned indicator.
   final Widget? childOverride;
 
-  /// Creates a [TimeIndicatorPositioner].
   const TimeIndicatorPositioner({
     super.key,
     required this.viewController,
@@ -48,10 +47,6 @@ class TimeIndicatorPositioner extends StatefulWidget {
   State<TimeIndicatorPositioner> createState() => _TimeIndicatorPositionerState();
 }
 
-/// The state class for [TimeIndicatorPositioner].
-///
-/// This class manages the positioning logic and listens to page offset changes
-/// to keep the time indicator properly positioned relative to the current view.
 class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with WidgetsBindingObserver {
   /// The [MultiDayViewController] that controls the calendar view.
   MultiDayViewController? viewController;
@@ -109,7 +104,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     var left = daysFromLeftEdge * dayWidth;
 
     if (Directionality.of(context) == TextDirection.rtl) {
-      // In RTL mode, we need to adjust the left position to account for the reversed layout.
       left = pageWidth - (left + dayWidth);
     }
 
@@ -143,7 +137,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     }
   }
 
-  /// Sets up the initial state of the time indicator positioner.
   void _setup() {
     viewController?.pageOffset.removeListener(_listener);
     viewController = widget.viewController;
@@ -152,10 +145,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     daysFromLeftEdge = _daysFromLeftEdge();
   }
 
-  /// Listener callback that triggers a rebuild when the page offset changes.
-  ///
-  /// This ensures the time indicator position is updated in real-time
-  /// as the user scrolls through different pages.
   void _listener() {
     final previous = daysFromLeftEdge;
     daysFromLeftEdge = _daysFromLeftEdge();
@@ -168,7 +157,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     setState(() {});
   }
 
-  /// Updates the today page number based on the current date.
   void _updatePageNumberAndIndex() {
     final nowCallback = widget.viewController.viewConfiguration.nowCallback;
     final location = widget.viewController.location;
@@ -185,28 +173,22 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     todayIndex = dates.indexOf(now);
   }
 
-  /// Sets up a timer that reliably triggers every minute to check if the date has changed.
   void _setupDailyTimer() {
-    // Cancel any existing timer to avoid multiple timers running simultaneously
     _dateCheckTimer?.cancel();
 
-    // Update the today page number immediately.
     _updatePageNumberAndIndex();
 
-    // Set up a 1-minute recurring timer that checks for day changes
     _dateCheckTimer = Timer.periodic(const Duration(minutes: 1), (_) {
       _checkIfDayChanged();
     });
   }
 
-  /// Checks if the day has changed since the last calculation.
   void _checkIfDayChanged() {
     final oldPageNumber = todayPageNumber;
     final oldIndex = todayIndex;
 
     _updatePageNumberAndIndex();
 
-    // Only trigger a rebuild if the day actually changed
     if (oldPageNumber != todayPageNumber || oldIndex != todayIndex) {
       daysFromLeftEdge = _daysFromLeftEdge();
       if (mounted) {
@@ -232,7 +214,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
               right: right,
               top: 0,
               bottom: 0,
-              // Hide the time indicator when today's column is off-screen.
               child: !_isVisible(daysFromLeftEdge)
                   ? const SizedBox.shrink()
                   : widget.childOverride ??

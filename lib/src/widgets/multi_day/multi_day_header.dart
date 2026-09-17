@@ -30,7 +30,6 @@ class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final HorizontalConfiguration? configuration;
 
-  /// Creates a new [MultiDayHeader].
   const MultiDayHeader({super.key, this.configuration});
 
   @override
@@ -108,7 +107,6 @@ class _SingleDayHeader extends StatelessWidget {
         itemBuilder: (context, index) {
           final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
 
-          // Minimum constraints for the multiDayEvents.
           final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2);
 
           return Stack(

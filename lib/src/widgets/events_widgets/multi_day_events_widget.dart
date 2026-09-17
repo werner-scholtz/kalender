@@ -45,7 +45,6 @@ class MultiDayEventWidget extends StatefulWidget {
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders? overlayBuilders;
 
-  /// Creates a new [MultiDayEventWidget].
   const MultiDayEventWidget({
     super.key,
     required this.eventsController,
@@ -358,7 +357,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     final maxNumberOfRows = this.maxNumberOfRows(frame);
     final (events, layoutInfo) = frame.visibleEvents(maxNumberOfRows);
 
-    // The multi-day events widget is used to display the events that span multiple days.
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
         range: widget.floatingRange,
@@ -505,7 +503,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     );
   }
 
-  /// The function that builds the overlay event tile for the event.
   MultiDayEventOverlayTile _overlayEventTileBuilder(
     BuildContext context,
     KalenderEvent event,

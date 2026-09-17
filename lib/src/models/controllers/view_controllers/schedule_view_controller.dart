@@ -79,7 +79,6 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
     return dateTimeItemIndex(currentPage)[normalized] ?? closestIndex(normalized);
   }
 
-  /// Animate to the given index.
   FutureOr<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) {
     if (!hasInitialized) return null;
     return itemScrollController?.scrollTo(
@@ -197,7 +196,6 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   /// The [PageController] used to control the page view.
   late final PageController pageController;
 
-  /// Animate to the page index.
   Future<void> _animateToPage(int pageIndex, {Duration? duration, Curve? curve}) async {
     if (!_hasClients) return;
     return pageController.animateToPage(
@@ -283,6 +281,5 @@ class PaginatedScheduleViewController extends ScheduleViewController {
     pageController.jumpToPage(page);
   }
 
-  /// Check if the page controller has clients.
   bool get _hasClients => pageController.hasClients;
 }

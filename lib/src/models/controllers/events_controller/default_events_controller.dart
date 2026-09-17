@@ -16,9 +16,7 @@ import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 class DefaultEventsController extends EventsController {
   final List<Location> locations;
 
-  /// Creates a [DefaultEventsController].
-  ///
-  /// The [locations] can be provided to the [DefaultEventStore] to optimize the retrieval and addition of events based on location.
+  /// The [locations] are passed to the [DefaultEventStore], which indexes events per location.
   DefaultEventsController({List<Location>? locations}) : locations = locations ?? [];
 
   late final eventStore = DefaultEventStore(locations: locations);
@@ -117,7 +115,6 @@ class DefaultEventsController extends EventsController {
     Location? location,
   ) {
     return events.where((event) {
-      // If the event is a zero duration event at the start of the day, we should check for touching.
       final touching = _checkTouching(event, location);
       return event.floatingRange(location: location).overlaps(range, touching: touching);
     });
@@ -131,7 +128,6 @@ class DefaultEventsController extends EventsController {
     MultiDayRule multiDayRule,
   ) {
     return events.where((event) {
-      // If the event is not a multi day event, return false.
       if (!event.spansMultipleDays(location: location, defaultRule: multiDayRule)) return false;
       return event.floatingRange(location: location).overlaps(range);
     });
@@ -145,10 +141,8 @@ class DefaultEventsController extends EventsController {
     MultiDayRule multiDayRule,
   ) {
     return events.where((event) {
-      // If the event is a multi day event, return false.
       if (event.spansMultipleDays(location: location, defaultRule: multiDayRule)) return false;
 
-      // If the event is a zero duration event at the start of the day, we should check for touching.
       final touching = _checkTouching(event, location);
 
       return event.floatingRange(location: location).overlaps(range, touching: touching);

@@ -15,8 +15,6 @@ class KalenderHeader extends StatefulWidget {
   /// This provides a way to override the [KalenderCallbacks] passed to the [KalenderView].
   final KalenderCallbacks? callbacks;
 
-  /// MultiDay
-
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? multiDayHeaderConfiguration;
 
@@ -26,15 +24,6 @@ class KalenderHeader extends StatefulWidget {
   /// The interaction notifier used by the [MultiDayHeader].
   final KalenderInteraction? interaction;
 
-  /// Month
-
-  /// Creates a KalenderHeader widget.
-  ///
-  /// This creates the correct header based on the [ViewController] inside the [KalenderController]
-  /// - [MultiDayHeader]
-  /// - [MonthHeader]
-  /// - [ScheduleHeader]
-  ///
   const KalenderHeader({
     super.key,
     this.multiDayTileComponents,

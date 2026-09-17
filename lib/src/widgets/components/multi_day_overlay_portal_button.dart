@@ -116,8 +116,7 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
     this.stringBuilder,
   });
 
-  /// The default label: a plus sign and the count, with the number formatted for
-  /// the calendar's locale so locales with their own numerals read correctly.
+  /// The default label, `+N` formatted for the locale.
   static String defaultLabel(BuildContext context, int numberOfHiddenRows) {
     return '+${NumberFormat.decimalPattern(context.locale?.toLanguageTag()).format(numberOfHiddenRows)}';
   }

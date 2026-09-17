@@ -126,7 +126,6 @@ class ResizeHandleDetails {
 ///
 /// {@category Appearance}
 class ResizeHandleStyle with Diagnosticable {
-  /// Creates a new [ResizeHandleStyle].
   const ResizeHandleStyle({this.length, this.impreciseLength});
 
   /// The length of a resize handle for precise input, such as a mouse.
@@ -202,7 +201,6 @@ class DefaultResizeHandles extends StatelessWidget {
     final style = KalenderTheme.of(context).resizeHandleStyle ?? const ResizeHandleStyle();
     final handleLength = isImprecise ? (style.impreciseLength ?? 24.0) : (style.length ?? 16.0);
 
-    // Determine whether to hide the start resize handle.
     final hideStart = (handleLength * 2) > (length / 2);
 
     return Stack(

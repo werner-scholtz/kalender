@@ -25,7 +25,6 @@ class MonthBody extends StatelessWidget {
   /// The configuration of the body, a [MonthBodyConfiguration] by default.
   final HorizontalConfiguration? configuration;
 
-  /// Creates a new [MonthBody].
   const MonthBody({super.key, this.configuration});
 
   @override

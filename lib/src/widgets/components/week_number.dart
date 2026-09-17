@@ -60,7 +60,6 @@ typedef WeekNumberBuilder = Widget Function(BuildContext context, KalenderDateTi
 ///
 /// {@category Appearance}
 class WeekNumberStyle with Diagnosticable {
-  /// Creates a new [WeekNumberStyle].
   const WeekNumberStyle({this.textStyle, this.buttonSize, this.tooltip, this.padding, this.alignment});
 
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.

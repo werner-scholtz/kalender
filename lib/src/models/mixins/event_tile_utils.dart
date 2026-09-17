@@ -81,7 +81,6 @@ mixin EventTileUtils {
 ///   }
 /// }
 /// ```
-// ignore: library_private_types_in_public_api
 /// {@category Appearance}
 mixin DayEventTileUtils implements EventTileUtils {
   @override
@@ -222,7 +221,6 @@ mixin DayEventTileUtils implements EventTileUtils {
 ///   }
 /// }
 /// ```
-// ignore: library_private_types_in_public_api
 /// {@category Appearance}
 mixin MultiDayEventTileUtils implements EventTileUtils {
   @override

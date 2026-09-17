@@ -41,7 +41,6 @@ class PageTriggerConfiguration {
   /// Defaults to `pageWidth / 50` when null.
   final double Function(double pageWidth)? triggerWidth;
 
-  /// Creates a copy of this [PageTriggerConfiguration] but with the given fields replaced with the new values.
   PageTriggerConfiguration copyWith({
     Duration? triggerDelay,
     Duration? animationDuration,
@@ -112,7 +111,6 @@ class ScrollTriggerConfiguration {
   /// The delta used to scroll the view.
   final double Function(double pageHeight)? scrollAmount;
 
-  /// Creates a copy of this [ScrollTriggerConfiguration] but with the given fields replaced with the new values.
   ScrollTriggerConfiguration copyWith({
     Duration? triggerDelay,
     Duration? animationDuration,

@@ -29,7 +29,6 @@ class DayEventTile extends EventTile {
 
   @override
   EventTileOnTapUp? get onTapUp => (details, context) {
-    // Find the global position and size of the tile.
     final renderObject = context.findRenderObject()! as RenderBox;
     final exactTime = _calculateExactTime(details.localPosition, context);
     context.callbacks?.onEventTapped?.call(event);
@@ -41,7 +40,6 @@ class DayEventTile extends EventTile {
 
   @override
   EventTileOnTapUp? get onSecondaryTapUp => (details, context) {
-    // Find the global position and size of the tile.
     final renderObject = context.findRenderObject()! as RenderBox;
     final exactTime = _calculateExactTime(details.localPosition, context);
     context.callbacks?.onEventSecondaryTapped?.call(event);

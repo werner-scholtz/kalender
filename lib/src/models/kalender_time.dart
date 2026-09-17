@@ -20,8 +20,6 @@ import 'package:kalender/kalender_extensions.dart';
 ///
 /// {@category Dates and times}
 final class KalenderTime implements Comparable<KalenderTime> {
-  /// Creates a [KalenderTime].
-  ///
   /// [hour] must be between 0 and 23, and [minute] between 0 and 59.
   const KalenderTime({required this.hour, required this.minute})
     : assert(hour >= 0 && hour < hoursPerDay),

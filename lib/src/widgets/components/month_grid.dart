@@ -17,7 +17,7 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// {@category Appearance}
 typedef MonthGridBuilder = Widget Function(BuildContext context, int numberOfRows);
 
-/// The [MonthGridStyle] class is used by the [MonthGrid] widget.
+/// The style of the [MonthGrid].
 ///
 /// {@category Appearance}
 class MonthGridStyle with Diagnosticable {

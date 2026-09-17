@@ -6,12 +6,7 @@
 
 import 'package:flutter/material.dart';
 
-/// The values the calendar's default look is built from.
-///
-/// Six, which is everything `KalenderThemeData.defaults` reads from a theme.
-/// Holding them behind one type means the defaults themselves name no Material,
-/// so pointing them at another design system is a change to `fromTheme` rather
-/// than to each of the fourteen style classes.
+/// The colors and text styles the default theme is built from.
 @immutable
 class KalenderPalette {
   /// Hour lines, day separators, the month grid and the tooltip background.
@@ -38,7 +33,6 @@ class KalenderPalette {
   /// The timeline's hour labels.
   final TextStyle? label;
 
-  /// Creates a [KalenderPalette].
   const KalenderPalette({
     required this.surface,
     required this.accent,
@@ -50,10 +44,7 @@ class KalenderPalette {
     this.label,
   });
 
-  /// Maps a Material [ThemeData] onto the six.
-  ///
-  /// The only place the defaults touch Material. A core that does not depend on
-  /// it moves this one factory and leaves every style where it is.
+  /// The palette for [theme].
   factory KalenderPalette.fromTheme(ThemeData theme) {
     return KalenderPalette(
       surface: theme.colorScheme.surfaceContainerHighest,

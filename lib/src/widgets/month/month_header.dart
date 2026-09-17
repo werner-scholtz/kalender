@@ -13,7 +13,6 @@ import 'package:kalender/src/widgets/internal_components/month_week_number_gutte
 ///
 /// {@category Views}
 class MonthHeader extends StatelessWidget {
-  /// Creates a new [MonthHeader].
   const MonthHeader({super.key});
 
   @override

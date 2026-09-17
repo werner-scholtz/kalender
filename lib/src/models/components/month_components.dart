@@ -55,8 +55,6 @@ class MonthComponents {
 
 /// The component builders used by the [MonthBody].
 ///
-/// - Using these will override the respective default components.
-///
 /// {@category Appearance}
 class MonthBodyComponents {
   /// A function that builds the month grid widget.
@@ -99,7 +97,6 @@ class MonthBodyComponents {
   /// A group of builders for the overlay widgets.
   final OverlayBuilders? overlayBuilders;
 
-  /// Creates overrides for the default components used by the [MonthBody].
   const MonthBodyComponents({
     this.monthGridBuilder,
     this.monthDayHeaderBuilder,
@@ -202,8 +199,6 @@ class MonthBodyComponents {
 
 /// The component builders used by the [MonthHeader].
 ///
-/// - Using these will override the respective default components.
-///
 /// {@category Appearance}
 class MonthHeaderComponents {
   /// A function that builds the week day header widget.
@@ -215,7 +210,6 @@ class MonthHeaderComponents {
   /// Defaults to the full day name in the calendar's locale.
   final DateStringBuilder? weekDayHeaderStringBuilder;
 
-  /// Creates overrides for the default components used by the [MonthHeader].
   const MonthHeaderComponents({this.weekDayHeaderBuilder, this.weekDayHeaderStringBuilder});
 
   /// Builds a week day header, with [weekDayHeaderBuilder] when set.

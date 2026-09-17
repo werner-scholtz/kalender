@@ -114,7 +114,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
         final updatedEvent = resizeEvent(event, direction, cursorDate);
         if (updatedEvent == null) return;
 
-        // Update the event being resized.
         controller.updateEvent(updatedEvent, internal: true);
       },
       onReschedule: (event) {
@@ -124,7 +123,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
         final rescheduledEvent = rescheduleEvent(event, cursorDate);
         if (rescheduledEvent == null) return;
 
-        // Update the event being dragged.
         controller.updateEvent(rescheduledEvent, internal: true);
       },
       onOther: () {},
@@ -210,13 +208,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   }
 
   /// Processes the [DragTargetDetails] and handle different types of detail data (reschedule, resize, create, other).
-  ///
-  /// [onCreate] - handle the [Create] type.
-  /// [onResize] - handle the [Resize] type.
-  /// [onReschedule] - handle the [Reschedule] type.
-  /// [onOther] - handle other types.
-  ///
-  /// Each handler function returns a value of type [K], which is the result of handling the data.
   static K handleDragDetails<K extends Object?, T extends Object?>(
     DragTargetDetails<Object?> details, {
     required K Function(int controllerId) onCreate,
@@ -240,11 +231,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   }
 
   /// Calculate the local position of the cursor for the [DragTarget] widget.
-  ///
-  /// [cursorPosition] Comes from the [DragTargetDetails.offset].
-  /// [scrollOffset] The scroll offset of the current view.
-  ///
-  /// This calculates the local position of the cursor on the [DragTarget] widget.
   Offset? calculateLocalCursorPosition(Offset cursorPosition, {Offset scrollOffset = Offset.zero}) {
     return dragTargetRenderBox.globalToLocal(cursorPosition) + scrollOffset;
   }

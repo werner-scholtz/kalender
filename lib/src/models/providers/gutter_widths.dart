@@ -26,13 +26,9 @@ class GutterWidths extends InheritedWidget {
   /// The width of the multi-day timeline column, or null where none is drawn.
   final double? timeline;
 
-  /// Creates a [GutterWidths] with the given measurements.
   const GutterWidths({super.key, required this.weekNumber, required this.timeline, required super.child});
 
   /// The [GutterWidths] above [context], or null when there is none.
-  ///
-  /// Null where a component widget is built outside a [KalenderView], which the
-  /// tests and the doc snippets do.
   static GutterWidths? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<GutterWidths>();
   }

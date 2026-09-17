@@ -8,12 +8,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
-/// The calendar header when in use should be able to throw a drop shadow on the body.
-/// Ideally a [Column] widget would be used with the children as [body, header].
-///
-/// However there is an issue with the [Column] widget
-/// https://github.com/flutter/flutter/issues/12206 which prevents this from working correctly.
-///
+/// Lays out the header above the body.
 class KalenderLayoutDelegate extends MultiChildLayoutDelegate {
   final int? headerId;
   final int? bodyId;

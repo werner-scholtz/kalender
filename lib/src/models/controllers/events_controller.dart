@@ -67,9 +67,6 @@ abstract class EventsController with ChangeNotifier {
   }
 
   /// Updates an [KalenderEvent].
-  ///
-  /// The [event] is the event that needs to be changed.
-  /// The [updatedEvent] is the event that will replace the [event].
   void updateEvent({required KalenderEvent event, required KalenderEvent updatedEvent});
 
   /// Retrieve a [KalenderEvent] by it's id if it exists.
@@ -77,9 +74,6 @@ abstract class EventsController with ChangeNotifier {
 
   /// Finds the [KalenderEvent]s that occur during the [range].
   ///
-  /// The [range] is the range of dates to search for events.
-  /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
-  /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
   /// The [location] is the calendar's timezone, used to place day boundaries when evaluating [multiDayRule].
   /// Pass the same one the calendar renders with.
   /// [multiDayRule] decides which events count as multi-day. Pass the current

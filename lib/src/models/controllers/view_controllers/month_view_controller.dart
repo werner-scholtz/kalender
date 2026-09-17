@@ -41,10 +41,8 @@ class MonthViewController extends ViewController {
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    // Calculate the pageNumber of the date.
     final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
-    // Animate to that page.
     await pageController.animateToPage(
       pageNumber,
       duration: duration ?? const Duration(milliseconds: 300),
@@ -60,7 +58,6 @@ class MonthViewController extends ViewController {
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
   }
 
