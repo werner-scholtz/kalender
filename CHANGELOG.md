@@ -11,6 +11,7 @@
 - `DayNumberStyle.selectedBackgroundColor`, `selectedForegroundColor`, `selectedBorder` and `todayBorder` style a selected day number and today. A selected day gets a ring by default.
 - `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses on date labels and week numbers, through `GestureCallbacks`.
 - An empty day in the schedule view reports the `onTapped` callbacks.
+- `KalenderController.showDayOverlay` and `hideDayOverlay` open and close the overlay of any visible day in the month view and the multi-day header, and `openDayOverlay` holds the open day.
 - `ResizeHandleDetails.location` holds the calendar's location. `continuesBefore`, `continuesAfter`, `showStart` and `showEnd` compare the event in it.
 
 ### Fixes
@@ -20,6 +21,7 @@
 - The multi-day body picks the tiles to build from `calculateVerticalLayoutData`, the positions the tiles are drawn at.
 - A calendar shorter than its header lays out without errors.
 - `kDefaultToWeekly` and `kDefaultToSchedule` carry the first day of the month when switching from the month view.
+- The "+N more" buttons sit under their own day in right-to-left layouts.
 
 ### Fixes
 
@@ -27,7 +29,7 @@
 
 ### Examples
 
-- `examples/example/lib/selection_demo.dart` shows date selection.
+- `examples/example/lib/selection_demo.dart` shows date selection and opening the day overlay.
 
 ## 0.31.3
 
