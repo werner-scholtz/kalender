@@ -594,10 +594,10 @@ class VerticalLayoutData {
 ///
 /// {@category Layout}
 class EventLayoutData {
-  /// The top of the event.
+  /// The left of the event.
   final double left;
 
-  /// The bottom of the event.
+  /// The right of the event.
   final double right;
 
   /// The vertical layout data of the event.

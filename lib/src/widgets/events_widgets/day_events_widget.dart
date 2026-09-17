@@ -81,9 +81,6 @@ class DayEventsColumn extends StatefulWidget {
   /// The date for which the events are being displayed.
   final FloatingDateTime date;
 
-  /// The controller for the multi-day view.
-  // final MultiDayViewController viewController;
-
   final EventLayoutDelegateCache cache;
 
   /// The location used for date and time calculations.

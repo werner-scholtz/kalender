@@ -22,7 +22,7 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 ///
 /// {@category Views}
 class MonthBody extends StatelessWidget {
-  /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
+  /// The configuration of the body, a [MonthBodyConfiguration] by default.
   final HorizontalConfiguration? configuration;
 
   /// Creates a new [MonthBody].

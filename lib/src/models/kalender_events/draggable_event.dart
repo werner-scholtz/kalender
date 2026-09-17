@@ -11,7 +11,6 @@ class Reschedule {
   /// The [KalenderEvent] that is being rescheduled.
   final KalenderEvent event;
 
-  /// Create a reschedule object from a [KalenderEvent].
   Reschedule({required this.event});
 }
 
@@ -23,7 +22,6 @@ class Resize {
   /// The direction that the [KalenderEvent] is being resized in.
   final ResizeDirection direction;
 
-  /// Create a reschedule object from a [KalenderEvent] and a [ResizeDirection].
   Resize({required this.event, required this.direction});
 
   bool get verticalResize => direction.vertical;

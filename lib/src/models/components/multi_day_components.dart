@@ -24,10 +24,10 @@ import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 ///
 /// {@category Appearance}
 class MultiDayComponents {
-  /// The component builders used by the [MultiDayBody].
+  /// The component builders used by the [MultiDayHeader].
   final MultiDayHeaderComponents headerComponents;
 
-  /// The component builders used by the [MultiDayHeader].
+  /// The component builders used by the [MultiDayBody].
   final MultiDayBodyComponents bodyComponents;
 
   const MultiDayComponents({

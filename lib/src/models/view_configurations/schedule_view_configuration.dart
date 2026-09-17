@@ -138,7 +138,6 @@ class ScheduleBodyConfiguration {
   /// The [ScrollPhysics] used by the page view.
   final ScrollPhysics? pageScrollPhysics;
 
-  /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   ScheduleBodyConfiguration copyWith({
     EmptyDayBehavior? emptyDay,
     double? leadingWidth,

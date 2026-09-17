@@ -45,8 +45,6 @@ class MultiDayEventWidget extends StatefulWidget {
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders? overlayBuilders;
 
-  /// The styles used for overlay widgets for multi-day events.
-
   /// Creates a new [MultiDayEventWidget].
   const MultiDayEventWidget({
     super.key,
@@ -176,8 +174,6 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders? multiDayOverlayBuilders;
-
-  /// The styles used for overlay widgets for multi-day events.
 
   final Location? location;
 
