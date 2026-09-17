@@ -208,26 +208,27 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     }
   }
 
-  /// Computes the (top, bottom) pixel band of each event, matching the layout
-  /// delegate's geometry so culling lines up with what is actually drawn.
+  /// Computes the (top, bottom) pixel band of each event with
+  /// [EventLayoutDelegate.calculateVerticalLayoutData], so culling lines up with what is drawn.
   List<(double, double)> _computeBands(List<KalenderEvent> events) {
     if (events.isEmpty) return const [];
+    final timeOfDayRange = widget.viewConfiguration.timeOfDayRange;
     final delegate = widget.configuration.eventLayoutStrategy.createDelegate(
-      events: const [],
+      events: events,
       date: widget.date,
-      timeOfDayRange: widget.viewConfiguration.timeOfDayRange,
+      timeOfDayRange: timeOfDayRange,
       heightPerMinute: widget.heightPerMinute,
       minimumTileHeight: widget.configuration.minimumTileHeight,
-      cache: widget.cache,
+      // The layout cache is not keyed by size, so this height must not fill it.
+      cache: null,
       location: widget.location,
     );
-    return [
-      for (final event in events)
-        (
-          delegate.calculateDistanceFromStart(event),
-          delegate.calculateDistanceFromStart(event) + delegate.calculateHeight(event),
-        ),
-    ];
+    final height = widget.heightPerMinute * timeOfDayRange.duration.inMinutes;
+    final bands = List<(double, double)>.filled(events.length, (0, 0));
+    for (final data in delegate.calculateVerticalLayoutData(Size(0, height))) {
+      bands[data.id] = (data.top, data.bottom);
+    }
+    return bands;
   }
 
   /// The indices of the events whose band intersects the visible scroll window

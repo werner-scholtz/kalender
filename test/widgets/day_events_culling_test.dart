@@ -40,7 +40,7 @@ void main() {
     );
   }
 
-  Future<void> pumpSingleDay(WidgetTester tester) {
+  Future<void> pumpSingleDay(WidgetTester tester, {EventLayoutStrategy? strategy}) {
     final components = TileComponents(tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id)));
     return pumpAndSettleWithMaterialApp(
       tester,
@@ -53,7 +53,10 @@ void main() {
           displayRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1))),
           initialDateTime: day,
         ),
-        body: KalenderBody(multiDayTileComponents: components),
+        body: KalenderBody(
+          multiDayTileComponents: components,
+          multiDayBodyConfiguration: strategy == null ? null : MultiDayBodyConfiguration(eventLayoutStrategy: strategy),
+        ),
       ),
     );
   }
@@ -95,4 +98,55 @@ void main() {
 
     expect(find.byKey(ValueKey(id)), findsOneWidget);
   });
+
+  testWidgets('culling uses the band from calculateVerticalLayoutData', (tester) async {
+    // A late-evening event that the delegate below draws at the top of the day.
+    final id = addEvent(22);
+    await pumpSingleDay(tester, strategy: const _TopStrategy());
+
+    expect(find.byKey(ValueKey(id)), findsOneWidget);
+  });
+}
+
+/// Draws every event in the first hour of the day.
+class _TopStrategy extends EventLayoutStrategy {
+  const _TopStrategy();
+
+  @override
+  EventLayoutDelegate createDelegate({
+    required Iterable<KalenderEvent> events,
+    required FloatingDateTime date,
+    required KalenderTimeRange timeOfDayRange,
+    required double heightPerMinute,
+    required double? minimumTileHeight,
+    required EventLayoutDelegateCache? cache,
+    required Location? location,
+  }) {
+    return _TopDelegate(
+      events: events,
+      date: date,
+      heightPerMinute: heightPerMinute,
+      timeOfDayRange: timeOfDayRange,
+      minimumTileHeight: minimumTileHeight,
+      layoutCache: cache ?? EventLayoutDelegateCache(),
+      location: location,
+    );
+  }
+}
+
+class _TopDelegate extends OverlapLayoutDelegate {
+  _TopDelegate({
+    required super.events,
+    required super.heightPerMinute,
+    required super.date,
+    required super.location,
+    required super.timeOfDayRange,
+    required super.minimumTileHeight,
+    required super.layoutCache,
+  });
+
+  @override
+  List<VerticalLayoutData> calculateVerticalLayoutData(Size size) => [
+    for (var i = 0; i < events.length; i++) VerticalLayoutData(id: i, top: 0, bottom: 60),
+  ];
 }
