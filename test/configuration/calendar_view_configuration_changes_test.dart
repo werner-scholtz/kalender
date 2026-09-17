@@ -217,6 +217,26 @@ void main() {
       expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2026, 8, 31));
     });
 
+    testWidgets('month → paginated schedule opens on the month', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(
+          name: 'Month',
+          displayRange: calendarRange,
+          firstDayOfWeek: DateTime.sunday,
+          initialDateTime: DateTime(2026, 9, 15),
+        ),
+        withBody: true,
+      );
+
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.paginated(name: 'Schedule', displayRange: calendarRange),
+      );
+
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2026, 9, 1));
+    });
+
     testWidgets('week → day', (tester) async {
       await pumpCalendarView(
         tester,
