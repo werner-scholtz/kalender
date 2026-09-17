@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/controllers/kalender_controller.dart';
 import 'package:kalender/src/models/floating_date_time.dart';
+import 'package:kalender/src/models/kalender_callbacks.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
@@ -140,8 +141,8 @@ class DayNumberStyle with Diagnosticable {
 /// month day header, the schedule date, and the multi-day overlay.
 ///
 /// It is never interactive. It is a label that happens to be drawn like a button, so `onPressed` is always null and
-/// the highlight has to set the disabled colors. It ignores pointers, so a tap reaches the cell or gesture detector
-/// around it.
+/// the highlight has to set the disabled colors. Without a [KalenderCallbacks.dateLabel] callback it ignores pointers,
+/// so a tap reaches the cell behind it.
 class DayNumber extends StatefulWidget {
   const DayNumber({
     super.key,
@@ -211,7 +212,10 @@ class _DayNumberState extends State<DayNumber> {
   }
 
   @override
-  Widget build(BuildContext context) => IgnorePointer(child: _buildButton(context));
+  Widget build(BuildContext context) {
+    final hasDateLabel = Callbacks.maybeOf(context)?.dateLabel?.hasAny ?? false;
+    return IgnorePointer(ignoring: !hasDateLabel, child: _buildButton(context));
+  }
 
   Widget _buildButton(BuildContext context) {
     final isToday = widget.isToday;

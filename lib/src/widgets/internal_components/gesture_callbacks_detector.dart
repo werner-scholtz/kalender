@@ -11,12 +11,21 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// Reports the gestures in [callbacks] on [child], and returns [child] unchanged when none are set.
 class GestureCallbacksDetector<T extends TapDetail> extends StatelessWidget {
-  const GestureCallbacksDetector({super.key, required this.callbacks, required this.detail, required this.child});
+  const GestureCallbacksDetector({
+    super.key,
+    required this.callbacks,
+    required this.detail,
+    this.behavior = HitTestBehavior.deferToChild,
+    required this.child,
+  });
 
   final GestureCallbacks<T>? callbacks;
 
   /// Builds the detail passed to a callback.
   final T Function(RenderBox renderBox, Offset localOffset) detail;
+
+  /// How the detector behaves during hit testing.
+  final HitTestBehavior behavior;
 
   final Widget child;
 
@@ -38,7 +47,7 @@ class GestureCallbacksDetector<T extends TapDetail> extends StatelessWidget {
     return MouseRegion(
       cursor: onTap == null ? MouseCursor.defer : SystemMouseCursors.click,
       child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+        behavior: behavior,
         onTapUp: onTap == null ? null : (details) => onTap(details.localPosition),
         onSecondaryTapUp: onSecondaryTap == null ? null : (details) => onSecondaryTap(details.localPosition),
         onLongPressStart: onLongPress == null ? null : (details) => onLongPress(details.localPosition),
@@ -63,7 +72,7 @@ class DateLabelGestures extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureCallbacksDetector<DayDetail>(
-      callbacks: context.dependOnInheritedWidgetOfExactType<Callbacks>()?.callbacks?.dateLabel,
+      callbacks: Callbacks.maybeOf(context)?.dateLabel,
       detail: (renderBox, localOffset) => DayDetail(date: date, renderBox: renderBox, localOffset: localOffset),
       child: child,
     );
@@ -82,9 +91,10 @@ class WeekNumberGestures extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureCallbacksDetector<MultiDayDetail>(
-      callbacks: context.dependOnInheritedWidgetOfExactType<Callbacks>()?.callbacks?.weekNumber,
+      callbacks: Callbacks.maybeOf(context)?.weekNumber,
       detail: (renderBox, localOffset) =>
           MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: localOffset),
+      behavior: HitTestBehavior.opaque,
       child: child,
     );
   }

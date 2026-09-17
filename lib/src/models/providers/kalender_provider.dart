@@ -120,6 +120,11 @@ class Callbacks extends InheritedWidget {
     assert(result != null, 'No CallbackProvider  found.');
     return result!.callbacks;
   }
+
+  /// Gets the [Callbacks] from the context, or null when there is none.
+  static KalenderCallbacks? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<Callbacks>()?.callbacks;
+  }
 }
 
 /// The [TileComponentProvider] provides the [TileComponents] to the widget tree.

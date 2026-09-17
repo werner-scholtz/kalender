@@ -97,7 +97,7 @@ class _SingleDayHeader extends StatelessWidget {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
           return const SizedBox.shrink();
         }
-        return headerComponents.buildDayHeader(context, value.start);
+        return headerComponents.buildDayHeader(context, value.start.forLocation(location: context.location));
       },
     );
 

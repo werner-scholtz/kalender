@@ -89,8 +89,20 @@ void main() {
 
     testWidgets('without a date label callback the month day number tap reaches the cell', (tester) async {
       await pump(tester, month);
-      await tester.tap(find.byKey(MonthDayHeader.todayKey));
+      await tester.tap(find.byKey(MonthDayHeader.todayKey), warnIfMissed: false);
       expect(calls, ['onTapped 2026-9-16', 'onTappedWithDetail 2026-9-16']);
+    });
+
+    testWidgets('the single-day header reports the date in the calendar location', (tester) async {
+      final dates = <DateTime>[];
+      await pump(
+        tester,
+        MultiDayViewConfiguration.singleDay(displayRange: range, initialDateTime: now, nowCallback: () => now),
+        dateLabel: GestureCallbacks(onTap: (detail) => dates.add(detail.date)),
+      );
+      await tester.tap(find.byKey(DayHeader.todayKey));
+      expect(dates, [DateTime(2026, 9, 16)]);
+      expect(dates.single.isUtc, isFalse);
     });
 
     testWidgets('the whole day header reports, including the day name', (tester) async {
@@ -163,10 +175,34 @@ void main() {
       expect(ranges, [visible, visible], reason: 'the long press is not taken by the tooltip');
     });
 
+    testWidgets('any week number callback makes the tooltip hover only', (tester) async {
+      Future<Tooltip> tooltip(GestureCallbacks<MultiDayDetail>? weekNumber) async {
+        await pumpAndSettleWithMaterialApp(
+          tester,
+          TestProvider(
+            kalenderController: kalenderController,
+            eventsController: eventsController,
+            tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
+            callbacks: KalenderCallbacks(weekNumber: weekNumber),
+            child: KalenderTheme(
+              data: const KalenderThemeData(weekNumberStyle: WeekNumberStyle(tooltip: 'Week')),
+              child: WeekNumber(
+                visibleDateTimeRange: KalenderDateTimeRange(start: now, end: now),
+              ),
+            ),
+          ),
+        );
+        return tester.widget<Tooltip>(find.byType(Tooltip));
+      }
+
+      expect((await tooltip(null)).triggerMode, isNull);
+      expect((await tooltip(GestureCallbacks(onTap: (_) {}))).triggerMode, TooltipTriggerMode.manual);
+    });
+
     testWidgets('a month week number reports its row', (tester) async {
       final ranges = <KalenderDateTimeRange>[];
       await pump(tester, month, weekNumber: GestureCallbacks(onTap: (detail) => ranges.add(detail.dateTimeRange)));
-      await tester.tap(find.byType(WeekNumber).at(2));
+      await tester.tap(find.descendant(of: find.byType(WeekNumber).at(2), matching: find.byType(IconButton)));
       expect(ranges.single.start, DateTime(2026, 9, 14));
       expect(ranges.single.end, DateTime(2026, 9, 21));
     });
@@ -174,7 +210,7 @@ void main() {
 
   testWidgets('an empty schedule day reports the onTapped callbacks', (tester) async {
     await pump(tester, schedule, scheduleConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show));
-    await tester.tap(find.byKey(ScheduleDate.todayKey));
+    await tester.tap(find.byKey(ScheduleDate.todayKey), warnIfMissed: false);
     expect(calls, ['onTapped 2026-9-16', 'onTappedWithDetail 2026-9-16']);
   });
 

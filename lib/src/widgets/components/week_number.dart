@@ -171,8 +171,7 @@ class WeekNumber extends StatelessWidget {
     final padding = style.padding ?? const EdgeInsets.symmetric(horizontal: 4);
     final buttonSize = style.buttonSize;
     final tooltip = style.tooltip;
-    final longPressTaken =
-        context.dependOnInheritedWidgetOfExactType<Callbacks>()?.callbacks?.weekNumber?.onLongPress != null;
+    final hasGestures = Callbacks.maybeOf(context)?.weekNumber?.hasAny ?? false;
 
     final button = IconButton.filledTonal(
       onPressed: null,
@@ -193,8 +192,8 @@ class WeekNumber extends StatelessWidget {
             ? button
             : Tooltip(
                 message: tooltip,
-                // A long press callback on the week number takes the gesture, so the tooltip only shows on hover.
-                triggerMode: longPressTaken ? TooltipTriggerMode.manual : null,
+                // A week number callback takes the tap or long press ahead of the tooltip, so it only shows on hover.
+                triggerMode: hasGestures ? TooltipTriggerMode.manual : null,
                 child: button,
               ),
       ),
