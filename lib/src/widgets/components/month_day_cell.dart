@@ -8,16 +8,8 @@ import 'package:flutter/material.dart';
 
 /// Builds the background of a single day cell in the month body.
 ///
-/// The builder is called once per cell with [MonthDayCellDetails] describing the
-/// cell's date, whether it is today, and whether it belongs to the focused month
-/// (as opposed to a leading/trailing day from an adjacent month). The returned
-/// widget is painted behind the grid, the day's number and the events, so it is
-/// well suited to styling the cell background, for example graying out
-/// adjacent-month days.
-///
-/// This is a background layer and does not receive pointer events. The event
-/// and drag layers sit above it. The default builder renders nothing, leaving
-/// the cell background unchanged.
+/// Called once per cell with [MonthDayCellDetails]. The widget is painted behind the grid, the day number and the
+/// events, and receives no pointer events. The default builds nothing.
 ///
 /// {@category Appearance}
 typedef MonthDayCellBuilder = Widget Function(BuildContext context, MonthDayCellDetails details);
@@ -70,11 +62,6 @@ class MonthDayCell extends StatelessWidget {
   Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
-/// Background shade for an adjacent-month day, used by
-/// [MonthDayCell.shadeAdjacentMonths]. Falls back to a low-opacity
-/// [ColorScheme.onSurface] overlay, read at build time, so the default shade
-/// reads as "greyed out" and follows the active [ColorScheme] in light and
-/// dark modes.
 class _AdjacentMonthShade extends StatelessWidget {
   const _AdjacentMonthShade({this.color});
 

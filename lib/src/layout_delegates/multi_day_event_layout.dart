@@ -23,16 +23,6 @@ import 'package:kalender/kalender.dart';
 /// )
 /// ```
 ///
-/// Write your own by extending this class. Call
-/// [defaultMultiDayFrameGenerator] from [generateFrame] to keep the built-in
-/// row assignment and change only the order events are placed in, or build the
-/// frame yourself.
-///
-/// This is a class rather than a function so that it has value equality. Header
-/// and month configurations are compared with `==` to decide whether the layout
-/// frame cache survives, and a function field written inline would clear that
-/// cache on every build.
-///
 /// {@category Layout}
 abstract class MultiDayLayoutStrategy {
   const MultiDayLayoutStrategy();
@@ -85,30 +75,9 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 /// Exposed so a custom [MultiDayLayoutStrategy] can reuse it and pass its own
 /// [eventComparator], which the strategy itself does not take.
 ///
-/// This function generates a layout frame for multi-day events by:
-/// 1. Sorting the events by their duration (descending) and start time (ascending).
-/// 2. Calculating the column (date) indices for each event based on its range.
-/// 3. Assigning each event to the first available row that does not overlap with other events.
-/// 4. Calculating the total number of rows each column requires.
-///
-/// ## Returns:
-/// A [MultiDayLayoutFrame] object containing:
-/// - The sorted list of events.
-/// - Layout information for each event, including row and column assignments.
-/// - The total number of rows required to display all events.
-/// - A mapping of columns to the number of rows.
-///
-/// ## Algorithm:
-/// 1. **Sorting**:
-///    - Events are sorted by duration in descending order.
-///    - If two events have the same duration, they are sorted by start time in ascending order.
-///    - If an eventComparator is provided, it is used to sort the events instead.
-/// 2. **Row Assignment**:
-///    - Each event is assigned to the first available row that does not overlap with other events.
-///    - Overlaps are determined based on the columns (dates) the event spans.
-/// 3. **Row Count Calculation**:
-///    - The total number of rows is updated as events are assigned to rows.
-///    - A map is maintained to track the number of rows required for each date.
+/// Sorts the events by duration, longest first, then by start time, or by [eventComparator] when one is given.
+/// Each event takes the first row whose columns it does not overlap. The frame holds the sorted events, their row
+/// and column assignments, the total number of rows and the number of rows per column.
 ///
 /// {@category Layout}
 MultiDayLayoutFrame defaultMultiDayFrameGenerator({
@@ -127,11 +96,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   final dates = visibleRange.dates();
   final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
 
-  // Precompute each event's floating range and sort keys once. The sort runs its
-  // comparator O(N log N) times, and the old comparator recomputed timezone
-  // conversions (floatingStart/floatingRange) on every call. That dominated the
-  // cost when many events share a duration, because the tie-breaker then runs on
-  // almost every comparison.
+  // Precompute each event's floating range and sort keys once.
   final entries = <_FrameEntry>[];
   for (final event in events) {
     final range = event.floatingRange(location: location);
@@ -167,15 +132,13 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 
   // The columns occupied by each row, indexed by row. A column is added once an
   // event is placed on that row so later events can find the first row whose
-  // columns do not clash with them. This replaces re-scanning every placed
-  // event on every row (the previous O(N^2) inner loop).
+  // columns do not clash with them.
   final rowColumns = <Set<int>>[];
 
   // The maximum number of rows needed to layout all the events.
   var maxRow = 0;
 
-  // Maps each visible date to its column index so column lookups are O(1)
-  // instead of a linear search per event per day.
+  // Maps each visible date to its column index.
   final columnForDate = <FloatingDateTime, int>{for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i};
 
   // A map that contains the number of rows for each of the columns.
@@ -262,21 +225,16 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   return frame;
 }
 
-/// An event plus the values [defaultMultiDayFrameGenerator] needs while sorting
-/// and placing it. Computed once per event so the sort comparator and layout
-/// loop reuse them instead of recomputing timezone conversions.
+/// An event with the range and sort keys [defaultMultiDayFrameGenerator] places it by.
 class _FrameEntry {
   _FrameEntry({required this.event, required this.start, required this.roundedEnd, required this.durationMicroseconds});
 
   final KalenderEvent event;
-
-  /// The event start as an [FloatingDateTime].
   final FloatingDateTime start;
 
-  /// The event end rounded to the end of the day (unless it sits on a day boundary).
+  /// The event end rounded to the end of the day, unless it sits on a day boundary.
   final FloatingDateTime roundedEnd;
 
-  /// The event duration in microseconds, used as the primary sort key.
   final int durationMicroseconds;
 }
 

@@ -112,13 +112,11 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
 
   /// The Material 3 defaults, derived from the [Theme] of the given [context].
   ///
-  /// This is the single place where the calendar's default visuals are defined.
-  /// Fields that depend on runtime state stay null:
+  /// These fields stay null:
   /// - string builders, which use the ambient locale inside the widgets.
   /// - [TimeIndicatorStyle.circleColor], which falls back to the line color.
-  /// - text styles that intentionally inherit from [DefaultTextStyle].
-  /// - [WeekNumberStyle.alignment], so a widget can tell an alignment nobody
-  ///   set from one set to centre. Each week number falls back on its own.
+  /// - text styles that inherit from [DefaultTextStyle].
+  /// - [WeekNumberStyle.alignment], which each week number resolves on its own.
   static KalenderThemeData defaults(BuildContext context) => _defaultsFor(Theme.of(context));
 
   static KalenderThemeData _defaultsFor(ThemeData theme) {
@@ -127,10 +125,6 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     return _defaultsCache[theme] = _buildDefaults(KalenderPalette.fromTheme(theme));
   }
 
-  /// Builds the defaults from [palette].
-  ///
-  /// Names no Material beyond [Icons.close], which stage 4 replaces with an
-  /// owned or caller-supplied icon.
   static KalenderThemeData _buildDefaults(KalenderPalette palette) {
     final tooltipDecoration = BoxDecoration(color: palette.surface, borderRadius: BorderRadius.circular(8));
 

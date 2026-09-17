@@ -164,9 +164,7 @@ class MultiDayViewController extends ViewController {
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
     final target = FloatingDateTime.fromDateTime(eventCenter.subtract(duration));
 
-    // It is important to check if the target is in the same day as the event start.
-    // If it is, we can use the local time of the target, otherwise we use the event start.
-    // This prevents the view from moving to the previous day if the event starts at midnight.
+    // Keep the event start when the target falls on an earlier day, so a midnight start does not show the previous day.
     if (target.isSameDay(event.floatingStart(location: location))) {
       date = target;
     } else {

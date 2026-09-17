@@ -54,16 +54,8 @@ typedef TimeLineBuilder =
 
 /// Resolves the width of the timeline gutter.
 ///
-/// The calendar calls this once and the multi-day body, header and drag overlay
-/// all read the result, so their day columns stay aligned. It is not called for
-/// a view that draws no timeline.
-///
-/// It runs above `KalenderHeader` and `KalenderBody`, so the context resolves
-/// [KalenderTheme] and every [KalenderScope] accessor except the four those two
-/// install: `interactionOf`, `snappingOf`, `tileComponentsOf` and
-/// `heightPerMinuteOf`.
-///
-/// See [defaultTimelineWidth] for the default implementation.
+/// Called once per view, and not for a view that draws no timeline. The context resolves [KalenderTheme] and every
+/// [KalenderScope] accessor except `interactionOf`, `snappingOf`, `tileComponentsOf` and `heightPerMinuteOf`.
 ///
 /// {@category Appearance}
 typedef TimelineWidthBuilder = double Function(BuildContext context, KalenderTimeRange timeOfDayRange);

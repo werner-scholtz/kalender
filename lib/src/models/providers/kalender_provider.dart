@@ -56,7 +56,6 @@ class KalenderControllerProvider extends InheritedNotifier<KalenderController> {
 }
 
 /// The [LocaleProvider] is used to provide the locale for internationalization.
-/// It does not have a type parameter so it can be used globally without type constraints.
 class LocaleProvider extends InheritedWidget {
   /// The locale used for internationalization.
   final Locale? locale;

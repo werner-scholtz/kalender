@@ -398,15 +398,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 ///
 /// {@category Views}
 class MultiDayBodyConfiguration extends VerticalConfiguration {
-  /// Whether to keep visited pages alive so navigating back to them does not
-  /// rebuild their content.
+  /// Keeps visited pages built so returning to one does not rebuild it.
   ///
-  /// Off by default. When enabled, each page you navigate to is cached and
-  /// reused, so navigating back to it is close to free instead of rebuilding
-  /// every event tile. The trade-off is memory: cached pages stay in memory for
-  /// the lifetime of the view, so this grows with the number of distinct pages
-  /// visited. Prefer it for views where the user moves back and forth between a
-  /// small set of pages.
+  /// Off by default. Cached pages stay in memory for the view's lifetime.
   final bool keepPagesAlive;
 
   const MultiDayBodyConfiguration({

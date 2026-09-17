@@ -85,14 +85,7 @@ class TileComponents {
     return resizeHandlePositioner?.call(context, details) ?? DefaultResizeHandles(details: details);
   }
 
-  /// Compares the builders, so components built with the same ones are equal.
-  ///
-  /// A builder written as an inline closure is a new object on every build and
-  /// never compares equal. Pass a top-level or static function to keep two
-  /// instances equal, which is what stops the tiles rebuilding.
-  ///
-  /// [ScheduleTileComponents] restricts several of these to null, so the types
-  /// are compared too rather than only the fields.
+  /// Compares the runtime type and every builder.
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

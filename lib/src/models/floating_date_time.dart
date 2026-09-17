@@ -57,9 +57,6 @@ final class FloatingDateTime extends DateTime {
   FloatingDateTime get startOfDay => FloatingDateTime(year, month, day);
 
   /// Returns midnight (00:00:00) of the **next** day (exclusive upper bound).
-  ///
-  /// This is an exclusive boundary — it represents the start of the following day,
-  /// not the last instant of the current day. Useful for half-open `[start, end)` ranges.
   FloatingDateTime get endOfDay => FloatingDateTime(year, month, day + 1);
 
   /// Returns a half-open `[start, end)` range covering this entire day.
@@ -96,18 +93,12 @@ final class FloatingDateTime extends DateTime {
   }
 
   /// Returns midnight of the day **after** the last day of this date's week (exclusive upper bound).
-  ///
-  /// The [firstDayOfWeek] parameter controls which day starts the week
-  /// (defaults to [DateTime.monday] per ISO 8601).
   FloatingDateTime endOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final daysToAdd = (firstDayOfWeek - weekday - 1) % 7;
     return FloatingDateTime(year, month, day + daysToAdd + 1);
   }
 
   /// Returns a half-open `[start, end)` range covering this entire week.
-  ///
-  /// The [firstDayOfWeek] parameter controls which day starts the week
-  /// (defaults to [DateTime.monday] per ISO 8601).
   FloatingDateTimeRange weekRange({int firstDayOfWeek = DateTime.monday}) {
     return FloatingDateTimeRange(
       start: startOfWeek(firstDayOfWeek: firstDayOfWeek),
@@ -124,36 +115,10 @@ final class FloatingDateTime extends DateTime {
     }
   }
 
-  /// Checks if this [FloatingDateTime] represents the current day in the specified [location].
+  /// Whether this date is the current day in [location].
   ///
-  /// Both `now` and this date are converted to the same target timezone before
-  /// comparing year, month, and day. This is necessary because comparing in UTC
-  /// can yield incorrect results near midnight — for example, 11:30 PM in New York
-  /// (UTC-5) is already the next day in UTC.
-  ///
-  /// If [now] is provided, it is used as the reference time instead of
-  /// computing the current time from [location] or the system clock.
-  /// The wall-clock components of [now] are compared directly against this date's
-  /// wall-clock components (via [isSameDay]), so the caller is responsible for
-  /// ensuring [now] is in the desired timezone.
-  ///
-  /// If [location] is `null` and [now] is `null`, the system's local timezone is used.
-  ///
-  /// Example:
-  /// ```dart
-  /// final date = FloatingDateTime.fromDateTime(DateTime.now());
-  ///
-  /// // Check using system timezone
-  /// print(date.isToday()); // true
-  ///
-  /// // Check using a specific timezone
-  /// final location = getLocation('America/New_York');
-  /// print(date.isToday(location: location)); // true (if today in New York)
-  ///
-  /// // Check using an explicit 'now' value
-  /// final customNow = DateTime(2024, 1, 15, 14, 30);
-  /// print(date.isToday(now: customNow)); // true only if date is Jan 15
-  /// ```
+  /// Both this date and the current time are taken in [location], or in the system's local timezone when it is null.
+  /// A given [now] replaces the clock and is compared by its wall-clock components, and [location] is then ignored.
   bool isToday({Location? location, DateTime? now}) {
     if (now != null) {
       return isSameDay(FloatingDateTime.fromDateTime(now));
@@ -167,14 +132,7 @@ final class FloatingDateTime extends DateTime {
 
   /// Checks if [date] falls on the same calendar day as this [FloatingDateTime].
   ///
-  /// Compares year, month, and day components only; time-of-day is ignored.
-  ///
-  /// Example:
-  /// ```dart
-  /// final date = FloatingDateTime(2024, 1, 15);
-  /// print(date.isSameDay(FloatingDateTime(2024, 1, 15))); // Output: true
-  /// print(date.isSameDay(FloatingDateTime(2024, 1, 16))); // Output: false
-  /// ```
+  /// Compares year, month, and day only. The time of day is ignored.
   bool isSameDay(FloatingDateTime date) {
     return year == date.year && month == date.month && day == date.day;
   }
@@ -183,21 +141,6 @@ final class FloatingDateTime extends DateTime {
   ///
   /// By default, the start time is included in the range, but the end time is not.
   /// This behavior can be changed by setting the `includeStart` and `includeEnd` parameters.
-  ///
-  /// Example:
-  /// ```dart
-  /// final date = FloatingDateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 31));
-  /// print(date.isWithin(range)); // Output: true
-  ///
-  /// final date2 = FloatingDateTime(2024, 1, 1); // January 1, 2024, 12:00 AM
-  /// print(date2.isWithin(range)); // Output: true
-  /// print(date2.isWithin(range, includeStart: false)); // Output: false
-  ///
-  /// final date3 = FloatingDateTime(2024, 1, 31); // January 31, 2024, 12:00 AM
-  /// print(date3.isWithin(range)); // Output: false
-  /// print(date3.isWithin(range, includeEnd: true)); // Output: true
-  /// ```
   bool isWithin(FloatingDateTimeRange range, {bool includeStart = true, bool includeEnd = false}) {
     final isWithin = isAfter(range.start) && isBefore(range.end);
     late final isAtStart = isAtSameMomentAs(range.start);
@@ -256,9 +199,6 @@ final class FloatingDateTime extends DateTime {
   }
 
   /// Adds a [Duration] to this [FloatingDateTime] and returns a new [FloatingDateTime].
-  ///
-  /// Note because [FloatingDateTime] is stored in UTC, it is unaffected by DST changes,
-  /// so adding a duration will always yield the expected result without any surprises.
   @override
   FloatingDateTime add(Duration duration) {
     final result = super.add(duration);
@@ -266,9 +206,6 @@ final class FloatingDateTime extends DateTime {
   }
 
   /// Subtracts a [Duration] from this [FloatingDateTime] and returns a new [FloatingDateTime].
-  ///
-  /// Note because [FloatingDateTime] is stored in UTC, it is unaffected by DST changes,
-  /// so subtracting a duration will always yield the expected result without any surprises.
   @override
   FloatingDateTime subtract(Duration duration) {
     final result = super.subtract(duration);

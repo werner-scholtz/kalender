@@ -31,20 +31,10 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   /// The index of the first page currently within the viewport.
   late int _firstVisiblePage;
 
-  /// The index of the last page currently within the viewport.
-  ///
-  /// When [LinkedPageController.viewportFraction] is `1.0` this equals
-  /// [_firstVisiblePage] while settled, so only the current page drives the
-  /// height. For a fractional viewport (e.g. free-scroll, where several days
-  /// are visible at once) it spans every page in view, so the tallest of them
-  /// sets the height instead of the header clipping the busier days.
+  /// The index of the last page within the viewport, equal to [_firstVisiblePage] when one page fills it.
   late int _lastVisiblePage;
 
-  /// The height needed to fit the tallest page currently in the viewport.
-  ///
-  /// Seeded from the first visible page's own height (not the default) so a
-  /// single visible page shorter than [_defaultItemHeight] keeps its measured
-  /// height rather than being floored up to the placeholder value.
+  /// The height of the tallest page within the viewport, or [_defaultItemHeight] when there are no pages.
   double get _visibleHeight {
     if (_heights.isEmpty) return _defaultItemHeight;
     final lo = _firstVisiblePage.clamp(0, _heights.length - 1);
@@ -127,7 +117,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       alignment: Alignment.topCenter,
       child: _SizeReporter(
         onSizeChanged: (size) {
-          // Only rebuild if the height actually changed to avoid layout thrashing.
+          // Rebuild only when the height changed.
           if (_heights[index] != size.height) {
             setState(() => _heights[index] = size.height);
           }

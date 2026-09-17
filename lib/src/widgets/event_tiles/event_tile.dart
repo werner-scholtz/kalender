@@ -21,20 +21,10 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// The function that is called when the event is tapped.
 typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
 
-/// Base class for all event tiles in the Kalender package.
+/// Base class for event tiles in every view.
 ///
-/// [EventTile] is the foundational widget for displaying calendar events across all view types
-/// (day, multi-day, month, and schedule views). It provides a unified interface for:
-/// - Rendering tile state widgets from [TileComponents].
-/// - Handling user interactions
-///   - [TileGestureDetector] for tap detection
-///   - [TileDraggable] for drag-and-drop rescheduling
-///   - [ResizeHandleWidget] for resizing events
-///
-/// The [EventTile] follows a composition pattern where different tile types extend this base class:
-/// - [DayEventTile] - For day and multi-day views with vertical resizing.
-/// - [MultiDayEventTile] - For multi-day headers with horizontal resizing.
-/// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
+/// Builds the tile from [TileComponents] with tap, drag and resize handling. Subclasses are [DayEventTile],
+/// [MultiDayEventTile] and [ScheduleEventTile].
 abstract class EventTile extends StatelessWidget {
   final KalenderEvent event;
 
@@ -66,23 +56,15 @@ abstract class EventTile extends StatelessWidget {
   });
 
   /// The function that is called when the event is tapped.
-  ///
-  /// Concrete implementations should override this to provide view-specific
-  /// tap handling, such as calling [KalenderCallbacks.onEventTapped] with
-  /// appropriate detail objects.
   EventTileOnTapUp? get onTapUp;
 
   /// The function that is called when the event is secondary tapped.
   EventTileOnTapUp? get onSecondaryTapUp;
 
-  /// A key used to identify the reschedule draggable.
-  ///
-  /// Each tile type provides a unique key pattern for testing and debugging.
+  /// The key of the reschedule draggable, unique per tile type.
   Key get rescheduleKey;
 
-  /// A key used to identify the gesture detector.
-  ///
-  /// Each tile type provides a unique key pattern for testing and debugging.
+  /// The key of the gesture detector, unique per tile type.
   Key get gestureKey;
 
   /// The builder used to render the tile content.
@@ -107,10 +89,7 @@ abstract class EventTile extends StatelessWidget {
       ),
     );
 
-    // Only build the resize handle scaffolding when resizing is actually
-    // enabled. It carries a mouse region, a selection listener and a size read
-    // per tile, so skipping it for read-only calendars avoids that per-tile
-    // cost entirely.
+    // Skip the resize handle's mouse region, listener and size read when resizing is off.
     final interaction = context.interaction;
     final showResizeHandles = resizeAxis != null && interaction.allowResizing;
 

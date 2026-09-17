@@ -14,16 +14,9 @@ import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-/// A widget that displays events in a schedule/list format.
+/// Displays events as a vertical list.
 ///
-/// The [ScheduleBody] is the main widget for displaying calendar events in a
-/// vertical list format, similar to a traditional agenda or schedule view.
-/// It supports both continuous scrolling and paginated navigation.
-///
-/// The widget automatically detects the type of [ScheduleViewController] and
-/// renders either:
-/// - [ContinuousScheduleViewController]: Single scrollable list of all events
-/// - [PaginatedScheduleViewController]: Paginated view with discrete pages
+/// One list for a [ContinuousScheduleViewController], one list per page for a [PaginatedScheduleViewController].
 ///
 /// {@category Views}
 class ScheduleBody extends StatelessWidget {
@@ -63,14 +56,9 @@ class ScheduleBody extends StatelessWidget {
   }
 }
 
-/// A paginated schedule widget that displays events across multiple pages.
+/// A [PageView] of [SchedulePositionList]s for a [PaginatedScheduleViewController].
 ///
-/// This widget is used when the [ScheduleViewController] is a
-/// [PaginatedScheduleViewController]. It creates a [PageView] where each page
-/// contains a [SchedulePositionList] for a specific date range.
-///
-/// The pagination allows users to swipe between different time periods
-/// (e.g., weeks, months) in the schedule view.
+/// Each page shows the date range its index maps to.
 ///
 /// {@category Views}
 class PaginatedSchedule extends StatefulWidget {
@@ -116,18 +104,9 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
   }
 }
 
-/// A scrollable list widget that displays schedule items with position tracking.
+/// A scrollable list of the schedule items in [range], tracking the position of every item.
 ///
-/// This widget creates a scrollable list of schedule items (events, month headers,
-/// empty days) and tracks their positions for visibility and navigation purposes.
-/// It's used both in continuous schedule views and as individual pages in
-/// paginated schedule views.
-///
-/// The widget automatically generates and maintains a map of items based on the
-/// provided date range and events, handling different item types:
-/// - [MonthItem]: Month header separators
-/// - [EventItem]: Individual event entries
-/// - [EmptyItem]: Placeholder for days with no events (configurable)
+/// Items are [MonthItem] headers, [EventItem] rows and, per [ScheduleBodyConfiguration.emptyDay], [EmptyItem] rows.
 ///
 /// {@category Views}
 class SchedulePositionList extends StatefulWidget {
@@ -167,11 +146,6 @@ class SchedulePositionList extends StatefulWidget {
   State<SchedulePositionList> createState() => _SchedulePositionListState();
 }
 
-/// The state implementation for [SchedulePositionList].
-///
-/// This class manages the complex logic of generating, organizing, and tracking
-/// schedule items. It handles event changes, position updates, and maintains
-/// the mapping between dates and schedule items.
 class _SchedulePositionListState extends State<SchedulePositionList> {
   // Convenience getters for accessing widget properties
   ScheduleViewController get viewController => widget.viewController;
@@ -207,36 +181,31 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     super.dispose();
   }
 
-  /// Sets up all necessary components for the schedule list.
   void _setup() {
     _setupViewController();
     _generateMap();
     _addListeners();
   }
 
-  /// Adds event listeners for tracking changes and position updates.
   void _addListeners() {
     eventsController.addListener(_updateMap);
     _itemPositionsListener.itemPositions.addListener(_positionListener);
   }
 
-  /// Removes all event listeners to prevent memory leaks.
   void _removeListeners(EventsController controller) {
     controller.removeListener(_updateMap);
     _itemPositionsListener.itemPositions.removeListener(_positionListener);
   }
 
-  /// Configures the view controller with the necessary controllers and state.
   void _setupViewController() {
     viewController.itemScrollController = _itemScrollController;
     viewController.itemPositionsListener = _itemPositionsListener;
     viewController.currentPage = widget.currentPage;
   }
 
-  /// Updates the item mapping when events change.
   void _updateMap() => setState(_generateMap);
 
-  /// Generates the complete mapping of schedule items for the current date range.
+  /// Refills the view controller with the items for [SchedulePositionList.range].
   void _generateMap() {
     final dates = widget.range.dates();
     viewController.clear();
@@ -284,7 +253,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     }
   }
 
-  /// Adds a month header item if needed for the given date.
+  /// Adds a [MonthItem] for [date] unless the previous item is in the same month.
   void _addMonthItem(FloatingDateTime date) {
     final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
     if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
@@ -292,7 +261,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     }
   }
 
-  /// Handles position changes in the scrollable list.
+  /// Publishes the visible date range and the visible events from the item positions.
   void _positionListener() {
     final itemPositions = _itemPositionsListener.itemPositions.value;
     if (itemPositions.isNotEmpty) {
@@ -316,10 +285,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
         return eventsController.byId(eventId);
       });
 
-      // Only publish when the set actually changed. A ValueNotifier compares
-      // sets by identity, so assigning a fresh set every scroll frame would
-      // notify listeners on every frame even when the visible events are the
-      // same, causing needless rebuilds during a scroll or page change.
+      // A ValueNotifier compares sets by identity, so assign only when the contents changed.
       final visibleEvents = events.nonNulls.toSet();
       if (!const SetEquality<KalenderEvent>().equals(viewController.visibleEvents.value, visibleEvents)) {
         viewController.visibleEvents.value = visibleEvents;

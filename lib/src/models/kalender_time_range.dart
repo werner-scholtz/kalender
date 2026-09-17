@@ -59,24 +59,10 @@ final class KalenderTimeRange {
     return Duration(hours: end.hour - start.hour, minutes: (end.minute - start.minute) + 1);
   }
 
-  /// Generates a list of [KalenderTimeRange] segments from the current [KalenderTimeRange].
+  /// Splits this range into consecutive [KalenderTimeRange]s of [segmentLength] minutes.
   ///
-  /// The list of [KalenderTimeRange] is generated based on the provided [segmentLength] in minutes.
-  ///
-  /// The last segment might not be of the same length as [segmentLength].
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = KalenderTimeRange(start: KalenderTime(hour: 10, minute: 0), end: KalenderTime(hour: 11, minute: 30));
-  /// final segments = range.splitIntoSegments(30);
-  /// print(segments);
-  /// ```
-  /// Output:
-  /// ```
-  /// [10:00 - 10:29, 10:30 - 10:59, 11:00 - 11:29, 11:30 - 11:30]
-  /// ```
-  ///
-  /// The segments are inclusive of the start and end times.
+  /// Each segment's [end] is inclusive, so a 30 minute segment runs 10:00 to 10:29. The last segment is shorter when
+  /// [segmentLength] does not divide the range evenly.
   List<KalenderTimeRange> splitIntoSegments(int segmentLength) {
     final segments = <KalenderTimeRange>[];
     final rangeStartMinutes = start.hour * 60 + start.minute;

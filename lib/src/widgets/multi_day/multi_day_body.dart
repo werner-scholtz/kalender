@@ -19,16 +19,10 @@ import 'package:linked_pageview/linked_pageview.dart';
 //  this should remove quite a but of complexity however it does mean that the timeline will scroll with the page view,
 //  which is not ideal but also not a deal breaker, if this is a feature that is requested a lot adding a pinned timeline can be re-implemented at that point.
 
-/// This widget is used to display a multi-day body.
+/// The scrollable body of a multi-day view.
 ///
-/// The multi-day body has two big parts to it:
-/// 1. The content:
-///   - Static content such as [HourLines] and [TimeLine].
-///   - Dynamic content such as the [PageView] which displays:
-///     [DaySeparator], [DayDraggable], [MultiDayEventsRow] and the [TimeIndicator]
-///
-/// 2. The [VerticalDragTarget]
-///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
+/// Holds the [TimeLine], [HourLines], a [PageView] of day columns and a [VerticalDragTarget] that handles the
+/// rescheduling and resizing of events.
 ///
 /// {@category Views}
 class MultiDayBody extends StatelessWidget {

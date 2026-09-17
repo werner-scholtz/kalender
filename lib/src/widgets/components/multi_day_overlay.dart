@@ -303,7 +303,7 @@ class MultiDayOverlay extends StatelessWidget {
   /// The portal controller that controls the overlay for this widget.
   final OverlayPortalController portalController;
 
-  /// The function that returns the [RenderBox] MultiDayEventLayoutWidget.
+  /// The function that returns the [RenderBox] of the multi-day events widget.
   final RenderBoxCallback getMultiDayEventLayoutRenderBox;
 
   /// The function that returns the [RenderBox] for the overlay portal.
@@ -360,13 +360,8 @@ class MultiDayOverlay extends StatelessWidget {
   /// Key applied to the [IconButton] when the date is today.
   static const todayKey = ValueKey('MultiDayOverlay.today');
 
-  /// Calculates where the overlay card would ideally sit, and how wide it is.
-  ///
-  /// The anchor lines the card's event list up with the day cell's event area,
-  /// putting the header above it. The card is taller than the cell it is
-  /// anchored to, because it lists every event for the day including the hidden
-  /// ones, so [_MultiDayOverlayLayoutDelegate] clamps the anchor to the
-  /// viewport once the card has been measured.
+  /// The ideal top and horizontal center of the overlay card, and its width. The top puts the card's event list
+  /// over the day cell's event area, and [_MultiDayOverlayLayoutDelegate] clamps it to the viewport after measuring.
   (double anchorTop, double anchorCenterX, double width) _calculateAnchor(
     BoxConstraints constraints,
     MultiDayOverlayStyle style,
@@ -391,11 +386,7 @@ class MultiDayOverlay extends StatelessWidget {
 
   static const defaultWidth = 300.0;
 
-  /// Determines the height of the header, never taller than the space available.
-  ///
-  /// The header does not get the whole overlay: [cardMargin] and the spacing
-  /// between the header and the event list come out of it first. Clamping against the
-  /// full height instead lets the column overflow by up to that much.
+  /// The header height, capped at the space left after [cardMargin] and the spacing before the event list.
   double _determineHeaderHeight(BoxConstraints constraints, MultiDayOverlayStyle style, EdgeInsetsGeometry cardMargin) {
     final available = constraints.maxHeight - cardMargin.vertical - _columnSpacing;
     return math.min(style.headerHeight ?? defaultHeaderHeight, math.max(0.0, available));

@@ -15,17 +15,9 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/day_overlay.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
-/// This widget is used to display multi-day events.
+/// Displays the multi-day events from the [EventsController] and rebuilds when they change.
 ///
-/// It fetches the events that need to be rendered from the [EventsController],
-/// the [EventsController] is also listened to in-case events are added or updated.
-///
-/// This widget also takes responsibility for updating the [KalenderController.visibleEvents],
-/// unlike the DayEventsWidget that can clear the visibleEvents it only adds the events that are visible.
-///
-/// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
-///         This is somewhat expensive computationally as it lays out all the events again to determine the position
-///         of the event being modified. See todo for a possible solution.
+/// Adds the events it shows to [KalenderController.visibleEvents] without clearing it.
 class MultiDayEventWidget extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;
@@ -119,9 +111,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final controller = context.kalenderController;
-        // Only publish when the merged set actually adds something. Assigning a
-        // fresh set every build would notify listeners on every build (a
-        // ValueNotifier compares sets by identity), causing needless rebuilds.
+        // A new set notifies listeners even when its contents match, so assign only when something is added.
         final current = controller.visibleEvents.value;
         if (_events.any((event) => !current.contains(event))) {
           controller.visibleEvents.value = {...current, ..._events};

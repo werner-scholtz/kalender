@@ -55,9 +55,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   Timer? _dateCheckTimer;
 
   /// The page number that contains today's date.
-  ///
-  /// This is calculated once during initialization and used as a reference
-  /// point for positioning the time indicator.
   late int todayPageNumber;
 
   /// The index of today's date on the page that contains it, or `-1` when today

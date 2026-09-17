@@ -197,7 +197,6 @@ class _TimeIndicatorState extends State<TimeIndicator> {
           ),
           PositionedDirectional(
             top: top - circleHeight / 2,
-            // This needs to be offset slightly so the center of the circle aligns with the first pixel of the pageview.
             start: -(circleWidth / 2) + _circleCenterOffset,
             width: circleWidth,
             height: circleHeight,
