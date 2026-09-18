@@ -129,12 +129,8 @@ FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
   return switch (transition.newViewConfiguration) {
     MonthViewConfiguration _ => kDefaultToMonthly(old),
     ScheduleViewConfiguration _ => kDefaultToSchedule(old),
-    final MultiDayViewConfiguration config => switch (config.type) {
-      MultiDayViewType.custom when config.numberOfDays == 1 => kDefaultToDaily(old),
-      MultiDayViewType.freeScroll when config.numberOfDays == 1 => kDefaultToDaily(old),
-      MultiDayViewType.singleDay => kDefaultToDaily(old),
-      _ => kDefaultToWeekly(old),
-    },
+    MultiDayViewConfiguration(numberOfDays: 1) => kDefaultToDaily(old),
+    MultiDayViewConfiguration _ => kDefaultToWeekly(old),
     _ => kDefaultToDaily(old),
   };
 }
@@ -145,9 +141,7 @@ FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
 FloatingDateTime kDefaultToMonthly(ViewController old) {
   final oldRange = old.floatingVisibleRange.value!;
   return switch (old.viewConfiguration) {
-    MonthViewConfiguration _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
-    MultiDayViewConfiguration _ => oldRange.start,
-    ScheduleViewConfiguration _ => oldRange.start,
+    MultiDayViewConfiguration _ || ScheduleViewConfiguration _ => oldRange.start,
     _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
   };
 }

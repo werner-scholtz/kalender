@@ -183,9 +183,6 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 }
 
 class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
-  /// The range of dates that the events will be laid out on.
-  late FloatingDateTimeRange _dateTimeRange = widget.floatingRange;
-
   /// The layout frame that contains all the data needed to display the events.
   MultiDayLayoutFrame? _frame;
 
@@ -213,7 +210,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   void initState() {
     super.initState();
     _frame = multiDayLayoutStrategy.generateFrame(
-      visibleRange: _dateTimeRange,
+      visibleRange: widget.floatingRange,
       events: widget.events,
       textDirection: widget.textDirection,
       cache: widget.multiDayCache,
@@ -315,7 +312,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
     if (didUpdate) {
       if (oldWidget.floatingRange != widget.floatingRange) _syncOverlayAfterFrame();
-      _dateTimeRange = widget.floatingRange;
 
       if (shouldUpdateCache) {
         // The events, configuration, and text direction apply to every range,
@@ -329,7 +325,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
       setState(() {
         _frame = multiDayLayoutStrategy.generateFrame(
-          visibleRange: _dateTimeRange,
+          visibleRange: widget.floatingRange,
           events: widget.events,
           textDirection: widget.textDirection,
           cache: widget.multiDayCache,
@@ -354,24 +350,22 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         numberOfRows: maxNumberOfRows,
         tileHeight: widget.configuration.tileHeight,
       ),
-      children: events.map((item) {
-        final event = item;
-        final id = event.id;
-
-        return LayoutId(
-          id: id,
-          key: MultiDayEventTile.tileKey(id),
-          child: Padding(
-            padding: widget.configuration.eventPadding,
-            child: MultiDayEventTile(
-              event: event,
-              tileComponents: context.tileComponents,
-              floatingRange: widget.floatingRange,
-              resizeAxis: Axis.horizontal,
+      children: [
+        for (final event in events)
+          LayoutId(
+            id: event.id,
+            key: MultiDayEventTile.tileKey(event.id),
+            child: Padding(
+              padding: widget.configuration.eventPadding,
+              child: MultiDayEventTile(
+                event: event,
+                tileComponents: context.tileComponents,
+                floatingRange: widget.floatingRange,
+                resizeAxis: Axis.horizontal,
+              ),
             ),
           ),
-        );
-      }).toList(),
+      ],
     );
 
     // The drop target widget is used to show the drop target for the event that is being dragged.

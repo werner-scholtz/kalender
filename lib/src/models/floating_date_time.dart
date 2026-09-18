@@ -145,20 +145,7 @@ final class FloatingDateTime extends DateTime {
     final isWithin = isAfter(range.start) && isBefore(range.end);
     late final isAtStart = isAtSameMomentAs(range.start);
     late final isAtEnd = isAtSameMomentAs(range.end);
-
-    if (includeStart && includeEnd) {
-      // If both are included, the date must be within or at the start or end.
-      return isWithin || isAtStart || isAtEnd;
-    } else if (includeStart) {
-      // If only the start is included, the date must be within or at the start.
-      return isWithin || isAtStart;
-    } else if (includeEnd) {
-      // If only the end is included, the date must be within or at the end.
-      return isWithin || isAtEnd;
-    } else {
-      // If neither are included, the date must be strictly within the range.
-      return isWithin;
-    }
+    return isWithin || (includeStart && isAtStart) || (includeEnd && isAtEnd);
   }
 
   /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
@@ -211,13 +198,6 @@ final class FloatingDateTime extends DateTime {
     final result = super.subtract(duration);
     return FloatingDateTime.fromDateTime(result);
   }
-
-  /// Returns the [Duration] between this and [other].
-  ///
-  /// Because both values are stored as UTC, the result is free from
-  /// DST-related surprises.
-  @override
-  Duration difference(DateTime other) => super.difference(other);
 
   /// Returns a new [FloatingDateTime] with the given fields replaced.
   ///

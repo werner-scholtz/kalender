@@ -233,7 +233,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     if (newStart.isBefore(range.end)) {
       return FloatingDateTimeRange(start: newStart, end: range.end);
     } else if (newStart.isAtSameMomentAs(range.end)) {
-      return FloatingDateTimeRange(start: range.start, end: range.end);
+      return range;
     } else {
       return FloatingDateTimeRange(start: range.end, end: newStart);
     }
@@ -246,7 +246,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     if (newEnd.isBefore(range.start)) {
       return FloatingDateTimeRange(start: newEnd, end: range.start);
     } else if (newEnd.isAtSameMomentAs(range.start)) {
-      return FloatingDateTimeRange(start: range.start, end: range.end);
+      return range;
     } else {
       return FloatingDateTimeRange(start: range.start, end: newEnd);
     }

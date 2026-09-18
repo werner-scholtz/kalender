@@ -66,7 +66,7 @@ class MonthViewConfiguration extends ViewConfiguration {
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
       multiDayRule: multiDayRule ?? this.multiDayRule,
-      displayRange: KalenderDateTimeRange(start: pageIndexCalculator.start, end: pageIndexCalculator.end),
+      displayRange: dateTimeRange,
     );
   }
 

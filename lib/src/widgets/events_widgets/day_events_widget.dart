@@ -133,9 +133,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   @override
   void initState() {
     super.initState();
-    _events = _sort(_queryEvents());
-    _bands = _computeBands(_events);
-    _visibleIndices = _computeVisibleIndices();
+    _setEvents(_sort(_queryEvents()));
     widget.eventsController.addListener(_update);
     widget.scrollController.addListener(_onViewportChanged);
     widget.kalenderController.selectedEvent.addListener(_onViewportChanged);
@@ -165,11 +163,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
     if (didUpdateLocation || didUpdateHeightPerMinute || didUpdateConfiguration) {
       widget.cache.clearAll();
-      setState(() {
-        _events = _sort(_queryEvents());
-        _bands = _computeBands(_events);
-        _visibleIndices = _computeVisibleIndices();
-      });
+      setState(() => _setEvents(_sort(_queryEvents())));
     }
   }
 
@@ -192,16 +186,15 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     );
   }
 
+  void _setEvents(List<KalenderEvent> events) {
+    _events = events;
+    _bands = _computeBands(events);
+    _visibleIndices = _computeVisibleIndices();
+  }
+
   void _update() {
     final sortedEvents = _sort(_queryEvents());
-
-    if (_needsLayout(sortedEvents)) {
-      setState(() {
-        _events = sortedEvents;
-        _bands = _computeBands(sortedEvents);
-        _visibleIndices = _computeVisibleIndices();
-      });
-    }
+    if (_needsLayout(sortedEvents)) setState(() => _setEvents(sortedEvents));
   }
 
   /// Recomputes the visible events as the scroll position (or selection)
@@ -397,26 +390,20 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
     final selectedEvent = widget.controller.selectedEvent.value;
     if (selectedEvent == _selectedEvent) return;
 
-    if (selectedEvent == null) {
+    final visible =
+        selectedEvent != null &&
+        selectedEvent.floatingRange(location: widget.location).overlaps(widget.date.dayRange) &&
+        (widget.configuration.showMultiDayEvents ||
+            !selectedEvent.spansMultipleDays(
+              location: widget.location,
+              defaultRule: widget.viewConfiguration.multiDayRule,
+            ));
+
+    if (visible) {
+      setState(() => _selectedEvent = selectedEvent);
+    } else if (_selectedEvent != null) {
       setState(() => _selectedEvent = null);
-      return;
     }
-
-    if (!selectedEvent.floatingRange(location: widget.location).overlaps(widget.date.dayRange)) {
-      if (_selectedEvent != null) setState(() => _selectedEvent = null);
-      return;
-    }
-
-    if (!widget.configuration.showMultiDayEvents &&
-        selectedEvent.spansMultipleDays(
-          location: widget.location,
-          defaultRule: widget.viewConfiguration.multiDayRule,
-        )) {
-      if (_selectedEvent != null) setState(() => _selectedEvent = null);
-      return;
-    }
-
-    setState(() => _selectedEvent = selectedEvent);
   }
 
   @override

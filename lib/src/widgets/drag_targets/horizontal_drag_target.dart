@@ -48,14 +48,11 @@ class HorizontalDragTarget extends StatefulWidget {
       onReschedule: (event) {
         // If the configuration does not allow single-day events (e.g., multi-day header),
         // reject single-day events. They belong in the body, not the header.
-        if (!configuration.allowSingleDayEvents &&
-            !event.spansMultipleDays(
+        return configuration.allowSingleDayEvents ||
+            event.spansMultipleDays(
               location: controller.viewController?.location,
               defaultRule: controller.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule,
-            )) {
-          return false;
-        }
-        return true;
+            );
       },
       onOther: () => false,
     );
@@ -70,29 +67,23 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
   @override
-  List<FloatingDateTime> get visibleDates => visibleRange.dates();
+  List<FloatingDateTime> get visibleDates => widget.visibleRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
   ViewController get viewController => controller.viewController!;
-  FloatingDateTimeRange get visibleRange => widget.visibleRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
-  double get tileHeight => widget.configuration.tileHeight;
 
   @override
   double dayWidth = 0;
   double pageWidth = 0;
 
-  void _updateDimensions(BoxConstraints constraints) {
-    pageWidth = constraints.maxWidth;
-    dayWidth = pageWidth / visibleDates.length;
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        _updateDimensions(constraints);
+        pageWidth = constraints.maxWidth;
+        dayWidth = pageWidth / visibleDates.length;
         return DragTarget(
           onWillAcceptWithDetails: (details) {
             final correctType = DragTargetUtilities.handleDragDetails(
@@ -112,7 +103,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
             final accepted =
                 callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
                 HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
-            if (!accepted) return accepted;
+            if (!accepted) return false;
 
             return onWillAcceptWithDetails(
               details,
@@ -127,7 +118,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
               onReschedule: (event) {
                 context.feedbackWidgetSizeNotifier.value = Size(
                   min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length),
-                  tileHeight,
+                  widget.configuration.tileHeight,
                 );
 
                 controller.selectEvent(event, internal: true);

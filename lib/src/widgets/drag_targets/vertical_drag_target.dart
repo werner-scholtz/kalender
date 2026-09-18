@@ -264,10 +264,9 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
         ? visibleDates.elementAtOrNull(cursorDateIndex)
         : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);
 
-    final cursorDate = date;
-    if (cursorDate == null) return null;
+    if (date == null) return null;
 
-    final startOfDate = timeOfDayRange.start.toFloatingDateTime(cursorDate);
+    final startOfDate = timeOfDayRange.start.toFloatingDateTime(date);
 
     final durationFromStart = localCursorPosition.dy ~/ heightPerMinute;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();

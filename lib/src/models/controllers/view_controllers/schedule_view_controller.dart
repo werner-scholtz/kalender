@@ -193,7 +193,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   late final PageController pageController;
 
   Future<void> _animateToPage(int pageIndex, {Duration? duration, Curve? curve}) async {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     return pageController.animateToPage(
       pageIndex,
       duration: duration ?? const Duration(milliseconds: 300),
@@ -243,7 +243,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     return await pageController.nextPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
@@ -252,7 +252,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     return await pageController.previousPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
@@ -271,9 +271,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
 
   @override
   void jumpToPage(int page) {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     pageController.jumpToPage(page);
   }
-
-  bool get _hasClients => pageController.hasClients;
 }

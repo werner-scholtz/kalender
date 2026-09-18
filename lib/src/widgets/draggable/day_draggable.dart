@@ -31,59 +31,57 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      child: Row(
-        children: [
-          for (final date in widget.visibleRange.dates())
-            Expanded(
-              child: Builder(
-                builder: (context) {
-                  var position = Offset.zero;
+    return Row(
+      children: [
+        for (final date in widget.visibleRange.dates())
+          Expanded(
+            child: Builder(
+              builder: (context) {
+                var position = Offset.zero;
 
-                  return Listener(
-                    onPointerDown: (event) => position = event.localPosition,
-                    onPointerSignal: (event) => position = event.localPosition,
-                    onPointerMove: (event) => position = event.localPosition,
-                    child: GestureDetector(
-                      onTap: callbacks?.hasOnTapped == true ? () => _onTap(context, date, position) : null,
-                      onSecondaryTap: callbacks?.hasOnSecondaryTapped == true
-                          ? () => _onSecondaryTap(context, date, position)
-                          : null,
-                      onLongPress: callbacks?.hasOnLongPressed == true
-                          ? () => _onLongPress(context, date, position)
-                          : null,
-                      onSecondaryLongPress: callbacks?.hasOnSecondaryLongPressed == true
-                          ? () => _onSecondaryLongPress(context, date, position)
-                          : null,
-                      child: context.interaction.allowEventCreation
-                          ? switch (context.interaction.createEventGesture) {
-                              EventInteractionGesture.tap => Draggable(
-                                dragAnchorStrategy: pointerDragAnchorStrategy,
-                                onDragStarted: () => createNewEvent(context, date, position),
-                                onDraggableCanceled: onDragFinished,
-                                onDragEnd: onDragFinished,
-                                data: Create(controllerId: controller.id),
-                                feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                                child: Container(color: Colors.transparent, height: widget.pageHeight),
-                              ),
-                              EventInteractionGesture.longPress => LongPressDraggable(
-                                dragAnchorStrategy: pointerDragAnchorStrategy,
-                                onDragStarted: () => createNewEvent(context, date, position),
-                                onDraggableCanceled: onDragFinished,
-                                onDragEnd: onDragFinished,
-                                data: Create(controllerId: controller.id),
-                                feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                                child: Container(color: Colors.transparent, height: widget.pageHeight),
-                              ),
-                            }
-                          : null,
-                    ),
-                  );
-                },
-              ),
+                return Listener(
+                  onPointerDown: (event) => position = event.localPosition,
+                  onPointerSignal: (event) => position = event.localPosition,
+                  onPointerMove: (event) => position = event.localPosition,
+                  child: GestureDetector(
+                    onTap: callbacks?.hasOnTapped == true ? () => _onTap(context, date, position) : null,
+                    onSecondaryTap: callbacks?.hasOnSecondaryTapped == true
+                        ? () => _onSecondaryTap(context, date, position)
+                        : null,
+                    onLongPress: callbacks?.hasOnLongPressed == true
+                        ? () => _onLongPress(context, date, position)
+                        : null,
+                    onSecondaryLongPress: callbacks?.hasOnSecondaryLongPressed == true
+                        ? () => _onSecondaryLongPress(context, date, position)
+                        : null,
+                    child: context.interaction.allowEventCreation
+                        ? switch (context.interaction.createEventGesture) {
+                            EventInteractionGesture.tap => Draggable(
+                              dragAnchorStrategy: pointerDragAnchorStrategy,
+                              onDragStarted: () => createNewEvent(context, date, position),
+                              onDraggableCanceled: onDragFinished,
+                              onDragEnd: onDragFinished,
+                              data: Create(controllerId: controller.id),
+                              feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                              child: Container(color: Colors.transparent, height: widget.pageHeight),
+                            ),
+                            EventInteractionGesture.longPress => LongPressDraggable(
+                              dragAnchorStrategy: pointerDragAnchorStrategy,
+                              onDragStarted: () => createNewEvent(context, date, position),
+                              onDraggableCanceled: onDragFinished,
+                              onDragEnd: onDragFinished,
+                              data: Create(controllerId: controller.id),
+                              feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                              child: Container(color: Colors.transparent, height: widget.pageHeight),
+                            ),
+                          }
+                        : null,
+                  ),
+                );
+              },
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
@@ -171,7 +169,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
   FloatingDateTime _calculateTimeAndDate(FloatingDateTime date, Offset localPosition) {
     final durationFromStart = localPosition.dy ~/ context.heightPerMinute;
-    final durationFromTop = Duration(minutes: durationFromStart.round());
+    final durationFromTop = Duration(minutes: durationFromStart);
 
     final startOfDay = widget.timeOfDayRange.start.toFloatingDateTime(date);
 

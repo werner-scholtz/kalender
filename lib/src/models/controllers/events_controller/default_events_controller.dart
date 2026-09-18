@@ -154,7 +154,6 @@ class DefaultEventsController extends EventsController {
     final floatingStart = event.floatingStart(location: location);
     final floatingEnd = event.floatingEnd(location: location);
 
-    return floatingStart == floatingEnd &&
-        floatingStart == FloatingDateTime(floatingStart.year, floatingStart.month, floatingStart.day);
+    return floatingStart == floatingEnd && floatingStart.isStartOfDay;
   }
 }

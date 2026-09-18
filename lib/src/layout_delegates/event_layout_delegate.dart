@@ -564,19 +564,18 @@ class EventLayoutData {
 ///
 /// {@category Layout}
 class HorizontalGroupData {
-  final List<VerticalLayoutData> verticalLayoutData = [];
+  final List<VerticalLayoutData> verticalLayoutData;
 
   /// The top of the group of [VerticalLayoutData].
-  double top = double.infinity;
+  double top;
 
   /// The bottom of the group of [VerticalLayoutData].
-  double bottom = double.negativeInfinity;
+  double bottom;
 
-  HorizontalGroupData(VerticalLayoutData initialData) {
-    verticalLayoutData.add(initialData);
-    top = initialData.top;
-    bottom = initialData.bottom;
-  }
+  HorizontalGroupData(VerticalLayoutData initialData)
+    : verticalLayoutData = [initialData],
+      top = initialData.top,
+      bottom = initialData.bottom;
 
   /// Adds the [layoutData] to the [HorizontalGroupData].
   void add(VerticalLayoutData layoutData) {

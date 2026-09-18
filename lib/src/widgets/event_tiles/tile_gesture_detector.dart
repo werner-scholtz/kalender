@@ -6,9 +6,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
-
-/// The function that is called when the event is tapped.
-typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
+import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 /// A gesture detector that wraps the event tile to handle taps.
 class TileGestureDetector extends StatelessWidget {

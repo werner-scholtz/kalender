@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/month_week_number_layout_delegate.dart';
@@ -170,9 +172,10 @@ class MonthWeek extends StatelessWidget {
                     // Subtract 1 to account for the extra widget at the bottom.
                     // Clamp to 0 so a very small row height never produces a negative value,
                     // which would cause spurious overflow buttons.
-                    final maxNumberOfVerticalEvents = ((constraints.maxHeight / configuration.tileHeight).floor() - 1)
-                        .clamp(0, double.maxFinite)
-                        .toInt();
+                    final maxNumberOfVerticalEvents = max(
+                      0,
+                      (constraints.maxHeight / configuration.tileHeight).floor() - 1,
+                    );
 
                     return MultiDayEventWidget(
                       eventsController: context.eventsController,
