@@ -17,7 +17,7 @@ flutter drive \
   -d linux
 ```
 
-## Knobs and output
+## Options and output
 
 - `KALENDER_PERF_RUNS` (default 5) sets how many times each scenario runs. Fewer
   runs trade precision for speed:

@@ -13,19 +13,15 @@ dart fix --dry-run              # preview
 dart fix --code=undefined_class,undefined_function,undefined_identifier,undefined_method,undefined_getter,undefined_named_parameter,undefined_extension_getter,missing_required_argument,invalid_override --apply
 ```
 
-Those are the diagnostics kalender's own fixes attach to. Limit the run to them.
-A project mid-upgrade does not compile, and `dart fix --apply` on its own also
-applies lint fixes such as `unused_import` and `unnecessary_null_checks`, which
-are computed against code the analyzer cannot fully resolve and can delete code
-you still need.
+Those are the diagnostics kalender's own fixes attach to. Limit the run to these
+codes. Without `--code`, `dart fix` also applies lint fixes such as `unused_import`
+to code that does not compile yet, and can delete code you still need.
 
 Fixes cover changes made in 0.28.0 and later, plus `CalendarEvent.copyWith` from
 0.26.0. Upgrading from anything earlier is manual. Inside the covered range it
 is safe to run across several versions at once.
 
-0.27.0 is not covered. Its one change is that every builder takes a
-`BuildContext`, and a builder is a function you pass, whose parameter list no
-fix can rewrite.
+0.27.0 is not covered.
 
 What it does not do:
 
@@ -45,15 +41,15 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.30.x → v0.31.0](#v030x--v0310) | The two layout date types are renamed to `FloatingDateTime` and `FloatingDateTimeRange`, and the members carrying them are renamed to match. The body of a `MultiDayLayoutStrategy.generateFrame` override and a `super.internalVisibleRange` constructor parameter need a manual edit. The deprecated `calendarLocale` is removed. `initialDateTime` only applies when the calendar is first built. The five value types are `final` classes. |
-| [v0.29.x → v0.30.0](#v029x--v0300) | The `Calendar*` types are renamed to `Kalender*`, and the controller members and `calendarLocale` follow. `CalendarView` and `CalendarViewState` are removed. `KalenderDateTimeRange` and `KalenderTime` replace Material's `DateTimeRange` and `TimeOfDay`, and `InternalDateTimeRange` no longer extends `DateTimeRange`. `TimeOfDayRange` and `TimeOfDayStringBuilder` become `KalenderTimeRange` and `KalenderTimeStringBuilder`, and `TimeOfDayExtension` is removed. `CalendarEvent` and `PageIndexCalculator` take `start` and `end`. The schedule view reports ranges in the calendar's location. |
-| [v0.28.x → v0.29.0](#v028x--v0290) | `CalendarView` is renamed to `KalenderView`, with the old name kept as a typedef. `locale` takes a `Locale`. `GutterStyles` is removed and every style resolves from `KalenderTheme`. The gutters share a measured width instead, and the month week number column has a fixed one. |
-| [v0.27.x → v0.28.0](#v027x--v0280) | The free scroll band stops drawing a day past its display range. A schedule drop keeps the event's time of day. `FreeScrollFunctions` is removed. The tap callbacks drop their `RenderBox`. The `default*` constants take a `k` prefix. `WeekNumberStyle.visualDensity` becomes `buttonSize`. Two enums and typedefs are renamed. |
-| [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext` and resolves its own styles. `TimeOfDayRange.isAllDay` is removed. |
-| [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. The three strategy fields become classes. `CalendarEvent.copyWith` becomes `copyWithData`. |
+| [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
+| [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
+| [v0.28.x → v0.29.0](#v028x--v0290) | `locale` takes a `Locale` and `GutterStyles` is removed. |
+| [v0.27.x → v0.28.0](#v027x--v0280) | Two behavior changes, the `k` prefix on the `default*` constants, and several renames and removals. |
+| [v0.26.x → v0.27.0](#v026x--v0270) | Every builder takes a `BuildContext`. |
+| [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields are removed and `copyWith` becomes `copyWithData`. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
-| [v0.22.x → v0.23.0](#v022x--v0230) | String builders move off the style classes. Nothing stops compiling, but an unchanged calendar renders differently. |
+| [v0.22.x → v0.23.0](#v022x--v0230) | String builders move off the style classes. |
 | v0.19.x → v0.22.x | No changes needed. |
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
@@ -266,18 +262,13 @@ The `CalendarLocale` extension on `BuildContext` is `KalenderLocale` now.
 
 `ViewController`'s changes type as well as name. `KalenderController.visibleDateTimeRange`
 is a `KalenderDateTimeRange` and `ViewController`'s is an `InternalDateTimeRange`, so
-check which one a call site holds. A member carrying the internal layout space says
-`internal` in its name now. 0.31.0 renames these to `floating`, see
-[v0.30.x → v0.31.0](#v030x--v0310).
+check which one a call site holds.
 
-`MultiDayRule.calendarDays` is unchanged. A calendar day is a unit of time, not a
-reference to the type.
+`MultiDayRule.calendarDays` is unchanged.
 
 ### `context.calendarLocale` is `context.kalenderLocale`
 
-The one rename in this release `dart fix` cannot apply. The old name is a deprecated
-getter that forwards to the new one, so the analyzer points at every call site. It is
-removed in 0.31.0.
+`dart fix` does not apply this one. Removed in 0.31.0.
 
 ```dart
 // Before
@@ -289,13 +280,9 @@ final locale = context.kalenderLocale;
 
 ### `CalendarView` and `CalendarViewState` are removed
 
-Deprecated in 0.29.0 as the one-release window requires. `dart fix` has renamed
-them to `KalenderView` and `KalenderViewState` since 0.29.1, and still does.
+`dart fix` renames them to `KalenderView` and `KalenderViewState`.
 
 ### `KalenderDateTimeRange` replaces Material's `DateTimeRange`
-
-Kalender owns this type now, so a call site reads the same whether the app uses
-Material or `material_ui`.
 
 `dart fix` cannot do this one. A project-wide replace of `DateTimeRange(` with
 `KalenderDateTimeRange(` covers it, plus the annotations.
@@ -328,8 +315,8 @@ final range = picked?.toKalenderDateTimeRange();
 
 ### `InternalDateTimeRange` is its own class
 
-It used to extend `DateTimeRange`, which is how it reached Material. It now carries
-`start`, `end`, `duration`, `==` and `hashCode` itself, and behaves as before.
+It now carries `start`, `end`, `duration`, `==` and `hashCode` itself, and behaves
+as before.
 
 Two of its members change type. `forLocation` returns a `KalenderDateTimeRange`,
 and `fromDateTimeRange` takes one. `overlaps` takes an `InternalDateTimeRange`,
@@ -348,8 +335,7 @@ MultiDayViewConfiguration.week(displayRange: someInternalRange.forLocation(locat
 
 ### `KalenderTime` replaces Material's `TimeOfDay`
 
-The same reasoning as `DateTimeRange`, and the same substitution. `dart fix` cannot
-do this one either.
+`dart fix` cannot do this one.
 
 ```dart
 // Before
@@ -362,10 +348,8 @@ MultiDayViewConfiguration.week(initialTimeOfDay: const KalenderTime(hour: 7, min
 It carries `hour`, `minute`, `fromDateTime`, `now`, `replacing`, `hoursPerDay`,
 `minutesPerHour`, `isBefore`, `isAfter`, `isAtSameTimeAs` and `compareTo`.
 
-Two members are deliberately absent. `format(BuildContext)` reached
-`MaterialLocalizations`, and `DateTimeExtensions.timeLocalized` formats a time for a
-locale instead. The am/pm helpers `period`, `hourOfPeriod` and `periodOffset` are
-gone with the `DayPeriod` enum, so a page that needs them compares `hour` against 12.
+`format` is replaced by `DateTimeExtensions.timeLocalized`. `period`, `hourOfPeriod`
+and `periodOffset` are gone. Compare `hour` against 12.
 
 Calls into Material's own API still take Material's type, so convert at that
 boundary. `package:kalender/material.dart` carries the conversions both ways, for
@@ -377,9 +361,6 @@ import 'package:kalender/material.dart';
 final picked = await showTimePicker(context: context, initialTime: time.toTimeOfDay());
 final time = picked?.toKalenderTime();
 ```
-
-It is a separate entry point, so no value type in `package:kalender/kalender.dart`
-names a Material class. Theming still does, through `KalenderThemeData`.
 
 ### `TimeOfDayRange` is renamed to `KalenderTimeRange`
 
@@ -417,9 +398,6 @@ final dateTime = timeOfDay.toKalenderTime().toDateTime(date);
 ```
 
 ### `CalendarEvent` takes `start` and `end`
-
-The event always stored two UTC instants. The constructor took a range and pulled
-it apart immediately, so it takes the two values now.
 
 `dart fix` applies this at every call site, deriving the two arguments from the
 range you were passing.
@@ -473,8 +451,7 @@ holds a whole range.
 
 ### `PageIndexCalculator` takes `start` and `end`
 
-Every subclass unpacked the range into two values and converted each separately, so
-it holds the two values now. `dart fix` applies this at every call site.
+`dart fix` applies this at every call site.
 
 ```dart
 // Before
@@ -497,11 +474,9 @@ number of events.
 
 ### The schedule view converts what it reports
 
-`onPageChanged`, `monthItemBuilder` and `emptyItemBuilder` handed back unconverted
-internal values, while the multi-day and month views converted theirs. They now
-report ranges in the calendar's location like the other two. Code reading those
-ranges against a `location` sees values shifted by that location's offset from
-what it saw before.
+`onPageChanged`, `monthItemBuilder` and `emptyItemBuilder` now report ranges in the
+calendar's location. Code reading those ranges against a `location` sees values
+shifted by that location's offset from what it saw before.
 
 ## v0.28.x → v0.29.0
 
@@ -522,8 +497,7 @@ KalenderView(...)
 
 ### `locale` takes a `Locale`
 
-`KalenderView.locale` was a `dynamic`, so a mistyped string compiled and failed at
-run time. It is a `Locale` now, along with `KalenderScope.localeOf`,
+`KalenderView.locale` is a `Locale` now, along with `KalenderScope.localeOf`,
 `BuildContext.calendarLocale` and the four localized methods on
 `DateTimeExtensions`.
 
@@ -563,10 +537,7 @@ final style = GutterStyles.timelineStyleOf(context);
 final style = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
 ```
 
-The calendar measures each gutter once and both halves read that number, so a
-`KalenderTheme` scoped inside the header or the body now restyles the gutter
-without resizing it. Setting a larger font in a scoped theme no longer widens the
-column. Set the width directly instead:
+A scoped `KalenderTheme` no longer resizes a gutter. Set the width:
 
 ```dart
 CalendarComponents(
@@ -585,9 +556,7 @@ CalendarComponents(
 
 ### The month week number column has a fixed width
 
-It sized itself to the widest label it was drawing, so the column changed width
-as you paged between months and the day columns shifted with it. It is now
-`kDefaultWeekNumberWidth`, 56, matching `kDefaultScheduleLeadingWidth`.
+It is `kDefaultWeekNumberWidth`, 56.
 
 A custom `weekNumberBuilder` wider than that needs `weekNumberWidth` set, where
 it was measured for you before. Setting `WeekNumberStyle.buttonSize` still widens
@@ -597,20 +566,14 @@ the column, since `defaultWeekNumberWidth` reads it.
 
 ### The free scroll band stops one day earlier
 
-Nothing stops compiling, and a free scroll calendar loses its last column. The
-band rounded the end of the display range up to the next midnight whatever it
-was, so a range already ending at midnight gained a day it should not have had.
-That covers the default range and any range written the usual way. A range
-ending part way through a day is unchanged.
-
-Extend the range by a day if you were relying on the extra column.
+Nothing stops compiling. A free scroll calendar whose range ends at midnight loses
+its last column. The default range ends at midnight. Extend the range by a day if
+you relied on it.
 
 ### A schedule drop keeps the event's time of day
 
-Nothing stops compiling. A drop in the schedule view took the time of day from
-the target day, so a 09:00 meeting dragged to another day landed at midnight. It
-now lands at 09:00 on the target day, which is what the multi-day header already
-did.
+Nothing stops compiling. An event dropped in the schedule view keeps its time of
+day on the target day.
 
 The event handed to `onEventChanged` changes accordingly. Reset the time
 yourself if you were relying on the old result:
@@ -640,9 +603,8 @@ if (config.pageIndexCalculator is DayIndexCalculator) { ... }
 
 ### `CreateEventGesture` is now `EventInteractionGesture`
 
-The enum decides how an event is modified as well as created, which the old name
-covered only half of. The `createEventGesture` and `modifyEventGesture` fields on
-`CalendarInteraction` keep their names, so only the type changes.
+The `createEventGesture` and `modifyEventGesture` fields on `CalendarInteraction`
+keep their names, so only the type changes.
 
 ```dart
 // Before
@@ -661,10 +623,6 @@ CalendarInteraction(
 `dart fix` applies this, to the type and to each value.
 
 ### The tap callbacks drop their `RenderBox`
-
-`TapDetail.renderBox` carries the same object the parameter did, so it was a
-duplicate on `OnEventTappedWithDetail` and the only route to the box on
-`OnEventTapped`. The two are now a short form and a full form:
 
 ```dart
 // Before
@@ -709,9 +667,8 @@ CalendarCallbacks(
 
 ### `OnTappedWithDetails` and `OnLongPressedWithDetails` lose the plural
 
-Each carries a single `TapDetail`, so the name now matches the type. Rename the
-typedef where you name it. The fields that use it already had the singular name
-and do not change.
+Rename the typedef where you name it. The fields that use it already had the
+singular name and do not change.
 
 ```dart
 // Before
@@ -758,14 +715,11 @@ MultiDayViewConfiguration.week(initialHeightPerMinute: kDefaultHeightPerMinute);
 ```
 
 The `static const default*` members on `CalendarInteraction` and
-`CalendarSnapping` are unchanged. The prefix marks a top-level constant, and a
-class already namespaces its own.
+`CalendarSnapping` are unchanged.
 
 ### `WeekNumberStyle.visualDensity` becomes `buttonSize`
 
-The field's only effect was the size of the week number button, which
-`MonthDayHeaderStyle.buttonSize` already expressed as a `Size`. Give the size you
-want instead of a density:
+Give the size you want instead of a density:
 
 ```dart
 // Before

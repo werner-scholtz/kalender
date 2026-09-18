@@ -9,7 +9,7 @@ Nothing here carries a date. Work is sequenced by release, and a release ships w
 
 ## What 1.0.0 means
 
-kalender is pre-1.0, so a breaking change can land in a minor version. A caret range keeps you on the minor version you chose, which is where fixes land, and every minor bump has an entry in the [migration guide](MIGRATION.md).
+kalender is pre-1.0, so a breaking change can land in a minor version.
 
 After 1.0.0 a breaking change needs a major version, so the API has to be one worth keeping first. That cuts two ways. Anything that would **change** existing API has to happen before the freeze, or it costs a 2.0.0. Anything that **adds** API wants to happen before it too, because a feature designed under a freeze has to live with whatever shape it was given on the first attempt.
 
@@ -19,217 +19,59 @@ So "Before 1.0.0" holds both: the breaking work, and the features that introduce
 
 ### 0.24.0, done
 
-All five items planned for this release shipped. See [CHANGELOG.md](CHANGELOG.md) for the full list, which is longer, since the release also absorbed work that was never planned here.
-
-- **Split the readme.** Reference material moved to `doc/` and the readme kept the overview.
-- **Remove the deprecated string builders,** along with `MonthDayHeaderStyle.textStyle`.
-- **Stop re-exporting the whole `timezone` package.** `Location` and `TZDateTime` stayed.
-- **Widen value equality on `KalenderInteraction` and `HorizontalConfiguration`.** Four missing fields, each one a change that never reached the calendar. This grew too. `KalenderSnapping` was dropping its snap strategy, and `ScheduleViewConfiguration` and `PageIndexCalculator` had no `==` at all, so every rebuild recreated the view controller and its layout caches.
-- **Fix what counts as a multi-day event.** This grew past the planned fix. Rather than correcting `isMultiDayEvent` in place, the decision became a `MultiDayRule` on the view configuration, with a per-event override, and the old getter is deprecated.
-
-Five further breaking changes landed that were not planned here: `throttleMilliseconds` was removed in favour of combining drag updates per frame, `DragTargetUtilities` became a `State`-only mixin, three long-deprecated members were removed, `ScheduleTileComponents` dropped three parameters that did nothing, and its two row builders moved to `ScheduleComponents`. Ten breaking changes in one release against the four this section planned is worth noting for the next one, since batching them was the reason the section existed.
+See [CHANGELOG.md](CHANGELOG.md).
 
 ### 0.25.0, theming shape, done
 
-The theme extension arrived in 0.21.0 and the string builders moved out of the style classes in 0.23.0. What is left is where kalender still differs from Flutter's own component themes.
+`KalenderTheme` became an `InheritedTheme`, and Material stayed the default look and a requirement.
 
-- **`KalenderTheme` becomes an `InheritedWidget`.** Today it is a static lookup, so a theme cannot be scoped to part of the widget tree. Flutter's component themes can be, and the current name implies this one can too.
-- **Style classes become `Diagnosticable`,** so resolved values appear in Flutter devtools the way Material's theme classes do.
-- **Revisit how deeply the style containers nest.** Reaching a single style means `KalenderComponents` to `MultiDayComponentStyles` to `MultiDayHeaderComponentStyles` to `dayHeaderStyle`. Flutter puts the property on the widget instead. The containers on that path are also the only style classes with no `==`, which does not matter while nothing compares them and would start mattering if this work does.
-- **Decide how much of Material kalender should require. Settled: Material stays the default look, and the calendar keeps requiring it for now.** Layout and interaction do not depend on it, so a framework neutral core remains reachable, but nothing is split in this release.
-
-  What decided it: `ThemeExtension` is defined in Flutter's Material library and has no equivalent in `widgets.dart`, so as long as the theme rides on it the package requires Material by construction. The widgets are not the obstacle. Six Material widgets are used anywhere in `lib/` (`IconButton`, `Material`, `ListTile`, `Card`, `Icons` and `InkWell`) and each has a plain replacement.
-
-  What this release did instead is shrink where Material is read, so a later split is a move rather than a rewrite. `KalenderTheme` is now an `InheritedTheme`, which lives in `widgets.dart`, so the transport is already framework neutral. Flutter's `Theme.of` is now read directly in six files, down from eight: three widgets were falling back to it for a value `KalenderThemeData.defaults` had already resolved, so they read the theme twice and could disagree with it. Of the six that remain, one is the theme file itself, one guards a public function that accepts any style, one deliberately inherits the app's `CardThemeData`, and three cover values the theme has no field for. Splitting later means moving `defaults` and the extension lookup into a Material layer and leaving the rest alone.
-
-  **Three public fields keep Material in the API regardless**, and are worth revisiting before 1.0.0 since changing them is breaking: `MultiDayOverlayStyle.cardTheme` is a `CardThemeData`, `MultiDayOverlayStyle.closeButtonStyle` is a `ButtonStyle`, and `WeekNumberStyle.visualDensity` is a `VisualDensity`. A neutral core cannot name any of those types.
-
-One unrelated removal rides along, because 0.24.0 promised it here. **`KalenderEvent.isMultiDayEvent` is removed,** as its deprecation message says. `spansMultipleDays` replaces it.
+**Three public fields kept Material in the API**: `MultiDayOverlayStyle.cardTheme` is a `CardThemeData`, `MultiDayOverlayStyle.closeButtonStyle` is a `ButtonStyle`, and `WeekNumberStyle.visualDensity` was a `VisualDensity`. Changing any of them is breaking. 0.28.0 replaced `visualDensity` with `Size? buttonSize`. The other two stay, see [Decided against](#decided-against).
 
 ### 0.26.0, the styles and the copy contract, done
 
-Three breaking items, plus the all-day flag and one fix that arrived while the release was still open. The first is contractual: the deprecation message shipped in 0.25.0 names this release by number, so it is the one item here that has a deadline rather than an argument.
+**Base class state does not route through your `copyWith`.** `KalenderEvent` has no `copyWith`. The calendar calls `withDateTimeRange`, which calls the subclass's `copyWithData` hook and then reapplies identity, interaction and classification through `carryOver`. A subclass keeps its own `copyWith` under its own name, with whatever parameters it likes. `copyWithData` is `@mustBeOverridden`, and a debug assert checks the type it returns.
 
-The all-day flag was scoped out to 0.27.0, on the argument that new public API does not belong in the same migration guide as the two largest removals the package has done. It came back. Only `0.26.0-dev.1` ever reached pub.dev, so the release was still open when the flag merged, and nothing about it is breaking, so it costs the migration guide nothing.
+**Strategy function fields are classes.** Each is a public abstract base with a const constructor and named factories for the built-ins, the shape of `MultiDayRule` and `PageIndexCalculator`. The base stays open, so an app can write its own strategy and give it value equality. A function field included in `==` reads as a change on every rebuild when it is written as an inline closure, and one left out of `==` never reaches the calendar. `nowCallback` stays a function, since it takes no arguments and has nothing to model.
 
-**1. The deprecated style fields on `KalenderComponents` are removed.** Four fields, along with their constructor and `copyWith` parameters and their places in `==` and `hashCode`. Larger than the deprecation implied: 25 read sites across 17 files, most of them the `fromContext` helpers on the component widgets. The seven container classes reached through those fields go with them, which empties `month_styles.dart`, `multi_day_styles.dart` and `schedule_styles.dart`. Only the fields carry a deprecation, so the classes are removed without a window of their own. Once the fields are gone nothing public reaches them, so a window would protect a type annotation and nothing else.
-
-  `OverlayStyles` is the exception and stays. `MultiDayOverlayPortalBuilder` names it, and that typedef is not deprecated, so the class keeps earning its place as the portal builder's parameter bundle. Its signature does not change.
-
-  The builders receive the theme-resolved style rather than null, which leaves them better off than today, where a custom builder gets an empty style unless the app used the deprecated container.
-
-  The month week number needs one fix first. Its top alignment can only be set through `MonthBodyComponentStyles` today, because the month body passes that style to the widget and a passed style wins over the theme, so removing the container would make the alignment unreachable. Dropping the unconditional `Alignment.center` from `KalenderThemeData.defaults` lets the month body read the theme instead, since the widget already falls back to centre on its own. That part is non-breaking on its own and can land ahead of the removal.
-
-  One behavior change follows. Afterwards the only route to that alignment is `KalenderThemeData.weekNumberStyle`, which feeds both the month gutter and the multi-day header, so an app cannot set them apart any more. Defaults are unaffected, so this reaches only an app that set a non-default alignment.
-
-**2. Base class state stops routing through your `copyWith`.** Every field `KalenderEvent` carries that `copyWith` takes no parameter for is a field each subclass has to forward manually. That is `id`, and `multiDayRule` since 0.24.0. 0.24.0 added a debug assert that reports the omission on the first drag, but the better fix is to make it unrepresentable. This is the largest single break in the release.
-
-  `copyWith` leaves `KalenderEvent` entirely rather than staying on the base as a method subclasses may not override. The base gains a method the calendar calls, a hook a subclass overrides to rebuild its own fields, and a helper that reapplies identity, interaction and classification to whatever the hook returned. A subclass then keeps its own `copyWith` under its own name, with whatever parameters it likes, and stops being an override. Every copy the calendar makes passes only a date range, while consumers use the widened form, so leaving `copyWith` on the base and forbidding overrides would have made `copyWith(title:)` illegal for nothing.
-
-  A subclass that adds no hook still compiles, so the omission is reported twice. `@mustBeOverridden` flags it in the app's own analysis before anything runs, and the debug assert that replaces the 0.24.0 pair checks the returned type on the first drag for anyone who ignores the warning. That assert is stronger than what it replaces, since it catches a subclass that wrote no hook at all rather than one that forgot a field.
-
-**3. Strategy function fields become classes.** [#380](https://github.com/werner-scholtz/kalender/issues/380) carries the full inventory. A function field that is included in `==` reads as a change on every rebuild when it is written as an inline closure, and one left out of `==` means a change to it never reaches the calendar. Both failure modes have shipped. `MultiDayRule` and `PageIndexCalculator` are the shape to follow, in the form that stays open: a public abstract base with a const constructor and named factories for the built-ins, so an app can write its own strategy and give it value equality. `advanced_example` already passes a custom layout, so a closed set of built-ins would take that away.
-
-  Checking each field rather than treating the six as one group changed the answer for half of them. `generateMultiDayLayoutFrame` is the one that pays: it sits behind a comparison that clears the whole layout frame cache, so an inline closure costs a cache clear and a relayout on every build. `eventSnapStrategy` sits behind a real gate too. `eventLayoutStrategy` currently gates nothing, since it reaches the calendar through the widget tree rather than through `==`, and it converts anyway so the three read as one design. `nowCallback` stays a function, because it takes no arguments and has nothing to model, and its place in `==` is what makes a change reach the calendar at all. The three view-transition resolvers need no work: they are correctly out of `==` and already read from the incoming configuration.
-
-  Two equality omissions turned up while checking, both unrelated to function fields and neither breaking. `MultiDayBodyConfiguration.keepPagesAlive` is not covered by the equality it inherits, and the body and header configuration base classes test only `other is X` with no runtime type check, so two different configuration types with matching fields can compare equal.
-
-**4. Whether an event is all-day becomes something you can state.** The calendar inferred it from duration through `MultiDayRule`, and the per-event rule override doubled as the way to force it, which that field's own documentation admitted when it described an event "all-day by nature rather than by duration". That never worked for the case it named: an event under 24 hours inside one calendar day satisfies neither built-in rule, so forcing it meant overriding `spansMultipleDays`.
-
-  `KalenderEvent.isAllDay` states it. A plain `bool` defaulting to false, so nothing changes for an event that does not set it. True means the multi-day header lane whatever the duration, with no rule consulted. A nullable tri-state was rejected: "not all-day" and "no opinion" want the same answer, since an event spanning several days has to stay in the header either way. The date range is untouched, and `carryOver` carries the flag across drags like `id` and `multiDayRule`, so it is not a third field to forward manually.
-
-  The name went to the event, because that is what every calendar format calls it. `KalenderTimeRange.isAllDay` becomes `coversWholeDay`, deprecated for one release: it reports whether the range runs 00:00 to 23:59, which is about the hours the body lays out, so it had the wrong name regardless. The `KalenderTimeRange.allDay()` factory is left alone, since renaming it touches every example, doc and test for a cosmetic gain and a constructor named "all day" does not read as an event property.
-
-  The ICS example needed more than first recorded. RFC 5545 encodes all-day as a date-valued `DTSTART`, but the `isAllDayEvent` getter on `enough_icalendar` reads a proprietary Microsoft property instead, so the standard signal is read off the value type of the property. The example discarded it at parse time and exported an all-day event as a timed one. It now maps to `isAllDay` and writes `VALUE=DATE` back out, a date-valued `DTSTART` with no `DTEND` lasts one day rather than one hour, and `sample.ics` carries one.
-
-  A shorter way to call `spansMultipleDays` was scoped alongside the flag and is dropped. Every verbose call site is inside the package, and the shortest form needs a `BuildContext` that two of the eight sites do not have. Making `defaultRule` optional is the only shape that reads shorter everywhere, and omitting it would silently substitute the package default for the calendar's own rule, which compiles and renders wrong. What is left is an internal tidy-up with no public API in it.
-
-**5. A week view honours `numberOfDays`.** [#444](https://github.com/werner-scholtz/kalender/issues/444). `MultiDayViewConfiguration.week` and `.workWeek` both took the parameter and built their page index calculator with a hardcoded 7 and 5, so the body laid out `numberOfDays` columns under a header showing the hardcoded count, and every column sat out of line with its header. `WeekIndexCalculator` already carries `daysToDisplay`, which shortens the page and leaves the weekly pagination alone, so the fix is to pass the value in. `copyWith` dropped it too.
-
-  `PageIndexCalculator` is exported with it, the second half of the same issue. `ViewConfiguration.pageIndexCalculator` returns the type, so it was already public with no way for an app to name it.
-
-  What this does not do is let an app pick arbitrary visible days. See [#90](https://github.com/werner-scholtz/kalender/issues/90) below.
+**`KalenderEvent.isAllDay` is a plain `bool`** defaulting to false. A nullable tri-state was rejected: "not all-day" and "no opinion" want the same answer, since an event spanning several days has to stay in the header either way.
 
 ### 0.27.0, the builders take a context, done
 
-One concept, across the widest customisation surface the package has. It gets a release of its own rather than riding along with model changes, and it happens before 1.0.0 because a freeze would put it behind a 2.0.0. What the plan below did not anticipate is how much doing it turned up, which the last three items record.
-
-`KalenderTimeRange.isAllDay` is removed here, as its 0.26.0 deprecation message names. `coversWholeDay` replaces it. Done, and it leaves `lib/` with no deprecation outstanding.
-
-**Every builder typedef takes a `BuildContext` first.** Fifteen of the twenty-four carry a style, and fourteen of those take no context, so a custom builder cannot call `KalenderTheme.of` and resolve anything for itself. The package resolves on its behalf and passes the result in, which is the only reason a style parameter sits on those signatures at all. The nine that carry no style take no context either. They change in the same release because a typedef signature cannot be deprecated in place, so each round of this is a hard break and splitting the work would break one concept twice.
-
-Flutter does the opposite, and does it inside the widget. `Divider` and `Card` read the component theme in `build` and fall back per property. `ButtonStyleButton` does the same for a whole style object, resolving the widget's style over the theme's over the defaults. Nothing in Flutter hands a child a pre-resolved style through its constructor, and the two merge helpers that look like exceptions, `DefaultTextStyle.merge` and `IconTheme.merge`, merge into the inherited scope so descendants still resolve from context themselves.
-
-kalender's own widgets already follow the Flutter shape. `WeekNumber.build` resolves the passed style over the theme over its own fallback. Only the builder path cannot, and only for want of a context.
-
-Giving the builders one removes the reason for every pre-merge in the package, and the style parameters go with them, with no exceptions. The gutter family looked like one. `TimelineWidthBuilder`, `TimeLineBuilder` and `HourLinesBuilder` resolve against `GutterStyles`, the scope the multi-day body, header and drag overlay all measure from, rather than against the theme, and a debug assert reports the case where a scoped theme moves the two apart. `GutterStyles` is already an `InheritedWidget` with `of` and `maybeOf`, so it becomes public here and a custom builder resolves from it exactly as `TimeLineUtils.effectiveStyle` already does. `MultiDayOverlayPortalBuilder` drops its `OverlayStyles` parameter, and the bundle goes with it: it was the only signature that named the class, so nothing was left for it to answer.
-
-The default for each builder moves off the widget and onto the components class that holds it, the shape `ScrollConfiguration.of(context).buildScrollbar(context, child, details)` uses. Fields become nullable and default to null, which makes "did the app override this" a question the package can ask. It cannot today: `month_body.dart` decides whether to build the day cell layer by comparing the field against `MonthDayCell.builder`, because a non-null tear-off default leaves nothing else to compare. Both statics on each component, `builder` and `fromContext`, are removed.
-
-**`ResizeHandlePositioner` was reshaped as well, which the plan above did not cover.** Giving it a context exposed that it was the odd one of the twenty-four on three counts at once: seven parameters against five for the next largest, a return type constrained to an abstract class, and the only builder anywhere in the package that required subclassing. The six values it received were exactly the constructor arguments of the class it had to return, so every implementation forwarded them manually, and the appearance guide showed no way to write one at all. It pointed at a preamble symbol that threw `UnimplementedError`, whose comment pointed back at the guide.
-
-  `ResizeHandles` is removed. Its six values and seven helpers move to `ResizeHandleDetails` and the positioner returns a plain `Widget`, which is the shape `MonthDayCellBuilder` already had with `MonthDayCellDetails`. Doing it in this release rather than the next one costs a single migration entry, where waiting would have broken the same typedef twice for one concept.
-
-**Three times now, public API has named a type nothing exported.** `PageIndexCalculator` was the first, returned by `ViewConfiguration.pageIndexCalculator` and fixed in 0.26.0. `ResizeHandleDetails.startResizeDetector` returns the resize draggable, which no app could name. `MultiDayOverlayEventTileBuilder` returns `MultiDayEventOverlayTile`, which made that typedef public but impossible to implement. Both remaining ones are exported now, and a test implements every builder with a constrained return type, so the analyzer catches the next one rather than a user.
-
-  Exporting the resize draggable also renamed it. `ResizeHandle` is the obvious name for the widget an app supplies through `TileComponents.verticalResizeHandle`, so publishing the package's own class under that name collided with the expected case, and the web demo stopped compiling. It is `ResizeDetector`, which is what `ResizeHandleDetails` already called it.
-
-**The tile key factories are unreachable.** Ten of the package's twenty-three `static Key` factories sit on classes nothing exports, so `DayEventTile.tileKey` and its siblings are internal test helpers named as though they were public. Settled in 0.28.0 below as internal, since a widget carrying its own identifying fields is findable without one. Flutter's answer is worth recording: the framework publishes no key factories at all, and its own tests use `find.byType` over `find.byKey` roughly three to one.
+Every builder takes a `BuildContext` first and resolves its own styles from it, the way Flutter's widgets read their component theme in `build`. Builder fields are nullable, and each default lives on the components class that holds it.
 
 ### 0.28.0, the next breaking window, done
 
-The breaking changes with nowhere cheaper to go. None has a deprecation path that costs less than doing it in a release that already breaks, so they wait for the next such release rather than for 1.0.0. Batching them is the point: a break that lands on its own costs a migration entry and a minor version for one item.
+**A callback is named for the detail type it carries.** `OnTappedWithDetail` takes a `TapDetail`, and the two `OnWillAccept` typedefs keep the plural of `DragTargetDetails`.
 
-**`OnEventTapped` drops its `RenderBox`, and so does `OnEventTappedWithDetail`.** `TapDetail` carries the same object, so the parameter was a duplicate on the second and the only route to the box on the first. Both are trimmed rather than one, which leaves a short form and a full form instead of one callback being a subset of the other. That is the shape `OnEventCreate` and `OnEventCreateWithDetail` already had. Of the eight call sites in the examples and the guides, seven ignored the box. The web demo used it to anchor an event overlay and moves to the detail callback.
+**`MultiDayBodyConfiguration` and `VerticalConfiguration` stay separate.** Merging would type `VerticalDragTarget` against a concrete view class while `HorizontalDragTarget` stays typed against an abstract axis base.
 
-  The naming settled with it. A callback is named for the detail type it carries, so `OnTappedWithDetails` and `OnLongPressedWithDetails` lose the plural to match their single `TapDetail`, and the two `OnWillAccept` typedefs keep it to match `DragTargetDetails`. Every field already used the singular.
+**Public top-level constants take a `k` prefix.** Top-level functions and static constants keep their names.
 
-**`MultiDayBodyConfiguration` and `VerticalConfiguration` stay separate.** The TODO on the first said to merge them and has been dropped. It was written when `VerticalConfiguration` was extracted, at which point the subclass added nothing, and `keepPagesAlive` landed nine months later without the TODO being revisited.
-
-Merging needs a concrete survivor, since `MultiDayBody` builds an instance and `VerticalConfiguration` is abstract. `HorizontalDragTarget` would then stay typed against an abstract axis base while `VerticalDragTarget` became typed against a concrete view class, which is the asymmetry that matters, since it is in the code rather than in the names. `KalenderBody` also names its three configuration fields after views rather than axes, so renaming would leave one field whose name does not match its type. No second vertical implementation exists or is planned: the two views on this roadmap are grids, and `ScheduleBodyConfiguration` shares three of the eight fields and takes no configuration object in its drag target at all. The cost of keeping both is about sixty lines, mostly `copyWith`.
-
-**`CreateEventGesture` is now `EventInteractionGesture`.** The old name said "create" and the enum also decides how an event is modified, which is why `KalenderInteraction` carries it twice, as `createEventGesture` and `modifyEventGesture`. A public enum cannot be renamed behind a deprecation, so it belongs in a release that already breaks. The two field names are unchanged.
-
-**The `default*` constants take a `k` prefix.** Twelve public top-level constants are renamed, and three already carried the prefix, so the package spelled the same kind of constant two ways. Flutter prefixes its public top-level constants and Effective Dart says not to use prefix letters, and the tie is broken by the three that already have it. The `default*` top-level functions keep their names, as do the `static const default*` members on `KalenderInteraction` and `KalenderSnapping`, since a class already namespaces its own.
-
-**The tile key factories are internal, and no code changes.** Ten of the twenty-three `static Key` factories sit on `DayEventTile`, `MultiDayEventTile`, `ScheduleEventTile` and `DayEventsWidget`, none of which the package exports, so no app can name them today and recording them as internal takes nothing away. `AGENTS.md` carries the rule.
-
-Flutter is the precedent. Its framework publishes no public static key at all, the only one being a private `_headingRowKey` in `data_table.dart`, and its own tests use `find.byType` 13790 times against `find.byKey` 4553. What it gives an app instead is the public widget type in the tree. Internal pieces are private classes that an app cannot find by type, and Flutter's own tests reach them by importing `src/`, which this package's tests already do.
-
-What an app cannot reach comes to two things rather than ten: the drag or gesture wrapper around a tile, and a day column. Everything else has a route. The tile itself is the app's own widget, since `TileComponents.tileBuilder` is required. A resize handle is `find.byType(ResizeDetector)` with a predicate. `MultiDayEventOverlayTile` was exported in 0.27.0 with its three factories, and the overflow button, overlay card, close button, barrier, header and hour labels all have public factories on exported classes. If the drag wrapper is asked for, the answer is the `ResizeDetector` move again, which adds API rather than breaking it.
-
-**`WeekNumberStyle.visualDensity` becomes `Size? buttonSize`.** The last of the three Material types carried from 0.25.0 that was worth changing. See [Theming, still open](#theming-still-open) for why the other two stay.
-
-**A `ResizeHandleStyle`, moved here from the theming list.** It adds rather than changes API, so it needs no breaking window, but it belongs with the resize handle work the previous release started. `KalenderThemeData` carried thirteen style classes and the resize handles were the only thing the calendar drew without one. The style carries `length` for precise input and `impreciseLength` for a finger, defaulting to the 16 and 24 the layout hardcoded, so changing the length no longer means writing a `resizeHandlePositioner`.
-
-**The timeline labels are positioned by the segments above them.** They were placed at a multiple of their own segment height, which is only correct when every segment is the same height. `KalenderTimeRange.splitIntoSegments` gives the last segment whatever is left of the range, so a range of 09:00 to 18:00 drew 18:00 above 10:00. `HourLines` already kept a running total, which is why the grid lines stayed correct while the labels did not. `KalenderTimeRange.allDay` divides evenly by the segment length, so the default range never showed it.
-
-**`FreeScrollFunctions` is removed, and removing it fixed a defect.** Its TODO asked whether `DayIndexCalculator` could replace it. The two were the same code but for one line, and that line rounded the end of the display range up to the next midnight even when it already fell on one, so a range already ending at midnight gained a day and the band drew a column outside it. Every other calculator guards that end with a conditional. The default range ends at midnight, as does any range written the usual way, so most free scroll calendars had it. `MultiDayViewConfiguration.type` is included in `==` and `hashCode` by the same change, since the calculator's runtime type was what told a free scroll configuration apart from a single day one.
+**The tile key factories are internal.** `AGENTS.md` carries the rule.
 
 ### 0.29.0, the state layer, done
 
-**The state layer becomes public, as one model rather than five widgets.** Composability's first piece, and the gate on [#215](https://github.com/werner-scholtz/kalender/issues/215), [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262), [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The coverage gate it waited on is met.
+**The state layer is public as `KalenderScope`, in the shape of `MediaQuery`.** It has one static accessor per value, each depending on that value alone. The providers behind it are not exported, so apps cannot depend on the tree shape, and the granularity can change without a break.
 
-Today `kalender_provider.dart` holds five `InheritedWidget`s, `EventsControllerProvider`, `KalenderControllerProvider`, `LocaleProvider`, `LocationProvider` and `TileComponentProvider`. The classes are public but the file is not exported, so no app can name one, and `KalenderView.build` nests them in a fixed order.
+**An accessor reads the nearest value.** Most values exist once per calendar. The ones `KalenderBody` and `KalenderHeader` each take, such as the callbacks and the tile components, are scoped to that half. Gutter widths are shared as measured numbers rather than styles, so the rule has no exception.
 
-Exporting the five is the obvious move and is rejected. It makes the tree shape public, so apps come to depend on which provider sits where, on each one existing, and on inserting their own between them. That cannot be walked back after 1.0.0. `GutterStyles` is the standing example of the cost: it went public in 0.27.0 and now the guide and a debug report both exist to explain where it must sit.
-
-The accessors live on `KalenderScope`, as `KalenderScope.localeOf(context)` and one per value. The internal `context.locale` style extension getters stay internal: they cannot carry an aspect, so they would rebuild on everything.
-
-The shape is `MediaQuery`. It is an `InheritedModel` over a **private** aspect enum, and its public surface is about forty static accessors, `sizeOf`, `paddingOf`, `textScalerOf`, each with a `maybeXOf` twin. A widget reading the size does not rebuild when the padding changes. Kalender takes the same form: one widget over the five providers, a private aspect enum, and one accessor per value. The tree stays free to change, rebuilds stay narrow, and the granularity itself is not public, so aspects can be added or removed without a break.
-
-The providers do not all collapse. Eleven exist, and only five are calendar-wide: the events controller, the calendar controller, the locale, the location and the gutter styles. The other six are inserted again in `KalenderBody` and `KalenderHeader` and are meant to be. `KalenderBody.build` reads `_callbacks ?? context.callbacks`, so the body overrides the view's callbacks and falls back to them, and interaction works the same way. `TileComponents` differs per half and per view type. Collapsing those into one value would remove a documented feature.
-
-So the model carries the five, the other six stay scoped widgets, and both sit behind one set of accessors. That makes one rule true everywhere: an accessor reads the nearest value. The five simply only ever have one instance. An app never learns which is which, and the gutter becomes the only place in the package where the rule does not hold.
-
-**`CalendarView` is renamed to `KalenderView`.** The package is `kalender` and the widget an app places was `CalendarView`, which read oddly next to `KalenderScope`. Pulled forward from the next breaking window, since this release already breaks. The old names stay as typedefs and are removed in 0.30.0.
-
-**`KalenderView.locale` becomes `Locale`.** It reaches intl's `DateFormat`, which takes a `String?`, so the `dynamic` lets a typo compile and fail at runtime. `Locale` is `dart:ui` rather than Material, it carries value equality, and an app holding `Localizations.localeOf(context)` has one already. `Intl.canonicalizedLocale` rewrites the separator, so `toLanguageTag`'s `en-US` and intl's `en_US` both resolve to the same data and no conversion rule is needed. intl's own `Locale` in `package:intl/locale.dart` is not used, since `DateFormat` does not accept it and it would put an intl type in the public API.
-
-Nine declarations carry the type. Three are public: the field, `KalenderLocale.kalenderLocale` on `BuildContext`, and the optional parameter on the four `DateTimeExtensions` localized methods. It breaks anyone passing a `String`, and anyone assigning `kalenderLocale` to a non-nullable `String`, since the implicit downcast a `dynamic` allowed becomes a compile error.
-
-**An intl4x example.** `examples/intl4x` supplies the six builders that answer with intl and renders the calendar through [intl4x](https://pub.dev/packages/intl4x) instead. Its test calls no `initializeDateFormatting`, so the default builders throw for `de` and the intl4x ones do not, which shows the substitution is complete rather than partial. Kalender keeps intl as its default, since a calendar with no localized names out of the box is a regression, and intl4x documents its API as still changing.
-
-**The gutter shares its measured width rather than its style.** `weekNumberStyle` and `timelineStyle` size the gutters, which are drawn in the body and reserved again in the header, so the calendar resolves them once above both. A `KalenderTheme` scoped inside either half is ignored for those two fields and honoured for every other one. 0.27.0 taught that a builder resolves its styles from the nearest scope, and these are the two places where that is untrue.
-
-The cause is that a layout value is derived from a themed value. `defaultTimelineWidth` measures every label the timeline can show in the resolved text style, and that measurement is the gutter's width, so changing a font changes a layout dimension. A layout dimension has to agree across the two halves, and a theme means the nearest one wins. Those three cannot all hold, and `GutterStyles` resolves it by suspending the third for two fields.
-
-The width has to be shared. The style does not. Today both are, which is what makes the exception larger than it needs to be. `KalenderView` computes the width once and publishes a `double`, the header spacer, the body gutter and the drag overlay read that number, and everything that paints resolves its style from `KalenderTheme.of(context)` at the nearest scope like every other style. A shared layout number needs no explanation, where a shared style collides with what theming means.
-
-That removes `GutterStyles` and `GutterStyles.timelineStyleOf` from the public API, deletes `debugCheckGutterStyleReaches`, and leaves gutter appearance in the theme extension where it interpolates with the rest. A scoped theme then restyles the labels without resizing the gutter, which is visible rather than silent. Measured against the repository, nothing exercises the case: across every example and guide the only gutter settings are an explicit `timelineWidth` returning 48 and a `WeekNumberStyle` tooltip.
-
-It also fixes two things that are not about theming. `buildTimelineWidth` runs at three sites below `KalenderView`, so the measurement, which lays out up to 24 text painters and 288 under a custom string builder, runs three times per build instead of once. And the body passes the real `timeOfDayRange` where the header and the drag overlay pass `KalenderTimeRange.allDay()`. `defaultTimelineWidth` ignores the parameter, so nothing breaks today, but a custom `timelineWidth` builder that read it would return different widths in the header and the body, which is the misalignment `GutterStyles` exists to prevent.
-
-The month comes along, which is what makes the rule true of the whole package rather than two thirds of it. Its gutter agrees today by a different mechanism: `MonthWeekNumberGutter` and `MonthWeekNumberSpacer` both wrap the week number in `KalenderTheme.of(context).copyWith(weekNumberStyle: shared)` and take the widget's intrinsic size, so they match because the same style is injected into both. That is the sharing being removed, so the month gets a `weekNumberWidth` builder alongside `timelineWidth`. `defaultWeekNumberWidth` returns a fixed `kDefaultWeekNumberWidth`, 56, matching `kDefaultScheduleLeadingWidth`, rather than measuring the way `defaultTimelineWidth` does. The label is one or two digits, so measuring it produced a column that changed width as the months paged. `WeekNumberStyle.buttonSize` landed in 0.28.0 and still widens the column, since the default reads it.
-
-`ScheduleViewConfiguration.leadingWidth` is already this design with the number given rather than measured, so the schedule needs no change and the three views end up saying one thing.
-
-`gutter_style_scope_test.dart` is replaced by `gutter_width_test.dart`. The tests that report an ignored scoped style go with the report. The ones that check the gutter and the spacer measure alike, that a theme above the calendar reaches the gutter, and that the drag target spacer matches are carried over. The labels-fit test is rewritten against the default, since a scoped text size is now meant to lay the labels out wider than the gutter.
-
+intl stays the default formatter, since a calendar with no localized names out of the box is a regression. `examples/intl4x` shows the substitution.
 
 ### 0.30.0, off Material, done
 
-**Flutter moved Material and Cupertino out of the framework, and the two value types kalender's public API is built on went with them.** `material_ui` and `cupertino_ui` are 1.x packages in `flutter/packages` now, and `material_ui` redefines `DateTimeRange` and `TimeOfDay` as its own classes. `package:flutter/material.dart` still ships in 3.47.2 carrying no deprecation, so nothing is broken today. An app that runs the migration Flutter documents, `dart fix --apply --code=migrate_design_widgets`, ends up holding types with the same names as the ones kalender asks for and no relationship to them. No bridge closes that, because it is a compile-time identity problem rather than a runtime lookup.
-
-`examples/material_ui` landed in 0.29.0 and renders the calendar from an app on the standalone package, so the three breaks are demonstrated rather than predicted. `TimeOfDay.format` resolving `MaterialLocalizations` is [#491](https://github.com/werner-scholtz/kalender/issues/491) and the only one with a workaround, `MaterialUiCompatibilityBridge`, which `material_ui` ships already marked deprecated as a temporary utility. The two value types do not compile across. `KalenderThemeData extends ThemeExtension`, so a `material_ui` `ThemeData` will not take it and the bridge drops extensions anyway.
-
-**The size was measured rather than estimated.** Swapping all 89 `package:flutter/material.dart` imports in `lib/` to `widgets.dart` gives 304 errors across 49 files. Forty of the 89 need nothing but the import swap. `DateTimeRange` accounts for 205 errors and `TimeOfDay` for 30, so two value types are 77% of the work, and the theming and widget coupling that looks like the hard part is 42 errors in a handful of files. `InternalDateTimeRange extends DateTimeRange<InternalDateTime>`, which puts a Material class inside kalender's own hierarchy rather than only at the edges, and is why the count lands where it does.
+Flutter moved Material into the `material_ui` package, which redefines `DateTimeRange` and `TimeOfDay` as its own classes.
 
 **Settled: kalender owns the types rather than depending on a compatibility package.** No standard package exists to depend on. Flutter closed [#53059](https://github.com/flutter/flutter/issues/53059), the umbrella for moving style-neutral code down into the widgets layer before decoupling, without these two, and its own text says not everything would be refactored into the core. Converters for the SDK's Material ship in a `package:kalender/material.dart`, which costs nothing in the pubspec since Material ships with the SDK and only affects users who import it. `material_ui` converters stay out of the core, because pub has no optional dependencies and shipping them would put `material_ui` in the graph of every user who will never touch it.
 
-**Settled: the core keeps Material for now, and only becomes able to drop it.** Owning the value types is required in every end state, since without it a `material_ui` app cannot compile against kalender at all. Dropping Material from the core is a separate question, and the answer is not yet. `_defaultsFor(ThemeData)` gains a kalender-owned palette as its input with Material still feeding it, which makes the split possible later without doing it now. Measured, the whole Material theming surface is seven call sites in five files, five of them one-line `??` fallbacks, so the preparation is small and the removal stays cheap whenever it is wanted. A separate `kalender_ui` package is rejected: the engine is the most Material-bound part today and becomes free the moment the value types are owned, so a split along that line would put the coupling in the wrong package. A `kalender_material_ui` companion waits until someone asks.
+**Settled: the core keeps Material for now, and only becomes able to drop it.** Owning the value types is required in every end state, since without it a `material_ui` app cannot compile against kalender at all. Dropping Material from the core is a separate question, and the answer is not yet. `_defaultsFor(ThemeData)` gains a kalender-owned palette as its input with Material still feeding it, which makes the split possible later without doing it now. A separate `kalender_ui` package is rejected: the engine is the most Material-bound part today and becomes free the moment the value types are owned, so a split along that line would put the coupling in the wrong package. A `kalender_material_ui` companion waits until someone asks.
 
-**The types are `KalenderDateTimeRange`, `KalenderTime` and `KalenderTimeRange`.** `Local` is wrong in Dart, where local means the local timezone, the opposite of what the type is. `Wall` was the first choice and was dropped because the repository already uses "wall-clock" in fifteen doc comments to mean the zoned value, so the name would invert its own vocabulary. `Plain` was the second and was dropped because the package is converging on `Kalender` as its ownership marker in this very release, and a second marker would cut across that. There is no `KalenderDateTime`: only the range type extended a Material class, and `InternalDateTime` extends `dart:core`'s `DateTime`, so the fork never reached it. That settles the model: events hold absolute instants as `DateTime`, layout and view coordinates stay `InternalDateTime` and `InternalDateTimeRange`, and `KalenderDateTimeRange` is the boundary type an app hands in and reads back.
+**The types are `KalenderDateTimeRange`, `KalenderTime` and `KalenderTimeRange`.** `Local` is wrong in Dart, where local means the local timezone, the opposite of what the type is. `Wall` was the first choice and was dropped because the repository already uses "wall-clock" in its doc comments to mean the zoned value, so the name would invert its own vocabulary. `Plain` was the second and was dropped because the package is converging on `Kalender` as its ownership marker in this very release, and a second marker would cut across that. There is no `KalenderDateTime`: only the range type extended a Material class, and `FloatingDateTime` extends `dart:core`'s `DateTime`, so the fork never reached it. That settles the model: events hold absolute instants as `DateTime`, layout and view coordinates are `FloatingDateTime` and `FloatingDateTimeRange`, and `KalenderDateTimeRange` is the boundary type an app hands in and reads back.
 
-**`KalenderEvent` takes `start` and `end` rather than a range.** It already stores them that way. The constructor takes a `DateTimeRange`, immediately does `start = dateTimeRange.start.toUtc()`, and the getter rebuilds one on demand, so the range is a wrapper around a round-trip rather than part of the model. Naming only `dart:core` types in the constructor every user subclasses is also what makes the goal reachable: an app already on this release runs `dart fix --apply --code=migrate_design_widgets` and needs no kalender change, because no kalender signature names a Material type.
-
-**One breaking release, and the `Calendar` family rename rides along.** With Material staying, the theme split and the last Material widgets do not happen, so the break is the value types plus the renames. Eight public `Calendar*` names remain, all pure renames, and 0.30.0 already breaks `CalendarEvent`, so folding them in costs a line in the migration guide rather than a second release. Three more are internal and rename freely.
-
-**The non-breaking work ships first.** The timeline formats time through the `intl` path the package already uses for every day and month name, which closes [#491](https://github.com/werner-scholtz/kalender/issues/491) for both flavours with no API change. Forty of the eighty-nine files that import Material need only the import swapped, and the value of doing it is the measurement it leaves behind: afterwards a Material import in `lib/` means the file needs Material.
-
-**Every rename ships a fix.** `lib/fix_data/` is in the package as of 0.29.1 and `dart fix --apply` already performs the `KalenderView` rename, verified from a consuming project. The mechanism covers renames, parameter renames, and deriving one argument from another, so `dateTimeRange` becoming `start` and `end` is automated too. What it cannot rewrite is a declaration in the user's own code, which leaves the `copyWithData` override as the one manual edit the guide has to carry. [AGENTS.md](AGENTS.md#automating-a-migration) makes this the standing rule rather than a one-off.
-
-This does not wait for Flutter. [#97496](https://github.com/flutter/flutter/issues/97496) is the remaining route for a canonical range type and is a proposals channel with no owner for this and no date. Filing there costs nothing and is worth doing, but it cannot be on the critical path. If Flutter promotes one later, kalender adds a converter and deprecates its own over a release or two, which is a smaller migration than the one waiting produces.
+If Flutter promotes a canonical range type ([#97496](https://github.com/flutter/flutter/issues/97496)), kalender adds a converter and deprecates its own.
 
 ### 0.31.0, the floating names, done
 
-**The layout date types are `FloatingDateTime` and `FloatingDateTimeRange`.** 0.30.0 kept the name `InternalDateTimeRange` for a later window. "Internal" on an exported type read oddly beside the `Kalender` marker, and it suggested the type was not meant for apps, while a custom page index calculator or layout strategy has to name it. Floating is the term RFC 5545 uses for a date and time that names no timezone, which is what both types hold, and the ICS example already parses that format. `InternalDateTime` moves with the range, since the two are a pair.
-
-Merging the range into `KalenderDateTimeRange` was rejected. The two were one type until 0.30.0, when `InternalDateTimeRange` still extended Material's `DateTimeRange`, and that subtype relationship is what let three offset defects compile. A single type would make a range of instants assignable where a layout position is wanted again. A generic range could not carry the arithmetic either, since `dates`, `weekNumbers` and the rest call members that live on `FloatingDateTime` rather than on `DateTime`.
-
-**Members are named for what they are, not for their type.** They say `range` rather than `dateTimeRange`, and a `floating` marker stays only where one class carries both spaces: `KalenderEvent`, `KalenderController` and `PageIndexCalculator`, and the widgets `MonthWeek` and `MultiDayEventOverlayTile`. The whole vocabulary landed in one release. The members that only change call sites and the members an app overrides sit side by side on the same classes, so splitting them would have shipped `PageIndexCalculator` with `rangeFromDate` beside `dateTimeRangeFromIndex`. The case is consistency before the freeze rather than correctness: with the Material inheritance gone, a misnamed member can no longer produce a value in the wrong space.
-
-`dart fix` covers more of it than first assumed, measured from a consuming project. A method rename renames the override as well as its call sites, and a parameter rename renames the parameter in the override's signature. What it leaves is a use of the old parameter inside an override's body, which in this release is only `MultiDayLayoutStrategy.generateFrame`.
-
-**The five value types are `final` classes.** `KalenderDateTimeRange`, `KalenderTime`, `KalenderTimeRange`, `FloatingDateTime` and `FloatingDateTimeRange` can no longer be extended or implemented. Adding a member to a final class is never a break, and no subclass can put a range of instants where a layout position is wanted, the mistake 0.30.0 made impossible. Flutter marks `TimeOfDay` and `DateTimeRange` `@immutable` and leaves them open. Nothing in the repository, its examples or its guides extended any of the five.
-
-**`initialDateTime` applies only when the calendar is first built.** A location change and a view switch shared one branch in `KalenderView.didUpdateWidget`, which read `initialDateTime` whenever it was set. A location change therefore threw away the date on screen and returned to the startup date, and it converted that date without the location, so it could land a week early or late. The dartdoc said `initialDateTime` wins on a view switch, while the views guide said it is the date for the first render. The guide won. A view switch and a location change take the date from `dateResolver` or `dateTransition`, and an app that wants a fixed date on a switch returns it from a `dateResolver`. `ViewTransitionContext.locationChanged` tells a resolver which of the two it is handling.
-
-**The deprecated `calendarLocale` is removed**, as its 0.30.0 message named, and `lib/` carries no `@Deprecated`.
-
-**Seven of the fourteen TODOs were resolved.** The four about locations were the defect above, already resolved, or out of date, since every `PageIndexCalculator` member already took a location. The force-unwrap of `floatingVisibleRange.value` is safe, since every view controller sets it in its constructor and nothing clears it. Event ids are random rather than timestamp-based, so the UUID suggestion described no defect. The TODO about new events outside the displayed hours covered one case. A drag that leaves the day already creates nothing, but snapping could round a time past the bottom of the day. Creating, resizing and rescheduling now stop at the bottom of the day, which is the start of `timeOfDayRange` plus its `duration`. Rescheduling used to stop one minute earlier, at `end`, while the body is drawn one minute past it.
-
-Publishing validates the package again, now that pub.dev accepts a metadata request that carries a bearer token, and every CI job runs the Flutter version in `.fvmrc`.
+**Members are named for what they are, not for their type.** [AGENTS.md](AGENTS.md#naming-the-two-range-spaces) carries the rule.
 
 ### 0.32.0, planned
 
@@ -262,57 +104,15 @@ What waits on it:
 
 ### The next breaking window
 
-Breaking changes with no release attached. The 0.28.0 entry above explains the batching: a break that lands on its own costs a migration entry and a minor version for one item, so these wait for the next release that already breaks.
-
-Nothing is queued beyond 0.33.0, which most likely breaks for composability.
+A breaking change with no release attached waits for the next release that already breaks. None is queued beyond 0.33.0.
 
 ### Theming, still open
-
-**The three Material types in the public API are settled.** `WeekNumberStyle.visualDensity` is replaced by `Size? buttonSize` in 0.28.0. `MultiDayOverlayStyle.cardTheme` and `closeButtonStyle` stay.
-
-The question was carried from 0.25.0 as "a framework neutral core cannot name a Material type", and that framing does not hold. `KalenderThemeData` is a `ThemeExtension`, which is Material-only, and the widgets involved are `Card` and `IconButton.filledTonal`. Removing the fields makes nothing neutral. It would take rewriting the default widgets to stop being Material, which is not planned and runs against the direction of styles in a `ThemeExtension` with Material 3 defaults.
-
-The question per field is whether it reaches something an app cannot otherwise reach, and whether the type is the right one for what the field sets. `cardTheme` is the override point over the app's own `CardTheme.of(context)` and its interpolation is `CardThemeData.lerp`. `closeButtonStyle` merges over the filled tonal defaults and its interpolation is `ButtonStyle.lerp`. Re-declaring either means reimplementing a Flutter type. `visualDensity` reached only the button's size, which `MonthDayHeaderStyle.buttonSize` already expressed as a `Size`, so the two headers spelled one thing two ways.
-
-The missing `ResizeHandleStyle` moved to 0.28.0 above.
-
-**The defaults an app cannot reach.** A `material_ui` app, or any app that installs no Material, can already supply every style through the `KalenderTheme` widget without `ThemeExtension`, so it is expected to bring its own colours. What it could not do was reach a default that sat behind no style field at all. There was one: the tonal today highlight behind a day number read the Material `ColorScheme` directly. 0.31.2 put it behind `KalenderThemeData.dayNumberStyle`. `KalenderPalette` stays private, since making it public would only save an app from naming the styles it already has to name, and a second way to set the same values is worth less than the one that already works. This leaves [#491](https://github.com/werner-scholtz/kalender/issues/491) resting on the `intl` timeline formatting alone.
 
 **An example of the calendar in an app that installs no Material.** `examples/material_ui` proved the value type breaks by building them rather than predicting them, and the same treatment is what would show whether an app on `WidgetsApp` or `CupertinoApp` can render the calendar at all, importing neither `package:flutter/material.dart` nor `package:kalender/material.dart` and theming it through `KalenderTheme`. Two things are known to be in the way today, both in the default components rather than the engine: the day number builds an `IconButton` and the multi-day overflow button an `InkWell`, and each needs a `Material` ancestor the app no longer supplies. `Card` supplies its own, and `MaterialLocalizations` is already an optional lookup. Whether the fix is to wrap those two, to replace them, or to tell the app to wrap the calendar, is for the example to answer.
 
 ### Known defects
 
-**Seven `TODO` comments ship in `lib/`.** None is a confirmed defect. Grouped by what they touch.
-
-*Rebuild cost.* `schedule_body.dart:50` and `:110` both flag rebuilds that may be unnecessary, and `kalender_view.dart:88` wants a field to become a `ValueNotifier`. Measure before changing any of them, as Performance below says.
-
-*Structure.* `multi_day_body.dart:18` wants the split between content and header removed, `view_controller.dart:41` notes a value is created where it could be passed in, `kalender_callbacks.dart:74` asks how the callbacks interact with the draggables, and `event_layout_delegate.dart:443` asks whether a hard-coded value should be adjustable.
-
-### Tests
-
-Coverage is 93.7% of lines, up from 88.2% at 0.24.0 and 84.4% at 0.23.0.
-
-Both columns are line coverage of the directory and everything under it, measured with `flutter test --coverage`.
-
-| Area | 0.24.0 | Now | What is missing |
-|---|---|---|---|
-| `models/` | 87% | 93% | Recovered, and past the 0.24.0 figure, once the directory below was covered. |
-| `models/components/` | not tracked | 98% | Done. `copyWith`, `==` and `hashCode` on the nine components classes had no test at all. What is left is six bare `@override` lines that lcov counts and no test can reach. |
-| `models/mixins/` | 84% | 86% | No targeted work yet. `schedule_map.dart` at 71%. |
-| `models/view_configurations/` | 83% | 91% | `schedule_view_configuration.dart` is covered. `month_view_configuration.dart` at 72%. |
-| `widgets/drag_targets/` | 71% | 92% | Done. `schedule_drag_target.dart` went from 10 of its 87 lines to 82, which covered the whole reschedule path in the schedule view. |
-| `widgets/event_tiles/` | 81% | 95% | `multi_day_overlay_tile.dart` and `schedule_tile.dart` are covered. `multi_day_tile.dart` at 77%. |
-| `theme/` | 78% | 92% | Done. 0.25.0 rewrote this code and tested it, taking it from the lowest covered area to one of the highest. |
-
-The rest runs from 86% to 100% with nothing far below.
-
-**CI runs every job on the Flutter version in `.fvmrc`**, so `examples/material_ui` runs on the release that moved Material out, which is the point of it. A job on the newest stable reports a break before `.fvmrc` moves. The declared Flutter minimum has had its own job since 0.30.0.
-
-**The Dart bound is `>=3.10.0`**, the version `timezone` already required. Raising it switched `dart format` to the tall style, since the formatter picks its style from the package language version.
-
-Both areas the 0.24.0 backfill named are closed, and so are the three files named after them, so the coverage gate on the composability work in 0.33.0 is met. What is left is smaller and spread out: `schedule_map.dart` at 71%, `month_view_configuration.dart` at 72% and `multi_day_tile.dart` at 77%.
-
-The pattern from 0.24.0 held again, in that raising coverage turned something up. Covering the schedule drag target showed that a drop took the time of day from the target day rather than keeping the event's, so a 09:00 meeting moved to another day landed at midnight. The multi-day header already kept it, and the schedule uses the same path in 0.28.0. The components classes were sound: the tests found no dropped field, which matches the audit done during 0.27.0.
+The `TODO` comments in `lib/` mark possible defects, none confirmed. `grep -rn TODO lib/` lists them. Measure before changing one about rebuild cost.
 
 ### Composability
 
@@ -382,13 +182,13 @@ Slow frames come from the size of the widget, render and semantics tree, not fro
 
 ### Documentation
 
-- **The API reference is grouped** into seven categories that match the guides: Views, Events, Controllers and callbacks, Interaction, Appearance, Layout, and Dates and times. Every one of the 226 public symbols carries its category, and each category's topic page is its guide.
+- **The API reference is grouped** into seven categories that match the guides: Views, Events, Controllers and callbacks, Interaction, Appearance, Layout, and Dates and times. Every public symbol carries its category, and each category's topic page is its guide.
 
 ## Decided against
 
-Asked for often enough to be worth answering here.
-
-- **An event type that carries your data.** Attaching data means subclassing `KalenderEvent` and writing `copyWith`, `==`, `hashCode` and `layoutEquals` yourself. A generic version would save the typing, but those four methods are where calendar performance is won or lost, and hiding them invites a heavy payload and skipped equality checks. The readme documents the pattern.
+- **An event type that carries your data.** Attaching data means subclassing `KalenderEvent` and writing `copyWithData`, `==`, `hashCode` and `layoutEquals` yourself. A generic version would save the typing, but those four methods are where calendar performance is won or lost, and hiding them invites a heavy payload and skipped equality checks. [doc/events.md](doc/events.md#custom-events) documents the pattern.
+- **Replacing `MultiDayOverlayStyle.cardTheme` and `closeButtonStyle`.** Each is the override point over a Flutter type and interpolates with that type's `lerp`, so re-declaring either means reimplementing a Flutter type. Removing them makes nothing framework neutral while `KalenderThemeData` is a `ThemeExtension`.
+- **A public `KalenderPalette`.** It would only save an app from naming the styles it already has to name, and a second way to set the same values is worth less than the one that already works.
 
 ## Influencing this
 

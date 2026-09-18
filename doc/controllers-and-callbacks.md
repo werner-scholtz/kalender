@@ -13,19 +13,7 @@ did. Together they are how the calendar connects to the rest of your app.
 
 [`EventsController`](https://pub.dev/documentation/kalender/latest/kalender/EventsController-class.html) manages and exposes events to the calendar. Typically one instance per app. Use [`DefaultEventsController`](https://pub.dev/documentation/kalender/latest/kalender/DefaultEventsController-class.html) unless you need a custom storage layer.
 
-| Method                               | Description                                                                                                                    |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `addEvent(event)`                    | Add a single event, returns its `String` id                                                                                    |
-| `addEvents(events)`                  | Add multiple events, returns `List<String>` of ids                                                                             |
-| `removeEvent(event)`                 | Remove a specific event                                                                                                        |
-| `removeEvents(events)`               | Remove a list of events                                                                                                        |
-| `removeWhere(test)`                  | Remove events matching a predicate                                                                                             |
-| `removeById(id)`                     | Remove the event with the given `String` id                                                                                    |
-| `updateEvent({event, updatedEvent})` | Replace an existing event (named parameters)                                                                                   |
-| `replaceEvents(events)`              | Replace every stored event with the given list, returns `List<String>` of ids                                                  |
-| `byId(id)`                           | Return the event with the given `String` id, or `null`                                                                         |
-| `clearEvents()`                      | Remove all events                                                                                                              |
-| `eventsInRange(range)`               | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
+Its methods are `addEvent`, `addEvents`, `removeEvent`, `removeEvents`, `removeWhere`, `removeById`, `updateEvent`, `replaceEvents`, `byId`, `clearEvents` and `eventsInRange`.
 
 `eventsInRange` takes a `FloatingDateTimeRange`, not a `KalenderDateTimeRange`.
 Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
@@ -54,35 +42,14 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 what draws its drop target and resize handles. `deselectEvent()` clears it. Both
 drive the `selectedEvent` notifier above.
 
-> Internally the controller delegates to a [`ViewController`](https://pub.dev/documentation/kalender/latest/kalender/ViewController-class.html) (`MultiDayViewController`, `MonthViewController`, or `ScheduleViewController`) depending on the active `ViewConfiguration`.
-
 ### Disposing
 
-Both controllers hold listeners, so dispose them with the widget that owns them.
+Both controllers hold listeners, so dispose them with the widget that owns them:
 
-<!-- snippet: file -->
+<!-- snippet: statements -->
 ```dart
-class MyCalendar extends StatefulWidget {
-  const MyCalendar({super.key});
-
-  @override
-  State<MyCalendar> createState() => _MyCalendarState();
-}
-
-class _MyCalendarState extends State<MyCalendar> {
-  final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
-
-  @override
-  void dispose() {
-    kalenderController.dispose();
-    eventsController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => const SizedBox.shrink();
-}
+kalenderController.dispose();
+eventsController.dispose();
 ```
 
 An `EventsController` shared across screens belongs to whatever owns it for the
@@ -104,19 +71,8 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
-
-  @override
-  void dispose() {
-    kalenderController.dispose();
-    eventsController.dispose();
-    super.dispose();
-  }
-
-  late final viewConfigurations = <ViewConfiguration>[
+  final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(),
-    MultiDayViewConfiguration.singleDay(),
     MonthViewConfiguration.singleMonth(),
   ];
   late ViewConfiguration viewConfiguration = viewConfigurations.first;
@@ -127,38 +83,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
       children: [
         Row(
           children: [
-            // The visible range drives the label, so it updates on every scroll,
-            // page change and view switch.
             ValueListenableBuilder(
               valueListenable: kalenderController.visibleDateTimeRange,
-              builder: (context, range, child) {
-                if (range == null) return const SizedBox.shrink();
-                return Text('${range.start.monthNameLocalized()} ${range.start.year}');
-              },
+              builder: (context, range, child) =>
+                  Text(range == null ? '' : '${range.start.monthNameLocalized()} ${range.start.year}'),
             ),
-            IconButton(
-              onPressed: kalenderController.animateToPreviousPage,
-              icon: const Icon(Icons.chevron_left),
-            ),
-            IconButton(
-              onPressed: kalenderController.animateToNextPage,
-              icon: const Icon(Icons.chevron_right),
-            ),
-            IconButton(
-              onPressed: () => kalenderController.animateToDate(DateTime.now()),
-              icon: const Icon(Icons.today),
-            ),
-            const Spacer(),
+            IconButton(onPressed: kalenderController.animateToPreviousPage, icon: const Icon(Icons.chevron_left)),
+            IconButton(onPressed: kalenderController.animateToNextPage, icon: const Icon(Icons.chevron_right)),
             DropdownButton<ViewConfiguration>(
               value: viewConfiguration,
-              items: [
-                for (final configuration in viewConfigurations)
-                  DropdownMenuItem(value: configuration, child: Text(configuration.name)),
-              ],
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => viewConfiguration = value);
-              },
+              items: [for (final c in viewConfigurations) DropdownMenuItem(value: c, child: Text(c.name))],
+              onChanged: (value) => setState(() => viewConfiguration = value!),
             ),
           ],
         ),
@@ -197,10 +132,7 @@ KalenderCallbacks(
   // Called when an event tile is tapped.
   onEventTapped: (event) {},
 
-  // Called when an event tile is tapped. Includes tap position detail.
-  // The 'detail' parameter provides the tap location, the tile's 'RenderBox' and
-  // its exact calculated 'DateTime' position based on the tapped position within
-  // the event UI.
+  // With tap position and the tile's RenderBox.
   onEventTappedWithDetail: (event, detail) {},
 
   // Called when an event is secondary tapped (right-clicked).
@@ -214,11 +146,8 @@ KalenderCallbacks(
       end: event.end, title: 'New Event');
   },
 
-  // Same as onEventCreate but includes gesture detail (position, renderBox).
-  onEventCreateWithDetail: (event, detail) {
-    return Event(start: event.start,
-      end: event.end, title: 'New Event');
-  },
+  // onEventCreateWithDetail: (event, detail) {...} also receives the gesture
+  // detail, and is used instead of onEventCreate when set.
 
   // Called after a new event has been committed. Add it to your controller here.
   onEventCreated: (event) => eventsController.addEvent(event),

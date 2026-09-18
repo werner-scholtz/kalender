@@ -84,41 +84,29 @@ it through with `super.interaction`, as in [Custom Events](events.md#custom-even
 
 Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`web_demo`](../examples/web_demo) example shows a full implementation with [`ZoomDetector`](../examples/web_demo/lib/widgets/calendar/zoom.dart).
 
-Here is a minimal example of driving zoom from Ctrl+scroll on desktop. `PointerScrollEvent` and `HardwareKeyboard` are not exported by `material.dart`, so both imports are needed:
+To zoom with Ctrl+scroll on desktop, wrap `KalenderView` in a `Listener`:
 
-<!-- snippet: file -->
+<!-- snippet: expression -->
 ```dart
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
-class ZoomableCalendar extends StatelessWidget {
-  final KalenderController kalenderController;
-  final Widget child;
+Listener(
+  onPointerSignal: (event) {
+    if (!HardwareKeyboard.instance.isControlPressed) return;
+    if (event is! PointerScrollEvent) return;
 
-  const ZoomableCalendar({
-    super.key,
-    required this.kalenderController,
-    required this.child,
-  });
+    final viewController = kalenderController.viewController;
+    if (viewController is! MultiDayViewController) return;
 
-  @override
-  Widget build(BuildContext context) {
-    return Listener(
-      onPointerSignal: (event) {
-        if (!HardwareKeyboard.instance.isControlPressed) return;
-        if (event is! PointerScrollEvent) return;
-
-        final viewController = kalenderController.viewController;
-        if (viewController is! MultiDayViewController) return;
-
-        final heightPerMinute = viewController.heightPerMinute;
-        final delta = event.scrollDelta.dy.sign * -0.1;
-        heightPerMinute.value = (heightPerMinute.value + delta).clamp(0.5, 2.0);
-      },
-      child: child,
-    );
-  }
-}
+    final heightPerMinute = viewController.heightPerMinute;
+    final delta = event.scrollDelta.dy.sign * -0.1;
+    heightPerMinute.value = (heightPerMinute.value + delta).clamp(0.5, 2.0);
+  },
+  child: KalenderView(
+    eventsController: eventsController,
+    kalenderController: kalenderController,
+    viewConfiguration: viewConfiguration,
+  ),
+)
 ```
-
-Wrap your `KalenderView` with this widget to enable Ctrl+scroll zooming.

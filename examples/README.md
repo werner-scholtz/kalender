@@ -9,16 +9,16 @@ each answer one question.
 
 | Example | Shows |
 | --- | --- |
-| [example](example) | All view types with a toolbar, sample events, custom tiles, and create, drag and resize. Start here. |
-| [advanced_example](advanced_example) | A custom event layout with a lane per person, zoom on desktop and mobile, and creating an event pre-assigned to the lane that was tapped. |
-| [recurrence](recurrence) | Recurring events built in the app, since the package has no recurrence of its own. Occurrences are generated up front, which suits a bounded number of repeats. |
-| [ics](ics) | Importing and exporting iCalendar files. `enough_icalendar` parses and writes, `rrule` expands the rule, and occurrences are produced only for the visible window so a "repeat forever" rule stays cheap. |
-| [riverpod](riverpod) | Sharing the events controller, the calendar controller and the selected view through providers. |
+| [example](example) | All view types with a toolbar, custom tiles, and create, drag and resize. |
+| [advanced_example](advanced_example) | A custom event layout with one lane per person. |
+| [recurrence](recurrence) | Recurring events generated in the app. |
+| [ics](ics) | Importing and exporting iCalendar files. |
+| [riverpod](riverpod) | Sharing the controllers and the selected view through providers. |
 | [intl4x](intl4x) | The calendar's localized strings rendered with intl4x instead of intl. |
-| [web_demo](web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/). Every option through a runtime configuration panel, theming, locales, text direction, timezones, and a desktop split view over one shared event store. |
-| [material_ui](material_ui) | The calendar inside an app that migrated to the standalone `material_ui` package. Shows the three things that break against `package:flutter/material.dart` and the workaround for each. |
-| [testing](testing) | A performance harness rather than an app. Drives the calendar through navigation, scrolling, rescheduling and resizing at 10 and 50 events per day and records frame build times. Feeds the [benchmarks dashboard](https://werner-scholtz.github.io/kalender/dev/bench/). |
-| [doc_snippets](doc_snippets) | Not an app either. Holds the placeholder identifiers that `tool/analyze_doc_snippets.dart` compiles the documentation snippets against. |
+| [web_demo](web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/). |
+| [material_ui](material_ui) | The calendar in an app built on the standalone `material_ui` package. |
+| [testing](testing) | A performance harness that feeds the [benchmarks dashboard](https://werner-scholtz.github.io/kalender/dev/bench/). |
+| [doc_snippets](doc_snippets) | Placeholders that `tool/analyze_doc_snippets.dart` compiles the documentation snippets against. |
 
 Run any of them from its own directory:
 
@@ -27,7 +27,5 @@ cd example
 flutter run
 ```
 
-Each has its own README with what it demonstrates and how to run it. The
-`analyze_examples.yml` workflow analyzes and tests every one on changes to
-`lib/` or `examples/`, which is what catches a breaking change before release,
-since the root analyzer excludes this directory.
+Each app has its own README. `analyze_examples.yml` analyzes and tests the
+examples in CI.
