@@ -6,7 +6,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
@@ -54,11 +53,8 @@ class MultiDayBody extends StatelessWidget {
 
     final pageHeight = context.heightPerMinute * timeOfDayRange.duration.inMinutes;
 
-    // Measured once by the calendar and shared with the header and the drag
-    // overlay so their day columns stay aligned.
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    final timelineWidth =
-        GutterWidths.maybeOf(context)?.timeline ?? bodyComponents.buildTimelineWidth(context, timeOfDayRange);
+    final timelineWidth = timelineWidthOf(context);
 
     return Stack(
       children: [

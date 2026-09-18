@@ -305,9 +305,6 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             final item = viewController.item(index);
             final date = viewController.dateTimeFromIndex(index)!;
 
-            // A fixed-width leading slot shared by every row, so the event tiles
-            // line up regardless of whether the row shows a date (and independent
-            // of day name / digits / locale / text scale).
             final leadingWidth = widget.configuration.leadingWidth;
             Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
 
