@@ -12,8 +12,6 @@ import 'package:timezone/timezone.dart';
 
 import '../utilities.dart';
 
-/// A widget that mixes in [DayEventTileUtils], used to exercise the public
-/// day-tile helper API from a real [BuildContext].
 class _DayTileHarness extends StatelessWidget with DayEventTileUtils {
   _DayTileHarness({required this.event, required this.tileRange});
 
@@ -27,8 +25,6 @@ class _DayTileHarness extends StatelessWidget with DayEventTileUtils {
   Widget build(BuildContext context) => const SizedBox(width: 100, height: 600);
 }
 
-/// A widget that mixes in [MultiDayEventTileUtils], used to exercise the public
-/// multi-day-tile helper API from a real [BuildContext].
 class _MultiDayTileHarness extends StatelessWidget with MultiDayEventTileUtils {
   _MultiDayTileHarness({required this.event, required this.tileRange});
 
@@ -80,8 +76,6 @@ void main() {
     return key.currentContext!;
   }
 
-  // ─── DayEventTileUtils ───────────────────────────────────────────────────────
-
   group('DayEventTileUtils', () {
     final event = KalenderEvent(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10));
     final tileRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16));
@@ -112,13 +106,10 @@ void main() {
     });
 
     testWidgets('nearbyEvents returns overlapping events within the window and excludes self', (tester) async {
-      // Self event 09:00-10:00.
       final selfId = eventsController.addEvent(event);
-      // Within a +/-30min window of 09:00-10:00 (08:30-10:30).
       final nearbyId = eventsController.addEvent(
         KalenderEvent(start: DateTime.utc(2024, 1, 15, 8), end: DateTime.utc(2024, 1, 15, 8, 45)),
       );
-      // Outside the window.
       eventsController.addEvent(
         KalenderEvent(start: DateTime.utc(2024, 1, 15, 11), end: DateTime.utc(2024, 1, 15, 12)),
       );
@@ -146,56 +137,35 @@ void main() {
     });
   });
 
-  // ─── MultiDayEventTileUtils ──────────────────────────────────────────────────
-
   group('MultiDayEventTileUtils', () {
     final event = KalenderEvent(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 17, 18));
     final tileRange = KalenderDateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 18));
 
-    testWidgets('dateFromPosition maps a horizontal offset to the right day', (tester) async {
+    Future<(_MultiDayTileHarness, BuildContext)> pumpMultiDayHarness(WidgetTester tester, KalenderEvent event) async {
       final harness = _MultiDayTileHarness(event: event, tileRange: tileRange);
-      final context = await pumpHarness(tester, harness);
-      // 3-day span across a 300px-wide tile → 100px per day. dx 150 → day index 1 → Jan 16.
-      final date = harness.dateFromPosition(context, const Offset(150, 0));
-      expect(date.year, equals(2024));
-      expect(date.month, equals(1));
-      expect(date.day, equals(16));
-    });
+      return (harness, await pumpHarness(tester, harness));
+    }
 
-    testWidgets('dateFromPosition first column resolves to the start day', (tester) async {
-      final harness = _MultiDayTileHarness(event: event, tileRange: tileRange);
-      final context = await pumpHarness(tester, harness);
-      final date = harness.dateFromPosition(context, const Offset(10, 0));
-      expect(date.day, equals(15));
-    });
+    // Runs Jan 13 to Jan 20, but the tile only shows Jan 15 to Jan 18.
+    final overflowing = KalenderEvent(start: DateTime.utc(2024, 1, 13, 9), end: DateTime.utc(2024, 1, 20, 18));
 
-    testWidgets('dateFromPosition last column resolves to the end day', (tester) async {
-      final harness = _MultiDayTileHarness(event: event, tileRange: tileRange);
-      final context = await pumpHarness(tester, harness);
-      // 3 days across 300px → dx 250 is in the third column (index 2) → Jan 17.
-      final date = harness.dateFromPosition(context, const Offset(250, 0));
-      expect(date.day, equals(17));
-    });
+    // 3 days across the 300px tile, so each day is 100px wide.
+    final dateFromPositionCases = [
+      ('maps a horizontal offset to the right day', event, 150.0, TZDateTime(utcLocation, 2024, 1, 16)),
+      ('resolves the first column to the start day', event, 10.0, TZDateTime(utcLocation, 2024, 1, 15)),
+      ('resolves the last column to the end day', event, 250.0, TZDateTime(utcLocation, 2024, 1, 17)),
+      ('clamps a tap on the trailing edge to the last day', event, 300.0, TZDateTime(utcLocation, 2024, 1, 17)),
+      ('clips an overflowing event', overflowing, 10.0, TZDateTime(utcLocation, 2024, 1, 15)),
+      ('clips an overflowing event', overflowing, 150.0, TZDateTime(utcLocation, 2024, 1, 16)),
+      ('clips an overflowing event', overflowing, 250.0, TZDateTime(utcLocation, 2024, 1, 17)),
+    ];
 
-    testWidgets('dateFromPosition clamps a tap on the trailing edge to the last day', (tester) async {
-      final harness = _MultiDayTileHarness(event: event, tileRange: tileRange);
-      final context = await pumpHarness(tester, harness);
-      // dx == width would be column index 3 (one past the 3-day event) without
-      // clamping; it must resolve to the last visible day (Jan 17), not Jan 18.
-      final date = harness.dateFromPosition(context, const Offset(300, 0));
-      expect(date.day, equals(17));
-    });
-
-    testWidgets('dateFromPosition clips an event that overflows the tile on both sides', (tester) async {
-      // Event runs Jan 13 → Jan 20 but the tile only shows Jan 15 → Jan 18, so
-      // the 300px width maps to the 3 visible days (Jan 15, 16, 17).
-      final overflowing = KalenderEvent(start: DateTime.utc(2024, 1, 13, 9), end: DateTime.utc(2024, 1, 20, 18));
-      final harness = _MultiDayTileHarness(event: overflowing, tileRange: tileRange);
-      final context = await pumpHarness(tester, harness);
-      expect(harness.dateFromPosition(context, const Offset(10, 0)).day, equals(15));
-      expect(harness.dateFromPosition(context, const Offset(150, 0)).day, equals(16));
-      expect(harness.dateFromPosition(context, const Offset(250, 0)).day, equals(17));
-    });
+    for (final (description, tileEvent, dx, expected) in dateFromPositionCases) {
+      testWidgets('dateFromPosition $description, dx $dx', (tester) async {
+        final (harness, context) = await pumpMultiDayHarness(tester, tileEvent);
+        expect(harness.dateFromPosition(context, Offset(dx, 0)), expected);
+      });
+    }
 
     testWidgets('nearbyEvents includes multi-day events by default', (tester) async {
       final selfId = eventsController.addEvent(event);
@@ -203,8 +173,7 @@ void main() {
         KalenderEvent(start: DateTime.utc(2024, 1, 16), end: DateTime.utc(2024, 1, 18)),
       );
 
-      final harness = _MultiDayTileHarness(event: eventsController.byId(selfId)!, tileRange: tileRange);
-      final context = await pumpHarness(tester, harness);
+      final (harness, context) = await pumpMultiDayHarness(tester, eventsController.byId(selfId)!);
       final nearby = harness.nearbyEvents(context);
 
       final ids = nearby.map((e) => e.id).toSet();

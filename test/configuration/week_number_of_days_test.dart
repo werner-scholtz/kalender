@@ -18,7 +18,6 @@ import '../utilities.dart';
 void main() {
   final displayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
-  // Monday 14 April 2025.
   final monday = DateTime(2025, 4, 14);
 
   group('MultiDayViewConfiguration.week', () {

@@ -54,8 +54,7 @@ void main() {
 
     test('a builder held as a top-level function stays equal across instances', () {
       const a = KalenderComponents(scheduleComponents: ScheduleComponents(leadingDateStringBuilder: _dateLabel));
-      // Built without const so this is a separate instance, which is what a
-      // consumer constructing their components inside build() ends up with.
+      // Built without const so this is a separate instance.
       // ignore: prefer_const_constructors
       final b = KalenderComponents(scheduleComponents: const ScheduleComponents(leadingDateStringBuilder: _dateLabel));
       expect(a, equals(b));
@@ -96,11 +95,6 @@ void main() {
   });
 
   group('Components rebuilds', () {
-    /// Counts how often the components actually change for a dependent.
-    ///
-    /// [State.didChangeDependencies] runs only when an inherited dependency
-    /// reports a change, so it separates a real notification from the ordinary
-    /// rebuild that follows a parent rebuilding.
     testWidgets('rebuilding the calendar does not report new components', (tester) async {
       _DependentState.notifications = 0;
       late StateSetter rebuild;

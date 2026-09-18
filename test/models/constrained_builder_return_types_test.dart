@@ -8,12 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-/// Two builder typedefs return a package class rather than a [Widget], so the
-/// class has to be exported or the typedef cannot be implemented.
+/// Two builder typedefs return a package class rather than a [Widget], so the class has to be exported or the
+/// typedef cannot be implemented.
 ///
-/// This has shipped broken twice: `PageIndexCalculator` before 0.26.0 and
-/// `MultiDayEventOverlayTile` before 0.27.0. These are compile-time checks, so
-/// a regression fails the analyzer rather than the expectation below.
+/// These are compile-time checks, so a regression fails the analyzer rather than the expectation below.
 void main() {
   test('MultiDayOverlayEventTileBuilder can be implemented', () {
     MultiDayEventOverlayTile build(

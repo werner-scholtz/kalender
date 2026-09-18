@@ -16,293 +16,105 @@ void main() {
   initializeTimeZones();
   final locations = locationsToTest.map(getLocation).toList();
 
+  final strategies = {
+    'kDefaultToMonthly': kDefaultToMonthly,
+    'kDefaultToWeekly': kDefaultToWeekly,
+    'kDefaultToDaily': kDefaultToDaily,
+    'kDefaultToSchedule': kDefaultToSchedule,
+  };
+
   for (final location in locations) {
-    // A full-year display range expressed in the target location.
     final range = KalenderDateTimeRange(start: TZDateTime(location, 2025), end: TZDateTime(location, 2026));
     final visibleEvents = ValueNotifier(<KalenderEvent>{});
 
-    // ── Controller builders ──────────────────────────────────────────────
-    //
-    // All controllers use initialDate = FloatingDateTime(2025, 1, 1) which is
-    // treated as a timezone-agnostic wall-clock value by page calculators.
-    //
-    // The dummy initial visibleDateTimeRange passed to each constructor is
-    // immediately overwritten inside the constructor, so any sentinel value works.
+    // The constructors overwrite the initial visible range.
+    ViewController build(ViewConfiguration config) {
+      final floatingVisibleRange = ValueNotifier(
+        FloatingDateTimeRange(start: FloatingDateTime(2025), end: FloatingDateTime(2025, 2)),
+      );
+      final initialDate = FloatingDateTime(2025, 1, 1);
+      return switch (config) {
+        final MonthViewConfiguration config => MonthViewController(
+          viewConfiguration: config,
+          floatingVisibleRange: floatingVisibleRange,
+          visibleEvents: visibleEvents,
+          initialDate: initialDate,
+        ),
+        final MultiDayViewConfiguration config => MultiDayViewController(
+          viewConfiguration: config,
+          floatingVisibleRange: floatingVisibleRange,
+          visibleEvents: visibleEvents,
+          initialDate: initialDate,
+        ),
+        final ScheduleViewConfiguration config => ContinuousScheduleViewController(
+          viewConfiguration: config,
+          floatingVisibleRange: floatingVisibleRange,
+          visibleEvents: visibleEvents,
+          initialDate: initialDate,
+        ),
+        _ => throw ArgumentError.value(config),
+      };
+    }
 
-    FloatingDateTimeRange dummyRange() =>
-        FloatingDateTimeRange(start: FloatingDateTime(2025), end: FloatingDateTime(2025, 2));
+    FloatingDateTime visibleStart(ViewConfiguration config) => build(config).floatingVisibleRange.value!.start;
 
-    MonthViewController buildMonth() => MonthViewController(
-      viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
-      floatingVisibleRange: ValueNotifier(dummyRange()),
-      visibleEvents: visibleEvents,
-      initialDate: FloatingDateTime(2025, 1, 1),
-    );
-
-    MultiDayViewController buildWeek() => MultiDayViewController(
-      viewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
-      floatingVisibleRange: ValueNotifier(dummyRange()),
-      visibleEvents: visibleEvents,
-      initialDate: FloatingDateTime(2025, 1, 1),
-    );
-
-    MultiDayViewController buildWorkWeek() => MultiDayViewController(
-      viewConfiguration: MultiDayViewConfiguration.workWeek(displayRange: range),
-      floatingVisibleRange: ValueNotifier(dummyRange()),
-      visibleEvents: visibleEvents,
-      initialDate: FloatingDateTime(2025, 1, 1),
-    );
-
-    MultiDayViewController buildDay() => MultiDayViewController(
-      viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
-      floatingVisibleRange: ValueNotifier(dummyRange()),
-      visibleEvents: visibleEvents,
-      initialDate: FloatingDateTime(2025, 1, 1),
-    );
-
-    MultiDayViewController buildCustomMultiDay() => MultiDayViewController(
-      viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range),
-      floatingVisibleRange: ValueNotifier(dummyRange()),
-      visibleEvents: visibleEvents,
-      initialDate: FloatingDateTime(2025, 1, 1),
-    );
-
-    MultiDayViewController buildCustomSingleDay() => MultiDayViewController(
-      viewConfiguration: MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range),
-      floatingVisibleRange: ValueNotifier(dummyRange()),
-      visibleEvents: visibleEvents,
-      initialDate: FloatingDateTime(2025, 1, 1),
-    );
-
-    ContinuousScheduleViewController buildSchedule() => ContinuousScheduleViewController(
-      viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: range),
-      floatingVisibleRange: ValueNotifier(dummyRange()),
-      visibleEvents: visibleEvents,
-      initialDate: FloatingDateTime(2025, 1, 1),
-    );
-
-    // ── Expected starting dates ──────────────────────────────────────────
-    //
-    // Month / Week / WorkWeek use calendar-aligned page calculators that snap
-    // to the ISO week boundary regardless of the TZDateTime UTC offset, so their
-    // visible-range start is the same for ALL tested locations:
-    //   • Month & Week & WorkWeek → Dec 30, 2024  (Monday of the week containing Jan 1)
-    //   • Day / Custom(1)         → Jan  1, 2025
-    //   • dominantMonthDate of the January month grid → Jan 1, 2025
-    //
-    // Custom(3) and Schedule anchor their page 0 to the raw display-range start.
-    // For UTC+2/+11 locations that start resolves to Dec 31 instead of Jan 1,
-    // shifting page boundaries. We therefore derive those starts from the
-    // constructed controllers instead of hardcoding them.
+    // Month, week and work week start on the Monday of the week containing 1 January in every location. Custom(3)
+    // and schedule anchor page 0 to the display-range start, which moves with the UTC offset, so their starts come
+    // from the controllers.
     final monthOrWeekStart = FloatingDateTime(2024, 12, 30);
     final dayStart = FloatingDateTime(2025, 1, 1);
     final dominantJanuary = FloatingDateTime(2025, 1, 1);
 
-    // Location-dependent starts – built once, reused across all strategy groups.
-    final customMultiStart = buildCustomMultiDay().floatingVisibleRange.value!.start;
-    final scheduleStart = buildSchedule().floatingVisibleRange.value!.start;
+    final week = MultiDayViewConfiguration.week(displayRange: range);
+    final custom3 = MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range);
+    final schedule = ScheduleViewConfiguration.continuous(displayRange: range);
 
-    // ── kDefaultToMonthly ────────────────────────────────────────────────
+    final views = [
+      (
+        name: 'Month',
+        config: MonthViewConfiguration.singleMonth(displayRange: range),
+        expected: dominantJanuary,
+        routesTo: 'kDefaultToMonthly',
+      ),
+      (name: 'Week', config: week, expected: monthOrWeekStart, routesTo: 'kDefaultToWeekly'),
+      (
+        name: 'WorkWeek',
+        config: MultiDayViewConfiguration.workWeek(displayRange: range),
+        expected: monthOrWeekStart,
+        routesTo: 'kDefaultToWeekly',
+      ),
+      (
+        name: 'Day',
+        config: MultiDayViewConfiguration.singleDay(displayRange: range),
+        expected: dayStart,
+        routesTo: 'kDefaultToDaily',
+      ),
+      (name: 'Custom(3)', config: custom3, expected: visibleStart(custom3), routesTo: 'kDefaultToWeekly'),
+      (
+        name: 'Custom(1)',
+        config: MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range),
+        expected: dayStart,
+        routesTo: 'kDefaultToDaily',
+      ),
+      (name: 'Schedule', config: schedule, expected: visibleStart(schedule), routesTo: 'kDefaultToSchedule'),
+    ];
 
-    group('[$location] kDefaultToMonthly', () {
-      test('from Month  → dominantMonthDate of visible range', () {
-        final result = kDefaultToMonthly(buildMonth());
-        expect(result, dominantJanuary, reason: 'Month → Month: expected $dominantJanuary but got $result');
+    for (final MapEntry(key: name, value: strategy) in strategies.entries) {
+      group('[$location] $name', () {
+        for (final view in views) {
+          test('from ${view.name}', () {
+            expect(strategy(build(view.config)), view.expected);
+          });
+        }
       });
-
-      test('from Week   → visible-range start', () {
-        final result = kDefaultToMonthly(buildWeek());
-        expect(result, monthOrWeekStart, reason: 'Week → Month: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToMonthly(buildWorkWeek());
-        expect(result, monthOrWeekStart, reason: 'WorkWeek → Month: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from Day → visible-range start', () {
-        final result = kDefaultToMonthly(buildDay());
-        expect(result, dayStart, reason: 'Day → Month: expected $dayStart but got $result');
-      });
-
-      test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToMonthly(buildCustomMultiDay());
-        expect(result, customMultiStart, reason: 'Custom(3) → Month: expected $customMultiStart but got $result');
-      });
-
-      test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToMonthly(buildCustomSingleDay());
-        expect(result, dayStart, reason: 'Custom(1) → Month: expected $dayStart but got $result');
-      });
-
-      test('from Schedule → visible-range start', () {
-        final result = kDefaultToMonthly(buildSchedule());
-        expect(result, scheduleStart, reason: 'Schedule → Month: expected $scheduleStart but got $result');
-      });
-    });
-
-    // ── kDefaultToWeekly ─────────────────────────────────────────────────
-
-    group('[$location] kDefaultToWeekly', () {
-      test('from Month    → dominantMonthDate of visible range', () {
-        final result = kDefaultToWeekly(buildMonth());
-        expect(result, dominantJanuary, reason: 'Month → Week: expected $dominantJanuary but got $result');
-      });
-
-      test('from Week     → visible-range start', () {
-        final result = kDefaultToWeekly(buildWeek());
-        expect(result, monthOrWeekStart, reason: 'Week → Week: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToWeekly(buildWorkWeek());
-        expect(result, monthOrWeekStart, reason: 'WorkWeek → Week: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from Day → visible-range start', () {
-        final result = kDefaultToWeekly(buildDay());
-        expect(result, dayStart, reason: 'Day → Week: expected $dayStart but got $result');
-      });
-
-      test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToWeekly(buildCustomMultiDay());
-        expect(result, customMultiStart, reason: 'Custom(3) → Week: expected $customMultiStart but got $result');
-      });
-
-      test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToWeekly(buildCustomSingleDay());
-        expect(result, dayStart, reason: 'Custom(1) → Week: expected $dayStart but got $result');
-      });
-
-      test('from Schedule → visible-range start', () {
-        final result = kDefaultToWeekly(buildSchedule());
-        expect(result, scheduleStart, reason: 'Schedule → Week: expected $scheduleStart but got $result');
-      });
-    });
-
-    // ── kDefaultToDaily ──────────────────────────────────────────────────
-
-    group('[$location] kDefaultToDaily', () {
-      test('from Month  → dominantMonthDate of visible range', () {
-        final result = kDefaultToDaily(buildMonth());
-        expect(result, dominantJanuary, reason: 'Month → Day: expected $dominantJanuary but got $result');
-      });
-
-      test('from Week   → visible-range start', () {
-        final result = kDefaultToDaily(buildWeek());
-        expect(result, monthOrWeekStart, reason: 'Week → Day: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToDaily(buildWorkWeek());
-        expect(result, monthOrWeekStart, reason: 'WorkWeek → Day: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from Day → visible-range start', () {
-        final result = kDefaultToDaily(buildDay());
-        expect(result, dayStart, reason: 'Day → Day: expected $dayStart but got $result');
-      });
-
-      test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToDaily(buildCustomMultiDay());
-        expect(result, customMultiStart, reason: 'Custom(3) → Day: expected $customMultiStart but got $result');
-      });
-
-      test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToDaily(buildCustomSingleDay());
-        expect(result, dayStart, reason: 'Custom(1) → Day: expected $dayStart but got $result');
-      });
-
-      test('from Schedule → visible-range start', () {
-        final result = kDefaultToDaily(buildSchedule());
-        expect(result, scheduleStart, reason: 'Schedule → Day: expected $scheduleStart but got $result');
-      });
-    });
-
-    // ── kDefaultToSchedule ───────────────────────────────────────────────
-
-    group('[$location] kDefaultToSchedule', () {
-      test('from Month    → dominantMonthDate of visible range', () {
-        final result = kDefaultToSchedule(buildMonth());
-        expect(result, dominantJanuary, reason: 'Month → Schedule: expected $dominantJanuary but got $result');
-      });
-
-      test('from Week     → visible-range start', () {
-        final result = kDefaultToSchedule(buildWeek());
-        expect(result, monthOrWeekStart, reason: 'Week → Schedule: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToSchedule(buildWorkWeek());
-        expect(result, monthOrWeekStart, reason: 'WorkWeek → Schedule: expected $monthOrWeekStart but got $result');
-      });
-
-      test('from Day → visible-range start', () {
-        final result = kDefaultToSchedule(buildDay());
-        expect(result, dayStart, reason: 'Day → Schedule: expected $dayStart but got $result');
-      });
-
-      test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToSchedule(buildCustomMultiDay());
-        expect(result, customMultiStart, reason: 'Custom(3) → Schedule: expected $customMultiStart but got $result');
-      });
-
-      test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToSchedule(buildCustomSingleDay());
-        expect(result, dayStart, reason: 'Custom(1) → Schedule: expected $dayStart but got $result');
-      });
-
-      test('from Schedule → visible-range start', () {
-        final result = kDefaultToSchedule(buildSchedule());
-        expect(result, scheduleStart, reason: 'Schedule → Schedule: expected $scheduleStart but got $result');
-      });
-    });
-
-    // ── kCarryFocusDate (routing) ────────────────────────────────────────
-    //
-    // Verifies that the general router delegates to the correct specific strategy
-    // for each target ViewConfiguration type.  Using relational assertions
-    // (router result == specific-strategy result) means these tests remain valid
-    // even if an underlying strategy changes its return value.
+    }
 
     group('[$location] kCarryFocusDate routing', () {
-      // Use the week controller as a stable source throughout.
-      final src = buildWeek;
-
-      test('→ MonthViewConfiguration routes to kDefaultToMonthly', () {
-        final cfg = MonthViewConfiguration.singleMonth(displayRange: range);
-        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToMonthly(src()));
-      });
-
-      test('→ week MultiDayViewConfiguration routes to kDefaultToWeekly', () {
-        final cfg = MultiDayViewConfiguration.week(displayRange: range);
-        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToWeekly(src()));
-      });
-
-      test('→ workWeek MultiDayViewConfiguration routes to kDefaultToWeekly', () {
-        final cfg = MultiDayViewConfiguration.workWeek(displayRange: range);
-        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToWeekly(src()));
-      });
-
-      test('→ custom(3) MultiDayViewConfiguration routes to kDefaultToWeekly', () {
-        final cfg = MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range);
-        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToWeekly(src()));
-      });
-
-      test('→ singleDay MultiDayViewConfiguration routes to kDefaultToDaily', () {
-        final cfg = MultiDayViewConfiguration.singleDay(displayRange: range);
-        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToDaily(src()));
-      });
-
-      test('→ custom(1) MultiDayViewConfiguration routes to kDefaultToDaily', () {
-        final cfg = MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range);
-        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToDaily(src()));
-      });
-
-      test('→ ScheduleViewConfiguration routes to kDefaultToSchedule', () {
-        final cfg = ScheduleViewConfiguration.continuous(displayRange: range);
-        expect(kCarryFocusDate(_ctx(src(), cfg)), kDefaultToSchedule(src()));
-      });
+      for (final view in views) {
+        test('to ${view.name} routes to ${view.routesTo}', () {
+          expect(kCarryFocusDate(_ctx(build(week), view.config)), strategies[view.routesTo]!(build(week)));
+        });
+      }
     });
   }
 }

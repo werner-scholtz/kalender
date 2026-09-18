@@ -14,12 +14,8 @@ void main() {
   final date = DateTime(2025);
   final floatingDate = FloatingDateTime.fromDateTime(date);
 
-  // Events deliberately chosen to exercise boundary-touching behavior:
-  //   - event 0 (01:29–01:30) and event 1 (01:30–01:59:59…) share an exact
-  //     boundary minute but do NOT overlap in vertical layout terms.
-  //   - events 2 and 3 are back-to-back whole hours, also non-overlapping.
-  // None of the events overlap, so every strategy should render each tile at
-  // full width.
+  // Events 0 and 1 share the boundary minute 01:30 and events 2 and 3 are back-to-back hours. None of them overlap,
+  // so every strategy renders each tile at full width.
   final events = [
     KalenderEvent(start: date.copyWith(hour: 1, minute: 29), end: date.copyWith(hour: 1, minute: 30)),
     KalenderEvent(
@@ -36,8 +32,6 @@ void main() {
 
   Key getKey(int index) => Key('event_$index');
 
-  /// Builds a [CustomMultiChildLayout] with the given [delegate] inside a
-  /// fixed-size [SizedBox] and returns the pumped widget.
   Widget buildLayout(EventLayoutDelegate delegate) {
     return wrapWithMaterialApp(
       SizedBox(
@@ -58,15 +52,13 @@ void main() {
     );
   }
 
-  /// Asserts that every event tile is visible, has the expected [width], and is
-  /// positioned within the container bounds.
-  void expectAllTilesRendered(WidgetTester tester, {double expectedWidth = containerWidth}) {
+  void expectAllTilesRendered(WidgetTester tester) {
     for (var i = 0; i < events.length; i++) {
       final finder = find.byKey(getKey(i));
       expect(finder, findsOneWidget, reason: 'event $i should be rendered');
 
       final size = tester.getSize(finder);
-      expect(size.width, expectedWidth, reason: 'event $i width');
+      expect(size.width, containerWidth, reason: 'event $i width');
 
       final topLeft = tester.getTopLeft(finder);
       expect(topLeft.dy, greaterThanOrEqualTo(0), reason: 'event $i top should be within container');
@@ -78,47 +70,32 @@ void main() {
     }
   }
 
-  group('OverlapLayoutStrategy', () {
-    for (final heightPerMinute in heightPerMinutes) {
-      testWidgets('height per minute $heightPerMinute', (tester) async {
-        await tester.pumpWidget(
-          buildLayout(
-            const EventLayoutStrategy.overlap().createDelegate(
-              events: events,
-              date: floatingDate,
-              timeOfDayRange: KalenderTimeRange.allDay(),
-              heightPerMinute: heightPerMinute,
-              minimumTileHeight: null,
-              cache: null,
-              location: null,
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        expectAllTilesRendered(tester);
-      });
-    }
-  });
+  const strategies = [
+    ('OverlapLayoutStrategy', EventLayoutStrategy.overlap()),
+    ('SideBySideLayoutStrategy', EventLayoutStrategy.sideBySide()),
+  ];
 
-  group('SideBySideLayoutStrategy', () {
-    for (final heightPerMinute in heightPerMinutes) {
-      testWidgets('height per minute $heightPerMinute', (tester) async {
-        await tester.pumpWidget(
-          buildLayout(
-            const EventLayoutStrategy.sideBySide().createDelegate(
-              events: events,
-              date: floatingDate,
-              timeOfDayRange: KalenderTimeRange.allDay(),
-              heightPerMinute: heightPerMinute,
-              minimumTileHeight: null,
-              cache: null,
-              location: null,
+  for (final (name, strategy) in strategies) {
+    group(name, () {
+      for (final heightPerMinute in heightPerMinutes) {
+        testWidgets('height per minute $heightPerMinute', (tester) async {
+          await tester.pumpWidget(
+            buildLayout(
+              strategy.createDelegate(
+                events: events,
+                date: floatingDate,
+                timeOfDayRange: KalenderTimeRange.allDay(),
+                heightPerMinute: heightPerMinute,
+                minimumTileHeight: null,
+                cache: null,
+                location: null,
+              ),
             ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        expectAllTilesRendered(tester);
-      });
-    }
-  });
+          );
+          await tester.pumpAndSettle();
+          expectAllTilesRendered(tester);
+        });
+      }
+    });
+  }
 }

@@ -8,17 +8,9 @@ import 'package:flutter/material.dart' show Size;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-// Regression tests for a datetime->pixel rounding bug where two back-to-back
-// events (one ends exactly when the next begins) were laid out as overlapping
-// (side-by-side) at certain zoom levels. The cause was computing an event's
-// bottom as top + height (two conversions summed) while the next event's top
-// used a single conversion, so their boundaries differed by a floating point
-// hair and the 0.1px rounding could split them the wrong way.
+// Tests that back-to-back events are not grouped as overlapping after their times are converted to pixels.
 void main() {
-  // Use local wall-clock times. With location null the layout converts event
-  // times to the system timezone, so building the events in local time keeps
-  // them on the delegate's date on any machine. UTC times would shift to a
-  // different day under a non-UTC timezone and the events would be clamped out.
+  // Local times, because with location null the layout converts event times to the system timezone.
   KalenderEvent event(int startSeconds, int endSeconds) => KalenderEvent(
     start: DateTime(2024, 1, 1).add(Duration(seconds: startSeconds)),
     end: DateTime(2024, 1, 1).add(Duration(seconds: endSeconds)),
@@ -45,11 +37,6 @@ void main() {
     return delegate.groupVerticalLayoutData(bands).length;
   }
 
-  test('a previously failing case: two 5-minute events at zoom 2.05', () {
-    // Before the fix this produced a single overlap group (side-by-side).
-    expect(groupCountForTouchingPair(startSeconds: 0, durationSeconds: 300, heightPerMinute: 2.05), 2);
-  });
-
   test('touching events never overlap across a wide sweep of zoom, offsets and durations', () {
     for (final startSeconds in [0, 37, 613, 1801, 3599, 5000, 12345]) {
       for (final durationSeconds in [60, 300, 599, 900, 1234, 3600]) {
@@ -73,10 +60,7 @@ void main() {
   });
 
   test('the fix holds when minimumTileHeight is set but not triggered', () {
-    // 30-minute events stay taller than the 24px minimum for hpm >= 0.8, so the
-    // minimum floor does not apply and the boundaries must line up exactly.
-    // (Below that the minimum legitimately inflates a tile past its neighbour,
-    // which is separate expected behaviour, not the rounding bug.)
+    // 30-minute events stay taller than the 24px minimum for hpm >= 0.8, so the minimum does not apply.
     for (var i = 0; i <= 140; i++) {
       final heightPerMinute = 0.8 + i * 0.01; // 0.8 .. 2.2
       final groups = groupCountForTouchingPair(

@@ -187,11 +187,7 @@ void main() {
         final input = FloatingDateTime(2024, 6, 15, 9, 0);
         final result = timeOfDay.toFloatingDateTime(input);
 
-        expect(result.year, 2024);
-        expect(result.month, 6);
-        expect(result.day, 15);
-        expect(result.hour, 14);
-        expect(result.minute, 30);
+        expect(result, FloatingDateTime(2024, 6, 15, 14, 30));
       });
 
       test('zeroes out second, millisecond, and microsecond', () {
@@ -199,9 +195,9 @@ void main() {
         final input = FloatingDateTime.fromDateTime(DateTime(2024, 6, 15, 9, 45, 30, 500, 250));
         final result = timeOfDay.toFloatingDateTime(input);
 
-        expect(result.second, 0, reason: 'second should be zeroed');
-        expect(result.millisecond, 0, reason: 'millisecond should be zeroed');
-        expect(result.microsecond, 0, reason: 'microsecond should be zeroed');
+        expect(result.second, 0);
+        expect(result.millisecond, 0);
+        expect(result.microsecond, 0);
       });
     });
 
@@ -211,11 +207,7 @@ void main() {
         final input = DateTime(2024, 6, 15, 22, 45);
         final result = timeOfDay.toDateTime(input);
 
-        expect(result.year, 2024);
-        expect(result.month, 6);
-        expect(result.day, 15);
-        expect(result.hour, 8);
-        expect(result.minute, 0);
+        expect(result, DateTime(2024, 6, 15, 8));
       });
 
       test('zeroes out second, millisecond, and microsecond', () {
@@ -223,9 +215,9 @@ void main() {
         final input = DateTime(2024, 6, 15, 9, 45, 30, 500, 250);
         final result = timeOfDay.toDateTime(input);
 
-        expect(result.second, 0, reason: 'second should be zeroed');
-        expect(result.millisecond, 0, reason: 'millisecond should be zeroed');
-        expect(result.microsecond, 0, reason: 'microsecond should be zeroed');
+        expect(result.second, 0);
+        expect(result.millisecond, 0);
+        expect(result.microsecond, 0);
       });
     });
   });

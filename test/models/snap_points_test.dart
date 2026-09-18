@@ -41,8 +41,7 @@ void main() {
   group('addSnapPoint / removeSnapPoint', () {
     test('add increases length and contains the new point', () {
       points.addSnapPoint(FloatingDateTime(2024, 1, 1, 14));
-      expect(points.snapPoints.length, 1);
-      expect(points.snapPoints, contains(FloatingDateTime(2024, 1, 1, 14)));
+      expect(points.snapPoints, [FloatingDateTime(2024, 1, 1, 14)]);
     });
 
     test('remove decreases length and no longer contains the point', () {
@@ -62,7 +61,6 @@ void main() {
   });
 
   group('findSnapPoint', () {
-    // Pre-populate with the 6 event snap points for all findSnapPoint tests.
     setUp(() => points.addEventSnapPoints(testEvents.toSet(), null));
 
     const snapRange = Duration(hours: 1);

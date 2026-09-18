@@ -10,77 +10,64 @@ import 'package:kalender/src/models/view_configurations/page_index_calculator.da
 import 'package:timezone/data/latest_10y.dart';
 import 'package:timezone/timezone.dart';
 
-final locationsToTest = ['Etc/UTC', 'Africa/Johannesburg', 'America/New_York', 'Europe/London', 'Australia/Sydney'];
+import '../utilities.dart';
 
 void main() {
   initializeTimeZones();
   final locations = locationsToTest.map(getLocation).toList();
 
+  void testRangeFromIndex(PageIndexCalculator calculator, Location location, Map<int, FloatingDateTimeRange> ranges) {
+    for (final MapEntry(key: index, value: range) in ranges.entries) {
+      test('rangeFromIndex($index)', () {
+        expect(calculator.rangeFromIndex(index, location), range);
+      });
+    }
+  }
+
+  void testIndexFromDate(PageIndexCalculator calculator, Location location, Map<DateTime, int> indices) {
+    for (final MapEntry(key: date, value: index) in indices.entries) {
+      test('indexFromDate($date)', () {
+        expect(calculator.indexFromDate(date, location), index);
+      });
+    }
+  }
+
+  void testPages(PageIndexCalculator calculator, Location location, Map<int, FloatingDateTimeRange> pages) {
+    testRangeFromIndex(calculator, location, pages);
+    testIndexFromDate(calculator, location, {
+      for (final MapEntry(key: index, value: page) in pages.entries) page.start.forLocation(location: location): index,
+    });
+  }
+
   for (final location in locations) {
     final range = KalenderDateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2021));
     group('DayIndexCalculator for $location', () {
-      late DayIndexCalculator calculator;
-      setUpAll(() {
-        calculator = DayIndexCalculator(start: range.start, end: range.end);
+      final calculator = DayIndexCalculator(start: range.start, end: range.end);
+
+      testPages(calculator, location, {
+        0: FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 2)),
+        1: FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 2), end: FloatingDateTime(2020, 1, 3)),
+        166: FloatingDateTimeRange(start: FloatingDateTime(2020, 6, 15), end: FloatingDateTime(2020, 6, 16)),
+        365: FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 31), end: FloatingDateTime(2021, 1, 1)),
+      });
+      testRangeFromIndex(calculator, location, {
+        366: FloatingDateTimeRange(start: FloatingDateTime(2021), end: FloatingDateTime(2021, 1, 2)),
+      });
+      // range.end is the exclusive end of the range, so it clamps to the last page index.
+      testIndexFromDate(calculator, location, {range.end: 365});
+
+      test('numberOfPages', () {
+        expect(calculator.numberOfPages(location), 366);
       });
 
-      test('test rangeFromIndex', () {
-        var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 2)));
-        floatingRange = calculator.rangeFromIndex(1, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 2), end: FloatingDateTime(2020, 1, 3)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(166, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 6, 15), end: FloatingDateTime(2020, 6, 16)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(365, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 31), end: FloatingDateTime(2021, 1, 1)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(366, location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2021), end: FloatingDateTime(2021, 1, 2)));
-      });
-
-      test('test indexFromDate', () {
-        var index = calculator.indexFromDate(range.start, location);
-        expect(index, 0);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 1, 2), location);
-        expect(index, 1);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 6, 15), location);
-        expect(index, 166);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 31), location);
-        expect(index, 365);
-
-        // range.end is the exclusive end of the range, so it clamps to the last page index.
-        index = calculator.indexFromDate(range.end, location);
-        expect(index, 365);
-      });
-
-      test('test numberOfPages', () {
-        // 366 days in the 2020 range (leap year) → 366 pages.
-        final numberOfPages = calculator.numberOfPages(location);
-        expect(numberOfPages, 366);
-      });
-
-      test('test floatingRange', () {
+      test('floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
         expect(floatingRange, FloatingDateTimeRange.fromDateTimeRange(range));
       });
 
       // An empty range (start == end) has 0 pages; indexFromDate must not throw
       // on the negative clamp bound, and should fall back to index 0.
-      test('test indexFromDate for an empty range', () {
+      test('indexFromDate for an empty range', () {
         final emptyRange = KalenderDateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2020));
         final emptyCalculator = DayIndexCalculator(start: emptyRange.start, end: emptyRange.end);
         expect(emptyCalculator.numberOfPages(location), 0);
@@ -94,9 +81,6 @@ void main() {
         expect(PageIndexCalculator.freeScroll(range), isA<DayIndexCalculator>());
       });
 
-      // The band used to round the end of the range up to the next midnight
-      // whatever it was, so a range already ending at midnight gained a day and
-      // the last column fell outside it.
       test('a range ending at midnight is not extended by a day', () {
         final calculator = PageIndexCalculator.freeScroll(range);
         expect(calculator.numberOfPages(location), 366);
@@ -117,67 +101,21 @@ void main() {
     });
 
     group('WeekIndexCalculator for $location', () {
-      late WeekIndexCalculator calculator;
-      setUpAll(() {
-        calculator = WeekIndexCalculator.week(start: range.start, end: range.end, firstDayOfWeek: DateTime.monday);
+      final calculator = WeekIndexCalculator.week(start: range.start, end: range.end, firstDayOfWeek: DateTime.monday);
+
+      testPages(calculator, location, {
+        0: FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2020, 1, 6)),
+        1: FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 6), end: FloatingDateTime(2020, 1, 13)),
+        9: FloatingDateTimeRange(start: FloatingDateTime(2020, 3, 2), end: FloatingDateTime(2020, 3, 9)),
+        51: FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 21), end: FloatingDateTime(2020, 12, 28)),
+        52: FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 28), end: FloatingDateTime(2021, 1, 4)),
       });
 
-      test('test rangeFromIndex', () {
-        var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2020, 1, 6)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(1, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 6), end: FloatingDateTime(2020, 1, 13)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(9, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 3, 2), end: FloatingDateTime(2020, 3, 9)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(51, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 21), end: FloatingDateTime(2020, 12, 28)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(52, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 28), end: FloatingDateTime(2021, 1, 4)),
-        );
+      test('numberOfPages', () {
+        expect(calculator.numberOfPages(location), 53);
       });
 
-      test('test indexFromDate', () {
-        var index = calculator.indexFromDate(TZDateTime(location, 2019, 12, 30), location);
-        expect(index, 0);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 1, 6), location);
-        expect(index, 1);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 3, 2), location);
-        expect(index, 9);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 21), location);
-        expect(index, 51);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 28), location);
-        expect(index, 52);
-      });
-
-      test('test numberOfPages', () {
-        // 53 whole weeks span the adjusted range → 53 pages.
-        final numberOfPages = calculator.numberOfPages(location);
-        expect(numberOfPages, 53);
-      });
-
-      test('test floatingRange', () {
+      test('floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
         expect(
           floatingRange,
@@ -187,15 +125,12 @@ void main() {
     });
 
     group('WeekIndexCalculator with six days for $location', () {
-      late WeekIndexCalculator calculator;
-      setUpAll(() {
-        calculator = WeekIndexCalculator(
-          start: range.start,
-          end: range.end,
-          firstDayOfWeek: DateTime.monday,
-          daysToDisplay: 6,
-        );
-      });
+      final calculator = WeekIndexCalculator(
+        start: range.start,
+        end: range.end,
+        firstDayOfWeek: DateTime.monday,
+        daysToDisplay: 6,
+      );
 
       test('a page ends after six days', () {
         expect(
@@ -226,125 +161,45 @@ void main() {
     });
 
     group('CustomIndexCalculator for $location', () {
-      late CustomIndexCalculator calculator;
-      setUpAll(() {
-        calculator = CustomIndexCalculator(start: range.start, end: range.end, numberOfDays: 3);
+      final calculator = CustomIndexCalculator(start: range.start, end: range.end, numberOfDays: 3);
+
+      testPages(calculator, location, {
+        0: FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 4)),
+        1: FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 4), end: FloatingDateTime(2020, 1, 7)),
+        9: FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 28), end: FloatingDateTime(2020, 1, 31)),
+        120: FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 26), end: FloatingDateTime(2020, 12, 29)),
+        121: FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 29), end: FloatingDateTime(2021)),
       });
 
-      test('test rangeFromIndex', () {
-        var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 1, 4)));
-
-        floatingRange = calculator.rangeFromIndex(1, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 4), end: FloatingDateTime(2020, 1, 7)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(9, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 28), end: FloatingDateTime(2020, 1, 31)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(120, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 26), end: FloatingDateTime(2020, 12, 29)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(121, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 12, 29), end: FloatingDateTime(2021)),
-        );
+      test('numberOfPages', () {
+        expect(calculator.numberOfPages(location), 122);
       });
 
-      test('test indexFromDate', () {
-        var index = calculator.indexFromDate(TZDateTime(location, 2020), location);
-        expect(index, 0);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 1, 4), location);
-        expect(index, 1);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 1, 28), location);
-        expect(index, 9);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 26), location);
-        expect(index, 120);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 29), location);
-        expect(index, 121);
-      });
-
-      test('test numberOfPages', () {
-        // 366 days / 3 days per page → 122 pages.
-        final numberOfPages = calculator.numberOfPages(location);
-        expect(numberOfPages, 122);
-      });
-
-      test('test floatingRange', () {
+      test('floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
         expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
       });
     });
 
     group('MonthIndexCalculator for $location', () {
-      late MonthIndexCalculator calculator;
-      setUpAll(() {
-        calculator = MonthIndexCalculator.fromRange(range, DateTime.monday);
+      final calculator = MonthIndexCalculator.fromRange(range, DateTime.monday);
+
+      testRangeFromIndex(calculator, location, {
+        0: FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2020, 2, 3)),
+        1: FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 27), end: FloatingDateTime(2020, 3, 2)),
+        9: FloatingDateTimeRange(start: FloatingDateTime(2020, 9, 28), end: FloatingDateTime(2020, 11, 2)),
+        10: FloatingDateTimeRange(start: FloatingDateTime(2020, 10, 26), end: FloatingDateTime(2020, 12, 07)),
+        11: FloatingDateTimeRange(start: FloatingDateTime(2020, 11, 30), end: FloatingDateTime(2021, 1, 4)),
+      });
+      testIndexFromDate(calculator, location, {
+        TZDateTime(location, 2020): 0,
+        TZDateTime(location, 2020, 2, 3): 1,
+        TZDateTime(location, 2020, 6, 2): 5,
+        TZDateTime(location, 2020, 11, 26): 10,
+        TZDateTime(location, 2020, 12, 31): 11,
       });
 
-      test('test rangeFromIndex', () {
-        var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2019, 12, 30), end: FloatingDateTime(2020, 2, 3)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(1, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 1, 27), end: FloatingDateTime(2020, 3, 2)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(9, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 9, 28), end: FloatingDateTime(2020, 11, 2)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(10, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 10, 26), end: FloatingDateTime(2020, 12, 07)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(11, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 11, 30), end: FloatingDateTime(2021, 1, 4)),
-        );
-      });
-
-      test('test indexFromDate', () {
-        var index = calculator.indexFromDate(TZDateTime(location, 2020), location);
-        expect(index, 0);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 2, 3), location);
-        expect(index, 1);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 6, 2), location);
-        expect(index, 5);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 11, 26), location);
-        expect(index, 10);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 31), location);
-        expect(index, 11);
-      });
-
-      test('test indexFromDate outside the range', () {
+      test('indexFromDate outside the range', () {
         expect(calculator.indexFromDate(TZDateTime(location, 2019, 12, 30), location), 0);
         expect(calculator.indexFromDate(TZDateTime(location, 2018, 6, 15), location), 0);
         expect(calculator.indexFromDate(TZDateTime(location, 2021, 3, 1), location), 11);
@@ -360,21 +215,17 @@ void main() {
         expect(empty.indexFromDate(TZDateTime(location, 2020, 3), location), 0);
       });
 
-      test('test numberOfPages', () {
-        // The range spans 12 calendar months (Jan–Dec 2020), so there are 12 pages.
-        final numberOfPages = calculator.numberOfPages(location);
-        expect(numberOfPages, 12);
+      test('numberOfPages', () {
+        expect(calculator.numberOfPages(location), 12);
       });
 
-      test('test floatingRange', () {
+      test('floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
         expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
       });
 
-      // Regression: https://github.com/werner-scholtz/kalender/issues/266
-      // A range spanning exactly one calendar month must report a single page,
-      // otherwise the month view renders nothing.
-      test('test numberOfPages for a single-month range', () {
+      // Regression test for #266.
+      test('numberOfPages for a single-month range', () {
         final singleMonth = MonthIndexCalculator(
           start: TZDateTime(location, 2020, 5),
           end: TZDateTime(location, 2020, 5, 31),
@@ -386,79 +237,43 @@ void main() {
     });
 
     group('ContinuousScheduleIndexCalculator for $location', () {
-      late ContinuousScheduleIndexCalculator calculator;
-      setUpAll(() {
-        calculator = ContinuousScheduleIndexCalculator(start: range.start, end: range.end);
+      final calculator = ContinuousScheduleIndexCalculator(start: range.start, end: range.end);
+
+      test('rangeFromIndex and floatingRange are the whole range', () {
+        final wholeRange = FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021));
+        expect(calculator.rangeFromIndex(0, location), wholeRange);
+        expect(calculator.floatingRange(location), wholeRange);
       });
 
-      test('test rangeFromIndex', () {
-        final floatingRange = calculator.rangeFromIndex(0, location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
-      });
-
-      test('test indexFromDate', () {
+      test('indexFromDate', () {
         final index = calculator.indexFromDate(TZDateTime(location, 2020), location);
         expect(index, 0);
       });
 
-      test('test numberOfPages', () {
-        final endIndex = calculator.numberOfPages(location);
-        expect(endIndex, 1);
-      });
-
-      test('test floatingRange', () {
-        final floatingRange = calculator.floatingRange(location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
+      test('numberOfPages', () {
+        expect(calculator.numberOfPages(location), 1);
       });
     });
 
     group('PaginatedScheduleIndexCalculator for $location', () {
-      late PaginatedScheduleIndexCalculator calculator;
-      setUpAll(() {
-        calculator = PaginatedScheduleIndexCalculator(start: range.start, end: range.end);
+      final calculator = PaginatedScheduleIndexCalculator(start: range.start, end: range.end);
+
+      testRangeFromIndex(calculator, location, {
+        0: FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 2)),
+        1: FloatingDateTimeRange(start: FloatingDateTime(2020, 2), end: FloatingDateTime(2020, 3)),
+        9: FloatingDateTimeRange(start: FloatingDateTime(2020, 10), end: FloatingDateTime(2020, 11)),
+        10: FloatingDateTimeRange(start: FloatingDateTime(2020, 11), end: FloatingDateTime(2020, 12)),
+        11: FloatingDateTimeRange(start: FloatingDateTime(2020, 12), end: FloatingDateTime(2021)),
+      });
+      testIndexFromDate(calculator, location, {
+        TZDateTime(location, 2020): 0,
+        TZDateTime(location, 2020, 2, 3): 1,
+        TZDateTime(location, 2020, 6, 2): 5,
+        TZDateTime(location, 2020, 11, 26): 10,
+        TZDateTime(location, 2020, 12, 31): 11,
       });
 
-      test('test rangeFromIndex', () {
-        var floatingRange = calculator.rangeFromIndex(0, location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2020, 2)));
-
-        floatingRange = calculator.rangeFromIndex(1, location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020, 2), end: FloatingDateTime(2020, 3)));
-
-        floatingRange = calculator.rangeFromIndex(9, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 10), end: FloatingDateTime(2020, 11)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(10, location);
-        expect(
-          floatingRange,
-          FloatingDateTimeRange(start: FloatingDateTime(2020, 11), end: FloatingDateTime(2020, 12)),
-        );
-
-        floatingRange = calculator.rangeFromIndex(11, location);
-        expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020, 12), end: FloatingDateTime(2021)));
-      });
-
-      test('test indexFromDate', () {
-        var index = calculator.indexFromDate(TZDateTime(location, 2020), location);
-        expect(index, 0);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 2, 3), location);
-        expect(index, 1);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 6, 2), location);
-        expect(index, 5);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 11, 26), location);
-        expect(index, 10);
-
-        index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 31), location);
-        expect(index, 11);
-      });
-
-      test('test indexFromDate outside the range', () {
+      test('indexFromDate outside the range', () {
         expect(calculator.indexFromDate(TZDateTime(location, 2019, 12, 30), location), 0);
         expect(calculator.indexFromDate(TZDateTime(location, 2018, 6, 15), location), 0);
         expect(calculator.indexFromDate(TZDateTime(location, 2021, 3, 1), location), 11);
@@ -473,13 +288,11 @@ void main() {
         expect(empty.indexFromDate(TZDateTime(location, 2020, 3), location), 0);
       });
 
-      test('test numberOfPages', () {
-        // 12 calendar months (Jan–Dec 2020) → 12 pages.
-        final numberOfPages = calculator.numberOfPages(location);
-        expect(numberOfPages, 12);
+      test('numberOfPages', () {
+        expect(calculator.numberOfPages(location), 12);
       });
 
-      test('test floatingRange', () {
+      test('floatingRange', () {
         final floatingRange = calculator.floatingRange(location);
         expect(floatingRange, FloatingDateTimeRange(start: FloatingDateTime(2020), end: FloatingDateTime(2021)));
       });

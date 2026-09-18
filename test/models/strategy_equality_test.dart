@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-/// The three strategies were functions until 0.26.0. A configuration holding one
-/// written as an inline closure was a new value on every build, so the calendar
-/// read every rebuild as a change. As classes with value equality they compare
-/// by what they do rather than by which closure instance was passed.
+/// Covers value equality of the three strategies, which were functions until 0.26.0.
 void main() {
   group('EventLayoutStrategy', () {
     test('two of the same kind are equal, with matching hashCodes', () {
@@ -70,33 +67,26 @@ void main() {
     });
   });
 
-  // The point of the conversion: a configuration built fresh on each build, as a
-  // build method does, compares equal to its predecessor.
+  // Built without const, as a build method does, so each call is a new instance.
+  // ignore_for_file: prefer_const_constructors
   group('configurations built twice', () {
-    test('MultiDayBodyConfiguration with a layout strategy is equal', () {
-      MultiDayBodyConfiguration build() {
-        return const MultiDayBodyConfiguration(eventLayoutStrategy: EventLayoutStrategy.sideBySide());
-      }
-
-      expect(build(), equals(build()));
-      expect(build().hashCode, equals(build().hashCode));
-    });
-
-    test('MonthBodyConfiguration with a multi-day strategy is equal', () {
-      MonthBodyConfiguration build() {
-        return const MonthBodyConfiguration(multiDayLayoutStrategy: MultiDayLayoutStrategy.byDuration());
-      }
-
-      expect(build(), equals(build()));
-      expect(build().hashCode, equals(build().hashCode));
-    });
-
-    test('KalenderSnapping with a snap strategy is equal', () {
-      KalenderSnapping build() => const KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none());
-
-      expect(build(), equals(build()));
-      expect(build().hashCode, equals(build().hashCode));
-    });
+    for (final (name, build) in <(String, Object Function())>[
+      (
+        'MultiDayBodyConfiguration with a layout strategy',
+        () => MultiDayBodyConfiguration(eventLayoutStrategy: EventLayoutStrategy.sideBySide()),
+      ),
+      (
+        'MonthBodyConfiguration with a multi-day strategy',
+        () => MonthBodyConfiguration(multiDayLayoutStrategy: MultiDayLayoutStrategy.byDuration()),
+      ),
+      ('KalenderSnapping with a snap strategy', () => KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none())),
+    ]) {
+      test('$name is equal', () {
+        expect(identical(build(), build()), isFalse);
+        expect(build(), equals(build()));
+        expect(build().hashCode, equals(build().hashCode));
+      });
+    }
   });
 
   // The other half of the contract: a change still has to reach the calendar.

@@ -8,23 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-/// Every components class has to survive a `copyWith`, and every field on it has
-/// to be reachable through one.
+/// Tests that `copyWith` on every components class keeps and applies each field (#252, #302).
 ///
-/// A `copyWith` that silently drops a field is a no-op with no error, which the
-/// package has shipped twice: `MonthBodyConfiguration.copyWith` dropped
-/// `eventPadding` (#252) and `PageTriggerConfiguration.copyWith` dropped
-/// `triggerWidth` (#302). These classes had no test at all.
-///
-/// Two checks cover it, without naming each field twice:
-///   * `copyWith()` with no arguments returns an equal instance, so no field is
-///     dropped on the way through.
-///   * setting each field on an empty instance breaks equality, so every field
-///     is applied, and reaches `==` and `hashCode`.
-///
-/// What this does not catch is a `copyWith` that sets a second field of the same
-/// type as a side effect, since the copy still differs from the empty instance.
-/// The analyzer catches the version of that where the types differ.
+///   * `copyWith()` with no arguments returns an equal instance.
+///   * Setting each field on an empty instance breaks equality and changes `hashCode`.
 void main() {
   /// Asserts [full] survives a no-argument copy, and that each mutation in
   /// [mutations] changes [empty].

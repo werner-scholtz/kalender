@@ -232,11 +232,11 @@ dartdoc:
     final pubspec = File('pubspec.yaml').readAsStringSync();
     final repoUrl = repositoryUrl(pubspec);
     final package = packageName(pubspec);
+    final topicPages = topicPageUrls(File('dartdoc_options.yaml').readAsStringSync(), package, tag);
 
     String pinAll(String content) => pinPubDevDocs(pinBranchUrls(content, repoUrl, tag), package, tag);
 
     test('the real README, example README and CHANGELOG rewrite cleanly', () {
-      final topicPages = topicPageUrls(File('dartdoc_options.yaml').readAsStringSync(), package, tag);
       final readme = pinRelativeLinks(
         pinAll(File('README.md').readAsStringSync()),
         repoUrl,
@@ -259,7 +259,6 @@ dartdoc:
     });
 
     test('the real guides rewrite cleanly and link each other through their topic pages', () {
-      final topicPages = topicPageUrls(File('dartdoc_options.yaml').readAsStringSync(), package, tag);
       for (final path in docFiles()) {
         final rewritten = pinRelativeLinks(
           pinAll(File(path).readAsStringSync()),
