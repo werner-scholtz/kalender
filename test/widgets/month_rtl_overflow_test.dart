@@ -10,11 +10,7 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-// The frame generator reverses its column order for right-to-left, so column 0
-// holds the last date rather than the first. MultiDayLayoutFrame did not know
-// the direction and always read a column back as `start + column days`, so in
-// RTL every "+N more" button was attributed to the mirrored date. With events
-// on Wed 29 Jan the buttons landed on the 30th and 31st.
+// Month rows map columns to dates, and "+N more" buttons to their day, in both text directions.
 void main() {
   group('MultiDayLayoutFrame.dateFromColumn', () {
     // Mon 27 Jan - Sun 2 Feb 2025, a single week row of the month grid.
@@ -60,20 +56,19 @@ void main() {
   });
 
   group('Month view overflow button dates', () {
-    /// Opens a month view with [eventCount] events on [day] and returns the
+    /// Opens a month view with eight events on [day] and returns the
     /// dates the "+N more" buttons were keyed to.
     Future<Set<DateTime>> buttonDates(
       WidgetTester tester, {
       required DateTime day,
       required TextDirection textDirection,
-      int eventCount = 8,
     }) async {
       final dpi = tester.view.devicePixelRatio;
       tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
       addTearDown(tester.view.resetPhysicalSize);
 
       final eventsController = DefaultEventsController();
-      for (var i = 0; i < eventCount; i++) {
+      for (var i = 0; i < 8; i++) {
         eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
       }
 
@@ -93,8 +88,6 @@ void main() {
         ),
       );
 
-      // The button for a date is keyed by that date, so probe the week the
-      // events fall in and collect whichever ones rendered.
       final found = <DateTime>{};
       for (var d = 27; d <= 31; d++) {
         final date = DateTime.utc(2025, 1, d);
@@ -106,19 +99,14 @@ void main() {
     // 29 Jan 2025 is a Wednesday, in the last row of a 5 row January.
     final day = DateTime.utc(2025, 1, 29);
 
-    testWidgets('left to right attributes the button to the event day', (tester) async {
-      final dates = await buttonDates(tester, day: day, textDirection: TextDirection.ltr);
+    for (final direction in TextDirection.values) {
+      testWidgets('${direction.name} attributes the button to the event day', (tester) async {
+        final dates = await buttonDates(tester, day: day, textDirection: direction);
 
-      expect(dates, contains(day), reason: 'the day the events are on should overflow');
-      expect(dates, isNot(contains(DateTime.utc(2025, 1, 31))), reason: 'a day with no events must not overflow');
-    });
-
-    testWidgets('right to left attributes the button to the same day', (tester) async {
-      final dates = await buttonDates(tester, day: day, textDirection: TextDirection.rtl);
-
-      expect(dates, contains(day), reason: 'direction must not change which date overflows');
-      expect(dates, isNot(contains(DateTime.utc(2025, 1, 31))), reason: 'the mirrored date must not overflow');
-    });
+        expect(dates, contains(day), reason: 'the day the events are on should overflow');
+        expect(dates, isNot(contains(DateTime.utc(2025, 1, 31))), reason: 'a day with no events must not overflow');
+      });
+    }
 
     testWidgets('both directions overflow exactly the same dates', (tester) async {
       final ltr = await buttonDates(tester, day: day, textDirection: TextDirection.ltr);

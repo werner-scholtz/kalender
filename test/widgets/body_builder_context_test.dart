@@ -57,7 +57,6 @@ void main() {
       ),
     );
 
-    expect(find.byKey(const ValueKey('timeline')), findsOneWidget);
     expect(tester.widget<Text>(find.byKey(const ValueKey('timeline'))).data, '123.0');
   });
 
@@ -90,7 +89,7 @@ void main() {
 
     final probes = tester.widgetList<_Probe>(find.byType(_Probe));
     expect(probes, isNotEmpty);
-    expect(probes.every((probe) => probe.color == const Color(0xFF0000FF)), isTrue);
+    expect(probes.map((probe) => probe.color), everyElement(const Color(0xFF0000FF)));
   });
 
   testWidgets('a custom time indicator resolves its style from the theme', (tester) async {

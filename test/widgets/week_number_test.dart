@@ -64,14 +64,6 @@ void main() {
       );
 
       expect(labelOf(tester).data, contains('-'));
-    });
-
-    testWidgets('the label is centred, so a wrapped second line does not sit left', (tester) async {
-      await pumpWeekNumber(
-        tester,
-        KalenderDateTimeRange(start: DateTime.utc(2025, 8, 6), end: DateTime.utc(2025, 8, 13)),
-      );
-
       expect(
         labelOf(tester).textAlign,
         TextAlign.center,

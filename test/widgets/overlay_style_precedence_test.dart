@@ -10,40 +10,27 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-// Overlay builders still resolve most-specific-first: a per-view
-// OverlayBuilders wins over the global KalenderComponents.overlayBuilders. The
-// month body used to resolve them the wrong way round.
-//
-// Overlay styles have no precedence left to test. The per-view and global style
-// fields were removed in 0.26.0, so the theme is the only source, and these
-// tests check it reaches the overflow button in both views.
+// Overlay builders resolve most-specific-first, and the theme styles the overflow button in both views.
 void main() {
-  /// A theme that colours the overflow button's text with [color], which is
-  /// what these tests read back.
   KalenderThemeData themeColoured(Color color) => KalenderThemeData(
     multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(textStyle: TextStyle(color: color)),
   );
 
-  /// Builds an [OverlayBuilders] whose overflow button is labelled [label]. The
-  /// hidden-event count is left out on purpose, it varies with the cell height.
+  // Leaves out the hidden-event count, which varies with the cell height.
   OverlayBuilders buildersLabelled(String label) =>
       OverlayBuilders(multiDayPortalOverlayButtonStringBuilder: (context, numberOfHiddenEvents) => label);
 
-  /// Every rendered overflow button, of which there can be more than one: adjacent
-  /// pages are built too, and a neighbouring month's grid can include the same day.
+  // Adjacent pages are built too, and a neighbouring month's grid can include the same day.
   Iterable<Text> buttonTexts(WidgetTester tester) {
     final texts = tester.widgetList<Text>(find.byKey(MultiDayPortalOverlayButton.textKey));
     expect(texts, isNotEmpty, reason: 'the day should overflow and show an overflow button');
     return texts;
   }
 
-  /// The distinct text colours of every rendered overflow button.
   Set<Color?> buttonColors(WidgetTester tester) => buttonTexts(tester).map((text) => text.style?.color).toSet();
 
-  /// The distinct labels of every rendered overflow button.
   Set<String> buttonLabels(WidgetTester tester) => buttonTexts(tester).map((text) => text.data!).toSet();
 
-  /// Adds enough events on [day] to overflow the cell and show the button.
   DefaultEventsController controllerWithOverflowOn(DateTime day) {
     final eventsController = DefaultEventsController();
     for (var i = 0; i < 8; i++) {
@@ -90,9 +77,6 @@ void main() {
       expect(buttonLabels(tester), {'specific'}, reason: 'the more specific month body builder should win');
     });
 
-    // MonthBodyComponents.overlayBuilders defaulted to a non-null empty
-    // OverlayBuilders, and the month body resolves it with `?? global`, so the
-    // empty default always shadowed the global builders.
     testWidgets('the global builders are used when the month body sets none', (tester) async {
       await pumpMonthView(tester, components: KalenderComponents(overlayBuilders: buildersLabelled('global')));
 

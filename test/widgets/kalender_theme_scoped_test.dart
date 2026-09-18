@@ -11,7 +11,6 @@ import 'package:kalender/kalender.dart';
 /// Covers [KalenderTheme] as a widget: scoping a theme to part of the tree, and
 /// where it sits relative to the theme extension and the Material 3 defaults.
 void main() {
-  /// The rendered color of the day separator, which follows the theme.
   Color? separatorColor(WidgetTester tester, {Finder? within}) {
     final finder = within == null
         ? find.byType(Container)
@@ -168,7 +167,6 @@ void main() {
       ),
     );
 
-    // Pumped outside the scope entirely.
     await tester.pumpWidget(MaterialApp(home: Scaffold(body: captured)));
 
     expect(separatorColor(tester), scoped);

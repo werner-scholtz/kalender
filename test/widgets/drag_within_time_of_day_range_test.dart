@@ -109,7 +109,6 @@ void main() {
       final tile = find.byKey(DayEventTile.tileKey(id));
       await tester.hoverOn(tile, await tester.createMouseGesture());
       final bottomHandle = find.descendant(of: tile, matching: find.byKey(ResizeDetector.endResizeDraggableKey(id)));
-      expect(bottomHandle, findsOneWidget);
 
       final handle = tester.getCenter(bottomHandle);
       await dragTo(tester, handle, Offset(handle.dx, lastPixel(body, range)));

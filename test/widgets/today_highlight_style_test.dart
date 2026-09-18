@@ -10,9 +10,7 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-// The today highlight is the one default the theme did not reach. Before
-// DayNumberStyle it came straight from the Material ColorScheme, so an app could
-// not change it at all.
+// The today highlight defaults to the ColorScheme and follows DayNumberStyle from the theme.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;

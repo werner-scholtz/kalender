@@ -48,11 +48,12 @@ void main() {
     );
   }
 
-  Widget plain(ViewConfiguration configuration, {KalenderThemeData? theme}) {
+  Widget plain(ViewConfiguration configuration, {KalenderThemeData? theme, KalenderComponents? components}) {
     final view = KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
       viewConfiguration: configuration,
+      components: components,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),
     );
@@ -88,15 +89,11 @@ void main() {
     testWidgets('a width builder above the calendar reaches both halves', (tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: month(),
+        plain(
+          month(),
           components: const KalenderComponents(
             monthComponents: MonthComponents(bodyComponents: MonthBodyComponents(weekNumberWidth: _fixedWidth)),
           ),
-          header: KalenderHeader(multiDayTileComponents: tiles),
-          body: KalenderBody(multiDayTileComponents: tiles),
         ),
       );
 
@@ -130,12 +127,17 @@ void main() {
   });
 
   group('multi-day timeline gutter', () {
+    double drawnWidth(WidgetTester tester) => tester.getSize(find.byKey(MultiDayBody.timelineKey)).width;
+    double reservedWidth(WidgetTester tester) => tester.getSize(find.byType(TimelineSizer)).width;
+
     testWidgets('the gutter and the header spacer measure alike by default', (tester) async {
       await pumpAndSettleWithMaterialApp(tester, plain(week()));
-      final drawn = tester.getSize(find.byKey(MultiDayBody.timelineKey)).width;
-      final reserved = tester.getSize(find.byType(TimelineSizer)).width;
-      expect(reserved, moreOrLessEquals(drawn, epsilon: 0.5));
-      expect(drawn, isNot(moreOrLessEquals(140, epsilon: 0.5)), reason: 'the body scope does not reach the width');
+      expect(reservedWidth(tester), moreOrLessEquals(drawnWidth(tester), epsilon: 0.5));
+      expect(
+        drawnWidth(tester),
+        isNot(moreOrLessEquals(140, epsilon: 0.5)),
+        reason: 'the body scope does not reach the width',
+      );
     });
 
     testWidgets('a theme above the calendar reaches the gutter', (tester) async {
@@ -143,22 +145,17 @@ void main() {
         tester,
         plain(week(), theme: const KalenderThemeData(timelineStyle: TimelineStyle(width: 140))),
       );
-      expect(tester.getSize(find.byKey(MultiDayBody.timelineKey)).width, moreOrLessEquals(140, epsilon: 0.5));
+      expect(drawnWidth(tester), moreOrLessEquals(140, epsilon: 0.5));
     });
 
-    // The gutter is measured once and read three times: the body draws it, the
-    // header reserves it, and TimelineSizer reserves it again for the drag
-    // target row. A width that reached only one put the drag target out of line
-    // with the day columns, so a drag landed in the wrong day.
+    // TimelineSizer reserves the gutter a third time, for the drag target row.
     testWidgets('the drag target spacer matches the drawn gutter', (tester) async {
       await pumpAndSettleWithMaterialApp(
         tester,
         splitTheme(week(), const KalenderThemeData(timelineStyle: TimelineStyle(width: 140))),
       );
 
-      final drawn = tester.getSize(find.byKey(MultiDayBody.timelineKey)).width;
-      final reserved = tester.getSize(find.byType(TimelineSizer)).width;
-      expect(reserved, moreOrLessEquals(drawn, epsilon: 0.5));
+      expect(reservedWidth(tester), moreOrLessEquals(drawnWidth(tester), epsilon: 0.5));
     });
 
     testWidgets('a body-scoped text size restyles the labels and both halves still agree', (tester) async {
@@ -170,30 +167,26 @@ void main() {
       final label = tester.widget<Text>(find.byKey(TimeLine.getTimeKey(1, 0)).first);
       expect(label.style?.fontSize, 40, reason: 'the label takes the scoped style');
 
-      final drawn = tester.getSize(find.byKey(MultiDayBody.timelineKey)).width;
-      final reserved = tester.getSize(find.byType(TimelineSizer)).width;
-      expect(reserved, moreOrLessEquals(drawn, epsilon: 0.5), reason: 'the width is measured above the scope');
+      expect(
+        reservedWidth(tester),
+        moreOrLessEquals(drawnWidth(tester), epsilon: 0.5),
+        reason: 'the width is measured above the scope',
+      );
     });
     testWidgets('the width is measured once rather than at every reader', (tester) async {
       _timelineWidthCalls = 0;
       await pumpAndSettleWithMaterialApp(
         tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: week(),
+        plain(
+          week(),
           components: const KalenderComponents(
             multiDayComponents: MultiDayComponents(
               bodyComponents: MultiDayBodyComponents(timelineWidth: _countingTimelineWidth),
             ),
           ),
-          header: KalenderHeader(multiDayTileComponents: tiles),
-          body: KalenderBody(multiDayTileComponents: tiles),
         ),
       );
 
-      // The body draws the gutter, the header reserves it and TimelineSizer
-      // reserves it again, and all three read the one measurement.
       expect(_timelineWidthCalls, 1);
     });
 
@@ -204,9 +197,9 @@ void main() {
       final labels = find.descendant(of: find.byKey(MultiDayBody.timelineKey), matching: find.byType(Text));
       expect(labels, findsWidgets);
 
-      for (var index = 0; index < tester.widgetList(labels).length; index++) {
+      for (final label in labels.evaluate()) {
         expect(
-          tester.getRect(labels.at(index)).width,
+          label.size!.width,
           lessThanOrEqualTo(gutter.width + 0.5),
           reason: 'the measurement must reserve room for every label it measured',
         );
@@ -217,17 +210,13 @@ void main() {
       _timelineWidthCalls = 0;
       await pumpAndSettleWithMaterialApp(
         tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: month(),
+        plain(
+          month(),
           components: const KalenderComponents(
             multiDayComponents: MultiDayComponents(
               bodyComponents: MultiDayBodyComponents(timelineWidth: _countingTimelineWidth),
             ),
           ),
-          header: KalenderHeader(multiDayTileComponents: tiles),
-          body: KalenderBody(multiDayTileComponents: tiles),
         ),
       );
 
@@ -242,17 +231,13 @@ void main() {
     _widthBuilderCalls = 0;
     await pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: week(),
+      plain(
+        week(),
         components: const KalenderComponents(
           multiDayComponents: MultiDayComponents(
             bodyComponents: MultiDayBodyComponents(timelineWidth: _readsCalendarState),
           ),
         ),
-        header: KalenderHeader(multiDayTileComponents: tiles),
-        body: KalenderBody(multiDayTileComponents: tiles),
       ),
     );
 

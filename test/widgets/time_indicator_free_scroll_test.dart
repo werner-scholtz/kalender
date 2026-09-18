@@ -11,10 +11,7 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 
 import '../utilities.dart';
 
-// A free scrolling view pages by the day while showing several days at a time,
-// so its pages are narrower than the viewport. The time indicator has to place
-// itself in day widths, not page widths, and hide itself once today's column
-// leaves the viewport.
+// The time indicator in a free scrolling view, which pages by the day while showing several days.
 void main() {
   const numberOfDays = 5;
   final start = DateTime(2025, 3, 24); // Monday
@@ -69,12 +66,9 @@ void main() {
     testWidgets('sits on day column $dayIndex when that day is today', (tester) async {
       await pumpFreeScroll(tester, start.add(Duration(days: dayIndex, hours: 12)));
 
-      final finder = find.byKey(indicatorKey);
-      expect(finder, findsOneWidget, reason: 'today is on screen, so the indicator should be built');
-
       final positionerLeft = tester.getTopLeft(find.byType(TimeIndicatorPositioner)).dx;
       expect(
-        tester.getTopLeft(finder).dx - positionerLeft,
+        tester.getTopLeft(find.byKey(indicatorKey)).dx - positionerLeft,
         moreOrLessEquals(dayIndex * dayWidth(tester), epsilon: 0.5),
       );
     });
@@ -95,7 +89,7 @@ void main() {
     viewController().pageController.jumpToPage(6);
     await tester.pumpAndSettle();
 
-    expect(find.byKey(indicatorKey), findsNothing, reason: 'today has left the viewport');
+    expect(find.byKey(indicatorKey), findsNothing);
   });
 
   testWidgets('reappears when today scrolls back into the viewport', (tester) async {

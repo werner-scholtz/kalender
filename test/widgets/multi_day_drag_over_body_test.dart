@@ -55,22 +55,22 @@ void main() {
     );
   }
 
+  Future<TestGesture> pickUpAndMove(WidgetTester tester, Offset offset) async {
+    final gesture = await tester.startGesture(tester.getCenter(find.byKey(MultiDayEventTile.tileKey(eventId))));
+    await tester.pump(const Duration(milliseconds: 100));
+    await gesture.moveBy(offset);
+    await tester.pumpAndSettle();
+    return gesture;
+  }
+
   testWidgets('dragging a multi-day tile down into the body still moves the header preview', (tester) async {
     await pumpWeek(tester);
-
-    final tile = find.byKey(MultiDayEventTile.tileKey(eventId));
-    expect(tile, findsOneWidget, reason: 'the multi-day tile should render in the header');
 
     final originalStart = eventsController.byId(eventId)!.start;
     final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
 
-    // Pick the tile up, then move well below the header, into the body.
-    final gesture = await tester.startGesture(tester.getCenter(tile));
-    await tester.pump(const Duration(milliseconds: 100));
-    await gesture.moveBy(const Offset(0, 200));
-    await tester.pumpAndSettle();
+    final gesture = await pickUpAndMove(tester, const Offset(0, 200));
 
-    // Now move sideways by two day columns while still over the body.
     await gesture.moveBy(Offset(dayWidth * 2, 0));
     await tester.pumpAndSettle();
 
@@ -92,10 +92,7 @@ void main() {
     final original = eventsController.byId(eventId)!;
     final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
 
-    final gesture = await tester.startGesture(tester.getCenter(find.byKey(MultiDayEventTile.tileKey(eventId))));
-    await tester.pump(const Duration(milliseconds: 100));
-    await gesture.moveBy(Offset(dayWidth, 250));
-    await tester.pumpAndSettle();
+    final gesture = await pickUpAndMove(tester, Offset(dayWidth, 250));
 
     final preview = kalenderController.selectedEvent.value!;
     expect(
@@ -121,10 +118,7 @@ void main() {
     final originalStart = eventsController.byId(eventId)!.start;
     final dayWidth = tester.getSize(find.byType(KalenderView)).width / 7;
 
-    final gesture = await tester.startGesture(tester.getCenter(find.byKey(MultiDayEventTile.tileKey(eventId))));
-    await tester.pump(const Duration(milliseconds: 100));
-    await gesture.moveBy(Offset(dayWidth, 220));
-    await tester.pumpAndSettle();
+    final gesture = await pickUpAndMove(tester, Offset(dayWidth, 220));
     await gesture.up();
     await tester.pumpAndSettle();
 

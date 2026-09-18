@@ -58,7 +58,7 @@ void main() {
       ),
     );
 
-    expect(tester.widgetList<_Probe>(find.byType(_Probe)).first.value, 42);
+    expect(tester.widgetList<_Probe<double>>(find.byType(_Probe<double>)).first.value, 42);
   });
 
   testWidgets('a custom week day header resolves its style from the theme', (tester) async {
@@ -76,7 +76,7 @@ void main() {
       ),
     );
 
-    expect(tester.widgetList<_Probe>(find.byType(_Probe)).first.value, 21);
+    expect(tester.widgetList<_Probe<double>>(find.byType(_Probe<double>)).first.value, 21);
   });
 
   testWidgets('a custom month grid builder receives the row count and a context', (tester) async {
@@ -94,7 +94,7 @@ void main() {
       ),
     );
 
-    final probe = tester.widgetList<_Probe>(find.byType(_Probe)).first;
+    final probe = tester.widgetList<_Probe<double>>(find.byType(_Probe<double>)).first;
     expect(probe.value, 7);
     expect(probe.rows, greaterThan(0));
   });
@@ -106,16 +106,14 @@ void main() {
       components: KalenderComponents(
         monthComponents: MonthComponents(
           bodyComponents: MonthBodyComponents(
-            weekNumberBuilder: (context, range) =>
-                _AlignmentProbe(KalenderTheme.of(context).weekNumberStyle?.alignment),
+            weekNumberBuilder: (context, range) => _Probe(KalenderTheme.of(context).weekNumberStyle?.alignment),
           ),
         ),
       ),
     );
 
-    final probes = tester.widgetList<_AlignmentProbe>(find.byType(_AlignmentProbe));
-    expect(probes, isNotEmpty);
-    expect(probes.first.alignment, Alignment.topCenter);
+    final probes = tester.widgetList<_Probe<AlignmentGeometry>>(find.byType(_Probe<AlignmentGeometry>));
+    expect(probes.first.value, Alignment.topCenter);
   });
 
   testWidgets('null builders render the package defaults', (tester) async {
@@ -128,21 +126,11 @@ void main() {
 }
 
 /// Renders nothing. Carries a value its builder resolved from the context.
-class _Probe extends StatelessWidget {
+class _Probe<T> extends StatelessWidget {
   const _Probe(this.value, {this.rows});
 
-  final double? value;
+  final T? value;
   final int? rows;
-
-  @override
-  Widget build(BuildContext context) => const SizedBox.shrink();
-}
-
-/// Renders nothing. Carries the alignment its builder resolved from the context.
-class _AlignmentProbe extends StatelessWidget {
-  const _AlignmentProbe(this.alignment);
-
-  final AlignmentGeometry? alignment;
 
   @override
   Widget build(BuildContext context) => const SizedBox.shrink();

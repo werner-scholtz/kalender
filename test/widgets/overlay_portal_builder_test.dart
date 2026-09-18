@@ -53,54 +53,40 @@ void main() {
     await pumpAndSettleWithMaterialApp(tester, scoped == null ? view : KalenderTheme(data: scoped, child: view));
   }
 
-  testWidgets('a custom portal builder resolves the overlay styles from its context', (tester) async {
-    MultiDayOverlayStyle? received;
+  for (final (name, scoped, matcher) in <(String, KalenderThemeData?, Matcher)>[
+    // The Material defaults populate the style even when the app sets nothing.
+    ('a custom portal builder resolves the overlay styles from its context', null, isNotNull),
+    (
+      'a scoped theme reaches the custom portal builder',
+      const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
+      isA<MultiDayOverlayStyle>().having((style) => style.width, 'width', 321),
+    ),
+  ]) {
+    testWidgets(name, (tester) async {
+      MultiDayOverlayStyle? received;
 
-    await pumpOverflowingMonth(
-      tester,
-      portalBuilder:
-          (
-            context, {
-            required date,
-            required events,
-            required numberOfHiddenRows,
-            required tileHeight,
-            required getMultiDayEventLayoutRenderBox,
-            required overlayTileBuilder,
-            required overlayBuilders,
-          }) {
-            received = KalenderTheme.of(context).multiDayOverlayStyle;
-            return const SizedBox();
-          },
-    );
+      await pumpOverflowingMonth(
+        tester,
+        scoped: scoped,
+        portalBuilder:
+            (
+              context, {
+              required date,
+              required events,
+              required numberOfHiddenRows,
+              required tileHeight,
+              required getMultiDayEventLayoutRenderBox,
+              required overlayTileBuilder,
+              required overlayBuilders,
+            }) {
+              received = KalenderTheme.of(context).multiDayOverlayStyle;
+              return const SizedBox();
+            },
+      );
 
-    expect(received, isNotNull, reason: 'the Material defaults populate this even when the app sets nothing');
-  });
-
-  testWidgets('a scoped theme reaches the custom portal builder', (tester) async {
-    MultiDayOverlayStyle? received;
-
-    await pumpOverflowingMonth(
-      tester,
-      scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
-      portalBuilder:
-          (
-            context, {
-            required date,
-            required events,
-            required numberOfHiddenRows,
-            required tileHeight,
-            required getMultiDayEventLayoutRenderBox,
-            required overlayTileBuilder,
-            required overlayBuilders,
-          }) {
-            received = KalenderTheme.of(context).multiDayOverlayStyle;
-            return const SizedBox();
-          },
-    );
-
-    expect(received?.width, equals(321));
-  });
+      expect(received, matcher);
+    });
+  }
 
   testWidgets('a custom overflow button builder resolves its style from its context', (tester) async {
     MultiDayPortalOverlayButtonStyle? received;
@@ -152,40 +138,14 @@ void main() {
   });
 
   testWidgets('the built-in overlay still follows a scoped theme with nothing passed to it', (tester) async {
-    final eventsController = DefaultEventsController();
-    for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
-    }
-    addTearDown(eventsController.dispose);
-
-    final kalenderController = KalenderController();
-    addTearDown(kalenderController.dispose);
-
-    final dpi = tester.view.devicePixelRatio;
-    tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
-    addTearDown(tester.view.resetPhysicalSize);
-
-    await pumpAndSettleWithMaterialApp(
+    await pumpOverflowingMonth(
       tester,
-      KalenderTheme(
-        data: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
-        child: KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: year2025DisplayRange,
-            initialDateTime: DateTime(2025, 1, 15),
-          ),
-          body: const KalenderBody(),
-        ),
-      ),
+      scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
     );
 
     await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(day)));
     await tester.pumpAndSettle();
 
-    // The overlay is built into an Overlay rather than below the calendar, so
-    // this also covers the theme reaching across that boundary.
     final card = tester.getSize(find.byKey(MultiDayOverlay.getOverlayCardKey(day)));
     expect(card.width, moreOrLessEquals(321, epsilon: 0.5));
   });

@@ -16,7 +16,7 @@ void main() {
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
   /// Builds a week view whose header overflows, then opens the overlay.
-  Future<KalenderController> pumpAndOpenOverlay(WidgetTester tester, TileComponents tileComponents) async {
+  Future<void> pumpAndOpenOverlay(WidgetTester tester, TileComponents tileComponents) async {
     final eventsController = DefaultEventsController();
     final kalenderController = KalenderController();
 
@@ -35,26 +35,19 @@ void main() {
     tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
     addTearDown(tester.view.reset);
 
-    await pumpAndSettleWithMaterialApp(
+    await pumpKalender(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.week(),
-        header: KalenderHeader(
-          multiDayHeaderConfiguration: headerConfiguration,
-          multiDayTileComponents: tileComponents,
-        ),
-        body: KalenderBody(multiDayTileComponents: tileComponents),
-      ),
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: MultiDayViewConfiguration.week(),
+      header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration, multiDayTileComponents: tileComponents),
+      body: KalenderBody(multiDayTileComponents: tileComponents),
     );
 
     final date = kalenderController.floatingVisibleRange.value!.dates().first;
     await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
     await tester.pumpAndSettle();
     expect(find.byType(MultiDayOverlay), findsOne);
-
-    return kalenderController;
   }
 
   group('overlayTileBuilder', () {
@@ -67,7 +60,6 @@ void main() {
         ),
       );
 
-      // Both events are hidden behind the overflow button, so both render in the overlay.
       expect(find.text('overlay'), findsNWidgets(2));
     });
 

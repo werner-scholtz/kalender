@@ -15,31 +15,19 @@ import '../utilities.dart';
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
-  KalenderEvent? tapped;
-  KalenderEvent? secondaryTapped;
-  TapDetail? tappedDetail;
-  TapDetail? secondaryTappedDetail;
-
-  final preciseInteraction = KalenderInteraction(
-    inputMode: InputMode.precise,
-    createEventGesture: EventInteractionGesture.tap,
-    modifyEventGesture: EventInteractionGesture.tap,
-  );
+  late _Taps taps;
 
   setUp(() {
     eventsController = DefaultEventsController();
     kalenderController = KalenderController();
-    tapped = null;
-    secondaryTapped = null;
-    tappedDetail = null;
-    secondaryTappedDetail = null;
+    taps = _Taps();
   });
 
   KalenderCallbacks recordingCallbacks() => KalenderCallbacks(
-    onEventTapped: (event) => tapped = event,
-    onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
-    onEventSecondaryTapped: (event) => secondaryTapped = event,
-    onEventSecondaryTappedWithDetail: (event, detail) => secondaryTappedDetail = detail,
+    onEventTapped: (event) => taps.tapped = event,
+    onEventTappedWithDetail: (event, detail) => taps.tappedDetail = detail,
+    onEventSecondaryTapped: (event) => taps.secondaryTapped = event,
+    onEventSecondaryTappedWithDetail: (event, detail) => taps.secondaryTappedDetail = detail,
   );
 
   void expectDayDetail(TapDetail? detail, DateTime day) {
@@ -58,18 +46,16 @@ void main() {
           final id = eventsController.addEvent(
             KalenderEvent(start: day.copyWith(hour: 10), end: day.copyWith(hour: 11)),
           );
-          await pumpAndSettleWithMaterialApp(
+          await pumpKalender(
             tester,
-            KalenderView(
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              viewConfiguration: ScheduleViewConfiguration.continuous(
-                displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
-                initialDateTime: day,
-              ),
-              callbacks: recordingCallbacks(),
-              body: KalenderBody(interaction: preciseInteraction),
+            eventsController: eventsController,
+            kalenderController: kalenderController,
+            viewConfiguration: ScheduleViewConfiguration.continuous(
+              displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
+              initialDateTime: day,
             ),
+            callbacks: recordingCallbacks(),
+            body: KalenderBody(interaction: kPreciseInteraction),
           );
           return id;
         }
@@ -80,8 +66,8 @@ void main() {
           await tester.tap(find.byKey(ScheduleEventTile.gestureDetectorKey(id)));
           await tester.pumpAndSettle();
 
-          expect(tapped?.id, id);
-          expectDayDetail(tappedDetail, day);
+          expect(taps.tapped?.id, id);
+          expectDayDetail(taps.tappedDetail, day);
         });
 
         testWidgets('a secondary tap reports the event and its day', (tester) async {
@@ -94,8 +80,8 @@ void main() {
           );
           await tester.pumpAndSettle();
 
-          expect(secondaryTapped?.id, id);
-          expectDayDetail(secondaryTappedDetail, day);
+          expect(taps.secondaryTapped?.id, id);
+          expectDayDetail(taps.secondaryTappedDetail, day);
         });
       });
 
@@ -105,22 +91,20 @@ void main() {
         Future<String> openOverlay(WidgetTester tester) async {
           final id = eventsController.addEvent(KalenderEvent(start: monday, end: monday.add(const Duration(days: 2))));
           eventsController.addEvent(KalenderEvent(start: monday, end: monday.add(const Duration(days: 2))));
-          await pumpAndSettleWithMaterialApp(
+          await pumpKalender(
             tester,
-            KalenderView(
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              viewConfiguration: MultiDayViewConfiguration.week(
-                displayRange: KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7))),
-                initialDateTime: monday,
-              ),
-              callbacks: recordingCallbacks(),
-              header: KalenderHeader(
-                multiDayHeaderConfiguration: const MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
-                interaction: preciseInteraction,
-              ),
-              body: KalenderBody(interaction: preciseInteraction),
+            eventsController: eventsController,
+            kalenderController: kalenderController,
+            viewConfiguration: MultiDayViewConfiguration.week(
+              displayRange: KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7))),
+              initialDateTime: monday,
             ),
+            callbacks: recordingCallbacks(),
+            header: KalenderHeader(
+              multiDayHeaderConfiguration: const MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
+              interaction: kPreciseInteraction,
+            ),
+            body: KalenderBody(interaction: kPreciseInteraction),
           );
 
           final firstDay = kalenderController.floatingVisibleRange.value!.dates().first;
@@ -138,8 +122,8 @@ void main() {
           await tester.tap(find.byKey(MultiDayEventOverlayTile.gestureDetectorKey(id)));
           await tester.pumpAndSettle();
 
-          expect(tapped?.id, id);
-          expectDayDetail(tappedDetail, monday);
+          expect(taps.tapped?.id, id);
+          expectDayDetail(taps.tappedDetail, monday);
         });
 
         testWidgets('a secondary tap reports the event and the overlay day', (tester) async {
@@ -152,10 +136,17 @@ void main() {
           );
           await tester.pumpAndSettle();
 
-          expect(secondaryTapped?.id, id);
-          expectDayDetail(secondaryTappedDetail, monday);
+          expect(taps.secondaryTapped?.id, id);
+          expectDayDetail(taps.secondaryTappedDetail, monday);
         });
       });
     },
   );
+}
+
+class _Taps {
+  KalenderEvent? tapped;
+  TapDetail? tappedDetail;
+  KalenderEvent? secondaryTapped;
+  TapDetail? secondaryTappedDetail;
 }

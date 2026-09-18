@@ -120,25 +120,16 @@ void main() {
 
   group('rebuilding with an equivalent configuration', () {
     testWidgets('keeps the same view controller', (tester) async {
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
-      final first = kalenderController.viewController;
-
-      // The same calendar rebuilt, as happens on any setState in the parent.
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
-
-      expect(
-        identical(kalenderController.viewController, first),
-        isTrue,
-        reason: 'an unchanged configuration should not recreate the view controller',
-      );
-    });
-
-    testWidgets('a configuration held in state does not recreate the controller', (tester) async {
       final held = week();
       await pumpAndSettleWithMaterialApp(tester, build(held));
       final first = kalenderController.viewController;
+
       await pumpAndSettleWithMaterialApp(tester, build(held));
-      expect(identical(kalenderController.viewController, first), isTrue);
+      expect(kalenderController.viewController, same(first), reason: 'a configuration held in state');
+
+      // The same calendar rebuilt, as happens on any setState in the parent.
+      await pumpAndSettleWithMaterialApp(tester, build(week()));
+      expect(kalenderController.viewController, same(first), reason: 'an equal configuration built again');
     });
 
     testWidgets('the layout caches survive a rebuild', (tester) async {

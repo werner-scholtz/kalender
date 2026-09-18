@@ -14,26 +14,15 @@ import '../utilities.dart';
 
 void main() {
   setUpAll(tz.initializeTimeZones);
-  // ──────────────────────────────────────────────────────────────────────
-  // Shared dates: a fixed week with a known "today" override.
-  // ──────────────────────────────────────────────────────────────────────
   final monday = FloatingDateTime(2026, 4, 13); // The callback "today"
   final tuesday = FloatingDateTime(2026, 4, 14);
   final wednesday = FloatingDateTime(2026, 4, 15);
 
-  NowCallback nowCallbackMonday() =>
-      () => DateTime(2026, 4, 13, 14, 30);
+  final withCallback = MultiDayViewConfiguration.week(nowCallback: () => DateTime(2026, 4, 13, 14, 30));
+  final withoutCallback = MultiDayViewConfiguration.week();
 
-  // A minimal view configuration that carries the callback.
-  MultiDayViewConfiguration weekConfigWithCallback() {
-    return MultiDayViewConfiguration.week(nowCallback: nowCallbackMonday());
-  }
-
-  MultiDayViewConfiguration weekConfigWithoutCallback() {
-    return MultiDayViewConfiguration.week();
-  }
-
-  Widget buildTestProvider({
+  Future<void> pump(
+    WidgetTester tester, {
     required Widget child,
     required MultiDayViewConfiguration viewConfiguration,
     Location? location,
@@ -48,174 +37,75 @@ void main() {
     );
     kalenderController.attach(viewController);
 
-    return TestProvider(
-      kalenderController: kalenderController,
-      eventsController: eventsController,
-      tileComponents: TileComponents.defaultComponents(),
-      location: location,
-      child: child,
+    return pumpAndSettleWithMaterialApp(
+      tester,
+      TestProvider(
+        kalenderController: kalenderController,
+        eventsController: eventsController,
+        tileComponents: TileComponents.defaultComponents(),
+        location: location,
+        child: child,
+      ),
     );
   }
 
-  // ──────────────────────────────────────────────────────────────────────
-  // DayHeader
-  // ──────────────────────────────────────────────────────────────────────
-  group('DayHeader uses nowCallback for today highlighting', () {
-    testWidgets('highlights the day matching the callback', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          child: DayHeader(date: monday),
-        ),
-      );
+  final widgets = [
+    (
+      name: 'DayHeader',
+      build: (FloatingDateTime date) => DayHeader(date: date),
+      todayKey: DayHeader.todayKey,
+      otherDay: tuesday,
+      daysAhead: 1,
+      overridesLocation: true,
+    ),
+    (
+      name: 'MonthDayHeader',
+      build: (FloatingDateTime date) => MonthDayHeader(date: date),
+      todayKey: MonthDayHeader.todayKey,
+      otherDay: wednesday,
+      daysAhead: 2,
+      overridesLocation: false,
+    ),
+    (
+      name: 'ScheduleDate',
+      build: (FloatingDateTime date) => ScheduleDate(date: date),
+      todayKey: ScheduleDate.todayKey,
+      otherDay: tuesday,
+      daysAhead: 1,
+      overridesLocation: true,
+    ),
+  ];
 
-      expect(find.byKey(DayHeader.todayKey), findsOneWidget, reason: 'Monday should be highlighted');
+  for (final w in widgets) {
+    group('${w.name} uses nowCallback for today highlighting', () {
+      testWidgets('highlights the day matching the callback', (tester) async {
+        await pump(tester, viewConfiguration: withCallback, child: w.build(monday));
+
+        expect(find.byKey(w.todayKey), findsOneWidget);
+      });
+
+      testWidgets('does not highlight a day that does not match the callback', (tester) async {
+        await pump(tester, viewConfiguration: withCallback, child: w.build(w.otherDay));
+
+        expect(find.byKey(w.todayKey), findsNothing);
+      });
+
+      testWidgets('falls back to location-based isToday when callback is null', (tester) async {
+        final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
+        final notToday = realToday.add(Duration(days: w.daysAhead));
+
+        await pump(tester, viewConfiguration: withoutCallback, child: w.build(notToday));
+
+        expect(find.byKey(w.todayKey), findsNothing);
+      });
+
+      if (w.overridesLocation) {
+        testWidgets('callback overrides location (UTC location, local callback)', (tester) async {
+          await pump(tester, viewConfiguration: withCallback, location: getLocation('Etc/UTC'), child: w.build(monday));
+
+          expect(find.byKey(w.todayKey), findsOneWidget);
+        });
+      }
     });
-
-    testWidgets('does not highlight a day that does not match the callback', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          child: DayHeader(date: tuesday),
-        ),
-      );
-
-      expect(find.byKey(DayHeader.todayKey), findsNothing, reason: 'Tuesday should not be highlighted');
-    });
-
-    testWidgets('falls back to location-based isToday when callback is null', (tester) async {
-      // With no callback, isToday uses DateTime.now() — only "real today" gets highlighted.
-      final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
-      final notToday = realToday.add(const Duration(days: 1));
-
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithoutCallback(),
-          child: DayHeader(date: notToday),
-        ),
-      );
-
-      expect(find.byKey(DayHeader.todayKey), findsNothing, reason: 'Tomorrow should not be highlighted');
-    });
-
-    testWidgets('callback overrides location (UTC location, local callback)', (tester) async {
-      // Calendar is in UTC, but callback returns local Monday — Monday should still highlight.
-      final utc = getLocation('Etc/UTC');
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          location: utc,
-          child: DayHeader(date: monday),
-        ),
-      );
-
-      expect(find.byKey(DayHeader.todayKey), findsOneWidget, reason: 'Callback should override location');
-    });
-  });
-
-  // ──────────────────────────────────────────────────────────────────────
-  // MonthDayHeader
-  // ──────────────────────────────────────────────────────────────────────
-  group('MonthDayHeader uses nowCallback for today highlighting', () {
-    testWidgets('highlights the day matching the callback', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          child: MonthDayHeader(date: monday),
-        ),
-      );
-
-      expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget, reason: 'Monday should be highlighted');
-    });
-
-    testWidgets('does not highlight a day that does not match the callback', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          child: MonthDayHeader(date: wednesday),
-        ),
-      );
-
-      expect(find.byKey(MonthDayHeader.todayKey), findsNothing, reason: 'Wednesday should not be highlighted');
-    });
-
-    testWidgets('falls back to location-based isToday when callback is null', (tester) async {
-      final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
-      final notToday = realToday.add(const Duration(days: 2));
-
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithoutCallback(),
-          child: MonthDayHeader(date: notToday),
-        ),
-      );
-
-      expect(find.byKey(MonthDayHeader.todayKey), findsNothing);
-    });
-  });
-
-  // ──────────────────────────────────────────────────────────────────────
-  // ScheduleDate
-  // ──────────────────────────────────────────────────────────────────────
-  group('ScheduleDate uses nowCallback for today highlighting', () {
-    testWidgets('highlights the day matching the callback', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          child: ScheduleDate(date: monday),
-        ),
-      );
-
-      expect(find.byKey(ScheduleDate.todayKey), findsOneWidget, reason: 'Monday should be highlighted');
-    });
-
-    testWidgets('does not highlight a day that does not match the callback', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          child: ScheduleDate(date: tuesday),
-        ),
-      );
-
-      expect(find.byKey(ScheduleDate.todayKey), findsNothing, reason: 'Tuesday should not be highlighted');
-    });
-
-    testWidgets('falls back to location-based isToday when callback is null', (tester) async {
-      final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
-      final notToday = realToday.add(const Duration(days: 1));
-
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithoutCallback(),
-          child: ScheduleDate(date: notToday),
-        ),
-      );
-
-      expect(find.byKey(ScheduleDate.todayKey), findsNothing);
-    });
-
-    testWidgets('callback overrides location (UTC location, local callback)', (tester) async {
-      final utc = getLocation('Etc/UTC');
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildTestProvider(
-          viewConfiguration: weekConfigWithCallback(),
-          location: utc,
-          child: ScheduleDate(date: monday),
-        ),
-      );
-
-      expect(find.byKey(ScheduleDate.todayKey), findsOneWidget, reason: 'Callback should override location');
-    });
-  });
+  }
 }
