@@ -61,8 +61,6 @@ void main() {
   /// draggable has been picked up.
   Future<TestGesture> beginDrag(WidgetTester tester) async {
     final tile = find.byKey(DayEventTile.tileKey(eventId));
-    expect(tile, findsOneWidget);
-
     final gesture = await tester.startGesture(tester.getCenter(tile));
     await tester.pump(const Duration(milliseconds: 100));
     await gesture.moveBy(const Offset(0, 40));
@@ -77,7 +75,6 @@ void main() {
     var updates = 0;
     kalenderController.selectedEvent.addListener(() => updates++);
 
-    // Three moves with no frame between them.
     await gesture.moveBy(const Offset(0, 20));
     await gesture.moveBy(const Offset(0, 20));
     await gesture.moveBy(const Offset(0, 20));
@@ -115,7 +112,6 @@ void main() {
     await pumpCalendar(tester);
     final gesture = await beginDrag(tester);
 
-    // Queue a move and drop before the frame that would process it.
     await gesture.moveBy(const Offset(0, 20));
     await gesture.up();
     await tester.pumpAndSettle();

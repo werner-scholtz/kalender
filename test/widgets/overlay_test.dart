@@ -42,88 +42,82 @@ void main() {
 
   final sizesToTest = [const Size(300, 500), const Size(400, 600), const Size(800, 600), const Size(1200, 600)];
 
+  Future<void> pumpWeek(WidgetTester tester, {Size? size}) async {
+    if (size != null) {
+      final dpi = tester.view.devicePixelRatio;
+      tester.view.physicalSize = Size(size.width * dpi, size.height * dpi);
+      addTearDown(tester.view.resetPhysicalSize);
+    }
+
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      KalenderView(
+        eventsController: eventsController,
+        kalenderController: kalenderController,
+        viewConfiguration: viewConfiguration,
+        header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration, interaction: preciseInteraction),
+        body: KalenderBody(interaction: preciseInteraction),
+      ),
+    );
+  }
+
   group('Overlay', () {
     for (final size in sizesToTest) {
       testWidgets('Overlay $size test', (tester) async {
-        final dpi = tester.view.devicePixelRatio;
-        tester.view.physicalSize = Size(size.width * dpi, size.height * dpi);
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          KalenderView(
-            eventsController: eventsController,
-            kalenderController: kalenderController,
-            viewConfiguration: viewConfiguration,
-            header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration, interaction: preciseInteraction),
-            body: KalenderBody(interaction: preciseInteraction),
-          ),
-        );
+        await pumpWeek(tester, size: size);
 
         expect(find.byType(MultiDayEventTile), findsOne);
         expect(find.byType(MultiDayOverlayPortal), findsNWidgets(2));
         expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(2));
 
-        // Check that the overlay always renders within the calendar view bounds.
         final visibleDates = kalenderController.floatingVisibleRange.value!.dates();
-        final datesToTest = [visibleDates[0], visibleDates[1]];
-        for (final date in datesToTest) {
-          final button = find.byKey(MultiDayPortalOverlayButton.getKey(date));
-          expect(button, findsOne);
-
-          await tester.tap(button);
+        for (final date in visibleDates.take(2)) {
+          await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
           await tester.pumpAndSettle();
 
-          final overlay = find.byType(MultiDayOverlay);
-          expect(overlay, findsOne);
+          expect(find.byType(MultiDayOverlay), findsOne);
 
-          final overlayCard = find.byKey(MultiDayOverlay.getOverlayCardKey(date));
-          expect(overlayCard, findsOne);
-
-          final topLeft = tester.getTopLeft(overlayCard);
-          final bottomRight = tester.getBottomRight(overlayCard);
-          final calendarRect = tester.getRect(find.byType(KalenderView));
-
-          expect(topLeft.dx >= calendarRect.left && topLeft.dy >= calendarRect.top, isTrue);
-          expect(bottomRight.dx <= calendarRect.right && bottomRight.dy <= calendarRect.bottom, isTrue);
+          final card = tester.getRect(find.byKey(MultiDayOverlay.getOverlayCardKey(date)));
+          final view = tester.getRect(find.byType(KalenderView));
+          expect(card.left, greaterThanOrEqualTo(view.left));
+          expect(card.top, greaterThanOrEqualTo(view.top));
+          expect(card.right, lessThanOrEqualTo(view.right));
+          expect(card.bottom, lessThanOrEqualTo(view.bottom));
 
           await tester.tap(find.byKey(MultiDayOverlay.getCloseButtonKey(date)));
           await tester.pumpAndSettle();
         }
 
-        // Check that the overlay dismisses correctly when dragging an event.
-        final overlay = find.byType(MultiDayOverlay);
-        expect(overlay, findsNothing);
-        final button = find.byKey(MultiDayPortalOverlayButton.getKey(datesToTest.first));
-        expect(button, findsOne);
-        await tester.tap(button);
-        await tester.pumpAndSettle();
-        expect(overlay, findsOne);
-
-        final event = find.byType(MultiDayEventOverlayTile).first;
-        expect(event, findsOne);
-
-        // Simulate a drag gesture on the event tile to dismiss the overlay.
-        final gesture = await tester.startGesture(tester.getCenter(event), pointer: 1, kind: PointerDeviceKind.mouse);
-        await gesture.moveBy(const Offset(20, 0));
-        await tester.pumpAndSettle();
-
-        expect(overlay, findsNothing);
-        await gesture.up();
-        await tester.pumpAndSettle();
-        expect(overlay, findsNothing);
+        expect(find.byType(MultiDayOverlay), findsNothing);
       });
     }
+
+    testWidgets('Overlay dismisses when one of its events is dragged', (tester) async {
+      await pumpWeek(tester);
+
+      final overlay = find.byType(MultiDayOverlay);
+      final date = kalenderController.floatingVisibleRange.value!.dates().first;
+      await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
+      await tester.pumpAndSettle();
+      expect(overlay, findsOne);
+
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byType(MultiDayEventOverlayTile).first),
+        pointer: 1,
+        kind: PointerDeviceKind.mouse,
+      );
+      await gesture.moveBy(const Offset(20, 0));
+      await tester.pumpAndSettle();
+
+      expect(overlay, findsNothing);
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(overlay, findsNothing);
+    });
   });
 
-  // The group above anchors the overlay off the week header, which sits at the
-  // top of the view, so the card is never near the bottom edge. The overlay
-  // card used to be positioned without being measured, and only its top and
-  // sides were clamped, so a card anchored low in the view ran off the bottom
-  // and was clipped by the enclosing Stack.
+  // Month view cards can anchor near the bottom edge, which the week header above never does.
   group('Month overlay bounds', () {
-    /// Opens the overlay for [day] in a month view of the given [size], with
-    /// [eventCount] events on that day, and returns the card's rect and the
-    /// view's rect.
     Future<({Rect card, Rect view})> openOverlay(
       WidgetTester tester, {
       required DateTime day,
@@ -172,33 +166,21 @@ void main() {
     testWidgets('a day in the last week row stays inside the view', (tester) async {
       final rects = await openOverlay(tester, day: lastRowDay, eventCount: 8);
 
-      expect(
-        rects.card.bottom,
-        lessThanOrEqualTo(rects.view.bottom),
-        reason: 'card bottom ${rects.card.bottom} overflows view bottom ${rects.view.bottom}',
-      );
-      expect(
-        rects.card.top,
-        greaterThanOrEqualTo(rects.view.top),
-        reason: 'card top ${rects.card.top} is above view top ${rects.view.top}',
-      );
+      expect(rects.card.bottom, lessThanOrEqualTo(rects.view.bottom));
+      expect(rects.card.top, greaterThanOrEqualTo(rects.view.top));
     });
 
     testWidgets('a day in the first week row stays inside the view', (tester) async {
       final rects = await openOverlay(tester, day: firstRowDay, eventCount: 8);
 
-      expect(rects.card.top, greaterThanOrEqualTo(rects.view.top), reason: 'card top ${rects.card.top}');
-      expect(rects.card.bottom, lessThanOrEqualTo(rects.view.bottom), reason: 'card bottom ${rects.card.bottom}');
+      expect(rects.card.top, greaterThanOrEqualTo(rects.view.top));
+      expect(rects.card.bottom, lessThanOrEqualTo(rects.view.bottom));
     });
 
     testWidgets('a card taller than the view is capped and scrolls', (tester) async {
       final rects = await openOverlay(tester, day: lastRowDay, eventCount: 40);
 
-      expect(
-        rects.card.height,
-        lessThanOrEqualTo(rects.view.height),
-        reason: 'card height ${rects.card.height} exceeds view height ${rects.view.height}',
-      );
+      expect(rects.card.height, lessThanOrEqualTo(rects.view.height));
       expect(rects.card.top, greaterThanOrEqualTo(rects.view.top));
       expect(rects.card.bottom, lessThanOrEqualTo(rects.view.bottom));
 

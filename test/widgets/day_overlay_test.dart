@@ -33,7 +33,6 @@ void main() {
     kalenderController.dispose();
   });
 
-  /// Runs [body] with [debugPrint] collecting into [printed].
   Future<void> capturePrints(Future<void> Function() body) async {
     final original = debugPrint;
     debugPrint = (message, {wrapWidth}) => printed.add(message ?? '');

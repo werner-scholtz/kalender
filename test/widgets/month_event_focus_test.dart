@@ -11,8 +11,6 @@ import 'package:kalender/kalender.dart';
 import '../utilities.dart';
 
 void main() {
-  // Regression for #233: selecting a month-view event that sits on the second
-  // row must project the focus/drop-target onto that same row, not the first.
   testWidgets('#233 selected event focus lands on the event row', (tester) async {
     final eventsController = DefaultEventsController();
     final kalenderController = KalenderController();
@@ -47,8 +45,6 @@ void main() {
     final topB = tester.getRect(find.byKey(ValueKey('tile-${eventB.id}'))).top;
     expect(topA, isNot(moreOrLessEquals(topB, epsilon: 1.0)), reason: 'The two events should stack on separate rows');
 
-    // Selecting either event must project the focus onto that event's own row —
-    // the bug in #233 was that it always landed on the first row.
     Future<double> dropTopFor(KalenderEvent event) async {
       kalenderController.selectEvent(event);
       await tester.pumpAndSettle();

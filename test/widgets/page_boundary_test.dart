@@ -9,12 +9,7 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// App-level tests for the page that sits at the very end of a `displayRange`.
-///
-/// Before treating `numberOfPages` as a count, every paginated view dropped its
-/// final in-range page (and a single-page range rendered nothing at all). These
-/// tests navigate to / render that last page and assert it is actually shown, so
-/// they fail on the old behaviour and pass once the off-by-one is fixed.
+// The last page of a displayRange is reachable and rendered.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -42,8 +37,7 @@ void main() {
   }
 
   testWidgets('week view can navigate to the final in-range week', (tester) async {
-    // June 18 and the range end (June 20) are in the same — and therefore the
-    // last — week of the range.
+    // June 18 is in the same week as the range end (June 20), the last week of the range.
     final lastWeekDate = DateTime(2025, 6, 18);
     await pump(
       tester,
@@ -60,7 +54,6 @@ void main() {
   });
 
   testWidgets('month view can navigate to the final in-range month', (tester) async {
-    // Range spans May–June 2025; June is the last month.
     await pump(
       tester,
       MonthViewConfiguration.singleMonth(
@@ -77,9 +70,7 @@ void main() {
   });
 
   testWidgets('free scroll stops at the end of the range', (tester) async {
-    // 2025-06-01 through 2025-06-07, the end exclusive at midnight. The band
-    // used to round that end up to the next midnight and draw an eighth column
-    // for 2025-06-08, a day outside the range.
+    // 2025-06-01 through 2025-06-07, the end exclusive at midnight.
     await pump(
       tester,
       MultiDayViewConfiguration.freeScroll(
@@ -108,7 +99,6 @@ void main() {
       ),
     );
 
-    // With itemCount off by one this PageView had 0 pages and rendered nothing.
     expect(find.byType(SchedulePositionList), findsWidgets, reason: 'A single-month schedule must render its page');
   });
 }

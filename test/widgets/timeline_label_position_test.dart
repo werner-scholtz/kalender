@@ -10,13 +10,8 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// Regression coverage for #472: the timeline labels are positioned by the
-/// segments before them, not by a multiple of their own height.
-///
-/// [KalenderTimeRange.splitIntoSegments] gives the last segment whatever is left of
-/// the range, so it is shorter than the rest unless the range divides evenly.
-/// [KalenderTimeRange.allDay] is one that does, which is why the default range was
-/// unaffected.
+// #472: timeline labels are positioned by the segments before them. The last segment is shorter than the rest unless
+// the range divides evenly, which KalenderTimeRange.allDay does.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -84,25 +79,19 @@ void main() {
     expectEvenlySpaced(tester);
   });
 
-  testWidgets('a range ending on a segment boundary labels its last segment in place', (tester) async {
-    // 09:00 to 18:00 leaves a one minute segment at the end, whose label used to
-    // land at the top of the timeline.
-    await pumpDay(
-      tester,
-      KalenderTimeRange(start: const KalenderTime(hour: 9, minute: 0), end: const KalenderTime(hour: 18, minute: 0)),
-    );
-    expectEvenlySpaced(tester);
-  });
+  final shortLastSegmentCases = [
+    // 09:00 to 18:00 leaves a one minute segment at the end.
+    (name: 'a range ending on a segment boundary', end: const KalenderTime(hour: 18, minute: 0)),
+    // 09:00 to 17:30 leaves a 31 minute segment at the end.
+    (name: 'a range ending part way through a segment', end: const KalenderTime(hour: 17, minute: 30)),
+  ];
 
-  testWidgets('a range ending part way through a segment labels its last segment in place', (tester) async {
-    // 09:00 to 17:30 leaves a 31 minute segment at the end, so it is affected
-    // without producing the one minute segment above.
-    await pumpDay(
-      tester,
-      KalenderTimeRange(start: const KalenderTime(hour: 9, minute: 0), end: const KalenderTime(hour: 17, minute: 30)),
-    );
-    expectEvenlySpaced(tester);
-  });
+  for (final (:name, :end) in shortLastSegmentCases) {
+    testWidgets('$name labels its last segment in place', (tester) async {
+      await pumpDay(tester, KalenderTimeRange(start: const KalenderTime(hour: 9, minute: 0), end: end));
+      expectEvenlySpaced(tester);
+    });
+  }
 
   testWidgets('the labels line up with the hour lines', (tester) async {
     final range = KalenderTimeRange(

@@ -12,10 +12,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
-/// A full-year display range for 2025, shared across multiple widget/interaction tests.
 final year2025DisplayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
-/// Timezone names used in tests that exercise timezone-aware controllers.
 const locationsToTest = ['Etc/UTC', 'Africa/Johannesburg', 'America/New_York', 'Europe/London', 'Australia/Sydney'];
 
 final datesToTest = [
@@ -64,30 +62,56 @@ final datesToTest = [
 ];
 
 /// Runs the given [body] with the given timezone and [datesToTest].
-void testWithTimeZones({
-  required void Function(String timezone, Iterable<DateTime> testDates) body,
-  List<DateTime>? dates,
-}) {
+void testWithTimeZones({required void Function(String timezone, Iterable<DateTime> testDates) body}) {
   final timezone = Platform.environment['TZ'] ?? 'UTC';
   return group(timezone, () {
     final isUtc = timezone == 'UTC';
-    final testDates = dates ?? (isUtc ? datesToTest.map((e) => e.toUtc()) : datesToTest);
+    final testDates = isUtc ? datesToTest.map((e) => e.toUtc()) : datesToTest;
     body(timezone, testDates);
   });
 }
 
-/// Wraps the given [child] with a [MaterialApp] and [Scaffold].
+/// Precise input with tap gestures, whatever platform the test runs as.
+final kPreciseInteraction = KalenderInteraction(
+  inputMode: InputMode.precise,
+  createEventGesture: EventInteractionGesture.tap,
+  modifyEventGesture: EventInteractionGesture.tap,
+);
+
 MaterialApp wrapWithMaterialApp(Widget child) {
   return MaterialApp(home: Scaffold(body: child));
 }
 
-Future<void> pumpAndSettleWithMaterialApp(WidgetTester tester, Widget child, {Duration? duration}) async {
+Future<void> pumpAndSettleWithMaterialApp(WidgetTester tester, Widget child) async {
   await tester.pumpWidget(wrapWithMaterialApp(child));
-  if (duration != null) {
-    await tester.pumpAndSettle(duration);
-  } else {
-    await tester.pumpAndSettle();
-  }
+  await tester.pumpAndSettle();
+}
+
+/// Pumps a [KalenderView] with [pumpAndSettleWithMaterialApp].
+Future<void> pumpKalender(
+  WidgetTester tester, {
+  required EventsController eventsController,
+  required KalenderController kalenderController,
+  required ViewConfiguration viewConfiguration,
+  KalenderCallbacks? callbacks,
+  KalenderComponents? components,
+  Widget? header,
+  Widget? body,
+  Location? location,
+}) {
+  return pumpAndSettleWithMaterialApp(
+    tester,
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: viewConfiguration,
+      callbacks: callbacks,
+      components: components,
+      header: header,
+      body: body,
+      location: location,
+    ),
+  );
 }
 
 class TestProvider extends StatelessWidget {
@@ -95,10 +119,7 @@ class TestProvider extends StatelessWidget {
   final KalenderController kalenderController;
   final EventsController eventsController;
   final KalenderCallbacks? callbacks;
-  final KalenderComponents? components;
   final TileComponents tileComponents;
-  final ValueNotifier<KalenderInteraction>? interaction;
-  final ValueNotifier<KalenderSnapping>? snapping;
   final ValueNotifier<double>? heightPerMinute;
   final Locale? locale;
   final Location? location;
@@ -110,9 +131,6 @@ class TestProvider extends StatelessWidget {
     required this.eventsController,
     required this.tileComponents,
     this.callbacks,
-    this.components,
-    this.interaction,
-    this.snapping,
     this.heightPerMinute,
     this.locale,
     this.location,
@@ -124,24 +142,21 @@ class TestProvider extends StatelessWidget {
       eventsController: eventsController,
       child: KalenderControllerProvider(
         notifier: kalenderController,
-        child: Callbacks(
-          callbacks: null,
-          child: Components(
-            components: components ?? const KalenderComponents(),
-            child: Interaction(
-              notifier: interaction ?? ValueNotifier(KalenderInteraction()),
-              child: Snapping(
-                notifier: snapping ?? ValueNotifier(const KalenderSnapping()),
-                child: HeightPerMinute(
-                  notifier: heightPerMinute ?? ValueNotifier(0.7),
-                  child: Callbacks(
-                    callbacks: callbacks ?? const KalenderCallbacks(),
-                    child: TileComponentProvider(
-                      tileComponents: tileComponents,
-                      child: LocaleProvider(
-                        locale: locale,
-                        child: LocationProvider(notifier: ValueNotifier(location), child: child),
-                      ),
+        child: Components(
+          components: const KalenderComponents(),
+          child: Interaction(
+            notifier: ValueNotifier(KalenderInteraction()),
+            child: Snapping(
+              notifier: ValueNotifier(const KalenderSnapping()),
+              child: HeightPerMinute(
+                notifier: heightPerMinute ?? ValueNotifier(0.7),
+                child: Callbacks(
+                  callbacks: callbacks ?? const KalenderCallbacks(),
+                  child: TileComponentProvider(
+                    tileComponents: tileComponents,
+                    child: LocaleProvider(
+                      locale: locale,
+                      child: LocationProvider(notifier: ValueNotifier(location), child: child),
                     ),
                   ),
                 ),
@@ -165,10 +180,7 @@ extension WidgetTesterUtils on WidgetTester {
     await pumpAndSettle();
   }
 
-  /// Performs a long-press-drag gesture sequence for [LongPressDraggable] widgets.
-  ///
-  /// This starts a gesture at [startLocation], waits for the long press delay,
-  /// then moves by [offset] and lifts the pointer.
+  /// Long-presses at [startLocation], drags by [offset] and releases, for [LongPressDraggable] widgets.
   Future<void> longPressDrag(Offset startLocation, Offset offset) async {
     final gesture = await startGesture(startLocation);
     await pump(const Duration(milliseconds: 500));
@@ -178,9 +190,24 @@ extension WidgetTesterUtils on WidgetTester {
     await pumpAndSettle();
   }
 
-  /// Performs a long-press-drag on the given [finder] widget.
   Future<void> longPressDragWidget(Finder finder, Offset offset) async {
     await longPressDrag(getCenter(finder), offset);
+  }
+
+  /// Drags [tile] to [target] and holds it there long enough for an edge trigger to fire, without releasing.
+  ///
+  /// The drag stops halfway first, since a drag target does not register a single move past it as an enter.
+  Future<TestGesture> holdDragAt(Finder tile, Offset target) async {
+    final center = getCenter(tile);
+    final gesture = await startGesture(center);
+    await pump();
+    await gesture.moveTo(Offset.lerp(center, target, 0.5)!);
+    await pump();
+    await gesture.moveTo(target);
+    await pump();
+    await pump(const Duration(milliseconds: 800));
+    await pump(const Duration(milliseconds: 250));
+    return gesture;
   }
 
   /// Creates a mouse [TestGesture] positioned at [Offset.zero] and registers

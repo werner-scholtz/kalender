@@ -19,22 +19,19 @@ void main() {
   late KalenderController kalenderController;
   late MultiDayViewController viewController;
 
-  /// Standard test events: two overlapping same-day events + one next-day event.
   late List<KalenderEvent> events;
 
   setUp(() {
     events = [
-      // Event 0: 23:00 day before → 01:00 start day (2h, crosses midnight)
+      // 23:00 the day before to 01:00.
       KalenderEvent(
         start: start.copyWith(hour: start.hour - 1),
         end: start.copyWith(hour: start.hour + 1),
       ),
-      // Event 1: 00:00 → 02:00 on start day (2h)
       KalenderEvent(
         start: start,
         end: start.copyWith(hour: start.hour + 2),
       ),
-      // Event 2: 00:00 → 03:00 on next day (3h)
       KalenderEvent(
         start: start.copyWith(day: start.day + 1),
         end: start.copyWith(day: start.day + 1, hour: start.hour + 3),
@@ -53,33 +50,21 @@ void main() {
     kalenderController.attach(viewController);
   });
 
-  /// Helper to pump a [MultiDayEventsRow] inside the required providers.
-  Future<void> pumpEventsRow(
-    WidgetTester tester, {
-    MultiDayBodyConfiguration configuration = const MultiDayBodyConfiguration(),
-    FloatingDateTimeRange? range,
-    TileComponents? tileComponents,
-    double width = 700,
-  }) async {
-    final displayRange = range ?? floatingStart.startOfDay.weekRange();
-    final tiles =
-        tileComponents ??
-        TileComponents(
-          tileBuilder: (context, event, tileRange) =>
-              Container(key: ValueKey(event.id), child: Text(event.id.toString())),
-        );
-
+  Future<void> pumpEventsRow(WidgetTester tester) async {
     await tester.pumpWidget(
       wrapWithMaterialApp(
         TestProvider(
           kalenderController: kalenderController,
           eventsController: eventsController,
-          tileComponents: tiles,
+          tileComponents: TileComponents(
+            tileBuilder: (context, event, tileRange) =>
+                Container(key: ValueKey(event.id), child: Text(event.id.toString())),
+          ),
           child: SizedBox(
-            width: width,
+            width: 700,
             child: MultiDayEventsRow(
-              configuration: configuration,
-              floatingRange: displayRange,
+              configuration: const MultiDayBodyConfiguration(),
+              floatingRange: floatingStart.startOfDay.weekRange(),
               viewController: viewController,
               pageHeight: 0.7 * Duration.minutesPerDay,
             ),
@@ -89,19 +74,15 @@ void main() {
     );
   }
 
-  /// Finder for an event tile by index into [events].
   Finder eventFinder(int index) => find.byKey(ValueKey(events[index].id));
 
-  // ---------------------------------------------------------------------------
-  // Layout
-  // ---------------------------------------------------------------------------
   group('Layout', () {
     testWidgets('renders all events', (tester) async {
       await pumpEventsRow(tester);
 
-      expect(eventFinder(0), findsOneWidget);
-      expect(eventFinder(1), findsOneWidget);
-      expect(eventFinder(2), findsOneWidget);
+      for (var i = 0; i < events.length; i++) {
+        expect(eventFinder(i), findsOneWidget);
+      }
     });
 
     testWidgets('same-day events share vertical start position', (tester) async {
@@ -138,57 +119,38 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Empty / single event
-  // ---------------------------------------------------------------------------
   group('Edge cases', () {
     testWidgets('renders with no events', (tester) async {
       eventsController.clearEvents();
       await pumpEventsRow(tester);
 
-      // Widget should still render without errors.
       expect(find.byType(MultiDayEventsRow), findsOneWidget);
     });
 
-    testWidgets('renders a single event', (tester) async {
-      eventsController.clearEvents();
-      final singleEvent = KalenderEvent(start: start, end: start.copyWith(hour: 4));
-      eventsController.addEvent(singleEvent);
-      events = [singleEvent]; // update local list for finder
+    final singleEvents = [
+      (name: 'single event', event: KalenderEvent(start: start, end: start.copyWith(hour: 4))),
+      (
+        name: 'short event (15 min)',
+        event: KalenderEvent(start: start.copyWith(hour: 10), end: start.copyWith(hour: 10, minute: 15)),
+      ),
+    ];
 
-      await pumpEventsRow(tester);
+    for (final c in singleEvents) {
+      testWidgets('renders a ${c.name}', (tester) async {
+        eventsController.clearEvents();
+        eventsController.addEvent(c.event);
 
-      expect(eventFinder(0), findsOneWidget);
-    });
+        await pumpEventsRow(tester);
 
-    testWidgets('renders short event (15 min)', (tester) async {
-      eventsController.clearEvents();
-      final shortEvent = KalenderEvent(start: start.copyWith(hour: 10), end: start.copyWith(hour: 10, minute: 15));
-      eventsController.addEvent(shortEvent);
-      events = [shortEvent];
-
-      await pumpEventsRow(tester);
-
-      expect(eventFinder(0), findsOneWidget);
-      // The tile should have a non-zero height (respecting minimumTileHeight).
-      final size = tester.getSize(eventFinder(0));
-      expect(size.height, greaterThan(0));
-    });
+        expect(tester.getSize(find.byKey(ValueKey(c.event.id))).height, greaterThan(0));
+      });
+    }
   });
 
-  // ---------------------------------------------------------------------------
-  // Dynamic updates
-  // ---------------------------------------------------------------------------
   group('Dynamic updates', () {
     testWidgets('adding an event updates the widget', (tester) async {
       await pumpEventsRow(tester);
 
-      // Initially 3 events.
-      expect(eventFinder(0), findsOneWidget);
-      expect(eventFinder(1), findsOneWidget);
-      expect(eventFinder(2), findsOneWidget);
-
-      // Add a 4th event on the same day.
       final newEvent = KalenderEvent(start: start.copyWith(hour: 5), end: start.copyWith(hour: 7));
       eventsController.addEvent(newEvent);
       events.add(newEvent);
@@ -200,8 +162,6 @@ void main() {
     testWidgets('removing an event updates the widget', (tester) async {
       await pumpEventsRow(tester);
 
-      expect(eventFinder(0), findsOneWidget);
-
       final eventToRemove = events[0];
       eventsController.removeEvent(eventToRemove);
       await tester.pump();
@@ -212,25 +172,19 @@ void main() {
     testWidgets('clearing all events updates the widget', (tester) async {
       await pumpEventsRow(tester);
 
-      expect(eventFinder(0), findsOneWidget);
-
       eventsController.clearEvents();
       await tester.pump();
 
-      expect(eventFinder(0), findsNothing);
-      expect(eventFinder(1), findsNothing);
-      expect(eventFinder(2), findsNothing);
+      for (var i = 0; i < events.length; i++) {
+        expect(eventFinder(i), findsNothing);
+      }
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Column keys
-  // ---------------------------------------------------------------------------
   group('Column keys', () {
     testWidgets('each day column has a unique key', (tester) async {
       await pumpEventsRow(tester);
 
-      // The week range starting from March 24 (Monday) should have 7 day columns.
       final weekRange = floatingStart.startOfDay.weekRange();
       var currentDate = weekRange.start;
       while (currentDate.isBefore(weekRange.end)) {

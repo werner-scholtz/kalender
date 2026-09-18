@@ -37,7 +37,6 @@ void main() {
     );
   }
 
-  /// The snapping the calendar's widget tree is actually reading.
   KalenderSnapping resolvedSnapping(WidgetTester tester) {
     return tester.widget<Snapping>(find.byType(Snapping)).notifier!.value;
   }
@@ -65,10 +64,8 @@ void main() {
   testWidgets('changing only eventSnapStrategy updates the widget tree', (tester) async {
     await pumpAndSettleWithMaterialApp(tester, buildCalendar(const KalenderSnapping()));
 
-    // The default strategy rounds 00:08 up to 00:15.
     expect(applyStrategy(resolvedSnapping(tester)), equals(FloatingDateTime(2025, 1, 1, 0, 15)));
 
-    // Rebuild with a snapping that differs only by its strategy.
     await pumpAndSettleWithMaterialApp(
       tester,
       buildCalendar(const KalenderSnapping(eventSnapStrategy: EventSnapStrategy.none())),

@@ -12,19 +12,7 @@ import 'package:timezone/timezone.dart';
 
 import '../utilities.dart';
 
-/// End-to-end regression coverage for "today" highlighting in a real
-/// [KalenderView], targeting the timezone bug reported in:
-///
-///   * #254 — `isSameDay` produced wrong results for non-UTC timezones,
-///   * #251 — wrong current-date highlighting (e.g. Dec 24 highlighted Dec 23),
-///   * #248 — header dates compared against a local `DateTime.now()` incorrectly
-///            near midnight in offset timezones.
-///
-/// The root cause was fixed by the `FloatingDateTime` + `NowCallback` refactor in
-/// `0.18.0`. The isolated component checks live in `now_callback_is_today_test.dart`;
-/// these exercise the layer users actually hit — a full `KalenderView` — and are
-/// run across the timezone matrix (`tool/test_timezones_linux.dart`) to cover the
-/// non-UTC / near-midnight condition that made the original bug visible.
+/// Today highlighting in a full [KalenderView] (#248, #251, #254).
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -37,66 +25,77 @@ void main() {
   Finder todayNumber(Key todayKey, int day) => find.descendant(of: find.byKey(todayKey), matching: find.text('$day'));
 
   group('Today highlighting in KalenderView (#254 #248 #251)', () {
-    // ── Month view ──────────────────────────────────────────────────────────
     group('MonthView', () {
-      Future<void> pumpMonth(WidgetTester tester, DateTime month, {NowCallback? nowCallback}) =>
-          pumpAndSettleWithMaterialApp(
-            tester,
-            KalenderView(
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              viewConfiguration: MonthViewConfiguration.singleMonth(
-                displayRange: KalenderDateTimeRange(
-                  start: DateTime(month.year, month.month - 1),
-                  end: DateTime(month.year, month.month + 2),
-                ),
-                initialDateTime: month,
-                nowCallback: nowCallback,
-              ),
-              body: const KalenderBody(),
+      Future<void> pumpMonth(
+        WidgetTester tester,
+        DateTime month, {
+        NowCallback? nowCallback,
+        KalenderComponents? components,
+        Location? location,
+      }) => pumpAndSettleWithMaterialApp(
+        tester,
+        KalenderView(
+          eventsController: eventsController,
+          kalenderController: kalenderController,
+          location: location,
+          components: components,
+          viewConfiguration: MonthViewConfiguration.singleMonth(
+            displayRange: KalenderDateTimeRange(
+              start: DateTime(month.year, month.month - 1),
+              end: DateTime(month.year, month.month + 2),
             ),
-          );
+            initialDateTime: month,
+            nowCallback: nowCallback,
+          ),
+          body: const KalenderBody(),
+        ),
+      );
 
       testWidgets('highlights exactly the real today (default location path)', (tester) async {
         final now = DateTime.now();
         await pumpMonth(tester, DateTime(now.year, now.month));
 
-        // Exactly one day is "today", and it carries today's day-of-month number.
         expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget);
         expect(todayNumber(MonthDayHeader.todayKey, now.day), findsOneWidget);
       });
 
       testWidgets('highlights the callback day, not its neighbour (#251)', (tester) async {
-        // The #251 report: current date Dec 24, but Dec 23 was highlighted.
         await pumpMonth(tester, DateTime(2025, 12), nowCallback: () => DateTime(2025, 12, 24, 10));
 
         expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget);
-        expect(todayNumber(MonthDayHeader.todayKey, 24), findsOneWidget, reason: 'Dec 24 must be highlighted');
-        expect(todayNumber(MonthDayHeader.todayKey, 23), findsNothing, reason: 'Dec 23 must not be highlighted');
+        expect(todayNumber(MonthDayHeader.todayKey, 24), findsOneWidget);
+        expect(todayNumber(MonthDayHeader.todayKey, 23), findsNothing);
       });
 
       testWidgets('highlights correctly on a month boundary', (tester) async {
-        // Last day of the month — a classic near-midnight / offset failure point.
         await pumpMonth(tester, DateTime(2025, 12), nowCallback: () => DateTime(2025, 12, 31, 23));
 
         expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget);
         expect(todayNumber(MonthDayHeader.todayKey, 31), findsOneWidget);
       });
 
-      // #248: a custom monthDayHeaderBuilder must receive a localized wall-clock
-      // DateTime (via .forLocation()), not a raw UTC-flagged FloatingDateTime, so
-      // consumer comparisons against DateTime.now() behave correctly.
-      testWidgets('custom builder receives localized (non-UTC) dates (#248)', (tester) async {
-        final received = <DateTime>[];
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          KalenderView(
-            eventsController: eventsController,
-            kalenderController: kalenderController,
-            viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
-              initialDateTime: DateTime(2025, 12),
-            ),
+      tz.initializeTimeZones();
+      final newYork = getLocation('America/New_York');
+      final builderCases = <({String name, Location? location, Matcher date})>[
+        (
+          name: 'custom builder receives localized (non-UTC) dates (#248)',
+          location: null,
+          date: isA<DateTime>().having((date) => date.isUtc, 'isUtc', isFalse),
+        ),
+        (
+          name: 'custom builder receives TZDateTime for a configured location (#248)',
+          location: newYork,
+          date: isA<TZDateTime>().having((date) => date.location, 'location', newYork),
+        ),
+      ];
+
+      for (final c in builderCases) {
+        testWidgets(c.name, (tester) async {
+          final received = <DateTime>[];
+          await pumpMonth(
+            tester,
+            DateTime(2025, 12),
+            location: c.location,
             components: KalenderComponents(
               monthComponents: MonthComponents(
                 bodyComponents: MonthBodyComponents(
@@ -107,59 +106,14 @@ void main() {
                 ),
               ),
             ),
-            body: const KalenderBody(),
-          ),
-        );
+          );
 
-        expect(received, isNotEmpty);
-        // No local timezone is configured, so dates arrive as local wall-clock
-        // (isUtc == false) rather than the UTC-flagged FloatingDateTime.
-        expect(
-          received.every((d) => !d.isUtc),
-          isTrue,
-          reason: 'monthDayHeaderBuilder should receive localized (non-UTC) dates',
-        );
-      });
-
-      testWidgets('custom builder receives TZDateTime for a configured location (#248)', (tester) async {
-        tz.initializeTimeZones();
-        final newYork = getLocation('America/New_York');
-        final received = <DateTime>[];
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          KalenderView(
-            eventsController: eventsController,
-            kalenderController: kalenderController,
-            location: newYork,
-            viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: KalenderDateTimeRange(start: DateTime(2025, 11), end: DateTime(2026)),
-              initialDateTime: DateTime(2025, 12),
-            ),
-            components: KalenderComponents(
-              monthComponents: MonthComponents(
-                bodyComponents: MonthBodyComponents(
-                  monthDayHeaderBuilder: (context, date) {
-                    received.add(date);
-                    return MonthDayHeader(date: date);
-                  },
-                ),
-              ),
-            ),
-            body: const KalenderBody(),
-          ),
-        );
-
-        expect(received, isNotEmpty);
-        expect(
-          received.every((d) => d is TZDateTime && d.location == newYork),
-          isTrue,
-          reason: 'monthDayHeaderBuilder should receive TZDateTime in the configured location',
-        );
-      });
+          expect(received, isNotEmpty);
+          expect(received, everyElement(c.date));
+        });
+      }
     });
 
-    // ── Multi-day (week) header ─────────────────────────────────────────────
     group('MultiDayView header', () {
       final monday = DateTime(2026, 4, 13);
       final weekRange = KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
@@ -180,7 +134,6 @@ void main() {
       );
 
       testWidgets('highlights exactly the callback day', (tester) async {
-        // Wednesday of the visible week.
         await pumpWeek(tester, nowCallback: () => DateTime(2026, 4, 15, 12));
 
         expect(find.byKey(DayHeader.todayKey), findsOneWidget);
@@ -188,7 +141,6 @@ void main() {
       });
 
       testWidgets('does not highlight any day when today is outside the visible range', (tester) async {
-        // "Today" is a week later — no header in view should be highlighted.
         await pumpWeek(tester, nowCallback: () => DateTime(2026, 4, 22, 12));
 
         expect(find.byKey(DayHeader.todayKey), findsNothing);
