@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/gestures.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
@@ -12,10 +13,42 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 
 import '../utilities.dart';
 
+class _View {
+  const _View({
+    required this.name,
+    required this.configuration,
+    required this.body,
+    required this.dragOffset,
+    required this.detail,
+    required this.tappedDate,
+    required this.eventStart,
+    required this.eventEnd,
+    required this.tileKey,
+    required this.gestureDetectorKey,
+    required this.tapEvent,
+    required this.eventTapDetail,
+    required this.nextPage,
+  });
+
+  final String name;
+  final ViewConfiguration configuration;
+  final Finder body;
+  final Offset dragOffset;
+  final Matcher detail;
+  final Matcher tappedDate;
+  final DateTime eventStart;
+  final DateTime eventEnd;
+  final Key Function(String id) tileKey;
+  final Key Function(String id) gestureDetectorKey;
+  final Future<void> Function(WidgetTester tester, Finder gestureDetector) tapEvent;
+  final Matcher eventTapDetail;
+  final DateTime nextPage;
+}
+
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
-  final interaction = KalenderInteraction(
+  final preciseInteraction = KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
@@ -32,729 +65,336 @@ void main() {
     modifyEventGesture: EventInteractionGesture.longPress,
   );
 
+  final views = [
+    _View(
+      name: 'MultiDayView',
+      configuration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+      body: find.byType(MultiDayBody),
+      dragOffset: const Offset(0, 100),
+      detail: isA<DayDetail>(),
+      tappedDate: equals(DateTime(2025, 1, 1, 6, 30)),
+      eventStart: DateTime(2025, 1, 1, 1),
+      eventEnd: DateTime(2025, 1, 1, 12),
+      tileKey: DayEventTile.tileKey,
+      gestureDetectorKey: DayEventTile.gestureDetectorKey,
+      tapEvent: (tester, gestureDetector) => tester.tapAt(tester.getTopLeft(gestureDetector) + const Offset(0, 60)),
+      eventTapDetail: isA<DayDetail>().having(
+        (detail) => detail.date,
+        'date',
+        predicate<DateTime>(
+          (date) => date.isAfter(DateTime(2025, 1, 1, 1)) && date.isBefore(DateTime(2025, 1, 1, 12)),
+          'inside the event',
+        ),
+      ),
+      nextPage: DateTime(2025, 1, 2),
+    ),
+    _View(
+      name: 'MonthView',
+      configuration: MonthViewConfiguration.singleMonth(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+      body: find.byType(MonthBody),
+      dragOffset: const Offset(100, 0),
+      detail: isA<MultiDayDetail>(),
+      tappedDate: isNotNull,
+      eventStart: DateTime(2025, 1, 1),
+      eventEnd: DateTime(2025, 1, 1, 1),
+      tileKey: MultiDayEventTile.tileKey,
+      gestureDetectorKey: MultiDayEventTile.gestureDetectorKey,
+      tapEvent: (tester, gestureDetector) => tester.tap(gestureDetector),
+      eventTapDetail: isA<MultiDayDetail>(),
+      nextPage: DateTime(2025, 2, 1),
+    ),
+  ];
+
+  final taps = [
+    (
+      name: 'onTapped',
+      buttons: kPrimaryButton,
+      callbacks: (OnTapped onDate, OnTappedWithDetail onDetail) =>
+          KalenderCallbacks(onTapped: onDate, onTappedWithDetail: onDetail),
+    ),
+    (
+      name: 'onSecondaryTapped',
+      buttons: kSecondaryButton,
+      callbacks: (OnTapped onDate, OnTappedWithDetail onDetail) =>
+          KalenderCallbacks(onSecondaryTapped: onDate, onSecondaryTappedWithDetail: onDetail),
+    ),
+  ];
+
+  final longPresses = [
+    (
+      name: 'onLongPressed',
+      buttons: kPrimaryButton,
+      callbacks: (OnLongPressed onDate, OnLongPressedWithDetail onDetail) =>
+          KalenderCallbacks(onLongPressed: onDate, onLongPressedWithDetail: onDetail),
+    ),
+    (
+      name: 'onSecondaryLongPressed',
+      buttons: kSecondaryButton,
+      callbacks: (OnLongPressed onDate, OnLongPressedWithDetail onDetail) =>
+          KalenderCallbacks(onSecondaryLongPressed: onDate, onSecondaryLongPressedWithDetail: onDetail),
+    ),
+  ];
+
   setUp(() {
     eventsController = DefaultEventsController();
     kalenderController = KalenderController();
   });
 
-  /// Helper to pump a MultiDayView (single day) with the given callbacks.
-  Future<void> pumpMultiDayView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
+  Future<void> pumpView(
+    WidgetTester tester,
+    _View view, {
+    required KalenderCallbacks callbacks,
+    KalenderInteraction? interaction,
+  }) async {
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(
-          displayRange: year2025DisplayRange,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialDateTime: DateTime(2025, 1, 1),
-        ),
+        viewConfiguration: view.configuration,
         callbacks: callbacks,
-        header: KalenderHeader(interaction: interaction),
-        body: KalenderBody(interaction: interaction),
+        header: KalenderHeader(interaction: interaction ?? preciseInteraction),
+        body: KalenderBody(interaction: interaction ?? preciseInteraction),
       ),
     );
   }
 
-  /// Helper to pump a MonthView with the given callbacks.
-  Future<void> pumpMonthView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
-    await pumpAndSettleWithMaterialApp(
-      tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: MonthViewConfiguration.singleMonth(
-          displayRange: year2025DisplayRange,
-          initialDateTime: DateTime(2025, 1, 1),
-        ),
-        callbacks: callbacks,
-        header: KalenderHeader(interaction: interaction),
-        body: KalenderBody(interaction: interaction),
-      ),
-    );
+  Future<String> addEvent(WidgetTester tester, _View view) async {
+    final id = eventsController.addEvent(KalenderEvent(start: view.eventStart, end: view.eventEnd));
+    await tester.pumpAndSettle();
+    return id;
   }
 
-  // ---------------------------------------------------------------------------
-  // MultiDayView Tests
-  // ---------------------------------------------------------------------------
-  group('MultiDayView Callbacks', () {
-    testWidgets('onTapped fires with correct date', (tester) async {
-      DateTime? tappedDate;
-      TapDetail? tappedDetail;
+  for (final view in views) {
+    group('${view.name} Callbacks', () {
+      for (final tap in taps) {
+        testWidgets('${tap.name} fires with correct date', (tester) async {
+          DateTime? tappedDate;
+          TapDetail? tappedDetail;
 
-      await pumpMultiDayView(
+          await pumpView(
+            tester,
+            view,
+            callbacks: tap.callbacks((date) => tappedDate = date, (detail) => tappedDetail = detail),
+          );
+
+          expect(tappedDate, isNull);
+          expect(tappedDetail, isNull);
+
+          await tester.tapAt(tester.getCenter(view.body), buttons: tap.buttons);
+
+          expect(tappedDate, view.tappedDate);
+          expect(tappedDetail, view.detail);
+          expect(tappedDetail!.localOffset.dx, greaterThan(0));
+          expect(tappedDetail!.localOffset.dy, greaterThan(0));
+          expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dx, greaterThanOrEqualTo(0));
+          expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dy, greaterThanOrEqualTo(0));
+        });
+      }
+
+      for (final longPress in longPresses) {
+        testWidgets('${longPress.name} fires', (tester) async {
+          DateTime? longPressedDate;
+          TapDetail? longPressedDetail;
+
+          await pumpView(
+            tester,
+            view,
+            callbacks: longPress.callbacks((date) => longPressedDate = date, (detail) => longPressedDetail = detail),
+          );
+
+          expect(longPressedDate, isNull);
+          expect(longPressedDetail, isNull);
+
+          await tester.longPressAt(tester.getCenter(view.body), buttons: longPress.buttons);
+
+          expect(longPressedDate, isNotNull);
+          expect(longPressedDetail, view.detail);
+        });
+      }
+
+      testWidgets('drag-to-create fires onEventCreate and onEventCreated, not onEventChange/onEventChanged', (
         tester,
-        callbacks: KalenderCallbacks(
-          onTapped: (date) => tappedDate = date,
-          onTappedWithDetail: (details) => tappedDetail = details,
-        ),
-      );
+      ) async {
+        KalenderEvent? createdEvent;
+        KalenderEvent? createdConfirmed;
+        KalenderEvent? changedBefore;
+        KalenderEvent? changedAfter;
 
-      final body = find.byType(MultiDayBody);
-      expect(body, findsOneWidget);
+        await pumpView(
+          tester,
+          view,
+          callbacks: KalenderCallbacks(
+            onEventCreate: (event) {
+              createdEvent = event;
+              return event;
+            },
+            onEventCreated: (event) => createdConfirmed = event,
+            onEventChange: (event) => changedBefore = event,
+            onEventChanged: (_, updated) => changedAfter = updated,
+          ),
+        );
 
-      expect(tappedDate, isNull);
-      expect(tappedDetail, isNull);
+        expect(createdEvent, isNull);
+        expect(createdConfirmed, isNull);
 
-      await tester.tapAt(tester.getCenter(body));
+        await tester.dragFrom(tester.getCenter(view.body), view.dragOffset);
 
-      expect(tappedDate, DateTime(2025, 1, 1, 6, 30));
-      expect(tappedDetail, isNotNull);
-      expect(tappedDetail!.isDayDetail, isTrue);
-      expect(tappedDetail!.localOffset.dx, greaterThan(0));
-      expect(tappedDetail!.localOffset.dy, greaterThan(0));
-      expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dx, greaterThanOrEqualTo(0));
-      expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dy, greaterThanOrEqualTo(0));
+        expect(createdEvent, isNotNull);
+        expect(createdConfirmed, isNotNull);
+        expect(changedBefore, isNull);
+        expect(changedAfter, isNull);
+      });
+
+      testWidgets('drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
+        KalenderEvent? changedBefore;
+        KalenderEvent? changedAfter;
+
+        await pumpView(
+          tester,
+          view,
+          callbacks: KalenderCallbacks(
+            onEventChange: (event) => changedBefore = event,
+            onEventChanged: (_, updated) => changedAfter = updated,
+          ),
+        );
+        final id = await addEvent(tester, view);
+
+        expect(changedBefore, isNull);
+        expect(changedAfter, isNull);
+
+        await tester.drag(find.byKey(view.tileKey(id)), view.dragOffset);
+
+        expect(changedBefore, isNotNull);
+        expect(changedAfter, isNotNull);
+      });
+
+      testWidgets('onEventTapped fires when tapping an event', (tester) async {
+        KalenderEvent? tappedEvent;
+        TapDetail? tappedDetail;
+
+        await pumpView(
+          tester,
+          view,
+          callbacks: KalenderCallbacks(
+            onEventTapped: (event) => tappedEvent = event,
+            onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
+          ),
+        );
+        final id = await addEvent(tester, view);
+
+        expect(tappedEvent, isNull);
+        expect(tappedDetail, isNull);
+
+        await view.tapEvent(tester, find.byKey(view.gestureDetectorKey(id)));
+        await tester.pumpAndSettle();
+
+        expect(tappedEvent?.id, id);
+        expect(tappedDetail?.renderBox.hasSize, isTrue);
+        expect(tappedDetail, view.eventTapDetail);
+      });
+
+      testWidgets('onPageChanged fires when navigating pages', (tester) async {
+        KalenderDateTimeRange? changedRange;
+
+        await pumpView(tester, view, callbacks: KalenderCallbacks(onPageChanged: (range) => changedRange = range));
+
+        expect(changedRange, isNull);
+
+        // Use jumpToDate instead of animateToNextPage to avoid animation that never settles.
+        kalenderController.jumpToDate(view.nextPage);
+        await tester.pumpAndSettle();
+
+        expect(changedRange, isNotNull);
+      });
+
+      testWidgets('onEventCreate returning null falls back to default event', (tester) async {
+        KalenderEvent? createdConfirmed;
+
+        await pumpView(
+          tester,
+          view,
+          callbacks: KalenderCallbacks(
+            onEventCreate: (event) => null,
+            onEventCreated: (event) => createdConfirmed = event,
+          ),
+        );
+
+        await tester.dragFrom(tester.getCenter(view.body), view.dragOffset);
+
+        expect(createdConfirmed, isNotNull);
+      });
     });
 
-    testWidgets('onSecondaryTapped fires with correct date', (tester) async {
-      DateTime? tappedDate;
-      TapDetail? tappedDetail;
+    group('${view.name} Imprecise Callbacks', () {
+      testWidgets('long-press drag-to-create fires onEventCreate and onEventCreated', (tester) async {
+        KalenderEvent? createdEvent;
+        KalenderEvent? createdConfirmed;
 
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onSecondaryTapped: (date) => tappedDate = date,
-          onSecondaryTappedWithDetail: (details) => tappedDetail = details,
-        ),
-      );
+        await pumpView(
+          tester,
+          view,
+          interaction: impreciseInteraction,
+          callbacks: KalenderCallbacks(
+            onEventCreate: (event) {
+              createdEvent = event;
+              return event;
+            },
+            onEventCreated: (event) => createdConfirmed = event,
+          ),
+        );
 
-      final body = find.byType(MultiDayBody);
-      expect(body, findsOneWidget);
+        expect(createdEvent, isNull);
+        expect(createdConfirmed, isNull);
 
-      expect(tappedDate, isNull);
-      expect(tappedDetail, isNull);
+        await tester.longPressDrag(tester.getCenter(view.body), view.dragOffset);
 
-      await tester.tapAt(tester.getCenter(body), buttons: kSecondaryButton);
+        expect(createdEvent, isNotNull);
+        expect(createdConfirmed, isNotNull);
+      });
 
-      expect(tappedDate, DateTime(2025, 1, 1, 6, 30));
-      expect(tappedDetail, isNotNull);
-      expect(tappedDetail!.isDayDetail, isTrue);
-      expect(tappedDetail!.localOffset.dx, greaterThan(0));
-      expect(tappedDetail!.localOffset.dy, greaterThan(0));
-      expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dx, greaterThanOrEqualTo(0));
-      expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dy, greaterThanOrEqualTo(0));
+      testWidgets('long-press drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
+        KalenderEvent? changedBefore;
+        KalenderEvent? changedAfter;
+
+        await pumpView(
+          tester,
+          view,
+          interaction: impreciseInteraction,
+          callbacks: KalenderCallbacks(
+            onEventChange: (event) => changedBefore = event,
+            onEventChanged: (_, updated) => changedAfter = updated,
+          ),
+        );
+        final id = await addEvent(tester, view);
+
+        expect(changedBefore, isNull);
+        expect(changedAfter, isNull);
+
+        await tester.longPressDragWidget(find.byKey(view.tileKey(id)), view.dragOffset);
+
+        expect(changedBefore, isNotNull);
+        expect(changedAfter, isNotNull);
+      });
     });
+  }
 
-    testWidgets('onLongPressed fires', (tester) async {
-      DateTime? longPressedDate;
-      TapDetail? longPressedDetail;
-
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onLongPressed: (date) => longPressedDate = date,
-          onLongPressedWithDetail: (details) => longPressedDetail = details,
-        ),
-      );
-
-      final body = find.byType(MultiDayBody);
-
-      expect(longPressedDate, isNull);
-      expect(longPressedDetail, isNull);
-
-      await tester.longPressAt(tester.getCenter(body));
-
-      expect(longPressedDate, isNotNull);
-      expect(longPressedDetail, isNotNull);
-      expect(longPressedDetail!.isDayDetail, isTrue);
-    });
-
-    testWidgets('onSecondaryLongPressed fires', (tester) async {
-      DateTime? longPressedDate;
-      TapDetail? longPressedDetail;
-
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onSecondaryLongPressed: (date) => longPressedDate = date,
-          onSecondaryLongPressedWithDetail: (details) => longPressedDetail = details,
-        ),
-      );
-
-      final body = find.byType(MultiDayBody);
-
-      expect(longPressedDate, isNull);
-      expect(longPressedDetail, isNull);
-
-      await tester.longPressAt(tester.getCenter(body), buttons: kSecondaryButton);
-
-      expect(longPressedDate, isNotNull);
-      expect(longPressedDetail, isNotNull);
-      expect(longPressedDetail!.isDayDetail, isTrue);
-    });
-
-    testWidgets('drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      KalenderEvent? createdEvent;
-      KalenderEvent? createdConfirmed;
-
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) {
-            createdEvent = event;
-            return event;
-          },
-          onEventCreated: (event) => createdConfirmed = event,
-        ),
-      );
-
-      final body = find.byType(MultiDayBody);
-
-      expect(createdEvent, isNull);
-      expect(createdConfirmed, isNull);
-
-      await tester.dragFrom(tester.getCenter(body), const Offset(0, 100));
-
-      expect(createdEvent, isNotNull);
-      expect(createdConfirmed, isNotNull);
-    });
-
-    testWidgets('drag-to-create does NOT fire onEventChange/onEventChanged', (tester) async {
-      KalenderEvent? changedBefore;
-      KalenderEvent? changedAfter;
-
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) => event,
-          onEventCreated: (_) {},
-          onEventChange: (event) => changedBefore = event,
-          onEventChanged: (_, updated) => changedAfter = updated,
-        ),
-      );
-
-      final body = find.byType(MultiDayBody);
-      await tester.dragFrom(tester.getCenter(body), const Offset(0, 100));
-
-      expect(changedBefore, isNull);
-      expect(changedAfter, isNull);
-    });
-
-    testWidgets('drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      KalenderEvent? changedBefore;
-      KalenderEvent? changedAfter;
-
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventChange: (event) => changedBefore = event,
-          onEventChanged: (_, updated) => changedAfter = updated,
-        ),
-      );
-
-      final id = eventsController.addEvent(
-        KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
-      );
-      await tester.pumpAndSettle();
-
-      final eventFinder = find.byKey(DayEventTile.tileKey(id));
-      expect(eventFinder, findsOneWidget);
-
-      expect(changedBefore, isNull);
-      expect(changedAfter, isNull);
-
-      await tester.drag(eventFinder, const Offset(0, 100));
-
-      expect(changedBefore, isNotNull);
-      expect(changedAfter, isNotNull);
-    });
-
-    testWidgets('onEventTapped fires when tapping an event', (tester) async {
-      KalenderEvent? tappedEvent;
-      TapDetail? tappedDetail;
-
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventTapped: (event) => tappedEvent = event,
-          onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
-        ),
-      );
-
-      final id = eventsController.addEvent(
-        KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
-      );
-      await tester.pumpAndSettle();
-
-      final gestureDetector = find.byKey(DayEventTile.gestureDetectorKey(id));
-      expect(gestureDetector, findsOneWidget);
-
-      expect(tappedEvent, isNull);
-      expect(tappedDetail, isNull);
-
-      await tester.tapAt(tester.getTopLeft(gestureDetector) + const Offset(0, 60));
-      await tester.pumpAndSettle();
-
-      expect(tappedEvent, isNotNull);
-      expect(tappedEvent!.id, id);
-      expect(tappedDetail, isNotNull);
-      expect(tappedDetail!.renderBox.hasSize, isTrue);
-      expect(tappedDetail!.isDayDetail, isTrue);
-
-      final dayDetail = tappedDetail as DayDetail;
-      expect(dayDetail.date.isAfter(DateTime(2025, 1, 1, 1, 0)), isTrue);
-      expect(dayDetail.date.isBefore(DateTime(2025, 1, 1, 12, 0)), isTrue);
-    });
-
-    testWidgets('onPageChanged fires when navigating pages', (tester) async {
-      KalenderDateTimeRange? changedRange;
-
-      await pumpMultiDayView(tester, callbacks: KalenderCallbacks(onPageChanged: (range) => changedRange = range));
-
-      expect(changedRange, isNull);
-
-      // Use jumpToDate instead of animateToNextPage to avoid animation that never settles.
-      kalenderController.jumpToDate(DateTime(2025, 1, 2));
-      await tester.pumpAndSettle();
-
-      expect(changedRange, isNotNull);
-    });
-
-    testWidgets('onEventCreate returning null falls back to default event', (tester) async {
-      KalenderEvent? createdConfirmed;
-
-      await pumpMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) => null, // Return null to use default event
-          onEventCreated: (event) => createdConfirmed = event,
-        ),
-      );
-
-      final body = find.byType(MultiDayBody);
-      await tester.dragFrom(tester.getCenter(body), const Offset(0, 100));
-
-      // When onEventCreate returns null, the library falls back to the default event
-      // and onEventCreated still fires.
-      expect(createdConfirmed, isNotNull);
-    });
-  });
-
-  // ---------------------------------------------------------------------------
-  // MonthView Tests
-  // ---------------------------------------------------------------------------
-  group('MonthView Callbacks', () {
-    testWidgets('onTapped fires with correct date', (tester) async {
-      DateTime? tappedDate;
-      TapDetail? tappedDetail;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onTapped: (date) => tappedDate = date,
-          onTappedWithDetail: (details) => tappedDetail = details,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-      expect(body, findsOneWidget);
-
-      expect(tappedDate, isNull);
-      expect(tappedDetail, isNull);
-
-      await tester.tapAt(tester.getCenter(body));
-
-      expect(tappedDate, isNotNull);
-      expect(tappedDetail, isNotNull);
-      expect(tappedDetail!.isMultiDayDetail, isTrue);
-    });
-
-    testWidgets('onSecondaryTapped fires with correct date', (tester) async {
-      DateTime? tappedDate;
-      TapDetail? tappedDetail;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onSecondaryTapped: (date) => tappedDate = date,
-          onSecondaryTappedWithDetail: (details) => tappedDetail = details,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-      expect(body, findsOneWidget);
-
-      expect(tappedDate, isNull);
-      expect(tappedDetail, isNull);
-
-      await tester.tapAt(tester.getCenter(body), buttons: kSecondaryButton);
-
-      expect(tappedDate, isNotNull);
-      expect(tappedDetail, isNotNull);
-      expect(tappedDetail!.isMultiDayDetail, isTrue);
-    });
-
-    testWidgets('onLongPressed fires', (tester) async {
-      DateTime? longPressedDate;
-      TapDetail? longPressedDetail;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onLongPressed: (date) => longPressedDate = date,
-          onLongPressedWithDetail: (details) => longPressedDetail = details,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-
-      expect(longPressedDate, isNull);
-      expect(longPressedDetail, isNull);
-
-      await tester.longPressAt(tester.getCenter(body));
-
-      expect(longPressedDate, isNotNull);
-      expect(longPressedDetail, isNotNull);
-      expect(longPressedDetail!.isMultiDayDetail, isTrue);
-    });
-
-    testWidgets('onSecondaryLongPressed fires', (tester) async {
-      DateTime? longPressedDate;
-      TapDetail? longPressedDetail;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onSecondaryLongPressed: (date) => longPressedDate = date,
-          onSecondaryLongPressedWithDetail: (details) => longPressedDetail = details,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-
-      expect(longPressedDate, isNull);
-      expect(longPressedDetail, isNull);
-
-      await tester.longPressAt(tester.getCenter(body), buttons: kSecondaryButton);
-
-      expect(longPressedDate, isNotNull);
-      expect(longPressedDetail, isNotNull);
-      expect(longPressedDetail!.isMultiDayDetail, isTrue);
-    });
-
-    testWidgets('drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      KalenderEvent? createdEvent;
-      KalenderEvent? createdConfirmed;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) {
-            createdEvent = event;
-            return event;
-          },
-          onEventCreated: (event) => createdConfirmed = event,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-
-      expect(createdEvent, isNull);
-      expect(createdConfirmed, isNull);
-
-      await tester.dragFrom(tester.getCenter(body), const Offset(100, 0));
-
-      expect(createdEvent, isNotNull);
-      expect(createdConfirmed, isNotNull);
-    });
-
-    testWidgets('drag-to-create does NOT fire onEventChange/onEventChanged', (tester) async {
-      KalenderEvent? changedBefore;
-      KalenderEvent? changedAfter;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) => event,
-          onEventCreated: (_) {},
-          onEventChange: (event) => changedBefore = event,
-          onEventChanged: (_, updated) => changedAfter = updated,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-      await tester.dragFrom(tester.getCenter(body), const Offset(100, 0));
-
-      expect(changedBefore, isNull);
-      expect(changedAfter, isNull);
-    });
-
-    testWidgets('drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      KalenderEvent? changedBefore;
-      KalenderEvent? changedAfter;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventChange: (event) => changedBefore = event,
-          onEventChanged: (_, updated) => changedAfter = updated,
-        ),
-      );
-
-      final id = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)));
-      await tester.pumpAndSettle();
-
-      final eventFinder = find.byKey(MultiDayEventTile.tileKey(id));
-      expect(eventFinder, findsOneWidget);
-
-      expect(changedBefore, isNull);
-      expect(changedAfter, isNull);
-
-      await tester.drag(eventFinder, const Offset(100, 0));
-
-      expect(changedBefore, isNotNull);
-      expect(changedAfter, isNotNull);
-    });
-
-    testWidgets('onEventTapped fires when tapping an event', (tester) async {
-      KalenderEvent? tappedEvent;
-      TapDetail? tappedDetail;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventTapped: (event) => tappedEvent = event,
-          onEventTappedWithDetail: (event, detail) => tappedDetail = detail,
-        ),
-      );
-
-      final id = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)));
-      await tester.pumpAndSettle();
-
-      final gestureDetector = find.byKey(MultiDayEventTile.gestureDetectorKey(id));
-      expect(gestureDetector, findsOneWidget);
-
-      expect(tappedEvent, isNull);
-      expect(tappedDetail, isNull);
-
-      await tester.tap(gestureDetector);
-      await tester.pumpAndSettle();
-
-      expect(tappedEvent, isNotNull);
-      expect(tappedEvent!.id, id);
-      expect(tappedDetail, isNotNull);
-      expect(tappedDetail!.renderBox.hasSize, isTrue);
-      expect(tappedDetail!.isMultiDayDetail, isTrue);
-    });
-
-    testWidgets('onPageChanged fires when navigating pages', (tester) async {
-      KalenderDateTimeRange? changedRange;
-
-      await pumpMonthView(tester, callbacks: KalenderCallbacks(onPageChanged: (range) => changedRange = range));
-
-      expect(changedRange, isNull);
-
-      // Use jumpToDate instead of animateToNextPage to avoid animation that never settles.
-      kalenderController.jumpToDate(DateTime(2025, 2, 1));
-      await tester.pumpAndSettle();
-
-      expect(changedRange, isNotNull);
-    });
-
-    testWidgets('onEventCreate returning null falls back to default event', (tester) async {
-      KalenderEvent? createdConfirmed;
-
-      await pumpMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) => null, // Return null to use default event
-          onEventCreated: (event) => createdConfirmed = event,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-      await tester.dragFrom(tester.getCenter(body), const Offset(100, 0));
-
-      // When onEventCreate returns null, the library falls back to the default event
-      // and onEventCreated still fires.
-      expect(createdConfirmed, isNotNull);
-    });
-  });
-
-  // ---------------------------------------------------------------------------
-  // Negative Tests
-  // ---------------------------------------------------------------------------
   group('Empty Callbacks (negative tests)', () {
-    testWidgets('MultiDayView renders and responds without callbacks', (tester) async {
-      await pumpMultiDayView(tester, callbacks: const KalenderCallbacks());
+    for (final view in views) {
+      testWidgets('${view.name} renders and responds without callbacks', (tester) async {
+        await pumpView(tester, view, callbacks: const KalenderCallbacks());
 
-      final body = find.byType(MultiDayBody);
-      expect(body, findsOneWidget);
-
-      // These interactions should not throw.
-      await tester.tapAt(tester.getCenter(body));
-      await tester.longPressAt(tester.getCenter(body));
-      await tester.dragFrom(tester.getCenter(body), const Offset(0, 100));
-    });
-
-    testWidgets('MonthView renders and responds without callbacks', (tester) async {
-      await pumpMonthView(tester, callbacks: const KalenderCallbacks());
-
-      final body = find.byType(MonthBody);
-      expect(body, findsOneWidget);
-
-      // These interactions should not throw.
-      await tester.tapAt(tester.getCenter(body));
-      await tester.longPressAt(tester.getCenter(body));
-      await tester.dragFrom(tester.getCenter(body), const Offset(100, 0));
-    });
-  });
-
-  // ---------------------------------------------------------------------------
-  // Imprecise (touch) helpers
-  // ---------------------------------------------------------------------------
-
-  Future<void> pumpImpreciseMultiDayView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
-    await pumpAndSettleWithMaterialApp(
-      tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(
-          displayRange: year2025DisplayRange,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialDateTime: DateTime(2025, 1, 1),
-        ),
-        callbacks: callbacks,
-        header: KalenderHeader(interaction: impreciseInteraction),
-        body: KalenderBody(interaction: impreciseInteraction),
-      ),
-    );
-  }
-
-  Future<void> pumpImpreciseMonthView(WidgetTester tester, {required KalenderCallbacks callbacks}) async {
-    await pumpAndSettleWithMaterialApp(
-      tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: MonthViewConfiguration.singleMonth(
-          displayRange: year2025DisplayRange,
-          initialDateTime: DateTime(2025, 1, 1),
-        ),
-        callbacks: callbacks,
-        header: KalenderHeader(interaction: impreciseInteraction),
-        body: KalenderBody(interaction: impreciseInteraction),
-      ),
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // Imprecise (touch) MultiDayView Tests
-  // ---------------------------------------------------------------------------
-  group('MultiDayView Imprecise Callbacks', () {
-    testWidgets('long-press drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      KalenderEvent? createdEvent;
-      KalenderEvent? createdConfirmed;
-
-      await pumpImpreciseMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) {
-            createdEvent = event;
-            return event;
-          },
-          onEventCreated: (event) => createdConfirmed = event,
-        ),
-      );
-
-      final body = find.byType(MultiDayBody);
-
-      expect(createdEvent, isNull);
-      expect(createdConfirmed, isNull);
-
-      await tester.longPressDrag(tester.getCenter(body), const Offset(0, 100));
-
-      expect(createdEvent, isNotNull);
-      expect(createdConfirmed, isNotNull);
-    });
-
-    testWidgets('long-press drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      KalenderEvent? changedBefore;
-      KalenderEvent? changedAfter;
-
-      await pumpImpreciseMultiDayView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventChange: (event) => changedBefore = event,
-          onEventChanged: (_, updated) => changedAfter = updated,
-        ),
-      );
-
-      final id = eventsController.addEvent(
-        KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12)),
-      );
-      await tester.pumpAndSettle();
-
-      final eventFinder = find.byKey(DayEventTile.tileKey(id));
-      expect(eventFinder, findsOneWidget);
-
-      expect(changedBefore, isNull);
-      expect(changedAfter, isNull);
-
-      await tester.longPressDragWidget(eventFinder, const Offset(0, 100));
-
-      expect(changedBefore, isNotNull);
-      expect(changedAfter, isNotNull);
-    });
-  });
-
-  // ---------------------------------------------------------------------------
-  // Imprecise (touch) MonthView Tests
-  // ---------------------------------------------------------------------------
-  group('MonthView Imprecise Callbacks', () {
-    testWidgets('long-press drag-to-create fires onEventCreate and onEventCreated', (tester) async {
-      KalenderEvent? createdEvent;
-      KalenderEvent? createdConfirmed;
-
-      await pumpImpreciseMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventCreate: (event) {
-            createdEvent = event;
-            return event;
-          },
-          onEventCreated: (event) => createdConfirmed = event,
-        ),
-      );
-
-      final body = find.byType(MonthBody);
-
-      expect(createdEvent, isNull);
-      expect(createdConfirmed, isNull);
-
-      await tester.longPressDrag(tester.getCenter(body), const Offset(100, 0));
-
-      expect(createdEvent, isNotNull);
-      expect(createdConfirmed, isNotNull);
-    });
-
-    testWidgets('long-press drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
-      KalenderEvent? changedBefore;
-      KalenderEvent? changedAfter;
-
-      await pumpImpreciseMonthView(
-        tester,
-        callbacks: KalenderCallbacks(
-          onEventChange: (event) => changedBefore = event,
-          onEventChanged: (_, updated) => changedAfter = updated,
-        ),
-      );
-
-      final id = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1)));
-      await tester.pumpAndSettle();
-
-      final eventFinder = find.byKey(MultiDayEventTile.tileKey(id));
-      expect(eventFinder, findsOneWidget);
-
-      expect(changedBefore, isNull);
-      expect(changedAfter, isNull);
-
-      await tester.longPressDragWidget(eventFinder, const Offset(100, 0));
-
-      expect(changedBefore, isNotNull);
-      expect(changedAfter, isNotNull);
-    });
+        await tester.tapAt(tester.getCenter(view.body));
+        await tester.longPressAt(tester.getCenter(view.body));
+        await tester.dragFrom(tester.getCenter(view.body), view.dragOffset);
+      });
+    }
   });
 }

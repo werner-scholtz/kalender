@@ -36,8 +36,8 @@ void main() {
     kalenderController.dispose();
   });
 
-  Future<void> pumpDay(WidgetTester tester) {
-    return pumpAndSettleWithMaterialApp(
+  Future<void> pumpAndHover(WidgetTester tester) async {
+    await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
@@ -57,6 +57,7 @@ void main() {
         ),
       ),
     );
+    await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());
   }
 
   /// The handle for [eventId] facing [direction].
@@ -67,16 +68,13 @@ void main() {
   }
 
   testWidgets('the type alone matches more than one handle', (tester) async {
-    await pumpDay(tester);
-    await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());
+    await pumpAndHover(tester);
 
-    // A start and an end handle for the hovered tile.
     expect(find.byType(ResizeDetector), findsNWidgets(2));
   });
 
   testWidgets('the event and the direction narrow it to one', (tester) async {
-    await pumpDay(tester);
-    await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());
+    await pumpAndHover(tester);
 
     expect(handleFor(eventId, ResizeDirection.top), findsOneWidget);
     expect(handleFor(eventId, ResizeDirection.bottom), findsOneWidget);
@@ -87,8 +85,7 @@ void main() {
   });
 
   testWidgets('scoping to a tile finds only that tile\'s handles', (tester) async {
-    await pumpDay(tester);
-    await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());
+    await pumpAndHover(tester);
 
     // The recipe for a tree where the same event could be built more than once,
     // which a page kept alive or an overlay can do.

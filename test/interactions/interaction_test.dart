@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -16,31 +17,13 @@ import '../utilities.dart';
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
-  final interaction = KalenderInteraction(
+  KalenderInteraction interaction(InputMode inputMode, EventInteractionGesture gesture) => KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
-    inputMode: InputMode.precise,
-    createEventGesture: EventInteractionGesture.tap,
-    modifyEventGesture: EventInteractionGesture.tap,
-  );
-
-  final impreciseInteraction = KalenderInteraction(
-    allowResizing: true,
-    allowRescheduling: true,
-    allowEventCreation: true,
-    inputMode: InputMode.imprecise,
-    createEventGesture: EventInteractionGesture.longPress,
-    modifyEventGesture: EventInteractionGesture.longPress,
-  );
-
-  final autoInteraction = KalenderInteraction(
-    allowResizing: true,
-    allowRescheduling: true,
-    allowEventCreation: true,
-    inputMode: InputMode.auto,
-    createEventGesture: EventInteractionGesture.tap,
-    modifyEventGesture: EventInteractionGesture.tap,
+    inputMode: inputMode,
+    createEventGesture: gesture,
+    modifyEventGesture: gesture,
   );
 
   late String dayEventID;
@@ -70,93 +53,39 @@ void main() {
     );
   });
 
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
-
-  Future<void> pumpMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-    tester,
-    KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.singleDay(
-        displayRange: year2025DisplayRange,
-        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        initialDateTime: DateTime(2025, 1, 1),
-      ),
-      header: KalenderHeader(interaction: interaction),
-      body: KalenderBody(interaction: interaction),
-    ),
+  MultiDayViewConfiguration singleDay() => MultiDayViewConfiguration.singleDay(
+    displayRange: year2025DisplayRange,
+    initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+    initialDateTime: DateTime(2025, 1, 1),
   );
 
-  Future<void> pumpMonthView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-    tester,
-    KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025),
-      ),
-      header: KalenderHeader(interaction: interaction),
-      body: KalenderBody(interaction: interaction),
-    ),
-  );
+  MonthViewConfiguration singleMonth() =>
+      MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, initialDateTime: DateTime(2025));
 
-  Future<void> pumpScheduleView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-    tester,
-    KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
-      header: KalenderHeader(interaction: interaction),
-      body: KalenderBody(interaction: interaction),
-    ),
-  );
+  Future<void> pump(WidgetTester tester, ViewConfiguration viewConfiguration, KalenderInteraction interaction) =>
+      pumpAndSettleWithMaterialApp(
+        tester,
+        KalenderView(
+          eventsController: eventsController,
+          kalenderController: kalenderController,
+          viewConfiguration: viewConfiguration,
+          header: KalenderHeader(interaction: interaction),
+          body: KalenderBody(interaction: interaction),
+        ),
+      );
 
-  Future<void> pumpImpreciseMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-    tester,
-    KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.singleDay(
-        displayRange: year2025DisplayRange,
-        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        initialDateTime: DateTime(2025, 1, 1),
-      ),
-      header: KalenderHeader(interaction: impreciseInteraction),
-      body: KalenderBody(interaction: impreciseInteraction),
-    ),
-  );
-
-  Future<void> pumpImpreciseMonthView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-    tester,
-    KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025),
-      ),
-      header: KalenderHeader(interaction: impreciseInteraction),
-      body: KalenderBody(interaction: impreciseInteraction),
-    ),
-  );
-
-  Future<void> pumpAutoMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
-    tester,
-    KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.singleDay(
-        displayRange: year2025DisplayRange,
-        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        initialDateTime: DateTime(2025, 1, 1),
-      ),
-      header: KalenderHeader(interaction: autoInteraction),
-      body: KalenderBody(interaction: autoInteraction),
-    ),
-  );
+  void expectHandles(
+    String id,
+    Key Function(String) rescheduleKey, {
+    bool reschedule = false,
+    bool start = false,
+    bool end = false,
+  }) {
+    Matcher shown(bool visible) => visible ? findsOneWidget : findsNothing;
+    expect(find.byKey(rescheduleKey(id)), shown(reschedule));
+    expect(find.byKey(ResizeDetector.startResizeDraggableKey(id)), shown(start));
+    expect(find.byKey(ResizeDetector.endResizeDraggableKey(id)), shown(end));
+  }
 
   Future<void> sendPointerHover(
     WidgetTester tester, {
@@ -172,148 +101,114 @@ void main() {
     tester.binding.handlePointerEvent(PointerRemovedEvent(pointer: pointer, position: position, kind: kind));
   }
 
-  // ---------------------------------------------------------------------------
-  // MultiDayView
-  // ---------------------------------------------------------------------------
-
   group('MultiDayView interaction', () {
     testWidgets('default events show all interaction handles', (tester) async {
-      await pumpMultiDayView(tester);
-      expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody not found');
+      await pump(tester, singleDay(), interaction(InputMode.precise, EventInteractionGesture.tap));
 
-      // Resize handles are only shown on hover for non-mobile devices.
       final gesture = await tester.createMouseGesture();
 
       final dayTile = find.byKey(DayEventTile.tileKey(dayEventID));
-      expect(dayTile, findsOneWidget, reason: 'DayEventTile with id $dayEventID not found');
       await tester.hoverOn(dayTile, gesture);
-      expect(find.byKey(DayEventTile.rescheduleDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(dayEventID)), findsOneWidget);
+      expectHandles(dayEventID, DayEventTile.rescheduleDraggableKey, reschedule: true, start: true, end: true);
 
       final multiDayTile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
-      expect(multiDayTile, findsOneWidget, reason: 'MultiDayEventTile with id $multiDayEventID not found');
       await tester.hoverOn(multiDayTile, gesture);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expectHandles(
+        multiDayEventID,
+        MultiDayEventTile.rescheduleDraggableKey,
+        reschedule: true,
+        start: true,
+        end: true,
+      );
     });
 
     testWidgets('custom events respect per-event interaction overrides', (tester) async {
-      await pumpMultiDayView(tester);
-      expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody not found');
+      await pump(tester, singleDay(), interaction(InputMode.precise, EventInteractionGesture.tap));
 
       final gesture = await tester.createMouseGesture();
 
-      // allowRescheduling: false, allowStartResize: false, allowEndResize: true
       final customDayTile = find.byKey(DayEventTile.tileKey(customDayEventID));
-      expect(customDayTile, findsOneWidget, reason: 'DayEventTile with id $customDayEventID not found');
       await tester.hoverOn(customDayTile, gesture);
-      expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customDayEventID)), findsOneWidget);
+      expectHandles(customDayEventID, DayEventTile.rescheduleDraggableKey, end: true);
 
       final customMultiDayTile = find.byKey(MultiDayEventTile.tileKey(customMultiDayEventID));
-      expect(customMultiDayTile, findsOneWidget, reason: 'MultiDayEventTile with id $customMultiDayEventID not found');
       await tester.hoverOn(customMultiDayTile, gesture);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+      expectHandles(customMultiDayEventID, MultiDayEventTile.rescheduleDraggableKey, end: true);
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // MonthView
-  // ---------------------------------------------------------------------------
-
   group('MonthView interaction', () {
     testWidgets('default event shows all interaction handles', (tester) async {
-      await pumpMonthView(tester);
-      expect(find.byType(MonthBody), findsOneWidget, reason: 'MonthBody not found');
+      await pump(tester, singleMonth(), interaction(InputMode.precise, EventInteractionGesture.tap));
 
       final gesture = await tester.createMouseGesture();
 
       final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
-      expect(tile, findsOneWidget, reason: 'MultiDayEventTile with id $multiDayEventID not found');
       await tester.hoverOn(tile, gesture);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expectHandles(
+        multiDayEventID,
+        MultiDayEventTile.rescheduleDraggableKey,
+        reschedule: true,
+        start: true,
+        end: true,
+      );
     });
 
     testWidgets('custom event respects per-event interaction overrides', (tester) async {
-      await pumpMonthView(tester);
-      expect(find.byType(MonthBody), findsOneWidget, reason: 'MonthBody not found');
+      await pump(tester, singleMonth(), interaction(InputMode.precise, EventInteractionGesture.tap));
 
       final gesture = await tester.createMouseGesture();
 
-      // allowRescheduling: false, allowStartResize: false, allowEndResize: true
       final customTile = find.byKey(MultiDayEventTile.tileKey(customMultiDayEventID));
-      expect(customTile, findsOneWidget, reason: 'MultiDayEventTile with id $customMultiDayEventID not found');
       await tester.hoverOn(customTile, gesture);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+      expectHandles(customMultiDayEventID, MultiDayEventTile.rescheduleDraggableKey, end: true);
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // ScheduleView
-  // ---------------------------------------------------------------------------
-
   group('ScheduleView interaction', () {
     testWidgets('default event shows reschedule handle but no resize handles', (tester) async {
-      await pumpScheduleView(tester);
-      expect(find.byType(ScheduleBody), findsOneWidget, reason: 'ScheduleBody not found');
+      await pump(
+        tester,
+        ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
+        interaction(InputMode.precise, EventInteractionGesture.tap),
+      );
 
       final gesture = await tester.createMouseGesture();
 
       final tile = find.byKey(ScheduleEventTile.tileKey(multiDayEventID));
-      expect(tile, findsOneWidget, reason: 'ScheduleEventTile with id $multiDayEventID not found');
       await tester.hoverOn(tile, gesture);
-      expect(find.byKey(ScheduleEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
+      expectHandles(multiDayEventID, ScheduleEventTile.rescheduleDraggableKey, reschedule: true);
     });
 
     testWidgets('custom event suppresses all interaction handles', (tester) async {
-      await pumpScheduleView(tester);
-      expect(find.byType(ScheduleBody), findsOneWidget, reason: 'ScheduleBody not found');
+      await pump(
+        tester,
+        ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
+        interaction(InputMode.precise, EventInteractionGesture.tap),
+      );
 
       final gesture = await tester.createMouseGesture();
 
       final customTile = find.byKey(ScheduleEventTile.tileKey(customMultiDayEventID));
-      expect(customTile, findsOneWidget, reason: 'ScheduleEventTile with id $customMultiDayEventID not found');
       await tester.hoverOn(customTile, gesture);
-      expect(find.byKey(ScheduleEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customMultiDayEventID)), findsNothing);
+      expectHandles(customMultiDayEventID, ScheduleEventTile.rescheduleDraggableKey);
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Imprecise (touch) MultiDayView
-  // ---------------------------------------------------------------------------
-
   group('MultiDayView imprecise interaction', () {
     testWidgets('default events show vertical resize handles on selection', (tester) async {
-      await pumpImpreciseMultiDayView(tester);
-      expect(find.byType(MultiDayBody), findsOneWidget);
+      await pump(tester, singleDay(), interaction(InputMode.imprecise, EventInteractionGesture.longPress));
 
-      // Before selection, resize handles are not visible.
       expect(find.byKey(ResizeDetector.startResizeDraggableKey(dayEventID)), findsNothing);
       expect(find.byKey(ResizeDetector.endResizeDraggableKey(dayEventID)), findsNothing);
 
-      // Select the day event to trigger handle visibility.
       final dayEvent = eventsController.events.firstWhere((e) => e.id == dayEventID);
       kalenderController.selectEvent(dayEvent);
       await tester.pumpAndSettle();
 
-      // Vertical resize handles should now be visible.
       expect(find.byKey(ResizeDetector.startResizeDraggableKey(dayEventID)), findsOneWidget);
       expect(find.byKey(ResizeDetector.endResizeDraggableKey(dayEventID)), findsOneWidget);
 
-      // Horizontal resize handles (multi-day header) should be hidden in imprecise mode.
       final multiDayEvent = eventsController.events.firstWhere((e) => e.id == multiDayEventID);
       kalenderController.selectEvent(multiDayEvent);
       await tester.pumpAndSettle();
@@ -322,51 +217,36 @@ void main() {
     });
 
     testWidgets('custom events respect per-event interaction overrides on selection', (tester) async {
-      await pumpImpreciseMultiDayView(tester);
-      expect(find.byType(MultiDayBody), findsOneWidget);
+      await pump(tester, singleDay(), interaction(InputMode.imprecise, EventInteractionGesture.longPress));
 
-      // Select the custom day event (allowStartResize: false, allowEndResize: true).
       final customDayEvent = eventsController.events.firstWhere((e) => e.id == customDayEventID);
       kalenderController.selectEvent(customDayEvent);
       await tester.pumpAndSettle();
 
-      expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.startResizeDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(ResizeDetector.endResizeDraggableKey(customDayEventID)), findsOneWidget);
+      expectHandles(customDayEventID, DayEventTile.rescheduleDraggableKey, end: true);
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Imprecise (touch) MonthView
-  // ---------------------------------------------------------------------------
-
   group('MonthView imprecise interaction', () {
     testWidgets('horizontal resize handles are hidden in imprecise mode', (tester) async {
-      await pumpImpreciseMonthView(tester);
+      await pump(tester, singleMonth(), interaction(InputMode.imprecise, EventInteractionGesture.longPress));
       expect(find.byType(MonthBody), findsOneWidget);
 
-      // Select the multi-day event.
       final multiDayEvent = eventsController.events.firstWhere((e) => e.id == multiDayEventID);
       kalenderController.selectEvent(multiDayEvent);
       await tester.pumpAndSettle();
 
-      // Horizontal resize handles should be hidden in imprecise mode by default.
       expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
       expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Auto input mode
-  // ---------------------------------------------------------------------------
-
   group('MultiDayView auto interaction', () {
     testWidgets('touch hover events do not switch horizontal handles into precise mode', (tester) async {
-      await pumpAutoMultiDayView(tester);
+      await pump(tester, singleDay(), interaction(InputMode.auto, EventInteractionGesture.tap));
       expect(find.byType(MultiDayBody), findsOneWidget);
 
       final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
-      expect(tile, findsOneWidget);
 
       await sendPointerHover(tester, target: tile, kind: PointerDeviceKind.touch);
 
@@ -375,11 +255,10 @@ void main() {
     });
 
     testWidgets('mouse hover events still show horizontal resize handles', (tester) async {
-      await pumpAutoMultiDayView(tester);
+      await pump(tester, singleDay(), interaction(InputMode.auto, EventInteractionGesture.tap));
       expect(find.byType(MultiDayBody), findsOneWidget);
 
       final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
-      expect(tile, findsOneWidget);
 
       await sendPointerHover(tester, target: tile, kind: PointerDeviceKind.mouse);
 

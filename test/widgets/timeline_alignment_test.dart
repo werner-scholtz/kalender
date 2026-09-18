@@ -12,11 +12,8 @@ import 'package:kalender/src/widgets/internal_components/expandable_page_view.da
 
 import '../utilities.dart';
 
-/// Regression coverage for #180: the multi-day header's day columns must line up
-/// with the body's day columns regardless of how the timeline gutter is
-/// customized. Both are driven by a single gutter width, so the body's day area
-/// (the [HourLines]) and the header's day area (the [ExpandablePageView] content)
-/// must occupy the same horizontal span.
+/// #180: the header's day area ([ExpandablePageView]) spans the same columns as the body's day area ([HourLines]),
+/// however the timeline gutter is customized.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -61,19 +58,9 @@ void main() {
   void expectAligned(WidgetTester tester) {
     final bodyDayArea = tester.getRect(find.byType(HourLines));
     final headerDayArea = tester.getRect(find.byType(ExpandablePageView));
-    expect(
-      headerDayArea.left,
-      moreOrLessEquals(bodyDayArea.left, epsilon: 0.5),
-      reason: 'Header day columns must start where the body day columns start',
-    );
-    expect(
-      headerDayArea.right,
-      moreOrLessEquals(bodyDayArea.right, epsilon: 0.5),
-      reason: 'Header day columns must end where the body day columns end',
-    );
+    expect(headerDayArea.left, moreOrLessEquals(bodyDayArea.left, epsilon: 0.5));
+    expect(headerDayArea.right, moreOrLessEquals(bodyDayArea.right, epsilon: 0.5));
   }
-
-  KalenderThemeData withTimelineStyle(TimelineStyle style) => KalenderThemeData(timelineStyle: style);
 
   KalenderComponents withTimelineStringBuilder(KalenderTimeStringBuilder builder) => KalenderComponents(
     multiDayComponents: MultiDayComponents(bodyComponents: MultiDayBodyComponents(timelineStringBuilder: builder)),
@@ -92,9 +79,7 @@ void main() {
   testWidgets('custom stringBuilder shortening labels keeps columns aligned (#180)', (tester) async {
     await pumpWeek(tester, components: withTimelineStringBuilder((context, time) => 'X'));
 
-    // The gutter shrank to fit the short label ...
-    expect(gutterWidth(tester), lessThan(40), reason: 'Short labels should produce a narrow gutter');
-    // ... and the header still lines up with the body (this is what #180 broke).
+    expect(gutterWidth(tester), lessThan(40));
     expectAligned(tester);
   });
 
@@ -107,34 +92,35 @@ void main() {
 
     await pumpWeek(tester, components: withTimelineStringBuilder(labels));
 
-    expect(
-      gutterWidth(tester),
-      greaterThan(150),
-      reason: 'Gutter must fit the widest label from any hour, not just the 23:59 sample',
-    );
+    expect(gutterWidth(tester), greaterThan(150));
     expectAligned(tester);
   });
 
-  testWidgets('explicit TimelineStyle.width drives the gutter and stays aligned', (tester) async {
-    await pumpWeek(tester, theme: withTimelineStyle(const TimelineStyle(width: 100)));
-
-    expect(gutterWidth(tester), moreOrLessEquals(100, epsilon: 0.5));
-    expectAligned(tester);
-  });
-
-  testWidgets('custom timelineWidth builder drives the gutter and stays aligned', (tester) async {
-    await pumpWeek(
-      tester,
+  final fixedWidths = <({String name, KalenderThemeData? theme, KalenderComponents? components})>[
+    (
+      name: 'explicit TimelineStyle.width',
+      theme: const KalenderThemeData(timelineStyle: TimelineStyle(width: 100)),
+      components: null,
+    ),
+    (
+      name: 'custom timelineWidth builder',
+      theme: null,
       components: KalenderComponents(
         multiDayComponents: MultiDayComponents(
           bodyComponents: MultiDayBodyComponents(timelineWidth: (context, timeOfDayRange) => 100),
         ),
       ),
-    );
+    ),
+  ];
 
-    expect(gutterWidth(tester), moreOrLessEquals(100, epsilon: 0.5));
-    expectAligned(tester);
-  });
+  for (final c in fixedWidths) {
+    testWidgets('${c.name} drives the gutter and stays aligned', (tester) async {
+      await pumpWeek(tester, theme: c.theme, components: c.components);
+
+      expect(gutterWidth(tester), moreOrLessEquals(100, epsilon: 0.5));
+      expectAligned(tester);
+    });
+  }
 
   testWidgets('columns stay aligned in right-to-left', (tester) async {
     await pumpWeek(

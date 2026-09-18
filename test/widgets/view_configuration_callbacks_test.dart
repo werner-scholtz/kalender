@@ -69,8 +69,6 @@ void main() {
       await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToMarch)));
       expect(visibleRangeCovers(DateTime(2025, 3, 10)), isTrue);
 
-      // Back to week, then to a month configuration that differs only by its
-      // resolver.
       await pumpAndSettleWithMaterialApp(tester, build(week()));
       await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToAugust)));
 
@@ -85,8 +83,6 @@ void main() {
       await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToMarch)));
       final before = kalenderController.visibleDateTimeRange.value;
 
-      // The same configuration with a different resolver. A resolver only runs
-      // at a view switch, and there is no switch here.
       await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToAugust)));
 
       expect(kalenderController.visibleDateTimeRange.value, equals(before));

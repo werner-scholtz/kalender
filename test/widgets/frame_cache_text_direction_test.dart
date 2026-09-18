@@ -68,8 +68,6 @@ void main() {
     final ltr = overflowDates(tester);
     expect(ltr, contains(day));
 
-    // Only the direction changes. The view controller, and so its layout frame
-    // cache, is the same one.
     await pumpAndSettleWithMaterialApp(tester, build(TextDirection.rtl));
 
     expect(
