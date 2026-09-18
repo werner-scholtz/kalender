@@ -23,32 +23,20 @@ void main() {
     kalenderController = KalenderController();
   });
 
-  final components = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}')),
-  );
-
   Future<void> pump(WidgetTester tester, TextDirection direction) {
     return pumpAndSettleWithMaterialApp(
       tester,
       Directionality(
         textDirection: direction,
-        child: KalenderView(
+        child: freeScrollView(
           eventsController: eventsController,
           kalenderController: kalenderController,
-          viewConfiguration: MultiDayViewConfiguration.freeScroll(
-            numberOfDays: 7,
-            displayRange: displayRange,
-            initialDateTime: start,
-            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          ),
-          header: KalenderHeader(multiDayTileComponents: components),
-          body: KalenderBody(multiDayTileComponents: components),
+          displayRange: displayRange,
+          initialDateTime: start,
         ),
       ),
     );
   }
-
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   testWidgets('RTL: a multi-day event renders as one spanning tile', (tester) async {
     final id = eventsController.addEvent(KalenderEvent(start: start, end: start.add(const Duration(days: 4))));
@@ -87,7 +75,7 @@ void main() {
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     final leftBefore = tester.getTopLeft(tile).dx;
 
-    final controller = viewController().pageController;
+    final controller = kalenderController.multiDayViewController.pageController;
     controller.jumpToPage((controller.page ?? 0).round() + 1);
     await tester.pumpAndSettle();
 

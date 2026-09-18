@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 
 final year2025DisplayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
@@ -78,12 +79,15 @@ final kPreciseInteraction = KalenderInteraction(
   modifyEventGesture: EventInteractionGesture.tap,
 );
 
-MaterialApp wrapWithMaterialApp(Widget child) {
-  return MaterialApp(home: Scaffold(body: child));
+MaterialApp wrapWithMaterialApp(Widget child, {ThemeData? theme}) {
+  return MaterialApp(
+    theme: theme,
+    home: Scaffold(body: child),
+  );
 }
 
-Future<void> pumpAndSettleWithMaterialApp(WidgetTester tester, Widget child) async {
-  await tester.pumpWidget(wrapWithMaterialApp(child));
+Future<void> pumpAndSettleWithMaterialApp(WidgetTester tester, Widget child, {ThemeData? theme}) async {
+  await tester.pumpWidget(wrapWithMaterialApp(child, theme: theme));
   await tester.pumpAndSettle();
 }
 
@@ -110,6 +114,136 @@ Future<void> pumpKalender(
       header: header,
       body: body,
       location: location,
+    ),
+  );
+}
+
+/// Returns an events controller with [count] all-day events on [day], by default enough to overflow its cell.
+DefaultEventsController controllerWithOverflowOn(DateTime day, {int count = 8}) {
+  final eventsController = DefaultEventsController();
+  for (var i = 0; i < count; i++) {
+    eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
+  }
+  return eventsController;
+}
+
+/// Pumps an 800 by 600 single-month view of January 2025 with [eventCount] all-day events on [day].
+Future<void> pumpOverflowingMonth(
+  WidgetTester tester, {
+  required DateTime day,
+  int eventCount = 8,
+  KalenderComponents? components,
+  NowCallback? nowCallback,
+  KalenderThemeData? scoped,
+  ThemeData? theme,
+  TextDirection? textDirection,
+}) {
+  tester.setViewSize(const Size(800, 600));
+
+  final eventsController = controllerWithOverflowOn(day, count: eventCount);
+  addTearDown(eventsController.dispose);
+  final kalenderController = KalenderController();
+  addTearDown(kalenderController.dispose);
+
+  Widget view = KalenderView(
+    eventsController: eventsController,
+    kalenderController: kalenderController,
+    viewConfiguration: MonthViewConfiguration.singleMonth(
+      displayRange: year2025DisplayRange,
+      initialDateTime: DateTime(2025, 1, 15),
+      nowCallback: nowCallback,
+    ),
+    components: components,
+    body: const KalenderBody(),
+  );
+  if (scoped != null) view = KalenderTheme(data: scoped, child: view);
+  if (textDirection != null) view = Directionality(textDirection: textDirection, child: view);
+
+  return pumpAndSettleWithMaterialApp(tester, view, theme: theme);
+}
+
+/// Returns the days from 27 to 31 January 2025 that show an overflow button.
+Set<DateTime> januaryLastRowOverflowDates() {
+  return {
+    for (var d = 27; d <= 31; d++)
+      if (find.byKey(MultiDayPortalOverlayButton.getKey(DateTime.utc(2025, 1, d))).evaluate().isNotEmpty)
+        DateTime.utc(2025, 1, d),
+  };
+}
+
+/// Returns the text of every overflow button built, expecting at least one.
+Iterable<Text> overflowButtonTexts(WidgetTester tester) {
+  final texts = tester.widgetList<Text>(find.byKey(MultiDayPortalOverlayButton.textKey));
+  expect(texts, isNotEmpty, reason: 'the day should overflow and show an overflow button');
+  return texts;
+}
+
+/// Returns the distinct labels of the overflow buttons.
+Set<String> overflowButtonLabels(WidgetTester tester) => overflowButtonTexts(tester).map((text) => text.data!).toSet();
+
+final _colouredTiles = TileComponents(tileBuilder: (context, event, tileRange) => Container(color: Colors.red));
+
+/// Builds a free-scroll [KalenderView] with coloured tiles in its header and body.
+KalenderView freeScrollView({
+  required EventsController eventsController,
+  required KalenderController kalenderController,
+  required KalenderDateTimeRange displayRange,
+  DateTime? initialDateTime,
+  int numberOfDays = 7,
+  KalenderCallbacks? callbacks,
+  KalenderInteraction? interaction,
+  MultiDayHeaderConfiguration? headerConfiguration,
+}) {
+  return KalenderView(
+    eventsController: eventsController,
+    kalenderController: kalenderController,
+    viewConfiguration: MultiDayViewConfiguration.freeScroll(
+      numberOfDays: numberOfDays,
+      displayRange: displayRange,
+      initialDateTime: initialDateTime,
+    ),
+    callbacks: callbacks,
+    header: KalenderHeader(
+      multiDayTileComponents: _colouredTiles,
+      multiDayHeaderConfiguration: headerConfiguration,
+      interaction: interaction,
+    ),
+    body: KalenderBody(multiDayTileComponents: _colouredTiles, interaction: interaction),
+  );
+}
+
+/// Returns a finder for the resize handle of [eventId] facing [direction].
+Finder resizeHandleFor(String eventId, ResizeDirection direction) {
+  return find.byWidgetPredicate(
+    (widget) => widget is ResizeDetector && widget.event.id == eventId && widget.direction == direction,
+  );
+}
+
+/// Builds a 700 by 100 [TimeIndicatorPositioner] showing [visibleRange], with its indicator keyed [indicatorKey].
+Widget timeIndicatorPositioner({
+  required MultiDayViewConfiguration viewConfiguration,
+  required FloatingDateTimeRange visibleRange,
+  required Key indicatorKey,
+  FloatingDateTime? initialDate,
+  DateTime? dateOverride,
+}) {
+  return SizedBox(
+    width: 700,
+    height: 100,
+    child: Stack(
+      children: [
+        TimeIndicatorPositioner(
+          viewController: MultiDayViewController(
+            viewConfiguration: viewConfiguration,
+            floatingVisibleRange: ValueNotifier(visibleRange),
+            visibleEvents: ValueNotifier(<KalenderEvent>{}),
+            initialDate: initialDate,
+          ),
+          initialPage: 0,
+          dateOverride: dateOverride,
+          childOverride: SizedBox(key: indicatorKey),
+        ),
+      ],
     ),
   );
 }
@@ -210,6 +344,22 @@ extension WidgetTesterUtils on WidgetTester {
     return gesture;
   }
 
+  /// Sets the view to [size] in logical pixels for the rest of the test.
+  void setViewSize(Size size) {
+    final dpi = view.devicePixelRatio;
+    view.physicalSize = Size(size.width * dpi, size.height * dpi);
+    addTearDown(view.resetPhysicalSize);
+  }
+
+  /// Taps the overflow button on [day] and returns the overlay card it opens.
+  Future<Finder> openOverflowOverlay(DateTime day) async {
+    await tap(find.byKey(MultiDayPortalOverlayButton.getKey(day)));
+    await pumpAndSettle();
+    final card = find.byKey(MultiDayOverlay.getOverlayCardKey(day));
+    expect(card, findsOne);
+    return card;
+  }
+
   /// Creates a mouse [TestGesture] positioned at [Offset.zero] and registers
   /// [TestGesture.removePointer] as a teardown so callers don't have to.
   Future<TestGesture> createMouseGesture() async {
@@ -218,4 +368,9 @@ extension WidgetTesterUtils on WidgetTester {
     addTearDown(gesture.removePointer);
     return gesture;
   }
+}
+
+extension KalenderControllerUtils on KalenderController {
+  /// Returns [viewController] as a [MultiDayViewController].
+  MultiDayViewController get multiDayViewController => viewController as MultiDayViewController;
 }

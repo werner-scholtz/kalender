@@ -63,13 +63,7 @@ void main() {
 
   /// The height of the handle for [eventId] facing [direction].
   double handleHeight(WidgetTester tester, ResizeDirection direction) {
-    return tester
-        .getSize(
-          find.byWidgetPredicate(
-            (widget) => widget is ResizeDetector && widget.event.id == eventId && widget.direction == direction,
-          ),
-        )
-        .height;
+    return tester.getSize(resizeHandleFor(eventId, direction)).height;
   }
 
   testWidgets('a precise handle is 16 long by default', (tester) async {

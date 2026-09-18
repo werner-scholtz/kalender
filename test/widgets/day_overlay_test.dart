@@ -20,10 +20,7 @@ void main() {
   late List<String> printed;
 
   setUp(() {
-    eventsController = DefaultEventsController();
-    for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(KalenderEvent(start: busyDay, end: busyDay.add(const Duration(days: 1))));
-    }
+    eventsController = controllerWithOverflowOn(busyDay);
     kalenderController = KalenderController();
     printed = [];
   });
@@ -55,9 +52,7 @@ void main() {
     KalenderCallbacks? callbacks,
     TextDirection textDirection = TextDirection.ltr,
   }) {
-    final dpi = tester.view.devicePixelRatio;
-    tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
-    addTearDown(tester.view.resetPhysicalSize);
+    tester.setViewSize(const Size(800, 600));
 
     return pumpAndSettleWithMaterialApp(
       tester,

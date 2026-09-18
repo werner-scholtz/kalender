@@ -26,44 +26,14 @@ void main() {
     CardThemeData? appCardTheme,
     NowCallback? nowCallback,
   }) async {
-    final dpi = tester.view.devicePixelRatio;
-    tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
-    addTearDown(tester.view.resetPhysicalSize);
-
-    final eventsController = DefaultEventsController();
-    for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
-    }
-
-    final view = KalenderView(
-      eventsController: eventsController,
-      kalenderController: KalenderController(),
-      viewConfiguration: MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025, 1, 15),
-        nowCallback: nowCallback,
-      ),
-      body: const KalenderBody(),
+    await pumpOverflowingMonth(
+      tester,
+      day: day,
+      nowCallback: nowCallback,
+      scoped: style == null ? null : KalenderThemeData(multiDayOverlayStyle: style),
+      theme: ThemeData(cardTheme: appCardTheme, extensions: [if (extension != null) extension]),
     );
-
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(cardTheme: appCardTheme, extensions: [if (extension != null) extension]),
-        home: Scaffold(
-          body: style == null
-              ? view
-              : KalenderTheme(
-                  data: KalenderThemeData(multiDayOverlayStyle: style),
-                  child: view,
-                ),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(day)));
-    await tester.pumpAndSettle();
-    expect(find.byKey(MultiDayOverlay.getOverlayCardKey(day)), findsOne);
+    await tester.openOverflowOverlay(day);
   }
 
   Card overlayCard(WidgetTester tester) => tester.widget<Card>(find.byKey(MultiDayOverlay.getOverlayCardKey(day)));

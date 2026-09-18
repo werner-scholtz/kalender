@@ -16,43 +16,6 @@ import '../utilities.dart';
 void main() {
   final day = DateTime.utc(2025, 1, 15);
 
-  /// Pumps a month view whose 15 January column overflows, with [portalBuilder]
-  /// standing in for the built-in portal.
-  Future<void> pumpOverflowingMonth(
-    WidgetTester tester, {
-    MultiDayOverlayPortalBuilder? portalBuilder,
-    OverlayBuilders? overlayBuilders,
-    KalenderThemeData? scoped,
-  }) async {
-    final dpi = tester.view.devicePixelRatio;
-    tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
-    addTearDown(tester.view.resetPhysicalSize);
-
-    final eventsController = DefaultEventsController();
-    for (var i = 0; i < 8; i++) {
-      eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
-    }
-    addTearDown(eventsController.dispose);
-
-    final kalenderController = KalenderController();
-    addTearDown(kalenderController.dispose);
-
-    final view = KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: MonthViewConfiguration.singleMonth(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025, 1, 15),
-      ),
-      components: KalenderComponents(
-        overlayBuilders: overlayBuilders ?? OverlayBuilders(multiDayOverlayPortalBuilder: portalBuilder),
-      ),
-      body: const KalenderBody(),
-    );
-
-    await pumpAndSettleWithMaterialApp(tester, scoped == null ? view : KalenderTheme(data: scoped, child: view));
-  }
-
   for (final (name, scoped, matcher) in <(String, KalenderThemeData?, Matcher)>[
     // The Material defaults populate the style even when the app sets nothing.
     ('a custom portal builder resolves the overlay styles from its context', null, isNotNull),
@@ -67,21 +30,26 @@ void main() {
 
       await pumpOverflowingMonth(
         tester,
+        day: day,
         scoped: scoped,
-        portalBuilder:
-            (
-              context, {
-              required date,
-              required events,
-              required numberOfHiddenRows,
-              required tileHeight,
-              required getMultiDayEventLayoutRenderBox,
-              required overlayTileBuilder,
-              required overlayBuilders,
-            }) {
-              received = KalenderTheme.of(context).multiDayOverlayStyle;
-              return const SizedBox();
-            },
+        components: KalenderComponents(
+          overlayBuilders: OverlayBuilders(
+            multiDayOverlayPortalBuilder:
+                (
+                  context, {
+                  required date,
+                  required events,
+                  required numberOfHiddenRows,
+                  required tileHeight,
+                  required getMultiDayEventLayoutRenderBox,
+                  required overlayTileBuilder,
+                  required overlayBuilders,
+                }) {
+                  received = KalenderTheme.of(context).multiDayOverlayStyle;
+                  return const SizedBox();
+                },
+          ),
+        ),
       );
 
       expect(received, matcher);
@@ -93,14 +61,17 @@ void main() {
 
     await pumpOverflowingMonth(
       tester,
+      day: day,
       scoped: const KalenderThemeData(
         multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(textStyle: TextStyle(fontSize: 21)),
       ),
-      overlayBuilders: OverlayBuilders(
-        multiDayPortalOverlayButtonBuilder: (context, controller, numberOfHiddenRows) {
-          received = KalenderTheme.of(context).multiDayPortalOverlayButtonStyle;
-          return const SizedBox();
-        },
+      components: KalenderComponents(
+        overlayBuilders: OverlayBuilders(
+          multiDayPortalOverlayButtonBuilder: (context, controller, numberOfHiddenRows) {
+            received = KalenderTheme.of(context).multiDayPortalOverlayButtonStyle;
+            return const SizedBox();
+          },
+        ),
       ),
     );
 
@@ -112,22 +83,25 @@ void main() {
 
     await pumpOverflowingMonth(
       tester,
+      day: day,
       scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
-      overlayBuilders: OverlayBuilders(
-        multiDayOverlayBuilder:
-            (
-              context, {
-              required date,
-              required events,
-              required tileHeight,
-              required portalController,
-              required overlayTileBuilder,
-              required getMultiDayEventLayoutRenderBox,
-              required getOverlayPortalRenderBox,
-            }) {
-              received = KalenderTheme.of(context).multiDayOverlayStyle;
-              return const SizedBox();
-            },
+      components: KalenderComponents(
+        overlayBuilders: OverlayBuilders(
+          multiDayOverlayBuilder:
+              (
+                context, {
+                required date,
+                required events,
+                required tileHeight,
+                required portalController,
+                required overlayTileBuilder,
+                required getMultiDayEventLayoutRenderBox,
+                required getOverlayPortalRenderBox,
+              }) {
+                received = KalenderTheme.of(context).multiDayOverlayStyle;
+                return const SizedBox();
+              },
+        ),
       ),
     );
 
@@ -140,13 +114,12 @@ void main() {
   testWidgets('the built-in overlay still follows a scoped theme with nothing passed to it', (tester) async {
     await pumpOverflowingMonth(
       tester,
+      day: day,
       scoped: const KalenderThemeData(multiDayOverlayStyle: MultiDayOverlayStyle(width: 321)),
+      components: const KalenderComponents(overlayBuilders: OverlayBuilders()),
     );
 
-    await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(day)));
-    await tester.pumpAndSettle();
-
-    final card = tester.getSize(find.byKey(MultiDayOverlay.getOverlayCardKey(day)));
+    final card = tester.getSize(await tester.openOverflowOverlay(day));
     expect(card.width, moreOrLessEquals(321, epsilon: 0.5));
   });
 }

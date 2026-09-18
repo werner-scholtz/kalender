@@ -60,13 +60,6 @@ void main() {
     await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());
   }
 
-  /// The handle for [eventId] facing [direction].
-  Finder handleFor(String eventId, ResizeDirection direction) {
-    return find.byWidgetPredicate(
-      (widget) => widget is ResizeDetector && widget.event.id == eventId && widget.direction == direction,
-    );
-  }
-
   testWidgets('the type alone matches more than one handle', (tester) async {
     await pumpAndHover(tester);
 
@@ -76,12 +69,12 @@ void main() {
   testWidgets('the event and the direction narrow it to one', (tester) async {
     await pumpAndHover(tester);
 
-    expect(handleFor(eventId, ResizeDirection.top), findsOneWidget);
-    expect(handleFor(eventId, ResizeDirection.bottom), findsOneWidget);
+    expect(resizeHandleFor(eventId, ResizeDirection.top), findsOneWidget);
+    expect(resizeHandleFor(eventId, ResizeDirection.bottom), findsOneWidget);
 
     // The tile that is not hovered contributes no handles.
-    expect(handleFor(otherId, ResizeDirection.top), findsNothing);
-    expect(handleFor(otherId, ResizeDirection.bottom), findsNothing);
+    expect(resizeHandleFor(otherId, ResizeDirection.top), findsNothing);
+    expect(resizeHandleFor(otherId, ResizeDirection.bottom), findsNothing);
   });
 
   testWidgets('scoping to a tile finds only that tile\'s handles', (tester) async {

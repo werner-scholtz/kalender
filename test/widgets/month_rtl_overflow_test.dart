@@ -63,37 +63,8 @@ void main() {
       required DateTime day,
       required TextDirection textDirection,
     }) async {
-      final dpi = tester.view.devicePixelRatio;
-      tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
-      addTearDown(tester.view.resetPhysicalSize);
-
-      final eventsController = DefaultEventsController();
-      for (var i = 0; i < 8; i++) {
-        eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
-      }
-
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        Directionality(
-          textDirection: textDirection,
-          child: KalenderView(
-            eventsController: eventsController,
-            kalenderController: KalenderController(),
-            viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: year2025DisplayRange,
-              initialDateTime: DateTime(2025, 1, 15),
-            ),
-            body: const KalenderBody(),
-          ),
-        ),
-      );
-
-      final found = <DateTime>{};
-      for (var d = 27; d <= 31; d++) {
-        final date = DateTime.utc(2025, 1, d);
-        if (find.byKey(MultiDayPortalOverlayButton.getKey(date)).evaluate().isNotEmpty) found.add(date);
-      }
-      return found;
+      await pumpOverflowingMonth(tester, day: day, textDirection: textDirection);
+      return januaryLastRowOverflowDates();
     }
 
     // 29 Jan 2025 is a Wednesday, in the last row of a 5 row January.

@@ -153,15 +153,6 @@ void main() {
   });
 
   group('Overflow button label', () {
-    /// Adds enough events on [day] to overflow the cell and show the button.
-    DefaultEventsController controllerWithOverflowOn(DateTime day) {
-      final eventsController = DefaultEventsController();
-      for (var i = 0; i < 8; i++) {
-        eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
-      }
-      return eventsController;
-    }
-
     Future<void> pumpOverflowingWeek(WidgetTester tester, TextDirection textDirection) {
       return pumpAndSettleWithMaterialApp(
         tester,
@@ -179,17 +170,11 @@ void main() {
       );
     }
 
-    Set<String> labels(WidgetTester tester) {
-      final texts = tester.widgetList<Text>(find.byKey(MultiDayPortalOverlayButton.textKey));
-      expect(texts, isNotEmpty, reason: 'the day should overflow and show an overflow button');
-      return texts.map((text) => text.data!).toSet();
-    }
-
     for (final textDirection in TextDirection.values) {
       testWidgets('defaults to a plus sign in front of the count in ${textDirection.name}', (tester) async {
         await pumpOverflowingWeek(tester, textDirection);
 
-        expect(labels(tester), everyElement(matches(RegExp(r'^\+\d+$'))));
+        expect(overflowButtonLabels(tester), everyElement(matches(RegExp(r'^\+\d+$'))));
       });
     }
   });

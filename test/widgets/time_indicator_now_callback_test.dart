@@ -7,48 +7,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 
 import '../utilities.dart';
 
 void main() {
+  final key = UniqueKey();
+  final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
+  final range = FloatingDateTimeRange(start: now, end: now.endOfWeek());
+
+  Future<void> pumpPositioner(
+    WidgetTester tester,
+    MultiDayViewConfiguration viewConfiguration, {
+    FloatingDateTimeRange? visibleRange,
+    DateTime? dateOverride,
+    FloatingDateTime? initialDate,
+  }) {
+    return pumpAndSettleWithMaterialApp(
+      tester,
+      timeIndicatorPositioner(
+        viewConfiguration: viewConfiguration,
+        visibleRange: visibleRange ?? range,
+        indicatorKey: key,
+        initialDate: initialDate,
+        dateOverride: dateOverride,
+      ),
+    );
+  }
+
+  group('TimeIndicatorPositioner', () {
+    final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range.forLocation());
+
+    for (final (index, date) in range.dates().map(FloatingDateTime.fromDateTime).indexed) {
+      testWidgets('for date index: ($index)', (tester) async {
+        await pumpPositioner(tester, viewConfiguration, dateOverride: date);
+        final finder = find.byKey(key);
+        expect(finder, findsOneWidget);
+        expect(tester.getTopLeft(finder).dx, index * 100.0);
+      });
+    }
+  });
+
   group('nowCallback', () {
     group('TimeIndicatorPositioner', () {
-      final key = UniqueKey();
-      final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
-      final range = FloatingDateTimeRange(start: now, end: now.endOfWeek());
-
-      Future<void> pumpPositioner(
-        WidgetTester tester,
-        MultiDayViewConfiguration viewConfiguration, {
-        FloatingDateTimeRange? visibleRange,
-        DateTime? dateOverride,
-        FloatingDateTime? initialDate,
-      }) {
-        return pumpAndSettleWithMaterialApp(
-          tester,
-          SizedBox(
-            width: 700,
-            height: 100,
-            child: Stack(
-              children: [
-                TimeIndicatorPositioner(
-                  viewController: MultiDayViewController(
-                    viewConfiguration: viewConfiguration,
-                    floatingVisibleRange: ValueNotifier(visibleRange ?? range),
-                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
-                    initialDate: initialDate,
-                  ),
-                  initialPage: 0,
-                  dateOverride: dateOverride,
-                  childOverride: SizedBox(key: key),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-
       group('positions indicator using callback wall-clock values', () {
         for (final (index, date) in range.dates().map(FloatingDateTime.fromDateTime).indexed) {
           testWidgets('day index $index', (tester) async {
