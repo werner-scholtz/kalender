@@ -121,9 +121,7 @@ final class FloatingDateTimeRange {
 
     final dominant = monthCounts.entries.reduce((a, b) => a.value >= b.value ? a : b);
 
-    return start.isUtc
-        ? DateTime.utc(dominant.key.$1, dominant.key.$2, 1)
-        : DateTime(dominant.key.$1, dominant.key.$2, 1);
+    return FloatingDateTime(dominant.key.$1, dominant.key.$2);
   }
 
   /// The ISO 8601 week number(s) this range spans.
@@ -132,7 +130,7 @@ final class FloatingDateTimeRange {
   /// `(firstWeek, lastWeek)` when the range crosses a week boundary.
   /// A midnight end is treated as the previous day.
   (int first, int? last) get weekNumbers {
-    final days = FloatingDateTimeRange(start: start, end: end).dates(inclusive: false);
+    final days = dates();
     final isSingleWeek = days.length <= 7;
 
     if (start.year != end.year && !isSingleWeek) {
@@ -142,8 +140,7 @@ final class FloatingDateTimeRange {
     final first = start.weekNumber;
     var second = end.weekNumber;
 
-    // If the end is the start of the day, then it should be considered as the previous day.
-    if (end == end.startOfDay) {
+    if (end.isStartOfDay) {
       second = end.subtract(const Duration(days: 1)).weekNumber;
     }
 

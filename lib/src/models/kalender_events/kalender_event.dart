@@ -96,7 +96,7 @@ class KalenderEvent {
        end = end.toUtc(),
        _multiDayRule = multiDayRule,
        _isAllDay = isAllDay,
-       _interaction = interaction ?? EventInteraction.fromCanModify(true);
+       _interaction = interaction ?? EventInteraction();
 
   static String _createUniqueId() {
     final rawRandom = Random();

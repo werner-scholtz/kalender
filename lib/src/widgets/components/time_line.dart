@@ -281,19 +281,13 @@ mixin TimeLineUtils {
   Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
     const displayTime = KalenderTime(hour: 23, minute: 59);
     final text = timelineString(context, displayTime);
-    final textSize = _textSize(text, textStyle, textDirection(context));
-    return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
-  }
-
-  /// Returns the [Size] of the text.
-  Size _textSize(String text, TextStyle? style, TextDirection textDirection) {
     final textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
+      text: TextSpan(text: text, style: textStyle),
       maxLines: 1,
-      textDirection: textDirection,
-    )..layout(minWidth: 0, maxWidth: double.infinity);
-
-    return textPainter.size;
+      textDirection: textDirection(context),
+    )..layout();
+    final textSize = textPainter.size;
+    return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
   }
 
   /// Calculates the [Size] of the item based on the [textStyle] and [textPadding].

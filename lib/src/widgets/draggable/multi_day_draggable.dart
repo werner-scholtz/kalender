@@ -141,11 +141,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
   }
 
   @override
-  FloatingDateTimeRange calculateFloatingRange(FloatingDateTime date, Offset localPosition) {
-    final start = date;
-    final end = start.endOfDay;
-    return FloatingDateTimeRange(start: start, end: end);
-  }
+  FloatingDateTimeRange calculateFloatingRange(FloatingDateTime date, Offset localPosition) => date.dayRange;
 
   @override
   TapDetail createTapDetail(BuildContext context, FloatingDateTimeRange range, Offset localPosition) {

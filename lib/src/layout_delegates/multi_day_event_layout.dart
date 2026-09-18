@@ -102,7 +102,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     final range = event.floatingRange(location: location);
     // Round the end to the end of the day unless it already sits on a day
     // boundary, so the final day of the event is included.
-    final roundedEnd = range.end == range.end.startOfDay ? range.end.startOfDay : range.end.endOfDay;
+    final roundedEnd = range.end == range.end.startOfDay ? range.end : range.end.endOfDay;
     entries.add(
       _FrameEntry(
         event: event,
@@ -167,8 +167,8 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 
     // The event spans a contiguous range of columns, so overlap only depends on
     // its first and last column.
-    final start = columns.first < columns.last ? columns.first : columns.last;
-    final end = columns.first < columns.last ? columns.last : columns.first;
+    final start = min(columns.first, columns.last);
+    final end = max(columns.first, columns.last);
 
     var rowToUse = -1;
     for (var row = 0; row < rowColumns.length; row++) {
@@ -318,14 +318,8 @@ class MultiDayLayoutFrame {
   ///
   /// If [maxNumberOfRows] is null, all events are returned.
   (List<KalenderEvent> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
-    // If there is no max number of rows we return all the events.
-    if (maxNumberOfRows == null) return (this.events, layoutInfo);
+    if (maxNumberOfRows == null || totalNumberOfRows <= maxNumberOfRows) return (this.events, layoutInfo);
 
-    // If the number of rows is less than the max number of rows we return all the events.
-    if (totalNumberOfRows <= maxNumberOfRows) return (this.events, layoutInfo);
-
-    // If the number of rows is greater than the max number of rows we only return the events that
-    // should be fitted in the max number of rows.
     final info = layoutInfo.where((e) => e.row < maxNumberOfRows).toList();
     final events = info.map((e) {
       return this.events.firstWhere((event) => event.id == e.id);

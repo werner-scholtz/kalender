@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
@@ -32,7 +34,7 @@ class ScheduleBody extends StatelessWidget {
     final kalenderController = context.kalenderController;
     assert(
       kalenderController.viewController is ScheduleViewController,
-      'The KalenderController\'s $ViewController needs to be a $MonthViewController',
+      'The KalenderController\'s $ViewController needs to be a $ScheduleViewController',
     );
     final viewController = kalenderController.viewController as ScheduleViewController;
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
@@ -243,7 +245,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
         }
       }
 
-      if (!widget.paginated || widget.paginated && !hasAddedMonth) _addMonthItem(date);
+      if (!widget.paginated || !hasAddedMonth) _addMonthItem(date);
 
       for (final (index, event) in events.indexed) {
         final isFirst = index == 0;
@@ -264,12 +266,9 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   void _positionListener() {
     final itemPositions = _itemPositionsListener.itemPositions.value;
     if (itemPositions.isNotEmpty) {
-      var first = viewController.itemCount;
-      var last = 0;
-      for (final position in itemPositions) {
-        if (position.index < first) first = position.index;
-        if (position.index > last) last = position.index;
-      }
+      final indices = itemPositions.map((position) => position.index);
+      final first = indices.reduce(min);
+      final last = indices.reduce(max);
 
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);

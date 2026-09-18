@@ -144,17 +144,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   @override
   void initState() {
     super.initState();
-    _startTimer();
-  }
-
-  @override
-  void didUpdateWidget(covariant TimeIndicator oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.timeOfDayRange != oldWidget.timeOfDayRange ||
-        oldWidget.location != widget.location ||
-        oldWidget.nowCallback != widget.nowCallback) {
-      setState(() {});
-    }
+    _timer = Timer.periodic(const Duration(seconds: 10), (_) => setState(() {}));
   }
 
   @override
@@ -162,8 +152,6 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     _timer.cancel();
     super.dispose();
   }
-
-  void _startTimer() => _timer = Timer.periodic(const Duration(seconds: 10), (_) => setState(() {}));
 
   @override
   Widget build(BuildContext context) {

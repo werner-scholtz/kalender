@@ -70,9 +70,6 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   @override
   bool get multiDayDragTarget => false;
 
-  // The width of the page, used for cursor navigation.
-  double get pageWidth => widget.constraints.maxWidth;
-
   // The height of the viewport, used for cursor navigation.
   double get viewPortHeight => widget.constraints.maxHeight;
 
@@ -108,7 +105,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
           configuration: pageTrigger,
           viewController: viewController,
           forward: true,
-          pageWidth: pageWidth,
+          pageWidth: dayWidth,
           builder: widget.rightPageTrigger,
         );
 
@@ -116,7 +113,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
           configuration: pageTrigger,
           viewController: viewController,
           forward: false,
-          pageWidth: pageWidth,
+          pageWidth: dayWidth,
           builder: widget.leftPageTrigger,
         );
 
@@ -144,7 +141,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
             },
             viewPortHeight: viewPortHeight,
             triggerHeight: triggerHeight,
-            width: pageWidth,
+            width: dayWidth,
             builder: builder,
           );
         }

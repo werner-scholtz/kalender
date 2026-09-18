@@ -328,33 +328,23 @@ class MultiDayOverlay extends StatelessWidget {
   });
 
   /// Returns a [Key] for the overlay based on the date.
-  static Key getKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_${date.millisecondsSinceEpoch}');
-  }
+  static Key getKey(DateTime date) => _key('multi_day_overlay', date);
 
   /// Returns a [Key] for the overlay card based on the date.
-  static Key getOverlayCardKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_card_${date.millisecondsSinceEpoch}');
-  }
+  static Key getOverlayCardKey(DateTime date) => _key('multi_day_overlay_card', date);
 
   /// Returns a [Key] for the close button based on the date.
-  static Key getCloseButtonKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_close_button_${date.millisecondsSinceEpoch}');
-  }
+  static Key getCloseButtonKey(DateTime date) => _key('multi_day_overlay_close_button', date);
 
   /// Returns a [Key] for the barrier behind the card, based on the date.
-  static Key getBarrierKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_barrier_${date.millisecondsSinceEpoch}');
-  }
+  static Key getBarrierKey(DateTime date) => _key('multi_day_overlay_barrier', date);
 
   /// Returns a [Key] for the card's header, based on the date.
-  static Key getHeaderKey(DateTime date) {
+  static Key getHeaderKey(DateTime date) => _key('multi_day_overlay_header', date);
+
+  static Key _key(String name, DateTime date) {
     assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_header_${date.millisecondsSinceEpoch}');
+    return Key('${name}_${date.millisecondsSinceEpoch}');
   }
 
   /// Key applied to the [IconButton] when the date is today.
@@ -376,12 +366,7 @@ class MultiDayOverlay extends StatelessWidget {
     final anchorTop = portalPosition.dy - multiDayEventsLayoutSize.height - headerHeight;
     final anchorCenterX = portalPosition.dx + portalWidth / 2;
 
-    return (anchorTop, anchorCenterX, _determineWidth(constraints, style));
-  }
-
-  /// Determines the width of the overlay, never wider than the space available.
-  double _determineWidth(BoxConstraints constraints, MultiDayOverlayStyle style) {
-    return math.min(style.width ?? defaultWidth, constraints.maxWidth);
+    return (anchorTop, anchorCenterX, math.min(style.width ?? defaultWidth, constraints.maxWidth));
   }
 
   static const defaultWidth = 300.0;
@@ -414,6 +399,7 @@ class MultiDayOverlay extends StatelessWidget {
       builder: (context, constraints) {
         final headerHeight = _determineHeaderHeight(constraints, style, cardMargin);
         final (anchorTop, anchorCenterX, width) = _calculateAnchor(constraints, style, headerHeight);
+        final displayDate = date.forLocation(location: context.location);
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -448,7 +434,7 @@ class MultiDayOverlay extends StatelessWidget {
                               Align(
                                 alignment: Alignment.topCenter,
                                 child: DateLabelGestures(
-                                  date: date.forLocation(location: context.location),
+                                  date: displayDate,
                                   child: Text(
                                     style.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
                                     style: style.dayNameTextStyle,
@@ -458,7 +444,7 @@ class MultiDayOverlay extends StatelessWidget {
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: DateLabelGestures(
-                                  date: date.forLocation(location: context.location),
+                                  date: displayDate,
                                   child: DayNumber(
                                     date: date,
                                     text: date.day.toString(),
@@ -513,7 +499,6 @@ class MultiDayOverlay extends StatelessWidget {
                                   valueListenable: context.kalenderController.selectedEvent,
                                   builder: (context, selectedEvent, child) {
                                     if (selectedEvent == null) return const SizedBox();
-                                    if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();
 
                                     final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
                                     if (eventIndex == -1) return const SizedBox();

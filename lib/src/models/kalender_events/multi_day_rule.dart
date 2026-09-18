@@ -63,7 +63,7 @@ class _CalendarDaysRule extends MultiDayRule {
     // one day above. Keep it multi-day so all-day events stay in the header.
     final start = range.start;
     final end = range.end;
-    return start == start.startOfDay && end == end.startOfDay && end.isAfter(start);
+    return start.isStartOfDay && end.isStartOfDay && end.isAfter(start);
   }
 
   @override

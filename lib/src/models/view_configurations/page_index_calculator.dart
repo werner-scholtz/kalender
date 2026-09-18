@@ -154,12 +154,7 @@ class DayIndexCalculator extends PageIndexCalculator {
   }
 
   @override
-  FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-    final start = floatingRange.start.startOfDay;
-    final end = floatingRange.end.isStartOfDay ? floatingRange.end : floatingRange.end.endOfDay;
-    return FloatingDateTimeRange(start: start, end: end);
-  }
+  FloatingDateTimeRange floatingRange(Location? location) => _wholeDays(rawRange(location));
 
   @override
   bool operator ==(Object other) =>
@@ -218,25 +213,16 @@ class WeekIndexCalculator extends PageIndexCalculator {
     final floatingStartOfWeek = floatingDate.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     final floatingRange = this.floatingRange(location);
 
-    if (floatingStartOfWeek.isBefore(floatingRange.start) || floatingStartOfWeek == floatingRange.start) return 0;
+    if (!floatingStartOfWeek.isAfter(floatingRange.start)) return 0;
     final range = FloatingDateTimeRange(start: floatingRange.start, end: floatingStartOfWeek);
-    final index = range.dates().length / DateTime.daysPerWeek;
-
-    if (index.round() != index) {
-      debugPrint('Warning: index is not an integer: $index');
-    }
-
-    return index.round().clamp(0, numberOfPages(location) - 1);
+    final index = range.dates().length ~/ DateTime.daysPerWeek;
+    return index.clamp(0, numberOfPages(location) - 1);
   }
 
   @override
   int numberOfPages(Location? location) {
     final floatingRange = this.floatingRange(location);
-    final numberOfPages = floatingRange.end.difference(floatingRange.start).inDays / DateTime.daysPerWeek;
-    if (numberOfPages.round() != numberOfPages) {
-      debugPrint('Warning: numberOfPages is not an integer: $numberOfPages');
-    }
-    return numberOfPages.round();
+    return floatingRange.end.difference(floatingRange.start).inDays ~/ DateTime.daysPerWeek;
   }
 
   @override
@@ -295,20 +281,13 @@ class CustomIndexCalculator extends PageIndexCalculator {
 
   @override
   FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-
-    final start = floatingRange.start.startOfDay;
-    final end = floatingRange.end.startOfDay == floatingRange.end
-        ? floatingRange.end.startOfDay
-        : floatingRange.end.endOfDay;
-    final numberOfDaysInRange = end.difference(start).inDays;
-    final extraDays = numberOfDaysInRange % numberOfDays;
-    if (extraDays == 0) {
-      return FloatingDateTimeRange(start: start, end: end);
-    } else {
-      final adjustedEnd = end.add(Duration(days: numberOfDays - extraDays));
-      return FloatingDateTimeRange(start: start, end: adjustedEnd);
-    }
+    final range = _wholeDays(rawRange(location));
+    final extraDays = range.end.difference(range.start).inDays % numberOfDays;
+    if (extraDays == 0) return range;
+    return FloatingDateTimeRange(
+      start: range.start,
+      end: range.end.add(Duration(days: numberOfDays - extraDays)),
+    );
   }
 
   @override
@@ -392,15 +371,7 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
   int numberOfPages(Location? location) => 1;
 
   @override
-  FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-
-    final start = floatingRange.start.startOfDay;
-    final end = floatingRange.end.startOfDay == floatingRange.end
-        ? floatingRange.end.startOfDay
-        : floatingRange.end.endOfDay;
-    return FloatingDateTimeRange(start: start, end: end);
-  }
+  FloatingDateTimeRange floatingRange(Location? location) => _wholeDays(rawRange(location));
 
   @override
   bool operator ==(Object other) =>
@@ -453,4 +424,9 @@ mixin _MonthPages on PageIndexCalculator {
     final end = range.end.startOfMonth == range.end ? range.end : range.end.endOfMonth;
     return FloatingDateTimeRange(start: range.start.startOfMonth, end: end);
   }
+}
+
+FloatingDateTimeRange _wholeDays(FloatingDateTimeRange range) {
+  final end = range.end.isStartOfDay ? range.end : range.end.endOfDay;
+  return FloatingDateTimeRange(start: range.start.startOfDay, end: end);
 }

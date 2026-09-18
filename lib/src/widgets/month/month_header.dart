@@ -32,10 +32,7 @@ class MonthHeader extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: kalenderController.visibleDateTimeRange,
       builder: (context, visibleDateTimeRange, child) {
-        if (visibleDateTimeRange == null) {
-          debugPrint('Warning: The visibleDateTimeRange is null in MonthHeader.');
-          return const SizedBox.shrink();
-        }
+        if (visibleDateTimeRange == null) return const SizedBox.shrink();
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
 
         return Row(

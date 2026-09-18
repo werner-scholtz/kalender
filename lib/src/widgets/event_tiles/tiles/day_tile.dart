@@ -51,14 +51,10 @@ class DayEventTile extends EventTile {
 
   DateTime _calculateExactTime(Offset localPosition, BuildContext context) {
     var date = floatingRange.start;
-    try {
-      final heightPerMinute = context.heightPerMinute;
-      if (heightPerMinute > 0) {
-        final minutes = (localPosition.dy / heightPerMinute).round();
-        date = date.add(Duration(minutes: minutes));
-      }
-    } catch (_) {
-      // Fallback if HeightPerMinute provider is not present
+    final heightPerMinute = context.heightPerMinute;
+    if (heightPerMinute > 0) {
+      final minutes = (localPosition.dy / heightPerMinute).round();
+      date = date.add(Duration(minutes: minutes));
     }
     return date.forLocation(location: context.location);
   }

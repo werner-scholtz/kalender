@@ -123,7 +123,7 @@ class HourLines extends StatelessWidget with TimeLineUtils {
 
   @override
   Widget build(BuildContext context) {
-    final timelineItemSize = largestTextSize(context, textStyle(context), textPadding(context));
+    final timelineItemSize = itemSize(context);
     final segments = timeOfDayRange.splitIntoSegments(
       segmentDuration(timeOfDayRange, heightPerMinute, timelineItemSize.height),
     );

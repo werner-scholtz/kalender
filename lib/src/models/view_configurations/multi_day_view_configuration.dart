@@ -352,7 +352,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         other.timeOfDayRange == timeOfDayRange &&
         other.initialTimeOfDay == initialTimeOfDay &&
         other.initialHeightPerMinute == initialHeightPerMinute &&
-        other.dateTimeRange == dateTimeRange &&
         other.numberOfDays == numberOfDays &&
         other.firstDayOfWeek == firstDayOfWeek &&
         other.multiDayRule == multiDayRule &&
@@ -372,7 +371,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       timeOfDayRange,
       initialTimeOfDay,
       initialHeightPerMinute,
-      dateTimeRange,
       numberOfDays,
       firstDayOfWeek,
       multiDayRule,
@@ -390,7 +388,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     displayRange: $dateTimeRange
     numberOfDays: $numberOfDays
     firstDayOfWeek: $firstDayOfWeek
-    pageNavigationFunctions: $pageIndexCalculator''';
+    pageIndexCalculator: $pageIndexCalculator''';
   }
 }
 

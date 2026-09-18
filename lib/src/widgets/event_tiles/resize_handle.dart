@@ -88,7 +88,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
     if (controller.internalFocus) {
       // Suppress handles during internal drag/resize operations.
-      if ((_showFromHover || _showFromSelection) && mounted) {
+      if (_showHandles && mounted) {
         setState(() {
           _showFromHover = false;
           _showFromSelection = false;
@@ -104,8 +104,8 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
     }
   }
 
-  /// [PointerEnterEvent] handler to show resize handles on hover (precise input).
-  void _onEnter(PointerEnterEvent event) {
+  /// Shows the resize handles on enter and hover from a precise pointer.
+  void _show(PointerEvent event) {
     if (_controller?.internalFocus == true) return;
     if (!_isPrecisePointer(event)) return;
     if (!_showFromHover && mounted) setState(() => _showFromHover = true);
@@ -114,13 +114,6 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// [PointerExitEvent] handler to hide resize handles when the pointer leaves.
   void _onExit(PointerExitEvent event) {
     if (_showFromHover && mounted) setState(() => _showFromHover = false);
-  }
-
-  /// [PointerHoverEvent] handler to show resize handles on hover (precise input).
-  void _onHover(PointerHoverEvent event) {
-    if (_controller?.internalFocus == true) return;
-    if (!_isPrecisePointer(event)) return;
-    if (!_showFromHover && mounted) setState(() => _showFromHover = true);
   }
 
   /// Resolves whether the current input is imprecise.
@@ -158,7 +151,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
       ),
     );
 
-    return MouseRegion(onEnter: _onEnter, onExit: _onExit, onHover: _onHover, opaque: false, child: visibility);
+    return MouseRegion(onEnter: _show, onExit: _onExit, onHover: _show, opaque: false, child: visibility);
   }
 }
 
@@ -186,7 +179,7 @@ class ResizeDetector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isVertical = direction == ResizeDirection.top || direction == ResizeDirection.bottom;
+    final isVertical = direction.vertical;
     final tileComponents = context.tileComponents;
     final resizeHandle = isVertical ? tileComponents.verticalResizeHandle : tileComponents.horizontalResizeHandle;
 
