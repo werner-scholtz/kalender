@@ -1,6 +1,6 @@
 # Contributing to Kalender
 
-Kalender is a work-in-progress package. This project is meant to be a fun way to explore Flutter and learn together. All contributions are welcome, whether it's fixing a bug, improving architecture, improving documentation, or adding a new feature.
+Kalender is a work-in-progress package. All contributions are welcome, whether it's fixing a bug, improving architecture, improving documentation, or adding a new feature.
 
 ## Getting started
 
@@ -22,7 +22,7 @@ flutter test
 
 - Create a branch for your work.
 - Try to keep pull requests focused on a single change.
-- If you're adding a new feature, try to follow the existing architecture and patterns, but don't stress about it. We can always iterate together during review.
+- If you're adding a new feature, try to follow the existing architecture and patterns.
 - Ensure `dart analyze` and `flutter analyze` report no issues.
 - Add or update tests where appropriate. [AGENTS.md](AGENTS.md#build--test) has the commands to run them in every CI timezone.
 - Adding or changing a code sample in the README or the guides? Every fenced dart block needs a directive comment. Run `dart run tool/analyze_doc_snippets.dart`.
