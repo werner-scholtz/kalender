@@ -31,9 +31,7 @@ void main() {
       KalenderEvent(start: range.start, end: range.end),
     ]);
 
-    final dpi = tester.view.devicePixelRatio;
-    tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
-    addTearDown(tester.view.reset);
+    tester.setViewSize(const Size(800, 600));
 
     await pumpKalender(
       tester,

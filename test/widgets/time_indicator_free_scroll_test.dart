@@ -55,8 +55,6 @@ void main() {
     );
   }
 
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
-
   /// The width of one day column in the body.
   double dayWidth(WidgetTester tester) {
     return tester.getSize(find.byType(TimeIndicatorPositioner)).width / numberOfDays;
@@ -86,7 +84,7 @@ void main() {
     expect(find.byKey(indicatorKey), findsOneWidget);
 
     // Jump six days forward, so today is a day past the leading edge.
-    viewController().pageController.jumpToPage(6);
+    kalenderController.multiDayViewController.pageController.jumpToPage(6);
     await tester.pumpAndSettle();
 
     expect(find.byKey(indicatorKey), findsNothing);
@@ -95,11 +93,11 @@ void main() {
   testWidgets('reappears when today scrolls back into the viewport', (tester) async {
     await pumpFreeScroll(tester, start.add(const Duration(hours: 12)));
 
-    viewController().pageController.jumpToPage(6);
+    kalenderController.multiDayViewController.pageController.jumpToPage(6);
     await tester.pumpAndSettle();
     expect(find.byKey(indicatorKey), findsNothing);
 
-    viewController().pageController.jumpToPage(0);
+    kalenderController.multiDayViewController.pageController.jumpToPage(0);
     await tester.pumpAndSettle();
     expect(find.byKey(indicatorKey), findsOneWidget);
   });

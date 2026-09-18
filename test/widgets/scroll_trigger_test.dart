@@ -27,8 +27,6 @@ void main() {
     tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
   );
 
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
-
   // Align the top of the viewport with [hour] so each test starts with room to
   // scroll in the direction it drags.
   Future<void> pumpWeek(WidgetTester tester, int hour) {
@@ -72,7 +70,7 @@ void main() {
       );
 
       await pumpWeek(tester, c.viewHour);
-      final offsetBefore = viewController().scrollController.offset;
+      final offsetBefore = kalenderController.multiDayViewController.scrollController.offset;
 
       final tile = find.byKey(DayEventTile.tileKey(id));
       final bodyRect = tester.getRect(find.byType(KalenderBody));
@@ -80,7 +78,7 @@ void main() {
       await gesture.up();
       await tester.pumpAndSettle();
 
-      expect(viewController().scrollController.offset, c.scrolled(offsetBefore));
+      expect(kalenderController.multiDayViewController.scrollController.offset, c.scrolled(offsetBefore));
     });
   }
 }

@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show MultiDayEventTile;
@@ -23,33 +22,16 @@ void main() {
     kalenderController = KalenderController();
   });
 
-  final components = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
-  );
-
-  final precise = KalenderInteraction(
-    inputMode: InputMode.precise,
-    createEventGesture: EventInteractionGesture.tap,
-    modifyEventGesture: EventInteractionGesture.tap,
-  );
-
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
-
   Future<void> pumpFreeScroll(WidgetTester tester, KalenderCallbacks callbacks) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(
+      freeScrollView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.freeScroll(
-          numberOfDays: 7,
-          displayRange: displayRange,
-          initialDateTime: start,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        ),
+        displayRange: displayRange,
+        initialDateTime: start,
         callbacks: callbacks,
-        header: KalenderHeader(multiDayTileComponents: components, interaction: precise),
-        body: KalenderBody(multiDayTileComponents: components, interaction: precise),
+        interaction: kPreciseInteraction,
       ),
     );
   }
@@ -117,24 +99,17 @@ void main() {
 
     await pumpFreeScroll(tester, KalenderCallbacks(onEventChange: (event) => event, onEventChanged: (_, __) {}));
 
-    final controller = viewController().pageController;
+    final controller = kalenderController.multiDayViewController.pageController;
     final pageBefore = controller.page ?? 0;
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     final headerRect = tester.getRect(find.byType(KalenderHeader));
-    final tileCenter = tester.getCenter(tile);
 
-    final gesture = await tester.startGesture(tileCenter);
-    await tester.pump();
-    await gesture.moveTo(Offset(headerRect.right - 2, tileCenter.dy));
-    await tester.pump(); // the edge trigger's drag target starts its timer
-    // The trigger fires after its 750ms delay, then the page animates (300ms).
-    await tester.pump(const Duration(milliseconds: 800));
-    await tester.pump(const Duration(milliseconds: 350));
+    final gesture = await tester.holdDragAt(tile, Offset(headerRect.right - 2, tester.getCenter(tile).dy));
     await gesture.up();
     await tester.pumpAndSettle();
 
-    final pageAfter = viewController().pageController.page ?? 0;
+    final pageAfter = kalenderController.multiDayViewController.pageController.page ?? 0;
     expect(pageAfter, greaterThan(pageBefore), reason: 'holding a drag at the edge should scroll toward it');
   });
 }

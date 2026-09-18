@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -22,26 +21,15 @@ void main() {
     kalenderController = KalenderController();
   });
 
-  final components = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
-  );
-
-  const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
-
   Future<void> pumpFreeScroll(WidgetTester tester) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(
+      freeScrollView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.freeScroll(
-          numberOfDays: 7,
-          displayRange: displayRange,
-          initialDateTime: start,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        ),
-        header: KalenderHeader(multiDayTileComponents: components, multiDayHeaderConfiguration: headerConfiguration),
-        body: KalenderBody(multiDayTileComponents: components),
+        displayRange: displayRange,
+        initialDateTime: start,
+        headerConfiguration: const MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
       ),
     );
   }

@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show MultiDayEventTile;
@@ -23,10 +22,6 @@ void main() {
     kalenderController = KalenderController();
   });
 
-  final components = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}')),
-  );
-
   Future<void> pumpFreeScroll(
     WidgetTester tester, {
     KalenderDateTimeRange? range,
@@ -35,22 +30,15 @@ void main() {
   }) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(
+      freeScrollView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.freeScroll(
-          numberOfDays: numberOfDays,
-          displayRange: range ?? displayRange,
-          initialDateTime: initialDateTime ?? start,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        ),
-        header: KalenderHeader(multiDayTileComponents: components),
-        body: KalenderBody(multiDayTileComponents: components),
+        displayRange: range ?? displayRange,
+        initialDateTime: initialDateTime ?? start,
+        numberOfDays: numberOfDays,
       ),
     );
   }
-
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   testWidgets('a multi-day event renders as one continuous spanning tile', (tester) async {
     final id = eventsController.addEvent(KalenderEvent(start: start, end: start.add(const Duration(days: 4))));
@@ -76,7 +64,7 @@ void main() {
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     final leftBefore = tester.getTopLeft(tile).dx;
 
-    final pageController = viewController().pageController;
+    final pageController = kalenderController.multiDayViewController.pageController;
     pageController.jumpToPage((pageController.page ?? 0).round() + 1);
     await tester.pumpAndSettle();
 

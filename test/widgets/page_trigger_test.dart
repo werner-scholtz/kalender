@@ -35,8 +35,6 @@ void main() {
     modifyEventGesture: EventInteractionGesture.tap,
   );
 
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
-
   Future<void> pumpWeek(WidgetTester tester) {
     return pumpAndSettleWithMaterialApp(
       tester,
@@ -61,7 +59,7 @@ void main() {
 
     await pumpWeek(tester);
 
-    final pageBefore = viewController().pageController.page ?? 0;
+    final pageBefore = kalenderController.multiDayViewController.pageController.page ?? 0;
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     final headerRect = tester.getRect(find.byType(KalenderHeader));
@@ -69,7 +67,7 @@ void main() {
     await gesture.up();
     await tester.pumpAndSettle();
 
-    final pageAfter = viewController().pageController.page ?? 0;
+    final pageAfter = kalenderController.multiDayViewController.pageController.page ?? 0;
     expect(pageAfter, greaterThan(pageBefore), reason: 'holding a drag at the header edge should advance the page');
   });
 
@@ -81,7 +79,7 @@ void main() {
 
     await pumpWeek(tester);
 
-    final pageBefore = viewController().pageController.page ?? 0;
+    final pageBefore = kalenderController.multiDayViewController.pageController.page ?? 0;
 
     final tile = find.byKey(DayEventTile.tileKey(id));
     final bodyRect = tester.getRect(find.byType(KalenderBody));
@@ -89,7 +87,7 @@ void main() {
     await gesture.up();
     await tester.pumpAndSettle();
 
-    final pageAfter = viewController().pageController.page ?? 0;
+    final pageAfter = kalenderController.multiDayViewController.pageController.page ?? 0;
     expect(pageAfter, greaterThan(pageBefore), reason: 'holding a drag at the body edge should advance the page');
   });
 }

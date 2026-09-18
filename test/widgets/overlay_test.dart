@@ -43,11 +43,7 @@ void main() {
   final sizesToTest = [const Size(300, 500), const Size(400, 600), const Size(800, 600), const Size(1200, 600)];
 
   Future<void> pumpWeek(WidgetTester tester, {Size? size}) async {
-    if (size != null) {
-      final dpi = tester.view.devicePixelRatio;
-      tester.view.physicalSize = Size(size.width * dpi, size.height * dpi);
-      addTearDown(tester.view.resetPhysicalSize);
-    }
+    if (size != null) tester.setViewSize(size);
 
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -122,39 +118,9 @@ void main() {
       WidgetTester tester, {
       required DateTime day,
       required int eventCount,
-      Size size = const Size(800, 600),
     }) async {
-      final dpi = tester.view.devicePixelRatio;
-      tester.view.physicalSize = Size(size.width * dpi, size.height * dpi);
-      addTearDown(tester.view.resetPhysicalSize);
-
-      final eventsController = DefaultEventsController();
-      for (var i = 0; i < eventCount; i++) {
-        eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
-      }
-
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: KalenderController(),
-          viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: year2025DisplayRange,
-            initialDateTime: DateTime(2025, 1, 15),
-          ),
-          body: const KalenderBody(),
-        ),
-      );
-
-      final button = find.byKey(MultiDayPortalOverlayButton.getKey(day));
-      expect(button, findsOne, reason: 'the day should overflow and show a "+N more" button');
-
-      await tester.tap(button);
-      await tester.pumpAndSettle();
-
-      final card = find.byKey(MultiDayOverlay.getOverlayCardKey(day));
-      expect(card, findsOne);
-
+      await pumpOverflowingMonth(tester, day: day, eventCount: eventCount);
+      final card = await tester.openOverflowOverlay(day);
       return (card: tester.getRect(card), view: tester.getRect(find.byType(KalenderView)));
     }
 
