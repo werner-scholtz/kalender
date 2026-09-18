@@ -9,6 +9,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:kalender/src/widgets/drag_targets/drag_target_helpers.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
@@ -153,18 +154,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     return DragTarget(
       hitTestBehavior: HitTestBehavior.translucent,
       onWillAcceptWithDetails: (details) {
-        final correctType = DragTargetUtilities.handleDragDetails(
-          details,
-          onCreate: (controllerId) => true,
-          onResize: (event, direction) => true,
-          onReschedule: (event) => true,
-          onOther: () => false,
-        );
-
-        if (!correctType) {
-          debugPrint('VerticalDragTarget: cannot use details: $details because of unknown data type');
-          return false;
-        }
+        if (!isKalenderPayload(details, 'VerticalDragTarget')) return false;
 
         // First test if the details can be accepted at all.
         final accepted =
@@ -258,12 +248,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final localCursorPosition = calculateLocalCursorPosition(offset, scrollOffset: Offset(0, scrollController.offset));
     if (localCursorPosition == null) return null;
 
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
-
-    final date = Directionality.of(context) == TextDirection.ltr
-        ? visibleDates.elementAtOrNull(cursorDateIndex)
-        : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);
-
+    final date = dateAtColumn(context, visibleDates, localCursorPosition.dx, dayWidth);
     if (date == null) return null;
 
     final startOfDate = timeOfDayRange.start.toFloatingDateTime(date);

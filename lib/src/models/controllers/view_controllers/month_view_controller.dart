@@ -6,6 +6,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 
 /// {@category Controllers and callbacks}
 class MonthViewController extends ViewController {
@@ -45,8 +46,8 @@ class MonthViewController extends ViewController {
 
     await pageController.animateToPage(
       pageNumber,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
@@ -82,16 +83,16 @@ class MonthViewController extends ViewController {
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
     await pageController.nextPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
     await pageController.previousPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 

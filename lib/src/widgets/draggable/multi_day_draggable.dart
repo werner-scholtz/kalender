@@ -38,37 +38,49 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
                   onPointerSignal: (event) => position = event.localPosition,
                   onPointerMove: (event) => position = event.localPosition,
                   child: GestureDetector(
-                    onTap: callbacks?.hasOnTapped == true ? () => _onTap(context, date, position) : null,
+                    onTap: callbacks?.hasOnTapped == true
+                        ? () => _report(context, callbacks?.onTapped, callbacks?.onTappedWithDetail, date, position)
+                        : null,
                     onSecondaryTap: callbacks?.hasOnSecondaryTapped == true
-                        ? () => _onSecondaryTap(context, date, position)
+                        ? () => _report(
+                            context,
+                            callbacks?.onSecondaryTapped,
+                            callbacks?.onSecondaryTappedWithDetail,
+                            date,
+                            position,
+                          )
                         : null,
                     onLongPress: callbacks?.hasOnLongPressed == true
-                        ? () => _onLongPress(context, date, position)
+                        ? () => _report(
+                            context,
+                            callbacks?.onLongPressed,
+                            callbacks?.onLongPressedWithDetail,
+                            date,
+                            position,
+                          )
                         : null,
                     onSecondaryLongPress: callbacks?.hasOnSecondaryLongPressed == true
-                        ? () => _onSecondaryLongPress(context, date, position)
+                        ? () => _report(
+                            context,
+                            callbacks?.onSecondaryLongPressed,
+                            callbacks?.onSecondaryLongPressedWithDetail,
+                            date,
+                            position,
+                          )
                         : null,
                     child: context.interaction.allowEventCreation
                         ? switch (context.interaction.createEventGesture) {
-                            EventInteractionGesture.tap => Draggable(
-                              onDragStarted: () => createNewEvent(context, date, position),
-                              onDraggableCanceled: onDragFinished,
-                              onDragEnd: onDragFinished,
-                              dragAnchorStrategy: pointerDragAnchorStrategy,
-                              data: Create(controllerId: controller.id),
-                              feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                              child: Container(color: Colors.transparent),
-                            ),
-                            EventInteractionGesture.longPress => LongPressDraggable(
-                              onDragStarted: () => createNewEvent(context, date, position),
-                              onDraggableCanceled: onDragFinished,
-                              onDragEnd: onDragFinished,
-                              dragAnchorStrategy: pointerDragAnchorStrategy,
-                              data: Create(controllerId: controller.id),
-                              feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                              child: Container(color: Colors.transparent),
-                            ),
-                          }
+                            EventInteractionGesture.tap => Draggable<Create>.new,
+                            EventInteractionGesture.longPress => LongPressDraggable<Create>.new,
+                          }(
+                            onDragStarted: () => createNewEvent(context, date, position),
+                            onDraggableCanceled: onDragFinished,
+                            onDragEnd: onDragFinished,
+                            dragAnchorStrategy: pointerDragAnchorStrategy,
+                            data: Create(controllerId: controller.id),
+                            feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                            child: Container(color: Colors.transparent),
+                          )
                         : null,
                   ),
                 );
@@ -79,59 +91,20 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     );
   }
 
-  /// Notify the callbacks about the tap / longPress.
-  void _onTap(BuildContext context, FloatingDateTime date, Offset localPosition) {
-    callbacks?.onTapped?.call(date.forLocation(location: context.location));
+  /// Reports a gesture at [position] in the column of [date] to [plain] and [withDetail].
+  void _report(
+    BuildContext context,
+    void Function(DateTime date)? plain,
+    void Function(TapDetail detail)? withDetail,
+    FloatingDateTime date,
+    Offset position,
+  ) {
+    plain?.call(date.forLocation(location: context.location));
 
-    if (callbacks?.onTappedWithDetail == null) return;
-    final range = calculateFloatingRange(date, localPosition);
-    final renderBox = context.findRenderObject() as RenderBox;
-    callbacks?.onTappedWithDetail?.call(
-      MultiDayDetail(
-        dateTimeRange: range.forLocation(location: context.location),
-        renderBox: renderBox,
-        localOffset: localPosition,
-      ),
-    );
-  }
-
-  void _onLongPress(BuildContext context, FloatingDateTime date, Offset position) {
-    callbacks?.onLongPressed?.call(date.forLocation(location: context.location));
-
-    if (callbacks?.onLongPressedWithDetail == null) return;
+    if (withDetail == null) return;
     final range = calculateFloatingRange(date, position);
     final renderBox = context.findRenderObject() as RenderBox;
-    callbacks?.onLongPressedWithDetail?.call(
-      MultiDayDetail(
-        dateTimeRange: range.forLocation(location: context.location),
-        renderBox: renderBox,
-        localOffset: position,
-      ),
-    );
-  }
-
-  void _onSecondaryTap(BuildContext context, FloatingDateTime date, Offset localPosition) {
-    callbacks?.onSecondaryTapped?.call(date.forLocation(location: context.location));
-
-    if (callbacks?.onSecondaryTappedWithDetail == null) return;
-    final range = calculateFloatingRange(date, localPosition);
-    final renderBox = context.findRenderObject() as RenderBox;
-    callbacks?.onSecondaryTappedWithDetail?.call(
-      MultiDayDetail(
-        dateTimeRange: range.forLocation(location: context.location),
-        renderBox: renderBox,
-        localOffset: localPosition,
-      ),
-    );
-  }
-
-  void _onSecondaryLongPress(BuildContext context, FloatingDateTime date, Offset position) {
-    callbacks?.onSecondaryLongPressed?.call(date.forLocation(location: context.location));
-
-    if (callbacks?.onSecondaryLongPressedWithDetail == null) return;
-    final range = calculateFloatingRange(date, position);
-    final renderBox = context.findRenderObject() as RenderBox;
-    callbacks?.onSecondaryLongPressedWithDetail?.call(
+    withDetail(
       MultiDayDetail(
         dateTimeRange: range.forLocation(location: context.location),
         renderBox: renderBox,
