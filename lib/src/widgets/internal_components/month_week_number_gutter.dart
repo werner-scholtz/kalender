@@ -12,9 +12,13 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 /// The month week number sits at the top of its row.
 const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter);
 
-/// [_monthWeekNumberDefaults] with [KalenderThemeData.weekNumberStyle] merged in.
-WeekNumberStyle _resolveStyle(BuildContext context) {
-  return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle);
+/// The range of week [row] of a month page that starts at the start of [visibleRange].
+FloatingDateTimeRange monthWeekRange(FloatingDateTimeRange visibleRange, int row) {
+  final start = visibleRange.start.add(Duration(days: row * DateTime.daysPerWeek));
+  return FloatingDateTimeRange(
+    start: start,
+    end: start.add(const Duration(days: DateTime.daysPerWeek)),
+  );
 }
 
 /// The week number column width from [GutterWidths], or a measurement outside a [KalenderView].
@@ -39,13 +43,14 @@ class MonthWeekNumberGutter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = KalenderTheme.of(context);
     return KalenderTheme(
-      data: KalenderTheme.of(context).copyWith(weekNumberStyle: _resolveStyle(context)),
+      data: theme.copyWith(weekNumberStyle: _monthWeekNumberDefaults.merge(theme.weekNumberStyle)),
       child: SizedBox(
         width: _width(context),
         child: Column(
           children: List.generate(numberOfRows, (index) {
-            final range = _rangeForRow(index);
+            final range = monthWeekRange(visibleRange, index);
             return Expanded(
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -59,14 +64,6 @@ class MonthWeekNumberGutter extends StatelessWidget {
           }),
         ),
       ),
-    );
-  }
-
-  FloatingDateTimeRange _rangeForRow(int index) {
-    final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-    return FloatingDateTimeRange(
-      start: start,
-      end: start.add(const Duration(days: DateTime.daysPerWeek)),
     );
   }
 }

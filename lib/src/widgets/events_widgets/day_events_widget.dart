@@ -194,7 +194,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   void _update() {
     final sortedEvents = _sort(_queryEvents());
-    if (_needsLayout(sortedEvents)) setState(() => _setEvents(sortedEvents));
+    if (eventLayoutChanged(sortedEvents, _events)) setState(() => _setEvents(sortedEvents));
   }
 
   /// Recomputes the visible events as the scroll position (or selection)
@@ -256,15 +256,6 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     return visible;
   }
 
-  /// Checks if the layout of the events has changed.
-  bool _needsLayout(List<KalenderEvent> sortedEvents) {
-    if (sortedEvents.length != _events.length) return true;
-    for (var i = 0; i < sortedEvents.length; i++) {
-      if (!sortedEvents[i].layoutEquals(_events[i])) return true;
-    }
-    return false;
-  }
-
   /// Sorts the events based on the layout strategy defined in the configuration.
   List<KalenderEvent> _sort(Iterable<KalenderEvent> events) {
     return widget.configuration.eventLayoutStrategy
@@ -282,8 +273,6 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.kalenderController;
-
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     // The tile range is the same for every tile in this column, so compute it
     // once instead of allocating a new range per event.
@@ -293,10 +282,10 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
         events: _events,
         date: widget.date,
         timeOfDayRange: widget.viewConfiguration.timeOfDayRange,
-        heightPerMinute: context.heightPerMinute,
+        heightPerMinute: widget.heightPerMinute,
         minimumTileHeight: widget.configuration.minimumTileHeight,
         cache: widget.cache,
-        location: context.location,
+        location: widget.location,
       ),
       // Only build the tiles within the visible scroll window. The delegate
       // still receives every event (above) so overlap widths stay correct even
@@ -328,7 +317,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
               configuration: widget.configuration,
               viewConfiguration: widget.viewConfiguration,
               date: widget.date,
-              controller: controller,
+              controller: widget.kalenderController,
               cache: widget.cache,
               location: widget.location,
             ),
@@ -409,7 +398,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
   @override
   Widget build(BuildContext context) {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
-    final controller = context.kalenderController;
+    final controller = widget.controller;
 
     final event = _selectedEvent;
     if (event == null) return const SizedBox();
@@ -444,6 +433,15 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
       }).toList(),
     );
   }
+}
+
+/// Whether [next] differs from [current] in length or in [KalenderEvent.layoutEquals] at any index.
+bool eventLayoutChanged(List<KalenderEvent> next, List<KalenderEvent> current) {
+  if (next.length != current.length) return true;
+  for (var i = 0; i < next.length; i++) {
+    if (!next[i].layoutEquals(current[i])) return true;
+  }
+  return false;
 }
 
 /// Lays out the tiles of a day column.

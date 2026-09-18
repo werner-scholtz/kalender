@@ -100,13 +100,8 @@ mixin DayEventTileUtils implements EventTileUtils {
     bool includeSelf = false,
   }) {
     final eventsController = context.eventsController;
-    final eventRangeOnDate = event
-        .floatingRange(location: context.location)
-        .rangeOnDate(floatingTileRange(context).start.startOfDay)!;
-    final range = FloatingDateTimeRange(
-      start: eventRangeOnDate.start.subtract(before),
-      end: eventRangeOnDate.end.add(after),
-    );
+    final eventRange = eventRangeOnDate(context);
+    final range = FloatingDateTimeRange(start: eventRange.start.subtract(before), end: eventRange.end.add(after));
     final events = eventsController
         .eventsInRange(
           range,

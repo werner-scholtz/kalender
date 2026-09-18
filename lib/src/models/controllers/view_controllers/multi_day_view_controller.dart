@@ -6,6 +6,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
 /// {@category Controllers and callbacks}
@@ -122,8 +123,8 @@ class MultiDayViewController extends ViewController {
 
     return pageController.animateToPage(
       pageNumber,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
@@ -144,8 +145,8 @@ class MultiDayViewController extends ViewController {
 
     return scrollController.animateTo(
       timeOffset,
-      duration: scrollDuration ?? const Duration(milliseconds: 300),
-      curve: scrollCurve ?? Curves.easeInOut,
+      duration: scrollDuration ?? defaultAnimationDuration,
+      curve: scrollCurve ?? defaultAnimationCurve,
     );
   }
 
@@ -183,16 +184,16 @@ class MultiDayViewController extends ViewController {
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) {
     return pageController.nextPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) {
     return pageController.previousPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 

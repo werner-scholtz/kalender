@@ -30,6 +30,7 @@
 - `DaySeparatorStyle.topIndent` and `bottomIndent` shorten the separator from the top and the bottom, not from the sides.
 - An event tile keeps one listener per controller across dependency changes.
 - `OverlapLayoutDelegate.sortEvents` keeps the duration-then-start order for more than 32 events.
+- `MultiDayViewConfiguration.copyWith` keeps `initialHeightPerMinute` instead of resetting it to the default.
 
 ### Examples
 

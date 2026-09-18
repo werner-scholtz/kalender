@@ -71,13 +71,7 @@ class MonthBody extends StatelessWidget {
         final grid = monthComponents.bodyComponents.buildMonthGrid(context, numberOfRows);
 
         // The date range of each week row, shared by the content and background.
-        final weekRanges = List.generate(numberOfRows, (row) {
-          final start = visibleRange.start.add(Duration(days: row * DateTime.daysPerWeek));
-          return FloatingDateTimeRange(
-            start: start,
-            end: start.add(const Duration(days: DateTime.daysPerWeek)),
-          );
-        });
+        final weekRanges = List.generate(numberOfRows, (row) => monthWeekRange(visibleRange, row));
 
         final content = Column(
           children: [

@@ -10,6 +10,17 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
+extension MultiDayViewControllerPage on MultiDayViewController {
+  /// The page of [pageController], or [fallback] (by default [initialPage]) until it is attached and laid out.
+  double currentPage({int? fallback}) {
+    final controller = pageController;
+    if (controller.hasClients && controller.positions.length == 1 && controller.position.hasPixels) {
+      return controller.page ?? (fallback ?? initialPage).toDouble();
+    }
+    return (fallback ?? initialPage).toDouble();
+  }
+}
+
 /// A widget that positions a time indicator to follow the current page position.
 ///
 /// The [TimeIndicatorPositioner] calculates the position of a time indicator
@@ -80,19 +91,9 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   /// Whether a day starting [days] from the left edge overlaps the viewport.
   bool _isVisible(double days) => todayIndex >= 0 && days > -1 && days < _visibleDays;
 
-  /// The current page, read from the controller rather than from the page offset
-  /// notifier, which counts viewports and so does not count pages when they are
-  /// narrower than one.
-  double _currentPage() {
-    final controller = widget.viewController.pageController;
-    if (controller.hasClients && controller.positions.length == 1 && controller.position.hasPixels) {
-      return controller.page ?? widget.initialPage.toDouble();
-    }
-    return widget.initialPage.toDouble();
-  }
-
   /// Days between the left edge of the viewport and the start of today.
-  double _daysFromLeftEdge() => (todayPageNumber - _currentPage()) * daysPerPage + todayIndex;
+  double _daysFromLeftEdge() =>
+      (todayPageNumber - widget.viewController.currentPage(fallback: widget.initialPage)) * daysPerPage + todayIndex;
 
   /// The calculated left position for the time indicator.
   ///
@@ -209,8 +210,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
             Positioned.fill(
               left: left,
               right: right,
-              top: 0,
-              bottom: 0,
               child: !_isVisible(daysFromLeftEdge)
                   ? const SizedBox.shrink()
                   : widget.childOverride ??
