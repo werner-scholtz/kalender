@@ -7,6 +7,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:kalender/src/models/providers/kalender_scope.dart';
 
 /// Builds the text displayed for [date].
 ///
@@ -37,10 +38,6 @@ typedef HiddenEventCountStringBuilder = String Function(BuildContext context, in
 ///
 /// {@category Appearance}
 extension KalenderLocale on BuildContext {
-  /// The locale of the enclosing calendar, as passed to `KalenderView.locale`.
-  ///
-  /// This is the locale the calendar formats its own dates and times with, which
-  /// is not necessarily the app's locale. Pass it to `intl`'s `DateFormat` or
-  /// `NumberFormat`, or to the localized extensions on [DateTime].
+  /// The locale of the enclosing calendar, the same as [KalenderScope.localeOf].
   Locale? get kalenderLocale => LocaleProvider.of(this);
 }

@@ -87,10 +87,7 @@ class _SingleDayHeader extends StatelessWidget {
     final dayHeaderWidget = ValueListenableBuilder(
       valueListenable: context.kalenderController.floatingVisibleRange,
       builder: (context, value, child) {
-        if (value == null) {
-          debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
-          return const SizedBox.shrink();
-        }
+        if (value == null) return const SizedBox.shrink();
         return headerComponents.buildDayHeader(context, value.start.forLocation(location: context.location));
       },
     );
@@ -159,10 +156,7 @@ class _MultiDayHeader extends StatelessWidget {
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: context.kalenderController.floatingVisibleRange,
       builder: (context, value, child) {
-        if (value == null) {
-          debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
-          return const SizedBox.shrink();
-        }
+        if (value == null) return const SizedBox.shrink();
         return headerComponents.buildWeekNumber(context, value.forLocation(location: context.location));
       },
     );

@@ -11,7 +11,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
-/// The schedule date builder.
+/// Builds the date shown at the start of each day in the schedule.
 ///
 /// Resolve the style with [KalenderTheme].
 ///
@@ -74,7 +74,7 @@ class ScheduleDateStyle with Diagnosticable {
   }
 }
 
-/// A widget that displays the name of the day and the day number of the week.
+/// The short day name and the day of the month shown at the start of each day in the schedule.
 ///
 /// {@category Appearance}
 class ScheduleDate extends StatelessWidget {

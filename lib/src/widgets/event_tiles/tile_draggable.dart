@@ -121,7 +121,6 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
     super.dispose();
   }
 
-  /// Updates the size of the feedback widget.
   void _updateSize() {
     if (!mounted) return;
     if (_sizeNotifier.value == Size.zero) return;
@@ -130,7 +129,6 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
     setState(() => _size = _sizeNotifier.value);
   }
 
-  /// The listener for the events controller.
   void _eventsControllerListener() {
     final updatedEvent = widget.eventsController.byId(widget.event.id);
     if (updatedEvent == null) return;
