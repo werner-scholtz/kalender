@@ -30,10 +30,7 @@ KalenderView(
 )
 ```
 
-Day and month names come from `intl`. The overlay button that stands in for events
-that do not fit is labelled with a plus sign and the count, `+3`, with the number
-formatted for the calendar's locale, so it needs no translation. The week number's
-tooltip is the one string that still defaults to English:
+The week number tooltip is the one string that defaults to English:
 
 <!-- snippet: expression -->
 ```dart
@@ -48,8 +45,7 @@ MaterialApp(
 )
 ```
 
-It can be set on a single `KalenderView` by wrapping it in a `KalenderTheme`, or
-once for the whole app through [`KalenderThemeData`](appearance.md#theming).
+See [Theming](appearance.md#theming).
 
 ### Custom text
 
@@ -87,11 +83,9 @@ The builders are `dayHeaderStringBuilder` and `dayHeaderNumberStringBuilder` on
 on `MonthHeaderComponents`, `leadingDateStringBuilder` on `ScheduleComponents`, and
 `multiDayPortalOverlayButtonStringBuilder` on `OverlayBuilders`.
 
-The times down the side of a multi-day view are the one case where the default
-does not always come from the calendar's `locale`. `MaterialLocalizations`
-formats them where the app installs them, so they follow the device's 12-hour or
-24-hour setting. Without those localizations they fall back to intl against the
-calendar's `locale`. Fix the format with `timelineStringBuilder`:
+The timeline follows `MaterialLocalizations` when the app installs them, so it
+uses the device's 12-hour or 24-hour setting. Otherwise it follows the calendar's
+`locale`. Fix the format with `timelineStringBuilder`:
 
 <!-- snippet: expression -->
 ```dart
@@ -161,7 +155,7 @@ Then set `KalenderView(location:)` to the zone the calendar should display in. T
 
 ### Now Callback
 
-By default, the time indicator position and "today" header highlighting are derived from the calendar's `Location`. If your app stores wall-clock times as UTC (e.g. an application where `location: UTC`) but still wants the indicator and today highlight to reflect the user's local time, pass a `NowCallback` on your view configuration:
+By default, the time indicator position and "today" header highlighting are derived from the calendar's `Location`. To resolve "now" differently from the calendar's `Location`, pass a `NowCallback`:
 
 <!-- snippet: expression -->
 ```dart
@@ -178,18 +172,6 @@ The callback's return value is used for:
 Any `DateTime` subtype works, so the callback can return UTC or a `TZDateTime` in a
 specific zone.
 
-`nowCallback` is included in the view configuration's equality, so pass the same
-function on every build. A tear-off such as `DateTime.now` is one, as is any
-top-level or static function. A closure works too, as long as it is stored
-rather than written inline:
-
-<!-- snippet: file -->
-```dart
-import 'package:timezone/timezone.dart' as tz;
-
-// Created once. Written inline it would be a new function every build, which
-// recreates the view and drops its layout cache.
-final nowInLondon = () => tz.TZDateTime.now(tz.getLocation('Europe/London'));
-```
+`nowCallback` is included in `==`, so store a closure rather than writing it inline.
 
 When `nowCallback` is `null` (the default), the calendar falls back to its `Location`-based behavior.

@@ -29,9 +29,7 @@ class Event extends KalenderEvent {
     super.isAllDay,
   });
 
-  // Rebuilds the fields this class adds. The calendar calls this on every drag
-  // and resize, then restores id, interaction, multiDayRule and isAllDay
-  // itself, so none of those are listed here.
+  // Rebuilds the fields this class adds. The calendar restores the rest.
   @override
   Event copyWithData({required DateTime start, required DateTime end}) {
     return Event(
@@ -57,8 +55,6 @@ class Event extends KalenderEvent {
     );
   }
 
-  // Override == and hashCode so that the calendar can detect when an event's
-  // custom fields have changed and update the tile accordingly.
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -92,8 +88,6 @@ final updated = original.copyWith(title: 'Updated Title', color: Colors.red);
 eventsController.updateEvent(event: original, updatedEvent: updated);
 ```
 
-Because `==` and `hashCode` include your custom fields, the calendar will detect the change and rebuild the tile.
-
 ### `layoutEquals`
 
 Only override `layoutEquals` when a custom property changes the *size or position* of the tile, for example a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, `interaction`, `multiDayRule` and `isAllDay`, which is sufficient for most cases.
@@ -117,9 +111,7 @@ TileComponents(
 
 ### Returning your subclass on event creation
 
-Use `onEventCreate` to intercept the bare `KalenderEvent` created by a gesture and return a fully typed instance:
-
-Pass this as `KalenderView.callbacks`:
+Return your subclass from `onEventCreate` in `KalenderView.callbacks`:
 
 <!-- snippet: expression -->
 ```dart
@@ -147,7 +139,7 @@ An event that is all-day by nature rather than by duration says so directly, and
 KalenderEvent(start: range.start, end: range.end, isAllDay: true)
 ```
 
-This puts it in the header lane whatever its duration, which no `MultiDayRule` can express for an event lasting an hour. The date range is left alone, so an app wanting midnight to midnight supplies it. `isAllDay` defaults to false, where the rules below apply as before.
+This puts it in the header lane whatever its duration. The date range is left alone, so an app wanting midnight to midnight supplies it. `isAllDay` defaults to false, where the rules below apply as before.
 
 A single event can override the calendar's rule:
 
@@ -159,8 +151,6 @@ KalenderEvent(
   multiDayRule: const MultiDayRule.calendarDays(),
 )
 ```
-
-`KalenderEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. You never forward it manually: `copyWithData` rebuilds only the fields your subclass adds, and `KalenderEvent` reapplies the rule, the id and the interaction config afterwards. Accept `super.multiDayRule` in the constructor so an event can be given one.
 
 `spansMultipleDays` returns whether an event counts as multi-day, applying the same rules the calendar does:
 

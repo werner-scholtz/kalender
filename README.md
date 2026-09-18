@@ -127,10 +127,8 @@ For a real app you almost always want custom fields on your events. See [Custom 
 
 ## Examples
 
-Ten runnable apps live in [`examples/`](examples/README.md), each a standalone
-project that builds against the working tree. Start with
-[example](examples/example), which shows the pieces most apps need. The
-[examples index](examples/README.md) says what each one answers.
+Runnable apps are in [`examples/`](examples/README.md). Start with
+[`example`](examples/example).
 
 ---
 
@@ -138,13 +136,13 @@ project that builds against the working tree. Start with
 
 The detailed guides live in [`doc/`](doc/README.md):
 
-- **[Views](doc/views.md).** Multi-day (day, week, work week, custom day counts, free scroll), month and schedule. What carries over on a view switch: the focused date, the scroll position, the zoom level.
-- **[Events](doc/events.md).** Subclassing `KalenderEvent` to attach your own data, updating events through the controller, and what puts an event in the multi-day header rather than the day timeline: the `MultiDayRule`, or `isAllDay` on the event itself.
-- **[Interaction](doc/interaction.md).** Creating, rescheduling and resizing, set separately for the header and the body and lockable per event. Snapping to an interval, the time indicator, other events, or your own strategy. Zoom driven from the controller.
-- **[Controllers & Callbacks](doc/controllers-and-callbacks.md).** Jumping and animating to a date or an event, switching views, reacting to taps, creation, resizing and rescheduling, and building a navigation toolbar.
-- **[Appearance](doc/appearance.md).** A `ThemeExtension` with Material 3 defaults that follows your app's `ThemeData`, and replacing components outright: event tiles, day headers, the timeline gutter, the time indicator, the multi-day overflow overlay.
-- **[Layout](doc/layout.md).** Where tiles are placed and sized, and how overlapping events share a column. Only needed for a custom layout strategy, such as one lane per person.
-- **[Timezones & Locales](doc/timezones-and-locales.md).** Events stored as UTC and displayed in any IANA location, across daylight saving changes and midnight. Day and month names from intl in the calendar's locale, right-to-left layouts, and replacing any string.
+- **[Views](doc/views.md).** The multi-day, month and schedule views, and switching between them.
+- **[Events](doc/events.md).** Custom event data, updates through the controller, and multi-day and all-day events.
+- **[Interaction](doc/interaction.md).** Creating, rescheduling, resizing, snapping, locking and zoom.
+- **[Controllers & Callbacks](doc/controllers-and-callbacks.md).** Navigation, view switching, callbacks and a toolbar.
+- **[Appearance](doc/appearance.md).** The theme and the replaceable components.
+- **[Layout](doc/layout.md).** Tile placement and custom layout strategies.
+- **[Timezones & Locales](doc/timezones-and-locales.md).** Timezones, locales and custom strings.
 
 ---
 

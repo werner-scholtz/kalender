@@ -37,93 +37,41 @@ KalenderBody(
 
 ### All TileComponents options
 
-Every aspect of an event tile's appearance and drag behavior can be overridden.
 Only `tileBuilder` is required. Every other field defaults to null, which keeps
-the package's own behavior, so set only what you want to change.
+the package's own behavior: `overlayTileBuilder`, `tileWhenDraggingBuilder`,
+`feedbackTileBuilder`, `dropTargetTile`, `dragAnchorStrategy`,
+`resizeDragAnchorStrategy`, `resizeHandlePositioner`, `verticalResizeHandle` and
+`horizontalResizeHandle`.
 
-<details>
-  <summary>TileComponents reference</summary>
+`resizeHandlePositioner` places the resize handles. `details` carries the tile's
+geometry and builds the detectors:
 
-  <!-- snippet: expression -->
-  ```dart
-  TileComponents(
-    // Required: the stationary event tile.
-    tileBuilder: (context, event, tileRange) => Container(),
-
-    // Shown over the calendar in portal overlays instead of tileBuilder.
-    overlayTileBuilder: (context, event, tileRange) => Container(),
-
-    // Shown in place of the tile while it is being dragged.
-    tileWhenDraggingBuilder: (context, event) => Container(),
-
-    // The tile that follows the cursor / finger during a drag.
-    feedbackTileBuilder: (context, event, dropTargetWidgetSize) => Container(),
-
-    // Rendered beneath the dragged tile to show where it will land.
-    dropTargetTile: (context, event) => Container(),
-
-    // The drag anchor strategy used by feedbackTileBuilder.
-    dragAnchorStrategy: childDragAnchorStrategy,
-
-    // Position and size the resize handles. `details` carries the tile's geometry
-    // and builds the detectors, so decide the layout and place them.
-    resizeHandlePositioner: (context, details) => Stack(
-      fit: StackFit.expand,
-      children: [
-        if (details.showStart())
-          Positioned(top: 0, left: 0, right: 0, height: 8, child: details.startResizeDetector),
-        if (details.showEnd())
-          Positioned(bottom: 0, left: 0, right: 0, height: 8, child: details.endResizeDetector),
-      ],
-    ),
-
-    // The vertical resize handle widget.
-    verticalResizeHandle: Container(),
-
-    // The horizontal resize handle widget.
-    horizontalResizeHandle: Container(),
-  )
-  ```
-</details>
-
-> [!WARNING]
-> The snippet above omits `resizeDragAnchorStrategy`. It defaults to a pointer
-> anchor. Setting it to `childDragAnchorStrategy` makes a vertical resize jump to
-> the neighbouring day on the smallest sideways movement.
+<!-- snippet: expression -->
+```dart
+TileComponents(
+  tileBuilder: (context, event, tileRange) => Container(),
+  resizeHandlePositioner: (context, details) => Stack(
+    fit: StackFit.expand,
+    children: [
+      if (details.showStart())
+        Positioned(top: 0, left: 0, right: 0, height: 8, child: details.startResizeDetector),
+      if (details.showEnd())
+        Positioned(bottom: 0, left: 0, right: 0, height: 8, child: details.endResizeDetector),
+    ],
+  ),
+)
+```
 
 ### ScheduleTileComponents
 
-Schedule view tiles have a different set of builders since they are laid out in a list rather than a grid.
-
-<details>
-  <summary>ScheduleTileComponents reference</summary>
-
-  <!-- snippet: expression -->
-  ```dart
-  ScheduleTileComponents(
-    // Required: the stationary event tile.
-    tileBuilder: (context, event, tileRange) => Container(),
-
-    // Shown in place of the tile while it is being dragged.
-    tileWhenDraggingBuilder: (context, event) => Container(),
-
-    // The tile that follows the cursor / finger during a drag.
-    feedbackTileBuilder: (context, event, dropTargetWidgetSize) => Container(),
-
-    // The drag anchor strategy used by feedbackTileBuilder.
-    dragAnchorStrategy: childDragAnchorStrategy,
-  )
-  ```
-</details>
-
-Schedule tiles cannot be resized, so `ScheduleTileComponents` takes no resize handles. It also takes no `dropTargetTile`: during a drag the schedule marks the destination by highlighting the row, built by `ScheduleComponents.scheduleTileHighlightBuilder` and styled by `ScheduleTileHighlightStyle`. The empty-day and month heading rows are list rows rather than event tiles, so their builders live on [`ScheduleComponents`](#appearance--custom-components) as well.
+Schedule tiles take `tileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder` and `dragAnchorStrategy`. The drop target is a row highlight, see [`ScheduleComponents`](#appearance--custom-components).
 
 ### Advanced tiles with event-tile utilities
 
 For tiles that need to know the exact tapped time or find nearby events, use the provided mixins.
 
 > [!TIP]
-> **Disabling the calendar's built-in tap detector:** The calendar only wraps event tiles in a `GestureDetector` when `onEventTapped` or `onEventTappedWithDetail` is provided in `KalenderCallbacks`. If you omit both callbacks, the wrapper is skipped and a `GestureDetector` inside your custom tile widget can receive events unobstructed. This is the intended pattern when using `DayEventTileUtils` or `MultiDayEventTileUtils`.
+> The calendar handles taps on a tile only when `onEventTapped` or `onEventTappedWithDetail` is set. Leave both unset to handle taps in your tile.
 
 <details>
   <summary>DayEventTileUtils (day / multi-day body tiles)</summary>
@@ -184,62 +132,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
   ```
 </details>
 
-<details>
-  <summary>MultiDayEventTileUtils (month view / multi-day header tiles)</summary>
-
-  <!-- snippet: file -->
-  ```dart
-  class CustomMultiDayEventTile extends StatelessWidget with MultiDayEventTileUtils {
-    @override
-    final KalenderEvent event;
-
-    @override
-    final KalenderDateTimeRange tileRange;
-
-    const CustomMultiDayEventTile({
-      super.key,
-      required this.event,
-      required this.tileRange,
-    });
-
-    Event get myEvent => event as Event;
-
-    @override
-    Widget build(BuildContext context) {
-      return GestureDetector(
-        onTapUp: (details) {
-          // Convert a horizontal tap position into a specific date.
-          final tappedDate = dateFromPosition(context, details.localPosition);
-          debugPrint('Tapped on: $tappedDate');
-
-          final overlapping = nearbyEvents(context);
-          debugPrint('Found ${overlapping.length} overlapping events');
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: myEvent.color ?? Colors.green,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          child: Text(
-            myEvent.title,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      );
-    }
-
-    static Widget builder(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange) =>
-        CustomMultiDayEventTile(
-          event: event,
-          tileRange: tileRange,
-        );
-  }
-
-  const multiDayTileComponents = TileComponents(tileBuilder: CustomMultiDayEventTile.builder);
-  ```
-</details>
+Month and multi-day header tiles mix in `MultiDayEventTileUtils`, which has `dateFromPosition` in place of `dateTimeFromPosition`.
 
 ---
 
@@ -288,8 +181,7 @@ The nearest one wins when they nest, and fields it leaves out fall through to
 the theme registered on `ThemeData`, so a scope can change one thing without
 restating the rest.
 
-This is an `InheritedTheme`, so it also reaches widgets the calendar builds into
-an `Overlay`, such as the tile that follows a drag.
+A `KalenderTheme` also reaches the tile that follows a drag.
 
 ### How a style is resolved
 
@@ -302,7 +194,7 @@ it leaves null.
 4. The Material 3 defaults.
 
 > [!NOTE]
-> Gutter widths are not styles. The month week number column and the multi-day timeline are drawn in the body and reserved again in the header, so the calendar measures each once and both halves read that number. A `KalenderTheme` scoped inside one half restyles the gutter there without resizing it. Set the width with `MonthBodyComponents.weekNumberWidth` or `MultiDayBodyComponents.timelineWidth`.
+> Gutter widths are not styles. Set them with `MonthBodyComponents.weekNumberWidth` or `MultiDayBodyComponents.timelineWidth`.
 
 Switching themes transitions the calendar's colors along with the rest of the app. A `KalenderTheme` scope does not animate.
 
@@ -333,10 +225,6 @@ KalenderThemeData(
 Pass a `KalenderComponents` object to `KalenderView` to override the default widget builders.
 
 > [!NOTE]
-> `KalenderComponents` carries builders only. Styles live on `KalenderThemeData`:
-> register one on `ThemeData.extensions` for the whole app, or wrap a calendar in
-> a [`KalenderTheme`](#theming-part-of-the-app) to style one of them.
->
 > Every builder receives a `BuildContext` as its first argument and resolves what
 > it needs from it: styles with `KalenderTheme.of(context)`, and the state of the
 > enclosing calendar with `KalenderScope`, one accessor per value.
