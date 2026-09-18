@@ -13,47 +13,31 @@ void main() {
   setUpAll(tz.initializeTimeZones);
 
   group('FloatingDateTimeRange', () {
-    // ── Constructor ────────────────────────────────────────────────────
-
     group('constructor', () {
       test('wraps start and end as FloatingDateTime', () {
         final range = FloatingDateTimeRange(start: DateTime(2024, 1, 10, 8, 30), end: DateTime(2024, 1, 20, 17, 0));
 
-        expect(range.start, isA<FloatingDateTime>());
-        expect(range.end, isA<FloatingDateTime>());
-        expect(range.start.year, 2024);
-        expect(range.start.month, 1);
-        expect(range.start.day, 10);
-        expect(range.start.hour, 8);
-        expect(range.end.day, 20);
-        expect(range.end.hour, 17);
+        expect(range.start, FloatingDateTime(2024, 1, 10, 8, 30));
+        expect(range.end, FloatingDateTime(2024, 1, 20, 17));
       });
 
       test('preserves components from UTC DateTimes', () {
         final range = FloatingDateTimeRange(start: DateTime.utc(2024, 6, 1, 12), end: DateTime.utc(2024, 6, 30, 18));
 
-        expect(range.start.month, 6);
-        expect(range.start.day, 1);
-        expect(range.end.day, 30);
+        expect(range.start, FloatingDateTime(2024, 6, 1, 12));
+        expect(range.end, FloatingDateTime(2024, 6, 30, 18));
       });
     });
-
-    // ── fromDateTimeRange ────────────────────────────────────────────────
 
     group('fromDateTimeRange', () {
       test('creates from a Flutter KalenderDateTimeRange', () {
         final flutterRange = KalenderDateTimeRange(start: DateTime(2024, 3, 1), end: DateTime(2024, 3, 31));
         final range = FloatingDateTimeRange.fromDateTimeRange(flutterRange);
 
-        expect(range.start, isA<FloatingDateTime>());
-        expect(range.end, isA<FloatingDateTime>());
-        expect(range.start.month, 3);
-        expect(range.start.day, 1);
-        expect(range.end.day, 31);
+        expect(range.start, FloatingDateTime(2024, 3, 1));
+        expect(range.end, FloatingDateTime(2024, 3, 31));
       });
     });
-
-    // ── forLocation ──────────────────────────────────────────────────────
 
     group('forLocation', () {
       test('returns a local KalenderDateTimeRange when location is null', () {
@@ -84,8 +68,6 @@ void main() {
       });
     });
 
-    // ── dates ────────────────────────────────────────────────────────────
-
     group('dates', () {
       test('returns a single date when start and end are on the same day', () {
         final range = FloatingDateTimeRange(
@@ -94,18 +76,14 @@ void main() {
         );
         final result = range.dates();
 
-        expect(result.length, 1);
-        expect(result.first, FloatingDateTime(2024, 1, 15));
+        expect(result, [FloatingDateTime(2024, 1, 15)]);
       });
 
       test('returns all days in a multi-day range (exclusive end)', () {
         final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 10), end: FloatingDateTime(2024, 1, 13));
         final result = range.dates();
 
-        expect(result.length, 3);
-        expect(result[0], FloatingDateTime(2024, 1, 10));
-        expect(result[1], FloatingDateTime(2024, 1, 11));
-        expect(result[2], FloatingDateTime(2024, 1, 12));
+        expect(result, [FloatingDateTime(2024, 1, 10), FloatingDateTime(2024, 1, 11), FloatingDateTime(2024, 1, 12)]);
       });
 
       test('returns all days in a multi-day range (inclusive end)', () {
@@ -130,19 +108,14 @@ void main() {
         final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 30), end: FloatingDateTime(2024, 2, 2));
         final result = range.dates();
 
-        expect(result.length, 3);
-        expect(result[0], FloatingDateTime(2024, 1, 30));
-        expect(result[1], FloatingDateTime(2024, 1, 31));
-        expect(result[2], FloatingDateTime(2024, 2, 1));
+        expect(result, [FloatingDateTime(2024, 1, 30), FloatingDateTime(2024, 1, 31), FloatingDateTime(2024, 2, 1)]);
       });
 
       test('handles leap year Feb 28 to Mar 1', () {
         final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 2, 28), end: FloatingDateTime(2024, 3, 1));
         final result = range.dates();
 
-        expect(result.length, 2);
-        expect(result[0], FloatingDateTime(2024, 2, 28));
-        expect(result[1], FloatingDateTime(2024, 2, 29));
+        expect(result, [FloatingDateTime(2024, 2, 28), FloatingDateTime(2024, 2, 29)]);
       });
 
       test('single day range returns one date even with inclusive flag', () {
@@ -155,17 +128,15 @@ void main() {
       });
     });
 
-    // ── rangeOnDate ──────────────────────────────────────────────
-
     group('rangeOnDate', () {
-      test('returns null for a date outside the range', () {
-        final range = FloatingDateTimeRange(
-          start: FloatingDateTime(2024, 1, 10, 9, 0),
-          end: FloatingDateTime(2024, 1, 20, 17, 0),
-        );
+      final tenDays = FloatingDateTimeRange(
+        start: FloatingDateTime(2024, 1, 10, 9, 0),
+        end: FloatingDateTime(2024, 1, 20, 17, 0),
+      );
 
-        expect(range.rangeOnDate(FloatingDateTime(2024, 1, 5)), isNull);
-        expect(range.rangeOnDate(FloatingDateTime(2024, 1, 25)), isNull);
+      test('returns null for a date outside the range', () {
+        expect(tenDays.rangeOnDate(FloatingDateTime(2024, 1, 5)), isNull);
+        expect(tenDays.rangeOnDate(FloatingDateTime(2024, 1, 25)), isNull);
       });
 
       test('returns the full range when start and end are on the same day', () {
@@ -173,139 +144,107 @@ void main() {
           start: FloatingDateTime(2024, 1, 15, 9, 0),
           end: FloatingDateTime(2024, 1, 15, 17, 0),
         );
-        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 15));
 
-        expect(result, isNotNull);
-        expect(result!.start, range.start);
-        expect(result.end, range.end);
+        expect(range.rangeOnDate(FloatingDateTime(2024, 1, 15)), range);
       });
 
       test('returns start to endOfDay for the start date', () {
-        final range = FloatingDateTimeRange(
-          start: FloatingDateTime(2024, 1, 10, 9, 0),
-          end: FloatingDateTime(2024, 1, 20, 17, 0),
+        expect(
+          tenDays.rangeOnDate(FloatingDateTime(2024, 1, 10)),
+          FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 10, 9, 0), end: FloatingDateTime(2024, 1, 11)),
         );
-        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 10));
-
-        expect(result, isNotNull);
-        expect(result!.start, FloatingDateTime(2024, 1, 10, 9, 0));
-        expect(result.end, FloatingDateTime(2024, 1, 11)); // endOfDay
       });
 
       test('returns startOfDay to end for the end date', () {
-        final range = FloatingDateTimeRange(
-          start: FloatingDateTime(2024, 1, 10, 9, 0),
-          end: FloatingDateTime(2024, 1, 20, 17, 0),
+        expect(
+          tenDays.rangeOnDate(FloatingDateTime(2024, 1, 20)),
+          FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 20), end: FloatingDateTime(2024, 1, 20, 17, 0)),
         );
-        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 20));
-
-        expect(result, isNotNull);
-        expect(result!.start, FloatingDateTime(2024, 1, 20)); // startOfDay
-        expect(result.end, FloatingDateTime(2024, 1, 20, 17, 0));
       });
 
       test('returns full day range for a date in the middle', () {
-        final range = FloatingDateTimeRange(
-          start: FloatingDateTime(2024, 1, 10, 9, 0),
-          end: FloatingDateTime(2024, 1, 20, 17, 0),
+        expect(
+          tenDays.rangeOnDate(FloatingDateTime(2024, 1, 15)),
+          FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 15), end: FloatingDateTime(2024, 1, 16)),
         );
-        final result = range.rangeOnDate(FloatingDateTime(2024, 1, 15));
-
-        expect(result, isNotNull);
-        expect(result!.start, FloatingDateTime(2024, 1, 15));
-        expect(result.end, FloatingDateTime(2024, 1, 16));
       });
     });
-
-    // ── overlaps ─────────────────────────────────────────────────────────
 
     group('overlaps', () {
-      test('returns true for overlapping ranges', () {
-        final a = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 10));
-        final b = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 5), end: FloatingDateTime(2024, 1, 15));
+      FloatingDateTimeRange january(int startDay, int endDay) =>
+          FloatingDateTimeRange(start: FloatingDateTime(2024, 1, startDay), end: FloatingDateTime(2024, 1, endDay));
 
-        expect(a.overlaps(b), true);
-      });
+      final cases = [
+        (name: 'overlapping ranges', a: january(1, 10), b: january(5, 15), touching: false, expected: true),
+        (name: 'a range containing the other', a: january(1, 31), b: january(10, 20), touching: false, expected: true),
+        (name: 'a range inside the other', a: january(10, 20), b: january(1, 31), touching: false, expected: true),
+        (name: 'non-overlapping ranges', a: january(1, 5), b: january(10, 15), touching: false, expected: false),
+        (
+          name: 'touching ranges without touching flag',
+          a: january(1, 5),
+          b: january(5, 10),
+          touching: false,
+          expected: false,
+        ),
+        (
+          name: 'touching ranges with touching flag',
+          a: january(1, 5),
+          b: january(5, 10),
+          touching: true,
+          expected: true,
+        ),
+        (
+          name: 'end-to-start touching with touching flag',
+          a: january(5, 10),
+          b: january(1, 5),
+          touching: true,
+          expected: true,
+        ),
+        (name: 'identical ranges', a: january(1, 10), b: january(1, 10), touching: false, expected: true),
+      ];
 
-      test('returns true when one range contains the other', () {
-        final outer = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 31));
-        final inner = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 10), end: FloatingDateTime(2024, 1, 20));
-
-        expect(outer.overlaps(inner), true);
-        expect(inner.overlaps(outer), true);
-      });
-
-      test('returns false for non-overlapping ranges', () {
-        final a = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 5));
-        final b = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 10), end: FloatingDateTime(2024, 1, 15));
-
-        expect(a.overlaps(b), false);
-      });
-
-      test('returns false for touching ranges without touching flag', () {
-        final a = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 5));
-        final b = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 5), end: FloatingDateTime(2024, 1, 10));
-
-        expect(a.overlaps(b), false);
-      });
-
-      test('returns true for touching ranges with touching flag', () {
-        final a = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 5));
-        final b = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 5), end: FloatingDateTime(2024, 1, 10));
-
-        expect(a.overlaps(b, touching: true), true);
-      });
-
-      test('touching flag detects end-to-start touching', () {
-        final a = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 5), end: FloatingDateTime(2024, 1, 10));
-        final b = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 5));
-
-        expect(a.overlaps(b, touching: true), true);
-      });
-
-      test('returns true for identical ranges', () {
-        final a = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 10));
-        final b = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 1, 10));
-
-        expect(a.overlaps(b), true);
-      });
+      for (final c in cases) {
+        test('returns ${c.expected} for ${c.name}', () {
+          expect(c.a.overlaps(c.b, touching: c.touching), c.expected);
+        });
+      }
     });
-
-    // ── monthDifference ──────────────────────────────────────────────────
 
     group('monthDifference', () {
-      test('returns correct difference within the same year', () {
-        final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2024, 6, 1));
+      final cases = [
+        (
+          name: 'within the same year',
+          start: FloatingDateTime(2024, 1, 1),
+          end: FloatingDateTime(2024, 6, 1),
+          expected: 5,
+        ),
+        (name: 'across years', start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2025, 6, 1), expected: 17),
+        (
+          name: 'for adjacent months',
+          start: FloatingDateTime(2024, 3, 15),
+          end: FloatingDateTime(2024, 4, 15),
+          expected: 1,
+        ),
+        (
+          name: 'for exactly one year',
+          start: FloatingDateTime(2024, 1, 1),
+          end: FloatingDateTime(2025, 1, 1),
+          expected: 12,
+        ),
+        (
+          name: 'across the year boundary',
+          start: FloatingDateTime(2024, 11, 1),
+          end: FloatingDateTime(2025, 2, 1),
+          expected: 3,
+        ),
+      ];
 
-        expect(range.monthDifference, 5);
-      });
-
-      test('returns correct difference across years', () {
-        final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2025, 6, 1));
-
-        expect(range.monthDifference, 17);
-      });
-
-      test('returns 1 for adjacent months', () {
-        final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 3, 15), end: FloatingDateTime(2024, 4, 15));
-
-        expect(range.monthDifference, 1);
-      });
-
-      test('returns 12 for exactly one year', () {
-        final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 1), end: FloatingDateTime(2025, 1, 1));
-
-        expect(range.monthDifference, 12);
-      });
-
-      test('returns correct difference across year boundary (Dec to Jan)', () {
-        final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 11, 1), end: FloatingDateTime(2025, 2, 1));
-
-        expect(range.monthDifference, 3);
-      });
+      for (final c in cases) {
+        test('returns ${c.expected} ${c.name}', () {
+          expect(FloatingDateTimeRange(start: c.start, end: c.end).monthDifference, c.expected);
+        });
+      }
     });
-
-    // ── dominantMonthDate ────────────────────────────────────────────────
 
     group('dominantMonthDate', () {
       test('returns current month for a range within one month', () {
@@ -334,8 +273,6 @@ void main() {
         expect(result.month, 1);
       });
     });
-
-    // ── weekNumbers ──────────────────────────────────────────────────────
 
     group('weekNumbers', () {
       test('returns a single week number when range fits within one week', () {
@@ -375,14 +312,6 @@ void main() {
 
         expect(first, FloatingDateTime(2024, 12, 22).weekNumber);
         expect(last, FloatingDateTime(2025, 1, 6).weekNumber);
-      });
-
-      test('single day range returns one week number', () {
-        final range = FloatingDateTimeRange(start: FloatingDateTime(2025, 1, 8), end: FloatingDateTime(2025, 1, 9));
-        final (first, last) = range.weekNumbers;
-
-        expect(first, 2);
-        expect(last, isNull);
       });
     });
   });

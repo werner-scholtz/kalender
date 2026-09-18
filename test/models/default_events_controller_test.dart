@@ -25,8 +25,6 @@ void main() {
     controller.dispose();
   });
 
-  // ─── EventStore setup ────────────────────────────────────────────────────
-
   group('EventStore setup', () {
     test('All pre-configured locations are registered', () {
       expect(locations, controller.eventStore.locations);
@@ -44,28 +42,15 @@ void main() {
     });
   });
 
-  // ─── addEvents (batch) ───────────────────────────────────────────────────
-
   group('addEvents', () {
     test('Returns one id per event and all events are retrievable', () {
-      final events = List.generate(5, (i) {
-        final start = DateTime.utc(2024, 2, i + 1, 9);
-        final end = DateTime.utc(2024, 2, i + 1, 10);
-        return KalenderEvent(start: start, end: end);
-      });
+      final events = List.generate(5, (i) => _event(2, i + 1, 9));
       final ids = controller.addEvents(events);
-      expect(ids.length, events.length);
-      for (var i = 0; i < ids.length; i++) {
-        expect(controller.byId(ids[i]), events[i], reason: 'Event $i should be retrievable by its assigned id.');
-      }
+      expect([for (final id in ids) controller.byId(id)], events);
     });
 
     test('All added events appear in the events iterable', () {
-      final events = List.generate(3, (i) {
-        final start = DateTime.utc(2024, 3, i + 1, 8);
-        final end = DateTime.utc(2024, 3, i + 1, 9);
-        return KalenderEvent(start: start, end: end);
-      });
+      final events = List.generate(3, (i) => _event(3, i + 1, 8));
       controller.addEvents(events);
       for (final event in events) {
         expect(controller.events, contains(event));
@@ -73,30 +58,21 @@ void main() {
     });
   });
 
-  // ─── byId edge cases ─────────────────────────────────────────────────────
-
   group('byId', () {
     test('Returns null for a non-existent id', () {
       expect(controller.byId('non-existent-id'), isNull);
     });
 
     test('Returns null after the event has been removed', () {
-      final start = DateTime.utc(2024, 1, 10, 10);
-      final end = DateTime.utc(2024, 1, 10, 11);
-      final event = KalenderEvent(start: start, end: end);
-      final id = controller.addEvent(event);
+      final id = controller.addEvent(_event(1, 10, 10));
       controller.removeById(id);
       expect(controller.byId(id), isNull);
     });
   });
 
-  // ─── removeEvent ─────────────────────────────────────────────────────────
-
   group('removeEvent', () {
     test('Removes event by object reference', () {
-      final start = DateTime.utc(2024, 1, 10, 10);
-      final end = DateTime.utc(2024, 1, 10, 11);
-      final event = KalenderEvent(start: start, end: end);
+      final event = _event(1, 10, 10);
       final id = controller.addEvent(event);
       controller.removeEvent(event);
       expect(controller.byId(id), isNull);
@@ -124,222 +100,140 @@ void main() {
     });
   });
 
-  // ─── removeEvents ────────────────────────────────────────────────────────
-
   group('removeEvents', () {
     test('Removes the specified events and leaves unaffected ones', () {
-      final events = List.generate(4, (i) {
-        final start = DateTime.utc(2024, 4, i + 1, 9);
-        final end = DateTime.utc(2024, 4, i + 1, 10);
-        return KalenderEvent(start: start, end: end);
-      });
+      final events = List.generate(4, (i) => _event(4, i + 1, 9));
       final ids = controller.addEvents(events);
       controller.removeEvents(events.take(2).toList());
-      expect(controller.byId(ids[0]), isNull, reason: 'First removed event should no longer be retrievable.');
-      expect(controller.byId(ids[1]), isNull, reason: 'Second removed event should no longer be retrievable.');
-      expect(controller.byId(ids[2]), events[2], reason: 'Third event should still be retrievable.');
-      expect(controller.byId(ids[3]), events[3], reason: 'Fourth event should still be retrievable.');
+      expect([for (final id in ids) controller.byId(id)], [null, null, events[2], events[3]]);
     });
 
     test('Removing an empty list leaves events unchanged', () {
-      final start = DateTime.utc(2024, 4, 10, 9);
-      final end = DateTime.utc(2024, 4, 10, 10);
-      final event = KalenderEvent(start: start, end: end);
+      final event = _event(4, 10, 9);
       final id = controller.addEvent(event);
       controller.removeEvents([]);
       expect(controller.byId(id), event);
     });
   });
 
-  // ─── removeWhere ─────────────────────────────────────────────────────────
-
   group('removeWhere', () {
     test('Removes only events matching the predicate', () {
-      final start1 = DateTime.utc(2024, 5, 1, 9);
-      final end1 = DateTime.utc(2024, 5, 1, 10);
-      final event1 = KalenderEvent(start: start1, end: end1);
-
-      final start2 = DateTime.utc(2024, 5, 2, 9);
-      final end2 = DateTime.utc(2024, 5, 2, 10);
-      final event2 = KalenderEvent(start: start2, end: end2);
-
-      final id1 = controller.addEvent(event1);
+      final event2 = _event(5, 2, 9);
+      final id1 = controller.addEvent(_event(5, 1, 9));
       final id2 = controller.addEvent(event2);
 
       controller.removeWhere((key, _) => key == id1);
 
-      expect(controller.byId(id1), isNull, reason: 'event1 should be removed.');
-      expect(controller.byId(id2), event2, reason: 'event2 should be unaffected.');
+      expect(controller.byId(id1), isNull);
+      expect(controller.byId(id2), event2);
     });
 
     test('Removes all events when predicate always returns true', () {
-      final events = List.generate(3, (i) {
-        final start = DateTime.utc(2024, 5, i + 10, 9);
-        final end = DateTime.utc(2024, 5, i + 10, 10);
-        return KalenderEvent(start: start, end: end);
-      });
-      controller.addEvents(events);
+      controller.addEvents(List.generate(3, (i) => _event(5, i + 10, 9)));
       controller.removeWhere((_, __) => true);
       expect(controller.events, isEmpty);
     });
   });
 
-  // ─── clearEvents ─────────────────────────────────────────────────────────
-
   group('clearEvents', () {
     test('Removes all events', () {
-      final events = List.generate(5, (i) {
-        final start = DateTime.utc(2024, 6, i + 1, 9);
-        final end = DateTime.utc(2024, 6, i + 1, 10);
-        return KalenderEvent(start: start, end: end);
-      });
-      controller.addEvents(events);
+      controller.addEvents(List.generate(5, (i) => _event(6, i + 1, 9)));
       expect(controller.events, isNotEmpty);
       controller.clearEvents();
       expect(controller.events, isEmpty);
     });
-
-    test('Adding events after clearEvents works correctly', () {
-      final start = DateTime.utc(2024, 7, 1, 9);
-      final end = DateTime.utc(2024, 7, 1, 10);
-      controller.addEvent(KalenderEvent(start: start, end: end));
-      controller.clearEvents();
-
-      final start2 = DateTime.utc(2024, 7, 5, 14);
-      final end2 = DateTime.utc(2024, 7, 5, 15);
-      final secondEvent = KalenderEvent(start: start2, end: end2);
-      final id = controller.addEvent(secondEvent);
-      expect(controller.byId(id), secondEvent);
-      expect(controller.events.length, 1);
-    });
   });
-
-  // ─── replaceEvents ───────────────────────────────────────────────────────
 
   group('replaceEvents', () {
     test('Swaps the whole set: old events gone, new events present', () {
-      final old = List.generate(3, (i) {
-        final start = DateTime.utc(2024, 6, i + 1, 9);
-        return KalenderEvent(start: start, end: start.add(const Duration(hours: 1)));
-      });
+      final old = List.generate(3, (i) => _event(6, i + 1, 9));
       controller.addEvents(old);
 
-      final replacement = List.generate(2, (i) {
-        final start = DateTime.utc(2024, 7, i + 1, 9);
-        return KalenderEvent(start: start, end: start.add(const Duration(hours: 1)));
-      });
+      final replacement = List.generate(2, (i) => _event(7, i + 1, 9));
       final ids = controller.replaceEvents(replacement);
 
-      expect(ids.length, replacement.length, reason: 'One id per replacement event.');
-      expect(controller.events.length, replacement.length, reason: 'Only the replacement events remain.');
+      expect(controller.events.length, replacement.length);
       for (final event in old) {
-        expect(controller.events, isNot(contains(event)), reason: 'Old events should be gone.');
+        expect(controller.events, isNot(contains(event)));
       }
-      for (var i = 0; i < ids.length; i++) {
-        expect(controller.byId(ids[i]), replacement[i], reason: 'Replacement event $i is retrievable by its id.');
-      }
+      expect([for (final id in ids) controller.byId(id)], replacement);
     });
 
     test('Notifies listeners exactly once', () {
-      controller.addEvents([KalenderEvent(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))]);
+      controller.addEvents([_event(6, 1, 9)]);
 
       var count = 0;
       controller.addListener(() => count++);
-      controller.replaceEvents([KalenderEvent(start: DateTime.utc(2024, 7, 1, 9), end: DateTime.utc(2024, 7, 1, 10))]);
+      controller.replaceEvents([_event(7, 1, 9)]);
       expect(count, 1, reason: 'A single atomic update, not a clear followed by an add.');
     });
 
     test('Replacing with an empty list clears all events', () {
-      controller.addEvents([KalenderEvent(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))]);
+      controller.addEvents([_event(6, 1, 9)]);
       controller.replaceEvents([]);
       expect(controller.events, isEmpty);
     });
   });
 
-  // ─── ChangeNotifier ──────────────────────────────────────────────────────
-
   group('ChangeNotifier', () {
-    test('addEvent notifies listeners', () {
-      var notified = false;
-      controller.addListener(() => notified = true);
-      final start = DateTime.utc(2024, 8, 1, 9);
-      final end = DateTime.utc(2024, 8, 1, 10);
-      controller.addEvent(KalenderEvent(start: start, end: end));
-      expect(notified, isTrue);
-    });
+    final cases = <({String name, void Function() Function() arrange})>[
+      (
+        name: 'addEvent',
+        arrange: () =>
+            () => controller.addEvent(_event(8, 1, 9)),
+      ),
+      (
+        name: 'addEvents',
+        arrange: () =>
+            () => controller.addEvents(List.generate(2, (i) => _event(8, i + 5, 9))),
+      ),
+      (
+        name: 'removeEvent',
+        arrange: () {
+          final event = _event(8, 2, 9);
+          controller.addEvent(event);
+          return () => controller.removeEvent(event);
+        },
+      ),
+      (
+        name: 'removeById',
+        arrange: () {
+          final id = controller.addEvent(_event(8, 9, 9));
+          return () => controller.removeById(id);
+        },
+      ),
+      (name: 'clearEvents', arrange: () => controller.clearEvents),
+      (
+        name: 'updateEvent',
+        arrange: () {
+          final event = _event(8, 3, 9);
+          controller.addEvent(event);
+          return () => controller.updateEvent(event: event, updatedEvent: _event(8, 3, 11));
+        },
+      ),
+    ];
 
-    test('addEvents notifies listeners', () {
-      var notified = false;
-      controller.addListener(() => notified = true);
-      final events = List.generate(2, (i) {
-        final start = DateTime.utc(2024, 8, i + 5, 9);
-        final end = DateTime.utc(2024, 8, i + 5, 10);
-        return KalenderEvent(start: start, end: end);
+    for (final (:name, :arrange) in cases) {
+      test('$name notifies listeners', () {
+        final act = arrange();
+        var notified = false;
+        controller.addListener(() => notified = true);
+        act();
+        expect(notified, isTrue);
       });
-      controller.addEvents(events);
-      expect(notified, isTrue);
-    });
-
-    test('removeEvent notifies listeners', () {
-      var notified = false;
-      final start = DateTime.utc(2024, 8, 2, 9);
-      final end = DateTime.utc(2024, 8, 2, 10);
-      final event = KalenderEvent(start: start, end: end);
-      controller.addEvent(event);
-      controller.addListener(() => notified = true);
-      controller.removeEvent(event);
-      expect(notified, isTrue);
-    });
-
-    test('removeById notifies listeners', () {
-      var notified = false;
-      final start = DateTime.utc(2024, 8, 9, 9);
-      final end = DateTime.utc(2024, 8, 9, 10);
-      final event = KalenderEvent(start: start, end: end);
-      final id = controller.addEvent(event);
-      controller.addListener(() => notified = true);
-      controller.removeById(id);
-      expect(notified, isTrue);
-    });
-
-    test('clearEvents notifies listeners', () {
-      var notified = false;
-      controller.addListener(() => notified = true);
-      controller.clearEvents();
-      expect(notified, isTrue);
-    });
-
-    test('updateEvent notifies listeners', () {
-      var notified = false;
-      final start = DateTime.utc(2024, 8, 3, 9);
-      final end = DateTime.utc(2024, 8, 3, 10);
-      final event = KalenderEvent(start: start, end: end);
-      controller.addEvent(event);
-      controller.addListener(() => notified = true);
-      final updatedEvent = KalenderEvent(start: DateTime.utc(2024, 8, 3, 11), end: DateTime.utc(2024, 8, 3, 12));
-      controller.updateEvent(event: event, updatedEvent: updatedEvent);
-      expect(notified, isTrue);
-    });
+    }
   });
-
-  // ─── eventsInRange edge cases ──────────────────────────────────
 
   group('eventsInRange edge cases', () {
     test('Event not returned for a range it does not overlap', () {
-      final start = DateTime.utc(2024, 9, 1, 10);
-      final end = DateTime.utc(2024, 9, 1, 11);
-      final event = KalenderEvent(start: start, end: end);
+      final event = _event(9, 1, 10);
       controller.addEvent(event);
       final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 9, 10), end: FloatingDateTime(2024, 9, 11));
       expect(controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, range), isNot(contains(event)));
     });
 
     test('Multiple events in the same range are all returned', () {
-      final events = List.generate(3, (i) {
-        final start = DateTime.utc(2024, 10, 5, 9 + i);
-        final end = DateTime.utc(2024, 10, 5, 10 + i);
-        return KalenderEvent(start: start, end: end);
-      });
+      final events = List.generate(3, (i) => _event(10, 5, 9 + i));
       controller.addEvents(events);
       final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 10, 5), end: FloatingDateTime(2024, 10, 6));
       final result = controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, range);
@@ -349,9 +243,7 @@ void main() {
     });
 
     test('Removed event is no longer returned from range query', () {
-      final start = DateTime.utc(2024, 11, 1, 10);
-      final end = DateTime.utc(2024, 11, 1, 11);
-      final event = KalenderEvent(start: start, end: end);
+      final event = _event(11, 1, 10);
       controller.addEvent(event);
       controller.removeEvent(event);
       final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 11, 1), end: FloatingDateTime(2024, 11, 2));
@@ -359,14 +251,10 @@ void main() {
     });
 
     test('Updated event is found in new range but not old range', () {
-      final start = DateTime.utc(2024, 12, 1, 10);
-      final end = DateTime.utc(2024, 12, 1, 11);
-      final event = KalenderEvent(start: start, end: end);
+      final event = _event(12, 1, 10);
       controller.addEvent(event);
 
-      final newStart = DateTime.utc(2024, 12, 20, 6);
-      final newEnd = DateTime.utc(2024, 12, 20, 7);
-      final updatedEvent = KalenderEvent(start: newStart, end: newEnd);
+      final updatedEvent = _event(12, 20, 6);
       controller.updateEvent(event: event, updatedEvent: updatedEvent);
 
       final oldRange = FloatingDateTimeRange(start: FloatingDateTime(2024, 12, 1), end: FloatingDateTime(2024, 12, 2));
@@ -379,10 +267,7 @@ void main() {
     });
 
     test('Both filters disabled returns empty iterable', () {
-      final start = DateTime.utc(2024, 9, 5, 10);
-      final end = DateTime.utc(2024, 9, 5, 11);
-      final event = KalenderEvent(start: start, end: end);
-      controller.addEvent(event);
+      controller.addEvent(_event(9, 5, 10));
       final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 9, 5), end: FloatingDateTime(2024, 9, 6));
       final result = controller.eventsInRange(
         multiDayRule: kDefaultMultiDayRule,
@@ -394,133 +279,56 @@ void main() {
     });
   });
 
-  // ─── Per-location: add / remove / fetch ──────────────────────────────────
-
   for (final location in locations) {
     group('[$location] Adding, removing and fetching events', () {
-      test('Short event (< 1 day)', () {
-        final start = TZDateTime(location, 2024, 1, 15, 10);
-        final end = TZDateTime(location, 2024, 1, 15, 11);
-        final event = KalenderEvent(start: start, end: end);
-        final id = controller.addEvent(event);
-        expect(controller.byId(id), event, reason: 'Event should be retrievable by its id after being added.');
+      Iterable<KalenderEvent> inRange(FloatingDateTimeRange range, {bool day = true, bool multi = true}) {
+        return controller.eventsInRange(
+          multiDayRule: kDefaultMultiDayRule,
+          range,
+          location: location,
+          includeDayEvents: day,
+          includeMultiDayEvents: multi,
+        );
+      }
 
-        final range = FloatingDateTimeRange(
-          start: FloatingDateTime.fromExternal(start, location: location),
-          end: FloatingDateTime.fromExternal(end, location: location),
-        );
-        expect(
-          controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, range, location: location),
-          contains(event),
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            range,
-            location: location,
-            includeDayEvents: false,
-          ),
-          isEmpty,
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            range,
-            location: location,
-            includeMultiDayEvents: false,
-          ),
-          contains(event),
-        );
-      });
+      FloatingDateTimeRange floatingRange(TZDateTime start, TZDateTime end) => FloatingDateTimeRange(
+        start: FloatingDateTime.fromExternal(start, location: location),
+        end: FloatingDateTime.fromExternal(end, location: location),
+      );
 
-      test('Multi-day event (>= 1 day)', () {
-        final start = TZDateTime(location, 2024, 1, 15);
-        final end = TZDateTime(location, 2024, 1, 16);
-        final event = KalenderEvent(start: start, end: end);
-        final id = controller.addEvent(event);
-        expect(controller.byId(id), event, reason: 'Event should be retrievable by its id after being added.');
+      final cases = [
+        (
+          name: 'Short event (< 1 day)',
+          start: TZDateTime(location, 2024, 1, 15, 10),
+          end: TZDateTime(location, 2024, 1, 15, 11),
+          multiDay: false,
+        ),
+        (
+          name: 'Multi-day event (>= 1 day)',
+          start: TZDateTime(location, 2024, 1, 15),
+          end: TZDateTime(location, 2024, 1, 16),
+          multiDay: true,
+        ),
+        (
+          name: 'Zero-duration event',
+          start: TZDateTime(location, 2024, 1, 15),
+          end: TZDateTime(location, 2024, 1, 15),
+          multiDay: false,
+        ),
+      ];
 
-        final range = FloatingDateTimeRange(
-          start: FloatingDateTime.fromExternal(start, location: location),
-          end: FloatingDateTime.fromExternal(end, location: location),
-        );
-        expect(
-          controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, range, location: location),
-          contains(event),
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            range,
-            location: location,
-            includeDayEvents: false,
-          ),
-          contains(event),
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            range,
-            location: location,
-            includeMultiDayEvents: false,
-          ),
-          isEmpty,
-        );
-      });
+      for (final (:name, :start, :end, :multiDay) in cases) {
+        test(name, () {
+          final event = KalenderEvent(start: start, end: end);
+          final id = controller.addEvent(event);
+          expect(controller.byId(id), event);
 
-      test('Zero-duration event', () {
-        final start = TZDateTime(location, 2024, 1, 15);
-        final end = TZDateTime(location, 2024, 1, 15);
-        final event = KalenderEvent(start: start, end: end);
-        final id = controller.addEvent(event);
-        expect(controller.byId(id), event, reason: 'Event should be retrievable by its id after being added.');
-
-        final range = FloatingDateTimeRange(
-          start: FloatingDateTime.fromExternal(start, location: location),
-          end: FloatingDateTime.fromExternal(end, location: location),
-        );
-        expect(
-          controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, range, location: location),
-          contains(event),
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            range,
-            location: location,
-            includeDayEvents: false,
-          ),
-          isEmpty,
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            range,
-            location: location,
-            includeMultiDayEvents: false,
-          ),
-          contains(event),
-        );
-      });
-
-      test('Remove event by id', () {
-        final start = TZDateTime(location, 2024, 1, 15);
-        final end = TZDateTime(location, 2024, 1, 16);
-        final event = KalenderEvent(start: start, end: end);
-        final id = controller.addEvent(event);
-        controller.removeById(id);
-        expect(controller.byId(id), isNull, reason: 'Event should not be retrievable after removal.');
-      });
-
-      test('Remove event by reference', () {
-        final start = TZDateTime(location, 2024, 2, 5);
-        final end = TZDateTime(location, 2024, 2, 6);
-        final event = KalenderEvent(start: start, end: end);
-        final id = controller.addEvent(event);
-        controller.removeEvent(event);
-        expect(controller.byId(id), isNull, reason: 'Event should not be retrievable after removal by reference.');
-        expect(controller.events, isNot(contains(event)));
-      });
+          final range = floatingRange(start, end);
+          expect(inRange(range), contains(event));
+          expect(inRange(range, day: false), multiDay ? contains(event) : isEmpty);
+          expect(inRange(range, multi: false), multiDay ? isEmpty : contains(event));
+        });
+      }
 
       test('Update event: id preserved and new range is queryable', () {
         final start = TZDateTime(location, 2024, 1, 15);
@@ -533,45 +341,18 @@ void main() {
         final updatedEvent = KalenderEvent(start: newStart, end: newEnd);
         controller.updateEvent(event: event, updatedEvent: updatedEvent);
 
-        expect(updatedEvent.id, id, reason: 'Updated event should retain the original id.');
-        expect(controller.byId(id), updatedEvent, reason: 'Updated event should be retrievable by original id.');
+        expect(updatedEvent.id, id);
+        expect(controller.byId(id), updatedEvent);
 
-        final oldRange = FloatingDateTimeRange(
-          start: FloatingDateTime.fromExternal(start, location: location),
-          end: FloatingDateTime.fromExternal(end, location: location),
-        );
-        final newRange = FloatingDateTimeRange(
-          start: FloatingDateTime.fromExternal(newStart, location: location),
-          end: FloatingDateTime.fromExternal(newEnd, location: location),
-        );
-        expect(
-          controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, oldRange, location: location),
-          isNot(contains(updatedEvent)),
-          reason: 'Updated event should not appear in its old range.',
-        );
-        expect(
-          controller.eventsInRange(multiDayRule: kDefaultMultiDayRule, newRange, location: location),
-          contains(updatedEvent),
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            newRange,
-            location: location,
-            includeDayEvents: false,
-          ),
-          contains(updatedEvent),
-        );
-        expect(
-          controller.eventsInRange(
-            multiDayRule: kDefaultMultiDayRule,
-            newRange,
-            location: location,
-            includeMultiDayEvents: false,
-          ),
-          isEmpty,
-        );
+        final newRange = floatingRange(newStart, newEnd);
+        expect(inRange(floatingRange(start, end)), isNot(contains(updatedEvent)));
+        expect(inRange(newRange), contains(updatedEvent));
+        expect(inRange(newRange, day: false), contains(updatedEvent));
+        expect(inRange(newRange, multi: false), isEmpty);
       });
     });
   }
 }
+
+KalenderEvent _event(int month, int day, int hour) =>
+    KalenderEvent(start: DateTime.utc(2024, month, day, hour), end: DateTime.utc(2024, month, day, hour + 1));

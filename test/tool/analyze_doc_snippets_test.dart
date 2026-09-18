@@ -13,6 +13,9 @@ import '../../tool/analyze_doc_snippets.dart'
 String block(String directive, String code) => '# Title\n\nSome prose.\n\n$directive\n```dart\n$code\n```\n';
 
 void main() {
+  GeneratedUnit unitFor(String directive, String code) =>
+      generateUnit(groupSnippets(parseSnippets(block(directive, code), 'doc/a.md')).single, 0);
+
   group('parseSnippets', () {
     test('reads the directive and the code below it', () {
       final snippets = parseSnippets(block('<!-- snippet: expression -->', 'KalenderBody()'), 'doc/a.md');
@@ -95,9 +98,6 @@ void main() {
   });
 
   group('generateUnit', () {
-    GeneratedUnit unitFor(String directive, String code) =>
-        generateUnit(groupSnippets(parseSnippets(block(directive, code), 'doc/a.md')).single, 0);
-
     test('an expression becomes a variable initializer', () {
       final unit = unitFor('<!-- snippet: expression -->', 'KalenderBody()');
       expect(unit.source, contains('final Object? _snippet0 =\nKalenderBody()\n;'));
@@ -138,10 +138,7 @@ void main() {
 
   group('mapDiagnostics', () {
     test('a generated location becomes the markdown line a reader sees', () {
-      final unit = generateUnit(
-        groupSnippets(parseSnippets(block('<!-- snippet: file -->', 'class A {\n  int x = 1;\n}'), 'doc/a.md')).single,
-        0,
-      );
+      final unit = unitFor('<!-- snippet: file -->', 'class A {\n  int x = 1;\n}');
       final generatedLine = unit.source.split('\n').indexOf('  int x = 1;') + 1;
 
       final mapped = mapDiagnostics(
@@ -154,10 +151,7 @@ void main() {
     });
 
     test('a diagnostic on the generated header is passed through unchanged', () {
-      final unit = generateUnit(
-        groupSnippets(parseSnippets(block('<!-- snippet: file -->', 'class A {}'), 'doc/a.md')).single,
-        0,
-      );
+      final unit = unitFor('<!-- snippet: file -->', 'class A {}');
       final mapped = mapDiagnostics('  error • Bad import • lib/generated/snippet_0.dart:3:1 • some_code', {
         'snippet_0.dart': unit,
       });

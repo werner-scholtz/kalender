@@ -8,11 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-// Regression net: every view-configuration copyWith must round-trip its fields
-// rather than silently dropping them. A dropped field in copyWith is a silent
-// no-op bug, which is what #252 turned out to be (MonthBodyConfiguration.copyWith
-// dropped eventPadding). Each type gets a "preserve untouched fields" test and an
-// "update the copied field" test.
+// Every view configuration copyWith keeps its untouched fields (#252).
 void main() {
   group('view configuration copyWith round-trips', () {
     group('MonthViewConfiguration', () {

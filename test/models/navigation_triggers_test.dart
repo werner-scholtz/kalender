@@ -9,8 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
-  // ─── PageTriggerConfiguration ────────────────────────────────────────────────
-
   group('PageTriggerConfiguration', () {
     test('defaultConfiguration uses the documented defaults', () {
       const config = PageTriggerConfiguration.defaultConfiguration();
@@ -58,12 +56,8 @@ void main() {
       expect(a, equals(b));
       expect(a.hashCode, equals(b.hashCode));
       expect(a, isNot(equals(c)));
-      expect(identical(a, a), isTrue);
-      expect(a == a, isTrue);
     });
   });
-
-  // ─── ScrollTriggerConfiguration ──────────────────────────────────────────────
 
   group('ScrollTriggerConfiguration', () {
     test('defaultConfiguration uses the documented defaults', () {
@@ -100,7 +94,6 @@ void main() {
     test('copyWith preserves scrollAmount when it is not overridden', () {
       double amount(double pageHeight) => pageHeight / 3;
       final original = ScrollTriggerConfiguration(scrollAmount: amount);
-      // Regression: copyWith previously dropped scrollAmount, resetting it to null.
       final copy = original.copyWith(triggerDelay: const Duration(milliseconds: 800));
       expect(copy.scrollAmount, same(amount));
     });
@@ -120,7 +113,6 @@ void main() {
       expect(a, equals(b));
       expect(a.hashCode, equals(b.hashCode));
       expect(a, isNot(equals(c)));
-      expect(a == a, isTrue);
     });
   });
 }

@@ -12,9 +12,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 
 import '../utilities.dart';
 
-/// The rule decides whether an event renders in the multi-day header or the day
-/// timeline, so a configuration that drops it on `copyWith` silently resets how
-/// every event is classified.
+/// Tests that `copyWith` on view configurations keeps or replaces the multi-day rule.
 void main() {
   final displayRange = KalenderDateTimeRange(start: DateTime(2024), end: DateTime(2026));
   const calendarDays = MultiDayRule.calendarDays();

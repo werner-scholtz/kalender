@@ -13,8 +13,6 @@ import 'package:kalender/kalender.dart';
 /// that reach them ([MultiDayBodyConfiguration] / [MultiDayHeaderConfiguration]),
 /// and the runtime type check that keeps two subclasses of one base apart.
 void main() {
-  // ─── VerticalConfiguration (via MultiDayBodyConfiguration) ───────────────────
-
   group('VerticalConfiguration equality', () {
     test('identical configurations are equal with matching hashCodes', () {
       expect(const MultiDayBodyConfiguration(), equals(const MultiDayBodyConfiguration()));
@@ -33,31 +31,17 @@ void main() {
       'minimumTileHeight': const MultiDayBodyConfiguration(minimumTileHeight: 40),
       'scrollPhysics': const MultiDayBodyConfiguration(scrollPhysics: BouncingScrollPhysics()),
       'pageScrollPhysics': const MultiDayBodyConfiguration(pageScrollPhysics: NeverScrollableScrollPhysics()),
+      'pageTriggerConfiguration': MultiDayBodyConfiguration(
+        pageTriggerConfiguration: PageTriggerConfiguration(triggerDelay: const Duration(seconds: 2)),
+      ),
+      'keepPagesAlive': const MultiDayBodyConfiguration(keepPagesAlive: true),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
         expect(entry.value, isNot(equals(const MultiDayBodyConfiguration())));
+        expect(entry.value.hashCode, isNot(equals(const MultiDayBodyConfiguration().hashCode)));
       });
     }
-
-    test('differing pageTriggerConfiguration breaks equality', () {
-      final a = const MultiDayBodyConfiguration();
-      final b = MultiDayBodyConfiguration(
-        pageTriggerConfiguration: PageTriggerConfiguration(triggerDelay: const Duration(seconds: 2)),
-      );
-      expect(a, isNot(equals(b)));
-    });
-
-    // keepPagesAlive is declared on MultiDayBodyConfiguration rather than the
-    // base, and the inherited equality did not reach it.
-    test('differing keepPagesAlive breaks equality', () {
-      const a = MultiDayBodyConfiguration();
-      const b = MultiDayBodyConfiguration(keepPagesAlive: true);
-      expect(a, isNot(equals(b)));
-      expect(a.hashCode, isNot(equals(b.hashCode)));
-    });
   });
-
-  // ─── HorizontalConfiguration (via MultiDayHeaderConfiguration) ───────────────
 
   group('HorizontalConfiguration equality', () {
     test('identical configurations are equal with matching hashCodes', () {
@@ -70,26 +54,16 @@ void main() {
       'showTiles': const MultiDayHeaderConfiguration(showTiles: false),
       'maximumNumberOfVerticalEvents': const MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 3),
       'eventPadding': const MultiDayHeaderConfiguration(eventPadding: EdgeInsets.all(8)),
+      'allowSingleDayEvents': const MultiDayHeaderConfiguration(allowSingleDayEvents: true),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
         expect(entry.value, isNot(equals(const MultiDayHeaderConfiguration())));
+        expect(entry.value.hashCode, isNot(equals(const MultiDayHeaderConfiguration().hashCode)));
       });
     }
-
-    test('differing allowSingleDayEvents breaks equality', () {
-      const a = MultiDayHeaderConfiguration(allowSingleDayEvents: false);
-      const b = MultiDayHeaderConfiguration(allowSingleDayEvents: true);
-      expect(a, isNot(equals(b)));
-      expect(a.hashCode, isNot(equals(b.hashCode)));
-    });
   });
 
-  // ─── Two subclasses of one base are not each other ───────────────────────────
-
   group('Configuration types stay distinct', () {
-    // MonthBodyConfiguration and MultiDayHeaderConfiguration both extend
-    // HorizontalConfiguration and add no equality of their own, so with only an
-    // `other is HorizontalConfiguration` test they compared equal.
     test('MonthBodyConfiguration is not a MultiDayHeaderConfiguration', () {
       const month = MonthBodyConfiguration();
       const header = MultiDayHeaderConfiguration();

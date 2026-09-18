@@ -7,14 +7,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-/// Until 0.26.0 a subclass overrode `copyWith` and had to forward by hand every
-/// field [KalenderEvent] carries but takes no parameter for, which was `id` and,
-/// from 0.24.0, `multiDayRule`. Forgetting one produced a copy the calendar read
-/// as a different event, or one that lost its rule, and adding a field to the
-/// base class broke every subclass at once without a compile error.
-///
-/// A subclass now overrides [KalenderEvent.copyWithData] and rebuilds only what
-/// it added. `withDateTimeRange` restores the base state afterwards.
+/// A subclass overrides [KalenderEvent.copyWithData] and rebuilds only what it added. `withDateTimeRange` restores the
+/// base state afterwards.
 
 /// Rebuilds only its own field, as the documentation shows.
 class _Task extends KalenderEvent {
@@ -27,8 +21,7 @@ class _Task extends KalenderEvent {
     return _Task(start: start, end: end, title: title);
   }
 
-  /// A copy method of the subclass's own, which is no longer an override and so
-  /// can take whatever parameters it likes.
+  /// Not an override, so it can take any parameters.
   _Task copyWith({String? title}) {
     return carryOver(_Task(start: dateTimeRange.start, end: dateTimeRange.end, title: title ?? this.title));
   }

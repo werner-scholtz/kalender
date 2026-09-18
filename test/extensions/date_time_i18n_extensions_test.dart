@@ -12,52 +12,37 @@ import 'package:kalender/src/extensions/date_time.dart';
 
 void main() {
   group('DateTime Internationalization Extensions', () {
-    final testDate = DateTime(2024, 1, 15); // Monday, January 15, 2024
-
     setUpAll(() async {
-      // Initialize locale data for the locales we want to test
       await initializeDateFormatting('en');
       await initializeDateFormatting('fr');
       await initializeDateFormatting('es');
     });
 
-    test('dayNameLocalized with English locale', () {
-      expect(testDate.dayNameLocalized(const Locale('en')), equals('Monday'));
-    });
+    final methods = <String, String Function(DateTime date, Locale locale)>{
+      'dayNameLocalized': (date, locale) => date.dayNameLocalized(locale),
+      'dayNameShortLocalized': (date, locale) => date.dayNameShortLocalized(locale),
+      'monthNameLocalized': (date, locale) => date.monthNameLocalized(locale),
+      'monthNameShortLocalized': (date, locale) => date.monthNameShortLocalized(locale),
+    };
 
-    test('dayNameLocalized with French locale', () {
-      expect(testDate.dayNameLocalized(const Locale('fr')), equals('lundi'));
-    });
-
-    test('dayNameShortLocalized with English locale', () {
-      expect(testDate.dayNameShortLocalized(const Locale('en')), equals('Mon'));
-    });
-
-    test('monthNameLocalized with English locale', () {
-      expect(testDate.monthNameLocalized(const Locale('en')), equals('January'));
-    });
-
-    test('monthNameLocalized with French locale', () {
-      expect(testDate.monthNameLocalized(const Locale('fr')), equals('janvier'));
-    });
-
-    test('monthNameShortLocalized with English locale', () {
-      expect(testDate.monthNameShortLocalized(const Locale('en')), equals('Jan'));
-    });
-
-    test('different weekdays in different locales', () {
-      final tuesday = DateTime(2024, 1, 16); // Tuesday
-      expect(tuesday.dayNameLocalized(const Locale('en')), equals('Tuesday'));
-      expect(tuesday.dayNameLocalized(const Locale('fr')), equals('mardi'));
-      expect(tuesday.dayNameLocalized(const Locale('es')), equals('martes'));
-    });
-
-    test('different months in different locales', () {
-      final february = DateTime(2024, 2, 15); // February
-      expect(february.monthNameLocalized(const Locale('en')), equals('February'));
-      expect(february.monthNameLocalized(const Locale('fr')), equals('février'));
-      expect(february.monthNameLocalized(const Locale('es')), equals('febrero'));
-    });
+    for (final (method, date, locale, expected) in [
+      ('dayNameLocalized', DateTime(2024, 1, 15), 'en', 'Monday'),
+      ('dayNameLocalized', DateTime(2024, 1, 15), 'fr', 'lundi'),
+      ('dayNameShortLocalized', DateTime(2024, 1, 15), 'en', 'Mon'),
+      ('monthNameLocalized', DateTime(2024, 1, 15), 'en', 'January'),
+      ('monthNameLocalized', DateTime(2024, 1, 15), 'fr', 'janvier'),
+      ('monthNameShortLocalized', DateTime(2024, 1, 15), 'en', 'Jan'),
+      ('dayNameLocalized', DateTime(2024, 1, 16), 'en', 'Tuesday'),
+      ('dayNameLocalized', DateTime(2024, 1, 16), 'fr', 'mardi'),
+      ('dayNameLocalized', DateTime(2024, 1, 16), 'es', 'martes'),
+      ('monthNameLocalized', DateTime(2024, 2, 15), 'en', 'February'),
+      ('monthNameLocalized', DateTime(2024, 2, 15), 'fr', 'février'),
+      ('monthNameLocalized', DateTime(2024, 2, 15), 'es', 'febrero'),
+    ]) {
+      test('$method with $locale locale returns $expected', () {
+        expect(methods[method]!(date, Locale(locale)), equals(expected));
+      });
+    }
 
     test('monthNameLocalized covers every month in English', () {
       const expected = [
@@ -84,7 +69,6 @@ void main() {
       const expected = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       for (var i = 0; i < 7; i++) {
         final date = DateTime(2024, 1, 15 + i);
-        expect(date.weekday, equals(i + 1));
         expect(date.dayNameLocalized(const Locale('en')), equals(expected[i]));
       }
     });

@@ -11,11 +11,6 @@ import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart
 
 import '../utilities.dart';
 
-// ---------------------------------------------------------------------------
-// Helpers shared across all MultiDayEventLayoutWidget tests
-// ---------------------------------------------------------------------------
-
-/// Asserts that no two [Rect]s in [rects] overlap each other.
 void expectNoOverlaps(List<Rect> rects) {
   for (var i = 0; i < rects.length; i++) {
     for (var j = i + 1; j < rects.length; j++) {
@@ -26,9 +21,6 @@ void expectNoOverlaps(List<Rect> rects) {
 
 void main() {
   group('MultiDayEventLayoutWidget', () {
-    // -----------------------------------------------------------------------
-    // Per-test state – recreated in setUp so tests are fully isolated.
-    // -----------------------------------------------------------------------
     late DefaultEventsController eventsController;
     late KalenderController controller;
 
@@ -46,37 +38,7 @@ void main() {
       controller = KalenderController();
     });
 
-    // -----------------------------------------------------------------------
-    // Widget-building helper – avoids repeating the full provider/widget tree.
-    // -----------------------------------------------------------------------
-    Widget buildLayoutWidget({required HorizontalConfiguration configuration, Widget? sizedBoxWrapper}) {
-      final inner = MultiDayEventLayoutWidget(
-        events: eventsController.events.toList(),
-        floatingRange: visibleRange,
-        textDirection: TextDirection.ltr,
-        multiDayOverlayBuilders: null,
-        configuration: configuration,
-        maxNumberOfVerticalEvents: null,
-        multiDayCache: null,
-        location: null,
-      );
-
-      return wrapWithMaterialApp(
-        TestProvider(
-          kalenderController: controller,
-          eventsController: eventsController,
-          tileComponents: tileComponents,
-          child: sizedBoxWrapper ?? inner,
-        ),
-      );
-    }
-
-    // Convenience overload that wraps the layout widget inside a SizedBox.
-    Widget buildLayoutWidgetSized({
-      required HorizontalConfiguration configuration,
-      required double width,
-      required double height,
-    }) {
+    Widget buildLayoutWidget({required HorizontalConfiguration configuration, double? width, double? height}) {
       return wrapWithMaterialApp(
         TestProvider(
           kalenderController: controller,
@@ -100,15 +62,12 @@ void main() {
       );
     }
 
-    // -----------------------------------------------------------------------
-    // Regression tests
-    // -----------------------------------------------------------------------
+    List<String?> overflowButtonTexts(WidgetTester tester) => [
+      for (final element in find.byKey(MultiDayPortalOverlayButton.textKey).evaluate()) (element.widget as Text).data,
+    ];
 
-    // Regression: totalNumberOfRows was always at least 1 (= maxRow + 1),
-    // so an empty event list produced totalNumberOfRows=1 instead of 0.
-    // With maxNumberOfVerticalEvents=0 that caused a spurious "+1" button.
+    // Regression: an empty event list counted as one row.
     testWidgets('No overflow buttons when there are no events', (tester) async {
-      // eventsController is empty – do not add any events.
       await tester.pumpWidget(
         buildLayoutWidget(
           configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 2),
@@ -119,15 +78,9 @@ void main() {
       expect(find.byType(MultiDayPortalOverlayButton), findsNothing);
     });
 
-    // Regression: when the available height per week row was less than tileHeight,
-    // MonthBody computed a negative maxNumberOfVerticalEvents (e.g. -1), turning
-    // "numberOfHiddenRows = (row+1) - (-1)" into 2 even for a single event.
-    // A second part of the same bug: columnRowMap was initialized to 0 for every
-    // column, so days that had NO event also showed overflow buttons whenever
-    // maxNumberOfRows dropped to 0.
+    // Regression: a negative maxNumberOfVerticalEvents miscounted hidden rows and showed buttons on empty days.
     testWidgets('Overflow button count is correct when maxNumberOfVerticalEvents is 0', (tester) async {
-      // Two events spanning days 24-25 only (end = midnight of the 26th = startOfDay,
-      // so the 26th is not included → 2 of the 7 visible columns).
+      // The events end at midnight of the 26th, so they span 2 of the 7 columns.
       final events = [
         KalenderEvent(
           start: start,
@@ -142,7 +95,6 @@ void main() {
 
       await tester.pumpWidget(
         buildLayoutWidget(
-          // max=0 means no events fit → both are hidden behind overflow buttons.
           configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 0),
         ),
       );
@@ -151,11 +103,8 @@ void main() {
       expect(find.byKey(ValueKey(events[0].id)), findsNothing);
       expect(find.byKey(ValueKey(events[1].id)), findsNothing);
 
-      // Only the 2 columns the events span (24, 25) should show a button.
-      // The remaining 5 columns have no events and must stay empty.
       expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(2));
 
-      // Every button that does appear must show a positive hidden-row count.
       for (final button in tester.widgetList(find.byType(MultiDayPortalOverlayButton))) {
         expect((button as MultiDayPortalOverlayButton).numberOfHiddenRows, greaterThan(0));
       }
@@ -182,18 +131,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Events within the max-vertical-events limit should be visible.
       expect(find.byKey(ValueKey(events[0].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[1].id)), findsOneWidget);
-      // Exceeds maximum – hidden behind the overflow button.
       expect(find.byKey(ValueKey(events[2].id)), findsNothing);
 
-      // One overflow button should appear.
       expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
 
-      // The button must show '+1' (one hidden event).
-      final buttonText = (find.byKey(MultiDayPortalOverlayButton.textKey).evaluate().single.widget as Text).data!;
-      expect(buttonText, equals('+1'));
+      expect(overflowButtonTexts(tester), ['+1']);
     });
 
     testWidgets('Drop target layout uses the selected event span during horizontal resize', (tester) async {
@@ -204,7 +148,7 @@ void main() {
       const tileHeight = 40.0;
 
       await tester.pumpWidget(
-        buildLayoutWidgetSized(
+        buildLayoutWidget(
           configuration: const MonthBodyConfiguration(tileHeight: tileHeight),
           width: dayWidth * 7,
           height: tileHeight * 3,
@@ -249,7 +193,7 @@ void main() {
       const dayWidth = 50.0;
 
       await tester.pumpWidget(
-        buildLayoutWidgetSized(
+        buildLayoutWidget(
           configuration: const MultiDayHeaderConfiguration(tileHeight: tileHeight, maximumNumberOfVerticalEvents: 3),
           width: dayWidth * 7,
           height: tileHeight * 3,
@@ -257,12 +201,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // All six events should be visible (none overflow with max = 3).
       for (final event in events) {
         expect(find.byKey(ValueKey(event.id)), findsOneWidget, reason: 'Event ${event.id} should be visible');
       }
 
-      // No event should overlap another event.
       expectNoOverlaps([for (final event in events) tester.getRect(find.byKey(ValueKey(event.id)))]);
     });
 
@@ -288,21 +230,14 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Events 1-3 should be visible; event 4 overflows.
       expect(find.byKey(ValueKey(events[0].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[1].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[2].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[3].id)), findsNothing);
 
-      // Three overflow buttons expected (one per overflowing column).
       expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(3));
 
-      // Each button must display exactly '+1'.
-      for (final element in find.byKey(MultiDayPortalOverlayButton.textKey).evaluate()) {
-        final text = (element.widget as Text).data;
-        expect(text, isNotNull, reason: 'Button text should not be null');
-        expect(text, equals('+1'), reason: 'Expected "+1" but found "$text"');
-      }
+      expect(overflowButtonTexts(tester), ['+1', '+1', '+1']);
     });
 
     testWidgets('Sorting by start time', (tester) async {
@@ -341,9 +276,6 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // events[0] (start 06:00, multi-day) and events[1] (start 00:00, multi-day) are visible.
-      // events[2] (start 03:00, same-day) is visible.
-      // events[3] (start 07:00) overflows.
       expect(find.byKey(ValueKey(events[0].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[1].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[2].id)), findsOneWidget);
@@ -351,11 +283,8 @@ void main() {
 
       expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
 
-      final buttonText = (find.byKey(MultiDayPortalOverlayButton.textKey).evaluate().single.widget as Text).data!;
-      expect(buttonText, equals('+1'));
+      expect(overflowButtonTexts(tester), ['+1']);
 
-      // Verify vertical ordering: events[1] (earliest start) is topmost,
-      // then events[2], then events[0].
       final pos0 = tester.getTopLeft(find.byKey(ValueKey(events[0].id)));
       final pos1 = tester.getTopLeft(find.byKey(ValueKey(events[1].id)));
       final pos2 = tester.getTopLeft(find.byKey(ValueKey(events[2].id)));
@@ -363,11 +292,7 @@ void main() {
       expect(pos1.dy, lessThan(pos2.dy));
       expect(pos2.dy, lessThan(pos0.dy));
 
-      expectNoOverlaps([
-        tester.getRect(find.byKey(ValueKey(events[0].id))),
-        tester.getRect(find.byKey(ValueKey(events[1].id))),
-        tester.getRect(find.byKey(ValueKey(events[2].id))),
-      ]);
+      expectNoOverlaps([for (final event in events.take(3)) tester.getRect(find.byKey(ValueKey(event.id)))]);
     });
 
     testWidgets('Sorting by end time', (tester) async {
@@ -400,7 +325,6 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // events[0-2] are within the limit; events[3] overflows.
       expect(find.byKey(ValueKey(events[0].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[1].id)), findsOneWidget);
       expect(find.byKey(ValueKey(events[2].id)), findsOneWidget);
@@ -408,11 +332,8 @@ void main() {
 
       expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
 
-      final buttonText = (find.byKey(MultiDayPortalOverlayButton.textKey).evaluate().single.widget as Text).data!;
-      expect(buttonText, equals('+1'));
+      expect(overflowButtonTexts(tester), ['+1']);
 
-      // Verify vertical ordering by end time (earliest end = topmost row):
-      // events[2] ends at 04:00, events[1] at 08:00, events[0] at 12:00.
       final pos0 = tester.getTopLeft(find.byKey(ValueKey(events[0].id)));
       final pos1 = tester.getTopLeft(find.byKey(ValueKey(events[1].id)));
       final pos2 = tester.getTopLeft(find.byKey(ValueKey(events[2].id)));
@@ -420,11 +341,7 @@ void main() {
       expect(pos2.dy, lessThan(pos1.dy));
       expect(pos1.dy, lessThan(pos0.dy));
 
-      expectNoOverlaps([
-        tester.getRect(find.byKey(ValueKey(events[0].id))),
-        tester.getRect(find.byKey(ValueKey(events[1].id))),
-        tester.getRect(find.byKey(ValueKey(events[2].id))),
-      ]);
+      expectNoOverlaps([for (final event in events.take(3)) tester.getRect(find.byKey(ValueKey(event.id)))]);
     });
   });
 }
