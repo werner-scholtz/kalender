@@ -33,10 +33,7 @@ class DefaultEventStore extends EventStore {
   /// Locations not listed here get their index built on first use.
   final List<Location> locations;
 
-  /// Map of the [DateTime] and event ids.
-  ///
-  /// The [DateTime] is the date.
-  /// The [Set] of [String] is the ids of the events.
+  @Deprecated('Never populated. Will be removed in 0.33.0.')
   final Map<DateTime, Set<String>> dateIds = {};
 
   /// A Map containing all events.

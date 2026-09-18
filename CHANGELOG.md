@@ -5,6 +5,8 @@
 - The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of `MultiDayOverlayPortal` are deprecated and are removed in 0.33.0. The calendar builds the overlay.
 - The `location` parameter of `ResizeHandleDetails.continuesBefore`, `continuesAfter`, `showStart` and `showEnd` is deprecated and is removed in 0.33.0. The details carry the location.
 - `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` are deprecated and are removed in 0.33.0. Use `calculateVerticalLayoutData`.
+- `kDefaultNewEventDuration` is deprecated and is removed in 0.33.0. Nothing reads it.
+- `DefaultEventStore.dateIds` is deprecated and is removed in 0.33.0. It was never populated.
 
 ### Features
 
