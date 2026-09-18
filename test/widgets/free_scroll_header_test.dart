@@ -16,10 +16,6 @@ void main() {
   late KalenderController kalenderController;
   late KalenderCallbacks callbacks;
 
-  final tileComponents = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
-  );
-
   setUp(() {
     eventsController = DefaultEventsController();
     kalenderController = KalenderController();
@@ -40,17 +36,13 @@ void main() {
     ]);
   }
 
-  Widget freeScrollView({DateTime? initialDate}) => KalenderView(
+  Widget buildView({DateTime? initialDate}) => freeScrollView(
     eventsController: eventsController,
     kalenderController: kalenderController,
-    viewConfiguration: MultiDayViewConfiguration.freeScroll(
-      numberOfDays: 3,
-      initialDateTime: initialDate,
-      displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
-    ),
+    displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
+    initialDateTime: initialDate,
+    numberOfDays: 3,
     callbacks: callbacks,
-    header: KalenderHeader(multiDayTileComponents: tileComponents),
-    body: KalenderBody(multiDayTileComponents: tileComponents),
   );
 
   group('FreeScroll header', () {
@@ -64,7 +56,7 @@ void main() {
         tester,
         ValueListenableBuilder(
           valueListenable: rebuild,
-          builder: (context, _, __) => freeScrollView(initialDate: base.add(const Duration(days: 2))),
+          builder: (context, _, __) => buildView(initialDate: base.add(const Duration(days: 2))),
         ),
       );
 
@@ -82,7 +74,7 @@ void main() {
       eventsController = DefaultEventsController();
       kalenderController = KalenderController();
       addTwoRowDay();
-      await pumpAndSettleWithMaterialApp(tester, freeScrollView(initialDate: initialDate));
+      await pumpAndSettleWithMaterialApp(tester, buildView(initialDate: initialDate));
       return tester.getSize(find.byType(KalenderHeader)).height;
     }
 

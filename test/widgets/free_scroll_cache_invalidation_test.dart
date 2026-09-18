@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show MultiDayEventTile;
@@ -24,32 +23,23 @@ void main() {
     kalenderController = KalenderController();
   });
 
-  final components = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}')),
-  );
-
   Future<void> pumpFreeScroll(WidgetTester tester) {
-    return pumpKalender(
+    return pumpAndSettleWithMaterialApp(
       tester,
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.freeScroll(
-        numberOfDays: 3,
+      freeScrollView(
+        eventsController: eventsController,
+        kalenderController: kalenderController,
         displayRange: displayRange,
         initialDateTime: initial,
-        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        numberOfDays: 3,
       ),
-      header: KalenderHeader(multiDayTileComponents: components),
-      body: KalenderBody(multiDayTileComponents: components),
     );
   }
-
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
 
   testWidgets('multi-day event stays visible when scrolling back to windows cached before it existed', (tester) async {
     await pumpFreeScroll(tester);
 
-    final pageController = viewController().pageController;
+    final pageController = kalenderController.multiDayViewController.pageController;
     final base = (pageController.page ?? 0).round();
     pageController.jumpToPage(base - 2);
     await tester.pumpAndSettle();

@@ -7,7 +7,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 
 import '../utilities.dart';
 
@@ -22,22 +21,10 @@ void main() {
     final monday = FloatingDateTime.fromDateTime(now()).startOfWeek();
     final range = FloatingDateTimeRange(start: monday, end: monday.endOfWeek());
 
-    return SizedBox(
-      width: pageWidth,
-      height: 100,
-      child: Stack(
-        children: [
-          TimeIndicatorPositioner(
-            viewController: MultiDayViewController(
-              viewConfiguration: MultiDayViewConfiguration.week(displayRange: range.forLocation(), nowCallback: now),
-              floatingVisibleRange: ValueNotifier(range),
-              visibleEvents: ValueNotifier(<KalenderEvent>{}),
-            ),
-            initialPage: 0,
-            childOverride: SizedBox(key: indicatorKey),
-          ),
-        ],
-      ),
+    return timeIndicatorPositioner(
+      viewConfiguration: MultiDayViewConfiguration.week(displayRange: range.forLocation(), nowCallback: now),
+      visibleRange: range,
+      indicatorKey: indicatorKey,
     );
   }
 
