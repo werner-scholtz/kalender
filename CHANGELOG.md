@@ -31,6 +31,7 @@
 - An event tile keeps one listener per controller across dependency changes.
 - `OverlapLayoutDelegate.sortEvents` keeps the duration-then-start order for more than 32 events.
 - `MultiDayViewConfiguration.copyWith` keeps `initialHeightPerMinute` instead of resetting it to the default.
+- The paginated schedule view builds, scrolls and reports the page on screen after a cancelled swipe.
 
 ### Examples
 

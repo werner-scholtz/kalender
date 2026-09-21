@@ -10,7 +10,14 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
+import 'package:meta/meta.dart' show internal;
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+typedef _PageList = ({
+  ItemScrollController scrollController,
+  ItemPositionsListener positionsListener,
+  VoidCallback onCurrent,
+});
 
 /// {@category Controllers and callbacks}
 abstract class ScheduleViewController extends ViewController with ScheduleMap {
@@ -35,17 +42,54 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
     populateMaps(numberOfPages);
   }
 
-  /// The [ItemScrollController] used to control the scrollable list of the current page.
+  /// The [ItemScrollController] of the list showing [currentPage].
   ItemScrollController? itemScrollController;
 
-  /// The [ItemPositionsListener] used to listen to the scroll position of the list.
+  /// The [ItemPositionsListener] of the list showing [currentPage].
   ItemPositionsListener? itemPositionsListener;
 
   /// The highlighted date time range.
   final highlightedRange = ValueNotifier<FloatingDateTimeRange?>(null);
 
-  /// The index of the current page.
-  late int currentPage;
+  /// The index of the page on screen.
+  ///
+  /// Setting it points [itemScrollController] and [itemPositionsListener] at the list of that page.
+  int get currentPage => _currentPage;
+  late int _currentPage;
+  set currentPage(int page) {
+    _currentPage = page;
+    final list = _lists[page];
+    _useList(list);
+    list?.onCurrent();
+  }
+
+  final _lists = <int, _PageList>{};
+
+  /// Registers the list showing [page]. [onCurrent] runs when [page] becomes [currentPage].
+  @internal
+  void attachList(
+    int page, {
+    required ItemScrollController scrollController,
+    required ItemPositionsListener positionsListener,
+    required VoidCallback onCurrent,
+  }) {
+    final list = (scrollController: scrollController, positionsListener: positionsListener, onCurrent: onCurrent);
+    _lists[page] = list;
+    if (page == currentPage) _useList(list);
+  }
+
+  /// Unregisters the list showing [page] unless another list registered for it since.
+  @internal
+  void detachList(int page, ItemScrollController scrollController) {
+    if (_lists[page]?.scrollController != scrollController) return;
+    _lists.remove(page);
+    if (page == currentPage) _useList(null);
+  }
+
+  void _useList(_PageList? list) {
+    itemScrollController = list?.scrollController;
+    itemPositionsListener = list?.positionsListener;
+  }
 
   /// Get the number of items for the current page.
   int get itemCount => itemCountForPage(currentPage);
