@@ -9,7 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
-  // ─── kDefaultSnapStrategy ─────────────────────────────────────────────────────
+  void overridePlatform(TargetPlatform? platform) {
+    debugDefaultTargetPlatformOverride = platform;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+  }
 
   group('IntervalSnapStrategy', () {
     final startOfDay = FloatingDateTime(2024, 1, 15);
@@ -54,58 +57,39 @@ void main() {
     });
   });
 
-  // ─── KalenderInteraction.resolveIsImprecise ──────────────────────────────────
-
   group('KalenderInteraction.resolveIsImprecise', () {
-    test('precise mode is never imprecise', () {
-      expect(KalenderInteraction(inputMode: InputMode.precise).resolveIsImprecise(), isFalse);
-    });
-
-    test('imprecise mode is always imprecise', () {
-      expect(KalenderInteraction(inputMode: InputMode.imprecise).resolveIsImprecise(), isTrue);
-    });
-
-    test('auto mode follows the platform: mobile → imprecise', () {
-      debugDefaultTargetPlatformOverride = TargetPlatform.android;
-      addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      expect(KalenderInteraction(inputMode: InputMode.auto).resolveIsImprecise(), isTrue);
-    });
-
-    test('auto mode follows the platform: desktop → precise', () {
-      debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
-      addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      expect(KalenderInteraction(inputMode: InputMode.auto).resolveIsImprecise(), isFalse);
-    });
+    for (final (mode, platform, imprecise) in [
+      (InputMode.precise, null, false),
+      (InputMode.imprecise, null, true),
+      (InputMode.auto, TargetPlatform.android, true),
+      (InputMode.auto, TargetPlatform.macOS, false),
+    ]) {
+      test('${mode.name} mode on ${platform?.name ?? 'any platform'} is ${imprecise ? 'imprecise' : 'precise'}', () {
+        overridePlatform(platform);
+        expect(KalenderInteraction(inputMode: mode).resolveIsImprecise(), imprecise);
+      });
+    }
   });
 
-  // ─── KalenderInteraction: default gestures depend on platform ────────────────
-
   group('KalenderInteraction default gestures', () {
-    test('mobile defaults to long-press for create/modify', () {
-      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-      addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      final interaction = KalenderInteraction();
-      expect(interaction.createEventGesture, equals(EventInteractionGesture.longPress));
-      expect(interaction.modifyEventGesture, equals(EventInteractionGesture.longPress));
-    });
-
-    test('desktop defaults to tap for create/modify', () {
-      debugDefaultTargetPlatformOverride = TargetPlatform.linux;
-      addTearDown(() => debugDefaultTargetPlatformOverride = null);
-      final interaction = KalenderInteraction();
-      expect(interaction.createEventGesture, equals(EventInteractionGesture.tap));
-      expect(interaction.modifyEventGesture, equals(EventInteractionGesture.tap));
-    });
+    for (final (platform, gesture) in [
+      (TargetPlatform.iOS, EventInteractionGesture.longPress),
+      (TargetPlatform.linux, EventInteractionGesture.tap),
+    ]) {
+      test('${platform.name} defaults to ${gesture.name} for create/modify', () {
+        overridePlatform(platform);
+        final interaction = KalenderInteraction();
+        expect(interaction.createEventGesture, equals(gesture));
+        expect(interaction.modifyEventGesture, equals(gesture));
+      });
+    }
 
     test('an explicit gesture overrides the platform default', () {
-      debugDefaultTargetPlatformOverride = TargetPlatform.android;
-      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      overridePlatform(TargetPlatform.android);
       final interaction = KalenderInteraction(createEventGesture: EventInteractionGesture.tap);
       expect(interaction.createEventGesture, equals(EventInteractionGesture.tap));
     });
   });
-
-  // ─── KalenderInteraction.copyWith ────────────────────────────────────────────
 
   group('KalenderInteraction.copyWith', () {
     test('replaces only the provided fields and preserves the rest', () {
@@ -128,7 +112,6 @@ void main() {
       expect(copy.allowResizing, isFalse);
       expect(copy.inputMode, equals(InputMode.imprecise));
       expect(copy.modifyEventGesture, equals(EventInteractionGesture.longPress));
-      // Untouched fields are preserved.
       expect(copy.allowRescheduling, isTrue);
       expect(copy.allowEventCreation, isTrue);
       expect(copy.allowHorizontalImpreciseResize, isFalse);
@@ -147,8 +130,6 @@ void main() {
       expect(copy.createEventGesture, equals(original.createEventGesture));
     });
   });
-
-  // ─── KalenderInteraction: equality ───────────────────────────────────────────
 
   group('KalenderInteraction equality', () {
     KalenderInteraction make() => KalenderInteraction(
@@ -182,14 +163,9 @@ void main() {
     }
   });
 
-  // ─── EventInteraction ────────────────────────────────────────────────────────
-
   group('EventInteraction', () {
     test('default constructor allows all interactions', () {
-      final interaction = EventInteraction();
-      expect(interaction.allowStartResize, isTrue);
-      expect(interaction.allowEndResize, isTrue);
-      expect(interaction.allowRescheduling, isTrue);
+      expect(EventInteraction(), equals(EventInteraction.allowAll()));
     });
 
     test('fromCanModify(true) enables every interaction', () {
@@ -203,10 +179,10 @@ void main() {
     });
 
     test('allowNone disables every interaction', () {
-      final interaction = EventInteraction.allowNone();
-      expect(interaction.allowStartResize, isFalse);
-      expect(interaction.allowEndResize, isFalse);
-      expect(interaction.allowRescheduling, isFalse);
+      expect(
+        EventInteraction.allowNone(),
+        equals(EventInteraction(allowStartResize: false, allowEndResize: false, allowRescheduling: false)),
+      );
     });
 
     test('allowAll and allowNone are not equal', () {
@@ -227,8 +203,6 @@ void main() {
       });
     }
   });
-
-  // ─── KalenderSnapping ────────────────────────────────────────────────────────
 
   group('KalenderSnapping', () {
     test('copyWith replaces only the provided fields', () {

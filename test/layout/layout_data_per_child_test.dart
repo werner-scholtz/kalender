@@ -50,8 +50,7 @@ void main() {
   });
 
   test('a subclass whose hashCode ignores the id does not lose children', () {
-    // Legal Dart, and normally only makes hash lookups slower. Here it used to
-    // collapse every event into one entry.
+    // Legal Dart, and normally only makes hash lookups slower.
     final delegate = delegateFor([
       _ConstantHashEvent(hour: 9),
       _ConstantHashEvent(hour: 11),

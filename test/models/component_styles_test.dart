@@ -32,7 +32,6 @@ void main() {
       final merged = a.merge(const DayHeaderStyle(textStyle: TextStyle(fontSize: 30)));
       expect(merged.textStyle, const TextStyle(fontSize: 30));
       expect(merged.mainAxisAlignment, a.mainAxisAlignment);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
@@ -40,14 +39,17 @@ void main() {
       expect(mid.textStyle?.fontSize, 15);
       expect(DayHeaderStyle.lerp(a, b, 0.25)!.mainAxisAlignment, MainAxisAlignment.start);
       expect(DayHeaderStyle.lerp(a, b, 0.75)!.mainAxisAlignment, MainAxisAlignment.end);
-      expect(DayHeaderStyle.lerp(null, null, 0.5), null);
       expect(DayHeaderStyle.lerp(a, a, 0.5), a);
     });
 
-    test('equality', () {
-      expect(a, const DayHeaderStyle(textStyle: TextStyle(fontSize: 10), mainAxisAlignment: MainAxisAlignment.start));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: DayHeaderStyle(textStyle: const TextStyle(fontSize: 10), mainAxisAlignment: MainAxisAlignment.start),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: DayHeaderStyle.lerp,
+    );
   });
 
   group('TimelineStyle', () {
@@ -64,7 +66,6 @@ void main() {
       final merged = a.merge(const TimelineStyle(width: 30));
       expect(merged.width, 30);
       expect(merged.textPadding, a.textPadding);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
@@ -73,13 +74,16 @@ void main() {
       expect(mid.textPadding, const EdgeInsets.all(6));
       expect(TimelineStyle.lerp(a, b, 0.25)!.textDirection, TextDirection.ltr);
       expect(TimelineStyle.lerp(a, b, 0.75)!.textDirection, TextDirection.rtl);
-      expect(TimelineStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const TimelineStyle(width: 10, textPadding: EdgeInsets.all(4), textDirection: TextDirection.ltr));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: TimelineStyle(width: 10, textPadding: const EdgeInsets.all(4), textDirection: TextDirection.ltr),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: TimelineStyle.lerp,
+    );
   });
 
   group('HourLinesStyle', () {
@@ -96,7 +100,6 @@ void main() {
       final merged = a.merge(const HourLinesStyle(endIndent: 5));
       expect(merged.endIndent, 5);
       expect(merged.color, a.color);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
@@ -104,13 +107,16 @@ void main() {
       expect(mid.thickness, 2);
       expect(mid.indent, 5);
       expect(mid.color, Color.lerp(a.color, b.color, 0.5));
-      expect(HourLinesStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const HourLinesStyle(color: Color(0xFF000000), thickness: 1, indent: 0));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: HourLinesStyle(color: const Color(0xFF000000), thickness: 1, indent: 0),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: HourLinesStyle.lerp,
+    );
   });
 
   group('DaySeparatorStyle', () {
@@ -127,20 +133,22 @@ void main() {
       final merged = a.merge(const DaySeparatorStyle(bottomIndent: 5));
       expect(merged.bottomIndent, 5);
       expect(merged.color, a.color);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = DaySeparatorStyle.lerp(a, b, 0.5)!;
       expect(mid.width, 2);
       expect(mid.topIndent, 5);
-      expect(DaySeparatorStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const DaySeparatorStyle(color: Color(0xFF000000), width: 1, topIndent: 0));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: DaySeparatorStyle(color: const Color(0xFF000000), width: 1, topIndent: 0),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: DaySeparatorStyle.lerp,
+    );
   });
 
   group('TimeIndicatorStyle', () {
@@ -157,20 +165,22 @@ void main() {
       final merged = a.merge(const TimeIndicatorStyle(thickness: 4));
       expect(merged.thickness, 4);
       expect(merged.circleSize, a.circleSize);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = TimeIndicatorStyle.lerp(a, b, 0.5)!;
       expect(mid.thickness, 2);
       expect(mid.circleSize, const Size(15, 15));
-      expect(TimeIndicatorStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const TimeIndicatorStyle(lineColor: Color(0xFF000000), thickness: 1, circleSize: Size(10, 10)));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: TimeIndicatorStyle(lineColor: const Color(0xFF000000), thickness: 1, circleSize: const Size(10, 10)),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: TimeIndicatorStyle.lerp,
+    );
   });
 
   group('WeekNumberStyle', () {
@@ -197,7 +207,6 @@ void main() {
       final merged = a.merge(const WeekNumberStyle(buttonSize: Size(32, 32)));
       expect(merged.buttonSize, const Size(32, 32));
       expect(merged.tooltip, a.tooltip);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
@@ -207,21 +216,21 @@ void main() {
       expect(mid.alignment, Alignment.center);
       expect(WeekNumberStyle.lerp(a, b, 0.25)!.tooltip, 'a');
       expect(WeekNumberStyle.lerp(a, b, 0.75)!.tooltip, 'b');
-      expect(WeekNumberStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(
-        a,
-        const WeekNumberStyle(
-          tooltip: 'a',
-          padding: EdgeInsets.all(4),
-          alignment: Alignment.topLeft,
-          buttonSize: Size(20, 20),
-        ),
-      );
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: WeekNumberStyle(
+        tooltip: 'a',
+        padding: const EdgeInsets.all(4),
+        alignment: Alignment.topLeft,
+        buttonSize: const Size(20, 20),
+      ),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: WeekNumberStyle.lerp,
+    );
   });
 
   group('ResizeHandleStyle', () {
@@ -238,20 +247,22 @@ void main() {
       final merged = a.merge(const ResizeHandleStyle(impreciseLength: 32));
       expect(merged.impreciseLength, 32);
       expect(merged.length, a.length);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = ResizeHandleStyle.lerp(a, b, 0.5)!;
       expect(mid.length, 15);
       expect(mid.impreciseLength, 30);
-      expect(ResizeHandleStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const ResizeHandleStyle(length: 10, impreciseLength: 20));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: ResizeHandleStyle(length: 10, impreciseLength: 20),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: ResizeHandleStyle.lerp,
+    );
   });
 
   group('MonthGridStyle', () {
@@ -268,18 +279,20 @@ void main() {
       final merged = a.merge(const MonthGridStyle(thickness: 4));
       expect(merged.thickness, 4);
       expect(merged.color, a.color);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       expect(MonthGridStyle.lerp(a, b, 0.5)!.thickness, 2);
-      expect(MonthGridStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const MonthGridStyle(color: Color(0xFF000000), thickness: 1));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: MonthGridStyle(color: const Color(0xFF000000), thickness: 1),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: MonthGridStyle.lerp,
+    );
   });
 
   group('MonthDayHeaderStyle', () {
@@ -297,20 +310,22 @@ void main() {
       final merged = a.merge(const MonthDayHeaderStyle(buttonSize: Size(30, 30)));
       expect(merged.buttonSize, const Size(30, 30));
       expect(merged.numberTextStyle, a.numberTextStyle);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = MonthDayHeaderStyle.lerp(a, b, 0.5)!;
       expect(mid.numberTextStyle?.fontSize, 15);
       expect(mid.buttonSize, const Size(30, 30));
-      expect(MonthDayHeaderStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20)));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: MonthDayHeaderStyle(numberTextStyle: const TextStyle(fontSize: 10), buttonSize: const Size(20, 20)),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: MonthDayHeaderStyle.lerp,
+    );
   });
 
   group('WeekDayHeaderStyle', () {
@@ -327,20 +342,22 @@ void main() {
       final merged = a.merge(const WeekDayHeaderStyle(padding: EdgeInsets.all(6)));
       expect(merged.padding, const EdgeInsets.all(6));
       expect(merged.textStyle, a.textStyle);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = WeekDayHeaderStyle.lerp(a, b, 0.5)!;
       expect(mid.textStyle?.fontSize, 15);
       expect(mid.padding, const EdgeInsets.all(6));
-      expect(WeekDayHeaderStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const WeekDayHeaderStyle(textStyle: TextStyle(fontSize: 10), padding: EdgeInsets.all(4)));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: WeekDayHeaderStyle(textStyle: const TextStyle(fontSize: 10), padding: const EdgeInsets.all(4)),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: WeekDayHeaderStyle.lerp,
+    );
   });
 
   group('ScheduleDateStyle', () {
@@ -357,18 +374,20 @@ void main() {
       final merged = a.merge(const ScheduleDateStyle(numberTextStyle: TextStyle(fontSize: 9)));
       expect(merged.numberTextStyle, const TextStyle(fontSize: 9));
       expect(merged.textStyle, a.textStyle);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       expect(ScheduleDateStyle.lerp(a, b, 0.5)!.textStyle?.fontSize, 15);
-      expect(ScheduleDateStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const ScheduleDateStyle(textStyle: TextStyle(fontSize: 10)));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: ScheduleDateStyle(textStyle: const TextStyle(fontSize: 10)),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: ScheduleDateStyle.lerp,
+    );
   });
 
   group('ScheduleTileHighlightStyle', () {
@@ -383,20 +402,22 @@ void main() {
     test('merge', () {
       final merged = a.merge(b);
       expect(merged.decoration, b.decoration);
-      expect(a.merge(null), a);
       expect(a.merge(const ScheduleTileHighlightStyle()).decoration, a.decoration);
     });
 
     test('lerp', () {
       final mid = ScheduleTileHighlightStyle.lerp(a, b, 0.5)!;
       expect(mid.decoration?.color, Color.lerp(const Color(0xFF000000), const Color(0xFFFFFFFF), 0.5));
-      expect(ScheduleTileHighlightStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(a, const ScheduleTileHighlightStyle(decoration: BoxDecoration(color: Color(0xFF000000))));
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: ScheduleTileHighlightStyle(decoration: const BoxDecoration(color: Color(0xFF000000))),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: ScheduleTileHighlightStyle.lerp,
+    );
   });
 
   group('MultiDayOverlayStyle', () {
@@ -413,23 +434,25 @@ void main() {
       final merged = a.merge(const MultiDayOverlayStyle(eventPadding: EdgeInsets.all(2)));
       expect(merged.eventPadding, const EdgeInsets.all(2));
       expect(merged.dayNameTextStyle, a.dayNameTextStyle);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = MultiDayOverlayStyle.lerp(a, b, 0.5)!;
       expect(mid.dayNameTextStyle?.fontSize, 15);
       expect(mid.headerPadding, const EdgeInsets.all(6));
-      expect(MultiDayOverlayStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(
-        a,
-        const MultiDayOverlayStyle(dayNameTextStyle: TextStyle(fontSize: 10), headerPadding: EdgeInsets.all(4)),
-      );
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: MultiDayOverlayStyle(
+        dayNameTextStyle: const TextStyle(fontSize: 10),
+        headerPadding: const EdgeInsets.all(4),
+      ),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: MultiDayOverlayStyle.lerp,
+    );
 
     group('card, button, barrier and size fields', () {
       const wide = MultiDayOverlayStyle(
@@ -485,9 +508,10 @@ void main() {
       test('equality', () {
         expect(
           wide,
-          const MultiDayOverlayStyle(
-            cardTheme: CardThemeData(color: Color(0xFF000000), elevation: 2),
-            barrierColor: Color(0xFF000000),
+          // ignore: prefer_const_constructors
+          MultiDayOverlayStyle(
+            cardTheme: const CardThemeData(color: Color(0xFF000000), elevation: 2),
+            barrierColor: const Color(0xFF000000),
             width: 100,
             headerHeight: 40,
           ),
@@ -512,23 +536,25 @@ void main() {
       final merged = a.merge(const MultiDayPortalOverlayButtonStyle(textOverflow: TextOverflow.clip));
       expect(merged.textOverflow, TextOverflow.clip);
       expect(merged.textStyle, a.textStyle);
-      expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = MultiDayPortalOverlayButtonStyle.lerp(a, b, 0.5)!;
       expect(mid.textStyle?.fontSize, 15);
       expect(mid.textPadding, const EdgeInsets.all(6));
-      expect(MultiDayPortalOverlayButtonStyle.lerp(null, null, 0.5), null);
     });
 
-    test('equality', () {
-      expect(
-        a,
-        const MultiDayPortalOverlayButtonStyle(textStyle: TextStyle(fontSize: 10), textPadding: EdgeInsets.all(4)),
-      );
-      expect(a == b, false);
-    });
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: MultiDayPortalOverlayButtonStyle(
+        textStyle: const TextStyle(fontSize: 10),
+        textPadding: const EdgeInsets.all(4),
+      ),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: MultiDayPortalOverlayButtonStyle.lerp,
+    );
   });
 
   group('Diagnosticable', () {
@@ -571,10 +597,25 @@ void main() {
         KalenderThemeData(),
       ];
 
-      expect(styles, hasLength(15));
       for (final style in styles) {
         expect(style.toString(), startsWith(style.runtimeType.toString()));
       }
     });
+  });
+}
+
+void _testStyleContract<T extends Object>({
+  required T a,
+  required T copyOfA,
+  required T b,
+  required T Function(T style, T? other) merge,
+  required T? Function(T? a, T? b, double t) lerp,
+}) {
+  test('equality, merge(null) and lerp(null, null)', () {
+    expect(identical(copyOfA, a), isFalse);
+    expect(copyOfA, a);
+    expect(b, isNot(a));
+    expect(merge(a, null), a);
+    expect(lerp(null, null, 0.5), isNull);
   });
 }

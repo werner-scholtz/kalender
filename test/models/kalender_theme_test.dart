@@ -9,7 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
-  /// Pumps a [MaterialApp] with the given [extension] and hands the inner context to [callback].
   Future<void> pumpWithTheme(
     WidgetTester tester, {
     KalenderThemeData? extension,
@@ -71,16 +70,13 @@ void main() {
           final theme = KalenderTheme.of(context);
           final colorScheme = Theme.of(context).colorScheme;
 
-          // Overridden fields come from the extension.
           expect(theme.timeIndicatorStyle?.lineColor, const Color(0xFF00FF00));
           expect(theme.hourLinesStyle?.thickness, 3);
 
-          // Fields the extension leaves null keep their defaults.
           expect(theme.timeIndicatorStyle?.thickness, 1);
           expect(theme.timeIndicatorStyle?.circleSize, const Size(10, 10));
           expect(theme.hourLinesStyle?.color, colorScheme.surfaceContainerHighest);
 
-          // Styles the extension does not mention are untouched defaults.
           expect(theme.daySeparatorStyle?.color, colorScheme.surfaceContainerHighest);
         },
       );
@@ -105,16 +101,22 @@ void main() {
 
   group('KalenderThemeData', () {
     test('copyWith replaces only the given styles', () {
-      const data = KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 1));
-      final copy = data.copyWith(monthGridStyle: const MonthGridStyle(thickness: 2));
-      expect(copy.monthGridStyle?.thickness, 2);
-      expect(copy.hourLinesStyle, data.hourLinesStyle);
-    });
-
-    test('copyWith keeps a style it is not given', () {
-      const data = KalenderThemeData(monthGridStyle: MonthGridStyle(thickness: 2));
-      final copy = data.copyWith(hourLinesStyle: const HourLinesStyle(thickness: 1));
-      expect(copy.monthGridStyle, data.monthGridStyle);
+      const expected = KalenderThemeData(
+        hourLinesStyle: HourLinesStyle(thickness: 1),
+        monthGridStyle: MonthGridStyle(thickness: 2),
+      );
+      expect(
+        const KalenderThemeData(
+          hourLinesStyle: HourLinesStyle(thickness: 1),
+        ).copyWith(monthGridStyle: const MonthGridStyle(thickness: 2)),
+        expected,
+      );
+      expect(
+        const KalenderThemeData(
+          monthGridStyle: MonthGridStyle(thickness: 2),
+        ).copyWith(hourLinesStyle: const HourLinesStyle(thickness: 1)),
+        expected,
+      );
     });
 
     test('merge overlays styles field by field', () {
@@ -128,13 +130,10 @@ void main() {
       );
 
       final merged = base.merge(overlay);
-      // Overlay wins where set, base fills the rest of the shared style.
       expect(merged.hourLinesStyle?.thickness, 5);
       expect(merged.hourLinesStyle?.color, const Color(0xFF000000));
-      // Styles only one side has come through as-is.
       expect(merged.monthGridStyle?.thickness, 0);
       expect(merged.timeIndicatorStyle?.lineColor, const Color(0xFF0000FF));
-      // Merging null is a no-op.
       expect(base.merge(null), base);
     });
 
@@ -146,14 +145,6 @@ void main() {
       expect(a.lerp(null, 0.5), a);
     });
 
-    test('equality', () {
-      const a = KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 1));
-      const b = KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 1));
-      const c = KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 2));
-      expect(a, b);
-      expect(a == c, false);
-    });
-
     test('equality compares every field', () {
       // Built without const, otherwise the two are canonicalized to one instance
       // and the comparison returns on identical() without reading any field.
@@ -163,6 +154,7 @@ void main() {
       final b = KalenderThemeData(hourLinesStyle: const HourLinesStyle(thickness: 1));
       expect(identical(a, b), isFalse);
       expect(a, b);
+      expect(a == const KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 2)), false);
 
       // The last field compared, so no earlier one can short-circuit ahead of it.
       final differsLast = a.copyWith(

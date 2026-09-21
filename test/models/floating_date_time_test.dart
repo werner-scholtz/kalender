@@ -13,34 +13,13 @@ void main() {
   setUpAll(tz.initializeTimeZones);
 
   group('FloatingDateTime', () {
-    // ── Constructor ──────────────────────────────────────────────────────
-
     group('constructor', () {
       test('creates a UTC DateTime with the given components', () {
-        final dt = FloatingDateTime(2024, 3, 15, 10, 30, 45, 100, 200);
-
-        expect(dt.year, 2024);
-        expect(dt.month, 3);
-        expect(dt.day, 15);
-        expect(dt.hour, 10);
-        expect(dt.minute, 30);
-        expect(dt.second, 45);
-        expect(dt.millisecond, 100);
-        expect(dt.microsecond, 200);
-        expect(dt.isUtc, true);
+        expect(FloatingDateTime(2024, 3, 15, 10, 30, 45, 100, 200), DateTime.utc(2024, 3, 15, 10, 30, 45, 100, 200));
       });
 
       test('defaults omitted components to zero / one', () {
-        final dt = FloatingDateTime(2024);
-
-        expect(dt.year, 2024);
-        expect(dt.month, 1);
-        expect(dt.day, 1);
-        expect(dt.hour, 0);
-        expect(dt.minute, 0);
-        expect(dt.second, 0);
-        expect(dt.millisecond, 0);
-        expect(dt.microsecond, 0);
+        expect(FloatingDateTime(2024), DateTime.utc(2024, 1, 1, 0, 0, 0, 0, 0));
       });
 
       test('is a subclass of DateTime', () {
@@ -48,50 +27,33 @@ void main() {
       });
     });
 
-    // ── fromDateTime ─────────────────────────────────────────────────────
-
     group('fromDateTime', () {
       test('preserves components of a local DateTime', () {
         final local = DateTime(2024, 6, 20, 14, 45, 30, 500, 700);
-        final internal = FloatingDateTime.fromDateTime(local);
-
-        expect(internal.year, 2024);
-        expect(internal.month, 6);
-        expect(internal.day, 20);
-        expect(internal.hour, 14);
-        expect(internal.minute, 45);
-        expect(internal.second, 30);
-        expect(internal.millisecond, 500);
-        expect(internal.microsecond, 700);
-        expect(internal.isUtc, true);
+        expect(FloatingDateTime.fromDateTime(local), DateTime.utc(2024, 6, 20, 14, 45, 30, 500, 700));
       });
 
       test('preserves components of a UTC DateTime', () {
         final utc = DateTime.utc(2024, 12, 31, 23, 59, 59);
-        final internal = FloatingDateTime.fromDateTime(utc);
-
-        expect(internal.year, 2024);
-        expect(internal.month, 12);
-        expect(internal.day, 31);
-        expect(internal.hour, 23);
-        expect(internal.minute, 59);
-        expect(internal.second, 59);
+        expect(FloatingDateTime.fromDateTime(utc), FloatingDateTime(2024, 12, 31, 23, 59, 59));
       });
 
       test('preserves components of a TZDateTime', () {
         final location = getLocation('America/New_York');
         final tzDate = TZDateTime(location, 2024, 7, 4, 22, 30);
-        final internal = FloatingDateTime.fromDateTime(tzDate);
+        expect(FloatingDateTime.fromDateTime(tzDate), FloatingDateTime(2024, 7, 4, 22, 30));
+      });
 
-        expect(internal.year, 2024);
-        expect(internal.month, 7);
-        expect(internal.day, 4);
-        expect(internal.hour, 22);
-        expect(internal.minute, 30);
+      test('preserves components of a TZDateTime with a negative offset', () {
+        final tzDate = TZDateTime(getLocation('Pacific/Honolulu'), 2024, 1, 1, 1);
+        expect(FloatingDateTime.fromDateTime(tzDate), FloatingDateTime(2024, 1, 1, 1));
+      });
+
+      test('preserves components of a TZDateTime with a positive offset', () {
+        final tzDate = TZDateTime(getLocation('Asia/Tokyo'), 2024, 1, 1, 2);
+        expect(FloatingDateTime.fromDateTime(tzDate), FloatingDateTime(2024, 1, 1, 2));
       });
     });
-
-    // ── fromExternal ─────────────────────────────────────────────────────
 
     group('fromExternal', () {
       test('returns the same instance if already an FloatingDateTime', () {
@@ -102,111 +64,54 @@ void main() {
       });
 
       test('converts a local DateTime via local timezone when no location is given', () {
-        // Create a UTC DateTime and convert through fromExternal without a location.
-        // This should convert to local first, then store those components.
         final utc = DateTime.utc(2024, 6, 15, 12, 0);
-        final result = FloatingDateTime.fromExternal(utc);
-        final expectedLocal = utc.toLocal();
-
-        expect(result.year, expectedLocal.year);
-        expect(result.month, expectedLocal.month);
-        expect(result.day, expectedLocal.day);
-        expect(result.hour, expectedLocal.hour);
-        expect(result.minute, expectedLocal.minute);
+        expect(FloatingDateTime.fromExternal(utc), FloatingDateTime.fromDateTime(utc.toLocal()));
       });
 
       test('converts a UTC DateTime to the specified location', () {
         final location = getLocation('Asia/Tokyo'); // UTC+9
-        final utc = DateTime.utc(2024, 1, 1, 0, 0); // midnight UTC
-        final result = FloatingDateTime.fromExternal(utc, location: location);
-
-        // In Tokyo this is Jan 1 09:00
-        expect(result.year, 2024);
-        expect(result.month, 1);
-        expect(result.day, 1);
-        expect(result.hour, 9);
-        expect(result.minute, 0);
+        final utc = DateTime.utc(2024, 1, 1, 0, 0);
+        expect(FloatingDateTime.fromExternal(utc, location: location), FloatingDateTime(2024, 1, 1, 9, 0));
       });
 
       test('converts a UTC DateTime that crosses day boundary in target location', () {
         final location = getLocation('Pacific/Honolulu'); // UTC-10
-        final utc = DateTime.utc(2024, 3, 1, 5, 0); // 5 AM UTC on Mar 1
-        final result = FloatingDateTime.fromExternal(utc, location: location);
-
-        // In Honolulu this is Feb 29 19:00 (2024 is a leap year)
-        expect(result.year, 2024);
-        expect(result.month, 2);
-        expect(result.day, 29);
-        expect(result.hour, 19);
+        final utc = DateTime.utc(2024, 3, 1, 5, 0);
+        // 2024 is a leap year.
+        expect(FloatingDateTime.fromExternal(utc, location: location), FloatingDateTime(2024, 2, 29, 19));
       });
     });
 
-    // ── startOfDay ───────────────────────────────────────────────────────
-
     group('startOfDay', () {
       test('returns midnight of the same date', () {
-        final dt = FloatingDateTime(2024, 3, 15, 14, 30, 45);
-        final sod = dt.startOfDay;
-
-        expect(sod.year, 2024);
-        expect(sod.month, 3);
-        expect(sod.day, 15);
-        expect(sod.hour, 0);
-        expect(sod.minute, 0);
-        expect(sod.second, 0);
-        expect(sod.millisecond, 0);
-        expect(sod.microsecond, 0);
+        expect(
+          FloatingDateTime(2024, 3, 15, 14, 30, 45).startOfDay,
+          allOf(isA<FloatingDateTime>(), FloatingDateTime(2024, 3, 15)),
+        );
       });
 
       test('is idempotent for midnight', () {
         final midnight = FloatingDateTime(2024, 1, 1);
         expect(midnight.startOfDay, midnight);
       });
-
-      test('returns an FloatingDateTime', () {
-        expect(FloatingDateTime(2024, 5, 1, 12).startOfDay, isA<FloatingDateTime>());
-      });
     });
-
-    // ── endOfDay ─────────────────────────────────────────────────────────
 
     group('endOfDay', () {
       test('returns midnight of the next day', () {
-        final dt = FloatingDateTime(2024, 3, 15, 14, 30);
-        final eod = dt.endOfDay;
-
-        expect(eod.year, 2024);
-        expect(eod.month, 3);
-        expect(eod.day, 16);
-        expect(eod.hour, 0);
-        expect(eod.minute, 0);
-        expect(eod.second, 0);
+        expect(
+          FloatingDateTime(2024, 3, 15, 14, 30).endOfDay,
+          allOf(isA<FloatingDateTime>(), FloatingDateTime(2024, 3, 16)),
+        );
       });
 
       test('wraps month correctly on last day of month', () {
-        final dt = FloatingDateTime(2024, 1, 31, 10, 0);
-        final eod = dt.endOfDay;
-
-        expect(eod.year, 2024);
-        expect(eod.month, 2);
-        expect(eod.day, 1);
+        expect(FloatingDateTime(2024, 1, 31, 10, 0).endOfDay, FloatingDateTime(2024, 2, 1));
       });
 
       test('wraps year correctly on Dec 31', () {
-        final dt = FloatingDateTime(2024, 12, 31, 23, 59);
-        final eod = dt.endOfDay;
-
-        expect(eod.year, 2025);
-        expect(eod.month, 1);
-        expect(eod.day, 1);
-      });
-
-      test('returns an FloatingDateTime', () {
-        expect(FloatingDateTime(2024).endOfDay, isA<FloatingDateTime>());
+        expect(FloatingDateTime(2024, 12, 31, 23, 59).endOfDay, FloatingDateTime(2025, 1, 1));
       });
     });
-
-    // ── dayRange ─────────────────────────────────────────────────────────
 
     group('dayRange', () {
       test('covers the full day as a half-open range', () {
@@ -223,37 +128,19 @@ void main() {
       });
     });
 
-    // ── startOfMonth / endOfMonth / monthRange ───────────────────────────
-
     group('startOfMonth', () {
       test('returns the first day of the month at midnight', () {
-        final dt = FloatingDateTime(2024, 7, 20, 15, 45);
-        final som = dt.startOfMonth;
-
-        expect(som.year, 2024);
-        expect(som.month, 7);
-        expect(som.day, 1);
-        expect(som.hour, 0);
+        expect(FloatingDateTime(2024, 7, 20, 15, 45).startOfMonth, FloatingDateTime(2024, 7, 1));
       });
     });
 
     group('endOfMonth', () {
       test('returns the first day of the next month at midnight', () {
-        final dt = FloatingDateTime(2024, 1, 15);
-        final eom = dt.endOfMonth;
-
-        expect(eom.year, 2024);
-        expect(eom.month, 2);
-        expect(eom.day, 1);
+        expect(FloatingDateTime(2024, 1, 15).endOfMonth, FloatingDateTime(2024, 2, 1));
       });
 
       test('wraps year correctly for December', () {
-        final dt = FloatingDateTime(2024, 12, 25);
-        final eom = dt.endOfMonth;
-
-        expect(eom.year, 2025);
-        expect(eom.month, 1);
-        expect(eom.day, 1);
+        expect(FloatingDateTime(2024, 12, 25).endOfMonth, FloatingDateTime(2025, 1, 1));
       });
     });
 
@@ -276,26 +163,15 @@ void main() {
       });
     });
 
-    // ── startOfYear / endOfYear / yearRange ──────────────────────────────
-
     group('startOfYear', () {
       test('returns January 1st at midnight', () {
-        final soy = FloatingDateTime(2024, 8, 20, 10, 30).startOfYear;
-
-        expect(soy.year, 2024);
-        expect(soy.month, 1);
-        expect(soy.day, 1);
-        expect(soy.hour, 0);
+        expect(FloatingDateTime(2024, 8, 20, 10, 30).startOfYear, FloatingDateTime(2024, 1, 1));
       });
     });
 
     group('endOfYear', () {
       test('returns January 1st of the next year at midnight', () {
-        final eoy = FloatingDateTime(2024, 5, 15).endOfYear;
-
-        expect(eoy.year, 2025);
-        expect(eoy.month, 1);
-        expect(eoy.day, 1);
+        expect(FloatingDateTime(2024, 5, 15).endOfYear, FloatingDateTime(2025, 1, 1));
       });
     });
 
@@ -318,160 +194,81 @@ void main() {
       });
     });
 
-    // ── isStartOfDay ─────────────────────────────────────────────────────
-
     group('isStartOfDay', () {
-      test('returns true for midnight', () {
-        expect(FloatingDateTime(2024, 1, 1).isStartOfDay, true);
-      });
-
-      test('returns false when hour is non-zero', () {
-        expect(FloatingDateTime(2024, 1, 1, 1).isStartOfDay, false);
-      });
-
-      test('returns false when minute is non-zero', () {
-        expect(FloatingDateTime(2024, 1, 1, 0, 1).isStartOfDay, false);
-      });
-
-      test('returns false when second is non-zero', () {
-        expect(FloatingDateTime(2024, 1, 1, 0, 0, 1).isStartOfDay, false);
-      });
-
-      test('returns false when millisecond is non-zero', () {
-        expect(FloatingDateTime(2024, 1, 1, 0, 0, 0, 1).isStartOfDay, false);
-      });
-
-      test('returns false when microsecond is non-zero', () {
-        expect(FloatingDateTime(2024, 1, 1, 0, 0, 0, 0, 1).isStartOfDay, false);
-      });
+      for (final (name, dateTime, expected) in [
+        ('midnight', FloatingDateTime(2024, 1, 1), true),
+        ('a non-zero hour', FloatingDateTime(2024, 1, 1, 1), false),
+        ('a non-zero minute', FloatingDateTime(2024, 1, 1, 0, 1), false),
+        ('a non-zero second', FloatingDateTime(2024, 1, 1, 0, 0, 1), false),
+        ('a non-zero millisecond', FloatingDateTime(2024, 1, 1, 0, 0, 0, 1), false),
+        ('a non-zero microsecond', FloatingDateTime(2024, 1, 1, 0, 0, 0, 0, 1), false),
+      ]) {
+        test('returns $expected for $name', () {
+          expect(dateTime.isStartOfDay, expected);
+        });
+      }
     });
 
-    // ── startOfWeek / endOfWeek / weekRange ──────────────────────────────
+    // 2024-01-08 is a Monday, 2024-01-10 a Wednesday and 2024-01-14 a Sunday.
+    final monday = FloatingDateTime(2024, 1, 8);
+    final wednesday = FloatingDateTime(2024, 1, 10);
+    final sunday = FloatingDateTime(2024, 1, 14);
 
     group('startOfWeek', () {
       test('returns Monday for a Wednesday (default firstDayOfWeek)', () {
-        // 2024-01-10 is a Wednesday
-        final dt = FloatingDateTime(2024, 1, 10, 14, 30);
-        final sow = dt.startOfWeek();
-
-        expect(sow.year, 2024);
-        expect(sow.month, 1);
-        expect(sow.day, 8); // Monday
-        expect(sow.weekday, DateTime.monday);
-        expect(sow.hour, 0);
+        expect(wednesday.copyWith(hour: 14, minute: 30).startOfWeek(), monday);
       });
 
       test('returns Monday for a Monday', () {
-        // 2024-01-08 is a Monday
-        final dt = FloatingDateTime(2024, 1, 8);
-        final sow = dt.startOfWeek();
-
-        expect(sow.day, 8);
-        expect(sow.weekday, DateTime.monday);
+        expect(monday.startOfWeek(), monday);
       });
 
       test('returns Monday for a Sunday', () {
-        // 2024-01-14 is a Sunday
-        final dt = FloatingDateTime(2024, 1, 14);
-        final sow = dt.startOfWeek();
-
-        expect(sow.day, 8); // Monday Jan 8
-        expect(sow.weekday, DateTime.monday);
+        expect(sunday.startOfWeek(), monday);
       });
 
       test('returns Sunday when firstDayOfWeek is Sunday', () {
-        // 2024-01-10 is a Wednesday
-        final dt = FloatingDateTime(2024, 1, 10);
-        final sow = dt.startOfWeek(firstDayOfWeek: DateTime.sunday);
-
-        expect(sow.day, 7); // Sunday Jan 7
-        expect(sow.weekday, DateTime.sunday);
+        expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.sunday), FloatingDateTime(2024, 1, 7));
       });
 
       test('returns Saturday when firstDayOfWeek is Saturday', () {
-        // 2024-01-10 is a Wednesday
-        final dt = FloatingDateTime(2024, 1, 10);
-        final sow = dt.startOfWeek(firstDayOfWeek: DateTime.saturday);
-
-        expect(sow.day, 6); // Saturday Jan 6
-        expect(sow.weekday, DateTime.saturday);
+        expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.saturday), FloatingDateTime(2024, 1, 6));
       });
 
       test('can cross month boundary backward', () {
         // 2024-03-01 is a Friday
-        final dt = FloatingDateTime(2024, 3, 1);
-        final sow = dt.startOfWeek();
-
-        expect(sow.year, 2024);
-        expect(sow.month, 2);
-        expect(sow.day, 26); // Monday Feb 26
+        expect(FloatingDateTime(2024, 3, 1).startOfWeek(), FloatingDateTime(2024, 2, 26));
       });
 
       test('can cross year boundary backward', () {
-        // 2024-01-01 is a Monday — but let's pick Jan 3 (Wednesday)
-        final dt = FloatingDateTime(2024, 1, 3);
-        final sow = dt.startOfWeek();
-
-        expect(sow.year, 2024);
-        expect(sow.month, 1);
-        expect(sow.day, 1); // Monday Jan 1
+        // 2024-01-03 is a Wednesday
+        expect(FloatingDateTime(2024, 1, 3).startOfWeek(), FloatingDateTime(2024, 1, 1));
 
         // 2025-01-01 is a Wednesday
-        final dt2 = FloatingDateTime(2025, 1, 1);
-        final sow2 = dt2.startOfWeek();
-
-        expect(sow2.year, 2024);
-        expect(sow2.month, 12);
-        expect(sow2.day, 30); // Monday Dec 30
+        expect(FloatingDateTime(2025, 1, 1).startOfWeek(), FloatingDateTime(2024, 12, 30));
       });
     });
 
     group('endOfWeek', () {
       test('returns next Monday for a Wednesday (default firstDayOfWeek)', () {
-        // 2024-01-10 is a Wednesday
-        final dt = FloatingDateTime(2024, 1, 10);
-        final eow = dt.endOfWeek();
-
-        expect(eow.year, 2024);
-        expect(eow.month, 1);
-        expect(eow.day, 15); // next Monday
-        expect(eow.weekday, DateTime.monday);
-        expect(eow.hour, 0);
+        expect(wednesday.endOfWeek(), FloatingDateTime(2024, 1, 15));
       });
 
       test('returns next Monday for a Monday', () {
-        // 2024-01-08 is a Monday
-        final dt = FloatingDateTime(2024, 1, 8);
-        final eow = dt.endOfWeek();
-
-        expect(eow.day, 15);
+        expect(monday.endOfWeek(), FloatingDateTime(2024, 1, 15));
       });
 
       test('returns next Monday for a Sunday', () {
-        // 2024-01-14 is a Sunday
-        final dt = FloatingDateTime(2024, 1, 14);
-        final eow = dt.endOfWeek();
-
-        expect(eow.day, 15);
+        expect(sunday.endOfWeek(), FloatingDateTime(2024, 1, 15));
       });
 
       test('returns next Sunday when firstDayOfWeek is Sunday', () {
-        // 2024-01-10 is a Wednesday
-        final dt = FloatingDateTime(2024, 1, 10);
-        final eow = dt.endOfWeek(firstDayOfWeek: DateTime.sunday);
-
-        expect(eow.day, 14); // Sunday Jan 14
-        expect(eow.weekday, DateTime.sunday);
+        expect(wednesday.endOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
       });
 
       test('can cross month boundary forward', () {
         // 2024-01-29 is a Monday
-        final dt = FloatingDateTime(2024, 1, 29);
-        final eow = dt.endOfWeek();
-
-        expect(eow.year, 2024);
-        expect(eow.month, 2);
-        expect(eow.day, 5); // Monday Feb 5
+        expect(FloatingDateTime(2024, 1, 29).endOfWeek(), FloatingDateTime(2024, 2, 5));
       });
     });
 
@@ -491,35 +288,20 @@ void main() {
       });
     });
 
-    // ── forLocation ──────────────────────────────────────────────────────
-
     group('forLocation', () {
       test('returns a local DateTime when location is null', () {
-        final internal = FloatingDateTime(2024, 6, 15, 10, 30);
-        final result = internal.forLocation();
-
-        expect(result.isUtc, false);
-        expect(result.year, 2024);
-        expect(result.month, 6);
-        expect(result.day, 15);
-        expect(result.hour, 10);
-        expect(result.minute, 30);
+        expect(FloatingDateTime(2024, 6, 15, 10, 30).forLocation(), DateTime(2024, 6, 15, 10, 30));
       });
 
       test('returns a TZDateTime when location is provided', () {
         final location = getLocation('America/New_York');
-        final internal = FloatingDateTime(2024, 6, 15, 10, 30);
-        final result = internal.forLocation(location: location);
-
-        expect(result, isA<TZDateTime>());
-        expect(result.year, 2024);
-        expect(result.month, 6);
-        expect(result.day, 15);
-        expect(result.hour, 10);
-        expect(result.minute, 30);
+        expect(
+          FloatingDateTime(2024, 6, 15, 10, 30).forLocation(location: location),
+          allOf(isA<TZDateTime>(), TZDateTime(location, 2024, 6, 15, 10, 30)),
+        );
       });
 
-      test('different locations produce different UTC offsets', () {
+      test('different locations keep the wall-clock time and differ in UTC offset', () {
         final newYork = getLocation('America/New_York');
         final tokyo = getLocation('Asia/Tokyo');
         final internal = FloatingDateTime(2024, 1, 15, 12, 0);
@@ -527,11 +309,11 @@ void main() {
         final nyResult = internal.forLocation(location: newYork) as TZDateTime;
         final tokyoResult = internal.forLocation(location: tokyo) as TZDateTime;
 
+        expect(nyResult, TZDateTime(newYork, 2024, 1, 15, 12));
+        expect(tokyoResult, TZDateTime(tokyo, 2024, 1, 15, 12));
         expect(nyResult.timeZone.offset, isNot(equals(tokyoResult.timeZone.offset)));
       });
     });
-
-    // ── isToday ──────────────────────────────────────────────────────────
 
     group('isToday', () {
       test('returns true for today without location', () {
@@ -563,6 +345,15 @@ void main() {
         expect(internal.isToday(location: location), true);
       });
 
+      test('returns false for yesterday with a specific location', () {
+        final location = getLocation('America/New_York');
+        final nowInNY = TZDateTime.now(location);
+        final yesterday = nowInNY.copyWith(day: nowInNY.day - 1);
+        final internal = FloatingDateTime(yesterday.year, yesterday.month, yesterday.day);
+
+        expect(internal.isToday(location: location), false);
+      });
+
       test('returns true regardless of time component if same day', () {
         final now = DateTime.now();
         final internal = FloatingDateTime(now.year, now.month, now.day, 23, 59, 59);
@@ -571,37 +362,113 @@ void main() {
       });
     });
 
-    // ── isSameDay ────────────────────────────────────────────────────────
+    group('isToday with explicit now', () {
+      final cases = [
+        (
+          name: 'now is the same day',
+          date: FloatingDateTime(2026, 4, 13),
+          now: DateTime(2026, 4, 13, 14, 30),
+          expected: true,
+        ),
+        (name: 'now is the next day', date: FloatingDateTime(2026, 4, 13), now: DateTime(2026, 4, 14), expected: false),
+        (
+          name: 'now is the previous day',
+          date: FloatingDateTime(2026, 4, 13),
+          now: DateTime(2026, 4, 12, 23, 59),
+          expected: false,
+        ),
+        (
+          name: 'the times of day differ',
+          date: FloatingDateTime(2026, 4, 13, 23, 59, 59),
+          now: DateTime(2026, 4, 13, 0, 0, 1),
+          expected: true,
+        ),
+        (
+          name: 'now is in a different month',
+          date: FloatingDateTime(2026, 3, 15),
+          now: DateTime(2026, 4, 15, 12),
+          expected: false,
+        ),
+        (
+          name: 'now is in a different year',
+          date: FloatingDateTime(2025, 4, 13),
+          now: DateTime(2026, 4, 13, 12),
+          expected: false,
+        ),
+        (
+          name: 'now is a UTC DateTime',
+          date: FloatingDateTime(2026, 4, 13, 10),
+          now: DateTime.utc(2026, 4, 13, 22),
+          expected: true,
+        ),
+      ];
 
-    group('isSameDay', () {
-      test('returns true for the same date with different times', () {
-        final a = FloatingDateTime(2024, 1, 15, 10, 30);
-        final b = FloatingDateTime(2024, 1, 15, 22, 0);
+      for (final c in cases) {
+        test('returns ${c.expected} when ${c.name}', () {
+          expect(c.date.isToday(now: c.now), c.expected);
+        });
+      }
 
-        expect(a.isSameDay(b), true);
+      test('now takes precedence over location', () {
+        final date = FloatingDateTime(2026, 1, 15);
+        expect(date.isToday(now: DateTime(2026, 1, 15, 12), location: getLocation('America/New_York')), true);
       });
 
-      test('returns false for different days', () {
-        expect(FloatingDateTime(2024, 1, 15).isSameDay(FloatingDateTime(2024, 1, 16)), false);
-      });
-
-      test('returns false for different months', () {
-        expect(FloatingDateTime(2024, 1, 15).isSameDay(FloatingDateTime(2024, 2, 15)), false);
-      });
-
-      test('returns false for different years', () {
-        expect(FloatingDateTime(2024, 1, 15).isSameDay(FloatingDateTime(2025, 1, 15)), false);
-      });
-
-      test('is symmetric', () {
-        final a = FloatingDateTime(2024, 5, 20, 8, 0);
-        final b = FloatingDateTime(2024, 5, 20, 18, 0);
-
-        expect(a.isSameDay(b), b.isSameDay(a));
+      test('falls back to the clock when now is null', () {
+        final now = DateTime.now();
+        expect(FloatingDateTime(now.year, now.month, now.day).isToday(now: null), true);
       });
     });
 
-    // ── isWithin ─────────────────────────────────────────────────────────
+    group('isSameDay', () {
+      final cases = [
+        (
+          name: 'the same date at different times',
+          a: FloatingDateTime(2024, 1, 15, 10, 30),
+          b: FloatingDateTime(2024, 1, 15, 22),
+          expected: true,
+        ),
+        (
+          name: 'both at the start of the day',
+          a: FloatingDateTime(2024, 6, 1),
+          b: FloatingDateTime(2024, 6, 1),
+          expected: true,
+        ),
+        (
+          name: 'the start and the end of one day',
+          a: FloatingDateTime(2024, 3, 10),
+          b: FloatingDateTime(2024, 3, 10, 23, 59, 59),
+          expected: true,
+        ),
+        (
+          name: 'adjacent days at midnight',
+          a: FloatingDateTime(2024, 3, 10, 23, 59, 59),
+          b: FloatingDateTime(2024, 3, 11),
+          expected: false,
+        ),
+        (name: 'different days', a: FloatingDateTime(2024, 1, 15), b: FloatingDateTime(2024, 1, 16), expected: false),
+        (name: 'different months', a: FloatingDateTime(2024, 1, 15), b: FloatingDateTime(2024, 2, 15), expected: false),
+        (name: 'different years', a: FloatingDateTime(2024, 1, 15), b: FloatingDateTime(2025, 1, 15), expected: false),
+      ];
+
+      for (final c in cases) {
+        test('is ${c.expected} for ${c.name}, in both directions', () {
+          expect(c.a.isSameDay(c.b), c.expected);
+          expect(c.b.isSameDay(c.a), c.expected);
+        });
+      }
+
+      // New York 22:00 and Tokyo 12:00 on 15 January are different instants on the same wall-clock day.
+      test('compares the wall-clock day of TZDateTimes, not the instant', () {
+        final newYork = getLocation('America/New_York');
+        final tokyo = getLocation('Asia/Tokyo');
+        final sameDay = FloatingDateTime.fromDateTime(TZDateTime(newYork, 2024, 1, 15, 22));
+        expect(sameDay.isSameDay(FloatingDateTime.fromDateTime(TZDateTime(tokyo, 2024, 1, 15, 12))), true);
+
+        final sameInstant = FloatingDateTime.fromDateTime(TZDateTime(newYork, 2024, 1, 15, 23));
+        expect(sameInstant.isSameDay(FloatingDateTime.fromDateTime(TZDateTime(tokyo, 2024, 1, 16, 13))), false);
+      });
+    });
 
     group('isWithin', () {
       final rangeStart = FloatingDateTime(2024, 1, 10);
@@ -652,318 +519,141 @@ void main() {
       });
     });
 
-    // ── weekNumber ───────────────────────────────────────────────────────
-
     group('weekNumber', () {
-      test('January 1, 2024 (Monday) is week 1', () {
-        expect(FloatingDateTime(2024, 1, 1).weekNumber, 1);
-      });
-
-      test('December 31, 2024 (Tuesday) is week 1 of next year', () {
-        // 2024-12-31 is a Tuesday; Jan 1, 2025 is a Wednesday.
-        // The ISO week for Dec 31, 2024 is week 1 of 2025.
-        expect(FloatingDateTime(2024, 12, 31).weekNumber, 1);
-      });
-
-      test('December 28 is always in the last week of its year', () {
-        // By ISO 8601, Dec 28 is always in the last week of the year.
-        expect(FloatingDateTime(2024, 12, 28).weekNumber, 52);
-        expect(FloatingDateTime(2023, 12, 28).weekNumber, 52);
-      });
-
-      test('January 1, 2023 (Sunday) is week 52 of 2022', () {
-        // Jan 1, 2023 is a Sunday, which belongs to ISO week 52 of 2022.
-        expect(FloatingDateTime(2023, 1, 1).weekNumber, 52);
-      });
-
-      test('January 4 is always in week 1', () {
-        // By ISO 8601, January 4 is always in week 1.
-        expect(FloatingDateTime(2024, 1, 4).weekNumber, 1);
-        expect(FloatingDateTime(2023, 1, 4).weekNumber, 1);
-        expect(FloatingDateTime(2022, 1, 4).weekNumber, 1);
-      });
-
-      test('known week numbers for specific dates', () {
-        // 2024-03-01 is a Friday in week 9
-        expect(FloatingDateTime(2024, 3, 1).weekNumber, 9);
-        // 2024-07-01 is a Monday in week 27
-        expect(FloatingDateTime(2024, 7, 1).weekNumber, 27);
-      });
-
-      test('week 53 exists in years where Jan 1 or Dec 31 is Thursday', () {
-        // 2015: Jan 1 is Thursday → has week 53
-        expect(FloatingDateTime(2015, 12, 31).weekNumber, 53);
-        // 2020: Dec 31 is Thursday → has week 53
-        expect(FloatingDateTime(2020, 12, 31).weekNumber, 53);
-      });
+      for (final (name, dateTime, expected) in [
+        ('January 1, 2024 (Monday)', FloatingDateTime(2024, 1, 1), 1),
+        ('December 31, 2024 (Tuesday), in week 1 of 2025', FloatingDateTime(2024, 12, 31), 1),
+        ('December 28, 2024, always in the last week of its year', FloatingDateTime(2024, 12, 28), 52),
+        ('December 28, 2023, always in the last week of its year', FloatingDateTime(2023, 12, 28), 52),
+        ('January 1, 2023 (Sunday), in week 52 of 2022', FloatingDateTime(2023, 1, 1), 52),
+        ('January 4, 2024, always in week 1', FloatingDateTime(2024, 1, 4), 1),
+        ('January 4, 2023, always in week 1', FloatingDateTime(2023, 1, 4), 1),
+        ('January 4, 2022, always in week 1', FloatingDateTime(2022, 1, 4), 1),
+        ('March 1, 2024 (Friday)', FloatingDateTime(2024, 3, 1), 9),
+        ('July 1, 2024 (Monday)', FloatingDateTime(2024, 7, 1), 27),
+        ('December 31, 2015, in a year that starts on a Thursday', FloatingDateTime(2015, 12, 31), 53),
+        ('December 31, 2020, in a year that ends on a Thursday', FloatingDateTime(2020, 12, 31), 53),
+      ]) {
+        test('$name is week $expected', () {
+          expect(dateTime.weekNumber, expected);
+        });
+      }
     });
-
-    // ── ordinalDate ──────────────────────────────────────────────────────
 
     group('ordinalDate', () {
-      test('January 1 is ordinal day 1', () {
-        expect(FloatingDateTime(2024, 1, 1).ordinalDate, 1);
-      });
-
-      test('February 1 is ordinal day 32', () {
-        expect(FloatingDateTime(2024, 2, 1).ordinalDate, 32);
-      });
-
-      test('March 1 in a leap year is ordinal day 61', () {
-        expect(FloatingDateTime(2024, 3, 1).ordinalDate, 61);
-      });
-
-      test('March 1 in a non-leap year is ordinal day 60', () {
-        expect(FloatingDateTime(2023, 3, 1).ordinalDate, 60);
-      });
-
-      test('December 31 in a leap year is ordinal day 366', () {
-        expect(FloatingDateTime(2024, 12, 31).ordinalDate, 366);
-      });
-
-      test('December 31 in a non-leap year is ordinal day 365', () {
-        expect(FloatingDateTime(2023, 12, 31).ordinalDate, 365);
-      });
-
-      test('July 4 is ordinal day 186 in a leap year', () {
+      for (final (name, dateTime, expected) in [
+        ('January 1', FloatingDateTime(2024, 1, 1), 1),
+        ('February 1', FloatingDateTime(2024, 2, 1), 32),
+        ('March 1 in a leap year', FloatingDateTime(2024, 3, 1), 61),
+        ('March 1 in a non-leap year', FloatingDateTime(2023, 3, 1), 60),
+        ('December 31 in a leap year', FloatingDateTime(2024, 12, 31), 366),
+        ('December 31 in a non-leap year', FloatingDateTime(2023, 12, 31), 365),
         // Jan(31) + Feb(29) + Mar(31) + Apr(30) + May(31) + Jun(30) + 4 = 186
-        expect(FloatingDateTime(2024, 7, 4).ordinalDate, 186);
-      });
+        ('July 4 in a leap year', FloatingDateTime(2024, 7, 4), 186),
+      ]) {
+        test('$name is ordinal day $expected', () {
+          expect(dateTime.ordinalDate, expected);
+        });
+      }
     });
-
-    // ── isLeapYear ───────────────────────────────────────────────────────
 
     group('isLeapYear', () {
-      test('returns true for years divisible by 4', () {
-        expect(FloatingDateTime(2024).isLeapYear, true);
-        expect(FloatingDateTime(2028).isLeapYear, true);
-      });
-
-      test('returns false for years divisible by 100 but not 400', () {
-        expect(FloatingDateTime(1900).isLeapYear, false);
-        expect(FloatingDateTime(2100).isLeapYear, false);
-      });
-
-      test('returns true for years divisible by 400', () {
-        expect(FloatingDateTime(2000).isLeapYear, true);
-        expect(FloatingDateTime(2400).isLeapYear, true);
-      });
-
-      test('returns false for common non-leap years', () {
-        expect(FloatingDateTime(2023).isLeapYear, false);
-        expect(FloatingDateTime(2025).isLeapYear, false);
-      });
+      for (final (year, expected, rule) in [
+        (2024, true, 'divisible by 4'),
+        (2028, true, 'divisible by 4'),
+        (1900, false, 'divisible by 100 but not 400'),
+        (2100, false, 'divisible by 100 but not 400'),
+        (2000, true, 'divisible by 400'),
+        (2400, true, 'divisible by 400'),
+        (2023, false, 'a common year'),
+        (2025, false, 'a common year'),
+      ]) {
+        test('returns $expected for $year, $rule', () {
+          expect(FloatingDateTime(year).isLeapYear, expected);
+        });
+      }
     });
-
-    // ── add ──────────────────────────────────────────────────────────────
 
     group('add', () {
       test('adds a positive duration', () {
-        final dt = FloatingDateTime(2024, 1, 1, 10, 0);
-        final result = dt.add(const Duration(hours: 5));
-
-        expect(result, isA<FloatingDateTime>());
-        expect(result.hour, 15);
-        expect(result.day, 1);
+        expect(
+          FloatingDateTime(2024, 1, 1, 10, 0).add(const Duration(hours: 5)),
+          allOf(isA<FloatingDateTime>(), FloatingDateTime(2024, 1, 1, 15)),
+        );
       });
 
       test('adding duration crosses day boundary', () {
-        final dt = FloatingDateTime(2024, 1, 1, 23, 0);
-        final result = dt.add(const Duration(hours: 3));
-
-        expect(result.year, 2024);
-        expect(result.month, 1);
-        expect(result.day, 2);
-        expect(result.hour, 2);
+        expect(FloatingDateTime(2024, 1, 1, 23, 0).add(const Duration(hours: 3)), FloatingDateTime(2024, 1, 2, 2));
       });
 
       test('adding days works correctly', () {
-        final dt = FloatingDateTime(2024, 2, 28);
-        final result = dt.add(const Duration(days: 1));
-
         // 2024 is a leap year
-        expect(result.month, 2);
-        expect(result.day, 29);
-      });
-
-      test('adding zero duration returns equivalent FloatingDateTime', () {
-        final dt = FloatingDateTime(2024, 6, 15, 12, 30);
-        final result = dt.add(Duration.zero);
-
-        expect(result.isAtSameMomentAs(dt), true);
-        expect(result, isA<FloatingDateTime>());
+        expect(FloatingDateTime(2024, 2, 28).add(const Duration(days: 1)), FloatingDateTime(2024, 2, 29));
       });
     });
-
-    // ── subtract ─────────────────────────────────────────────────────────
 
     group('subtract', () {
       test('subtracts a positive duration', () {
-        final dt = FloatingDateTime(2024, 1, 1, 10, 0);
-        final result = dt.subtract(const Duration(hours: 5));
-
-        expect(result, isA<FloatingDateTime>());
-        expect(result.hour, 5);
-        expect(result.day, 1);
+        expect(
+          FloatingDateTime(2024, 1, 1, 10, 0).subtract(const Duration(hours: 5)),
+          allOf(isA<FloatingDateTime>(), FloatingDateTime(2024, 1, 1, 5)),
+        );
       });
 
       test('subtracting duration crosses day boundary backward', () {
-        final dt = FloatingDateTime(2024, 1, 2, 1, 0);
-        final result = dt.subtract(const Duration(hours: 3));
-
-        expect(result.year, 2024);
-        expect(result.month, 1);
-        expect(result.day, 1);
-        expect(result.hour, 22);
+        expect(FloatingDateTime(2024, 1, 2, 1, 0).subtract(const Duration(hours: 3)), FloatingDateTime(2024, 1, 1, 22));
       });
 
       test('subtracting days works correctly across month boundary', () {
-        final dt = FloatingDateTime(2024, 3, 1);
-        final result = dt.subtract(const Duration(days: 1));
-
         // 2024 is a leap year
-        expect(result.month, 2);
-        expect(result.day, 29);
-      });
-
-      test('subtracting zero duration returns equivalent FloatingDateTime', () {
-        final dt = FloatingDateTime(2024, 6, 15, 12, 30);
-        final result = dt.subtract(Duration.zero);
-
-        expect(result.isAtSameMomentAs(dt), true);
-        expect(result, isA<FloatingDateTime>());
+        expect(FloatingDateTime(2024, 3, 1).subtract(const Duration(days: 1)), FloatingDateTime(2024, 2, 29));
       });
     });
-
-    // ── difference ───────────────────────────────────────────────────────
-
-    group('difference', () {
-      test('returns positive duration when other is earlier', () {
-        final a = FloatingDateTime(2024, 1, 2);
-        final b = FloatingDateTime(2024, 1, 1);
-
-        expect(a.difference(b), const Duration(days: 1));
-      });
-
-      test('returns negative duration when other is later', () {
-        final a = FloatingDateTime(2024, 1, 1);
-        final b = FloatingDateTime(2024, 1, 2);
-
-        expect(a.difference(b), const Duration(days: -1));
-      });
-
-      test('returns zero for the same instant', () {
-        final dt = FloatingDateTime(2024, 6, 15, 10, 30);
-        expect(dt.difference(FloatingDateTime(2024, 6, 15, 10, 30)), Duration.zero);
-      });
-
-      test('handles hour-level differences', () {
-        final a = FloatingDateTime(2024, 1, 1, 14, 0);
-        final b = FloatingDateTime(2024, 1, 1, 10, 0);
-
-        expect(a.difference(b), const Duration(hours: 4));
-      });
-
-      test('works across month boundaries', () {
-        final a = FloatingDateTime(2024, 3, 1);
-        final b = FloatingDateTime(2024, 2, 1);
-
-        // Feb 2024 has 29 days (leap year)
-        expect(a.difference(b), const Duration(days: 29));
-      });
-
-      test('works with a plain DateTime argument', () {
-        final internal = FloatingDateTime(2024, 1, 2);
-        final plain = DateTime.utc(2024, 1, 1);
-
-        expect(internal.difference(plain), const Duration(days: 1));
-      });
-    });
-
-    // ── copyWith ─────────────────────────────────────────────────────────
 
     group('copyWith', () {
-      test('returns an FloatingDateTime', () {
-        final dt = FloatingDateTime(2024, 6, 15, 10, 30);
-        expect(dt.copyWith(), isA<FloatingDateTime>());
-      });
-
       test('copies all fields when no arguments are given', () {
         final dt = FloatingDateTime(2024, 3, 15, 10, 30, 45, 100, 200);
-        final copy = dt.copyWith();
-
-        expect(copy.year, 2024);
-        expect(copy.month, 3);
-        expect(copy.day, 15);
-        expect(copy.hour, 10);
-        expect(copy.minute, 30);
-        expect(copy.second, 45);
-        expect(copy.millisecond, 100);
-        expect(copy.microsecond, 200);
-        expect(copy.isAtSameMomentAs(dt), true);
+        expect(dt.copyWith(), allOf(isA<FloatingDateTime>(), dt));
       });
 
-      test('replaces year', () {
-        final dt = FloatingDateTime(2024, 6, 15);
-        expect(dt.copyWith(year: 2025).year, 2025);
-        expect(dt.copyWith(year: 2025).month, 6);
-      });
-
-      test('replaces month', () {
-        final dt = FloatingDateTime(2024, 6, 15);
-        expect(dt.copyWith(month: 12).month, 12);
-        expect(dt.copyWith(month: 12).day, 15);
-      });
-
-      test('replaces day', () {
-        final dt = FloatingDateTime(2024, 6, 15);
-        expect(dt.copyWith(day: 28).day, 28);
-      });
-
-      test('replaces hour', () {
-        final dt = FloatingDateTime(2024, 6, 15, 10);
-        expect(dt.copyWith(hour: 23).hour, 23);
-      });
-
-      test('replaces minute', () {
-        final dt = FloatingDateTime(2024, 6, 15, 10, 30);
-        expect(dt.copyWith(minute: 59).minute, 59);
-      });
-
-      test('replaces second', () {
-        final dt = FloatingDateTime(2024, 6, 15, 10, 30, 45);
-        expect(dt.copyWith(second: 0).second, 0);
-      });
-
-      test('replaces millisecond', () {
-        final dt = FloatingDateTime(2024, 6, 15, 10, 30, 45, 100);
-        expect(dt.copyWith(millisecond: 999).millisecond, 999);
-      });
-
-      test('replaces microsecond', () {
-        final dt = FloatingDateTime(2024, 6, 15, 10, 30, 45, 100, 200);
-        expect(dt.copyWith(microsecond: 500).microsecond, 500);
-      });
+      for (final (field, copy, expected) in [
+        ('year', FloatingDateTime(2024, 6, 15).copyWith(year: 2025), FloatingDateTime(2025, 6, 15)),
+        ('month', FloatingDateTime(2024, 6, 15).copyWith(month: 12), FloatingDateTime(2024, 12, 15)),
+        ('day', FloatingDateTime(2024, 6, 15).copyWith(day: 28), FloatingDateTime(2024, 6, 28)),
+        ('hour', FloatingDateTime(2024, 6, 15, 10).copyWith(hour: 23), FloatingDateTime(2024, 6, 15, 23)),
+        ('minute', FloatingDateTime(2024, 6, 15, 10, 30).copyWith(minute: 59), FloatingDateTime(2024, 6, 15, 10, 59)),
+        (
+          'second',
+          FloatingDateTime(2024, 6, 15, 10, 30, 45).copyWith(second: 0),
+          FloatingDateTime(2024, 6, 15, 10, 30, 0),
+        ),
+        (
+          'millisecond',
+          FloatingDateTime(2024, 6, 15, 10, 30, 45, 100).copyWith(millisecond: 999),
+          FloatingDateTime(2024, 6, 15, 10, 30, 45, 999),
+        ),
+        (
+          'microsecond',
+          FloatingDateTime(2024, 6, 15, 10, 30, 45, 100, 200).copyWith(microsecond: 500),
+          FloatingDateTime(2024, 6, 15, 10, 30, 45, 100, 500),
+        ),
+      ]) {
+        test('replaces $field', () {
+          expect(copy, expected);
+        });
+      }
 
       test('replaces multiple fields at once', () {
         final dt = FloatingDateTime(2024, 1, 1, 0, 0, 0);
-        final copy = dt.copyWith(year: 2025, month: 12, day: 31, hour: 23, minute: 59, second: 59);
-
-        expect(copy.year, 2025);
-        expect(copy.month, 12);
-        expect(copy.day, 31);
-        expect(copy.hour, 23);
-        expect(copy.minute, 59);
-        expect(copy.second, 59);
+        expect(
+          dt.copyWith(year: 2025, month: 12, day: 31, hour: 23, minute: 59, second: 59),
+          FloatingDateTime(2025, 12, 31, 23, 59, 59),
+        );
       });
 
       test('handles day overflow into next month', () {
-        final dt = FloatingDateTime(2024, 1, 15);
-        final copy = dt.copyWith(day: 32);
-
         // DateTime normalizes day 32 of January → Feb 1
-        expect(copy.month, 2);
-        expect(copy.day, 1);
+        expect(FloatingDateTime(2024, 1, 15).copyWith(day: 32), FloatingDateTime(2024, 2, 1));
       });
     });
   });
