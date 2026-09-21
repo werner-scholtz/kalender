@@ -73,7 +73,7 @@ If Flutter promotes a canonical range type ([#97496](https://github.com/flutter/
 
 **Members are named for what they are, not for their type.** [AGENTS.md](AGENTS.md#naming-the-two-range-spaces) carries the rule.
 
-### 0.32.0, planned
+### 0.32.0, previewed in 0.32.0-dev.1
 
 A release that adds and does not break, built around selection. It has no migration section.
 
