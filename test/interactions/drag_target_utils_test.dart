@@ -22,10 +22,8 @@ class _HarnessWidget extends StatefulWidget {
 /// [State.mounted] is false. Only the helpers that touch neither may be called
 /// against this harness.
 class _DragUtilsHarness extends State<_HarnessWidget> with DragTargetUtilities<_HarnessWidget> {
-  _DragUtilsHarness({KalenderController? controller}) : controller = controller ?? KalenderController();
-
   @override
-  final KalenderController controller;
+  final KalenderController controller = KalenderController();
 
   @override
   EventsController get eventsController => throw UnimplementedError();
@@ -61,57 +59,40 @@ void main() {
   initializeTimeZones();
 
   final harness = _DragUtilsHarness();
-  final range = FloatingDateTimeRange(start: DateTime.utc(2024, 1, 15, 10), end: DateTime.utc(2024, 1, 15, 12));
+  DateTime at(int hour) => DateTime.utc(2024, 1, 15, hour);
+  FloatingDateTimeRange hours(int start, int end) => FloatingDateTimeRange(start: at(start), end: at(end));
+  final range = hours(10, 12);
 
   KalenderEvent eventWithId(String id) {
     return KalenderEvent(id: id, start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 10));
   }
 
-  // ─── calculateRangeFromStart ─────────────────────────────────────────
-
-  group('calculateRangeFromStart', () {
-    test('new start before end keeps the end and moves the start', () {
-      final result = harness.calculateRangeFromStart(range, DateTime.utc(2024, 1, 15, 9));
-      expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 9)), isTrue);
-      expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 12)), isTrue);
+  for (final (method, calculate, cases) in [
+    (
+      'calculateRangeFromStart',
+      harness.calculateRangeFromStart,
+      [
+        ('new start before end keeps the end and moves the start', 9, hours(9, 12)),
+        ('new start equal to end returns the original range', 12, range),
+        ('new start after end swaps the boundaries', 13, hours(12, 13)),
+      ],
+    ),
+    (
+      'calculateRangeFromEnd',
+      harness.calculateRangeFromEnd,
+      [
+        ('new end after start keeps the start and moves the end', 13, hours(10, 13)),
+        ('new end equal to start returns the original range', 10, range),
+        ('new end before start swaps the boundaries', 9, hours(9, 10)),
+      ],
+    ),
+  ]) {
+    group(method, () {
+      for (final (name, hour, expected) in cases) {
+        test(name, () => expect(calculate(range, at(hour)), expected));
+      }
     });
-
-    test('new start equal to end returns the original range', () {
-      final result = harness.calculateRangeFromStart(range, DateTime.utc(2024, 1, 15, 12));
-      expect(result.start.isAtSameMomentAs(range.start), isTrue);
-      expect(result.end.isAtSameMomentAs(range.end), isTrue);
-    });
-
-    test('new start after end swaps the boundaries', () {
-      final result = harness.calculateRangeFromStart(range, DateTime.utc(2024, 1, 15, 13));
-      expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 12)), isTrue);
-      expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 13)), isTrue);
-    });
-  });
-
-  // ─── calculateRangeFromEnd ───────────────────────────────────────────
-
-  group('calculateRangeFromEnd', () {
-    test('new end after start keeps the start and moves the end', () {
-      final result = harness.calculateRangeFromEnd(range, DateTime.utc(2024, 1, 15, 13));
-      expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 10)), isTrue);
-      expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 13)), isTrue);
-    });
-
-    test('new end equal to start returns the original range', () {
-      final result = harness.calculateRangeFromEnd(range, DateTime.utc(2024, 1, 15, 10));
-      expect(result.start.isAtSameMomentAs(range.start), isTrue);
-      expect(result.end.isAtSameMomentAs(range.end), isTrue);
-    });
-
-    test('new end before start swaps the boundaries', () {
-      final result = harness.calculateRangeFromEnd(range, DateTime.utc(2024, 1, 15, 9));
-      expect(result.start.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 9)), isTrue);
-      expect(result.end.isAtSameMomentAs(DateTime.utc(2024, 1, 15, 10)), isTrue);
-    });
-  });
-
-  // ─── handleDragDetails (static dispatcher) ───────────────────────────────────
+  }
 
   group('handleDragDetails', () {
     String dispatch(Object? data, {KalenderEvent Function(KalenderEvent)? resolveEvent}) {
@@ -134,7 +115,7 @@ void main() {
       expect(dispatch(data), equals('resize:e1:bottom'));
     });
 
-    test('routes Reschedule data to onReschedule with the event', () {
+    test('routes Reschedule data to onReschedule with the payload event when resolveEvent is null', () {
       expect(dispatch(Reschedule(event: eventWithId('e2'))), equals('reschedule:e2'));
     });
 
@@ -144,7 +125,6 @@ void main() {
     });
 
     test('applies resolveEvent to the latest event for Resize/Reschedule', () {
-      // resolveEvent swaps the stale event for the "live" one looked up by id.
       final live = eventWithId('live');
       KalenderEvent resolve(KalenderEvent _) => live;
 
@@ -157,21 +137,9 @@ void main() {
       );
       expect(dispatch(Reschedule(event: eventWithId('stale')), resolveEvent: resolve), equals('reschedule:live'));
     });
-
-    test('falls back to the payload event when resolveEvent is null', () {
-      expect(dispatch(Reschedule(event: eventWithId('payload'))), equals('reschedule:payload'));
-    });
   });
 
-  // ─── Create guard (foreign controller id) ────────────────────────────────────
-  //
-  // onAcceptWithDetails' onCreate handler must ignore Create payloads from a
-  // *different* controller: the guard returns before reaching
-  // calculateCursorDateTime (which throws in this harness), so a foreign create
-  // completes without touching the widget tree. A regression here (e.g. a
-  // `controllerId != controllerId` self-comparison) would fall through and
-  // throw UnimplementedError.
-
+  // calculateCursorDateTime throws in this harness, so the guard must return before reaching it.
   group('Create guard ignores a foreign controller id', () {
     test('onAcceptWithDetails returns normally for a foreign create', () {
       final host = _DragUtilsHarness();

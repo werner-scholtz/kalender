@@ -58,7 +58,6 @@ void main() {
     await tester.pumpWidget(withoutMaterial(const Locale('de'), calendar(const Locale('de'))));
     await tester.pumpAndSettle();
 
-    expect(tester.takeException(), isNull);
     expect(labelAt(tester, 9), '09:00', reason: 'intl formatted it for the calendar\'s locale');
   });
 
@@ -72,10 +71,7 @@ void main() {
     expect(labelAt(tester, 9), endsWith('AM'));
   });
 
-  // MaterialLocalizations wins wherever they are installed, so an app that works
-  // today keeps the labels it has. DefaultMaterialLocalizations covers en only,
-  // so a German calendar inside a MaterialApp still labels in English, which is
-  // exactly what it did before this change.
+  // DefaultMaterialLocalizations covers en only, so a German calendar inside a MaterialApp labels in English.
   testWidgets('MaterialLocalizations still decide the format when present', (tester) async {
     await pumpAndSettleWithMaterialApp(tester, calendar(const Locale('de')));
 

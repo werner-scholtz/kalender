@@ -56,14 +56,28 @@ void main() {
     );
   }
 
-  testWidgets('an hour-long all-day event renders in the header', (tester) async {
-    final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
+  final headerCases = [
+    (
+      name: 'an hour-long all-day event renders in the header',
+      rule: const MultiDayRule.minimumDuration(Duration(hours: 24)),
+    ),
+    // A rule nothing satisfies. The flag still decides.
+    (
+      name: 'the view rule cannot pull it back into the body',
+      rule: const MultiDayRule.minimumDuration(Duration(days: 365)),
+    ),
+  ];
 
-    await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
+  for (final (:name, :rule) in headerCases) {
+    testWidgets(name, (tester) async {
+      final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
 
-    expect(find.byKey(MultiDayEventTile.tileKey(id)), findsOneWidget);
-    expect(find.byKey(DayEventTile.tileKey(id)), findsNothing);
-  });
+      await pumpWeek(tester, rule);
+
+      expect(find.byKey(MultiDayEventTile.tileKey(id)), findsOneWidget);
+      expect(find.byKey(DayEventTile.tileKey(id)), findsNothing);
+    });
+  }
 
   testWidgets('the same event without the flag stays in the body', (tester) async {
     final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end));
@@ -72,16 +86,6 @@ void main() {
 
     expect(find.byKey(DayEventTile.tileKey(id)), findsWidgets);
     expect(find.byKey(MultiDayEventTile.tileKey(id)), findsNothing);
-  });
-
-  testWidgets('the view rule cannot pull it back into the body', (tester) async {
-    // A rule nothing satisfies. The flag still decides.
-    final id = eventsController.addEvent(KalenderEvent(start: shortRange.start, end: shortRange.end, isAllDay: true));
-
-    await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(days: 365)));
-
-    expect(find.byKey(MultiDayEventTile.tileKey(id)), findsOneWidget);
-    expect(find.byKey(DayEventTile.tileKey(id)), findsNothing);
   });
 
   testWidgets('rescheduling it in the header keeps it all-day', (tester) async {

@@ -12,15 +12,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 
 import '../../utilities.dart';
 
-/// Regression coverage for the continuous schedule view:
-///
-///   * Row alignment — every event tile shares one leading (date) column width,
-///     so first-of-day rows (which show the date) line up with the rows below
-///     them (which don't). Previously the date widget's intrinsic width and a
-///     hardcoded `SizedBox(width: 32)` placeholder disagreed.
-///   * #253 — when today has no events, `initialScrollIndex` /
-///     `animateToDateTime(now)` landed on the first item instead of today / the
-///     nearest day, and `initialScrollIndex` polluted the date→index map.
+/// Row alignment and the scroll target when today has no events (#253) in the continuous schedule view.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -41,18 +33,16 @@ void main() {
     double leadingWidth = kDefaultScheduleLeadingWidth,
     NowCallback? nowCallback,
     DateTime? initialDate,
-    Location? location,
     KalenderComponents? components,
   }) {
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      location: location,
       components: components,
       viewConfiguration: ScheduleViewConfiguration.continuous(
         displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026)),
-        initialDateTime: initialDate,
-        nowCallback: nowCallback,
+        initialDateTime: initialDate ?? DateTime(2025, 1, 15),
+        nowCallback: nowCallback ?? () => DateTime(2025, 1, 15, 10),
       ),
       body: KalenderBody(
         scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay, leadingWidth: leadingWidth),
@@ -72,12 +62,8 @@ void main() {
         eventAt(DateTime(2025, 1, 15), 13),
       ]);
 
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildSchedule(initialDate: DateTime(2025, 1, 15), nowCallback: () => DateTime(2025, 1, 15, 10)),
-      );
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule());
 
-      // The first row shows the date, the rest don't — they must still line up.
       final first = tileLeft(tester, ids[0]);
       expect(tileLeft(tester, ids[1]), moreOrLessEquals(first, epsilon: 0.5));
       expect(tileLeft(tester, ids[2]), moreOrLessEquals(first, epsilon: 0.5));
@@ -86,24 +72,10 @@ void main() {
     testWidgets('leadingWidth widens the leading column by exactly its delta', (tester) async {
       final ids = eventsController.addEvents([eventAt(DateTime(2025, 1, 15), 9)]);
 
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildSchedule(
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
-          leadingWidth: 56,
-        ),
-      );
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule(leadingWidth: 56));
       final narrow = tileLeft(tester, ids.first);
 
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildSchedule(
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
-          leadingWidth: 120,
-        ),
-      );
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule(leadingWidth: 120));
       final wide = tileLeft(tester, ids.first);
 
       expect(wide - narrow, moreOrLessEquals(64, epsilon: 1));
@@ -114,14 +86,7 @@ void main() {
     testWidgets('showOnlyToday indexes today, so it is the scroll target', (tester) async {
       eventsController.addEvents([eventAt(DateTime(2025, 1, 10), 9), eventAt(DateTime(2025, 1, 20), 9)]);
 
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildSchedule(
-          emptyDay: EmptyDayBehavior.showOnlyToday,
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
-        ),
-      );
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule(emptyDay: EmptyDayBehavior.showOnlyToday));
 
       final controller = schedule();
       final todayIndex = controller.indexFromDateTime(DateTime(2025, 1, 15));
@@ -130,51 +95,23 @@ void main() {
       expect(controller.dateTimeFromIndex(todayIndex)!.isSameDay(FloatingDateTime(2025, 1, 15)), isTrue);
       expect(controller.initialScrollIndex(DateTime(2025, 1, 15)), todayIndex);
 
-      // Only today is shown among empty days.
       expect(controller.indexFromDateTime(DateTime(2025, 1, 11)), isNull);
     });
 
-    testWidgets('hide: closest picks the nearer past day, not the earliest', (tester) async {
-      eventsController.addEvents([eventAt(DateTime(2025, 1, 14), 9), eventAt(DateTime(2025, 1, 18), 9)]);
+    for (final (name, eventDays, expected) in [
+      ('hide: closest picks the nearer past day, not the earliest', [14, 18], 14),
+      ('hide: closest picks the nearer future day', [12, 16], 16),
+    ]) {
+      testWidgets(name, (tester) async {
+        eventsController.addEvents([for (final day in eventDays) eventAt(DateTime(2025, 1, day), 9)]);
 
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildSchedule(
-          emptyDay: EmptyDayBehavior.hide,
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
-        ),
-      );
+        await pumpAndSettleWithMaterialApp(tester, buildSchedule(emptyDay: EmptyDayBehavior.hide));
 
-      final controller = schedule();
-      final index = controller.closestIndex(DateTime(2025, 1, 15));
-      expect(
-        controller.dateTimeFromIndex(index)!.isSameDay(FloatingDateTime(2025, 1, 14)),
-        isTrue,
-        reason: 'Jan 14 is 1 day away, Jan 18 is 3 — the nearer one wins',
-      );
-    });
-
-    testWidgets('hide: closest picks the nearer future day', (tester) async {
-      eventsController.addEvents([eventAt(DateTime(2025, 1, 12), 9), eventAt(DateTime(2025, 1, 16), 9)]);
-
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildSchedule(
-          emptyDay: EmptyDayBehavior.hide,
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
-        ),
-      );
-
-      final controller = schedule();
-      final index = controller.closestIndex(DateTime(2025, 1, 15));
-      expect(
-        controller.dateTimeFromIndex(index)!.isSameDay(FloatingDateTime(2025, 1, 16)),
-        isTrue,
-        reason: 'Jan 16 is 1 day away, Jan 12 is 3 — the nearer one wins',
-      );
-    });
+        final controller = schedule();
+        final index = controller.closestIndex(DateTime(2025, 1, 15));
+        expect(controller.dateTimeFromIndex(index)!.isSameDay(FloatingDateTime(2025, 1, expected)), isTrue);
+      });
+    }
 
     testWidgets('closest clamps to the first/last day for out-of-range targets', (tester) async {
       eventsController.addEvents([eventAt(DateTime(2025, 6, 10), 9), eventAt(DateTime(2025, 6, 20), 9)]);
@@ -195,18 +132,9 @@ void main() {
     testWidgets('initialScrollIndex does not pollute the date→index map', (tester) async {
       eventsController.addEvents([eventAt(DateTime(2025, 1, 10), 9), eventAt(DateTime(2025, 1, 20), 9)]);
 
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        buildSchedule(
-          emptyDay: EmptyDayBehavior.hide,
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
-        ),
-      );
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule(emptyDay: EmptyDayBehavior.hide));
 
       final controller = schedule();
-      // The build already resolved initialScrollIndex(Jan 15); it must not have
-      // written a fallback index back into the authoritative map.
       expect(controller.indexFromDateTime(DateTime(2025, 1, 15)), isNull);
       controller.initialScrollIndex(DateTime(2025, 1, 15));
       expect(controller.indexFromDateTime(DateTime(2025, 1, 15)), isNull);
@@ -221,8 +149,6 @@ void main() {
         tester,
         buildSchedule(
           emptyDay: EmptyDayBehavior.hide,
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
           components: const KalenderComponents(
             scheduleComponents: ScheduleComponents(monthItemBuilder: _customMonthItem),
           ),
@@ -238,8 +164,6 @@ void main() {
         tester,
         buildSchedule(
           emptyDay: EmptyDayBehavior.showOnlyToday,
-          initialDate: DateTime(2025, 1, 15),
-          nowCallback: () => DateTime(2025, 1, 15, 10),
           components: const KalenderComponents(
             scheduleComponents: ScheduleComponents(emptyItemBuilder: _customEmptyItem),
           ),
@@ -254,7 +178,7 @@ void main() {
     testWidgets('is built once when the view first appears', (tester) async {
       final counting = _CountingEventsController();
       eventsController = counting;
-      await pumpAndSettleWithMaterialApp(tester, buildSchedule(initialDate: DateTime(2025, 1, 15)));
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule());
       final callsOnMount = counting.eventsInRangeCalls;
 
       counting.addEvent(eventAt(DateTime(2025, 1, 15), 9));
@@ -268,10 +192,10 @@ void main() {
     testWidgets('a replaced events controller is no longer listened to', (tester) async {
       final first = DefaultEventsController();
       eventsController = first;
-      await pumpAndSettleWithMaterialApp(tester, buildSchedule(initialDate: DateTime(2025, 1, 15)));
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule());
 
       eventsController = DefaultEventsController();
-      await pumpAndSettleWithMaterialApp(tester, buildSchedule(initialDate: DateTime(2025, 1, 15)));
+      await pumpAndSettleWithMaterialApp(tester, buildSchedule());
       await tester.pumpWidget(const SizedBox());
 
       first.addEvent(eventAt(DateTime(2025, 1, 15), 9));

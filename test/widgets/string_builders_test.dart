@@ -10,10 +10,7 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// The string builders used to live on the component style classes, which put
-/// formatting inside the themeable KalenderThemeData and gave custom builders no
-/// way to see the calendar's locale. They now live on the *Components classes and
-/// receive a BuildContext. The style fields stay until 0.24.0 as a fallback.
+/// The string builders on the components classes replace the built-in labels.
 void main() {
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
   final scheduleTiles = ScheduleTileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
@@ -40,20 +37,13 @@ void main() {
     );
   }
 
-  Future<void> pumpWeek(WidgetTester tester, KalenderComponents components) {
-    return pumpView(
-      tester,
-      viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
-      components: components,
-      header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderBody(multiDayTileComponents: tiles),
-    );
-  }
+  final week = MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day);
+  final month = MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, initialDateTime: day);
 
-  Future<void> pumpMonth(WidgetTester tester, KalenderComponents components) {
+  Future<void> pumpWithTiles(WidgetTester tester, ViewConfiguration viewConfiguration, KalenderComponents components) {
     return pumpView(
       tester,
-      viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, initialDateTime: day),
+      viewConfiguration: viewConfiguration,
       components: components,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),
@@ -62,8 +52,9 @@ void main() {
 
   group('DayHeader', () {
     testWidgets('the components string builders replace the day name and the day number', (tester) async {
-      await pumpWeek(
+      await pumpWithTiles(
         tester,
+        week,
         KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
@@ -82,8 +73,9 @@ void main() {
       final nameDates = <DateTime>[];
       final numberDates = <DateTime>[];
 
-      await pumpWeek(
+      await pumpWithTiles(
         tester,
+        week,
         KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
@@ -101,14 +93,15 @@ void main() {
       );
 
       expect(nameDates, isNotEmpty);
-      expect(numberDates, nameDates, reason: 'the two builders used to be handed different DateTime flavours');
+      expect(numberDates, nameDates);
     });
   });
 
   group('WeekDayHeader', () {
     testWidgets('the components string builder replaces the day name', (tester) async {
-      await pumpMonth(
+      await pumpWithTiles(
         tester,
+        month,
         KalenderComponents(
           monthComponents: MonthComponents(
             headerComponents: MonthHeaderComponents(weekDayHeaderStringBuilder: (context, date) => 'wd'),
@@ -121,11 +114,10 @@ void main() {
   });
 
   group('MonthDayHeader', () {
-    // MonthDayHeaderStyle.stringBuilder was declared but never called, so setting
-    // it did nothing. The replacement is wired up.
     testWidgets('the components string builder replaces the day number', (tester) async {
-      await pumpMonth(
+      await pumpWithTiles(
         tester,
+        month,
         KalenderComponents(
           monthComponents: MonthComponents(
             bodyComponents: MonthBodyComponents(monthDayHeaderStringBuilder: (context, date) => 'md'),
@@ -161,20 +153,7 @@ void main() {
   });
 
   group('Overflow button label', () {
-    /// Adds enough events on [day] to overflow the cell and show the button.
-    DefaultEventsController controllerWithOverflowOn(DateTime day) {
-      final eventsController = DefaultEventsController();
-      for (var i = 0; i < 8; i++) {
-        eventsController.addEvent(KalenderEvent(start: day, end: day.add(const Duration(days: 1))));
-      }
-      return eventsController;
-    }
-
-    Future<void> pumpOverflowingWeek(
-      WidgetTester tester, {
-      KalenderComponents? components,
-      TextDirection textDirection = TextDirection.ltr,
-    }) {
+    Future<void> pumpOverflowingWeek(WidgetTester tester, TextDirection textDirection) {
       return pumpAndSettleWithMaterialApp(
         tester,
         Directionality(
@@ -182,8 +161,7 @@ void main() {
           child: KalenderView(
             eventsController: controllerWithOverflowOn(day),
             kalenderController: KalenderController(),
-            viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
-            components: components,
+            viewConfiguration: week,
             header: const KalenderHeader(
               multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
             ),
@@ -192,24 +170,12 @@ void main() {
       );
     }
 
-    Set<String> labels(WidgetTester tester) {
-      final texts = tester.widgetList<Text>(find.byKey(MultiDayPortalOverlayButton.textKey));
-      expect(texts, isNotEmpty, reason: 'the day should overflow and show an overflow button');
-      return texts.map((text) => text.data!).toSet();
+    for (final textDirection in TextDirection.values) {
+      testWidgets('defaults to a plus sign in front of the count in ${textDirection.name}', (tester) async {
+        await pumpOverflowingWeek(tester, textDirection);
+
+        expect(overflowButtonLabels(tester), everyElement(matches(RegExp(r'^\+\d+$'))));
+      });
     }
-
-    // The default used to be the English '$n more'. It is now a plus sign and the
-    // count, which needs no translation.
-    testWidgets('defaults to a plus sign and the count', (tester) async {
-      await pumpOverflowingWeek(tester);
-
-      expect(labels(tester), everyElement(matches(RegExp(r'^\+\d+$'))));
-    });
-
-    testWidgets('keeps the plus in front of the count in right-to-left', (tester) async {
-      await pumpOverflowingWeek(tester, textDirection: TextDirection.rtl);
-
-      expect(labels(tester), everyElement(matches(RegExp(r'^\+\d+$'))));
-    });
   });
 }

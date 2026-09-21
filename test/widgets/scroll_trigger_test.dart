@@ -11,10 +11,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEv
 
 import '../utilities.dart';
 
-// The body's top/bottom scroll triggers are built through
-// CursorNavigationTrigger.scroll (the shared helper for the body and schedule
-// scroll triggers). Holding a drag at the top or bottom edge must still scroll
-// the body vertically, the same as before the helper existed.
+// Holding a drag at the top or bottom edge of the body scrolls it vertically.
 void main() {
   final start = DateTime(2025, 3, 24); // Monday
 
@@ -30,92 +27,58 @@ void main() {
     tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
   );
 
-  final precise = KalenderInteraction(
-    inputMode: InputMode.precise,
-    createEventGesture: EventInteractionGesture.tap,
-    modifyEventGesture: EventInteractionGesture.tap,
-  );
-
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
-
   // Align the top of the viewport with [hour] so each test starts with room to
   // scroll in the direction it drags.
   Future<void> pumpWeek(WidgetTester tester, int hour) {
-    return pumpAndSettleWithMaterialApp(
+    return pumpKalender(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 7))),
-          initialDateTime: start,
-          initialTimeOfDay: KalenderTime(hour: hour, minute: 0),
-        ),
-        body: KalenderBody(multiDayTileComponents: components, interaction: precise),
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 7))),
+        initialDateTime: start,
+        initialTimeOfDay: KalenderTime(hour: hour, minute: 0),
       ),
+      body: KalenderBody(multiDayTileComponents: components, interaction: kPreciseInteraction),
     );
   }
 
-  // Drag [tile] from its center to [target] in steps so the edge trigger
-  // registers a drag-enter (a single jump past it does not) and starts its
-  // timer, hold long enough for the scroll to run, then release.
-  Future<void> dragTo(WidgetTester tester, Finder tile, Offset target) async {
-    final tileCenter = tester.getCenter(tile);
-    final gesture = await tester.startGesture(tileCenter);
-    await tester.pump();
-    await gesture.moveTo(Offset(tileCenter.dx, (tileCenter.dy + target.dy) / 2));
-    await tester.pump();
-    await gesture.moveTo(target);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 800));
-    await tester.pump(const Duration(milliseconds: 250));
-    await gesture.up();
-    await tester.pumpAndSettle();
+  final cases = [
+    (
+      edge: 'bottom',
+      direction: 'down',
+      viewHour: 0,
+      eventHour: 1,
+      targetY: (Rect body) => body.bottom - 2,
+      scrolled: greaterThan,
+    ),
+    (
+      edge: 'top',
+      direction: 'up',
+      viewHour: 12,
+      eventHour: 12,
+      targetY: (Rect body) => body.top + 2,
+      scrolled: lessThan,
+    ),
+  ];
+
+  for (final c in cases) {
+    testWidgets('holding a drag at the ${c.edge} edge scrolls the body ${c.direction}', (tester) async {
+      final eventStart = start.add(Duration(hours: c.eventHour));
+      final id = eventsController.addEvent(
+        KalenderEvent(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
+      );
+
+      await pumpWeek(tester, c.viewHour);
+      final offsetBefore = kalenderController.multiDayViewController.scrollController.offset;
+
+      final tile = find.byKey(DayEventTile.tileKey(id));
+      final bodyRect = tester.getRect(find.byType(KalenderBody));
+      final gesture = await tester.holdDragAt(tile, Offset(tester.getCenter(tile).dx, c.targetY(bodyRect)));
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      expect(kalenderController.multiDayViewController.scrollController.offset, c.scrolled(offsetBefore));
+    });
   }
-
-  testWidgets('holding a drag at the bottom edge scrolls the body down', (tester) async {
-    // Start at the top of the day so the whole day is below and there is room
-    // to scroll down. The event sits just below the top edge, so it is visible.
-    final eventStart = start.add(const Duration(hours: 1));
-    final id = eventsController.addEvent(
-      KalenderEvent(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
-    );
-
-    await pumpWeek(tester, 0);
-    final offsetBefore = viewController().scrollController.offset;
-
-    final tile = find.byKey(DayEventTile.tileKey(id));
-    expect(tile, findsOneWidget);
-    final bodyRect = tester.getRect(find.byType(KalenderBody));
-    await dragTo(tester, tile, Offset(tester.getCenter(tile).dx, bodyRect.bottom - 2));
-
-    expect(
-      viewController().scrollController.offset,
-      greaterThan(offsetBefore),
-      reason: 'holding a drag at the bottom edge should scroll the body down',
-    );
-  });
-
-  testWidgets('holding a drag at the top edge scrolls the body up', (tester) async {
-    // Start at midday so the morning is above and there is room to scroll up.
-    final eventStart = start.add(const Duration(hours: 12));
-    final id = eventsController.addEvent(
-      KalenderEvent(start: eventStart, end: eventStart.add(const Duration(hours: 1))),
-    );
-
-    await pumpWeek(tester, 12);
-    final offsetBefore = viewController().scrollController.offset;
-    expect(offsetBefore, greaterThan(0), reason: 'midday start should leave room to scroll up');
-
-    final tile = find.byKey(DayEventTile.tileKey(id));
-    expect(tile, findsOneWidget);
-    final bodyRect = tester.getRect(find.byType(KalenderBody));
-    await dragTo(tester, tile, Offset(tester.getCenter(tile).dx, bodyRect.top + 2));
-
-    expect(
-      viewController().scrollController.offset,
-      lessThan(offsetBefore),
-      reason: 'holding a drag at the top edge should scroll the body up',
-    );
-  });
 }

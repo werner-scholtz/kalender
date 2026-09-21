@@ -10,20 +10,11 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-// The free-scroll header renders its multi-day events as one continuous band
-// (not a per-day page view). These regressions cover the two behaviours the old
-// paged header had to fight for and the band should get for free:
-//  - the header does not wobble (change height) when it rebuilds (#282), and
-//  - the header fits the tallest day currently in view, not just the leading
-//    day (#283).
+// Free-scroll header height: stable on rebuild (#282), fits the tallest visible day (#283).
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
   late KalenderCallbacks callbacks;
-
-  final tileComponents = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
-  );
 
   setUp(() {
     eventsController = DefaultEventsController();
@@ -45,23 +36,17 @@ void main() {
     ]);
   }
 
-  Widget freeScrollView({DateTime? initialDate}) => KalenderView(
+  Widget buildView({DateTime? initialDate}) => freeScrollView(
     eventsController: eventsController,
     kalenderController: kalenderController,
-    viewConfiguration: MultiDayViewConfiguration.freeScroll(
-      numberOfDays: 3,
-      initialDateTime: initialDate,
-      displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
-    ),
+    displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
+    initialDateTime: initialDate,
+    numberOfDays: 3,
     callbacks: callbacks,
-    header: KalenderHeader(multiDayTileComponents: tileComponents),
-    body: KalenderBody(multiDayTileComponents: tileComponents),
   );
 
   group('FreeScroll header', () {
-    // Regression for #282: the old header reset its measured per-page heights on
-    // rebuild and visibly wobbled. The band's height is deterministic, so a
-    // rebuild must not change it.
+    // #282
     testWidgets('does not change height when it rebuilds', (tester) async {
       addTwoRowDay();
       final rebuild = ValueNotifier(0);
@@ -71,13 +56,12 @@ void main() {
         tester,
         ValueListenableBuilder(
           valueListenable: rebuild,
-          builder: (context, _, __) => freeScrollView(initialDate: base.add(const Duration(days: 2))),
+          builder: (context, _, __) => buildView(initialDate: base.add(const Duration(days: 2))),
         ),
       );
 
       final heightBefore = tester.getSize(find.byType(KalenderHeader)).height;
 
-      // Force the header to build again, as a calendar item change would.
       rebuild.value++;
       await tester.pumpAndSettle();
 
@@ -85,23 +69,19 @@ void main() {
       expect(heightAfter, closeTo(heightBefore, 0.5), reason: 'the header must not wobble on rebuild');
     });
 
-    // Regression for #283: the header must fit the tallest day currently in
-    // view, regardless of whether it is the leading day.
     Future<double> pumpAndMeasureHeader(WidgetTester tester, DateTime initialDate) async {
       await tester.pumpWidget(const SizedBox());
       eventsController = DefaultEventsController();
       kalenderController = KalenderController();
       addTwoRowDay();
-      await pumpAndSettleWithMaterialApp(tester, freeScrollView(initialDate: initialDate));
+      await pumpAndSettleWithMaterialApp(tester, buildView(initialDate: initialDate));
       return tester.getSize(find.byType(KalenderHeader)).height;
     }
 
+    // #283
     testWidgets('fits the tallest visible day, not just the leading day', (tester) async {
-      // 26 Mar (two rows) as the leading day.
       final heightAsLeading = await pumpAndMeasureHeader(tester, base.add(const Duration(days: 2)));
-      // 26 Mar visible as a trailing day (leading is 25 Mar, a single row).
       final heightAsTrailing = await pumpAndMeasureHeader(tester, base.add(const Duration(days: 1)));
-      // A window of empty days for a single-row baseline.
       final heightEmpty = await pumpAndMeasureHeader(tester, base.add(const Duration(days: 12)));
 
       expect(

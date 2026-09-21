@@ -4,17 +4,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show MultiDayEventTile;
 
 import '../utilities.dart';
 
-// The free-scroll header draws multi-day events as one continuous band. A
-// multi-day event should render as ONE tile spanning several day columns, and
-// stay a single tile that moves as the view scrolls, rather than being split
-// into one tile per day.
 void main() {
   final start = DateTime(2025, 3, 24); // Monday
   final displayRange = KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 21)));
@@ -27,32 +22,25 @@ void main() {
     kalenderController = KalenderController();
   });
 
-  final components = TileComponents(
-    tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}')),
-  );
-
-  Future<void> pumpFreeScroll(WidgetTester tester) {
+  Future<void> pumpFreeScroll(
+    WidgetTester tester, {
+    KalenderDateTimeRange? range,
+    DateTime? initialDateTime,
+    int numberOfDays = 7,
+  }) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(
+      freeScrollView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.freeScroll(
-          numberOfDays: 7,
-          displayRange: displayRange,
-          initialDateTime: start,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        ),
-        header: KalenderHeader(multiDayTileComponents: components),
-        body: KalenderBody(multiDayTileComponents: components),
+        displayRange: range ?? displayRange,
+        initialDateTime: initialDateTime ?? start,
+        numberOfDays: numberOfDays,
       ),
     );
   }
 
-  MultiDayViewController viewController() => kalenderController.viewController as MultiDayViewController;
-
   testWidgets('a multi-day event renders as one continuous spanning tile', (tester) async {
-    // Monday 00:00 -> Friday 00:00, a 4-day span inside the first visible week.
     final id = eventsController.addEvent(KalenderEvent(start: start, end: start.add(const Duration(days: 4))));
 
     await pumpFreeScroll(tester);
@@ -60,11 +48,10 @@ void main() {
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
     final calWidth = tester.getSize(find.byType(KalenderView)).width;
 
-    expect(tile, findsOneWidget, reason: 'the multi-day event should be a single continuous tile');
     final tileWidth = tester.getSize(tile).width;
     // A single day column is ~calWidth/7. A spanning tile is clearly wider.
-    expect(tileWidth, greaterThan(calWidth * 0.22), reason: 'the tile should span more than one day column');
-    expect(tileWidth, lessThan(calWidth), reason: 'the tile should not fill the whole strip');
+    expect(tileWidth, greaterThan(calWidth * 0.22));
+    expect(tileWidth, lessThan(calWidth));
   });
 
   testWidgets('the spanning tile stays one tile and moves as the view scrolls', (tester) async {
@@ -75,17 +62,14 @@ void main() {
     await pumpFreeScroll(tester);
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
-    expect(tile, findsOneWidget);
     final leftBefore = tester.getTopLeft(tile).dx;
 
-    // Scroll the body forward by one day.
-    final pageController = viewController().pageController;
+    final pageController = kalenderController.multiDayViewController.pageController;
     pageController.jumpToPage((pageController.page ?? 0).round() + 1);
     await tester.pumpAndSettle();
 
-    expect(tile, findsOneWidget, reason: 'still a single tile after scrolling');
     final leftAfter = tester.getTopLeft(tile).dx;
-    expect(leftAfter, lessThan(leftBefore), reason: 'the tile should move left as the view scrolls forward');
+    expect(leftAfter, lessThan(leftBefore));
   });
 
   testWidgets('renders without blowing up on a multi-year display range', (tester) async {
@@ -94,24 +78,8 @@ void main() {
     final bigRange = KalenderDateTimeRange(start: DateTime(2018), end: DateTime(2036));
     final id = eventsController.addEvent(KalenderEvent(start: DateTime(2026, 7, 6), end: DateTime(2026, 7, 9)));
 
-    await pumpAndSettleWithMaterialApp(
-      tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.freeScroll(
-          numberOfDays: 3,
-          displayRange: bigRange,
-          initialDateTime: DateTime(2026, 7, 6),
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        ),
-        header: KalenderHeader(multiDayTileComponents: components),
-        body: KalenderBody(multiDayTileComponents: components),
-      ),
-    );
+    await pumpFreeScroll(tester, range: bigRange, initialDateTime: DateTime(2026, 7, 6), numberOfDays: 3);
 
-    // No exception during layout, and the event near the initial date is built.
-    expect(tester.takeException(), isNull);
     expect(find.byKey(MultiDayEventTile.tileKey(id)), findsOneWidget);
   });
 }

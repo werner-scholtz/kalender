@@ -10,10 +10,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
-// The today highlight used to be a disabled IconButton.filled, which Material
-// paints with the disabled colors. That greyed it out, so it read as
-// "unavailable" rather than "today". DayNumber keeps the tonal look while
-// staying non-interactive, for every component that shows a day number.
+// DayNumber: a non-interactive day number with the tonal today and selected highlights.
 void main() {
   const todayKey = ValueKey('test.today');
   final date = FloatingDateTime(2025, 3, 15);
@@ -82,13 +79,11 @@ void main() {
 
   testWidgets('a day that is not today is not given a background', (tester) async {
     await pump(tester, isToday: false);
-    expect(button(tester).style, isNull, reason: 'it should be a plain icon button');
+    expect(button(tester).style, isNull);
   });
 
   testWidgets('size tightens the button, null keeps its natural size', (tester) async {
-    // The size constrains the highlight itself. IconButton keeps its own tap
-    // target around that, so assert what is passed down rather than the
-    // rendered footprint.
+    // IconButton keeps its own tap target around the size, so assert what is passed down.
     await pump(tester, isToday: true, size: const Size(28, 28));
     expect(button(tester).constraints, BoxConstraints.tight(const Size(28, 28)));
     expect(button(tester).padding, EdgeInsets.zero, reason: 'the padding would fight a tight size');
@@ -103,57 +98,57 @@ void main() {
     const today = DayNumberStyle(todayBackgroundColor: Color(0xFF000001), todayForegroundColor: Color(0xFF000002));
     const side = BorderSide(color: Color(0xFF000003), width: 2);
 
-    testWidgets('a selected day that is not today gets the selected values', (tester) async {
-      controller.selectDate(DateTime(2025, 3, 15));
-      await pump(
-        tester,
-        isToday: false,
-        style: today.copyWith(selectedBackgroundColor: const Color(0xFF000004), selectedBorder: side),
-      );
+    group('with the date selected', () {
+      setUp(() => controller.selectDate(DateTime(2025, 3, 15)));
 
-      final style = button(tester).style!;
-      expect(style.backgroundColor?.resolve(states), const Color(0xFF000004));
-      expect(style.side?.resolve(states), side);
-      expect(find.byKey(todayKey), findsNothing);
-    });
+      testWidgets('a selected day that is not today gets the selected values', (tester) async {
+        await pump(
+          tester,
+          isToday: false,
+          style: today.copyWith(selectedBackgroundColor: const Color(0xFF000004), selectedBorder: side),
+        );
 
-    testWidgets('a day both today and selected falls back to the today colors', (tester) async {
-      controller.selectDate(DateTime(2025, 3, 15));
-      await pump(tester, isToday: true, style: today.copyWith(selectedBorder: side));
+        final style = button(tester).style!;
+        expect(style.backgroundColor?.resolve(states), const Color(0xFF000004));
+        expect(style.side?.resolve(states), side);
+        expect(find.byKey(todayKey), findsNothing);
+      });
 
-      final style = button(tester).style!;
-      expect(style.backgroundColor?.resolve(states), const Color(0xFF000001));
-      expect(style.foregroundColor?.resolve(states), const Color(0xFF000002));
-      expect(style.side?.resolve(states), side, reason: 'today sets no border, so the selected one shows');
-      expect(find.byKey(todayKey), findsOne);
-    });
+      testWidgets('a day both today and selected falls back to the today colors', (tester) async {
+        await pump(tester, isToday: true, style: today.copyWith(selectedBorder: side));
 
-    testWidgets('a day both today and selected takes the selected colors and the today border', (tester) async {
-      const todayBorder = BorderSide(color: Color(0xFF000006));
-      controller.selectDate(DateTime(2025, 3, 15));
-      await pump(
-        tester,
-        isToday: true,
-        style: today.copyWith(
-          todayBorder: todayBorder,
-          selectedBackgroundColor: const Color(0xFF000004),
-          selectedBorder: side,
-        ),
-      );
+        final style = button(tester).style!;
+        expect(style.backgroundColor?.resolve(states), const Color(0xFF000001));
+        expect(style.foregroundColor?.resolve(states), const Color(0xFF000002));
+        expect(style.side?.resolve(states), side, reason: 'today sets no border, so the selected one shows');
+        expect(find.byKey(todayKey), findsOne);
+      });
 
-      final style = button(tester).style!;
-      expect(style.backgroundColor?.resolve(states), const Color(0xFF000004));
-      expect(style.side?.resolve(states), todayBorder);
-    });
+      testWidgets('a day both today and selected takes the selected colors and the today border', (tester) async {
+        const todayBorder = BorderSide(color: Color(0xFF000006));
+        await pump(
+          tester,
+          isToday: true,
+          style: today.copyWith(
+            todayBorder: todayBorder,
+            selectedBackgroundColor: const Color(0xFF000004),
+            selectedBorder: side,
+          ),
+        );
 
-    testWidgets('the number text takes the foreground color', (tester) async {
-      controller.selectDate(DateTime(2025, 3, 15));
-      await pump(tester, isToday: true, style: today.copyWith(selectedForegroundColor: const Color(0xFF000005)));
-      expect(tester.widget<Text>(find.text('15')).style?.color, const Color(0xFF000005));
+        final style = button(tester).style!;
+        expect(style.backgroundColor?.resolve(states), const Color(0xFF000004));
+        expect(style.side?.resolve(states), todayBorder);
+      });
 
-      controller.deselectRange();
-      await tester.pump();
-      expect(tester.widget<Text>(find.text('15')).style?.color, const Color(0xFF000002));
+      testWidgets('the number text takes the foreground color', (tester) async {
+        await pump(tester, isToday: true, style: today.copyWith(selectedForegroundColor: const Color(0xFF000005)));
+        expect(tester.widget<Text>(find.text('15')).style?.color, const Color(0xFF000005));
+
+        controller.deselectRange();
+        await tester.pump();
+        expect(tester.widget<Text>(find.text('15')).style?.color, const Color(0xFF000002));
+      });
     });
 
     testWidgets('follows the controller', (tester) async {

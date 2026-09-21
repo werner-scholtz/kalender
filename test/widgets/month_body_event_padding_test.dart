@@ -11,16 +11,9 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show
 
 import '../utilities.dart';
 
-// Coverage for #252: MonthBodyConfiguration should expose eventPadding, forward
-// it to the shared HorizontalConfiguration, and carry it through copyWith, so
-// month event tiles can be spaced like the multi-day header already allows.
+// #252
 void main() {
   group('MonthBodyConfiguration eventPadding (#252)', () {
-    test('constructor exposes eventPadding', () {
-      const padding = EdgeInsets.fromLTRB(1, 2, 3, 4);
-      expect(const MonthBodyConfiguration(eventPadding: padding).eventPadding, padding);
-    });
-
     test('defaults to kDefaultMultiDayEventPadding', () {
       expect(const MonthBodyConfiguration().eventPadding, kDefaultMultiDayEventPadding);
     });
@@ -57,14 +50,12 @@ void main() {
         ),
       );
 
-      expect(find.byType(MultiDayEventTile), findsWidgets, reason: 'The event should render a tile');
       expect(
         find.ancestor(
           of: find.byType(MultiDayEventTile),
           matching: find.byWidgetPredicate((widget) => widget is Padding && widget.padding == padding),
         ),
         findsWidgets,
-        reason: 'Each month event tile should be wrapped in the configured eventPadding',
       );
     });
   });

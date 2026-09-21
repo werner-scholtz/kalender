@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -99,14 +98,7 @@ void main() {
       final id = addEvent();
       await pump(tester, week, gesture: EventInteractionGesture.longPress);
 
-      final gesture = await tester.startGesture(tester.getCenter(find.byKey(DayEventTile.tileKey(id))));
-      await tester.pump(kLongPressTimeout + const Duration(milliseconds: 100));
-      await gesture.moveBy(const Offset(0, 50));
-      await tester.pump();
-      await gesture.moveBy(const Offset(0, 50));
-      await tester.pump();
-      await gesture.up();
-      await tester.pumpAndSettle();
+      await tester.longPressDragWidget(find.byKey(DayEventTile.tileKey(id)), const Offset(0, 100));
 
       expect(created, hasLength(1));
     });

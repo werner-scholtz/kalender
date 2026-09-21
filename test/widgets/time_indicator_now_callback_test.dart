@@ -7,93 +7,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
-import 'package:timezone/data/latest_10y.dart' as tz;
-import 'package:timezone/timezone.dart';
 
 import '../utilities.dart';
 
 void main() {
+  final key = UniqueKey();
+  final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
+  final range = FloatingDateTimeRange(start: now, end: now.endOfWeek());
+
+  Future<void> pumpPositioner(
+    WidgetTester tester,
+    MultiDayViewConfiguration viewConfiguration, {
+    FloatingDateTimeRange? visibleRange,
+    DateTime? dateOverride,
+    FloatingDateTime? initialDate,
+  }) {
+    return pumpAndSettleWithMaterialApp(
+      tester,
+      timeIndicatorPositioner(
+        viewConfiguration: viewConfiguration,
+        visibleRange: visibleRange ?? range,
+        indicatorKey: key,
+        initialDate: initialDate,
+        dateOverride: dateOverride,
+      ),
+    );
+  }
+
+  group('TimeIndicatorPositioner', () {
+    final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range.forLocation());
+
+    for (final (index, date) in range.dates().map(FloatingDateTime.fromDateTime).indexed) {
+      testWidgets('for date index: ($index)', (tester) async {
+        await pumpPositioner(tester, viewConfiguration, dateOverride: date);
+        final finder = find.byKey(key);
+        expect(finder, findsOneWidget);
+        expect(tester.getTopLeft(finder).dx, index * 100.0);
+      });
+    }
+  });
+
   group('nowCallback', () {
     group('TimeIndicatorPositioner', () {
-      final key = UniqueKey();
-      final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
-      final range = FloatingDateTimeRange(start: now, end: now.endOfWeek());
-
       group('positions indicator using callback wall-clock values', () {
         for (final (index, date) in range.dates().map(FloatingDateTime.fromDateTime).indexed) {
           testWidgets('day index $index', (tester) async {
-            final viewConfiguration = MultiDayViewConfiguration.week(
-              displayRange: range.forLocation(),
-              nowCallback: () => date,
-            );
-
-            await pumpAndSettleWithMaterialApp(
+            await pumpPositioner(
               tester,
-              SizedBox(
-                width: 700,
-                height: 100,
-                child: Stack(
-                  children: [
-                    TimeIndicatorPositioner(
-                      viewController: MultiDayViewController(
-                        viewConfiguration: viewConfiguration,
-                        floatingVisibleRange: ValueNotifier(range),
-                        visibleEvents: ValueNotifier(<KalenderEvent>{}),
-                      ),
-                      initialPage: 0,
-                      childOverride: SizedBox(key: key),
-                    ),
-                  ],
-                ),
-              ),
+              MultiDayViewConfiguration.week(displayRange: range.forLocation(), nowCallback: () => date),
             );
-            final finder = find.byKey(key);
-            expect(finder, findsOneWidget);
-            expect(tester.getTopLeft(finder).dx, index * 100.0);
+            expect(tester.getTopLeft(find.byKey(key)).dx, index * 100.0);
           });
         }
       });
 
       testWidgets('dateOverride takes precedence over nowCallback', (tester) async {
-        // The callback points to day index 3 (Thursday), but dateOverride points to day index 0 (Monday).
         final thursday = FloatingDateTime.fromDateTime(range.dates()[3]);
         final monday = FloatingDateTime.fromDateTime(range.dates()[0]);
 
-        final viewConfiguration = MultiDayViewConfiguration.week(
-          displayRange: range.forLocation(),
-          nowCallback: () => thursday,
-        );
-
-        await pumpAndSettleWithMaterialApp(
+        await pumpPositioner(
           tester,
-          SizedBox(
-            width: 700,
-            height: 100,
-            child: Stack(
-              children: [
-                TimeIndicatorPositioner(
-                  viewController: MultiDayViewController(
-                    viewConfiguration: viewConfiguration,
-                    floatingVisibleRange: ValueNotifier(range),
-                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
-                  ),
-                  initialPage: 0,
-                  dateOverride: monday,
-                  childOverride: SizedBox(key: key),
-                ),
-              ],
-            ),
-          ),
+          MultiDayViewConfiguration.week(displayRange: range.forLocation(), nowCallback: () => thursday),
+          dateOverride: monday,
         );
-        final finder = find.byKey(key);
-        expect(finder, findsOneWidget);
-        // Should be at Monday's position (index 0), not Thursday's.
-        expect(tester.getTopLeft(finder).dx, 0.0);
+        expect(tester.getTopLeft(find.byKey(key)).dx, 0.0);
       });
 
       testWidgets('null callback preserves location-based behavior', (tester) async {
-        // With no callback, the indicator uses DateTime.now() which is "today".
         final today = FloatingDateTime.fromDateTime(DateTime.now());
         final todayWeekStart = today.startOfWeek();
         final todayRange = FloatingDateTimeRange(start: todayWeekStart, end: todayWeekStart.endOfWeek());
@@ -103,106 +83,51 @@ void main() {
             .toList()
             .indexWhere((d) => d.isSameDay(today.startOfDay));
 
-        final viewConfiguration = MultiDayViewConfiguration.week(
-          displayRange: todayRange.forLocation(),
-          // No nowCallback — null by default
-        );
-
-        await pumpAndSettleWithMaterialApp(
+        await pumpPositioner(
           tester,
-          SizedBox(
-            width: 700,
-            height: 100,
-            child: Stack(
-              children: [
-                TimeIndicatorPositioner(
-                  viewController: MultiDayViewController(
-                    viewConfiguration: viewConfiguration,
-                    floatingVisibleRange: ValueNotifier(todayRange),
-                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
-                  ),
-                  initialPage: 0,
-                  childOverride: SizedBox(key: key),
-                ),
-              ],
-            ),
-          ),
+          MultiDayViewConfiguration.week(displayRange: todayRange.forLocation()),
+          visibleRange: todayRange,
         );
-        final finder = find.byKey(key);
-        expect(finder, findsOneWidget);
-        expect(tester.getTopLeft(finder).dx, todayIndex * 100.0);
+        expect(tester.getTopLeft(find.byKey(key)).dx, todayIndex * 100.0);
       });
 
       testWidgets('singleDay config with callback', (tester) async {
-        // For a single-day view, the indicator should always be at index 0 (the only column).
         final monday = FloatingDateTime.fromDateTime(range.dates()[0]);
-        final viewConfiguration = MultiDayViewConfiguration.singleDay(
-          displayRange: range.forLocation(),
-          nowCallback: () => monday,
-        );
 
-        await pumpAndSettleWithMaterialApp(
+        await pumpPositioner(
           tester,
-          SizedBox(
-            width: 700,
-            height: 100,
-            child: Stack(
-              children: [
-                TimeIndicatorPositioner(
-                  viewController: MultiDayViewController(
-                    viewConfiguration: viewConfiguration,
-                    floatingVisibleRange: ValueNotifier(range),
-                    visibleEvents: ValueNotifier(<KalenderEvent>{}),
-                    initialDate: monday,
-                  ),
-                  initialPage: 0,
-                  childOverride: SizedBox(key: key),
-                ),
-              ],
-            ),
-          ),
+          MultiDayViewConfiguration.singleDay(displayRange: range.forLocation(), nowCallback: () => monday),
+          initialDate: monday,
         );
-        final finder = find.byKey(key);
-        expect(finder, findsOneWidget);
-        expect(tester.getTopLeft(finder).dx, 0.0);
+        expect(tester.getTopLeft(find.byKey(key)).dx, 0.0);
       });
     });
 
     group('ViewConfiguration copyWith preserves nowCallback', () {
-      test('MultiDayViewConfiguration.week copyWith', () {
-        DateTime callback() => DateTime(2026, 4, 13, 14, 0);
-        final config = MultiDayViewConfiguration.week(nowCallback: callback);
-        final copy = config.copyWith(name: 'Modified');
-        expect(copy.nowCallback, same(callback));
-      });
+      final constructors = [
+        (name: 'week', build: (NowCallback callback) => MultiDayViewConfiguration.week(nowCallback: callback)),
+        (
+          name: 'singleDay',
+          build: (NowCallback callback) => MultiDayViewConfiguration.singleDay(nowCallback: callback),
+        ),
+        (name: 'workWeek', build: (NowCallback callback) => MultiDayViewConfiguration.workWeek(nowCallback: callback)),
+        (
+          name: 'custom',
+          build: (NowCallback callback) => MultiDayViewConfiguration.custom(numberOfDays: 3, nowCallback: callback),
+        ),
+        (
+          name: 'freeScroll',
+          build: (NowCallback callback) => MultiDayViewConfiguration.freeScroll(numberOfDays: 3, nowCallback: callback),
+        ),
+      ];
 
-      test('MultiDayViewConfiguration.singleDay copyWith', () {
-        DateTime callback() => DateTime(2026, 4, 13, 14, 0);
-        final config = MultiDayViewConfiguration.singleDay(nowCallback: callback);
-        final copy = config.copyWith(name: 'Modified');
-        expect(copy.nowCallback, same(callback));
-      });
-
-      test('MultiDayViewConfiguration.workWeek copyWith', () {
-        DateTime callback() => DateTime(2026, 4, 13, 14, 0);
-        final config = MultiDayViewConfiguration.workWeek(nowCallback: callback);
-        final copy = config.copyWith(name: 'Modified');
-        expect(copy.nowCallback, same(callback));
-      });
-
-      test('MultiDayViewConfiguration.custom copyWith', () {
-        DateTime callback() => DateTime(2026, 4, 13, 14, 0);
-        final config = MultiDayViewConfiguration.custom(numberOfDays: 3, nowCallback: callback);
-        final copy = config.copyWith(name: 'Modified');
-        expect(copy.nowCallback, same(callback));
-      });
-
-      test('MultiDayViewConfiguration.freeScroll copyWith', () {
-        DateTime callback() => DateTime(2026, 4, 13, 14, 0);
-        final config = MultiDayViewConfiguration.freeScroll(numberOfDays: 3, nowCallback: callback);
-        final copy = config.copyWith(name: 'Modified');
-        expect(copy.nowCallback, same(callback));
-      });
+      for (final constructor in constructors) {
+        test('MultiDayViewConfiguration.${constructor.name} copyWith', () {
+          DateTime callback() => DateTime(2026, 4, 13, 14, 0);
+          final copy = constructor.build(callback).copyWith(name: 'Modified');
+          expect(copy.nowCallback, same(callback));
+        });
+      }
 
       test('copyWith can override nowCallback', () {
         DateTime original() => DateTime(2026, 4, 13, 14, 0);
@@ -215,22 +140,6 @@ void main() {
       test('null by default', () {
         final config = MultiDayViewConfiguration.week();
         expect(config.nowCallback, isNull);
-      });
-    });
-
-    group('NowCallback typedef', () {
-      test('DateTime.now satisfies the typedef', () {
-        final callback = DateTime.now;
-        final result = callback();
-        expect(result, isA<DateTime>());
-      });
-
-      test('TZDateTime.now satisfies the typedef via wrapper', () {
-        tz.initializeTimeZones();
-        final utc = getLocation('Etc/UTC');
-        DateTime callback() => TZDateTime.now(utc);
-        final result = callback();
-        expect(result, isA<TZDateTime>());
       });
     });
   });

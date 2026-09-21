@@ -9,21 +9,13 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// Characterization tests for page navigation that must hold regardless of the
-/// page-count convention.
-///
-/// These navigate to a date in the **middle** of a wide range, well away from
-/// the range boundary. The visible page must always contain the requested date.
-/// They are expected to pass both before and after the `numberOfPages` change,
-/// proving that change does not alter normal (non-boundary) navigation.
+/// Navigating to a date in the middle of a wide range, away from its boundaries, shows the page containing it.
 void main() {
   group('Page navigation (preserved behaviour)', () {
     late DefaultEventsController eventsController;
     late KalenderController kalenderController;
 
-    // A wide range so the target date is nowhere near the first/last page.
     final wideRange = KalenderDateTimeRange(start: DateTime(2024), end: DateTime(2027));
-    // A Wednesday, comfortably inside the range.
     final target = DateTime(2025, 6, 18);
 
     setUp(() {
@@ -48,25 +40,25 @@ void main() {
       return range.dates().any((d) => d.year == date.year && d.month == date.month && d.day == date.day);
     }
 
-    testWidgets('single day view lands on the requested mid-range day', (tester) async {
-      await pump(
-        tester,
-        MultiDayViewConfiguration.singleDay(displayRange: wideRange, initialDateTime: DateTime(2024, 1, 1)),
-      );
-      kalenderController.jumpToDate(target);
-      await tester.pumpAndSettle();
-      expect(visibleRangeContains(target), isTrue);
-    });
+    final multiDayCases = [
+      (
+        name: 'single day view lands on the requested mid-range day',
+        config: MultiDayViewConfiguration.singleDay(displayRange: wideRange, initialDateTime: DateTime(2024, 1, 1)),
+      ),
+      (
+        name: 'week view lands on the week containing a mid-range date',
+        config: MultiDayViewConfiguration.week(displayRange: wideRange, initialDateTime: DateTime(2024, 1, 1)),
+      ),
+    ];
 
-    testWidgets('week view lands on the week containing a mid-range date', (tester) async {
-      await pump(
-        tester,
-        MultiDayViewConfiguration.week(displayRange: wideRange, initialDateTime: DateTime(2024, 1, 1)),
-      );
-      kalenderController.jumpToDate(target);
-      await tester.pumpAndSettle();
-      expect(visibleRangeContains(target), isTrue);
-    });
+    for (final c in multiDayCases) {
+      testWidgets(c.name, (tester) async {
+        await pump(tester, c.config);
+        kalenderController.jumpToDate(target);
+        await tester.pumpAndSettle();
+        expect(visibleRangeContains(target), isTrue);
+      });
+    }
 
     testWidgets('month view lands on the month containing a mid-range date', (tester) async {
       await pump(

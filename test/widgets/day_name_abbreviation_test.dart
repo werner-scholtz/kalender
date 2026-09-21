@@ -11,16 +11,13 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// [ScheduleDate] abbreviated the day name by cutting the full name at three
-/// characters, which only happens to be right in English. Every other component
-/// that shows a short day name uses `DateFormat.E` through
-/// [DateTimeExtensions.dayNameShortLocalized].
+/// [ScheduleDate] shows the locale's short day name from [DateTimeExtensions.dayNameShortLocalized].
 void main() {
   // 15 January 2025 is a Wednesday, whose abbreviation differs from the first
   // three letters of its full name in several locales.
   final wednesday = FloatingDateTime(2025, 1, 15);
 
-  Future<void> pumpScheduleDate(WidgetTester tester, Locale locale) async {
+  Future<void> pumpInLocale(WidgetTester tester, Locale locale, {Widget? child}) async {
     await initializeDateFormatting(locale.toLanguageTag());
     await pumpAndSettleWithMaterialApp(
       tester,
@@ -29,47 +26,40 @@ void main() {
         eventsController: DefaultEventsController(),
         tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
         locale: locale,
-        child: ScheduleDate(date: wednesday),
+        child: child ?? ScheduleDate(date: wednesday),
       ),
     );
   }
 
   testWidgets('uses the locale\'s own abbreviation, not the first three letters', (tester) async {
-    await pumpScheduleDate(tester, const Locale('de'));
+    await pumpInLocale(tester, const Locale('de'));
 
     expect(find.text('Mi'), findsOneWidget);
     expect(find.text('Mit'), findsNothing, reason: 'Mittwoch cut at three characters is not how German abbreviates it');
   });
 
-  testWidgets('English is unchanged, which is why this went unnoticed', (tester) async {
-    await pumpScheduleDate(tester, const Locale('en'));
+  testWidgets('uses the English three-letter abbreviation', (tester) async {
+    await pumpInLocale(tester, const Locale('en'));
 
     expect(find.text('Wed'), findsOneWidget);
   });
 
   testWidgets('keeps abbreviations that are not three characters long', (tester) async {
-    // Russian abbreviates Wednesday to two characters, and the cut produced three.
-    await pumpScheduleDate(tester, const Locale('ru'));
+    await pumpInLocale(tester, const Locale('ru'));
 
     expect(find.text('ср'), findsOneWidget);
     expect(find.text('сре'), findsNothing);
   });
 
   testWidgets('matches what the multi-day day header shows for the same date', (tester) async {
-    await initializeDateFormatting('de');
-    await pumpAndSettleWithMaterialApp(
+    await pumpInLocale(
       tester,
-      TestProvider(
-        kalenderController: KalenderController(),
-        eventsController: DefaultEventsController(),
-        tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
-        locale: const Locale('de'),
-        child: Column(
-          children: [
-            ScheduleDate(date: wednesday),
-            DayHeader(date: wednesday),
-          ],
-        ),
+      const Locale('de'),
+      child: Column(
+        children: [
+          ScheduleDate(date: wednesday),
+          DayHeader(date: wednesday),
+        ],
       ),
     );
 

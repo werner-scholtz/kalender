@@ -90,7 +90,6 @@ void main() {
   });
 }
 
-/// Identifies the widget a custom positioner returned.
 const _probeKey = ValueKey<String>('probe-resize-handles');
 
 class _Handle extends StatelessWidget {

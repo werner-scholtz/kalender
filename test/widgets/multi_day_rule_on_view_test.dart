@@ -73,11 +73,9 @@ void main() {
 
   testWidgets('switching the rule needs no change to the events', (tester) async {
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
-    expect(find.byKey(DayEventTile.tileKey(eventId)), findsWidgets);
 
     final before = eventsController.byId(eventId)!;
 
-    // Only the view configuration changes. The controller is never touched.
     await pumpWeek(tester, const MultiDayRule.calendarDays());
 
     expect(find.byKey(MultiDayEventTile.tileKey(eventId)), findsOneWidget);
@@ -98,7 +96,6 @@ void main() {
       ),
     );
 
-    // The view says duration, the event says calendar days. The event wins.
     await pumpWeek(tester, const MultiDayRule.minimumDuration(Duration(hours: 24)));
     expect(find.byKey(MultiDayEventTile.tileKey(pinned)), findsOneWidget);
     expect(find.byKey(DayEventTile.tileKey(pinned)), findsNothing);

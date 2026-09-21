@@ -10,28 +10,18 @@ import 'package:kalender/src/widgets/internal_components/multi_day_header_layout
 
 import '../utilities.dart';
 
-// Finders are constant across all MultiDayHeaderWidget tests.
 final _headerFinder = find.byType(MultiDayHeaderWidget);
 final _contentFinder = find.byKey(const ValueKey('content'));
 final _leadingFinder = find.byKey(const ValueKey('leading'));
 
-/// Asserts that the header, content, and leading widgets are all present and
-/// that the header has the given [expectedHeight].
 void _expectHeader(WidgetTester tester, double expectedHeight) {
-  expect(_headerFinder, findsOneWidget);
   expect(_contentFinder, findsOneWidget);
   expect(_leadingFinder, findsOneWidget);
-  final headerHeight = tester.getSize(_headerFinder).height;
-  expect(
-    headerHeight,
-    expectedHeight,
-    reason: 'Header height ($headerHeight) is not the same as the expected height ($expectedHeight).',
-  );
+  expect(tester.getSize(_headerFinder).height, expectedHeight);
 }
 
 void main() {
   group('MultiDayHeaderWidget Tests', () {
-    // Layout cases: (description, contentHeight, leadingHeight, expectedHeight).
     final layoutChecks = <({String name, double contentHeight, double leadingHeight, double expectedHeight})>[
       (name: 'content & leading same height', contentHeight: 48.0, leadingHeight: 48.0, expectedHeight: 48.0),
       (name: 'content height larger than leading', contentHeight: 96.0, leadingHeight: 48.0, expectedHeight: 96.0),

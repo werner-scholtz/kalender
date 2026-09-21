@@ -33,15 +33,13 @@ void main() {
   });
 
   Future<void> pumpView(WidgetTester tester, ViewConfiguration config, Location location) {
-    return pumpAndSettleWithMaterialApp(
+    return pumpKalender(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        location: location,
-        viewConfiguration: config,
-        body: const KalenderBody(),
-      ),
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      location: location,
+      viewConfiguration: config,
+      body: const KalenderBody(),
     );
   }
 
@@ -60,44 +58,30 @@ void main() {
           expect(visibleStart(), beforeSwitch);
         });
 
-        testWidgets('keeps a navigated page rather than returning to initialDateTime', (tester) async {
-          final config = MultiDayViewConfiguration.week(displayRange: displayRange, initialDateTime: initialDateTime);
-          await pumpView(tester, config, newYork);
-          kalenderController.jumpToDate(june);
-          await tester.pumpAndSettle();
-          final beforeSwitch = visibleStart();
+        final navigatedCases = <({String name, ViewConfiguration config})>[
+          (
+            name: 'rather than returning to initialDateTime',
+            config: MultiDayViewConfiguration.week(displayRange: displayRange, initialDateTime: initialDateTime),
+          ),
+          (name: 'when initialDateTime is not set', config: MultiDayViewConfiguration.week(displayRange: displayRange)),
+          (
+            name: 'in the month view',
+            config: MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: initialDateTime),
+          ),
+        ];
 
-          await pumpView(tester, config, tokyo);
+        for (final c in navigatedCases) {
+          testWidgets('keeps a navigated page ${c.name}', (tester) async {
+            await pumpView(tester, c.config, newYork);
+            kalenderController.jumpToDate(june);
+            await tester.pumpAndSettle();
+            final beforeSwitch = visibleStart();
 
-          expect(visibleStart(), beforeSwitch);
-        });
+            await pumpView(tester, c.config, tokyo);
 
-        testWidgets('keeps a navigated page when initialDateTime is not set', (tester) async {
-          final config = MultiDayViewConfiguration.week(displayRange: displayRange);
-          await pumpView(tester, config, newYork);
-          kalenderController.jumpToDate(june);
-          await tester.pumpAndSettle();
-          final beforeSwitch = visibleStart();
-
-          await pumpView(tester, config, tokyo);
-
-          expect(visibleStart(), beforeSwitch);
-        });
-
-        testWidgets('keeps a navigated page in the month view', (tester) async {
-          final config = MonthViewConfiguration.singleMonth(
-            displayRange: displayRange,
-            initialDateTime: initialDateTime,
-          );
-          await pumpView(tester, config, newYork);
-          kalenderController.jumpToDate(june);
-          await tester.pumpAndSettle();
-          final beforeSwitch = visibleStart();
-
-          await pumpView(tester, config, tokyo);
-
-          expect(visibleStart(), beforeSwitch);
-        });
+            expect(visibleStart(), beforeSwitch);
+          });
+        }
 
         testWidgets('tells a dateResolver whether the location changed', (tester) async {
           final locationChanged = <bool>[];
@@ -136,18 +120,14 @@ void main() {
           );
 
           Future<void> pumpSchedule(Location location) {
-            return pumpAndSettleWithMaterialApp(
+            return pumpKalender(
               tester,
-              KalenderView(
-                eventsController: eventsController,
-                kalenderController: kalenderController,
-                location: location,
-                components: components,
-                viewConfiguration: config,
-                body: KalenderBody(
-                  scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
-                ),
-              ),
+              eventsController: eventsController,
+              kalenderController: kalenderController,
+              location: location,
+              components: components,
+              viewConfiguration: config,
+              body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
             );
           }
 

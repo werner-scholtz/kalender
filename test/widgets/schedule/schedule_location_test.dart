@@ -12,12 +12,7 @@ import 'package:timezone/timezone.dart';
 
 import '../../utilities.dart';
 
-/// The schedule view reports its ranges in the calendar's location, matching the
-/// multi-day and month views.
-///
-/// `onPageChanged`, `monthItemBuilder` and `emptyItemBuilder` each handed out an
-/// unconverted internal value, so every range an app received was off by the
-/// location's UTC offset.
+// The schedule view reports onPageChanged, monthItemBuilder and emptyItemBuilder ranges in the calendar's location.
 void main() {
   initializeTimeZones();
 
@@ -82,8 +77,6 @@ void main() {
       ),
     );
 
-    expect(ranges, isNotEmpty, reason: 'the month heading must render for January');
-
     // January 2025 in Tokyo starts at 2025-01-01 00:00+09:00, which is
     // 2024-12-31 15:00Z. An unconverted internal value reads 2025-01-01 00:00Z.
     expect(ranges.first.start.toUtc(), DateTime.utc(2024, 12, 31, 15));
@@ -112,8 +105,6 @@ void main() {
         ),
       ),
     );
-
-    expect(ranges, isNotEmpty, reason: "today's empty row must render");
 
     // 2025-01-15 00:00+09:00 is 2025-01-14 15:00Z.
     expect(ranges.first.start.toUtc(), DateTime.utc(2025, 1, 14, 15));
