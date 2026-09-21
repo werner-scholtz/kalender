@@ -84,6 +84,7 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
       itemCount: widget.viewController.viewConfiguration.pageIndexCalculator.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
+        widget.viewController.currentPage = value;
         final range = widget.viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(
           value,
           context.location,
@@ -123,7 +124,7 @@ class SchedulePositionList extends StatefulWidget {
   /// The date range to display in this list.
   final FloatingDateTimeRange range;
 
-  /// The current page index (used in paginated views).
+  /// The index of the page this list shows.
   final int currentPage;
 
   /// Whether this list is part of a paginated view.
@@ -155,6 +156,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   KalenderCallbacks? get callbacks => context.callbacks;
   ScheduleComponents get components => context.components.scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
+  int get page => widget.currentPage;
 
   /// Controller for programmatically scrolling to specific items in the list.
   final ItemScrollController _itemScrollController = ItemScrollController();
@@ -164,21 +166,21 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
   @override
   void didUpdateWidget(covariant SchedulePositionList oldWidget) {
-    _removeListeners(oldWidget.eventsController);
+    _teardown(oldWidget);
     _setup();
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void didChangeDependencies() {
-    _removeListeners(eventsController);
+    _teardown(widget);
     _setup();
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    _removeListeners(eventsController);
+    _teardown(widget);
     super.dispose();
   }
 
@@ -193,15 +195,19 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     _itemPositionsListener.itemPositions.addListener(_positionListener);
   }
 
-  void _removeListeners(EventsController controller) {
-    controller.removeListener(_updateMap);
+  void _teardown(SchedulePositionList list) {
+    list.eventsController.removeListener(_updateMap);
+    list.viewController.detachList(list.currentPage, _itemScrollController);
     _itemPositionsListener.itemPositions.removeListener(_positionListener);
   }
 
   void _setupViewController() {
-    viewController.itemScrollController = _itemScrollController;
-    viewController.itemPositionsListener = _itemPositionsListener;
-    viewController.currentPage = widget.currentPage;
+    viewController.attachList(
+      page,
+      scrollController: _itemScrollController,
+      positionsListener: _itemPositionsListener,
+      onCurrent: _positionListener,
+    );
   }
 
   void _updateMap() => setState(_generateMap);
@@ -209,7 +215,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   /// Refills the view controller with the items for [SchedulePositionList.range].
   void _generateMap() {
     final dates = widget.range.dates();
-    viewController.clear();
+    viewController.clearPage(page);
 
     var hasAddedMonth = false;
 
@@ -230,13 +236,13 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
           case EmptyDayBehavior.show:
             // Record the empty day as the first (only) row of its date so it can
             // be scrolled or animated to directly.
-            viewController.addItem(item: EmptyItem(), date: date, isFirst: true);
+            viewController.addItemForPage(item: EmptyItem(), date: date, pageIndex: page, isFirst: true);
             continue;
 
           case EmptyDayBehavior.showOnlyToday:
             final now = widget.viewController.viewConfiguration.nowCallback?.call();
             if (date.isToday(location: widget.location, now: now)) {
-              viewController.addItem(item: EmptyItem(), date: date, isFirst: true);
+              viewController.addItemForPage(item: EmptyItem(), date: date, pageIndex: page, isFirst: true);
             }
             continue;
 
@@ -249,35 +255,41 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
       for (final (index, event) in events.indexed) {
         final isFirst = index == 0;
-        viewController.addItem(item: EventItem(event.id, isFirst), date: date, isFirst: isFirst);
+        viewController.addItemForPage(
+          item: EventItem(event.id, isFirst),
+          date: date,
+          pageIndex: page,
+          isFirst: isFirst,
+        );
       }
     }
   }
 
   /// Adds a [MonthItem] for [date] unless the previous item is in the same month.
   void _addMonthItem(FloatingDateTime date) {
-    final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
+    final previousDateItem = viewController.dateTimeItemIndex(page).keys.lastOrNull;
     if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
-      viewController.addItem(item: MonthItem(), date: date);
+      viewController.addItemForPage(item: MonthItem(), date: date, pageIndex: page);
     }
   }
 
-  /// Publishes the visible date range and the visible events from the item positions.
+  /// Publishes the visible date range and the visible events from the item positions while [page] is on screen.
   void _positionListener() {
+    if (viewController.currentPage != page) return;
     final itemPositions = _itemPositionsListener.itemPositions.value;
     if (itemPositions.isNotEmpty) {
       final indices = itemPositions.map((position) => position.index);
       final first = indices.reduce(min);
       final last = indices.reduce(max);
 
-      final start = viewController.dateTimeFromIndex(first);
-      final end = viewController.dateTimeFromIndex(last);
+      final start = viewController.dateTimeFromIndexForPage(page, first);
+      final end = viewController.dateTimeFromIndexForPage(page, last);
       if (start != null && end != null) {
         kalenderController.floatingVisibleRange.value = FloatingDateTimeRange(start: start, end: end.endOfDay);
       }
 
       final events = itemPositions.map((position) {
-        final item = viewController.item(position.index);
+        final item = viewController.indexItem(page)[position.index];
         if (item is! EventItem) return null;
         final eventId = item.eventId;
         return eventsController.byId(eventId);
@@ -298,12 +310,12 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
         ScrollablePositionedList.builder(
           itemScrollController: _itemScrollController,
           itemPositionsListener: _itemPositionsListener,
-          itemCount: viewController.itemCount,
-          initialScrollIndex: viewController.initialScrollIndex(viewController.initialDate),
+          itemCount: viewController.itemCountForPage(page),
+          initialScrollIndex: viewController.closestIndexForPage(page, viewController.initialDate),
           physics: widget.configuration.scrollPhysics,
           itemBuilder: (context, index) {
-            final item = viewController.item(index);
-            final date = viewController.dateTimeFromIndex(index)!;
+            final item = viewController.indexItem(page)[index];
+            final date = viewController.dateTimeFromIndexForPage(page, index)!;
 
             final leadingWidth = widget.configuration.leadingWidth;
             Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
@@ -361,6 +373,9 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                 kalenderController: kalenderController,
                 callbacks: callbacks,
                 viewController: viewController,
+                page: page,
+                itemScrollController: _itemScrollController,
+                itemPositionsListener: _itemPositionsListener,
                 constraints: constraints,
                 paginated: widget.paginated,
                 pageTriggerConfiguration: widget.configuration.pageTriggerConfiguration,

@@ -8,18 +8,19 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart' show CursorNavigationTrigger;
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-/// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
-///
-/// The [ScheduleDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
+/// The [DragTarget] over a [SchedulePositionList]. A drop lands on the day of the row under the cursor.
 class ScheduleDragTarget extends StatefulWidget {
   final EventsController eventsController;
   final KalenderController kalenderController;
   final KalenderCallbacks? callbacks;
   final ScheduleViewController viewController;
+  final int page;
+  final ItemScrollController itemScrollController;
+  final ItemPositionsListener itemPositionsListener;
   final BoxConstraints constraints;
   final bool paginated;
 
@@ -37,6 +38,9 @@ class ScheduleDragTarget extends StatefulWidget {
     required this.kalenderController,
     required this.callbacks,
     required this.viewController,
+    required this.page,
+    required this.itemScrollController,
+    required this.itemPositionsListener,
     required this.constraints,
     required this.paginated,
     required this.pageTriggerConfiguration,
@@ -122,18 +126,16 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
           return CursorNavigationTrigger.scroll(
             configuration: scrollTrigger,
             onTrigger: () {
-              if (!viewController.hasInitialized) return;
-
-              final positions = viewController.itemPositionsListener!.itemPositions.value;
+              final positions = widget.itemPositionsListener.itemPositions.value;
               if (positions.isEmpty) return;
 
               // The item nearest the edge we are scrolling toward, then one past it.
               final indices = positions.map((position) => position.index);
               final edge = forward ? indices.reduce(max) : indices.reduce(min);
               final targetIndex = forward ? edge + 1 : edge - 1;
-              if (targetIndex < 0 || targetIndex >= viewController.itemCount) return;
+              if (targetIndex < 0 || targetIndex >= viewController.itemCountForPage(widget.page)) return;
 
-              viewController.itemScrollController!.scrollTo(
+              widget.itemScrollController.scrollTo(
                 index: targetIndex,
                 duration: scrollTrigger.animationDuration,
                 curve: scrollTrigger.animationCurve,
@@ -166,10 +168,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
 
-    final viewController = widget.viewController;
-    if (!viewController.hasInitialized) return null;
-
-    final itemPositions = viewController.itemPositionsListener!.itemPositions.value;
+    final itemPositions = widget.itemPositionsListener.itemPositions.value;
     final proportionalOffset = localCursorPosition.dy / widget.constraints.maxHeight;
     final itemIndex = itemPositions
         .where((item) => item.itemLeadingEdge <= proportionalOffset && item.itemTrailingEdge >= proportionalOffset)
@@ -178,7 +177,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
 
     if (itemIndex == null) return null;
 
-    final date = viewController.dateTimeFromIndex(itemIndex);
+    final date = viewController.dateTimeFromIndexForPage(widget.page, itemIndex);
 
     if (date == null) return null;
     return FloatingDateTime.fromDateTime(date);

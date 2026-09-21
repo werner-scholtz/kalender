@@ -7,6 +7,7 @@
 - `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` are deprecated and are removed in 0.33.0. Use `calculateVerticalLayoutData`.
 - `kDefaultNewEventDuration` is deprecated and is removed in 0.33.0. Nothing reads it.
 - `DefaultEventStore.dateIds` is deprecated and is removed in 0.33.0. It was never populated.
+- `ScheduleViewController.itemCount`, `item`, `addItem`, `clear` and `initialScrollIndex` are deprecated and are removed in 0.33.0. Use `itemCountForPage`, `indexItem`, `addItemForPage` and `clearPage` with `currentPage`, and `closestIndex`.
 
 ### Features
 
@@ -31,6 +32,7 @@
 - An event tile keeps one listener per controller across dependency changes.
 - `OverlapLayoutDelegate.sortEvents` keeps the duration-then-start order for more than 32 events.
 - `MultiDayViewConfiguration.copyWith` keeps `initialHeightPerMinute` instead of resetting it to the default.
+- The paginated schedule view builds, scrolls and reports the page on screen after a cancelled swipe.
 
 ### Examples
 

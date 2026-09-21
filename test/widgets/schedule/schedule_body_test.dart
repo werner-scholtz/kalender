@@ -91,9 +91,9 @@ void main() {
       final controller = schedule();
       final todayIndex = controller.indexFromDateTime(DateTime(2025, 1, 15));
       expect(todayIndex, isNotNull, reason: "today's empty row must be indexed");
-      expect(controller.item(todayIndex!), isA<EmptyItem>());
+      expect(controller.indexItem(controller.currentPage)[todayIndex!], isA<EmptyItem>());
       expect(controller.dateTimeFromIndex(todayIndex)!.isSameDay(FloatingDateTime(2025, 1, 15)), isTrue);
-      expect(controller.initialScrollIndex(DateTime(2025, 1, 15)), todayIndex);
+      expect(controller.closestIndex(DateTime(2025, 1, 15)), todayIndex);
 
       expect(controller.indexFromDateTime(DateTime(2025, 1, 11)), isNull);
     });
@@ -129,14 +129,14 @@ void main() {
       expect(controller.dateTimeFromIndex(latest)!.isSameDay(FloatingDateTime(2025, 6, 20)), isTrue);
     });
 
-    testWidgets('initialScrollIndex does not pollute the date→index map', (tester) async {
+    testWidgets('closestIndex does not pollute the date→index map', (tester) async {
       eventsController.addEvents([eventAt(DateTime(2025, 1, 10), 9), eventAt(DateTime(2025, 1, 20), 9)]);
 
       await pumpAndSettleWithMaterialApp(tester, buildSchedule(emptyDay: EmptyDayBehavior.hide));
 
       final controller = schedule();
       expect(controller.indexFromDateTime(DateTime(2025, 1, 15)), isNull);
-      controller.initialScrollIndex(DateTime(2025, 1, 15));
+      controller.closestIndex(DateTime(2025, 1, 15));
       expect(controller.indexFromDateTime(DateTime(2025, 1, 15)), isNull);
     });
   });
