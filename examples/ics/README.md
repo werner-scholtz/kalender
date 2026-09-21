@@ -15,7 +15,8 @@ events.
   cheap. The window is refreshed as you navigate.
 - **All-day events.** RFC 5545 encodes all-day as a date-valued `DTSTART`
   (`DTSTART;VALUE=DATE:20250110`), which becomes `KalenderEvent.isAllDay` so the
-  occurrence renders in the multi-day header.
+  occurrence renders in the multi-day header. Export writes it back as
+  `VALUE=DATE`.
 - **Display.** Each occurrence becomes an `IcsEvent` (a `KalenderEvent` subclass
   carrying the title, description, color, and source `uid`).
 - **Export.** The master events are serialized back to `.ics` text with
@@ -23,14 +24,11 @@ events.
 
 ## Notes
 
-- The two libraries split the work: `enough_icalendar` parses and generates the
-  file, `rrule` expands the rule. Neither expands recurrence on its own.
 - Times in the sample are floating (no time zone), handled as local wall-clock.
   Real `.ics` files carry a `TZID`; mapping those correctly means building
   `TZDateTime`s with the `timezone` package before handing them to `kalender`.
 - Export writes the master events (with their rules), not the expanded instances,
-  so the recurrence survives a round trip. All-day events are written back as
-  `VALUE=DATE` so they do not come back as timed ones.
+  so the recurrence survives a round trip.
 - `VEvent.isAllDayEvent` is not the signal to read. It reports the proprietary
   `X-MICROSOFT-CDO-ALLDAYEVENT` property, which most producers never write.
 

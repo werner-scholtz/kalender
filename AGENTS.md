@@ -4,7 +4,6 @@
 
 Kalender is a Flutter calendar widget package providing four views: **MultiDay** (day/week), **Month**, **Schedule**, and a generic **KalenderView** orchestrator. The library is pre-1.0 and actively developed.
 
-- **SDK constraints**: Dart `>=3.0.0 <4.0.0`, Flutter `>=3.22.0`
 - **Key dependencies**: `intl`, `timezone`, `collection`, `linked_pageview`, `scrollable_positioned_list`
 
 ## Repository Layout
@@ -30,25 +29,16 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `test/` | Unit and widget tests (mirrors `lib/src/` structure) |
 | `test/utilities.dart` | Shared test helpers: `TestProvider`, `wrapWithMaterialApp`, `testWithTimeZones`, `WidgetTesterUtils` |
 | `doc/` | The user-facing guides, indexed by `doc/README.md` |
-| `examples/` | Example Flutter apps (`example/`, `advanced_example/`, `riverpod/`, `recurrence/`, `ics/`, `intl4x/`, `material_ui/`, `testing/`, `web_demo/`), plus `doc_snippets/` for the snippet check |
+| `examples/` | Example projects, indexed by `examples/README.md` |
 | `example/` | README only: the pub.dev Example tab, which links to `examples/` |
 | `tool/` | Dev scripts: `test_timezones_linux.dart` replicates the CI timezone matrix locally, `pin_release_links.dart` pins documentation links at publish, `license_headers.dart` adds the license header to Dart files |
 | `.github/workflows/` | CI: `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `deploy_dashboard.yml`, `publish.yml`, `web_demo.yml` |
 
 ## Code Style
 
-- **Linting**: `package:flutter_lints` with strict-inference and strict-raw-types enabled. See `analysis_options.yaml`.
-- **Formatter page width**: 120 characters.
-- **License header**: Every Dart file starts with the KDAB license header. `dart run tool/license_headers.dart` adds them and CI checks them.
-- **Imports**: Always use `package:` imports (never relative). Enforced by `always_use_package_imports: true`. Follow `directives_ordering` (dart:, package:, relative in that order).
-- **Strings**: Prefer `single_quotes`.
-- **Variables/fields**: Prefer `final` locals (`prefer_final_locals`) and `final` fields (`prefer_final_fields`). Use `omit_local_variable_types` and `avoid_types_on_closure_parameters` so type inference does the work.
-- **Constructors**: Prefer `const` constructors (`prefer_const_constructors`).
-- **Trailing commas**: Required on every multi-line argument list (`require_trailing_commas`).
-- **No print**: `avoid_print` is enforced.
-- **Widget ordering**: `sort_child_properties_last`: the `child` parameter goes last.
-- **Unnecessary wrappers**: `avoid_unnecessary_containers` and `unnecessary_lambdas`.
-- **Naming**: snake_case for files (`kalender_event.dart`), PascalCase for classes. Widget files match their class name. View widgets use `Body`/`Header` suffixes (e.g. `MonthBody`, `MonthHeader`).
+- **Lints and formatter width**: `analysis_options.yaml`.
+- **License header**: `dart run tool/license_headers.dart`.
+- **Naming**: View widgets use `Body`/`Header` suffixes, such as `MonthBody` and `MonthHeader`.
 
 ## Build & Test
 
@@ -77,7 +67,6 @@ dart tool/test_timezones_linux.dart test/models/floating_date_time_test.dart
 - **Flutter version**: Every job runs the version in `.fvmrc`, except `minimum-flutter`, which runs the floor `pubspec.yaml` declares, and `latest-stable`, which runs the newest stable and does not fail the workflow. Format with the `.fvmrc` version.
 - **Analyze job**: `dart analyze` + `flutter analyze` on `ubuntu-latest`.
 - **Test job**: Matrix strategy over 6 timezones: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`, `Africa/Johannesburg`, `UTC`. Sets system timezone via `timedatectl` and `TZ` env var.
-- **Additional workflows**: `performance_profiling.yml`, `publish.yml`, `web_demo.yml`.
 
 ### Test Conventions
 
@@ -89,13 +78,9 @@ dart tool/test_timezones_linux.dart test/models/floating_date_time_test.dart
   - `WidgetTesterUtils.hoverOn()` / `createMouseGesture()`: mouse interaction helpers.
 - DST transition dates from multiple regions are defined in `datesToTest` for thorough timezone coverage.
 - Timezone-sensitive tests **must** use `testWithTimeZones` and the shared `datesToTest` / `locationsToTest` lists.
-- A `static Key` factory on a class the package does not export is an internal
-  test helper, not public API. Ten of the twenty-three sit on `DayEventTile`,
-  `MultiDayEventTile`, `ScheduleEventTile` and `DayEventsWidget`, which no app
-  can name. The package's own tests reach them by importing the source path.
-  Do not add one to reach a widget from an app: give the widget the fields that
-  identify it and find it with `find.byType` and a predicate, the way
-  `ResizeDetector` carries `event` and `direction`.
+- A `static Key` factory on an unexported class is a test helper. Do not add one
+  to reach a widget from an app. Give the widget identifying fields and use
+  `find.byType` with a predicate.
 
 ## Architecture Conventions
 
@@ -128,7 +113,7 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/k
 | `LocaleProvider` | `Locale?` | Internationalization locale |
 | `LocationProvider` | `Location?` | Timezone location |
 
-`GutterWidths` sits in `lib/src/models/providers/gutter_widths.dart`. `KalenderView` measures the month week number column and the multi-day timeline once and publishes the widths there, so the header and the body cannot be given different ones. A width is null where the view draws no such gutter.
+`GutterWidths` sits in `lib/src/models/providers/gutter_widths.dart`. `KalenderView` measures the month week number column and the multi-day timeline once and publishes the widths there. A width is null where the view draws no such gutter.
 
 `KalenderScope` in `lib/src/models/providers/kalender_scope.dart` is the exported accessor for the table above, one static per value. The providers themselves are not exported. Add an accessor there when a provider gains something an app should reach.
 
@@ -212,11 +197,9 @@ This is a pre-1.0 package, so the minor version is the breaking slot. Breaking c
 
 ### Breaking changes and deprecations
 
-These are rules, not preferences.
+**Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone.
 
-**Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone. `KalenderInteraction.throttleMilliseconds` was removed outright in 0.24.0 for exactly this reason: nothing was left behind it. `KalenderEvent.isMultiDayEvent` was deprecated instead, because it still returns a usable answer.
-
-The same reasoning removes a public **type** outright once every entry point to it has gone. It cannot answer anything, and a window would protect a type annotation and nothing else. The style container classes are removed in 0.26.0 alongside the `KalenderComponents` fields that reached them, without a deprecation of their own.
+The same reasoning removes a public **type** outright once every entry point to it has gone.
 
 **The window is one minor release.** Deprecated in 0.23.0 means removed in 0.24.0. Do not extend it, and do not remove early.
 
@@ -226,20 +209,20 @@ The same reasoning removes a public **type** outright once every entry point to 
 @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
 ```
 
-A message without a version has no deadline and will sit there for years. `lib/` currently carries no `@Deprecated` at all, and `grep -rn "@Deprecated" lib/` is the check that keeps it that way.
+Check with `grep -rn "@Deprecated" lib/`.
 
 **Some changes cannot be deprecated at all.** There is no window available for any of these, so they go straight into a breaking batch with a migration entry:
 
 - Turning a getter into a method of the same name. Dart rejects declaring both (`duplicate_definition`), so the getter has to vanish the moment the method appears.
 - Adding a named parameter to a method that subclasses override, including optional ones. An override must accept every named parameter its supertype declares, so `copyWith` and `eventsInRange` break every implementer either way.
 - Adding a member to a public mixin or abstract class, or narrowing what it can be applied to, such as constraining `DragTargetUtilities` to `State`.
-- Changing a function typedef's signature. A typedef cannot be deprecated into a new shape, so a builder that gains or loses a parameter breaks every implementer at once. 0.27.0 moved all twenty-four builders to a leading `BuildContext` in one release for that reason: splitting the work by component would have broken the same concept twice.
+- Changing a function typedef's signature. A typedef cannot be deprecated into a new shape, so a builder that gains or loses a parameter breaks every implementer at once.
 
 **Record it in both places.** A deprecation gets a `### Deprecations` entry in the changelog naming the removal version. A breaking change gets a `### Breaking Changes` entry plus a section in [MIGRATION.md](MIGRATION.md) showing the before and after.
 
 ### Automating a migration
 
-**Ship a fix for everything that can carry one.** A migration step a user performs manually is a step some users will not perform. Data-driven fixes live in `lib/fix_data/fix_*.yaml` and ship inside the package, so `dart fix --apply` in a user's project applies them. The format is at https://dart.dev/go/data-driven-fixes.
+**Ship a fix for everything that can carry one.** Data-driven fixes live in `lib/fix_data/fix_*.yaml` and ship inside the package, so `dart fix --apply` in a user's project applies them. The format is at https://dart.dev/go/data-driven-fixes.
 
 What a fix can do:
 
@@ -251,7 +234,7 @@ What it cannot do: rewrite the body of an override, or reshape an override's par
 
 A type change with no rename has nothing to trigger on, since kalender cannot deprecate another package's type. Rename the parameter alongside the type change and the fix can wrap the old value.
 
-**`date` is when the change landed, not when the fix was written.** Use the date the pull request merged and name that pull request in a comment above the transform, the way `material_ui` does. It does not affect behaviour: chained renames resolve whatever order the dates are in, tested by inverting them.
+**`date` is when the change landed, not when the fix was written.** Use the date the pull request merged and name that pull request in a comment above the transform, the way `material_ui` does.
 
 **What a fix reaches depends on the change kind.** Measured against a subclass overriding a `@mustBeOverridden` member:
 
@@ -275,24 +258,17 @@ dart fix --compare-to-golden test_fixes
 
 `test_fixes/` is excluded from the package analysis, since the fixtures use deprecated members on purpose, and excluded from the published archive.
 
-**`### Breaking Changes` is for code that stops compiling. `### Behavior Changes` is for code that still compiles and renders differently.** They ask the reader for different things: one is "fix your code", the other is "look at your screenshots". Do not put them under one heading. 0.23.0 is the reference for the second kind, 0.24.0 for the first.
+**`### Breaking Changes` is for code that stops compiling. `### Behavior Changes` is for code that still compiles and renders differently.** They ask the reader for different things: one is "fix your code", the other is "look at your screenshots". Do not put them under one heading.
 
-**If the version is not tagged yet, amend the existing entries rather than appending.** Someone upgrading should read what the release does, not the history of how it got there.
+**If the version is not tagged yet, amend the existing entries rather than appending.**
 
 ### Verifying a removal
 
-`flutter analyze` at the root will not catch a break for two separate reasons, and both have bitten:
-
-- `deprecated_member_use_from_same_package` is not enabled, so in-package uses of a deprecated member never warn.
-- `analysis_options.yaml` excludes `examples/**`, so the only consumer-shaped code in the repo is invisible to it.
-
-So always run the examples directly:
+`flutter analyze` at the root excludes `examples/**`. It also does not warn when the package uses its own deprecated members. Run the examples directly:
 
 ```bash
 for d in examples/*/; do (cd "$d" && flutter analyze); done
 ```
-
-This is what caught a `copyWith` change in 0.24.0 that broke all seven while the package analyze stayed clean.
 
 ### Releasing
 
@@ -302,11 +278,11 @@ Publishing is triggered by a tag, not by a merge. Bump `version` in `pubspec.yam
 git tag -m v0.23.0 v0.23.0 && git push origin v0.23.0
 ```
 
-The `-m` is not optional. `tag.gpgsign` is set globally, so every tag is signed and therefore annotated, and an annotated tag needs a message. Without it the command fails with `fatal: no tag message?` and nothing is created. Every release from v0.18.0 onwards uses the tag name as its message, and is signed. The tags before that are lightweight and predate the setting.
+The `-m` is required because tags are signed.
 
-`publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests, pins the repository links to the tag and publishes. A published version is permanent: it can be retracted within seven days, but the number can never be reused.
+`publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests, pins the repository links to the tag and publishes.
 
-The published archive is not byte-identical to the tag. Before packaging, the workflow runs `dart run tool/pin_release_links.dart <tag>`, which rewrites README.md, example/README.md, CHANGELOG.md and doc/*.md so the pub.dev pages link to the tag's documentation instead of main. The rewrite is committed only inside the runner to keep the publish validator's clean-git check meaningful and is never pushed, so the repository keeps its relative links. To preview the published pages locally, run the script with any release tag, inspect with `git diff`, then restore with `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
+The published archive is not byte-identical to the tag. Before packaging, the workflow runs `dart run tool/pin_release_links.dart <tag>`, which rewrites README.md, example/README.md, CHANGELOG.md and doc/*.md so the pub.dev pages link to the tag's documentation instead of main. The rewrite is committed only inside the runner and is never pushed, so the repository keeps its relative links. To preview the published pages locally, run the script with any release tag, inspect with `git diff`, then restore with `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
 
 The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/), so it always shows the published package rather than whatever is on main. To rebuild it from main instead, push a commit whose message contains `web demo`.
 
@@ -318,7 +294,7 @@ To ship a preview of the next version, add a `-dev.N` suffix:
 git tag -m v0.24.0-dev.1 v0.24.0-dev.1 && git push origin v0.24.0-dev.1
 ```
 
-pub.dev never resolves a pre-release as `latest`, so `dart pub add kalender` is unaffected and people opt in explicitly. This suits breaking releases, where the removals want trying before they are final.
+This suits breaking releases, where the removals want trying before they are final.
 
 Patching an older release after main has moved on does not need a branch prepared in advance. Cut one from the tag when it is needed:
 
@@ -333,35 +309,23 @@ before tagging it:
 
 - **TODOs on public API.** Renames and removals get held for the next breaking
   window rather than done piecemeal. Find them with `grep -rn "TODO" lib/`. Each
-  one is a decision still owed. Keep them
-  as `//` comments: a `///` one renders as prose in the API reference, which is
-  how `FreeScrollFunctions` shipped with a TODO as its entire published
-  documentation before it was removed in 0.28.0. `grep -rn "/// TODO" lib/` is
-  the check.
-- **Deprecations past their window.** None. `lib/` carries no `@Deprecated` at
-  all: `TimeOfDayRange.isAllDay` was removed in 0.27.0 as its 0.26.0 message
-  named, and the `KalenderComponents` style fields with the seven containers they
-  reached went in 0.26.0. `grep -rn "@Deprecated" lib/` is the check. See
-  [Verifying a removal](#verifying-a-removal).
-- **Function fields compared with `==`.** `ViewConfiguration.nowCallback` is the
-  one left. It is included in equality, so a closure written inline is a new
-  function every build and defeats the caching the comparison exists to enable.
-  It stays a function because it takes no arguments and has nothing to model, and
-  its place in `==` is what makes a change reach the calendar at all. Documented
-  on the field. The other three converted to classes in 0.26.0
-  ([#380](https://github.com/werner-scholtz/kalender/issues/380)):
-  `KalenderSnapping.eventSnapStrategy`, `VerticalConfiguration.eventLayoutStrategy`
-  and `HorizontalConfiguration.multiDayLayoutStrategy`, renamed from
-  `generateMultiDayLayoutFrame`.
-
-Key breaking changes to be aware of:
-- **v0.16.0**: `KalenderEvent` removed generic type parameter (use subclassing instead of `KalenderEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.
-- **v0.15.0**: Full timezone support added. `InternalDateTime` classes introduced. `ViewConfiguration.selectedDate` renamed to `initialDateTime`.
+  one is a decision still owed. Keep TODOs as `//`. A `///` TODO renders in the
+  API reference. Check: `grep -rn "/// TODO" lib/`.
+- **Deprecations past their window.** Run `grep -rn "@Deprecated" lib/` and check
+  each removal version. See [Verifying a removal](#verifying-a-removal).
+- **Function fields included in `==`.** A closure written inline is a new function
+  on every build, so a value holding one never equals its predecessor. These are
+  included: `ViewConfiguration.nowCallback`, every builder on `TileComponents`,
+  `OverlayBuilders` and the month, multi-day and schedule component classes, and
+  `PageTriggerConfiguration.triggerWidth` and
+  `ScrollTriggerConfiguration.triggerHeight`. Decide per field whether it becomes
+  a class, as the layout and snap strategies did, or stays a function with the
+  rule on its doc comment.
 
 ## Documentation
 
 - [README.md](README.md): feature list, quick-start, previews.
-- [doc/README.md](doc/README.md): index of the guides. One guide per topic: views, events, interaction, controllers and callbacks, appearance, layout, timezones and locales.
+- [doc/README.md](doc/README.md): index of the guides.
 - [MIGRATION.md](MIGRATION.md): breaking-change migration guides between versions.
 - [CHANGELOG.md](CHANGELOG.md): version history.
 
@@ -369,25 +333,5 @@ A guide links to a class with its pub.dev API page, not a `lib/src` blob URL.
 `pin_release_links.dart` rewrites both, so a published version keeps linking to
 the documentation it shipped with.
 
-### Snippets in the documentation
-
-Every fenced dart block in `README.md`, `example/README.md` and `doc/*.md` is
-compiled by `tool/analyze_doc_snippets.dart`, which CI runs. Each block needs a
-directive comment above it saying how, and a block without one fails the run:
-
-```markdown
-<!-- snippet: file -->          top-level declarations
-<!-- snippet: statements -->    wrapped in an async function body
-<!-- snippet: expression -->    wrapped in a variable initializer
-<!-- snippet: continues -->     appended to the block above
-<!-- snippet: skip: reason -->  not compiled, reason required
-```
-
-A snippet may assume only `material.dart` and `kalender.dart`. Anything else has
-to be imported in the block itself, so a snippet a reader copies whole actually
-compiles. That rule exists because a wider implied header hid the missing
-`gestures.dart` and `services.dart` in the zoom example for as long as it was
-there. Placeholder identifiers such as the `Event` subclass come from
-`examples/doc_snippets/lib/preamble.dart`, which is analyzed too.
-
-Diagnostics are reported against the markdown line, not the generated file.
+Every fenced dart block in `README.md`, `example/README.md` and `doc/*.md` needs a
+directive comment. `tool/analyze_doc_snippets.dart` documents them and CI runs it.

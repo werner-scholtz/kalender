@@ -22,7 +22,7 @@ Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 
 To create a custom strategy, subclass `EventLayoutDelegate`. See [`CustomSideBySideLayoutDelegate`](../examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
 
-`performLayout` must guard `layoutChild` and `positionChild` with `hasChild`. The day view builds only the tiles inside the visible scroll window, while the delegate receives every event of the day, so an event outside that window has no child. Calculate from every event, since a tile's width depends on partners that may be off screen, and lay out only the ones that were built.
+In `performLayout`, guard `layoutChild` and `positionChild` with `hasChild`. Tiles outside the visible window are not built, but every event is passed so a width can account for partners off screen.
 
 Here is a minimal implementation:
 
@@ -116,7 +116,7 @@ Events are placed in a grid of rows × columns (rows = concurrent events, column
 
 Write your own by extending `MultiDayLayoutStrategy`. Call `defaultMultiDayFrameGenerator` to keep the built-in row assignment and change only the order, by supplying an `eventComparator`.
 
-Give the class value equality, comparing on `runtimeType` for the same reason as above. This field is included in the body configuration's equality, and a strategy that compares unequal on every build clears the layout frame cache and regenerates every row each time.
+Give the class value equality on `runtimeType`, as above.
 
 <!-- snippet: file -->
 ```dart
