@@ -231,7 +231,7 @@ Merging the range into `KalenderDateTimeRange` was rejected. The two were one ty
 
 Publishing validates the package again, now that pub.dev accepts a metadata request that carries a bearer token, and every CI job runs the Flutter version in `.fvmrc`.
 
-### 0.32.0, planned
+### 0.32.0, previewed in 0.32.0-dev.1
 
 A release that adds and does not break, built around selection. It has no migration section.
 
