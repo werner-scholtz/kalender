@@ -11,9 +11,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
-/// The day header builder.
-///
-/// The [date] is the date that the header will be displayed for.
+/// Builds the date shown at the start of each day in the schedule.
 ///
 /// Resolve the style with [KalenderTheme].
 ///
@@ -24,7 +22,6 @@ typedef ScheduleDateBuilder = Widget Function(BuildContext context, FloatingDate
 ///
 /// {@category Appearance}
 class ScheduleDateStyle with Diagnosticable {
-  /// Creates a new [ScheduleDateStyle].
   const ScheduleDateStyle({this.textStyle, this.numberTextStyle});
 
   /// The [TextStyle] used by the [ScheduleDate] widget to display the name of the day.
@@ -77,7 +74,7 @@ class ScheduleDateStyle with Diagnosticable {
   }
 }
 
-/// A widget that displays the name of the day and the day number of the week.
+/// The short day name and the day of the month shown at the start of each day in the schedule.
 ///
 /// {@category Appearance}
 class ScheduleDate extends StatelessWidget {
@@ -87,10 +84,6 @@ class ScheduleDate extends StatelessWidget {
   final FloatingDateTime date;
   final ScheduleDateStyle? style;
 
-  /// Create a new [ScheduleDate].
-  ///
-  /// The [date] is the date that will be displayed.
-  /// The [style] is the style of the [ScheduleDate].
   const ScheduleDate({super.key, required this.date, this.style});
 
   @override

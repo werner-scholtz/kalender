@@ -8,6 +8,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -70,22 +71,17 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   void clear() => clearPage(currentPage);
 
   /// Find the initial scroll index for the given date.
-  ///
-  /// Normalizes with the view's [location] (matching how the map is keyed and how
-  /// [indexFromDateTime]/[closestIndex] look up), and never writes a fallback back
-  /// into the authoritative date→index map.
   int initialScrollIndex(DateTime date) {
     final normalized = FloatingDateTime.fromExternal(date, location: location).startOfDay;
     return dateTimeItemIndex(currentPage)[normalized] ?? closestIndex(normalized);
   }
 
-  /// Animate to the given index.
   FutureOr<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) {
     if (!hasInitialized) return null;
     return itemScrollController?.scrollTo(
       index: index,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
@@ -138,34 +134,24 @@ class ContinuousScheduleViewController extends ScheduleViewController {
     return animateToDate(event.start, duration: scrollDuration, curve: scrollCurve);
   }
 
-  @override
-  Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
+  Future<void> _animateByMonths(int delta) async {
     if (!hasInitialized) return;
     final currentIndex = itemPositionsListener!.itemPositions.value.firstOrNull?.index;
     if (currentIndex == null) return;
 
     final date = dateTimeFromIndex(currentIndex);
     if (date == null) return;
-    final nextMonth = FloatingDateTime.fromDateTime(date.copyWith(month: date.month + 1)).startOfMonth;
+    final month = FloatingDateTime.fromDateTime(date.copyWith(month: date.month + delta)).startOfMonth;
 
-    final index = monthIndexFromDateTime(currentPage, nextMonth) ?? closestIndex(nextMonth);
+    final index = monthIndexFromDateTime(currentPage, month) ?? closestIndex(month);
     return _animateToIndex(index);
   }
 
   @override
-  Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    if (!hasInitialized) return;
-    final currentIndex = itemPositionsListener!.itemPositions.value.firstOrNull?.index;
-    if (currentIndex == null) return;
+  Future<void> animateToNextPage({Duration? duration, Curve? curve}) => _animateByMonths(1);
 
-    final currentDate = dateTimeFromIndex(currentIndex);
-
-    if (currentDate == null) return;
-    final previousDate = FloatingDateTime.fromDateTime(currentDate.copyWith(month: currentDate.month - 1)).startOfMonth;
-
-    final index = monthIndexFromDateTime(currentPage, previousDate) ?? closestIndex(previousDate);
-    return _animateToIndex(index);
-  }
+  @override
+  Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) => _animateByMonths(-1);
 
   @override
   void jumpToDate(DateTime date) {
@@ -197,23 +183,24 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   /// The [PageController] used to control the page view.
   late final PageController pageController;
 
-  /// Animate to the page index.
   Future<void> _animateToPage(int pageIndex, {Duration? duration, Curve? curve}) async {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     return pageController.animateToPage(
       pageIndex,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
-    await _animateToPage(pageIndex, duration: duration, curve: curve);
-
-    final index = indexFromDateTime(date) ?? closestIndex(date);
-    return _animateToIndex(index, duration: duration, curve: curve);
+    return animateToDateTime(
+      date,
+      pageDuration: duration,
+      pageCurve: curve,
+      scrollDuration: duration,
+      scrollCurve: curve,
+    );
   }
 
   @override
@@ -239,29 +226,30 @@ class PaginatedScheduleViewController extends ScheduleViewController {
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final date = event.start;
-    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
-    await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
-
-    final index = indexFromDateTime(date) ?? closestIndex(date);
-    return _animateToIndex(index, duration: scrollDuration, curve: scrollCurve);
+    return animateToDateTime(
+      event.start,
+      pageDuration: pageDuration,
+      pageCurve: pageCurve,
+      scrollDuration: scrollDuration,
+      scrollCurve: scrollCurve,
+    );
   }
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     return await pageController.nextPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     return await pageController.previousPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
@@ -269,9 +257,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   Future<void> jumpToDate(DateTime date) async {
     final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
-    // Since jump to page does not build the page immediately,
-    // and I'm currently unaware of a way to reliably wait for the page to be built,
-    // I will just be using _animateToPage with hardcoded values for now.
+    // animateToPage builds the page before the index scroll. jumpToPage does not.
     await _animateToPage(pageIndex, duration: const Duration(milliseconds: 100), curve: Curves.linear);
     final index = indexFromDateTime(date) ?? closestIndex(date);
     await _animateToIndex(index, duration: const Duration(milliseconds: 100), curve: Curves.linear);
@@ -279,10 +265,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
 
   @override
   void jumpToPage(int page) {
-    if (!_hasClients) return;
+    if (!pageController.hasClients) return;
     pageController.jumpToPage(page);
   }
-
-  /// Check if the page controller has clients.
-  bool get _hasClients => pageController.hasClients;
 }

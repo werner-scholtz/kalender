@@ -9,22 +9,19 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
-/// The month grid puts the week number at the top of its row rather than
-/// centring it, which is where every other week number sits.
+/// The month week number sits at the top of its row.
 const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter);
 
-/// The style the month week number is drawn with.
-///
-/// [KalenderThemeData.weekNumberStyle] wins over the top alignment, resolved from
-/// the nearest scope like every other style.
-WeekNumberStyle _resolveStyle(BuildContext context) {
-  return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle);
+/// The range of week [row] of a month page that starts at the start of [visibleRange].
+FloatingDateTimeRange monthWeekRange(FloatingDateTimeRange visibleRange, int row) {
+  final start = visibleRange.start.add(Duration(days: row * DateTime.daysPerWeek));
+  return FloatingDateTimeRange(
+    start: start,
+    end: start.add(const Duration(days: DateTime.daysPerWeek)),
+  );
 }
 
-/// The width the calendar measured for the week number column.
-///
-/// Falls back to measuring where there is no [GutterWidths], which is the case
-/// outside a [KalenderView].
+/// The week number column width from [GutterWidths], or a measurement outside a [KalenderView].
 double _width(BuildContext context) {
   return GutterWidths.maybeOf(context)?.weekNumber ??
       context.components.monthComponents.bodyComponents.buildWeekNumberWidth(context);
@@ -46,13 +43,14 @@ class MonthWeekNumberGutter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = KalenderTheme.of(context);
     return KalenderTheme(
-      data: KalenderTheme.of(context).copyWith(weekNumberStyle: _resolveStyle(context)),
+      data: theme.copyWith(weekNumberStyle: _monthWeekNumberDefaults.merge(theme.weekNumberStyle)),
       child: SizedBox(
         width: _width(context),
         child: Column(
           children: List.generate(numberOfRows, (index) {
-            final range = _rangeForRow(index);
+            final range = monthWeekRange(visibleRange, index);
             return Expanded(
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -66,14 +64,6 @@ class MonthWeekNumberGutter extends StatelessWidget {
           }),
         ),
       ),
-    );
-  }
-
-  FloatingDateTimeRange _rangeForRow(int index) {
-    final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-    return FloatingDateTimeRange(
-      start: start,
-      end: start.add(const Duration(days: DateTime.daysPerWeek)),
     );
   }
 }

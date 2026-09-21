@@ -9,56 +9,17 @@ import 'package:kalender/src/models/controllers/events_controller/event_store.da
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:timezone/timezone.dart';
 
-/// Maps timezone location names to their respective date-to-event-ID indexes.
-///
-/// Each location (timezone) maintains its own mapping of dates to event IDs,
-/// allowing efficient querying of events within specific timezones.
-///
-/// Example structure:
-/// ```dart
-/// {
-///   'America/New_York': {DateTime(2024, 1, 15): {1, 3, 7}},
-///   'Europe/London': {DateTime(2024, 1, 15): {2, 5}},
-///   'default': {DateTime(2024, 1, 15): {1, 2, 3, 5, 7}},
-/// }
-/// ```
+/// Maps a timezone location name to its [DateToEventIds].
 ///
 /// {@category Events}
 typedef LocationDateIdMap = Map<String, DateToEventIds>;
 
-/// Maps calendar dates to sets of event IDs that occur on those dates.
-///
-/// The [DateTime] keys represent calendar dates (typically at midnight UTC)
-/// and the [Set<int>] values contain the IDs of all events that span or
-/// occur on that date.
-///
-/// This structure enables efficient lookup of events within date ranges
-/// by checking only the relevant date entries.
-///
-/// Example:
-/// ```dart
-/// {
-///   DateTime.utc(2024, 1, 15): {101, 102, 105},
-///   DateTime.utc(2024, 1, 16): {103, 105},
-/// }
-/// ```
+/// Maps a date key from [DefaultEventStore.toKey] to the ids of the events on that date.
 ///
 /// {@category Events}
 typedef DateToEventIds = Map<String, Set<String>>;
 
-/// Maps unique event IDs to their corresponding [KalenderEvent] instances.
-///
-/// This serves as the primary storage for calendar events, providing
-/// O(1) lookup by event ID. Used in conjunction with [DateToEventIds]
-/// for efficient event retrieval.
-///
-/// Example:
-/// ```dart
-/// {
-///   101: KalenderEvent(data: 'Meeting', ...),
-///   102: KalenderEvent(data: 'Lunch', ...),
-/// }
-/// ```
+/// Maps an event id to its [KalenderEvent].
 ///
 /// {@category Events}
 typedef EventIdToEvent = Map<String, KalenderEvent>;
@@ -69,13 +30,10 @@ typedef EventIdToEvent = Map<String, KalenderEvent>;
 class DefaultEventStore extends EventStore {
   /// Predefined locations for optimizations.
   ///
-  /// Requesting a location that is not in this list will generate its own date map on demand not a great solution for performance.
+  /// Locations not listed here get their index built on first use.
   final List<Location> locations;
 
-  /// Map of the [DateTime] and event ids.
-  ///
-  /// The [DateTime] is the date.
-  /// The [Set] of [String] is the ids of the events.
+  @Deprecated('Never populated. Will be removed in 0.33.0.')
   final Map<DateTime, Set<String>> dateIds = {};
 
   /// A Map containing all events.
@@ -101,13 +59,11 @@ class DefaultEventStore extends EventStore {
   @override
   KalenderEvent? byId(String id) => idEvent[id];
 
-  /// Clear the [locationDateIdMap] and [idEvent] maps.
   @override
   void clear() {
     locationDateIdMap.clear();
     idEvent.clear();
 
-    // Re-add the default locations.
     locationDateIdMap.addAll({
       defaultLocation: DateToEventIds(),
       for (final location in locations) location.name: DateToEventIds(),
@@ -138,9 +94,6 @@ class DefaultEventStore extends EventStore {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
       final dates = event.floatingRange(location: location).dates();
       for (final date in dates) {
-        // Null-safe so a date-key that was never populated is a no-op rather
-        // than throwing (Map.update without ifAbsent would); symmetric with
-        // addEventToLocation's ifAbsent.
         locationDateIdMap[locationString]![toKey(date)]?.remove(id);
       }
     }
@@ -170,10 +123,8 @@ class DefaultEventStore extends EventStore {
   @override
   Set<String> eventIdsInRange(FloatingDateTimeRange range, Location? location) {
     final locationString = location?.name ?? defaultLocation;
-    // Ensure the location exists in the map.
     final hasLocation = hasDateToEventIds(locationString);
 
-    // If the location does not exist, populate it.
     if (!hasLocation) {
       locations.add(location!);
       populateLocation(location);
@@ -202,10 +153,8 @@ class DefaultEventStore extends EventStore {
 
   /// Populate all predefined locations in the [locationDateIdMap].
   void populateAllLocations() {
-    // Populate the default location.
     populateLocation(null);
 
-    // Populate the predefined locations.
     for (final locations in locations) {
       populateLocation(locations);
     }
@@ -216,13 +165,10 @@ class DefaultEventStore extends EventStore {
 
   /// Populate the [locationDateIdMap] with a new [location] if it does not exist.
   void populateLocation(Location? location) {
-    // If the location is null, use the default location.
     final locationString = location?.name ?? defaultLocation;
 
-    // Add the location if it does not exist.
     if (!hasDateToEventIds(locationString)) locationDateIdMap[locationString] = DateToEventIds();
 
-    // Add all existing events to the new location.
     for (final event in idEvent.values) {
       addEventToLocation(location, event);
     }

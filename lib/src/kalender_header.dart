@@ -10,12 +10,10 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// {@category Views}
 class KalenderHeader extends StatefulWidget {
-  /// The callbacks used by the [KalenderBody].
+  /// The callbacks used by the [KalenderHeader].
   ///
   /// This provides a way to override the [KalenderCallbacks] passed to the [KalenderView].
   final KalenderCallbacks? callbacks;
-
-  /// MultiDay
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? multiDayHeaderConfiguration;
@@ -26,15 +24,6 @@ class KalenderHeader extends StatefulWidget {
   /// The interaction notifier used by the [MultiDayHeader].
   final KalenderInteraction? interaction;
 
-  /// Month
-
-  /// Creates a KalenderHeader widget.
-  ///
-  /// This creates the correct header based on the [ViewController] inside the [KalenderController]
-  /// - [MultiDayHeader]
-  /// - [MonthHeader]
-  /// - [ScheduleHeader]
-  ///
   const KalenderHeader({
     super.key,
     this.multiDayTileComponents,
@@ -48,22 +37,17 @@ class KalenderHeader extends StatefulWidget {
 }
 
 class _KalenderHeaderState extends State<KalenderHeader> {
-  late KalenderCallbacks? _callbacks;
   late ValueNotifier<KalenderInteraction> _interaction;
 
   @override
   void initState() {
     super.initState();
-    _callbacks = widget.callbacks;
     _interaction = ValueNotifier(widget.interaction ?? KalenderInteraction());
   }
 
   @override
   void didUpdateWidget(covariant KalenderHeader oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.callbacks != widget.callbacks) {
-      _callbacks = widget.callbacks;
-    }
     if (oldWidget.interaction != widget.interaction) {
       _interaction.value = widget.interaction ?? KalenderInteraction();
     }
@@ -79,7 +63,7 @@ class _KalenderHeaderState extends State<KalenderHeader> {
   Widget build(BuildContext context) {
     final viewController = context.kalenderController.viewController;
     return Callbacks(
-      callbacks: _callbacks ?? context.callbacks,
+      callbacks: widget.callbacks ?? context.callbacks,
       child: switch (viewController) {
         MultiDayViewController() => Interaction(
           notifier: _interaction,

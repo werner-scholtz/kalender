@@ -6,6 +6,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
 /// {@category Controllers and callbacks}
@@ -42,9 +43,6 @@ class MultiDayViewController extends ViewController {
       floatingVisibleRange.value = range;
     }
 
-    // Align the top of the viewport with the initial time-of-day. The override
-    // (e.g. a time-of-day preserved across a view switch) takes precedence over
-    // the view's configured initialTimeOfDay.
     final topOfDay = (initialTimeOfDayOverride ?? viewConfiguration.initialTimeOfDay).toFloatingDateTime(now);
     final dayStart = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(now);
     final scrollOffset = topOfDay.difference(dayStart).inMinutes * heightPerMinute.value;
@@ -89,7 +87,6 @@ class MultiDayViewController extends ViewController {
   late ValueNotifier<double> heightPerMinute;
 
   /// The page offset of the view.
-  /// This is a value notifier that updates when the page is scrolled.
   ValueNotifier<double> pageOffset = ValueNotifier<double>(0.0);
 
   /// The [KalenderTime] currently aligned with the top of the visible viewport.
@@ -122,14 +119,12 @@ class MultiDayViewController extends ViewController {
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    // Calculate the pageNumber of the date.
     final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
-    // Animate to that page.
     return pageController.animateToPage(
       pageNumber,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
@@ -141,7 +136,6 @@ class MultiDayViewController extends ViewController {
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
     final floatingDate = FloatingDateTime.fromExternal(date);
@@ -149,11 +143,10 @@ class MultiDayViewController extends ViewController {
     final timeDifference = floatingDate.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
-    // Animate to the offset of the time.
     return scrollController.animateTo(
       timeOffset,
-      duration: scrollDuration ?? const Duration(milliseconds: 300),
-      curve: scrollCurve ?? Curves.easeInOut,
+      duration: scrollDuration ?? defaultAnimationDuration,
+      curve: scrollCurve ?? defaultAnimationCurve,
     );
   }
 
@@ -172,9 +165,7 @@ class MultiDayViewController extends ViewController {
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
     final target = FloatingDateTime.fromDateTime(eventCenter.subtract(duration));
 
-    // It is important to check if the target is in the same day as the event start.
-    // If it is, we can use the local time of the target, otherwise we use the event start.
-    // This prevents the view from moving to the previous day if the event starts at midnight.
+    // Keep the event start when the target falls on an earlier day, so a midnight start does not show the previous day.
     if (target.isSameDay(event.floatingStart(location: location))) {
       date = target;
     } else {
@@ -193,16 +184,16 @@ class MultiDayViewController extends ViewController {
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) {
     return pageController.nextPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) {
     return pageController.previousPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 

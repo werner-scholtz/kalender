@@ -34,8 +34,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   final KalenderTimeRange timeOfDayRange;
 
   /// The first day of the week.
-  ///
-  /// This can be [DateTime.monday], [DateTime.saturday] or [DateTime.sunday].
   final int firstDayOfWeek;
 
   /// The number of days that can be displayed by [MultiDayBody] widgets using this configuration.
@@ -221,6 +219,26 @@ class MultiDayViewConfiguration extends ViewConfiguration {
        type = MultiDayViewType.freeScroll,
        pageIndexCalculator = PageIndexCalculator.freeScroll(displayRange ?? kDefaultRange());
 
+  MultiDayViewConfiguration._({
+    required super.name,
+    required super.initialDateTime,
+    required super.dateTransition,
+    required super.dateResolver,
+    required super.nowCallback,
+    required super.multiDayRule,
+    required this.timeOfDayRange,
+    required this.numberOfDays,
+    required this.firstDayOfWeek,
+    required this.pageIndexCalculator,
+    required this.type,
+    required this.initialTimeOfDay,
+    required this.initialHeightPerMinute,
+    required this.scrollTransition,
+    required this.scrollResolver,
+    required this.zoomTransition,
+    required this.zoomResolver,
+  });
+
   MultiDayViewConfiguration copyWith({
     String? name,
     DateTime? initialDateTime,
@@ -238,105 +256,38 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     ZoomResolver? zoomResolver,
     MultiDayRule? multiDayRule,
   }) {
-    final name0 = name ?? this.name;
-    final initialDateTime0 = initialDateTime ?? this.initialDateTime;
-    final dateTransition0 = dateTransition ?? this.dateTransition;
-    final dateResolver0 = dateResolver ?? this.dateResolver;
-    final nowCallback0 = nowCallback ?? this.nowCallback;
-    final timeOfDayRange0 = timeOfDayRange ?? this.timeOfDayRange;
     final displayRange0 = displayRange ?? dateTimeRange;
-    final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
-    final initialTimeOfDay0 = initialTimeOfDay ?? this.initialTimeOfDay;
-    final scrollTransition0 = scrollTransition ?? this.scrollTransition;
-    final scrollResolver0 = scrollResolver ?? this.scrollResolver;
-    final zoomTransition0 = zoomTransition ?? this.zoomTransition;
-    final zoomResolver0 = zoomResolver ?? this.zoomResolver;
-    final multiDayRule0 = multiDayRule ?? this.multiDayRule;
-
-    return switch (type) {
-      MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
-        name: name0,
-        initialDateTime: initialDateTime0,
-        dateTransition: dateTransition0,
-        dateResolver: dateResolver0,
-        nowCallback: nowCallback0,
-        timeOfDayRange: timeOfDayRange0,
-        displayRange: displayRange0,
-        firstDayOfWeek: firstDayOfWeek0,
-        initialTimeOfDay: initialTimeOfDay0,
-        scrollTransition: scrollTransition0,
-        scrollResolver: scrollResolver0,
-        zoomTransition: zoomTransition0,
-        zoomResolver: zoomResolver0,
-        multiDayRule: multiDayRule0,
-      ),
-      MultiDayViewType.week => MultiDayViewConfiguration.week(
-        name: name0,
-        initialDateTime: initialDateTime0,
-        dateTransition: dateTransition0,
-        dateResolver: dateResolver0,
-        nowCallback: nowCallback0,
-        timeOfDayRange: timeOfDayRange0,
-        displayRange: displayRange0,
-        firstDayOfWeek: firstDayOfWeek0,
-        numberOfDays: numberOfDays ?? this.numberOfDays,
-        initialTimeOfDay: initialTimeOfDay0,
-        scrollTransition: scrollTransition0,
-        scrollResolver: scrollResolver0,
-        zoomTransition: zoomTransition0,
-        zoomResolver: zoomResolver0,
-        multiDayRule: multiDayRule0,
-      ),
-      MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
-        name: name0,
-        initialDateTime: initialDateTime0,
-        dateTransition: dateTransition0,
-        dateResolver: dateResolver0,
-        nowCallback: nowCallback0,
-        timeOfDayRange: timeOfDayRange0,
-        displayRange: displayRange0,
-        numberOfDays: numberOfDays ?? this.numberOfDays,
-        initialTimeOfDay: initialTimeOfDay0,
-        scrollTransition: scrollTransition0,
-        scrollResolver: scrollResolver0,
-        zoomTransition: zoomTransition0,
-        zoomResolver: zoomResolver0,
-        multiDayRule: multiDayRule0,
-      ),
-      MultiDayViewType.custom => MultiDayViewConfiguration.custom(
-        name: name0,
-        initialDateTime: initialDateTime0,
-        dateTransition: dateTransition0,
-        dateResolver: dateResolver0,
-        nowCallback: nowCallback0,
-        timeOfDayRange: timeOfDayRange0,
-        displayRange: displayRange0,
-        firstDayOfWeek: firstDayOfWeek0,
-        numberOfDays: numberOfDays ?? this.numberOfDays,
-        initialTimeOfDay: initialTimeOfDay0,
-        scrollTransition: scrollTransition0,
-        scrollResolver: scrollResolver0,
-        zoomTransition: zoomTransition0,
-        zoomResolver: zoomResolver0,
-        multiDayRule: multiDayRule0,
-      ),
-      MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
-        name: name0,
-        initialDateTime: initialDateTime0,
-        dateTransition: dateTransition0,
-        dateResolver: dateResolver0,
-        nowCallback: nowCallback0,
-        timeOfDayRange: timeOfDayRange0,
-        displayRange: displayRange0,
-        numberOfDays: numberOfDays ?? this.numberOfDays,
-        initialTimeOfDay: initialTimeOfDay0,
-        scrollTransition: scrollTransition0,
-        scrollResolver: scrollResolver0,
-        zoomTransition: zoomTransition0,
-        zoomResolver: zoomResolver0,
-        multiDayRule: multiDayRule0,
-      ),
+    final numberOfDays0 = type == MultiDayViewType.singleDay ? 1 : numberOfDays ?? this.numberOfDays;
+    final firstDayOfWeek0 = switch (type) {
+      MultiDayViewType.workWeek || MultiDayViewType.freeScroll => kDefaultFirstDayOfWeek,
+      _ => firstDayOfWeek ?? this.firstDayOfWeek,
     };
+
+    return MultiDayViewConfiguration._(
+      name: name ?? this.name,
+      initialDateTime: initialDateTime ?? this.initialDateTime,
+      dateTransition: dateTransition ?? this.dateTransition,
+      dateResolver: dateResolver ?? this.dateResolver,
+      nowCallback: nowCallback ?? this.nowCallback,
+      multiDayRule: multiDayRule ?? this.multiDayRule,
+      timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+      numberOfDays: numberOfDays0,
+      firstDayOfWeek: firstDayOfWeek0,
+      pageIndexCalculator: switch (type) {
+        MultiDayViewType.singleDay => PageIndexCalculator.singleDay(displayRange0),
+        MultiDayViewType.week => PageIndexCalculator.week(displayRange0, firstDayOfWeek0, daysToDisplay: numberOfDays0),
+        MultiDayViewType.workWeek => PageIndexCalculator.workWeek(displayRange0, daysToDisplay: numberOfDays0),
+        MultiDayViewType.custom => PageIndexCalculator.custom(displayRange0, numberOfDays0),
+        MultiDayViewType.freeScroll => PageIndexCalculator.freeScroll(displayRange0),
+      },
+      type: type,
+      initialTimeOfDay: initialTimeOfDay ?? this.initialTimeOfDay,
+      initialHeightPerMinute: initialHeightPerMinute,
+      scrollTransition: scrollTransition ?? this.scrollTransition,
+      scrollResolver: scrollResolver ?? this.scrollResolver,
+      zoomTransition: zoomTransition ?? this.zoomTransition,
+      zoomResolver: zoomResolver ?? this.zoomResolver,
+    );
   }
 
   @override
@@ -354,7 +305,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         other.timeOfDayRange == timeOfDayRange &&
         other.initialTimeOfDay == initialTimeOfDay &&
         other.initialHeightPerMinute == initialHeightPerMinute &&
-        other.dateTimeRange == dateTimeRange &&
         other.numberOfDays == numberOfDays &&
         other.firstDayOfWeek == firstDayOfWeek &&
         other.multiDayRule == multiDayRule &&
@@ -374,7 +324,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       timeOfDayRange,
       initialTimeOfDay,
       initialHeightPerMinute,
-      dateTimeRange,
       numberOfDays,
       firstDayOfWeek,
       multiDayRule,
@@ -392,7 +341,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     displayRange: $dateTimeRange
     numberOfDays: $numberOfDays
     firstDayOfWeek: $firstDayOfWeek
-    pageNavigationFunctions: $pageIndexCalculator''';
+    pageIndexCalculator: $pageIndexCalculator''';
   }
 }
 
@@ -400,18 +349,11 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 ///
 /// {@category Views}
 class MultiDayBodyConfiguration extends VerticalConfiguration {
-  /// Whether to keep visited pages alive so navigating back to them does not
-  /// rebuild their content.
+  /// Keeps visited pages built so returning to one does not rebuild it.
   ///
-  /// Off by default. When enabled, each page you navigate to is cached and
-  /// reused, so navigating back to it is close to free instead of rebuilding
-  /// every event tile. The trade-off is memory: cached pages stay in memory for
-  /// the lifetime of the view, so this grows with the number of distinct pages
-  /// visited. Prefer it for views where the user moves back and forth between a
-  /// small set of pages.
+  /// Off by default. Cached pages stay in memory for the view's lifetime.
   final bool keepPagesAlive;
 
-  /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayBodyConfiguration({
     super.showMultiDayEvents,
     super.horizontalPadding,
@@ -424,7 +366,6 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
     this.keepPagesAlive = false,
   });
 
-  /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
   MultiDayBodyConfiguration copyWith({
     bool? showMultiDayEvents,
     EdgeInsets? horizontalPadding,
@@ -462,7 +403,6 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
 ///
 /// {@category Views}
 class MultiDayHeaderConfiguration extends HorizontalConfiguration {
-  /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayHeaderConfiguration({
     super.showTiles = kDefaultShowEventTiles,
     super.tileHeight = kDefaultTileHeight,
@@ -473,7 +413,6 @@ class MultiDayHeaderConfiguration extends HorizontalConfiguration {
     super.allowSingleDayEvents = false,
   });
 
-  /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   @override
   MultiDayHeaderConfiguration copyWith({
     double? tileHeight,

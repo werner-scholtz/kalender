@@ -11,7 +11,6 @@ import 'package:kalender/kalender.dart';
 
 /// This widget uses a [DragTarget] to trigger navigation of the calendar.
 class CursorNavigationTrigger extends StatefulWidget {
-  /// The child.
   final Widget? child;
 
   /// Callback for when a trigger event happened.
@@ -113,14 +112,12 @@ class _CursorNavigationTriggerState extends State<CursorNavigationTrigger> {
   Widget build(BuildContext context) {
     return DragTarget(
       onWillAcceptWithDetails: (details) {
-        // Start the timer on enter.
         triggerTimer = Timer.periodic(widget.triggerDelay, (timer) => widget.onTrigger());
 
         // Always return false to allow the drag to continue.
         return false;
       },
       onLeave: (data) {
-        // Cancel the timer on leave.
         triggerTimer?.cancel();
       },
       builder: (context, candidateData, rejectedData) {

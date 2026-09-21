@@ -6,7 +6,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
@@ -19,27 +18,16 @@ import 'package:linked_pageview/linked_pageview.dart';
 //  this should remove quite a but of complexity however it does mean that the timeline will scroll with the page view,
 //  which is not ideal but also not a deal breaker, if this is a feature that is requested a lot adding a pinned timeline can be re-implemented at that point.
 
-/// This widget is used to display a multi-day body.
+/// The scrollable body of a multi-day view.
 ///
-/// The multi-day body has two big parts to it:
-/// 1. The content:
-///   - Static content such as [HourLines] and [TimeLine].
-///   - Dynamic content such as the [PageView] which displays:
-///     [DaySeparator], [DayDraggable], [MultiDayEventsRow] and the [TimeIndicator]
-///
-/// 2. The [VerticalDragTarget]
-///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
+/// Holds the [TimeLine], [HourLines], a [PageView] of day columns and a [VerticalDragTarget] that handles the
+/// rescheduling and resizing of events.
 ///
 /// {@category Views}
 class MultiDayBody extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
 
-  /// Creates a new [MultiDayBody].
-  ///
-  /// This widget is used to display events in a day/week view format.
-  ///
-  /// This widget is intended to be the body of a [KalenderView].
   const MultiDayBody({super.key, this.configuration});
 
   /// The key used to identify the [SingleChildScrollView] of the [MultiDayBody].
@@ -63,14 +51,10 @@ class MultiDayBody extends StatelessWidget {
 
     final configuration = this.configuration ?? const MultiDayBodyConfiguration();
 
-    // Calculate the height of the page.
     final pageHeight = context.heightPerMinute * timeOfDayRange.duration.inMinutes;
 
-    // Measured once by the calendar and shared with the header and the drag
-    // overlay so their day columns stay aligned.
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    final timelineWidth =
-        GutterWidths.maybeOf(context)?.timeline ?? bodyComponents.buildTimelineWidth(context, timeOfDayRange);
+    final timelineWidth = timelineWidthOf(context);
 
     return Stack(
       children: [
@@ -125,9 +109,6 @@ class MultiDayBody extends StatelessWidget {
             ),
           ),
         ),
-        // The DayDragTarget is positioned on top of the content.
-        // It should not scroll with the content or move with the page view.
-        // It should always be positioned at the top of the page.
         Positioned.fill(
           child: Row(
             children: [
@@ -166,10 +147,7 @@ class MultiDayBody extends StatelessWidget {
 class MultiDayPage extends StatefulWidget {
   final EventsController eventsController;
 
-  /// The [MultiDayViewController] that will be used by the [MultiDayPage].
   final MultiDayViewController viewController;
-
-  /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayPage].
   final MultiDayBodyConfiguration configuration;
 
   /// The height of the page.
@@ -178,7 +156,6 @@ class MultiDayPage extends StatefulWidget {
   /// The initial location used to calculate the visible events.
   final Location? location;
 
-  /// Creates a new [MultiDayPage].
   const MultiDayPage({
     super.key,
     required this.eventsController,
@@ -262,7 +239,6 @@ class _MultiDayPageState extends State<MultiDayPage> {
       itemCount: widget.viewController.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (index) {
-        // Update the visible date time range based on the page index.
         final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);
         final range = _isFreeScroll
             ? FloatingDateTimeRange(
@@ -272,22 +248,17 @@ class _MultiDayPageState extends State<MultiDayPage> {
             : visibleRange;
         final controller = context.kalenderController;
         controller.floatingVisibleRange.value = range;
-
-        // Update the visible events for the new page index.
         _updateVisibleEvents(index, context.location);
 
-        // Call the onPageChanged callback if it was provided.
         final callbacks = context.callbacks;
         callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {
-        // Calculate the visible date time range for the current page index.
         final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);
         final page = Stack(
           key: MultiDayPage.contentKey,
           clipBehavior: Clip.none,
           children: [
-            // HourLines are positioned behind the events.
             Positioned.fill(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -297,8 +268,6 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 ),
               ),
             ),
-
-            // The draggable area for the creating events.
             Positioned.fill(
               child: DayDraggable(
                 visibleRange: visibleRange,
@@ -306,8 +275,6 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 pageHeight: widget.pageHeight,
               ),
             ),
-
-            // The events row that displays the events for the current page.
             Positioned.fill(
               child: MultiDayEventsRow(
                 configuration: widget.configuration,

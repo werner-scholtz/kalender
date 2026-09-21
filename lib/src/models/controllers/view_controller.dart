@@ -16,8 +16,6 @@ export 'view_controllers/schedule_view_controller.dart';
 
 /// A controller for calendar views.
 ///
-/// A view controller lets you control a calendar view.
-///
 /// {@category Controllers and callbacks}
 abstract class ViewController with KalenderNavigationFunctions {
   /// The location of the current view.
@@ -38,54 +36,14 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// The [KalenderEvent]s that are currently visible.
   ValueNotifier<Set<KalenderEvent>> get visibleEvents;
 
-  // TODO: this can be passed between ViewControllers, but for now it is created here.
-
   /// The cache used by the event layout delegate.
   final EventLayoutDelegateCache cache = EventLayoutDelegateCache();
 
   /// The cache used for the multi-day event layout.
   final MultiDayLayoutFrameCache multiDayCache = MultiDayLayoutFrameCache();
 
-  /// Jump to the given [DateTime].
-  @override
-  void jumpToPage(int page);
-
-  /// Jump to the given [DateTime].
   @override
   FutureOr<void> jumpToDate(DateTime date);
 
-  @override
-  Future<void> animateToNextPage({Duration? duration, Curve? curve});
-
-  @override
-  Future<void> animateToPreviousPage({Duration? duration, Curve? curve});
-
-  @override
-  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve});
-
-  @override
-  Future<void> animateToDateTime(
-    DateTime date, {
-    Duration? pageDuration,
-    Curve? pageCurve,
-    Duration? scrollDuration,
-    Curve? scrollCurve,
-  });
-
-  @override
-  Future<void> animateToEvent(
-    KalenderEvent event, {
-    Duration? pageDuration,
-    Curve? pageCurve,
-    Duration? scrollDuration,
-    Curve? scrollCurve,
-    bool centerEvent = true,
-  });
-
   void dispose();
-
-  @override
-  String toString() {
-    return runtimeType.toString();
-  }
 }

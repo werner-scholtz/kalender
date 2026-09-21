@@ -69,35 +69,3 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
         textDirection != oldDelegate.textDirection;
   }
 }
-
-class MonthWeekNumberHeaderLayoutDelegate extends MultiChildLayoutDelegate {
-  final int? probeId;
-  final int contentId;
-
-  MonthWeekNumberHeaderLayoutDelegate({required this.probeId, required this.contentId});
-
-  @override
-  void performLayout(Size size) {
-    var probeWidth = 0.0;
-
-    if (probeId != null && hasChild(probeId!)) {
-      final probeSize = layoutChild(
-        probeId!,
-        BoxConstraints(minWidth: 0, maxWidth: size.width, minHeight: 0, maxHeight: size.height),
-      );
-      probeWidth = probeSize.width;
-      positionChild(probeId!, Offset.zero);
-    }
-
-    final contentConstraints = BoxConstraints.tight(
-      Size((size.width - probeWidth).clamp(0.0, size.width), size.height),
-    );
-    layoutChild(contentId, contentConstraints);
-    positionChild(contentId, Offset(probeWidth, 0));
-  }
-
-  @override
-  bool shouldRelayout(covariant MonthWeekNumberHeaderLayoutDelegate oldDelegate) {
-    return probeId != oldDelegate.probeId || contentId != oldDelegate.contentId;
-  }
-}

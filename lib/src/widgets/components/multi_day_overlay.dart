@@ -17,10 +17,6 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
 ///
-/// The [event] is the event that is being displayed.
-/// The [floatingRange] is the range for which the event is displayed.
-/// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
-///
 /// {@category Appearance}
 typedef MultiDayOverlayEventTileBuilder =
     MultiDayEventOverlayTile Function(
@@ -36,14 +32,6 @@ typedef MultiDayOverlayEventTileBuilder =
 typedef RenderBoxCallback = RenderBox Function();
 
 /// A function that returns a [MultiDayOverlay] widget.
-///
-/// The [date] is the date for which the widget is created.
-/// The [events] are all the events that should be displayed for the given [date].
-/// The [tileHeight] is the height of the tile.
-/// The [portalController] is the controller for the overlay portal.
-/// The [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] for the `MultiDayEventLayoutWidget`.
-/// The [getOverlayPortalRenderBox] is the function that returns the [RenderBox] for the [MultiDayOverlay].
-/// The [overlayTileBuilder] is the builder for the overlay event tile.
 ///
 /// Resolve the style with [KalenderTheme].
 ///
@@ -315,7 +303,7 @@ class MultiDayOverlay extends StatelessWidget {
   /// The portal controller that controls the overlay for this widget.
   final OverlayPortalController portalController;
 
-  /// The function that returns the [RenderBox] MultiDayEventLayoutWidget.
+  /// The function that returns the [RenderBox] of the multi-day events widget.
   final RenderBoxCallback getMultiDayEventLayoutRenderBox;
 
   /// The function that returns the [RenderBox] for the overlay portal.
@@ -340,45 +328,30 @@ class MultiDayOverlay extends StatelessWidget {
   });
 
   /// Returns a [Key] for the overlay based on the date.
-  static Key getKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_${date.millisecondsSinceEpoch}');
-  }
+  static Key getKey(DateTime date) => _key('multi_day_overlay', date);
 
   /// Returns a [Key] for the overlay card based on the date.
-  static Key getOverlayCardKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_card_${date.millisecondsSinceEpoch}');
-  }
+  static Key getOverlayCardKey(DateTime date) => _key('multi_day_overlay_card', date);
 
   /// Returns a [Key] for the close button based on the date.
-  static Key getCloseButtonKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_close_button_${date.millisecondsSinceEpoch}');
-  }
+  static Key getCloseButtonKey(DateTime date) => _key('multi_day_overlay_close_button', date);
 
   /// Returns a [Key] for the barrier behind the card, based on the date.
-  static Key getBarrierKey(DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_barrier_${date.millisecondsSinceEpoch}');
-  }
+  static Key getBarrierKey(DateTime date) => _key('multi_day_overlay_barrier', date);
 
   /// Returns a [Key] for the card's header, based on the date.
-  static Key getHeaderKey(DateTime date) {
+  static Key getHeaderKey(DateTime date) => _key('multi_day_overlay_header', date);
+
+  static Key _key(String name, DateTime date) {
     assert(date.isUtc, 'Date must be in UTC');
-    return Key('multi_day_overlay_header_${date.millisecondsSinceEpoch}');
+    return Key('${name}_${date.millisecondsSinceEpoch}');
   }
 
   /// Key applied to the [IconButton] when the date is today.
   static const todayKey = ValueKey('MultiDayOverlay.today');
 
-  /// Calculates where the overlay card would ideally sit, and how wide it is.
-  ///
-  /// The anchor lines the card's event list up with the day cell's event area,
-  /// putting the header above it. The card is taller than the cell it is
-  /// anchored to, because it lists every event for the day including the hidden
-  /// ones, so [_MultiDayOverlayLayoutDelegate] clamps the anchor to the
-  /// viewport once the card has been measured.
+  /// The ideal top and horizontal center of the overlay card, and its width. The top puts the card's event list
+  /// over the day cell's event area, and [_MultiDayOverlayLayoutDelegate] clamps it to the viewport after measuring.
   (double anchorTop, double anchorCenterX, double width) _calculateAnchor(
     BoxConstraints constraints,
     MultiDayOverlayStyle style,
@@ -387,28 +360,18 @@ class MultiDayOverlay extends StatelessWidget {
     final portalRenderBox = getOverlayPortalRenderBox();
     final multiDayEventsLayoutSize = getMultiDayEventLayoutRenderBox().size;
 
-    // Get the position of the portal widget.
     final portalWidth = portalRenderBox.size.width;
     final portalPosition = portalRenderBox.localToGlobal(Offset.zero);
 
     final anchorTop = portalPosition.dy - multiDayEventsLayoutSize.height - headerHeight;
     final anchorCenterX = portalPosition.dx + portalWidth / 2;
 
-    return (anchorTop, anchorCenterX, _determineWidth(constraints, style));
-  }
-
-  /// Determines the width of the overlay, never wider than the space available.
-  double _determineWidth(BoxConstraints constraints, MultiDayOverlayStyle style) {
-    return math.min(style.width ?? defaultWidth, constraints.maxWidth);
+    return (anchorTop, anchorCenterX, math.min(style.width ?? defaultWidth, constraints.maxWidth));
   }
 
   static const defaultWidth = 300.0;
 
-  /// Determines the height of the header, never taller than the space available.
-  ///
-  /// The header does not get the whole overlay: [cardMargin] and the spacing
-  /// between the header and the event list come out of it first. Clamping against the
-  /// full height instead lets the column overflow by up to that much.
+  /// The header height, capped at the space left after [cardMargin] and the spacing before the event list.
   double _determineHeaderHeight(BoxConstraints constraints, MultiDayOverlayStyle style, EdgeInsetsGeometry cardMargin) {
     final available = constraints.maxHeight - cardMargin.vertical - _columnSpacing;
     return math.min(style.headerHeight ?? defaultHeaderHeight, math.max(0.0, available));
@@ -436,6 +399,7 @@ class MultiDayOverlay extends StatelessWidget {
       builder: (context, constraints) {
         final headerHeight = _determineHeaderHeight(constraints, style, cardMargin);
         final (anchorTop, anchorCenterX, width) = _calculateAnchor(constraints, style, headerHeight);
+        final displayDate = date.forLocation(location: context.location);
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -470,7 +434,7 @@ class MultiDayOverlay extends StatelessWidget {
                               Align(
                                 alignment: Alignment.topCenter,
                                 child: DateLabelGestures(
-                                  date: date.forLocation(location: context.location),
+                                  date: displayDate,
                                   child: Text(
                                     style.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
                                     style: style.dayNameTextStyle,
@@ -480,7 +444,7 @@ class MultiDayOverlay extends StatelessWidget {
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: DateLabelGestures(
-                                  date: date.forLocation(location: context.location),
+                                  date: displayDate,
                                   child: DayNumber(
                                     date: date,
                                     text: date.day.toString(),
@@ -535,7 +499,6 @@ class MultiDayOverlay extends StatelessWidget {
                                   valueListenable: context.kalenderController.selectedEvent,
                                   builder: (context, selectedEvent, child) {
                                     if (selectedEvent == null) return const SizedBox();
-                                    if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();
 
                                     final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
                                     if (eventIndex == -1) return const SizedBox();

@@ -12,24 +12,10 @@ import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 /// {@category Events}
 const kDefaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
 
-/// Decides whether an event belongs in the multi-day header lane rather than
-/// the day timeline.
+/// Decides whether an event belongs in the multi-day header lane rather than the day timeline.
 ///
-/// Set it once on the view configuration:
-///
-/// ```dart
-/// MultiDayViewConfiguration.week(
-///   multiDayRule: const MultiDayRule.calendarDays(),
-/// )
-/// ```
-///
-/// A single event can disagree with the rest through
-/// [KalenderEvent.multiDayRule]. For a rule none of these express, override
-/// [KalenderEvent.spansMultipleDays] rather than implementing this class.
-///
-/// This is a class rather than a function so that it has value equality. View
-/// configurations are compared with `==` to decide whether the calendar needs
-/// to rebuild, and a function field would defeat that.
+/// Set on the view configuration. [KalenderEvent.multiDayRule] overrides it for a single event, and
+/// [KalenderEvent.spansMultipleDays] replaces it for a rule none of these express.
 ///
 /// {@category Events}
 abstract class MultiDayRule {
@@ -37,11 +23,7 @@ abstract class MultiDayRule {
 
   /// Multi-day when the event lasts at least [minimum]. The default, at 24 hours.
   ///
-  /// Measures elapsed time rather than wall-clock time, and so ignores the
-  /// location it is given. An event that reads as 24 hours on the clock is 23
-  /// or 25 hours of elapsed time across a daylight saving change, and qualifies
-  /// or not accordingly. Use [MultiDayRule.calendarDays] when the day
-  /// boundaries are what matter.
+  /// Elapsed time, so a 24-hour clock span across a DST change may not qualify.
   const factory MultiDayRule.minimumDuration(Duration minimum) = _MinimumDurationRule;
 
   /// Multi-day when the event covers part of more than one calendar day.
@@ -81,7 +63,7 @@ class _CalendarDaysRule extends MultiDayRule {
     // one day above. Keep it multi-day so all-day events stay in the header.
     final start = range.start;
     final end = range.end;
-    return start == start.startOfDay && end == end.startOfDay && end.isAfter(start);
+    return start.isStartOfDay && end.isStartOfDay && end.isAfter(start);
   }
 
   @override

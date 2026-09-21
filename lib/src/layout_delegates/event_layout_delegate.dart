@@ -25,10 +25,6 @@ export 'package:kalender/src/models/kalender_time_range.dart';
 /// )
 /// ```
 ///
-/// This is a class rather than a function so that it has value equality. Body
-/// configurations are compared with `==` to decide whether the calendar needs to
-/// rebuild, and a function field would defeat that.
-///
 /// {@category Layout}
 abstract class EventLayoutStrategy {
   const EventLayoutStrategy();
@@ -122,19 +118,15 @@ class SideBySideLayoutStrategy extends EventLayoutStrategy {
 /// A cache for [EventLayoutDelegate]s.
 ///
 /// This is used to cache some values that are recalculated often.
-/// What can/do we need to cache here ?
-///
 ///
 /// {@category Layout}
 class EventLayoutDelegateCache {
   final Map<String, Map<int, VerticalLayoutData>> _dateCache = {};
 
-  /// Generates a cache key based on the [date], [heightPerMinute], and [timeRange].
   String _generateCacheKey(DateTime date, double heightPerMinute, KalenderTimeRange timeRange) {
     return '${date.millisecondsSinceEpoch}_${heightPerMinute}_${timeRange.hashCode}';
   }
 
-  /// Caches the vertical layout data for the given [date], [heightPerMinute], and [timeOfDayRange].
   Map<int, VerticalLayoutData>? getCache(DateTime date, double heightPerMinute, KalenderTimeRange timeOfDayRange) {
     final key = _generateCacheKey(date, heightPerMinute, timeOfDayRange);
     return _dateCache[key];
@@ -154,14 +146,6 @@ class EventLayoutDelegateCache {
 }
 
 /// The base [MultiChildLayoutDelegate] class for laying out [KalenderEvent]s.
-///
-/// [EventLayoutDelegate]s are used to layout [KalenderEvent]s in  a [CustomMultiChildLayout].
-///
-/// The [EventLayoutDelegate] has some helper methods:
-///
-/// * [calculateVerticalLayoutData] - Calculates the top and bottom of each event.
-/// * [groupVerticalLayoutData] - Groups the [VerticalLayoutData] into horizontal groups.
-///
 ///
 /// {@category Layout}
 abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
@@ -196,10 +180,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// The cache for the [EventLayoutDelegate].
   final EventLayoutDelegateCache layoutCache;
 
-  /// Sorts the [KalenderEvent]s.
-  ///
-  /// This is used to sort the events before passing them to the [EventLayoutDelegate].
-  /// Override this method to provide custom sorting.
+  /// Sorts [events] before layout.
   List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events);
 
   /// Calculates the height of an item based on the [KalenderEvent.duration] and [heightPerMinute] of the event.
@@ -218,11 +199,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
 
   /// The pixel offset of [instant] from the top of the day.
   ///
-  /// Both the top and bottom of an event are derived from this single
-  /// conversion. Computing them the same way is what guarantees that two
-  /// back-to-back events (where one ends exactly when the next begins) get
-  /// bit-identical boundaries, so they never register as overlapping because of
-  /// floating point differences.
+  /// The top and bottom of every tile come from this one conversion, so back-to-back tiles get identical boundaries.
   double _offsetFromDayStart(FloatingDateTime instant) {
     final dateStart = timeOfDayRange.start.toFloatingDateTime(date);
     final difference = instant.difference(dateStart);
@@ -279,20 +256,14 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     final eventEnd = range?.end ?? date.startOfDay;
 
     var top = _offsetFromDayStart(eventStart);
-    // Derive the bottom from the end instant with the same conversion as the
-    // top (not top + height), so a touching neighbour's top matches this bottom
-    // exactly and they are never treated as overlapping.
     var bottom = _offsetFromDayStart(eventEnd);
 
-    // Enforce the minimum tile height as a floor on the rendered height.
     if (minimumTileHeight != null && bottom - top < minimumTileHeight!) {
       bottom = top + minimumTileHeight!;
     }
 
     final overlap = size.height - bottom;
-    // Check if the event is outside the bounds of the widget.
     if (overlap.isNegative) {
-      // Update the top and bottom to fit within the bounds.
       top += overlap;
       bottom += overlap;
     }
@@ -315,10 +286,8 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
       final top = layoutData.top;
       final bottom = layoutData.bottom;
 
-      // If the layout data is already in a group, skip it.
       if (horizontalGroups.any((group) => group.containsId(id))) continue;
 
-      // Find the index of the group that overlaps with the layout data.
       final groupIndex = horizontalGroups.indexWhere((group) {
         return group.overlaps(top, bottom);
       });
@@ -334,32 +303,20 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     return horizontalGroups;
   }
 
-  /// Finds the longest chain of overlapping events using depth-first search.
+  /// The length of the longest chain of overlapping entries in [verticalLayoutData].
   ///
-  /// This method determines the maximum number of events that overlap at any given time,
-  /// which is used to calculate the optimal width for each event tile in side-by-side layouts.
-  ///
-  /// This algorithm can get expensive, so it should be used sparingly.
-  ///
-  /// [verticalLayoutData] - The collection of vertical layout data for all events.
-  ///
-  /// Returns the length of the longest chain of overlapping events.
+  /// Uses a depth-first search, which is expensive for large inputs.
   int findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
-    // Early return if no events to process
     if (verticalLayoutData.isEmpty) return 0;
 
     final dataList = verticalLayoutData.toList();
-    // Key: event index, Value: longest chain starting from that event
     final memo = <int, int>{};
 
     int depthFirstSearch(int currentIndex, Set<int> visited) {
-      // If we've already calculated this, return cached result
       if (memo.containsKey(currentIndex)) return memo[currentIndex]!;
       var maxLength = 1;
 
-      // Check all other events to see if they overlap with current event
       for (var i = 0; i < dataList.length; i++) {
-        // Skip if it's the same event, already visited, or doesn't overlap
         if (i != currentIndex && !visited.contains(i) && dataList[currentIndex].overlaps(dataList[i])) {
           final newVisited = Set<int>.from(visited)..add(i);
           maxLength = max(maxLength, 1 + depthFirstSearch(i, newVisited));
@@ -414,10 +371,7 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
 
   @override
   void performLayout(Size size) {
-    // Calculate the vertical layout data.
     final verticalLayoutData = calculateVerticalLayoutData(size);
-
-    // Group the vertical layout data into horizontal groups.
     final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
 
     for (var i = 0; i < horizontalGroups.length; i++) {
@@ -438,7 +392,6 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
           width = size.width / numberOfOverlaps;
           xOffset = width * (numberOfOverlaps - 1);
         } else {
-          // TODO: make this adjustable ?
           width = lastWidth / 1.8;
           xOffset = size.width - width;
         }
@@ -451,7 +404,6 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
           positionChild(data.id, Offset(xOffset, data.top));
         }
 
-        // Add the layout data to the list.
         layoutData.add(EventLayoutData(left: xOffset, right: size.width, verticalLayoutData: data));
       }
     }
@@ -488,10 +440,7 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
 
   @override
   void performLayout(Size size) {
-    // Calculate the vertical layout data.
     final verticalLayoutData = calculateVerticalLayoutData(size);
-
-    // Group the vertical layout data into horizontal groups.
     final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
 
     for (var i = 0; i < horizontalGroups.length; i++) {
@@ -509,24 +458,20 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
         final data = verticalLayoutData.elementAt(i);
         final id = data.id;
 
-        // Find the overlaps to the left of the tile.
         final tilesToLeft = verticalLayoutData.getRange(0, i);
         final overlapsLeft = tilesToLeft.where((e) => e.overlaps(data));
         final lastOverlapLeft = overlapsLeft.lastOrNull;
 
-        // Calculate the x offset of the tile.
-        final double tileXOffset; // = childWidth * overlapsLeft;
+        final double tileXOffset;
         if (lastOverlapLeft != null) {
           tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
         } else {
           tileXOffset = childWidth * overlapsLeft.length;
         }
 
-        // Find the overlaps to the right of the tile.
         final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
         final overlapsRight = tilesToRight.where((e) => e.overlaps(data)).toList();
 
-        // Calculate the width of the tile.
         var tileWidth = childWidth;
         if (overlapsRight.isEmpty) {
           tileWidth = size.width - tileXOffset;
@@ -594,10 +539,10 @@ class VerticalLayoutData {
 ///
 /// {@category Layout}
 class EventLayoutData {
-  /// The top of the event.
+  /// The left of the event.
   final double left;
 
-  /// The bottom of the event.
+  /// The right of the event.
   final double right;
 
   /// The vertical layout data of the event.
@@ -619,19 +564,18 @@ class EventLayoutData {
 ///
 /// {@category Layout}
 class HorizontalGroupData {
-  final List<VerticalLayoutData> verticalLayoutData = [];
+  final List<VerticalLayoutData> verticalLayoutData;
 
   /// The top of the group of [VerticalLayoutData].
-  double top = double.infinity;
+  double top;
 
   /// The bottom of the group of [VerticalLayoutData].
-  double bottom = double.negativeInfinity;
+  double bottom;
 
-  HorizontalGroupData(VerticalLayoutData initialData) {
-    verticalLayoutData.add(initialData);
-    top = initialData.top;
-    bottom = initialData.bottom;
-  }
+  HorizontalGroupData(VerticalLayoutData initialData)
+    : verticalLayoutData = [initialData],
+      top = initialData.top,
+      bottom = initialData.bottom;
 
   /// Adds the [layoutData] to the [HorizontalGroupData].
   void add(VerticalLayoutData layoutData) {

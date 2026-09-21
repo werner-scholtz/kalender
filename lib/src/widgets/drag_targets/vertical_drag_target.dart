@@ -9,6 +9,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:kalender/src/widgets/drag_targets/drag_target_helpers.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
@@ -25,7 +26,6 @@ class VerticalDragTarget extends StatefulWidget {
 
   final ValueNotifier<KalenderSnapping> snapping;
 
-  /// Creates a [VerticalDragTarget].
   const VerticalDragTarget({
     super.key,
     required this.controller,
@@ -40,11 +40,8 @@ class VerticalDragTarget extends StatefulWidget {
   @override
   State<VerticalDragTarget> createState() => _VerticalDragTargetState();
 
-  /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
-  /// This can be overridden by providing a custom implementation via [KalenderCallbacks.onWillAcceptWithDetailsVertical].
-  ///
-  /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
-  /// The checks performed for each are detailed in the respective sections below.
+  /// The default [KalenderCallbacks.onWillAcceptWithDetailsVertical]. Accepts [Create], [Resize] and
+  /// [Reschedule] payloads.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
     KalenderController controller,
@@ -102,12 +99,10 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   KalenderTimeRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
 
   VerticalConfiguration get bodyConfiguration => widget.configuration;
-  bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
   PageTriggerConfiguration get pageTrigger => bodyConfiguration.pageTriggerConfiguration;
   ScrollTriggerConfiguration get scrollTrigger => bodyConfiguration.scrollTriggerConfiguration;
 
   KalenderSnapping get snapping => widget.snapping.value;
-  bool get snapToOtherEvents => snapping.snapToOtherEvents;
   int get snapIntervalMinutes => snapping.snapIntervalMinutes;
   bool get snapToTimeIndicator => snapping.snapToTimeIndicator;
   Duration get snapRange => snapping.snapRange;
@@ -149,7 +144,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   /// Update the snap points.
   void _updateSnapPoints() {
-    if (!snapToOtherEvents) return;
+    if (!snapping.snapToOtherEvents) return;
     clearSnapPoints();
     addEventSnapPoints(controller.visibleEvents.value, context.location);
   }
@@ -159,18 +154,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     return DragTarget(
       hitTestBehavior: HitTestBehavior.translucent,
       onWillAcceptWithDetails: (details) {
-        final correctType = DragTargetUtilities.handleDragDetails(
-          details,
-          onCreate: (controllerId) => true,
-          onResize: (event, direction) => true,
-          onReschedule: (event) => true,
-          onOther: () => false,
-        );
-
-        if (!correctType) {
-          debugPrint('VerticalDragTarget: cannot use details: $details because of unknown data type');
-          return false;
-        }
+        if (!isKalenderPayload(details, 'VerticalDragTarget')) return false;
 
         // First test if the details can be accepted at all.
         final accepted =
@@ -194,12 +178,9 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
             }
           },
           onReschedule: (event) {
-            // Calculate the size of the feedback widget.
             final eventDuration = event.duration;
             final eventHeight = eventDuration.inMinutes * heightPerMinute;
-            // Set the size of the feedback widget.
             context.feedbackWidgetSizeNotifier.value = Size(dayWidth, eventHeight);
-            // Select the event as an internal one.
             controller.selectEvent(event, internal: true);
           },
           onOther: () {},
@@ -211,7 +192,6 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       onAcceptWithDetails: onAcceptWithDetails,
       onLeave: onLeave,
       builder: (context, candidateData, rejectedData) {
-        // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
         final components = context.components.multiDayComponents.bodyComponents;
 
@@ -268,21 +248,11 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final localCursorPosition = calculateLocalCursorPosition(offset, scrollOffset: Offset(0, scrollController.offset));
     if (localCursorPosition == null) return null;
 
-    // Calculate only the date of the cursor from the local cursor position.
-    // Clamp the index to valid bounds to handle cursor positions over the timeline area.
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
+    final date = dateAtColumn(context, visibleDates, localCursorPosition.dx, dayWidth);
+    if (date == null) return null;
 
-    final date = Directionality.of(context) == TextDirection.ltr
-        ? visibleDates.elementAtOrNull(cursorDateIndex)
-        : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);
+    final startOfDate = timeOfDayRange.start.toFloatingDateTime(date);
 
-    final cursorDate = date;
-    if (cursorDate == null) return null;
-
-    // Calculate the start of the day.
-    final startOfDate = timeOfDayRange.start.toFloatingDateTime(cursorDate);
-
-    // Calculate the duration to add to the startOfDate.
     final durationFromStart = localCursorPosition.dy ~/ heightPerMinute;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
@@ -296,7 +266,6 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     return cursorDateTime;
   }
 
-  /// Update the [KalenderEvent] based on the [Offset] delta.
   @override
   KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime) {
     // A multi-day event is laid out in the header, so dragging it across the
@@ -322,26 +291,21 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       }
     }
 
-    // Calculate the new dateTimeRange for the event.
     final duration = event.duration;
     var end = start.add(duration);
 
-    // Add now to the snap points.
     late final now = FloatingDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
-    // Find the index of the snap point that is within a duration of snapRange of the start.
     final startSnapPoint = findSnapPoint(start, snapRange);
     if (startSnapPoint != null && startSnapPoint.isBefore(end)) {
       start = startSnapPoint;
       end = start.add(duration);
     }
 
-    // Find the index of the snap point that is within a duration of snapRange of the end.
     late final endSnapPoint = findSnapPoint(end, snapRange);
     final canUseEndSnapPoint = startSnapPoint == null && endSnapPoint != null && endSnapPoint.isAfter(start);
     if (canUseEndSnapPoint) {
-      // Calculate the new end time.
       end = endSnapPoint;
       start = end.subtract(duration);
     }
@@ -353,25 +317,20 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       KalenderDateTimeRange(start: convertedStart, end: convertedStart.add(duration)),
     );
 
-    // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
 
     return updatedEvent;
   }
 
-  /// Update the [KalenderEvent] based on the [direction] and [cursorDateTime] delta.
   @override
   KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime) {
-    // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
-    // Add now to the snap points.
     late final now = FloatingDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;
 
-    // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
 
     final floatingRange = event.floatingRange(location: context.location);

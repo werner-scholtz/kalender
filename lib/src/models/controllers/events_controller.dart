@@ -50,26 +50,15 @@ abstract class EventsController with ChangeNotifier {
   /// Removes all [KalenderEvent]s from the controller.
   void clearEvents();
 
-  /// Replaces all [KalenderEvent]s with [events] in a single update.
+  /// Replaces all events with [events]. Returns the ids assigned, in order.
   ///
-  /// Prefer this over [clearEvents] followed by [addEvents] when swapping the
-  /// whole set, for example after loading a new source. It avoids the
-  /// intermediate empty state and, where the implementation allows, notifies
-  /// listeners once instead of twice.
-  ///
-  /// Returns the id's assigned to the events in order.
-  ///
-  /// The default implementation clears then adds. Subclasses may override to do
-  /// it atomically.
+  /// The default implementation calls [clearEvents] then [addEvents].
   List<String> replaceEvents(List<KalenderEvent> events) {
     clearEvents();
     return addEvents(events);
   }
 
   /// Updates an [KalenderEvent].
-  ///
-  /// The [event] is the event that needs to be changed.
-  /// The [updatedEvent] is the event that will replace the [event].
   void updateEvent({required KalenderEvent event, required KalenderEvent updatedEvent});
 
   /// Retrieve a [KalenderEvent] by it's id if it exists.
@@ -77,9 +66,6 @@ abstract class EventsController with ChangeNotifier {
 
   /// Finds the [KalenderEvent]s that occur during the [range].
   ///
-  /// The [range] is the range of dates to search for events.
-  /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
-  /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
   /// The [location] is the calendar's timezone, used to place day boundaries when evaluating [multiDayRule].
   /// Pass the same one the calendar renders with.
   /// [multiDayRule] decides which events count as multi-day. Pass the current

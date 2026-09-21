@@ -8,19 +8,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
-import 'package:kalender/src/models/providers/kalender_scope.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
+import 'package:kalender/src/widgets/components/time_line.dart';
 
-/// The width of the month's week number column.
+/// Resolves the width of the month's week number column.
 ///
-/// The column is drawn in the month body and reserved again in the month header,
-/// so both read one number rather than each measuring what they build. It is not
-/// called for a view that draws no week numbers.
-///
-/// It runs above `KalenderHeader` and `KalenderBody`, so the context resolves
-/// [KalenderTheme] and every [KalenderScope] accessor except the four those two
-/// install: `interactionOf`, `snappingOf`, `tileComponentsOf` and
-/// `heightPerMinuteOf`.
+/// Called once per view, and not for a view that draws no week numbers. The context resolves what a
+/// [TimelineWidthBuilder]'s context resolves.
 ///
 /// {@category Appearance}
 typedef WeekNumberWidthBuilder = double Function(BuildContext context);
@@ -60,7 +54,6 @@ typedef WeekNumberBuilder = Widget Function(BuildContext context, KalenderDateTi
 ///
 /// {@category Appearance}
 class WeekNumberStyle with Diagnosticable {
-  /// Creates a new [WeekNumberStyle].
   const WeekNumberStyle({this.textStyle, this.buttonSize, this.tooltip, this.padding, this.alignment});
 
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.

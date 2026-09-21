@@ -11,35 +11,17 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 
 /// Calculates page indices and date ranges for paginated calendar views.
 ///
-/// This class provides the logic to translate between dates and page indices
-/// for different view types (day, week, month, schedule). It handles:
-/// - Converting dates to page indices for navigation
-/// - Calculating the date range displayed on a specific page
-/// - Determining the total number of pages available
-/// - Managing timezone-adjusted date ranges for calculations
-///
-/// Each view type (single day, week, month, etc.) has its own implementation
-/// that defines how dates map to pages based on the view's structure.
-///
-/// **Note:** Internal calculations are performed in UTC. Use [FloatingDateTime.forLocation]
-/// to convert results to the appropriate timezone.
+/// Each view type has its own implementation that maps dates to pages. Calculations are performed in UTC. Use
+/// [FloatingDateTime.forLocation] to convert results to a location.
 ///
 /// {@category Views}
 abstract class PageIndexCalculator {
-  /// The start of the range this calculator operates within.
-  ///
-  /// This is provided by the user and defines the bounds for navigation and display.
-  /// Note these bounds are not hard limits; the calendar may adjust them in certain circumstances.
-  /// - The week view may extend the range to ensure full weeks are displayed.
-  /// - The month view may adjust to show complete months.
-  ///
-  /// see [floatingRange] for the adjusted range used in calculations.
+  /// The start of the range, before a view aligns it to its page boundaries. See [floatingRange].
   final DateTime start;
 
   /// The end of the range this calculator operates within.
   final DateTime end;
 
-  /// Creates a [PageIndexCalculator] covering [start] to [end].
   const PageIndexCalculator({required this.start, required this.end});
 
   /// [start] and [end] resolved into [location], before a view adjusts them to
@@ -115,21 +97,16 @@ abstract class PageIndexCalculator {
   }
 
   /// Calculates the VisibleDateRange from the [index].
-  ///
-  /// [index] is the page index.
   FloatingDateTimeRange rangeFromIndex(int index, Location? location);
 
   /// Calculates the page index of the [date].
   ///
   /// The returned index should be clamped between 0 and [numberOfPages] minus one.
-  /// [numberOfPages] is a count, while page indices are zero-based, so the last
-  /// valid index is `numberOfPages - 1`.
   int indexFromDate(DateTime date, Location? location);
 
   /// The number of pages that can be displayed.
   ///
-  /// This is a count (starting at 1), not an index. The last valid page index is
-  /// therefore `numberOfPages - 1`.
+  /// Page indices are zero-based, so the last valid index is `numberOfPages - 1`.
   int numberOfPages(Location? location);
 
   /// The adjusted range for a specific location.
@@ -149,13 +126,11 @@ abstract class PageIndexCalculator {
 ///
 /// {@category Views}
 class DayIndexCalculator extends PageIndexCalculator {
-  /// Creates a [DayIndexCalculator] covering [start] to [end].
   DayIndexCalculator({required super.start, required super.end});
 
   @override
   FloatingDateTimeRange rangeFromIndex(int index, Location? location) {
     final floatingRange = this.floatingRange(location);
-    // Add the index to the start date to get the date to display.
     final start = floatingRange.start.add(Duration(days: index));
     final end = start.add(const Duration(days: 1));
     return FloatingDateTimeRange(start: start, end: end);
@@ -165,7 +140,6 @@ class DayIndexCalculator extends PageIndexCalculator {
   int indexFromDate(DateTime date, Location? location) {
     final startOfDate = FloatingDateTime.fromExternal(date, location: location);
     final startOfRange = floatingRange(location).start;
-    // Calculate the difference in days between the two dates.
     final days = startOfDate.difference(startOfRange).inDays;
     // Guard against an empty range (numberOfPages == 0), where numberOfPages - 1
     // would be a negative upper bound and make clamp throw.
@@ -180,12 +154,7 @@ class DayIndexCalculator extends PageIndexCalculator {
   }
 
   @override
-  FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-    final start = floatingRange.start.startOfDay;
-    final end = floatingRange.end.isStartOfDay ? floatingRange.end : floatingRange.end.endOfDay;
-    return FloatingDateTimeRange(start: start, end: end);
-  }
+  FloatingDateTimeRange floatingRange(Location? location) => _wholeDays(rawRange(location));
 
   @override
   bool operator ==(Object other) =>
@@ -209,7 +178,6 @@ class WeekIndexCalculator extends PageIndexCalculator {
   /// consecutive pages overlap.
   final int daysToDisplay;
 
-  /// Creates a [WeekIndexCalculator] covering [start] to [end], [firstDayOfWeek], and [daysToDisplay].
   WeekIndexCalculator({
     required super.start,
     required super.end,
@@ -242,33 +210,19 @@ class WeekIndexCalculator extends PageIndexCalculator {
   @override
   int indexFromDate(DateTime date, Location? location) {
     final floatingDate = FloatingDateTime.fromExternal(date, location: location).startOfDay;
-    // print('Date for index calculation: $date');
     final floatingStartOfWeek = floatingDate.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     final floatingRange = this.floatingRange(location);
-    // print('Internal start of range: $floatingStartOfWeek');
 
-    // If the date provided start of week is before or equal to the adjusted range start, return 0.
-    if (floatingStartOfWeek.isBefore(floatingRange.start) || floatingStartOfWeek == floatingRange.start) return 0;
+    if (!floatingStartOfWeek.isAfter(floatingRange.start)) return 0;
     final range = FloatingDateTimeRange(start: floatingRange.start, end: floatingStartOfWeek);
-    // print(range.end.difference(range.start));
-    // print(range.dates().length);
-    final index = range.dates().length / DateTime.daysPerWeek;
-
-    if (index.round() != index) {
-      debugPrint('Warning: index is not an integer: $index');
-    }
-
-    return index.round().clamp(0, numberOfPages(location) - 1);
+    final index = range.dates().length ~/ DateTime.daysPerWeek;
+    return index.clamp(0, numberOfPages(location) - 1);
   }
 
   @override
   int numberOfPages(Location? location) {
     final floatingRange = this.floatingRange(location);
-    final numberOfPages = floatingRange.end.difference(floatingRange.start).inDays / DateTime.daysPerWeek;
-    if (numberOfPages.round() != numberOfPages) {
-      debugPrint('Warning: numberOfPages is not an integer: $numberOfPages');
-    }
-    return numberOfPages.round();
+    return floatingRange.end.difference(floatingRange.start).inDays ~/ DateTime.daysPerWeek;
   }
 
   @override
@@ -299,7 +253,6 @@ class CustomIndexCalculator extends PageIndexCalculator {
   /// The number of days in each page.
   final int numberOfDays;
 
-  /// Creates a [CustomIndexCalculator] covering [start] to [end] and [numberOfDays].
   CustomIndexCalculator({required super.start, required super.end, required this.numberOfDays});
 
   @override
@@ -328,20 +281,13 @@ class CustomIndexCalculator extends PageIndexCalculator {
 
   @override
   FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-
-    final start = floatingRange.start.startOfDay;
-    final end = floatingRange.end.startOfDay == floatingRange.end
-        ? floatingRange.end.startOfDay
-        : floatingRange.end.endOfDay;
-    final numberOfDaysInRange = end.difference(start).inDays;
-    final extraDays = numberOfDaysInRange % numberOfDays;
-    if (extraDays == 0) {
-      return FloatingDateTimeRange(start: start, end: end);
-    } else {
-      final adjustedEnd = end.add(Duration(days: numberOfDays - extraDays));
-      return FloatingDateTimeRange(start: start, end: adjustedEnd);
-    }
+    final range = _wholeDays(rawRange(location));
+    final extraDays = range.end.difference(range.start).inDays % numberOfDays;
+    if (extraDays == 0) return range;
+    return FloatingDateTimeRange(
+      start: range.start,
+      end: range.end.add(Duration(days: numberOfDays - extraDays)),
+    );
   }
 
   @override
@@ -363,10 +309,8 @@ class MonthIndexCalculator extends PageIndexCalculator with _MonthPages {
   /// The value to shift the start of week by to get the first day of the week.
   final int firstDayOfWeek;
 
-  /// Creates a [MonthIndexCalculator] covering [start] to [end] and [firstDayOfWeek].
   MonthIndexCalculator({required super.start, required super.end, required this.firstDayOfWeek});
 
-  /// Creates a [MonthIndexCalculator] covering [dateTimeRange] and [firstDayOfWeek].
   MonthIndexCalculator.fromRange(KalenderDateTimeRange dateTimeRange, this.firstDayOfWeek)
     : super(start: dateTimeRange.start, end: dateTimeRange.end);
 
@@ -415,7 +359,6 @@ class MonthIndexCalculator extends PageIndexCalculator with _MonthPages {
 ///
 /// {@category Views}
 class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
-  /// Creates a [ContinuousScheduleIndexCalculator] covering [start] to [end].
   ContinuousScheduleIndexCalculator({required super.start, required super.end});
 
   @override
@@ -428,15 +371,7 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
   int numberOfPages(Location? location) => 1;
 
   @override
-  FloatingDateTimeRange floatingRange(Location? location) {
-    final floatingRange = rawRange(location);
-
-    final start = floatingRange.start.startOfDay;
-    final end = floatingRange.end.startOfDay == floatingRange.end
-        ? floatingRange.end.startOfDay
-        : floatingRange.end.endOfDay;
-    return FloatingDateTimeRange(start: start, end: end);
-  }
+  FloatingDateTimeRange floatingRange(Location? location) => _wholeDays(rawRange(location));
 
   @override
   bool operator ==(Object other) =>
@@ -446,6 +381,8 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
   int get hashCode => Object.hash(ContinuousScheduleIndexCalculator, start, end);
 }
 
+/// Calculates page indices and date ranges for a paginated schedule view.
+///
 /// {@category Views}
 class PaginatedScheduleIndexCalculator extends PageIndexCalculator with _MonthPages {
   PaginatedScheduleIndexCalculator({required super.start, required super.end});
@@ -487,4 +424,9 @@ mixin _MonthPages on PageIndexCalculator {
     final end = range.end.startOfMonth == range.end ? range.end : range.end.endOfMonth;
     return FloatingDateTimeRange(start: range.start.startOfMonth, end: end);
   }
+}
+
+FloatingDateTimeRange _wholeDays(FloatingDateTimeRange range) {
+  final end = range.end.isStartOfDay ? range.end : range.end.endOfDay;
+  return FloatingDateTimeRange(start: range.start.startOfDay, end: end);
 }

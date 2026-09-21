@@ -12,7 +12,7 @@ import 'package:kalender/src/models/kalender_callbacks.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
-/// The [DayNumberStyle] class is used by the [DayNumber] widget.
+/// The style of the [DayNumber].
 ///
 /// A day that is both today and selected takes its colors from the selected values and its border from the today
 /// values, each falling back to the other when null.
@@ -214,10 +214,6 @@ class _DayNumberState extends State<DayNumber> {
   @override
   Widget build(BuildContext context) {
     final hasDateLabel = Callbacks.maybeOf(context)?.dateLabel?.hasAny ?? false;
-    return IgnorePointer(ignoring: !hasDateLabel, child: _buildButton(context));
-  }
-
-  Widget _buildButton(BuildContext context) {
     final isToday = widget.isToday;
     var textStyle = widget.textStyle;
     ButtonStyle? buttonStyle;
@@ -235,14 +231,17 @@ class _DayNumberState extends State<DayNumber> {
       );
     }
 
-    return IconButton(
-      key: isToday ? widget.todayKey : null,
-      onPressed: null,
-      icon: Text(widget.text, style: textStyle),
-      visualDensity: VisualDensity.compact,
-      padding: widget.size == null ? null : EdgeInsets.zero,
-      constraints: widget.size == null ? null : BoxConstraints.tight(widget.size!),
-      style: buttonStyle,
+    return IgnorePointer(
+      ignoring: !hasDateLabel,
+      child: IconButton(
+        key: isToday ? widget.todayKey : null,
+        onPressed: null,
+        icon: Text(widget.text, style: textStyle),
+        visualDensity: VisualDensity.compact,
+        padding: widget.size == null ? null : EdgeInsets.zero,
+        constraints: widget.size == null ? null : BoxConstraints.tight(widget.size!),
+        style: buttonStyle,
+      ),
     );
   }
 }

@@ -105,6 +105,11 @@ void main() {
       test('updates numberOfDays', () {
         expect(config.copyWith(numberOfDays: 5).numberOfDays, 5);
       });
+
+      test('preserves initialHeightPerMinute when copying another field', () {
+        final zoomed = MultiDayViewConfiguration.custom(numberOfDays: 3, initialHeightPerMinute: 1.5);
+        expect(zoomed.copyWith(name: 'Renamed').initialHeightPerMinute, 1.5);
+      });
     });
 
     group('PageTriggerConfiguration', () {

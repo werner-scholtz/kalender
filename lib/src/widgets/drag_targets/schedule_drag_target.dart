@@ -31,7 +31,6 @@ class ScheduleDragTarget extends StatefulWidget {
   final HorizontalTriggerWidgetBuilder? topScrollTrigger;
   final HorizontalTriggerWidgetBuilder? bottomScrollTrigger;
 
-  /// Creates a [ScheduleDragTarget].
   const ScheduleDragTarget({
     super.key,
     required this.eventsController,
@@ -71,9 +70,6 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
   @override
   bool get multiDayDragTarget => false;
 
-  // The width of the page, used for cursor navigation.
-  double get pageWidth => widget.constraints.maxWidth;
-
   // The height of the viewport, used for cursor navigation.
   double get viewPortHeight => widget.constraints.maxHeight;
 
@@ -88,7 +84,6 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
           details,
           onResize: (event, direction) => false,
           onReschedule: (event) {
-            // Set the size of the feedback widget.
             const height = 24.0;
 
             context.feedbackWidgetSizeNotifier.value = Size(dayWidth, height);
@@ -101,7 +96,6 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
       onAcceptWithDetails: onAcceptWithDetails,
       onLeave: onLeave,
       builder: (context, candidateData, rejectedData) {
-        // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
 
         final pageTrigger = widget.pageTriggerConfiguration;
@@ -111,7 +105,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
           configuration: pageTrigger,
           viewController: viewController,
           forward: true,
-          pageWidth: pageWidth,
+          pageWidth: dayWidth,
           builder: widget.rightPageTrigger,
         );
 
@@ -119,7 +113,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
           configuration: pageTrigger,
           viewController: viewController,
           forward: false,
-          pageWidth: pageWidth,
+          pageWidth: dayWidth,
           builder: widget.leftPageTrigger,
         );
 
@@ -147,7 +141,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
             },
             viewPortHeight: viewPortHeight,
             triggerHeight: triggerHeight,
-            width: pageWidth,
+            width: dayWidth,
             builder: builder,
           );
         }
@@ -169,11 +163,9 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
 
   @override
   FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
-    // Calculate the relative cursor position.
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
 
-    // Find the item index based on the cursor position.
     final viewController = widget.viewController;
     if (!viewController.hasInitialized) return null;
 
@@ -184,10 +176,8 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
         .map((item) => item.index)
         .firstOrNull;
 
-    // If no item index is found, return null.
     if (itemIndex == null) return null;
 
-    // Get the date for the item index.
     final date = viewController.dateTimeFromIndex(itemIndex);
 
     if (date == null) return null;

@@ -138,14 +138,10 @@ class OverlayBuilders {
 
 /// The trigger widget builder, should be constrained in width.
 ///
-/// The [pageWidth] is the width of the page.
-///
 /// {@category Interaction}
 typedef HorizontalTriggerWidgetBuilder = Widget Function(BuildContext context, double pageWidth);
 
 /// The trigger widget builder, should be constrained in height.
-///
-/// The [viewPortHeight] is the height of the page.
 ///
 /// {@category Interaction}
 typedef VerticalTriggerWidgetBuilder = Widget Function(BuildContext context, double viewPortHeight);

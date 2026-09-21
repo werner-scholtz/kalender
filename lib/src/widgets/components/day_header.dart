@@ -20,10 +20,7 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 /// {@category Appearance}
 typedef DayHeaderBuilder = Widget Function(BuildContext context, DateTime date);
 
-/// The styling class for the [DayHeader].
-///
-/// This class allows you to customize the appearance of the [DayHeader] widget.
-/// You can change the text style, the string displayed, the number text style, and the alignment.
+/// The style for the [DayHeader].
 ///
 /// {@category Appearance}
 class DayHeaderStyle with Diagnosticable {
@@ -36,15 +33,6 @@ class DayHeaderStyle with Diagnosticable {
   /// The main axis alignment of the [DayHeader].
   final MainAxisAlignment? mainAxisAlignment;
 
-  /// Use this function to customize the string used for the day number.
-  ///
-  /// By default, the [DateTime.day] is used to get the day number.
-
-  /// Use this function to customize the sting displayed under the day number.
-  ///
-  /// By default, the [DateTimeExtensions.dayNameShortLocalized] is used to get the short name of the day in the current locale.
-
-  /// Creates a new [DayHeaderStyle].
   const DayHeaderStyle({this.textStyle, this.numberTextStyle, this.mainAxisAlignment});
 
   /// Creates a copy of this style with the given fields replaced with the new values.
@@ -111,10 +99,6 @@ class DayHeader extends StatelessWidget {
   /// The style of the [DayHeader].
   final DayHeaderStyle? style;
 
-  /// Create a new [DayHeader].
-  ///
-  /// The [date] is the date that will be displayed.
-  /// The [style] is the style of the [DayHeader].
   const DayHeader({super.key, required this.date, this.style});
 
   @override

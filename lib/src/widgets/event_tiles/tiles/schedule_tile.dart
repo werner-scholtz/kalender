@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/kalender_callbacks.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/tile_taps.dart';
 
 class ScheduleEventTile extends EventTile {
   const ScheduleEventTile({
@@ -28,34 +29,16 @@ class ScheduleEventTile extends EventTile {
   static Key gestureDetectorKey(String eventId) => Key('ScheduleEventTile-GestureDetector-$eventId');
 
   @override
-  EventTileOnTapUp? get onTapUp => (details, context) {
-    // Find the global position and size of the tile.
-    final renderObject = context.findRenderObject()! as RenderBox;
-    context.callbacks?.onEventTapped?.call(event);
-    context.callbacks?.onEventTappedWithDetail?.call(
-      event,
-      MultiDayDetail(
-        dateTimeRange: floatingRange.forLocation(location: context.location),
-        renderBox: renderObject,
-        localOffset: details.localPosition,
-      ),
-    );
-  };
+  EventTileOnTapUp? get onTapUp => reportEventTap(event, _detail);
 
   @override
-  EventTileOnTapUp? get onSecondaryTapUp => (details, context) {
-    // Find the global position and size of the tile.
-    final renderObject = context.findRenderObject()! as RenderBox;
-    context.callbacks?.onEventSecondaryTapped?.call(event);
-    context.callbacks?.onEventSecondaryTappedWithDetail?.call(
-      event,
-      MultiDayDetail(
-        dateTimeRange: floatingRange.forLocation(location: context.location),
-        renderBox: renderObject,
-        localOffset: details.localPosition,
-      ),
-    );
-  };
+  EventTileOnTapUp? get onSecondaryTapUp => reportEventTap(event, _detail, secondary: true);
+
+  MultiDayDetail _detail(Offset localPosition, BuildContext context, RenderBox renderBox) => MultiDayDetail(
+    dateTimeRange: floatingRange.forLocation(location: context.location),
+    renderBox: renderBox,
+    localOffset: localPosition,
+  );
 
   @override
   Key get rescheduleKey => ScheduleEventTile.rescheduleDraggableKey(event.id);

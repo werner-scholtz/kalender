@@ -12,10 +12,8 @@ class Components extends InheritedWidget {
   /// The [KalenderComponents] that will be used by the Calendar.
   final KalenderComponents components;
 
-  /// Creates a [Components] with the specified components.
   const Components({super.key, required this.components, required super.child});
 
-  /// Gets the [Components] from the context.
   static KalenderComponents of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Components>();
     assert(result != null, 'No ComponentsProvider found.');
@@ -39,7 +37,6 @@ class EventsControllerProvider extends InheritedWidget {
     return eventsController != oldWidget.eventsController;
   }
 
-  /// Gets the [EventsControllerProvider] from the context.
   static EventsController of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider>();
     assert(result != null, 'No EventControllerProvider found.');
@@ -51,7 +48,6 @@ class EventsControllerProvider extends InheritedWidget {
 class KalenderControllerProvider extends InheritedNotifier<KalenderController> {
   const KalenderControllerProvider({super.key, required super.notifier, required super.child});
 
-  /// Gets the [KalenderControllerProvider] from the context.
   static KalenderController of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<KalenderControllerProvider>();
     assert(result != null, 'No KalenderControllerProvider  found.');
@@ -60,15 +56,12 @@ class KalenderControllerProvider extends InheritedNotifier<KalenderController> {
 }
 
 /// The [LocaleProvider] is used to provide the locale for internationalization.
-/// It does not have a type parameter so it can be used globally without type constraints.
 class LocaleProvider extends InheritedWidget {
   /// The locale used for internationalization.
   final Locale? locale;
 
-  /// Creates a [LocaleProvider] with the specified locale.
   const LocaleProvider({super.key, required this.locale, required super.child});
 
-  /// Gets the [LocaleProvider] from the context.
   static Locale? of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocaleProvider>();
     assert(result != null, 'No LocaleProvider found.');
@@ -83,17 +76,14 @@ class LocaleProvider extends InheritedWidget {
 
 /// The [LocationProvider] is used to provide the [Location] for the calendar.
 class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
-  /// Creates a [LocationProvider] with the specified location.
   const LocationProvider({super.key, required super.notifier, required super.child});
 
-  /// Gets the [LocationProvider] from the context.
   static Location? of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
     assert(result != null, 'No LocationProvider found.');
     return result!.notifier!.value;
   }
 
-  /// Gets the [ValueNotifier<Location?>] from the context.
   static ValueNotifier<Location?> ofNotifier(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
     assert(result != null, 'No LocationProvider found.');
@@ -106,7 +96,6 @@ class Callbacks extends InheritedWidget {
   /// The [KalenderCallbacks] that will be used by the Calendar.
   final KalenderCallbacks? callbacks;
 
-  /// Creates a [Callbacks] with the specified callbacks.
   const Callbacks({super.key, required this.callbacks, required super.child});
 
   @override
@@ -114,7 +103,6 @@ class Callbacks extends InheritedWidget {
     return callbacks != oldWidget.callbacks;
   }
 
-  /// Gets the [Callbacks] from the context.
   static KalenderCallbacks? of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Callbacks>();
     assert(result != null, 'No CallbackProvider  found.');
@@ -132,7 +120,6 @@ class TileComponentProvider extends InheritedWidget {
   /// The tile components used by the Calendar.
   final TileComponents tileComponents;
 
-  /// Creates a [TileComponentProvider] with the specified tile components.
   const TileComponentProvider({super.key, required this.tileComponents, required super.child});
 
   @override
@@ -140,7 +127,6 @@ class TileComponentProvider extends InheritedWidget {
     return tileComponents != oldWidget.tileComponents;
   }
 
-  /// Gets the [TileComponentProvider] from the context.
   static TileComponents of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<TileComponentProvider>();
     assert(result != null, 'No TileComponentProvider found.');
@@ -152,7 +138,6 @@ class TileComponentProvider extends InheritedWidget {
 class Interaction extends InheritedNotifier<ValueNotifier<KalenderInteraction>> {
   const Interaction({super.key, required super.notifier, required super.child});
 
-  /// Gets the [Interaction] from the context.
   static KalenderInteraction of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Interaction>();
     assert(result != null, 'No KalenderInteractionProvider found.');
@@ -164,7 +149,6 @@ class Interaction extends InheritedNotifier<ValueNotifier<KalenderInteraction>> 
 class Snapping extends InheritedNotifier<ValueNotifier<KalenderSnapping>> {
   const Snapping({super.key, required super.notifier, required super.child});
 
-  /// Gets the [Snapping] from the context.
   static KalenderSnapping of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Snapping>();
     assert(result != null, 'No KalenderSnappingProvider found.');
@@ -182,7 +166,6 @@ class Snapping extends InheritedNotifier<ValueNotifier<KalenderSnapping>> {
 class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
   const HeightPerMinute({super.key, required super.notifier, required super.child});
 
-  /// Gets the [HeightPerMinute] from the context.
   static double of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<HeightPerMinute>();
     assert(result != null, 'No HeightPerMinuteProvider found.');
@@ -225,7 +208,6 @@ extension ProviderContext on BuildContext {
   /// Retrieve the height per minute.
   double get heightPerMinute => HeightPerMinute.of(this);
 
-  /// Retrieve the [Location] of the calendar.
   /// The rule deciding which events belong in the multi-day header.
   ///
   /// Comes from the current view's [ViewConfiguration.multiDayRule], falling
@@ -233,9 +215,9 @@ extension ProviderContext on BuildContext {
   MultiDayRule get multiDayRule =>
       kalenderController.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
 
+  /// Retrieve the [Location] of the calendar.
   Location? get location => LocationProvider.of(this);
   ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
-  bool get hasLocation => location != null;
 
   /// Whether [date] is today, honouring the view's `nowCallback` when set and
   /// otherwise the calendar's [location].

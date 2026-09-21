@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/tile_taps.dart';
 
 class DayEventTile extends EventTile {
   const DayEventTile({
@@ -28,41 +29,23 @@ class DayEventTile extends EventTile {
   static Key gestureDetectorKey(String eventId) => Key('DayEventTile-GestureDetector-$eventId');
 
   @override
-  EventTileOnTapUp? get onTapUp => (details, context) {
-    // Find the global position and size of the tile.
-    final renderObject = context.findRenderObject()! as RenderBox;
-    final exactTime = _calculateExactTime(details.localPosition, context);
-    context.callbacks?.onEventTapped?.call(event);
-    context.callbacks?.onEventTappedWithDetail?.call(
-      event,
-      DayDetail(date: exactTime, renderBox: renderObject, localOffset: details.localPosition),
-    );
-  };
+  EventTileOnTapUp? get onTapUp => reportEventTap(event, _detail);
 
   @override
-  EventTileOnTapUp? get onSecondaryTapUp => (details, context) {
-    // Find the global position and size of the tile.
-    final renderObject = context.findRenderObject()! as RenderBox;
-    final exactTime = _calculateExactTime(details.localPosition, context);
-    context.callbacks?.onEventSecondaryTapped?.call(event);
-    context.callbacks?.onEventSecondaryTappedWithDetail?.call(
-      event,
-      DayDetail(date: exactTime, renderBox: renderObject, localOffset: details.localPosition),
-    );
-  };
+  EventTileOnTapUp? get onSecondaryTapUp => reportEventTap(event, _detail, secondary: true);
 
-  DateTime _calculateExactTime(Offset localPosition, BuildContext context) {
+  DayDetail _detail(Offset localPosition, BuildContext context, RenderBox renderBox) {
     var date = floatingRange.start;
-    try {
-      final heightPerMinute = context.heightPerMinute;
-      if (heightPerMinute > 0) {
-        final minutes = (localPosition.dy / heightPerMinute).round();
-        date = date.add(Duration(minutes: minutes));
-      }
-    } catch (_) {
-      // Fallback if HeightPerMinute provider is not present
+    final heightPerMinute = context.heightPerMinute;
+    if (heightPerMinute > 0) {
+      final minutes = (localPosition.dy / heightPerMinute).round();
+      date = date.add(Duration(minutes: minutes));
     }
-    return date.forLocation(location: context.location);
+    return DayDetail(
+      date: date.forLocation(location: context.location),
+      renderBox: renderBox,
+      localOffset: localPosition,
+    );
   }
 
   @override

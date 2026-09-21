@@ -6,6 +6,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 
 /// {@category Controllers and callbacks}
 class MonthViewController extends ViewController {
@@ -41,14 +42,12 @@ class MonthViewController extends ViewController {
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    // Calculate the pageNumber of the date.
     final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
-    // Animate to that page.
     await pageController.animateToPage(
       pageNumber,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
@@ -60,7 +59,6 @@ class MonthViewController extends ViewController {
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
   }
 
@@ -85,16 +83,16 @@ class MonthViewController extends ViewController {
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
     await pageController.nextPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
     await pageController.previousPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+      duration: duration ?? defaultAnimationDuration,
+      curve: curve ?? defaultAnimationCurve,
     );
   }
 

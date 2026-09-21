@@ -4,23 +4,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-/// A range between two [DateTime]s.
-///
-/// The type kalender's public signatures use for a start and end pair. Its two
-/// ends are ordinary instants, so this is the range an app hands in and reads
-/// back.
-///
-/// It is not the type the calendar lays out with. That is
-/// `FloatingDateTimeRange`, whose ends name no timezone and which carries the
-/// date arithmetic. `FloatingDateTimeRange.forLocation` converts to this type
-/// and `FloatingDateTimeRange.fromDateTimeRange` converts back.
-///
-/// For Material's `DateTimeRange`, import `package:kalender/material.dart` and
-/// call `toDateTimeRange()` or `toKalenderDateTimeRange()`.
+/// A range between two [DateTime]s. `FloatingDateTimeRange.forLocation` converts to it,
+/// `FloatingDateTimeRange.fromDateTimeRange` back.
 ///
 /// {@category Dates and times}
 final class KalenderDateTimeRange {
-  /// Creates a [KalenderDateTimeRange].
   KalenderDateTimeRange({required this.start, required this.end}) : assert(!start.isAfter(end));
 
   /// The start of the range.

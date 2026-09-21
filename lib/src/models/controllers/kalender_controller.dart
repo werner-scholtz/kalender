@@ -17,12 +17,9 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 import 'package:timezone/timezone.dart';
 
-/// The [KalenderController] is used to controller a single [KalenderView].
-/// It provides some useful functions for navigating the [KalenderView].
+/// The [KalenderController] controls a single [KalenderView].
 ///
-/// The [KalenderView] attaches itself to the [KalenderController] by calling [attach].
-/// And detaches itself by calling [detach].
-///
+/// The [KalenderView] attaches itself by calling [attach] and detaches itself by calling [detach].
 ///
 /// {@category Controllers and callbacks}
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
@@ -32,8 +29,6 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   static int _nextId = 0;
 
-  /// This controllers id.
-  ///
   /// Unique to this instance. The drag targets compare it to decide whether a
   /// create gesture belongs to their calendar.
   final int id;
@@ -44,8 +39,6 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   bool get isAttached => _viewController != null;
 
   /// The [FloatingDateTimeRange] that is currently visible.
-  ///
-  /// See [FloatingDateTimeRange] for more information.
   late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
   ValueNotifier<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
@@ -82,7 +75,6 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// Place focus on an event.
   ///
-  /// [event] the event to focus on.
   /// [internal] leave false if not called from within the package.
   void selectEvent(KalenderEvent event, {bool internal = false}) {
     _selectedEventId = event.id;
@@ -272,13 +264,11 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _visibleTimeOfDayForwarder = null;
   }
 
-  /// Jump to the given [DateTime].
   @override
   void jumpToPage(int page) {
     viewController?.jumpToPage(page);
   }
 
-  /// Jump to the given [DateTime].
   @override
   void jumpToDate(DateTime date) {
     viewController?.jumpToDate(date);
@@ -333,11 +323,6 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
       scrollCurve: scrollCurve,
       centerEvent: centerEvent,
     );
-  }
-
-  @override
-  String toString() {
-    return runtimeType.toString();
   }
 
   @override

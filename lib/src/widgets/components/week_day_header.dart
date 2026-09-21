@@ -19,7 +19,7 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// {@category Appearance}
 typedef WeekDayHeaderBuilder = Widget Function(BuildContext context, DateTime date);
 
-/// The [WeekDayHeaderStyle] class is used by the default [WeekDayHeader] widget.
+/// The style of the [WeekDayHeader].
 ///
 /// {@category Appearance}
 class WeekDayHeaderStyle with Diagnosticable {

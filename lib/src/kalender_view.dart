@@ -51,10 +51,7 @@ class KalenderView extends StatefulWidget {
   /// If not provided, the default location will be used.
   final Location? location;
 
-  /// Creates a [KalenderView] widget.
-  ///
-  /// This widget creates a [ViewController] based on the [viewConfiguration].
-  /// It then attaches the [ViewController] to the [kalenderController].
+  /// Creates a [ViewController] from [viewConfiguration] and attaches it to [kalenderController].
   const KalenderView({
     super.key,
     required this.eventsController,
@@ -77,28 +74,19 @@ class KalenderViewState extends State<KalenderView> {
   /// The [ViewController] that will be used by the children of the [KalenderView].
   late ViewController _viewController;
 
-  /// A snapshot of what each view last displayed, keyed by its configuration
-  /// `name`, plus the most recent multi-day snapshot. These persist across
-  /// view-configuration changes (they live on the state, not the disposable
-  /// controllers) so the transition policy can restore date / time-of-day / zoom
-  /// even after a round-trip through a view without scroll (e.g. Week → Month →
-  /// Week). See [ViewConfiguration.dateTransition] and friends.
+  /// Last snapshot of each view, keyed by configuration name.
   final Map<String, ViewSnapshot> _viewHistory = {};
   ViewSnapshot? _lastMultiDaySnapshot;
   // TODO: update this to be a valueNotifier.
-  late Locale? _locale = widget.locale;
   late final _location = ValueNotifier<Location?>(widget.location);
 
   @override
   void initState() {
     super.initState();
-    // Create the initial view controller.
     late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
     final initialDateTime = widget.viewConfiguration.initialDateTime ?? now;
     final initialDate = FloatingDateTime.fromExternal(initialDateTime, location: widget.location);
     _viewController = _createViewController(initialDate: initialDate);
-
-    // Attach the view controller when the widget is initialized.
     widget.kalenderController.attach(_viewController);
   }
 
@@ -106,18 +94,13 @@ class KalenderViewState extends State<KalenderView> {
   void didUpdateWidget(covariant KalenderView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final didChangeLocale = _locale != widget.locale;
-    if (didChangeLocale) {
-      _locale = widget.locale;
-    }
+    final didChangeLocale = widget.locale != oldWidget.locale;
 
     final didChangeLocation = widget.location != oldWidget.location;
     if (didChangeLocation) {
       _location.value = widget.location;
     }
 
-    // Move the view controller across when the calendar controller is swapped,
-    // so the new one drives this view and the old one stops.
     final didChangeKalenderController = widget.kalenderController != oldWidget.kalenderController;
     if (didChangeKalenderController) {
       oldWidget.kalenderController.detach();
@@ -125,7 +108,6 @@ class KalenderViewState extends State<KalenderView> {
     }
 
     final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
-    // If the view configuration has changed or location, recreate the view controller.
     if (didChangeViewConfiguration || didChangeLocation) {
       // Snapshot the outgoing view so its date / time-of-day / zoom can be
       // restored on a later switch. The snapshot is kept even when switching to a
@@ -154,17 +136,12 @@ class KalenderViewState extends State<KalenderView> {
             newConfig.zoomResolver?.call(context) ?? _resolveZoom(newConfig.zoomTransition, context);
       }
 
-      // Create the new view controller.
       _viewController = _createViewController(
         initialDate: initialDate,
         initialTimeOfDay: initialTimeOfDay,
         initialHeightPerMinute: initialHeightPerMinute,
       );
-
-      // Dispose the old view controller if it exists.
       widget.kalenderController.viewController?.dispose();
-
-      // Attach the new view controller.
       widget.kalenderController.attach(_viewController);
     }
 
@@ -176,20 +153,17 @@ class KalenderViewState extends State<KalenderView> {
   @override
   void deactivate() {
     super.deactivate();
-    // Detach the view controller when the widget is deactivated.
     widget.kalenderController.detach();
   }
 
   @override
   void activate() {
     super.activate();
-    // Reattach the view controller when the widget is reactivated.
     widget.kalenderController.attach(_viewController);
   }
 
   @override
   void dispose() {
-    // Dispose the view controller when the widget is disposed.
     widget.kalenderController.viewController?.dispose();
     _location.dispose();
     super.dispose();
@@ -242,7 +216,6 @@ class KalenderViewState extends State<KalenderView> {
     };
   }
 
-  /// Create the [ViewController] based on the [ViewConfiguration].
   ViewController _createViewController({
     required FloatingDateTime initialDate,
     KalenderTime? initialTimeOfDay,
@@ -303,7 +276,7 @@ class KalenderViewState extends State<KalenderView> {
     return LocationProvider(
       notifier: _location,
       child: LocaleProvider(
-        locale: _locale,
+        locale: widget.locale,
         child: Callbacks(
           callbacks: widget.callbacks,
           child: Components(

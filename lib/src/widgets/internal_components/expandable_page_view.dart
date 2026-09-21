@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:math' as math;
+
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:linked_pageview/linked_pageview.dart';
@@ -29,31 +31,17 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   late List<double> _heights;
 
   /// The index of the first page currently within the viewport.
-  late int _firstVisiblePage;
+  int _firstVisiblePage = 0;
 
-  /// The index of the last page currently within the viewport.
-  ///
-  /// When [LinkedPageController.viewportFraction] is `1.0` this equals
-  /// [_firstVisiblePage] while settled, so only the current page drives the
-  /// height. For a fractional viewport (e.g. free-scroll, where several days
-  /// are visible at once) it spans every page in view, so the tallest of them
-  /// sets the height instead of the header clipping the busier days.
-  late int _lastVisiblePage;
+  /// The index of the last page within the viewport, equal to [_firstVisiblePage] when one page fills it.
+  int _lastVisiblePage = 0;
 
-  /// The height needed to fit the tallest page currently in the viewport.
-  ///
-  /// Seeded from the first visible page's own height (not the default) so a
-  /// single visible page shorter than [_defaultItemHeight] keeps its measured
-  /// height rather than being floored up to the placeholder value.
+  /// The height of the tallest page within the viewport, or [_defaultItemHeight] when there are no pages.
   double get _visibleHeight {
     if (_heights.isEmpty) return _defaultItemHeight;
     final lo = _firstVisiblePage.clamp(0, _heights.length - 1);
     final hi = _lastVisiblePage.clamp(0, _heights.length - 1);
-    var height = _heights[lo];
-    for (var i = lo + 1; i <= hi; i++) {
-      if (_heights[i] > height) height = _heights[i];
-    }
-    return height;
+    return _heights.getRange(lo, hi + 1).reduce(math.max);
   }
 
   /// Computes the inclusive range of page indices currently in the viewport.
@@ -70,15 +58,19 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
     return (first, last);
   }
 
+  bool _updateVisibleRange() {
+    final (first, last) = _computeVisibleRange();
+    if (first == _firstVisiblePage && last == _lastVisiblePage) return false;
+    _firstVisiblePage = first;
+    _lastVisiblePage = last;
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
-    // Initialize the heights with a default value.
     _heights = List.filled(widget.itemCount, _defaultItemHeight, growable: true);
-
-    final (first, last) = _computeVisibleRange();
-    _firstVisiblePage = first;
-    _lastVisiblePage = last;
+    _updateVisibleRange();
     widget.controller.addListener(_onScroll);
   }
 
@@ -92,9 +84,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
     if (oldWidget.itemCount != widget.itemCount) {
       _heights = List.filled(widget.itemCount, _defaultItemHeight, growable: true);
     }
-    final (first, last) = _computeVisibleRange();
-    _firstVisiblePage = first;
-    _lastVisiblePage = last;
+    _updateVisibleRange();
   }
 
   @override
@@ -128,7 +118,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       alignment: Alignment.topCenter,
       child: _SizeReporter(
         onSizeChanged: (size) {
-          // Only rebuild if the height actually changed to avoid layout thrashing.
+          // Rebuild only when the height changed.
           if (_heights[index] != size.height) {
             setState(() => _heights[index] = size.height);
           }
@@ -141,13 +131,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   /// Rebuilds when the set of pages in the viewport changes so [_visibleHeight]
   /// tracks the tallest visible page as the user scrolls.
   void _onScroll() {
-    final (first, last) = _computeVisibleRange();
-    if (first != _firstVisiblePage || last != _lastVisiblePage) {
-      setState(() {
-        _firstVisiblePage = first;
-        _lastVisiblePage = last;
-      });
-    }
+    if (_updateVisibleRange()) setState(() {});
   }
 }
 

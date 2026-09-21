@@ -6,9 +6,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
-
-/// The function that is called when the event is tapped.
-typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
+import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 /// A gesture detector that wraps the event tile to handle taps.
 class TileGestureDetector extends StatelessWidget {
@@ -24,7 +22,6 @@ class TileGestureDetector extends StatelessWidget {
   /// The child widget.
   final Widget child;
 
-  /// Creates a tile gesture detector.
   const TileGestureDetector({
     super.key,
     required this.onTapUp,
@@ -39,13 +36,11 @@ class TileGestureDetector extends StatelessWidget {
     final enableGestureDetection = callbacks?.hasOnEventTapped ?? false;
     final enableSecondaryGestureDetection = callbacks?.hasOnEventSecondaryTapped ?? false;
 
-    // If no callbacks are provided or gesture detection is disabled, return the child as is.
     if ((onTapUp == null || !enableGestureDetection) &&
         (onSecondaryTapUp == null || !enableSecondaryGestureDetection)) {
       return child;
     }
 
-    // Wrap the child in a GestureDetector to handle tap events.
     return GestureDetector(
       onTapUp: enableGestureDetection && onTapUp != null ? (details) => onTapUp!(details, context) : null,
       onSecondaryTapUp: enableSecondaryGestureDetection && onSecondaryTapUp != null

@@ -144,17 +144,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   @override
   void initState() {
     super.initState();
-    _startTimer();
-  }
-
-  @override
-  void didUpdateWidget(covariant TimeIndicator oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.timeOfDayRange != oldWidget.timeOfDayRange ||
-        oldWidget.location != widget.location ||
-        oldWidget.nowCallback != widget.nowCallback) {
-      setState(() {});
-    }
+    _timer = Timer.periodic(const Duration(seconds: 10), (_) => setState(() {}));
   }
 
   @override
@@ -162,8 +152,6 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     _timer.cancel();
     super.dispose();
   }
-
-  void _startTimer() => _timer = Timer.periodic(const Duration(seconds: 10), (_) => setState(() {}));
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +172,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     final circleWidth = style.circleSize?.width ?? 10;
     final circleHeight = style.circleSize?.height ?? 10;
 
-    // This ignore pointer is needed so that users can interact with the event tiles and other components that are behind the time indicator.
+    // Pointer events go to the tiles below.
     return IgnorePointer(
       child: Stack(
         clipBehavior: Clip.none,
@@ -197,7 +185,6 @@ class _TimeIndicatorState extends State<TimeIndicator> {
           ),
           PositionedDirectional(
             top: top - circleHeight / 2,
-            // This needs to be offset slightly so the center of the circle aligns with the first pixel of the pageview.
             start: -(circleWidth / 2) + _circleCenterOffset,
             width: circleWidth,
             height: circleHeight,

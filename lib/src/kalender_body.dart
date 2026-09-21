@@ -26,7 +26,7 @@ class KalenderBody extends StatefulWidget {
   /// The tile components used by the [MonthBody].
   final TileComponents? monthTileComponents;
 
-  /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
+  /// The [MonthBodyConfiguration] that will be used by the [MonthBody].
   final MonthBodyConfiguration? monthBodyConfiguration;
 
   /// The tile components used by the [ScheduleBody].
@@ -41,13 +41,6 @@ class KalenderBody extends StatefulWidget {
   /// The snapping that will be used by the [KalenderBody].
   final KalenderSnapping? snapping;
 
-  /// Creates a KalenderBody widget.
-  ///
-  /// This creates the correct body based on the [ViewController] inside the [KalenderController]
-  /// - [MultiDayBody]
-  /// - [MonthBody]
-  /// - [ScheduleBody]
-  ///
   const KalenderBody({
     super.key,
     this.callbacks,
@@ -66,14 +59,12 @@ class KalenderBody extends StatefulWidget {
 }
 
 class _KalenderBodyState extends State<KalenderBody> {
-  late KalenderCallbacks? _callbacks;
   late ValueNotifier<KalenderInteraction> _interaction;
   late ValueNotifier<KalenderSnapping> _snapping;
 
   @override
   void initState() {
     super.initState();
-    _callbacks = widget.callbacks;
     _interaction = ValueNotifier(widget.interaction ?? KalenderInteraction());
     _snapping = ValueNotifier(widget.snapping ?? const KalenderSnapping());
   }
@@ -81,9 +72,6 @@ class _KalenderBodyState extends State<KalenderBody> {
   @override
   void didUpdateWidget(covariant KalenderBody oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.callbacks != widget.callbacks) {
-      _callbacks = widget.callbacks;
-    }
     if (oldWidget.interaction != widget.interaction) {
       _interaction.value = widget.interaction ?? KalenderInteraction();
     }
@@ -103,7 +91,7 @@ class _KalenderBodyState extends State<KalenderBody> {
   Widget build(BuildContext context) {
     final viewController = context.kalenderController.viewController;
     return Callbacks(
-      callbacks: _callbacks ?? context.callbacks,
+      callbacks: widget.callbacks ?? context.callbacks,
       child: Interaction(
         notifier: _interaction,
         child: switch (viewController) {

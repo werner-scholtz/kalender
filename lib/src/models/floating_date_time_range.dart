@@ -13,7 +13,6 @@ import 'package:kalender/kalender.dart';
 ///
 /// {@category Dates and times}
 final class FloatingDateTimeRange {
-  /// Creates a [FloatingDateTimeRange] instance.
   FloatingDateTimeRange({required DateTime start, required DateTime end})
     : start = FloatingDateTime.fromDateTime(start),
       end = FloatingDateTime.fromDateTime(end) {
@@ -49,23 +48,15 @@ final class FloatingDateTimeRange {
   /// By default the end date is excluded (half-open). Set [inclusive] to `true`
   /// to include the end date itself.
   List<FloatingDateTime> dates({bool inclusive = false}) {
-    // Start with the beginning of the start date.
     final dates = [start.startOfDay];
 
-    // Handle the case where the start and end dates are the same.
     if (start.isSameDay(end)) return dates;
 
-    // Iterate through the dates, incrementing by one day at a time.
     var current = dates.last;
     while (current.isBefore(end) || (inclusive && current.isAtSameMomentAs(end))) {
-      // Increment using date components (DST-safe)
       final next = current.copyWith(day: current.day + 1);
 
-      // Add the next date to the list if it's within the range.
       if (next.isBefore(end) || (inclusive && next.isAtSameMomentAs(end))) {
-        dates.add(next);
-        current = next;
-      } else if (inclusive && next.isAtSameMomentAs(end)) {
         dates.add(next);
         current = next;
       } else {
@@ -84,23 +75,16 @@ final class FloatingDateTimeRange {
   /// * If [date] is in between → the full day `[startOfDay, endOfDay)`.
   /// * If start and end are the same day → returns the range unchanged.
   FloatingDateTimeRange? rangeOnDate(FloatingDateTime date) {
-    // Adjust the start and end times to the beginning and end of the day.
     final range = FloatingDateTimeRange(start: start.startOfDay, end: end.endOfDay);
 
-    // Check if the given date is outside the range. If so, return null.
     if (!date.isWithin(range, includeStart: true)) return null;
 
-    // Check if the start and end dates are the same day. If so, the entire range is on that day.
     if (start.isSameDay(end)) return this;
 
-    // Check if the given date is the same as the start date.
     if (date.isSameDay(start)) return FloatingDateTimeRange(start: start, end: start.endOfDay);
 
-    // Check if the given date is the same as the end date.
     if (date.isSameDay(end)) return FloatingDateTimeRange(start: end.startOfDay, end: end);
 
-    // If none of the above conditions are met, the date must be within the range
-    // but not the start or end date.
     return FloatingDateTimeRange(start: date.startOfDay, end: date.endOfDay);
   }
 
@@ -109,11 +93,9 @@ final class FloatingDateTimeRange {
   /// Ranges that only touch at a boundary (e.g. one ends where the other starts)
   /// return `false` by default. Set [touching] to `true` to treat those as overlapping.
   bool overlaps(FloatingDateTimeRange other, {bool touching = false}) {
-    // Check if the ranges overlap.
     final overlap = start.isBefore(other.end) && end.isAfter(other.start);
     if (!touching) return overlap;
 
-    // Check if the start or end times are touching.
     final startTouching = other.start.isAtSameMomentAs(end);
     final endTouching = other.end.isAtSameMomentAs(start);
     return startTouching || endTouching;
@@ -139,9 +121,7 @@ final class FloatingDateTimeRange {
 
     final dominant = monthCounts.entries.reduce((a, b) => a.value >= b.value ? a : b);
 
-    return start.isUtc
-        ? DateTime.utc(dominant.key.$1, dominant.key.$2, 1)
-        : DateTime(dominant.key.$1, dominant.key.$2, 1);
+    return FloatingDateTime(dominant.key.$1, dominant.key.$2);
   }
 
   /// The ISO 8601 week number(s) this range spans.
@@ -150,7 +130,7 @@ final class FloatingDateTimeRange {
   /// `(firstWeek, lastWeek)` when the range crosses a week boundary.
   /// A midnight end is treated as the previous day.
   (int first, int? last) get weekNumbers {
-    final days = FloatingDateTimeRange(start: start, end: end).dates(inclusive: false);
+    final days = dates();
     final isSingleWeek = days.length <= 7;
 
     if (start.year != end.year && !isSingleWeek) {
@@ -160,8 +140,7 @@ final class FloatingDateTimeRange {
     final first = start.weekNumber;
     var second = end.weekNumber;
 
-    // If the end is the start of the day, then it should be considered as the previous day.
-    if (end == end.startOfDay) {
+    if (end.isStartOfDay) {
       second = end.subtract(const Duration(days: 1)).weekNumber;
     }
 

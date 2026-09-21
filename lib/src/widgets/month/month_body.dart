@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/month_week_number_layout_delegate.dart';
@@ -22,10 +24,9 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 ///
 /// {@category Views}
 class MonthBody extends StatelessWidget {
-  /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
+  /// The configuration of the body, a [MonthBodyConfiguration] by default.
   final HorizontalConfiguration? configuration;
 
-  /// Creates a new [MonthBody].
   const MonthBody({super.key, this.configuration});
 
   @override
@@ -70,13 +71,7 @@ class MonthBody extends StatelessWidget {
         final grid = monthComponents.bodyComponents.buildMonthGrid(context, numberOfRows);
 
         // The date range of each week row, shared by the content and background.
-        final weekRanges = List.generate(numberOfRows, (row) {
-          final start = visibleRange.start.add(Duration(days: row * DateTime.daysPerWeek));
-          return FloatingDateTimeRange(
-            start: start,
-            end: start.add(const Duration(days: DateTime.daysPerWeek)),
-          );
-        });
+        final weekRanges = List.generate(numberOfRows, (row) => monthWeekRange(visibleRange, row));
 
         final content = Column(
           children: [
@@ -171,9 +166,10 @@ class MonthWeek extends StatelessWidget {
                     // Subtract 1 to account for the extra widget at the bottom.
                     // Clamp to 0 so a very small row height never produces a negative value,
                     // which would cause spurious overflow buttons.
-                    final maxNumberOfVerticalEvents = ((constraints.maxHeight / configuration.tileHeight).floor() - 1)
-                        .clamp(0, double.maxFinite)
-                        .toInt();
+                    final maxNumberOfVerticalEvents = max(
+                      0,
+                      (constraints.maxHeight / configuration.tileHeight).floor() - 1,
+                    );
 
                     return MultiDayEventWidget(
                       eventsController: context.eventsController,

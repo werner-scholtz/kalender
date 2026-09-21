@@ -14,10 +14,6 @@ typedef UpdatedEvent = (KalenderEvent, KalenderEvent);
 
 /// Shared drag-target behaviour for the calendar's [DragTarget] states.
 ///
-/// Constrained to [State] for [context] and [mounted]. [mounted] is checked
-/// before any deferred work, since reading [State.context] after disposal
-/// throws rather than returning null.
-///
 /// {@category Interaction}
 mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   KalenderController get controller;
@@ -70,10 +66,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   }
 
   /// Handle the [DragTarget.onMove], processing at most one move per frame.
-  ///
-  /// Pointer moves can arrive faster than the display refreshes, and each one
-  /// processed rebuilds the preview. Only the newest is worth drawing, so the
-  /// rest are discarded rather than throttled against the clock.
   void onMove(DragTargetDetails<Object?> details) {
     _pendingMove = details;
     if (_moveScheduled) return;
@@ -114,7 +106,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
         final updatedEvent = resizeEvent(event, direction, cursorDate);
         if (updatedEvent == null) return;
 
-        // Update the event being resized.
         controller.updateEvent(updatedEvent, internal: true);
       },
       onReschedule: (event) {
@@ -124,7 +115,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
         final rescheduledEvent = rescheduleEvent(event, cursorDate);
         if (rescheduledEvent == null) return;
 
-        // Update the event being dragged.
         controller.updateEvent(rescheduledEvent, internal: true);
       },
       onOther: () {},
@@ -188,10 +178,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   }
 
   /// Drop any move still waiting to be processed.
-  ///
-  /// A move queued during the drag would otherwise be processed after the drop
-  /// has already deselected the event, reselecting it and leaving the preview
-  /// behind as a duplicate of the event it was previewing.
   void _cancelPendingMove() => _pendingMove = null;
 
   /// Reschedule an event.
@@ -200,7 +186,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Resize an event.
   KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime);
 
-  /// Reschedule an event.
+  /// The event being created.
   KalenderEvent? createEvent(FloatingDateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
   /// Resolves the latest version of the [event] from the [EventsController],
@@ -210,13 +196,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   }
 
   /// Processes the [DragTargetDetails] and handle different types of detail data (reschedule, resize, create, other).
-  ///
-  /// [onCreate] - handle the [Create] type.
-  /// [onResize] - handle the [Resize] type.
-  /// [onReschedule] - handle the [Reschedule] type.
-  /// [onOther] - handle other types.
-  ///
-  /// Each handler function returns a value of type [K], which is the result of handling the data.
   static K handleDragDetails<K extends Object?, T extends Object?>(
     DragTargetDetails<Object?> details, {
     required K Function(int controllerId) onCreate,
@@ -240,11 +219,6 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   }
 
   /// Calculate the local position of the cursor for the [DragTarget] widget.
-  ///
-  /// [cursorPosition] Comes from the [DragTargetDetails.offset].
-  /// [scrollOffset] The scroll offset of the current view.
-  ///
-  /// This calculates the local position of the cursor on the [DragTarget] widget.
   Offset? calculateLocalCursorPosition(Offset cursorPosition, {Offset scrollOffset = Offset.zero}) {
     return dragTargetRenderBox.globalToLocal(cursorPosition) + scrollOffset;
   }
@@ -252,31 +226,27 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// Calculate the [DateTime] of the cursor.
   FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero});
 
-  /// Calculate the [FloatingDateTimeRange] from the start [DateTime].
+  /// Returns [range] with its start moved to [newStart] and the same end.
   ///
-  /// Will return a [FloatingDateTimeRange] with an updated start [DateTime] and the same end [DateTime].
-  /// - In the case where the new start [DateTime] is after the end [DateTime], the start and end [DateTime]s will be swapped.
-  /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
+  /// A [newStart] after the end swaps the two ends. One equal to the end leaves [range] unchanged.
   FloatingDateTimeRange calculateRangeFromStart(FloatingDateTimeRange range, DateTime newStart) {
     if (newStart.isBefore(range.end)) {
       return FloatingDateTimeRange(start: newStart, end: range.end);
     } else if (newStart.isAtSameMomentAs(range.end)) {
-      return FloatingDateTimeRange(start: range.start, end: range.end);
+      return range;
     } else {
       return FloatingDateTimeRange(start: range.end, end: newStart);
     }
   }
 
-  /// Calculate the [FloatingDateTimeRange] from the end [DateTime].
+  /// Returns [range] with its end moved to [newEnd] and the same start.
   ///
-  /// Will return a [FloatingDateTimeRange] with an updated end [DateTime] and the same start [DateTime].
-  /// - In the case where the new end [DateTime] is before the start [DateTime], the start and end [DateTime]s will be swapped.
-  /// - In the case where the [DateTime]s are the same, the original [FloatingDateTimeRange] will be returned.
+  /// A [newEnd] before the start swaps the two ends. One equal to the start leaves [range] unchanged.
   FloatingDateTimeRange calculateRangeFromEnd(FloatingDateTimeRange range, DateTime newEnd) {
     if (newEnd.isBefore(range.start)) {
       return FloatingDateTimeRange(start: newEnd, end: range.start);
     } else if (newEnd.isAtSameMomentAs(range.start)) {
-      return FloatingDateTimeRange(start: range.start, end: range.end);
+      return range;
     } else {
       return FloatingDateTimeRange(start: range.start, end: newEnd);
     }

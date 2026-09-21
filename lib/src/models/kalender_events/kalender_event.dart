@@ -82,11 +82,7 @@ class KalenderEvent {
   bool get isAllDay => _isAllDay;
   bool _isAllDay;
 
-  /// Creates a [KalenderEvent].
-  ///
-  /// [start] and [end] are stored in UTC, and [start] must not be after [end].
-  /// A unique [id] is generated if omitted. [interaction] defaults to fully
-  /// modifiable.
+  /// [start] must not be after [end]. A null [interaction] means fully modifiable.
   KalenderEvent({
     String? id,
     required DateTime start,
@@ -100,7 +96,7 @@ class KalenderEvent {
        end = end.toUtc(),
        _multiDayRule = multiDayRule,
        _isAllDay = isAllDay,
-       _interaction = interaction ?? EventInteraction.fromCanModify(true);
+       _interaction = interaction ?? EventInteraction();
 
   static String _createUniqueId() {
     final rawRandom = Random();
@@ -149,12 +145,7 @@ class KalenderEvent {
   /// All dates this event spans, adjusted for [location].
   List<FloatingDateTime> datesSpanned({Location? location}) => floatingRange(location: location).dates();
 
-  /// A copy of this event covering [dateTimeRange].
-  ///
-  /// The calendar calls this on every drag and resize. Override [copyWithData]
-  /// rather than this: this calls it and then restores the state
-  /// [KalenderEvent] holds, so a copy keeps its identity, its interaction
-  /// config and its rule whatever the subclass returns.
+  /// A copy of this event covering [dateTimeRange], made by [copyWithData] then [carryOver].
   @nonVirtual
   KalenderEvent withDateTimeRange(KalenderDateTimeRange dateTimeRange) {
     final copy = copyWithData(start: dateTimeRange.start, end: dateTimeRange.end);
@@ -169,13 +160,10 @@ class KalenderEvent {
     return carryOver(copy);
   }
 
-  /// Rebuilds this event covering [start] to [end], keeping the data this
-  /// subclass adds.
+  /// Rebuilds this event covering [start] to [end], keeping the data this subclass adds.
   ///
-  /// Override this and return a new instance of your own type. Do not forward
-  /// [id], [interaction], [multiDayRule] or [isAllDay]: [withDateTimeRange]
-  /// restores them through [carryOver] once this returns, which is what keeps a
-  /// field added to [KalenderEvent] later from silently going missing.
+  /// Return a new instance of your own type. Do not forward [id], [interaction], [multiDayRule] or [isAllDay]:
+  /// [withDateTimeRange] restores them through [carryOver] after this returns.
   @protected
   @mustBeOverridden
   KalenderEvent copyWithData({required DateTime start, required DateTime end}) {
@@ -183,15 +171,6 @@ class KalenderEvent {
   }
 
   /// Reapplies the state [KalenderEvent] holds to [copy], and returns it.
-  ///
-  /// [withDateTimeRange] calls this on whatever [copyWithData] returned. Call it
-  /// from a `copyWith` of your own so that copy keeps its identity too:
-  ///
-  /// ```dart
-  /// Event copyWith({String? title}) {
-  ///   return carryOver(Event(start: start, end: end, title: title ?? this.title));
-  /// }
-  /// ```
   @protected
   T carryOver<T extends KalenderEvent>(T copy) {
     copy.id = id;

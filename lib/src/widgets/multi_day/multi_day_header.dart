@@ -13,6 +13,7 @@ import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
+import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
 /// The multi-day header decides which header to display the:
@@ -20,17 +21,11 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// - [_MultiDayHeader] this is used for a body that displays multiple days.
 /// - [_FreeScrollHeader] this is used for a body that scrolls freely.
 ///
-/// The single-day and multi-day headers use an [ExpandablePageView] to size the
-/// header to the current page. The free-scroll header instead renders one
-/// continuous band (see [_FreeScrollMultiDayBand]) so multi-day events can span
-/// day columns.
-///
 /// {@category Views}
 class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final HorizontalConfiguration? configuration;
 
-  /// Creates a new [MultiDayHeader].
   const MultiDayHeader({super.key, this.configuration});
 
   @override
@@ -90,15 +85,9 @@ class _SingleDayHeader extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     final headerComponents = components.multiDayComponents.headerComponents;
-    final dayHeaderWidget = ValueListenableBuilder(
-      valueListenable: context.kalenderController.floatingVisibleRange,
-      builder: (context, value, child) {
-        if (value == null) {
-          debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
-          return const SizedBox.shrink();
-        }
-        return headerComponents.buildDayHeader(context, value.start.forLocation(location: context.location));
-      },
+    final dayHeaderWidget = _visibleRangeBuilder(
+      context,
+      (context, range) => headerComponents.buildDayHeader(context, range.start.forLocation(location: context.location)),
     );
 
     return MultiDayHeaderWidget(
@@ -108,35 +97,27 @@ class _SingleDayHeader extends StatelessWidget {
         itemBuilder: (context, index) {
           final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
 
-          // Minimum constraints for the multiDayEvents.
-          final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2);
+          final minHeight = configuration.tileHeight * 2;
 
-          return Stack(
-            children: [
-              if (configuration.showTiles) ...[
-                Positioned.fill(child: MultiDayDraggable(floatingRange: visibleRange)),
+          if (!configuration.showTiles) {
+            return Stack(
+              children: [
                 ConstrainedBox(
-                  constraints: constraints,
-                  child: MultiDayEventWidget(
-                    eventsController: context.eventsController,
-                    floatingRange: visibleRange,
-                    configuration: configuration,
-                    multiDayCache: viewController.multiDayCache,
-                    maxNumberOfVerticalEvents: null,
-                    overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-                  ),
+                  constraints: BoxConstraints(minHeight: minHeight),
+                  child: const SizedBox.shrink(),
                 ),
-                Positioned.fill(
-                  child: HorizontalDragTarget(
-                    visibleRange: visibleRange,
-                    configuration: configuration,
-                    leftPageTrigger: headerComponents.leftTriggerBuilder,
-                    rightPageTrigger: headerComponents.rightTriggerBuilder,
-                  ),
-                ),
-              ] else
-                ConstrainedBox(constraints: constraints, child: const SizedBox.shrink()),
-            ],
+              ],
+            );
+          }
+          return _multiDayTiles(
+            context,
+            range: visibleRange,
+            configuration: configuration,
+            viewController: viewController,
+            components: components,
+            minHeight: minHeight,
+            leftPageTrigger: headerComponents.leftTriggerBuilder,
+            rightPageTrigger: headerComponents.rightTriggerBuilder,
           );
         },
       ),
@@ -163,15 +144,9 @@ class _MultiDayHeader extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
-    final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.kalenderController.floatingVisibleRange,
-      builder: (context, value, child) {
-        if (value == null) {
-          debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
-          return const SizedBox.shrink();
-        }
-        return headerComponents.buildWeekNumber(context, value.forLocation(location: context.location));
-      },
+    final weekNumberWidget = _visibleRangeBuilder(
+      context,
+      (context, range) => headerComponents.buildWeekNumber(context, range.forLocation(location: context.location)),
     );
 
     return MultiDayHeaderWidget(
@@ -190,29 +165,15 @@ class _MultiDayHeader extends StatelessWidget {
                     .buildDayHeader(context, date.forLocation(location: context.location)),
               ),
               if (configuration.showTiles)
-                Stack(
-                  children: [
-                    Positioned.fill(child: MultiDayDraggable(floatingRange: visibleRange)),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: configuration.tileHeight),
-                      child: MultiDayEventWidget(
-                        eventsController: context.eventsController,
-                        floatingRange: visibleRange,
-                        configuration: configuration,
-                        multiDayCache: viewController.multiDayCache,
-                        maxNumberOfVerticalEvents: null,
-                        overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: HorizontalDragTarget(
-                        visibleRange: visibleRange,
-                        configuration: configuration,
-                        leftPageTrigger: headerComponents.leftTriggerBuilder,
-                        rightPageTrigger: headerComponents.rightTriggerBuilder,
-                      ),
-                    ),
-                  ],
+                _multiDayTiles(
+                  context,
+                  range: visibleRange,
+                  configuration: configuration,
+                  viewController: viewController,
+                  components: components,
+                  minHeight: configuration.tileHeight,
+                  leftPageTrigger: headerComponents.leftTriggerBuilder,
+                  rightPageTrigger: headerComponents.rightTriggerBuilder,
                 ),
             ],
           );
@@ -243,12 +204,9 @@ class _FreeScrollHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final headerComponents = components.multiDayComponents.headerComponents;
-    final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.kalenderController.floatingVisibleRange,
-      builder: (context, value, child) {
-        if (value == null) return const SizedBox.shrink();
-        return headerComponents.buildWeekNumber(context, value.forLocation(location: context.location));
-      },
+    final weekNumberWidget = _visibleRangeBuilder(
+      context,
+      (context, range) => headerComponents.buildWeekNumber(context, range.forLocation(location: context.location)),
     );
 
     return MultiDayHeaderWidget(
@@ -320,19 +278,6 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
     super.dispose();
   }
 
-  /// The current leftmost visible day as a fractional absolute day index.
-  ///
-  /// Falls back to the view's initial page until the page controller is
-  /// attached, because it does not notify [MultiDayViewController.pageOffset] on
-  /// first attach.
-  double _currentPage() {
-    final controller = widget.viewController.pageController;
-    if (controller.hasClients && controller.positions.length == 1 && controller.position.hasPixels) {
-      return controller.page ?? widget.viewController.initialPage.toDouble();
-    }
-    return widget.viewController.initialPage.toDouble();
-  }
-
   int _clampStart(int start) {
     if (start < 0) return 0;
     final maxStart = _numberOfPages - 1;
@@ -344,7 +289,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
   /// correct afterwards.
   void _maybeReanchor() {
     if (_dayWidth == 0) return;
-    final desiredStart = _clampStart(_currentPage().floor() - _bufferDays);
+    final desiredStart = _clampStart(widget.viewController.currentPage().floor() - _bufferDays);
     if (_domainStart == null || desiredStart != _domainStart) {
       setState(() => _domainStart = desiredStart);
     }
@@ -366,7 +311,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
         final dayWidth = pageWidth / _numberOfDays;
         _dayWidth = dayWidth;
 
-        final start = _domainStart ??= _clampStart(_currentPage().floor() - _bufferDays);
+        final start = _domainStart ??= _clampStart(widget.viewController.currentPage().floor() - _bufferDays);
         final maxCount = _numberOfPages - start;
         final requested = _numberOfDays + 2 * _bufferDays;
         final domainCount = requested > maxCount ? maxCount : (requested < 1 ? 1 : requested);
@@ -383,10 +328,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
           if (mounted) _maybeReanchor();
         });
 
-        // Built once per window, not on every scroll frame. The multi-day band
-        // layers a create-by-drag target behind the events and a drop/resize
-        // target in front, both over the window range so their day<->pixel
-        // mapping matches the events (same as the paged headers).
+        // Built once per window. The drag targets span the window range so they map days to pixels like the events.
         final content = SizedBox(
           width: bandWidth,
           child: Column(
@@ -398,42 +340,24 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
                     .buildDayHeader(context, date.forLocation(location: context.location)),
               ),
               if (widget.configuration.showTiles)
-                Stack(
-                  children: [
-                    Positioned.fill(child: MultiDayDraggable(floatingRange: windowRange)),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: widget.configuration.tileHeight),
-                      child: MultiDayEventWidget(
-                        eventsController: context.eventsController,
-                        floatingRange: windowRange,
-                        configuration: widget.configuration,
-                        multiDayCache: viewController.multiDayCache,
-                        maxNumberOfVerticalEvents: null,
-                        overlayBuilders: headerComponents.overlayBuilders ?? widget.components.overlayBuilders,
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: HorizontalDragTarget(
-                        visibleRange: windowRange,
-                        configuration: widget.configuration,
-                        // The page-edge triggers are anchored to the viewport
-                        // below, not to this window-wide (translated) target,
-                        // so disable the built-in ones here.
-                        leftPageTrigger: (_, __) => const SizedBox.shrink(),
-                        rightPageTrigger: (_, __) => const SizedBox.shrink(),
-                      ),
-                    ),
-                  ],
+                _multiDayTiles(
+                  context,
+                  range: windowRange,
+                  configuration: widget.configuration,
+                  viewController: viewController,
+                  components: widget.components,
+                  minHeight: widget.configuration.tileHeight,
+                  // The page-edge triggers are anchored to the viewport
+                  // below, not to this window-wide (translated) target,
+                  // so disable the built-in ones here.
+                  leftPageTrigger: (_, __) => const SizedBox.shrink(),
+                  rightPageTrigger: (_, __) => const SizedBox.shrink(),
                 ),
             ],
           ),
         );
 
-        // A non-scrolling horizontal viewport sizes its height to the content,
-        // lets the strip exceed the viewport width, and clips. The strip is
-        // parked at offset 0; the translate below does the windowing. Computing
-        // the translate here (not in a post-frame callback) keeps it in lockstep
-        // with a re-anchor so pages do not flicker.
+        // The strip stays at offset 0 and the translate below windows it, in the same build as a re-anchor.
         final band = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const NeverScrollableScrollPhysics(),
@@ -442,7 +366,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
             child: content,
             builder: (context, _, child) {
               final maxTranslate = bandWidth - pageWidth;
-              final raw = (_currentPage() - start) * dayWidth;
+              final raw = (widget.viewController.currentPage() - start) * dayWidth;
               final translate = maxTranslate <= 0 ? 0.0 : raw.clamp(0.0, maxTranslate);
               // In right-to-left the day columns are mirrored, so scrolling
               // forward moves the strip the other way.
@@ -454,9 +378,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
 
         if (!widget.configuration.showTiles) return band;
 
-        // Page-edge auto-scroll: while a drag hovers the viewport edge, advance
-        // to the adjacent day. These triggers are anchored to the viewport (not
-        // the translated strip), so they stay reachable at the visible edge.
+        // Page-edge triggers anchored to the viewport, not the translated strip, so a drag at the edge can reach them.
         final pageTrigger = widget.configuration.pageTriggerConfiguration;
         Widget edgeTrigger({required bool leading}) {
           return CursorNavigationTrigger.page(
@@ -478,4 +400,55 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
       },
     );
   }
+}
+
+/// A [ValueListenableBuilder] on [KalenderController.floatingVisibleRange] that builds nothing while it is null.
+Widget _visibleRangeBuilder(
+  BuildContext context,
+  Widget Function(BuildContext context, FloatingDateTimeRange range) builder,
+) {
+  return ValueListenableBuilder(
+    valueListenable: context.kalenderController.floatingVisibleRange,
+    builder: (context, value, child) {
+      if (value == null) return const SizedBox.shrink();
+      return builder(context, value);
+    },
+  );
+}
+
+/// The [MultiDayDraggable], [MultiDayEventWidget] and [HorizontalDragTarget] of [range], stacked.
+Widget _multiDayTiles(
+  BuildContext context, {
+  required FloatingDateTimeRange range,
+  required HorizontalConfiguration configuration,
+  required MultiDayViewController viewController,
+  required KalenderComponents components,
+  required double minHeight,
+  required HorizontalTriggerWidgetBuilder? leftPageTrigger,
+  required HorizontalTriggerWidgetBuilder? rightPageTrigger,
+}) {
+  return Stack(
+    children: [
+      Positioned.fill(child: MultiDayDraggable(floatingRange: range)),
+      ConstrainedBox(
+        constraints: BoxConstraints(minHeight: minHeight),
+        child: MultiDayEventWidget(
+          eventsController: context.eventsController,
+          floatingRange: range,
+          configuration: configuration,
+          multiDayCache: viewController.multiDayCache,
+          maxNumberOfVerticalEvents: null,
+          overlayBuilders: components.multiDayComponents.headerComponents.overlayBuilders ?? components.overlayBuilders,
+        ),
+      ),
+      Positioned.fill(
+        child: HorizontalDragTarget(
+          visibleRange: range,
+          configuration: configuration,
+          leftPageTrigger: leftPageTrigger,
+          rightPageTrigger: rightPageTrigger,
+        ),
+      ),
+    ],
+  );
 }

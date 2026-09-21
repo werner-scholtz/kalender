@@ -26,7 +26,6 @@ class MultiDayEventsRow extends StatelessWidget {
   /// The height of the page.
   final double pageHeight;
 
-  /// Creates a new instance of the [MultiDayEventsRow] widget.
   const MultiDayEventsRow({
     super.key,
     required this.configuration,
@@ -81,9 +80,6 @@ class DayEventsColumn extends StatefulWidget {
   /// The date for which the events are being displayed.
   final FloatingDateTime date;
 
-  /// The controller for the multi-day view.
-  // final MultiDayViewController viewController;
-
   final EventLayoutDelegateCache cache;
 
   /// The location used for date and time calculations.
@@ -104,7 +100,6 @@ class DayEventsColumn extends StatefulWidget {
   /// event built even when it scrolls out of view.
   final KalenderController kalenderController;
 
-  /// Creates a new instance of the [DayEventsColumn] widget.
   const DayEventsColumn({
     super.key,
     required this.eventsController,
@@ -138,9 +133,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   @override
   void initState() {
     super.initState();
-    _events = _sort(_queryEvents());
-    _bands = _computeBands(_events);
-    _visibleIndices = _computeVisibleIndices();
+    _setEvents(_sort(_queryEvents()));
     widget.eventsController.addListener(_update);
     widget.scrollController.addListener(_onViewportChanged);
     widget.kalenderController.selectedEvent.addListener(_onViewportChanged);
@@ -170,11 +163,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
     if (didUpdateLocation || didUpdateHeightPerMinute || didUpdateConfiguration) {
       widget.cache.clearAll();
-      setState(() {
-        _events = _sort(_queryEvents());
-        _bands = _computeBands(_events);
-        _visibleIndices = _computeVisibleIndices();
-      });
+      setState(() => _setEvents(_sort(_queryEvents())));
     }
   }
 
@@ -197,16 +186,15 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     );
   }
 
+  void _setEvents(List<KalenderEvent> events) {
+    _events = events;
+    _bands = _computeBands(events);
+    _visibleIndices = _computeVisibleIndices();
+  }
+
   void _update() {
     final sortedEvents = _sort(_queryEvents());
-
-    if (_needsLayout(sortedEvents)) {
-      setState(() {
-        _events = sortedEvents;
-        _bands = _computeBands(sortedEvents);
-        _visibleIndices = _computeVisibleIndices();
-      });
-    }
+    if (eventLayoutChanged(sortedEvents, _events)) setState(() => _setEvents(sortedEvents));
   }
 
   /// Recomputes the visible events as the scroll position (or selection)
@@ -268,15 +256,6 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     return visible;
   }
 
-  /// Checks if the layout of the events has changed.
-  bool _needsLayout(List<KalenderEvent> sortedEvents) {
-    if (sortedEvents.length != _events.length) return true;
-    for (var i = 0; i < sortedEvents.length; i++) {
-      if (!sortedEvents[i].layoutEquals(_events[i])) return true;
-    }
-    return false;
-  }
-
   /// Sorts the events based on the layout strategy defined in the configuration.
   List<KalenderEvent> _sort(Iterable<KalenderEvent> events) {
     return widget.configuration.eventLayoutStrategy
@@ -294,8 +273,6 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.kalenderController;
-
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     // The tile range is the same for every tile in this column, so compute it
     // once instead of allocating a new range per event.
@@ -305,10 +282,10 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
         events: _events,
         date: widget.date,
         timeOfDayRange: widget.viewConfiguration.timeOfDayRange,
-        heightPerMinute: context.heightPerMinute,
+        heightPerMinute: widget.heightPerMinute,
         minimumTileHeight: widget.configuration.minimumTileHeight,
         cache: widget.cache,
-        location: context.location,
+        location: widget.location,
       ),
       // Only build the tiles within the visible scroll window. The delegate
       // still receives every event (above) so overlap widths stay correct even
@@ -340,7 +317,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
               configuration: widget.configuration,
               viewConfiguration: widget.viewConfiguration,
               date: widget.date,
-              controller: controller,
+              controller: widget.kalenderController,
               cache: widget.cache,
               location: widget.location,
             ),
@@ -400,52 +377,37 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
 
   void _update() {
     final selectedEvent = widget.controller.selectedEvent.value;
-    // This ensures that we do not rebuild the widget if the selected event is the same as the current one.
     if (selectedEvent == _selectedEvent) return;
 
-    // If the selected event is null, we reset the state.
-    if (selectedEvent == null) {
+    final visible =
+        selectedEvent != null &&
+        selectedEvent.floatingRange(location: widget.location).overlaps(widget.date.dayRange) &&
+        (widget.configuration.showMultiDayEvents ||
+            !selectedEvent.spansMultipleDays(
+              location: widget.location,
+              defaultRule: widget.viewConfiguration.multiDayRule,
+            ));
+
+    if (visible) {
+      setState(() => _selectedEvent = selectedEvent);
+    } else if (_selectedEvent != null) {
       setState(() => _selectedEvent = null);
-      return;
     }
-
-    // If the selected event does not overlap with the current date.
-    if (!selectedEvent.floatingRange(location: widget.location).overlaps(widget.date.dayRange)) {
-      // We need to check if the _selectedEvent is null, if it is not, we reset the state.
-      if (_selectedEvent != null) setState(() => _selectedEvent = null);
-      return;
-    }
-
-    // If the configuration does not allow multi-day events and the selected event is a multi-day event, clear the state.
-    if (!widget.configuration.showMultiDayEvents &&
-        selectedEvent.spansMultipleDays(
-          location: widget.location,
-          defaultRule: widget.viewConfiguration.multiDayRule,
-        )) {
-      if (_selectedEvent != null) setState(() => _selectedEvent = null);
-      return;
-    }
-
-    setState(() => _selectedEvent = selectedEvent);
   }
 
   @override
   Widget build(BuildContext context) {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
-    final controller = context.kalenderController;
+    final controller = widget.controller;
 
-    // If there is no event being dragged, return an empty widget.
     final event = _selectedEvent;
     if (event == null) return const SizedBox();
 
     final eventList = widget.events.toList();
-    // Find the index of the selected event.
     final index = eventList.indexWhere((e) => e.id == controller.selectedEventId);
     if (index != -1) {
-      // If it exists override it with the selectedEvent.
       eventList[index] = event;
     } else {
-      // Else add it at the start of the list.
       eventList.insert(0, event);
     }
 
@@ -471,6 +433,15 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
       }).toList(),
     );
   }
+}
+
+/// Whether [next] differs from [current] in length or in [KalenderEvent.layoutEquals] at any index.
+bool eventLayoutChanged(List<KalenderEvent> next, List<KalenderEvent> current) {
+  if (next.length != current.length) return true;
+  for (var i = 0; i < next.length; i++) {
+    if (!next[i].layoutEquals(current[i])) return true;
+  }
+  return false;
 }
 
 /// Lays out the tiles of a day column.

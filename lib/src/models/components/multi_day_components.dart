@@ -24,10 +24,10 @@ import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 ///
 /// {@category Appearance}
 class MultiDayComponents {
-  /// The component builders used by the [MultiDayBody].
+  /// The component builders used by the [MultiDayHeader].
   final MultiDayHeaderComponents headerComponents;
 
-  /// The component builders used by the [MultiDayHeader].
+  /// The component builders used by the [MultiDayBody].
   final MultiDayBodyComponents bodyComponents;
 
   const MultiDayComponents({
@@ -58,8 +58,6 @@ class MultiDayComponents {
 
 /// The component builders used by the [MultiDayHeader].
 ///
-/// - Using these will override the respective default components.
-///
 /// {@category Appearance}
 class MultiDayHeaderComponents {
   /// A function that builds the day header widget.
@@ -89,7 +87,6 @@ class MultiDayHeaderComponents {
   /// A group of builders for the overlay widgets.
   final OverlayBuilders? overlayBuilders;
 
-  /// Creates overrides for the default components used by the [MultiDayHeader].
   const MultiDayHeaderComponents({
     this.dayHeaderBuilder,
     this.dayHeaderStringBuilder,
@@ -167,8 +164,6 @@ class MultiDayHeaderComponents {
 
 /// The component builders used by the [MultiDayBody].
 ///
-/// - Using these will override the respective default components.
-///
 /// {@category Appearance}
 class MultiDayBodyComponents {
   /// A function that builds the hour lines widget.
@@ -177,23 +172,18 @@ class MultiDayBodyComponents {
 
   /// A function that builds the timeline widget.
   ///
-  /// The gutter width is decided by [timelineWidth] (not by this widget), so the
-  /// header, body and drag overlay always align. Build the timeline to fill the
-  /// width [timelineWidth] resolves to.
+  /// The widget fills the width [timelineWidth] resolves to.
   /// Null uses [TimeLine].
   final TimeLineBuilder? timeline;
 
   /// Builds the labels displayed by the timeline.
   ///
-  /// Defaults to the localized time of day in the calendar's locale. The gutter width
-  /// measures every label this can produce, so a builder whose output varies per
-  /// minute still gets a gutter wide enough for it.
+  /// Defaults to the localized time of day in the calendar's locale.
   final KalenderTimeStringBuilder? timelineStringBuilder;
 
   /// Resolves the width of the timeline gutter.
   ///
-  /// This single value is used by the body, the header and the drag overlay, so
-  /// their day columns stay aligned regardless of how [timeline] is customized.
+  /// The body, the header and the drag overlay share this width so their day columns align.
   /// Null uses [defaultTimelineWidth].
   final TimelineWidthBuilder? timelineWidth;
 
@@ -217,7 +207,6 @@ class MultiDayBodyComponents {
   /// A function that builds the bottom trigger widget.
   final VerticalTriggerWidgetBuilder? bottomTriggerBuilder;
 
-  /// Creates overrides for the default components used by the [MultiDayBody].
   const MultiDayBodyComponents({
     this.hourLines,
     this.timeline,

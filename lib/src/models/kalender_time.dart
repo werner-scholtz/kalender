@@ -8,20 +8,11 @@ import 'package:kalender/kalender_extensions.dart';
 
 /// A time of day, as an hour and a minute.
 ///
-/// The type kalender's public signatures use for a time without a date. It is a
-/// view coordinate: where a day view opens, which slice of the day it shows,
-/// and what the timeline gutter reads.
-///
-/// There are no seconds, and none are wanted. A day is measured in minutes
-/// throughout, from `KalenderTimeRange.splitIntoSegments` to the height per
-/// minute the body lays out with. Event data is unaffected: `KalenderEvent.start`
-/// and `KalenderEvent.end` are ordinary [DateTime]s and keep full precision.
-/// Building one of these from a [DateTime] drops everything below the minute.
+/// The type kalender's public signatures use for a time without a date. It has no seconds. Building one from a
+/// [DateTime] drops everything below the minute.
 ///
 /// {@category Dates and times}
 final class KalenderTime implements Comparable<KalenderTime> {
-  /// Creates a [KalenderTime].
-  ///
   /// [hour] must be between 0 and 23, and [minute] between 0 and 59.
   const KalenderTime({required this.hour, required this.minute})
     : assert(hour >= 0 && hour < hoursPerDay),

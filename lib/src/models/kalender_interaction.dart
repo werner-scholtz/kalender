@@ -14,17 +14,7 @@ const kDefaultSnapStrategy = EventSnapStrategy.interval();
 
 /// Decides where a dragged event lands, given the position of the cursor.
 ///
-/// Set it on [KalenderSnapping.eventSnapStrategy]:
-///
-/// ```dart
-/// KalenderSnapping(
-///   eventSnapStrategy: const EventSnapStrategy.none(),
-/// )
-/// ```
-///
-/// This is a class rather than a function so that it has value equality.
-/// [KalenderSnapping] is compared with `==` to decide whether the calendar needs
-/// to rebuild, and a function field would defeat that.
+/// Set on [KalenderSnapping.eventSnapStrategy], which is compared with `==`, so subclasses define `==` and `hashCode`.
 ///
 /// {@category Interaction}
 abstract class EventSnapStrategy {
@@ -130,69 +120,37 @@ enum EventInteractionGesture {
   longPress,
 }
 
-/// The [KalenderInteraction] class defines the interaction settings for the calendar.
-///
-/// This class allows you to configure various aspects of how users can interact with the calendar,
-/// such as resizing, rescheduling, and creating events. It also provides settings for snapping
-/// events to specific intervals or other events.
-///
-/// Example usage:
-/// ```dart
-/// KalenderInteraction(
-///   allowResizing: true,
-///   allowRescheduling: true,
-///   allowEventCreation: true,
-/// );
-/// ```
+/// What users may do with the calendar: resize, reschedule and create events, and with which gestures.
 ///
 /// {@category Interaction}
 class KalenderInteraction {
   /// Allow the resizing of events.
-  ///
-  /// If set to `true`, users can resize events by dragging their edges.
   final bool allowResizing;
   static const defaultAllowResizing = true;
 
   /// Allow the rescheduling of events.
-  ///
-  /// If set to `true`, users can reschedule events by dragging them to a different time slot.
   final bool allowRescheduling;
   static const defaultAllowRescheduling = true;
 
   /// Allow the creation of events.
-  ///
-  /// If set to `true`, users can create new events by interacting with the calendar.
   final bool allowEventCreation;
   static const defaultAllowEventCreation = true;
 
   /// The gesture used to create an event.
-  ///
-  /// This gesture determines how users can create new events in the calendar.
-  /// It can be either a tap or a long press gesture.
   final EventInteractionGesture createEventGesture;
   static const defaultCreateEventGesture = EventInteractionGesture.tap;
   static const defaultMobileCreateEventGesture = EventInteractionGesture.longPress;
 
   /// The gesture used to modify an event.
-  ///
-  /// This gesture determines how users can modify existing events in the calendar.
-  /// It can be either a tap or a long press gesture.
   final EventInteractionGesture modifyEventGesture;
   static const defaultModifyEventGesture = EventInteractionGesture.tap;
   static const defaultMobileModifyEventGesture = EventInteractionGesture.longPress;
 
   /// The input mode for the calendar.
-  ///
-  /// This determines how resize handles are positioned and when they become visible.
-  /// See [InputMode] for details on each mode.
   final InputMode inputMode;
   static const defaultInputMode = InputMode.auto;
 
   /// Whether to allow horizontal resize handles in [InputMode.imprecise] mode.
-  ///
-  /// By default, horizontal resize handles are hidden for imprecise input because
-  /// they are too small to interact with reliably using touch.
-  /// Set this to `true` to enable them.
   final bool allowHorizontalImpreciseResize;
   static const defaultAllowHorizontalImpreciseResize = false;
 
@@ -208,9 +166,6 @@ class KalenderInteraction {
     };
   }
 
-  /// Creates a new [KalenderInteraction] instance with the specified settings.
-  ///
-  /// All parameters are optional and default to the values defined in the class.
   KalenderInteraction({
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
@@ -224,8 +179,6 @@ class KalenderInteraction {
        modifyEventGesture =
            modifyEventGesture ?? (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
 
-  /// Creates a copy of this [KalenderInteraction] but with the given fields replaced with the new values.
-  /// If the fields are not provided, the original values will be used.
   KalenderInteraction copyWith({
     bool? allowResizing,
     bool? allowRescheduling,
@@ -272,41 +225,19 @@ class KalenderInteraction {
   );
 }
 
-/// The [EventInteraction] class defines the interaction settings for individual calendar events.
-///
-/// This class allows you to configure how users can interact with specific events,
-/// such as resizing the start/end times and rescheduling. Unlike [KalenderInteraction] which
-/// applies globally, [EventInteraction] is applied per event for fine-grained control.
-///
-/// Example usage:
-/// ```dart
-/// EventInteraction(
-///   allowStartResize: true,
-///   allowEndResize: true,
-///   allowRescheduling: true,
-/// );
-/// ```
+/// What users may do with one event: resize its start, resize its end and reschedule it.
 ///
 /// {@category Interaction}
 class EventInteraction {
   /// Whether the start of the event can be resized.
-  ///
-  /// If set to `true`, users can resize the event's start time by dragging the top edge.
   final bool allowStartResize;
 
   /// Whether the end of the event can be resized.
-  ///
-  /// If set to `true`, users can resize the event's end time by dragging the bottom edge.
   final bool allowEndResize;
 
   /// Whether the event can be rescheduled.
-  ///
-  /// If set to `true`, users can reschedule the event by dragging it to a different time slot.
   final bool allowRescheduling;
 
-  /// Creates a new [EventInteraction] instance with the specified settings.
-  ///
-  /// All parameters are optional and default to `true`, allowing all interactions.
   EventInteraction({this.allowStartResize = true, this.allowEndResize = true, this.allowRescheduling = true});
 
   /// Creates an [EventInteraction] with every permission set to [canModify].
@@ -337,45 +268,23 @@ class EventInteraction {
   int get hashCode => Object.hash(allowStartResize, allowEndResize, allowRescheduling);
 }
 
-/// The [KalenderSnapping] class defines the snapping settings for the calendar.
-///
-/// This class allows you to configure various aspects of how events snap to specific intervals
-/// or other events in the calendar.
-///
-/// Example usage:
-/// ```dart
-/// KalenderSnapping(
-///   snapIntervalMinutes: 15,
-///   snapToTimeIndicator: true,
-///   snapToOtherEvents: true,
-///   snapRange: Duration(minutes: 10),
-/// );
-/// ```
+/// How a dragged or resized event snaps to time intervals, the time indicator and other events.
 ///
 /// {@category Interaction}
 class KalenderSnapping {
   /// The snap interval in minutes for events.
-  ///
-  /// This interval is used when snapping events to the nearest time slot.
-  /// For example, if set to 15, events will snap to the nearest 15-minute interval.
   final int snapIntervalMinutes;
   static const defaultSnapIntervalMinutes = 10;
 
   /// Whether to snap to the time indicator when altering an event.
-  ///
-  /// If set to `true`, events will snap to the current time indicator when being moved or resized.
   final bool snapToTimeIndicator;
   static const defaultSnapToTimeIndicator = true;
 
   /// Whether to snap to other events when altering an event.
-  ///
-  /// If set to `true`, events will snap to the edges of other events when being moved or resized.
   final bool snapToOtherEvents;
   static const defaultSnapToOtherEvents = true;
 
   /// The [Duration] in which events will snap to other events.
-  ///
-  /// This duration defines the range within which events will snap to other events.
   final Duration snapRange;
   static const defaultSnapRange = Duration(minutes: 15);
 
@@ -384,9 +293,6 @@ class KalenderSnapping {
   /// This strategy is only used by the multi-day body.
   final EventSnapStrategy eventSnapStrategy;
 
-  /// Creates a new [KalenderSnapping] instance with the specified settings.
-  ///
-  /// All parameters are optional and default to the values defined in the class.
   const KalenderSnapping({
     this.snapIntervalMinutes = defaultSnapIntervalMinutes,
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
@@ -395,8 +301,6 @@ class KalenderSnapping {
     this.eventSnapStrategy = kDefaultSnapStrategy,
   });
 
-  /// Creates a copy of this [KalenderSnapping] but with the given fields replaced with the new values.
-  /// If the fields are not provided, the original values will be used.
   KalenderSnapping copyWith({
     int? snapIntervalMinutes,
     bool? snapToTimeIndicator,

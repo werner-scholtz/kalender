@@ -16,9 +16,7 @@ import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 class DefaultEventsController extends EventsController {
   final List<Location> locations;
 
-  /// Creates a [DefaultEventsController].
-  ///
-  /// The [locations] can be provided to the [DefaultEventStore] to optimize the retrieval and addition of events based on location.
+  /// The [locations] are passed to the [DefaultEventStore], which indexes events per location.
   DefaultEventsController({List<Location>? locations}) : locations = locations ?? [];
 
   late final eventStore = DefaultEventStore(locations: locations);
@@ -98,59 +96,15 @@ class DefaultEventsController extends EventsController {
   }) {
     final eventIds = eventStore.eventIdsInRange(range, location);
     final events = eventIds.map((id) => eventStore.byId(id)).nonNulls;
+    if (!includeMultiDayEvents && !includeDayEvents) return [];
 
-    if (includeMultiDayEvents && includeDayEvents) {
-      return _allEventsFromDateTimeRange(events, range, location);
-    } else if (includeMultiDayEvents) {
-      return _multiDayEventsFromDateTimeRange(events, range, location, multiDayRule);
-    } else if (includeDayEvents) {
-      return _dayEventsFromDateTimeRange(events, range, location, multiDayRule);
-    } else {
-      return [];
-    }
-  }
-
-  /// Finds all the [KalenderEvent]s that occur during the [range].
-  Iterable<KalenderEvent> _allEventsFromDateTimeRange(
-    Iterable<KalenderEvent> events,
-    FloatingDateTimeRange range,
-    Location? location,
-  ) {
     return events.where((event) {
-      // If the event is a zero duration event at the start of the day, we should check for touching.
+      if (includeMultiDayEvents != includeDayEvents) {
+        final multiDay = event.spansMultipleDays(location: location, defaultRule: multiDayRule);
+        if (multiDay != includeMultiDayEvents) return false;
+        if (multiDay) return event.floatingRange(location: location).overlaps(range);
+      }
       final touching = _checkTouching(event, location);
-      return event.floatingRange(location: location).overlaps(range, touching: touching);
-    });
-  }
-
-  /// Finds the [KalenderEvent]s longer than 1 day that occur during the [range].
-  Iterable<KalenderEvent> _multiDayEventsFromDateTimeRange(
-    Iterable<KalenderEvent> events,
-    FloatingDateTimeRange range,
-    Location? location,
-    MultiDayRule multiDayRule,
-  ) {
-    return events.where((event) {
-      // If the event is not a multi day event, return false.
-      if (!event.spansMultipleDays(location: location, defaultRule: multiDayRule)) return false;
-      return event.floatingRange(location: location).overlaps(range);
-    });
-  }
-
-  /// Finds the [KalenderEvent]s that are shorter than 1 day that occur during the [range].
-  Iterable<KalenderEvent> _dayEventsFromDateTimeRange(
-    Iterable<KalenderEvent> events,
-    FloatingDateTimeRange range,
-    Location? location,
-    MultiDayRule multiDayRule,
-  ) {
-    return events.where((event) {
-      // If the event is a multi day event, return false.
-      if (event.spansMultipleDays(location: location, defaultRule: multiDayRule)) return false;
-
-      // If the event is a zero duration event at the start of the day, we should check for touching.
-      final touching = _checkTouching(event, location);
-
       return event.floatingRange(location: location).overlaps(range, touching: touching);
     });
   }
@@ -160,7 +114,6 @@ class DefaultEventsController extends EventsController {
     final floatingStart = event.floatingStart(location: location);
     final floatingEnd = event.floatingEnd(location: location);
 
-    return floatingStart == floatingEnd &&
-        floatingStart == FloatingDateTime(floatingStart.year, floatingStart.month, floatingStart.day);
+    return floatingStart == floatingEnd && floatingStart.isStartOfDay;
   }
 }

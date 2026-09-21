@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-/// The [ResizeDirection] is used to differentiate between the different directions that an event can be resized in.
+/// The direction an event is resized in.
 ///
 /// {@category Interaction}
 enum ResizeDirection {

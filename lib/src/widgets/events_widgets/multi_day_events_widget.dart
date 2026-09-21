@@ -12,20 +12,13 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
+import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/day_overlay.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
-/// This widget is used to display multi-day events.
+/// Displays the multi-day events from the [EventsController] and rebuilds when they change.
 ///
-/// It fetches the events that need to be rendered from the [EventsController],
-/// the [EventsController] is also listened to in-case events are added or updated.
-///
-/// This widget also takes responsibility for updating the [KalenderController.visibleEvents],
-/// unlike the DayEventsWidget that can clear the visibleEvents it only adds the events that are visible.
-///
-/// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
-///         This is somewhat expensive computationally as it lays out all the events again to determine the position
-///         of the event being modified. See todo for a possible solution.
+/// Adds the events it shows to [KalenderController.visibleEvents] without clearing it.
 class MultiDayEventWidget extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;
@@ -45,9 +38,6 @@ class MultiDayEventWidget extends StatefulWidget {
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders? overlayBuilders;
 
-  /// The styles used for overlay widgets for multi-day events.
-
-  /// Creates a new [MultiDayEventWidget].
   const MultiDayEventWidget({
     super.key,
     required this.eventsController,
@@ -102,19 +92,10 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
         )
         .toList();
 
-    if (_needsLayout(visibleEvents)) {
+    if (eventLayoutChanged(visibleEvents, _events)) {
       // Update the state with the new visible events.
       setState(() => _events = visibleEvents);
     }
-  }
-
-  /// Checks if the layout of the events has changed.
-  bool _needsLayout(List<KalenderEvent> sortedEvents) {
-    if (sortedEvents.length != _events.length) return true;
-    for (var i = 0; i < sortedEvents.length; i++) {
-      if (!sortedEvents[i].layoutEquals(_events[i])) return true;
-    }
-    return false;
   }
 
   @override
@@ -122,9 +103,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final controller = context.kalenderController;
-        // Only publish when the merged set actually adds something. Assigning a
-        // fresh set every build would notify listeners on every build (a
-        // ValueNotifier compares sets by identity), causing needless rebuilds.
+        // A new set notifies listeners even when its contents match, so assign only when something is added.
         final current = controller.visibleEvents.value;
         if (_events.any((event) => !current.contains(event))) {
           controller.visibleEvents.value = {...current, ..._events};
@@ -177,8 +156,6 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders? multiDayOverlayBuilders;
 
-  /// The styles used for overlay widgets for multi-day events.
-
   final Location? location;
 
   const MultiDayEventLayoutWidget({
@@ -198,9 +175,6 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 }
 
 class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
-  /// The range of dates that the events will be laid out on.
-  late FloatingDateTimeRange _dateTimeRange = widget.floatingRange;
-
   /// The layout frame that contains all the data needed to display the events.
   MultiDayLayoutFrame? _frame;
 
@@ -228,7 +202,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   void initState() {
     super.initState();
     _frame = multiDayLayoutStrategy.generateFrame(
-      visibleRange: _dateTimeRange,
+      visibleRange: widget.floatingRange,
       events: widget.events,
       textDirection: widget.textDirection,
       cache: widget.multiDayCache,
@@ -330,7 +304,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
     if (didUpdate) {
       if (oldWidget.floatingRange != widget.floatingRange) _syncOverlayAfterFrame();
-      _dateTimeRange = widget.floatingRange;
 
       if (shouldUpdateCache) {
         // The events, configuration, and text direction apply to every range,
@@ -344,7 +317,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
       setState(() {
         _frame = multiDayLayoutStrategy.generateFrame(
-          visibleRange: _dateTimeRange,
+          visibleRange: widget.floatingRange,
           events: widget.events,
           textDirection: widget.textDirection,
           cache: widget.multiDayCache,
@@ -362,7 +335,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     final maxNumberOfRows = this.maxNumberOfRows(frame);
     final (events, layoutInfo) = frame.visibleEvents(maxNumberOfRows);
 
-    // The multi-day events widget is used to display the events that span multiple days.
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
         range: widget.floatingRange,
@@ -370,24 +342,22 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         numberOfRows: maxNumberOfRows,
         tileHeight: widget.configuration.tileHeight,
       ),
-      children: events.map((item) {
-        final event = item;
-        final id = event.id;
-
-        return LayoutId(
-          id: id,
-          key: MultiDayEventTile.tileKey(id),
-          child: Padding(
-            padding: widget.configuration.eventPadding,
-            child: MultiDayEventTile(
-              event: event,
-              tileComponents: context.tileComponents,
-              floatingRange: widget.floatingRange,
-              resizeAxis: Axis.horizontal,
+      children: [
+        for (final event in events)
+          LayoutId(
+            id: event.id,
+            key: MultiDayEventTile.tileKey(event.id),
+            child: Padding(
+              padding: widget.configuration.eventPadding,
+              child: MultiDayEventTile(
+                event: event,
+                tileComponents: context.tileComponents,
+                floatingRange: widget.floatingRange,
+                resizeAxis: Axis.horizontal,
+              ),
             ),
           ),
-        );
-      }).toList(),
+      ],
     );
 
     // The drop target widget is used to show the drop target for the event that is being dragged.
@@ -449,7 +419,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       },
     );
 
-    final overlayBuilders = widget.multiDayOverlayBuilders;
     final numberOfColumns = widget.floatingRange.dates().length;
 
     // Frame columns count from the left in both directions.
@@ -475,41 +444,41 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           if (frame.totalNumberOfRows > maxNumberOfRows)
             Row(
               textDirection: TextDirection.ltr,
-              children: (() {
-                return frame.columnRowMap.entries.map((entry) {
-                  final column = entry.key;
-                  final row = entry.value;
-                  final date = frame.dateFromColumn(column);
-                  late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
-
-                  late final overlayPortal =
-                      overlayBuilders?.multiDayOverlayPortalBuilder?.call(
-                        context,
-                        date: date,
-                        events: frame.eventsForColumn(column),
-                        numberOfHiddenRows: numberOfHiddenRows,
-                        tileHeight: widget.configuration.tileHeight,
-                        getMultiDayEventLayoutRenderBox: getRenderBox,
-                        overlayTileBuilder: _overlayEventTileBuilder,
-                        overlayBuilders: overlayBuilders,
-                      ) ??
-                      MultiDayOverlayPortal(
-                        key: MultiDayOverlayPortal.getKey(date),
-                        date: date,
-                        numberOfHiddenRows: numberOfHiddenRows,
-                        overlayBuilders: overlayBuilders,
-                      );
-
-                  return Expanded(child: row >= maxNumberOfRows ? overlayPortal : const SizedBox.shrink());
-                }).toList();
-              })(),
+              children: [
+                for (final MapEntry(key: column, value: row) in frame.columnRowMap.entries)
+                  Expanded(
+                    child: row < maxNumberOfRows
+                        ? const SizedBox.shrink()
+                        : _buildOverlayPortal(context, frame, column, (row + 1) - maxNumberOfRows),
+                  ),
+              ],
             ),
         ],
       ),
     );
   }
 
-  /// The function that builds the overlay event tile for the event.
+  Widget _buildOverlayPortal(BuildContext context, MultiDayLayoutFrame frame, int column, int numberOfHiddenRows) {
+    final overlayBuilders = widget.multiDayOverlayBuilders;
+    final date = frame.dateFromColumn(column);
+    return overlayBuilders?.multiDayOverlayPortalBuilder?.call(
+          context,
+          date: date,
+          events: frame.eventsForColumn(column),
+          numberOfHiddenRows: numberOfHiddenRows,
+          tileHeight: widget.configuration.tileHeight,
+          getMultiDayEventLayoutRenderBox: getRenderBox,
+          overlayTileBuilder: _overlayEventTileBuilder,
+          overlayBuilders: overlayBuilders,
+        ) ??
+        MultiDayOverlayPortal(
+          key: MultiDayOverlayPortal.getKey(date),
+          date: date,
+          numberOfHiddenRows: numberOfHiddenRows,
+          overlayBuilders: overlayBuilders,
+        );
+  }
+
   MultiDayEventOverlayTile _overlayEventTileBuilder(
     BuildContext context,
     KalenderEvent event,

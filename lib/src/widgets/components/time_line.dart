@@ -54,16 +54,8 @@ typedef TimeLineBuilder =
 
 /// Resolves the width of the timeline gutter.
 ///
-/// The calendar calls this once and the multi-day body, header and drag overlay
-/// all read the result, so their day columns stay aligned. It is not called for
-/// a view that draws no timeline.
-///
-/// It runs above `KalenderHeader` and `KalenderBody`, so the context resolves
-/// [KalenderTheme] and every [KalenderScope] accessor except the four those two
-/// install: `interactionOf`, `snappingOf`, `tileComponentsOf` and
-/// `heightPerMinuteOf`.
-///
-/// See [defaultTimelineWidth] for the default implementation.
+/// Called once per view, and not for a view that draws no timeline. The context resolves [KalenderTheme] and every
+/// [KalenderScope] accessor except `interactionOf`, `snappingOf`, `tileComponentsOf` and `heightPerMinuteOf`.
 ///
 /// {@category Appearance}
 typedef TimelineWidthBuilder = double Function(BuildContext context, KalenderTimeRange timeOfDayRange);
@@ -141,8 +133,6 @@ class TimelineStyle with Diagnosticable {
   /// When set, the gutter uses this width directly. When null, the width is
   /// measured from the widest label plus [textPadding].
   final double? width;
-
-  /// The function that will be used to build the string.
 
   /// The decoration for the event start time.
   final Decoration? startDecoration;
@@ -291,19 +281,13 @@ mixin TimeLineUtils {
   Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
     const displayTime = KalenderTime(hour: 23, minute: 59);
     final text = timelineString(context, displayTime);
-    final textSize = _textSize(text, textStyle, textDirection(context));
-    return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
-  }
-
-  /// Returns the [Size] of the text.
-  Size _textSize(String text, TextStyle? style, TextDirection textDirection) {
     final textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
+      text: TextSpan(text: text, style: textStyle),
       maxLines: 1,
-      textDirection: textDirection,
-    )..layout(minWidth: 0, maxWidth: double.infinity);
-
-    return textPainter.size;
+      textDirection: textDirection(context),
+    )..layout();
+    final textSize = textPainter.size;
+    return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
   }
 
   /// Calculates the [Size] of the item based on the [textStyle] and [textPadding].
@@ -338,7 +322,6 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   /// The [ValueNotifier] that contains the event being dragged.
   final ValueNotifier<KalenderEvent?> eventBeingDragged;
 
-  /// The visibleDataTimeRange.
   final ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange;
 
   /// Creates a new [TimeLine] widget.
@@ -377,10 +360,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
       final pos = offset;
       offset += range.duration.inMinutes * heightPerMinute;
 
-      // Always skip the first item.
       if (index == 0) return null;
 
-      // The time to display is the next hour.
       final displayTime = range.start;
       final text = timelineString(context, displayTime);
 
@@ -407,23 +388,18 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
         return ValueListenableBuilder(
           valueListenable: eventBeingDragged,
           builder: (context, eventBeingDragged, child) {
-            // Ensure that there is a event being dragged.
             if (eventBeingDragged == null) return const SizedBox();
 
-            // Multi-day events belong in the header, not the body.
-            // Don't show timeline tooltips for them.
             if (eventBeingDragged.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
               return const SizedBox();
             }
 
-            // Ensure that the event is visible.
             final eventRange = eventBeingDragged.floatingRange(location: context.location);
             if (!eventRange.overlaps(FloatingDateTimeRange.fromDateTimeRange(visibleRange))) return const SizedBox();
 
             final start = eventBeingDragged.floatingStart(location: context.location);
             final end = eventBeingDragged.floatingEnd(location: context.location);
 
-            // Calculate the top and bottom values.
             final startTop =
                 start.difference(timeOfDayRange.start.toFloatingDateTime(start)).inMinutes * heightPerMinute;
             final endTop = end.difference(timeOfDayRange.start.toFloatingDateTime(end)).inMinutes * heightPerMinute;

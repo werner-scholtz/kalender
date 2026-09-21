@@ -11,20 +11,15 @@ library;
 export 'package:kalender/src/kalender_body.dart';
 export 'package:kalender/src/kalender_header.dart';
 
-/// Widgets
 export 'package:kalender/src/kalender_view.dart';
 
-/// Enumerations
 export 'package:kalender/src/enumerations.dart';
 
-/// Layout
 export 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 export 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 
-/// Theme
 export 'package:kalender/src/theme/kalender_theme.dart';
 
-/// Models
 export 'package:kalender/src/models/providers/kalender_scope.dart';
 export 'package:kalender/src/models/controllers/kalender_controller.dart';
 export 'package:kalender/src/models/controllers/events_controller.dart';
@@ -48,7 +43,6 @@ export 'package:kalender/src/models/controllers/events_controller/default_event_
 export 'package:kalender/src/models/controllers/events_controller/event_store.dart';
 export 'package:kalender/src/models/controllers/events_controller/default_events_controller.dart';
 
-/// Components
 export 'package:kalender/src/models/components/components.dart';
 export 'package:kalender/src/models/components/month_components.dart';
 export 'package:kalender/src/models/components/multi_day_components.dart';
@@ -81,6 +75,5 @@ export 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 export 'package:kalender/src/widgets/schedule/schedule_body.dart';
 export 'package:kalender/src/widgets/schedule/schedule_header.dart';
 
-/// Utils
 export 'package:kalender/src/models/mixins/event_tile_utils.dart';
 export 'package:kalender/src/models/mixins/drag_target_utils.dart';

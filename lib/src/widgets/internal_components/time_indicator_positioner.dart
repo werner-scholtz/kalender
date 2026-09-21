@@ -10,6 +10,17 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
+extension MultiDayViewControllerPage on MultiDayViewController {
+  /// The page of [pageController], or [fallback] (by default [initialPage]) until it is attached and laid out.
+  double currentPage({int? fallback}) {
+    final controller = pageController;
+    if (controller.hasClients && controller.positions.length == 1 && controller.position.hasPixels) {
+      return controller.page ?? (fallback ?? initialPage).toDouble();
+    }
+    return (fallback ?? initialPage).toDouble();
+  }
+}
+
 /// A widget that positions a time indicator to follow the current page position.
 ///
 /// The [TimeIndicatorPositioner] calculates the position of a time indicator
@@ -35,7 +46,6 @@ class TimeIndicatorPositioner extends StatefulWidget {
   /// An optional child widget to display within the positioned indicator.
   final Widget? childOverride;
 
-  /// Creates a [TimeIndicatorPositioner].
   const TimeIndicatorPositioner({
     super.key,
     required this.viewController,
@@ -48,10 +58,6 @@ class TimeIndicatorPositioner extends StatefulWidget {
   State<TimeIndicatorPositioner> createState() => _TimeIndicatorPositionerState();
 }
 
-/// The state class for [TimeIndicatorPositioner].
-///
-/// This class manages the positioning logic and listens to page offset changes
-/// to keep the time indicator properly positioned relative to the current view.
 class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with WidgetsBindingObserver {
   /// The [MultiDayViewController] that controls the calendar view.
   MultiDayViewController? viewController;
@@ -60,9 +66,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   Timer? _dateCheckTimer;
 
   /// The page number that contains today's date.
-  ///
-  /// This is calculated once during initialization and used as a reference
-  /// point for positioning the time indicator.
   late int todayPageNumber;
 
   /// The index of today's date on the page that contains it, or `-1` when today
@@ -88,19 +91,9 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   /// Whether a day starting [days] from the left edge overlaps the viewport.
   bool _isVisible(double days) => todayIndex >= 0 && days > -1 && days < _visibleDays;
 
-  /// The current page, read from the controller rather than from the page offset
-  /// notifier, which counts viewports and so does not count pages when they are
-  /// narrower than one.
-  double _currentPage() {
-    final controller = widget.viewController.pageController;
-    if (controller.hasClients && controller.positions.length == 1 && controller.position.hasPixels) {
-      return controller.page ?? widget.initialPage.toDouble();
-    }
-    return widget.initialPage.toDouble();
-  }
-
   /// Days between the left edge of the viewport and the start of today.
-  double _daysFromLeftEdge() => (todayPageNumber - _currentPage()) * daysPerPage + todayIndex;
+  double _daysFromLeftEdge() =>
+      (todayPageNumber - widget.viewController.currentPage(fallback: widget.initialPage)) * daysPerPage + todayIndex;
 
   /// The calculated left position for the time indicator.
   ///
@@ -109,7 +102,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     var left = daysFromLeftEdge * dayWidth;
 
     if (Directionality.of(context) == TextDirection.rtl) {
-      // In RTL mode, we need to adjust the left position to account for the reversed layout.
       left = pageWidth - (left + dayWidth);
     }
 
@@ -143,7 +135,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     }
   }
 
-  /// Sets up the initial state of the time indicator positioner.
   void _setup() {
     viewController?.pageOffset.removeListener(_listener);
     viewController = widget.viewController;
@@ -152,10 +143,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     daysFromLeftEdge = _daysFromLeftEdge();
   }
 
-  /// Listener callback that triggers a rebuild when the page offset changes.
-  ///
-  /// This ensures the time indicator position is updated in real-time
-  /// as the user scrolls through different pages.
   void _listener() {
     final previous = daysFromLeftEdge;
     daysFromLeftEdge = _daysFromLeftEdge();
@@ -168,7 +155,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     setState(() {});
   }
 
-  /// Updates the today page number based on the current date.
   void _updatePageNumberAndIndex() {
     final nowCallback = widget.viewController.viewConfiguration.nowCallback;
     final location = widget.viewController.location;
@@ -185,28 +171,22 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     todayIndex = dates.indexOf(now);
   }
 
-  /// Sets up a timer that reliably triggers every minute to check if the date has changed.
   void _setupDailyTimer() {
-    // Cancel any existing timer to avoid multiple timers running simultaneously
     _dateCheckTimer?.cancel();
 
-    // Update the today page number immediately.
     _updatePageNumberAndIndex();
 
-    // Set up a 1-minute recurring timer that checks for day changes
     _dateCheckTimer = Timer.periodic(const Duration(minutes: 1), (_) {
       _checkIfDayChanged();
     });
   }
 
-  /// Checks if the day has changed since the last calculation.
   void _checkIfDayChanged() {
     final oldPageNumber = todayPageNumber;
     final oldIndex = todayIndex;
 
     _updatePageNumberAndIndex();
 
-    // Only trigger a rebuild if the day actually changed
     if (oldPageNumber != todayPageNumber || oldIndex != todayIndex) {
       daysFromLeftEdge = _daysFromLeftEdge();
       if (mounted) {
@@ -230,9 +210,6 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
             Positioned.fill(
               left: left,
               right: right,
-              top: 0,
-              bottom: 0,
-              // Hide the time indicator when today's column is off-screen.
               child: !_isVisible(daysFromLeftEdge)
                   ? const SizedBox.shrink()
                   : widget.childOverride ??

@@ -13,7 +13,6 @@ import 'package:kalender/src/widgets/internal_components/month_week_number_gutte
 ///
 /// {@category Views}
 class MonthHeader extends StatelessWidget {
-  /// Creates a new [MonthHeader].
   const MonthHeader({super.key});
 
   @override
@@ -25,7 +24,6 @@ class MonthHeader extends StatelessWidget {
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
-    // final viewController = kalenderController.viewController as MonthViewController;
     final viewController = kalenderController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
@@ -34,10 +32,7 @@ class MonthHeader extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: kalenderController.visibleDateTimeRange,
       builder: (context, visibleDateTimeRange, child) {
-        if (visibleDateTimeRange == null) {
-          debugPrint('Warning: The visibleDateTimeRange is null in MonthHeader.');
-          return const SizedBox.shrink();
-        }
+        if (visibleDateTimeRange == null) return const SizedBox.shrink();
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
 
         return Row(

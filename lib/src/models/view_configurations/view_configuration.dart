@@ -21,25 +21,14 @@ export 'package:kalender/kalender_extensions.dart';
 
 /// A callback that returns the current [DateTime] representing "now" for the calendar.
 ///
-/// See [ViewConfiguration.nowCallback] for what it affects. Any [DateTime]
-/// subtype works, so it can return local time, UTC, or a `TZDateTime` in a
-/// specific zone.
+/// See [ViewConfiguration.nowCallback] for what it affects. Any [DateTime] subtype works.
 ///
-/// Pass the same function on every build, since it is included in the view
-/// configuration's equality. These qualify:
-///
-/// - a tear-off, such as [DateTime.now] or a top-level or static function,
-/// - a closure stored in a field, which matters when the callback needs a
-///   captured value such as a location.
-///
-/// A closure written inline does not. It is a new function every build.
+/// Pass the same function on every build: it is included in `==`.
 ///
 /// {@category Views}
 typedef NowCallback = DateTime Function();
 
 /// The base class for all [ViewConfiguration]s.
-///
-/// [ViewConfiguration]s are used to configure the view of the calendar.
 ///
 /// {@category Views}
 abstract class ViewConfiguration {
@@ -81,26 +70,11 @@ abstract class ViewConfiguration {
 
   /// An optional callback that overrides how the calendar resolves "now".
   ///
-  /// The wall-clock components of the returned [DateTime] decide:
+  /// The wall-clock components of the returned [DateTime] decide where the time indicator sits, which day
+  /// [DayHeader], [MonthDayHeader] and [ScheduleDate] highlight as today, and whether
+  /// [EmptyDayBehavior.showOnlyToday] keeps an empty day.
   ///
-  /// - where the time indicator sits, both its day and its time of day,
-  /// - which day [DayHeader], [MonthDayHeader] and [ScheduleDate] highlight as
-  ///   today,
-  /// - whether [EmptyDayBehavior.showOnlyToday] keeps an empty day.
-  ///
-  /// Useful when the calendar displays UTC but should follow the user's local
-  /// wall clock:
-  ///
-  /// ```dart
-  /// MultiDayViewConfiguration.week(nowCallback: DateTime.now)
-  /// ```
-  ///
-  /// Pass the same function on every build, since this is included in `==`. See
-  /// [NowCallback] for the shapes that qualify. [dateResolver] and the
-  /// multi-day resolvers are not compared, because they are read from the
-  /// incoming configuration at a view switch and so are already current.
-  ///
-  /// Null, the default, uses the calendar's [Location].
+  /// Included in `==`, unlike [dateResolver]. Null, the default, uses the calendar's [Location].
   final NowCallback? nowCallback;
 
   /// The functions for navigating the [PageView].
@@ -137,13 +111,9 @@ abstract class VerticalConfiguration {
   /// The [ScrollPhysics] used by the page view.
   final ScrollPhysics? pageScrollPhysics;
 
-  /// The minimum height of the tile.
+  /// The minimum height of a tile.
   ///
-  /// Setting this value will force all tiles to have a minimum height of this value.
-  /// This is useful for displaying short events in a consistent way.
-  ///
-  /// * Note tiles will be expanded downwards except when the tile is at the bottom of the screen
-  ///   then they will be expanded upwards.
+  /// A shorter tile grows downwards, or upwards when it sits at the bottom of the screen.
   final double? minimumTileHeight;
 
   /// The configuration for the page navigation triggers.
@@ -167,8 +137,7 @@ abstract class VerticalConfiguration {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    // Subclasses add fields but not all of them override this, so without a
-    // runtime type check two different configuration types compare equal.
+    // Subclasses do not all override ==.
     if (other.runtimeType != runtimeType) return false;
 
     return other is VerticalConfiguration &&
@@ -251,9 +220,7 @@ abstract class HorizontalConfiguration {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    // MonthBodyConfiguration and MultiDayHeaderConfiguration both extend this
-    // and add no equality of their own, so without a runtime type check they
-    // compare equal to each other.
+    // Subclasses do not all override ==.
     if (other.runtimeType != runtimeType) return false;
 
     return other is HorizontalConfiguration &&
@@ -284,6 +251,9 @@ abstract class HorizontalConfiguration {
 const kDefaultTileHeight = 24.0;
 
 /// {@category Interaction}
+@Deprecated(
+  'Not read by the calendar. A created event is as long as the drag that created it. Will be removed in 0.33.0.',
+)
 const kDefaultNewEventDuration = Duration(minutes: 30);
 
 /// {@category Views}

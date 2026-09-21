@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:kalender/src/widgets/drag_targets/drag_target_helpers.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
@@ -34,11 +35,8 @@ class HorizontalDragTarget extends StatefulWidget {
   @override
   State<HorizontalDragTarget> createState() => _HorizontalDragTargetState();
 
-  /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
-  /// This can be overridden by providing a custom implementation via [KalenderCallbacks.onWillAcceptWithDetailsHorizontal].
-  ///
-  /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
-  /// The checks performed for each are detailed in the respective sections below.
+  /// The default [KalenderCallbacks.onWillAcceptWithDetailsHorizontal]. Accepts [Create], [Resize] and
+  /// [Reschedule] payloads.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
     KalenderController controller,
@@ -51,14 +49,11 @@ class HorizontalDragTarget extends StatefulWidget {
       onReschedule: (event) {
         // If the configuration does not allow single-day events (e.g., multi-day header),
         // reject single-day events. They belong in the body, not the header.
-        if (!configuration.allowSingleDayEvents &&
-            !event.spansMultipleDays(
+        return configuration.allowSingleDayEvents ||
+            event.spansMultipleDays(
               location: controller.viewController?.location,
               defaultRule: controller.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule,
-            )) {
-          return false;
-        }
-        return true;
+            );
       },
       onOther: () => false,
     );
@@ -73,50 +68,32 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
   @override
-  List<FloatingDateTime> get visibleDates => visibleRange.dates();
+  List<FloatingDateTime> get visibleDates => widget.visibleRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
   ViewController get viewController => controller.viewController!;
-  TileComponents get tileComponents => context.tileComponents;
-  FloatingDateTimeRange get visibleRange => widget.visibleRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
-  double get tileHeight => widget.configuration.tileHeight;
 
   @override
   double dayWidth = 0;
   double pageWidth = 0;
 
-  void _updateDimensions(BoxConstraints constraints) {
-    pageWidth = constraints.maxWidth;
-    dayWidth = pageWidth / visibleDates.length;
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        _updateDimensions(constraints);
+        pageWidth = constraints.maxWidth;
+        dayWidth = pageWidth / visibleDates.length;
         return DragTarget(
           onWillAcceptWithDetails: (details) {
-            final correctType = DragTargetUtilities.handleDragDetails(
-              details,
-              onCreate: (controllerId) => true,
-              onResize: (event, direction) => true,
-              onReschedule: (event) => true,
-              onOther: () => false,
-            );
-
-            if (!correctType) {
-              debugPrint('HorizontalDragTarget: cannot use details: $details because of unknown data type');
-              return false;
-            }
+            if (!isKalenderPayload(details, 'HorizontalDragTarget')) return false;
 
             // First test if the details can be accepted at all.
             final accepted =
                 callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
                 HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
-            if (!accepted) return accepted;
+            if (!accepted) return false;
 
             return onWillAcceptWithDetails(
               details,
@@ -129,10 +106,9 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
                 return direction.horizontal;
               },
               onReschedule: (event) {
-                // Set the size of the feedback widget.
                 context.feedbackWidgetSizeNotifier.value = Size(
                   min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length),
-                  tileHeight,
+                  widget.configuration.tileHeight,
                 );
 
                 controller.selectEvent(event, internal: true);
@@ -144,7 +120,6 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
           onAcceptWithDetails: onAcceptWithDetails,
           onLeave: onLeave,
           builder: (context, candidateData, rejectedData) {
-            // Check if the candidateData is null.
             if (candidateData.firstOrNull == null) return const SizedBox();
 
             final rightTrigger = CursorNavigationTrigger.page(
@@ -177,18 +152,10 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
 
   @override
   FloatingDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
-    // Calculate the relative cursor position.
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
 
-    // Clamp the index to valid bounds to handle cursor positions over edge areas.
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
-
-    final date = Directionality.of(context) == TextDirection.ltr
-        ? visibleDates.elementAtOrNull(cursorDateIndex)
-        : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);
-
-    return date;
+    return dateAtColumn(context, visibleDates, localCursorPosition.dx, dayWidth);
   }
 
   @override
