@@ -91,10 +91,10 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
     itemPositionsListener = list?.positionsListener;
   }
 
-  /// Get the number of items for the current page.
+  @Deprecated('Not used by the calendar. Use itemCountForPage. Will be removed in 0.33.0.')
   int get itemCount => itemCountForPage(currentPage);
 
-  /// Get the item at the given index of the current page.
+  @Deprecated('Not used by the calendar. Use indexItem. Will be removed in 0.33.0.')
   ListItem? item(int index) => indexItem(currentPage)[index];
 
   /// Get the [DateTime] for the given index of the current page.
@@ -106,15 +106,15 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   /// Get the index closest to the given [DateTime] of the current page.
   int closestIndex(DateTime date) => closestIndexForPage(currentPage, date);
 
-  /// Add an item to the schedule map of the current page.
+  @Deprecated('Not used by the calendar. Use addItemForPage. Will be removed in 0.33.0.')
   void addItem({required ListItem item, required FloatingDateTime date, bool isFirst = false}) {
     return addItemForPage(item: item, date: date, pageIndex: currentPage, isFirst: isFirst);
   }
 
-  /// Clear the schedule map for the current page.
+  @Deprecated('Not used by the calendar. Use clearPage. Will be removed in 0.33.0.')
   void clear() => clearPage(currentPage);
 
-  /// Find the initial scroll index for the given date.
+  @Deprecated('Not used by the calendar. Use closestIndex. Will be removed in 0.33.0.')
   int initialScrollIndex(DateTime date) {
     final normalized = FloatingDateTime.fromExternal(date, location: location).startOfDay;
     return dateTimeItemIndex(currentPage)[normalized] ?? closestIndex(normalized);
