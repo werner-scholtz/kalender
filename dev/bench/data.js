@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790058547025,
+  "lastUpdate": 1790070171949,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -13651,6 +13651,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3232.430284857571,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3c60919537163d3d6d2a3b27e9d9c52adab6a073",
+          "message": "Merge pull request #601 from werner-scholtz/fix/benchmark-harness-no-op-drags\n\nfix: the frame benchmark fails when a drag misses every tile",
+          "timestamp": "2026-09-22T11:13:40+02:00",
+          "tree_id": "4caea759c598131ab92bf147c8d52eaef0085ba1",
+          "url": "https://github.com/werner-scholtz/kalender/commit/3c60919537163d3d6d2a3b27e9d9c52adab6a073"
+        },
+        "date": 1790070163528,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 172.174415639609,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 691.73325,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2032.509,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8072.374531835206,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 702.56975,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2136.829,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2371.041,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 11878.074712643678,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 250.3768169959001,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 109.40246372844237,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 757.86625,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3216.9865067466267,
             "unit": "us"
           }
         ]
