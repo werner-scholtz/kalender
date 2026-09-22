@@ -1,337 +1,197 @@
 # Kalender: Project Guidelines
 
-## Overview
+Kalender is a Flutter calendar package with three views, multi-day (day and week), month and schedule, composed through `KalenderView`, `KalenderHeader` and `KalenderBody`. It is pre-1.0, so a minor version can break.
 
-Kalender is a Flutter calendar widget package providing four views: **MultiDay** (day/week), **Month**, **Schedule**, and a generic **KalenderView** orchestrator. The library is pre-1.0 and actively developed.
+`examples/web_demo/AGENTS.md` covers the web demo.
 
-- **Key dependencies**: `intl`, `timezone`, `collection`, `linked_pageview`, `scrollable_positioned_list`
-
-## Repository Layout
+## Repository layout
 
 | Path | Purpose |
 |------|---------|
-| `lib/kalender.dart` | Main barrel export: organized by category (Widgets, Enumerations, Layout, Models, Components, Utils) |
-| `lib/kalender_extensions.dart` | Public extension APIs: `DateTimeExtensions`, `FloatingDateTime`, `FloatingDateTimeRange`, `KalenderDateTimeRange` |
-| `lib/src/` | All implementation code |
-| `lib/src/models/` | Core data structures: controllers, events, view configurations, providers, components, mixins |
-| `lib/src/models/controllers/` | `KalenderController` (ChangeNotifier), `EventsController` (abstract), `ViewController` (abstract), view-specific controllers |
-| `lib/src/models/providers/` | InheritedWidget providers (`KalenderControllerProvider`, `EventsControllerProvider`, `Components`, `Callbacks`, `Interaction`, `Snapping`, `HeightPerMinute`, `TileComponentProvider`, `LocaleProvider`, `LocationProvider`) |
-| `lib/src/models/components/` | Customizable builder classes: `TileComponents`, `KalenderComponents`, view-specific components and styles |
-| `lib/src/models/mixins/` | Reusable mixins: `KalenderNavigationFunctions`, `DragTargetUtilities`, `EventTileUtils`, `NewEvent`, `SnapPoints`, `ScheduleMap` |
-| `lib/src/models/view_configurations/` | `ViewConfiguration` (abstract base), `MultiDayViewConfiguration`, `MonthViewConfiguration`, `ScheduleViewConfiguration` |
-| `lib/src/models/kalender_events/` | `KalenderEvent` base class (extensible via subclassing) |
-| `lib/src/widgets/` | UI widgets by view (`month/`, `multi_day/`, `schedule/`) plus shared (`components/`, `event_tiles/`, `draggable/`, `drag_targets/`) |
-| `lib/src/layout_delegates/` | Event layout/positioning strategies (`EventLayoutStrategy`, `MultiDayLayoutStrategy`) with caching |
-| `lib/src/extensions/` | `DateTimeExtensions`: localized day, month and time strings |
-| `lib/src/kalender_body.dart` | Top-level body widget that delegates to the correct view |
-| `lib/src/kalender_header.dart` | Top-level header widget |
-| `lib/src/kalender_view.dart` | Main KalenderView orchestrator widget |
-| `test/` | Unit and widget tests (mirrors `lib/src/` structure) |
-| `test/utilities.dart` | Shared test helpers: `TestProvider`, `wrapWithMaterialApp`, `testWithTimeZones`, `WidgetTesterUtils` |
-| `doc/` | The user-facing guides, indexed by `doc/README.md` |
-| `examples/` | Example projects, indexed by `examples/README.md` |
-| `example/` | README only: the pub.dev Example tab, which links to `examples/` |
-| `tool/` | Dev scripts: `test_timezones_linux.dart` replicates the CI timezone matrix locally, `pin_release_links.dart` pins documentation links at publish, `license_headers.dart` adds the license header to Dart files |
-| `.github/workflows/` | CI: `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `deploy_dashboard.yml`, `publish.yml`, `web_demo.yml` |
+| `lib/kalender.dart` | The public API, one export per file |
+| `lib/kalender_extensions.dart` | `DateTimeExtensions`, `FloatingDateTime`, `FloatingDateTimeRange`, `KalenderDateTimeRange`, and `Location` and `TZDateTime` re-exported from `timezone` |
+| `lib/material.dart` | Converters between the Material `DateTimeRange` and `TimeOfDay` and the kalender types |
+| `lib/fix_data/` | Data-driven fixes for `dart fix`, see [Automating a migration](#automating-a-migration) |
+| `lib/src/models/` | Controllers, events, view configurations, components, providers, mixins |
+| `lib/src/widgets/` | One folder per view (`month/`, `multi_day/`, `schedule/`), plus `components/` (the replaceable defaults), `internal_components/`, `event_tiles/`, `events_widgets/`, `draggable/` and `drag_targets/` |
+| `lib/src/layout_delegates/` | `EventLayoutStrategy` and `MultiDayLayoutStrategy` with their caches |
+| `test/` | Mirrors `lib/src/`. `test/utilities.dart` holds the shared helpers and `test/tool/` tests the scripts |
+| `test_fixes/` | Golden fixtures for the `dart fix` data |
+| `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page |
+| `examples/` | Runnable apps, indexed by `examples/README.md`. `example/` is the pub.dev Example tab and only links there |
+| `tool/` | `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart` and `pin_release_links.dart` |
+| `.github/workflows/` | `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `deploy_dashboard.yml`, `publish.yml` and `web_demo.yml` |
 
-## Code Style
+Every example depends on the package by path, `../../../kalender/` for most of them, so the checkout has to sit in a folder named `kalender`.
 
-- **Lints and formatter width**: `analysis_options.yaml`.
-- **License header**: `dart run tool/license_headers.dart`.
-- **Naming**: View widgets use `Body`/`Header` suffixes, such as `MonthBody` and `MonthHeader`.
+## Commands
 
-## Build & Test
+Use the Flutter version in `.fvmrc`. Formatting output depends on it.
 
 ```bash
-# Install dependencies
 flutter pub get
-
-# Analyse (CI runs both)
+dart format lib test tool benchmark
+dart run tool/license_headers.dart           # --check in CI
 dart analyze && flutter analyze
-
-# Run tests (root package)
 flutter test
-
-# Run tests in a specific timezone (CI runs six timezones)
-TZ=America/New_York flutter test
-
-# Run all timezones locally (Linux), mirroring the CI matrix
-dart tool/test_timezones_linux.dart
-
-# Run specific test file across all timezones
-dart tool/test_timezones_linux.dart test/models/floating_date_time_test.dart
+TZ=America/New_York flutter test             # one timezone
+dart tool/test_timezones_linux.dart [file]   # the CI timezone matrix, Linux only
+dart run tool/analyze_doc_snippets.dart      # compiles the snippets in README.md and doc/
+dart fix --compare-to-golden test_fixes      # the dart fix data
+for d in examples/*/; do (cd "$d" && flutter analyze); done
 ```
 
-### CI Pipeline (`.github/workflows/flutter_analyze_and_test.yml`)
+CI runs all of these. The `test` job runs in six timezones (`America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`, `Africa/Johannesburg` and `UTC`). `minimum-flutter` runs the floor `pubspec.yaml` declares, and `latest-stable` runs the newest stable without failing the workflow.
 
-- **Flutter version**: Every job runs the version in `.fvmrc`, except `minimum-flutter`, which runs the floor `pubspec.yaml` declares, and `latest-stable`, which runs the newest stable and does not fail the workflow. Format with the `.fvmrc` version.
-- **Analyze job**: `dart analyze` + `flutter analyze` on `ubuntu-latest`.
-- **Test job**: Matrix strategy over 6 timezones: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`, `Africa/Johannesburg`, `UTC`. Sets system timezone via `timedatectl` and `TZ` env var.
+`flutter analyze` at the root excludes `examples/**` and does not warn when the package uses its own deprecated members, which is what the examples loop is for.
 
-### Test Conventions
+## Code style
 
-- Test directory mirrors `lib/src/` structure: `test/extensions/`, `test/configuration/`, `test/interactions/`, `test/layout/`, `test/models/`, `test/widgets/`.
-- Use the shared `test/utilities.dart` helpers:
-  - `testWithTimeZones()`: wraps test groups to run against the current `TZ` environment variable.
-  - `TestProvider`: wraps widgets with all required InheritedWidget providers for widget tests.
-  - `wrapWithMaterialApp()` / `pumpAndSettleWithMaterialApp()`: standard MaterialApp + Scaffold wrappers.
-  - `WidgetTesterUtils.hoverOn()` / `createMouseGesture()`: mouse interaction helpers.
-- DST transition dates from multiple regions are defined in `datesToTest` for thorough timezone coverage.
-- Timezone-sensitive tests **must** use `testWithTimeZones` and the shared `datesToTest` / `locationsToTest` lists.
-- A `static Key` factory on an unexported class is a test helper. Do not add one
-  to reach a widget from an app. Give the widget identifying fields and use
-  `find.byType` with a predicate.
+- Lints and the formatter width are in `analysis_options.yaml`.
+- Every Dart file carries the license header. `tool/license_headers.dart` adds it.
+- View widgets take a `Body` or `Header` suffix, such as `MonthBody`.
+- Public top-level constants take a `k` prefix. Top-level functions and static constants do not.
+- Every public symbol carries a `{@category ...}` tag naming one of the seven categories in `dartdoc_options.yaml`. The category's page is the matching guide.
+- Comments say what the code does now, not how it got there. A `TODO` stays `//`, since a `///` one renders in the API reference.
 
-## Architecture Conventions
+### Naming the two range spaces
 
-### View Pattern
+`KalenderDateTimeRange` holds instants and is what an app hands in and reads back. `FloatingDateTimeRange` names no timezone and carries the date arithmetic. They are not interchangeable.
 
-Each calendar view (MultiDay, Month, Schedule) follows the same layered structure:
+Name a member for what it is, not for its type. Say `range` rather than `dateTimeRange`, and let the type annotation say which space the value is in. Add a `floating` marker only where one class carries both spaces, as `KalenderEvent`, `KalenderController` and `PageIndexCalculator` do.
 
-1. **ViewController** (`models/controllers/view_controllers/`): manages view-specific state (page index, visible range). Abstract base: `ViewController`.
-2. **ViewConfiguration** (`models/view_configurations/`): holds layout parameters. Configuration mixins: `VerticalConfiguration` (event layout strategy, scroll physics), `HorizontalConfiguration` (tile height, multi-day layout).
-3. **Body widget** (`widgets/<view>/<view>_body.dart`): renders the main content area.
-4. **Header widget** (`widgets/<view>/<view>_header.dart`): renders the top navigation/day headers.
-5. **TileComponents**: customizable builder functions for rendering event tiles.
+## Tests
 
-`KalenderBody` and `KalenderHeader` select the correct sub-widget via a `switch` on the active `ViewController` type.
+- `test/` mirrors `lib/src/`.
+- Build widgets with the helpers in `test/utilities.dart`: `pumpKalender`, `pumpOverflowingMonth`, `freeScrollView`, `wrapWithMaterialApp`, `pumpAndSettleWithMaterialApp` and `TestProvider`. `resizeHandleFor`, `WidgetTesterUtils` and `KalenderControllerUtils` drive interactions.
+- Timezone-sensitive tests use `testWithTimeZones` with the shared `datesToTest` and `locationsToTest`.
+- A `static Key` factory on an unexported class is a test helper. Do not add one to reach a widget from an app. Give the widget identifying fields and use `find.byType` with a predicate.
 
-### State Management (InheritedWidget only, no external packages)
+## Architecture
 
-All state flows through InheritedWidget providers in `lib/src/models/providers/kalender_provider.dart`:
+### Views
 
-| Provider | Wraps | Purpose |
-|----------|-------|---------|
-| `KalenderControllerProvider` | `KalenderController` | Top-level calendar state (visible range, selected event, navigation) |
-| `EventsControllerProvider` | `EventsController` | Event storage/retrieval |
-| `Components` | `KalenderComponents` | Visual component builders |
-| `TileComponentProvider` | `TileComponents` | Event tile builders |
-| `Callbacks` | `KalenderCallbacks` | User interaction callbacks |
-| `Interaction` | `KalenderInteraction` | Interaction permissions (create, resize, reschedule) |
-| `Snapping` | `KalenderSnapping` | Snap-to-grid configuration |
-| `HeightPerMinute` | `double` | Vertical zoom level |
-| `LocaleProvider` | `Locale?` | Internationalization locale |
-| `LocationProvider` | `Location?` | Timezone location |
+Each view has a `ViewController` (`models/controllers/view_controllers/`), a `ViewConfiguration` (`models/view_configurations/`), and a body and a header widget (`widgets/<view>/`). `KalenderBody` and `KalenderHeader` pick the widget with a `switch` on the controller type. `VerticalConfiguration` and `HorizontalConfiguration` are the configuration mixins for the two axes.
 
-`GutterWidths` sits in `lib/src/models/providers/gutter_widths.dart`. `KalenderView` measures the month week number column and the multi-day timeline once and publishes the widths there. A width is null where the view draws no such gutter.
+### State
 
-`KalenderScope` in `lib/src/models/providers/kalender_scope.dart` is the exported accessor for the table above, one static per value. The providers themselves are not exported. Add an accessor there when a provider gains something an app should reach.
+State reaches widgets through the `InheritedWidget` providers in `lib/src/models/providers/kalender_provider.dart`, one per value, plus `GutterWidths`, which `KalenderView` fills with the measured week number and timeline widths. The providers are not exported. `KalenderScope` in `kalender_scope.dart` is the public accessor, one static per value in the shape of `MediaQuery`. Add an accessor there when a provider gains something an app should reach.
 
-### Event Model
+### Events
 
-- `KalenderEvent` is the base class: extend it to attach custom data (title, colour, etc.).
-- Events store UTC internally (`start` and `end` as `DateTime` in UTC). Use `floatingStart()`/`floatingEnd()` for calendar-position access.
-- Event IDs are `String` (10-char random alphanumeric, auto-generated).
-- Override `copyWithData()`, `==`, and `hashCode` in subclasses. `copyWithData` carries `@mustBeOverridden`, and `KalenderEvent` reapplies `id`, `interaction` and `multiDayRule` through `carryOver` afterwards, so a subclass never forwards those manually.
-- `EventInteraction` controls per-event permissions (resizing, rescheduling).
-- `layoutEquals()` is used for render optimisation: returns true if the event occupies the same visual space.
+- `KalenderEvent` is extended to attach data. `start` and `end` are UTC. `floatingStart()` and `floatingEnd()` give the calendar position.
+- A subclass overrides `copyWithData`, `==` and `hashCode`. `copyWithData` is `@mustBeOverridden`. `carryOver` reapplies `id`, `interaction`, `multiDayRule` and `isAllDay` afterwards, so a subclass never forwards them.
+- `layoutEquals` returns true when two events occupy the same space on screen. The day body lays out again only when an event fails it.
+- `EventInteraction` holds the per-event permissions.
 
-### Controller Hierarchy
+### Controllers
 
-- **KalenderController** (`ChangeNotifier` + mixins): top-level orchestrator. Manages `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`. Attaches/detaches from a `ViewController`.
-- **EventsController** (abstract `ChangeNotifier`): event CRUD interface. `addEvent()` returns `String` id. Implement or use `DefaultEventsController`.
-- **ViewController** (abstract): view-specific state. Implementations: `MultiDayViewController`, `MonthViewController`, `ScheduleViewController`.
+- `KalenderController` drives one `KalenderView`: navigation, `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`, `selectedRange` and `openDayOverlay`. It attaches to the active `ViewController`.
+- `EventsController` is the abstract store. `DefaultEventsController` is the one apps use.
+- The calendar never selects a day on its own. An app selects from the callbacks.
 
-### DateTime & Timezone Handling
+### Dates and timezones
 
-- **All dates stored in UTC**: `KalenderEvent.start`/`.end` are always UTC.
-- **Calendar arithmetic** uses `FloatingDateTime` and `FloatingDateTimeRange` (in `lib/src/models/`) to handle DST transitions safely.
-- Use `FloatingDateTime.fromExternal(utcDateTime, location: location)` to convert for display.
-- The `timezone` package provides `Location` objects for timezone-aware logic.
-- `DateTimeExtensions` (public) provide localized day/month names via `intl`.
+Events hold instants as UTC `DateTime`. Layout and view coordinates are `FloatingDateTime` and `FloatingDateTimeRange`, which carry the DST-safe arithmetic. `FloatingDateTime.fromExternal(dateTime, location: location)` converts for display. `Location` comes from the `timezone` package.
 
-#### Naming the two range spaces
+### Strategies
 
-`KalenderDateTimeRange` holds instants and is what an app hands in and reads
-back. `FloatingDateTimeRange` names no timezone and carries the date arithmetic.
-They are not interchangeable.
+`EventLayoutStrategy.createDelegate` returns an `EventLayoutDelegate`, and `MultiDayLayoutStrategy.generateFrame` returns a `MultiDayLayoutFrame`. The bases stay open so an app can extend them. A strategy compares on `runtimeType` rather than `other is X`, or a subclass compares equal to what it extends. `EventSnapStrategy` follows the same rule.
 
-**Name a member for what it is, not for its type.** Say `range` rather than
-`dateTimeRange`, and let the type annotation say which space the value is in.
-Add a `floating` marker only where one class carries both spaces, as
-`KalenderEvent`, `KalenderController` and `PageIndexCalculator` do.
+### Components
 
-### Layout Delegates
+`TileComponents` and `ScheduleTileComponents` hold the event tile builders, with defaults in `lib/src/widgets/components/default_tile_components.dart`. `KalenderComponents` holds the rest, one class per view. Every builder takes a `BuildContext` first and resolves its styles from `KalenderTheme.of(context)`. Only `tileBuilder` is required.
 
-- `EventLayoutStrategy` is an abstract class whose `createDelegate` returns an `EventLayoutDelegate`.
-- Built-in strategies: `EventLayoutStrategy.overlap()` (layered stacking), `EventLayoutStrategy.sideBySide()` (adjacent columns).
-- The base stays open, so an app can extend it. Compare on `runtimeType` rather than `other is X`, or a subclass compares equal to what it extends.
-- `EventLayoutDelegateCache` caches layouts per date/heightPerMinute/timeRange for performance.
-- Custom strategies can be provided via `VerticalConfiguration.eventLayoutStrategy`.
+### Errors
 
-### Component / Builder Pattern
+Asserts are the only error handling: provider lookups and input validation, such as a `KalenderTimeRange` whose start is after its end. There are no exception classes.
 
-`TileComponents` provides customizable widget builders:
+## Versioning and migration
 
-| Builder | Purpose |
-|---------|---------|
-| `tileBuilder` | Default stationary event tile `(KalenderEvent, DateTimeRange) → Widget` |
-| `overlayTileBuilder` | Tile variant for overlay display |
-| `tileWhenDraggingBuilder` | Placeholder shown at original position during drag |
-| `feedbackTileBuilder` | Widget shown under the pointer during drag |
-| `dropTargetTile` | Preview of where the event will land |
-| `resizeHandlePositioner` | Positions resize handles on tiles |
-| `verticalResizeHandle` / `horizontalResizeHandle` | Resize handle widgets |
+The minor version is the breaking slot until 1.0.0. Breaking changes are batched into as few releases as possible.
 
-Default builders are in `lib/src/widgets/components/default_tile_components.dart`. Use `TileComponents.defaultComponents()` as a starting point.
+### Deprecations
 
-Mixins `DayEventTileUtils` and `MultiDayEventTileUtils` provide helper methods for custom tile builders.
-
-### Drag & Drop
-
-- Native `Draggable`/`LongPressDraggable` for existing events. `NewDraggable` mixin for creating new events.
-- Drag targets: `VerticalDragTarget` (day/week), `HorizontalDragTarget` (month/header), `ScheduleDragTarget`.
-- Drag data: `DraggableEvent` for existing events, create markers for new events, `ResizeDirection` enum for resize operations.
-- Platform-aware gestures: Desktop uses tap, mobile uses long-press (configurable via `EventInteractionGesture`).
-- Callbacks: `onEventCreate()`, `onEventChange()`, `onWillAcceptWithDetails*()`.
-
-### Error Handling
-
-- **Asserts** for provider lookups ("No XyzProvider found"): these are development-time checks.
-- **Input validation** via asserts (e.g. `KalenderTimeRange` start ≤ end).
-- No custom exception classes (pre-1.0 assert-based approach).
-
-## Versioning & Migration
-
-This is a pre-1.0 package, so the minor version is the breaking slot. Breaking changes are batched into as few releases as possible rather than dribbled out.
-
-### Breaking changes and deprecations
-
-**Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone.
-
-The same reasoning removes a public **type** outright once every entry point to it has gone.
-
-**The window is one minor release.** Deprecated in 0.23.0 means removed in 0.24.0. Do not extend it, and do not remove early.
-
-**Every `@Deprecated` message names the replacement and the removal version.** Both, every time:
+- Deprecate only when the old member still gives a correct answer. A member that compiles and does nothing is worse than a compile error.
+- The window is one minor release. Deprecated in 0.32.0 means removed in 0.33.0. Do not extend it or remove early.
+- Every `@Deprecated` message names the replacement and the removal version. Check with `grep -rn "@Deprecated" lib/`.
 
 ```dart
 @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
 ```
 
-Check with `grep -rn "@Deprecated" lib/`.
+Some changes cannot be deprecated and go straight into a breaking batch with a migration entry:
 
-**Some changes cannot be deprecated at all.** There is no window available for any of these, so they go straight into a breaking batch with a migration entry:
+- Turning a getter into a method of the same name. Dart rejects declaring both.
+- Adding a named parameter to a method that subclasses override, optional or not. An override must accept every named parameter its supertype declares.
+- Adding a member to a public mixin or abstract class, or narrowing what it can be applied to.
+- Changing a function typedef's signature.
 
-- Turning a getter into a method of the same name. Dart rejects declaring both (`duplicate_definition`), so the getter has to vanish the moment the method appears.
-- Adding a named parameter to a method that subclasses override, including optional ones. An override must accept every named parameter its supertype declares, so `copyWith` and `eventsInRange` break every implementer either way.
-- Adding a member to a public mixin or abstract class, or narrowing what it can be applied to, such as constraining `DragTargetUtilities` to `State`.
-- Changing a function typedef's signature. A typedef cannot be deprecated into a new shape, so a builder that gains or loses a parameter breaks every implementer at once.
+### Recording a change
 
-**Record it in both places.** A deprecation gets a `### Deprecations` entry in the changelog naming the removal version. A breaking change gets a `### Breaking Changes` entry plus a section in [MIGRATION.md](MIGRATION.md) showing the before and after.
+- A deprecation gets a `### Deprecations` changelog entry naming the removal version.
+- A breaking change gets a `### Breaking Changes` entry and a section in [MIGRATION.md](MIGRATION.md) with before and after code. `### Behavior Changes` is for code that still compiles and renders differently. Keep the two headings apart.
+- Changelog entries are one line each and say what changed. The reasoning goes in the pull request.
+- Until the version is tagged, amend the existing entries rather than appending.
 
 ### Automating a migration
 
-**Ship a fix for everything that can carry one.** Data-driven fixes live in `lib/fix_data/fix_*.yaml` and ship inside the package, so `dart fix --apply` in a user's project applies them. The format is at https://dart.dev/go/data-driven-fixes.
+Ship a fix for everything that can carry one. Fixes live in `lib/fix_data/fix_*.yaml` and ship inside the package, so `dart fix --apply` in a user's project applies them. The format is at https://dart.dev/go/data-driven-fixes.
 
-What a fix can do:
+A fix can rename a class, typedef, mixin, enum, constructor, method, getter, setter or field, and rename, add or remove a named parameter. `addParameter` with an `argumentValue.expression` derives a new argument from an old one, so `dateTimeRange: r` can become `start: r.start, end: r.end`. A fix cannot rewrite the body of an override or reshape an override's parameters, and a type change with no rename gives it nothing to trigger on, so rename the parameter alongside the type change.
 
-- Rename a class, typedef, mixin, enum, constructor, method, getter, setter or field.
-- Rename, add or remove a named parameter.
-- Derive a new argument from an old one, so one parameter can become two. `KalenderEvent(dateTimeRange: r)` to `KalenderEvent(start: r.start, end: r.end)` is an `addParameter` pair with `argumentValue.expression` reading `arguments[dateTimeRange]`, plus a `removeParameter`.
-
-What it cannot do: rewrite the body of an override, or reshape an override's parameters. Both are manual edits the migration guide has to carry.
-
-A type change with no rename has nothing to trigger on, since kalender cannot deprecate another package's type. Rename the parameter alongside the type change and the fix can wrap the old value.
-
-**`date` is when the change landed, not when the fix was written.** Use the date the pull request merged and name that pull request in a comment above the transform, the way `material_ui` does.
-
-**What a fix reaches depends on the change kind.** Measured against a subclass overriding a `@mustBeOverridden` member:
+What a fix reaches, measured against a subclass overriding a `@mustBeOverridden` member:
 
 | Change | Call sites | Override signature | Override body |
 | --- | --- | --- | --- |
-| `rename` of a method | yes | yes, the override is renamed | not applicable |
-| `renameParameter` | yes | yes | no, references to the parameter are left undefined |
+| `rename` of a method | yes | yes | not applicable |
+| `renameParameter` | yes | yes | no, references are left undefined |
 | `addParameter` with `removeParameter` | yes | no, reported as `invalid_override` | not applicable |
 
-So a parameter reshape, which is the shape a signature change usually takes, fixes every call site and leaves every subclass to be edited manually. Say so in the migration guide for any change to a `@mustBeOverridden` member.
+- A `renameParameter` reaches only the element it names. Give each function and method an app calls or overrides its own transform.
+- A `renameParameter` on a constructor does not reach a subclass's `super.` parameter.
+- `date` is the day the pull request merged. Name the pull request in a comment above the transform.
+- Every fix has a fixture pair in `test_fixes/<name>.dart` and `<name>.dart.expect`, checked by `dart fix --compare-to-golden test_fixes`.
 
-**A `renameParameter` reaches only the element it names.** A transform on `defaultMultiDayFrameGenerator` does not rename the same parameter on `MultiDayLayoutStrategy.generateFrame`. Give each function and method an app calls or overrides its own transform, and give a probe override a body that uses the parameter, or the body edit stays hidden.
-
-**A `renameParameter` on a constructor does not reach a `super.` parameter** declared by a subclass constructor. That declaration is a manual edit the migration guide has to carry.
-
-**Every fix is tested.** The fixture pair lives in `test_fixes/<name>.dart` and `<name>.dart.expect`, and CI runs:
-
-```bash
-dart fix --compare-to-golden test_fixes
-```
-
-`test_fixes/` is excluded from the package analysis, since the fixtures use deprecated members on purpose, and excluded from the published archive.
-
-**`### Breaking Changes` is for code that stops compiling. `### Behavior Changes` is for code that still compiles and renders differently.** They ask the reader for different things: one is "fix your code", the other is "look at your screenshots". Do not put them under one heading.
-
-**If the version is not tagged yet, amend the existing entries rather than appending.**
-
-### Verifying a removal
-
-`flutter analyze` at the root excludes `examples/**`. It also does not warn when the package uses its own deprecated members. Run the examples directly:
-
-```bash
-for d in examples/*/; do (cd "$d" && flutter analyze); done
-```
-
-### Releasing
-
-Publishing is triggered by a tag, not by a merge. Bump `version` in `pubspec.yaml`, merge that to main, then tag the merge commit:
-
-```bash
-git tag -m v0.23.0 v0.23.0 && git push origin v0.23.0
-```
-
-The `-m` is required because tags are signed.
-
-`publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests, pins the repository links to the tag and publishes.
-
-The published archive is not byte-identical to the tag. Before packaging, the workflow runs `dart run tool/pin_release_links.dart <tag>`, which rewrites README.md, example/README.md, CHANGELOG.md and doc/*.md so the pub.dev pages link to the tag's documentation instead of main. The rewrite is committed only inside the runner and is never pushed, so the repository keeps its relative links. To preview the published pages locally, run the script with any release tag, inspect with `git diff`, then restore with `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
-
-The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/), so it always shows the published package rather than whatever is on main. To rebuild it from main instead, push a commit whose message contains `web demo`.
-
-### Pre-releases
-
-To ship a preview of the next version, add a `-dev.N` suffix:
-
-```bash
-git tag -m v0.24.0-dev.1 v0.24.0-dev.1 && git push origin v0.24.0-dev.1
-```
-
-This suits breaking releases, where the removals want trying before they are final.
-
-Patching an older release after main has moved on does not need a branch prepared in advance. Cut one from the tag when it is needed:
-
-```bash
-git branch release/0.23.x v0.23.0
-```
+Say in the migration guide which edits the fixes leave to the reader.
 
 ### Before 1.0.0
 
-A pre-1.0.0 release can carry unfinished work that a 1.0.0 cannot. Audit these
-before tagging it:
+Audit before tagging it:
 
-- **TODOs on public API.** Renames and removals get held for the next breaking
-  window rather than done piecemeal. Find them with `grep -rn "TODO" lib/`. Each
-  one is a decision still owed. Keep TODOs as `//`. A `///` TODO renders in the
-  API reference. Check: `grep -rn "/// TODO" lib/`.
-- **Deprecations past their window.** Run `grep -rn "@Deprecated" lib/` and check
-  each removal version. See [Verifying a removal](#verifying-a-removal).
-- **Function fields included in `==`.** A closure written inline is a new function
-  on every build, so a value holding one never equals its predecessor. These are
-  included: `ViewConfiguration.nowCallback`, every builder on `TileComponents`,
-  `OverlayBuilders` and the month, multi-day and schedule component classes, and
-  `PageTriggerConfiguration.triggerWidth` and
-  `ScrollTriggerConfiguration.triggerHeight`. Decide per field whether it becomes
-  a class, as the layout and snap strategies did, or stays a function with the
-  rule on its doc comment.
+- `grep -rn "TODO" lib/`. Each is a decision still owed, held for a breaking window.
+- `grep -rn "@Deprecated" lib/`. Nothing may be past its removal version.
+- Function fields included in `==`. A closure written inline is a new function on every build. [ROADMAP.md](ROADMAP.md) carries the list and the options.
+
+## Releasing
+
+Publishing is triggered by a tag. Bump `version` in `pubspec.yaml` and add the `## <version>` changelog heading, merge to main, then tag the merge commit:
+
+```bash
+git tag -s v0.32.0 -m v0.32.0 && git push origin v0.32.0
+```
+
+`publish.yml` refuses a tag that is not on main, does not match `pubspec.yaml` or has no changelog heading. It then analyzes, tests, runs `tool/pin_release_links.dart <tag>` and publishes. The pinning rewrites the links in `README.md`, `example/README.md`, `CHANGELOG.md` and `doc/*.md` to the tag, inside the runner only, so the pub.dev pages link to the documentation they shipped with and the repository keeps its relative links. Preview it locally by running the script with any tag and restore with `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
+
+The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/). A push to main whose message contains `web demo` rebuilds it from main.
+
+A pre-release takes a `-dev.N` suffix, as in `v0.33.0-dev.1`. A patch for an older release starts from its tag when needed: `git branch release/0.32.x v0.32.0`.
+
+`.pubignore` keeps `AGENTS.md`, `ROADMAP.md`, the tests, examples and tools out of the archive. `flutter pub publish --dry-run` lists what ships.
 
 ## Documentation
 
-- [README.md](README.md): feature list, quick-start, previews.
-- [doc/README.md](doc/README.md): index of the guides.
-- [MIGRATION.md](MIGRATION.md): breaking-change migration guides between versions.
-- [CHANGELOG.md](CHANGELOG.md): version history.
+- [README.md](README.md): features, quick start and links.
+- [doc/README.md](doc/README.md): the guide index. A new public API rarely needs a new guide section.
+- [CHANGELOG.md](CHANGELOG.md): what changed, one line per entry.
+- [MIGRATION.md](MIGRATION.md): what to do about it, with before and after code.
+- [ROADMAP.md](ROADMAP.md): why it was decided that way.
 
-A guide links to a class with its pub.dev API page, not a `lib/src` blob URL.
-`pin_release_links.dart` rewrites both, so a published version keeps linking to
-the documentation it shipped with.
+A guide links to a class through its pub.dev API page, not a `lib/src` URL. Every fenced Dart block in `README.md`, `example/README.md` and `doc/*.md` needs a directive comment, and `tool/analyze_doc_snippets.dart` documents them.
 
-Every fenced dart block in `README.md`, `example/README.md` and `doc/*.md` needs a
-directive comment. `tool/analyze_doc_snippets.dart` documents them and CI runs it.
+## Commits and pull requests
+
+- Subject: `type: what changed`, lower case, no period. Types in use: `feat`, `fix`, `docs`, `refactor`, `test`, `chore` and `ci`. A breaking change takes `!`, as in `refactor!:`.
+- Body: one line per change, saying what was done. No reasoning and no test counts.
+- A pull request body says what changed and what it means for the package. Pull requests merge with a merge commit.
+- Dependent pull requests are grouped in a GitHub stack. Merging one retargets the ones above it.

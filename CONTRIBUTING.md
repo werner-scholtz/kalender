@@ -24,9 +24,9 @@ flutter test
 - Try to keep pull requests focused on a single change.
 - If you're adding a new feature, try to follow the existing architecture and patterns.
 - Ensure `dart analyze` and `flutter analyze` report no issues.
-- Add or update tests where appropriate. [AGENTS.md](AGENTS.md#build--test) has the commands to run them in every CI timezone.
+- Add or update tests where appropriate. [AGENTS.md](AGENTS.md#commands) has the commands to run them in every CI timezone.
 - Adding or changing a code sample in the README or the guides? Every fenced dart block needs a directive comment. Run `dart run tool/analyze_doc_snippets.dart`.
-- Removing or renaming anything public? The rules for deprecating it, how long it stays, and what to write in the changelog and migration guide are in [AGENTS.md](AGENTS.md#breaking-changes-and-deprecations).
+- Removing or renaming anything public? The rules for deprecating it, how long it stays, and what to write in the changelog and migration guide are in [AGENTS.md](AGENTS.md#versioning-and-migration).
 - Renaming anything public also ships a data-driven fix so `dart fix --apply` does it for the user, with a fixture pair in `test_fixes/`. See [AGENTS.md](AGENTS.md#automating-a-migration). Check it with:
 
 ```bash
