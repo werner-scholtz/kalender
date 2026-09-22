@@ -7,7 +7,7 @@
 - `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` are deprecated and are removed in 0.33.0. Use `calculateVerticalLayoutData`.
 - `kDefaultNewEventDuration` is deprecated and is removed in 0.33.0. Nothing reads it.
 - `DefaultEventStore.dateIds` is deprecated and is removed in 0.33.0. It was never populated.
-- `ScheduleViewController.itemCount`, `item`, `addItem`, `clear` and `initialScrollIndex` are deprecated and are removed in 0.33.0. Use `itemCountForPage`, `indexItem`, `addItemForPage` and `clearPage` with `currentPage`, and `closestIndex`.
+- `ScheduleViewController.itemCount`, `item`, `addItem`, `clear` and `initialScrollIndex` are deprecated and are removed in 0.33.0. Pass a page, `currentPage` for the one on screen, to `itemCountForPage`, `indexItem`, `addItemForPage` and `clearPage`. `closestIndex` replaces `initialScrollIndex`.
 
 ### Features
 
@@ -21,7 +21,7 @@
 ### Fixes
 
 - Tapping the day number in a month cell reaches `onTapped`.
-- A press on an event that can't be rescheduled or resized reaches the calendar behind it.
+- A press on an event that cannot be rescheduled or resized reaches the calendar behind it.
 - The multi-day body picks the tiles to build from `calculateVerticalLayoutData`, the positions the tiles are drawn at.
 - A calendar shorter than its header lays out without errors.
 - `kDefaultToWeekly` and `kDefaultToSchedule` carry the first day of the month when switching from the month view.

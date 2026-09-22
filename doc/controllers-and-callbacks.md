@@ -30,6 +30,8 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 | `visibleTimeOfDay`     | `ValueNotifier<KalenderTime?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
 | `visibleEvents`        | `ValueNotifier<Set<KalenderEvent>>` | Events visible on screen                               |
 | `selectedEvent`        | `ValueNotifier<KalenderEvent?>`     | The focused event (shows drop target / resize handles) |
+| `selectedRange`        | `ValueNotifier<FloatingDateTimeRange?>` | The selected days, ending at midnight after the last one |
+| `openDayOverlay`       | `ValueNotifier<FloatingDateTime?>`  | The day whose overlay is open (month view and multi-day header, `null` otherwise) |
 
 **Navigation methods:**
 
@@ -40,7 +42,15 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 
 **Selection methods:** `selectEvent(event)` focuses an event from code, which is
 what draws its drop target and resize handles. `deselectEvent()` clears it. Both
-drive the `selectedEvent` notifier above.
+drive the `selectedEvent` notifier above. `selectDate(date)` and
+`selectRange(range)` select whole days, `deselectRange()` clears them and
+`isDateSelected(date)` tests one. They drive `selectedRange`. Pass
+`navigate: true` to move the view to a selection that is off screen.
+
+**Day overlay:** `showDayOverlay(date)` opens the overlay listing a day's events
+in the month view and the multi-day header, and `hideDayOverlay()` closes it.
+Both drive `openDayOverlay`. A day off screen opens nothing unless
+`navigate: true` is passed.
 
 ### Disposing
 
@@ -169,7 +179,8 @@ KalenderCallbacks(
   // 'visibleTimeOfDay' is the time aligned with the top of the viewport.
   onScrollPositionChanged: (visibleTimeOfDay) {},
 
-  // Called when the user taps an empty area (day / week body).
+  // Called when the user taps an empty area (day / week body, month cell,
+  // empty schedule day).
   onTapped: (date) {},
   onTappedWithDetail: (detail) {
     // detail.dateTime or detail.dateTimeRange, plus renderBox & localOffset.
@@ -186,6 +197,11 @@ KalenderCallbacks(
   // Called when the user secondary long-presses an empty area.
   onSecondaryLongPressed: (date) {},
   onSecondaryLongPressedWithDetail: (detail) {},
+
+  // Taps, secondary taps and long presses on a date label (day number, day
+  // name, schedule date) and on a week number. Each listens only for what is set.
+  dateLabel: GestureCallbacks(onTap: (detail) {}),
+  weekNumber: GestureCallbacks(onTap: (detail) {}),
 
   // --- Drag-and-drop acceptance ---
 

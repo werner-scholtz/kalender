@@ -200,7 +200,7 @@ Switching themes transitions the calendar's colors along with the rest of the ap
 
 ### The overflow overlay
 
-The overlay that opens from the `+3` button, which stands in for events that do not fit, is themed the same way. Its card and close button take Flutter's own `CardThemeData` and `ButtonStyle`.
+The overlay listing a day's events, opened from the `+3` button that stands in for events that do not fit or from `KalenderController.showDayOverlay`, is themed the same way. Its card and close button take Flutter's own `CardThemeData` and `ButtonStyle`.
 
 <!-- snippet: expression -->
 ```dart
