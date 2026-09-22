@@ -197,4 +197,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tileLayout => 'Tile Layout';
+
+  @override
+  String get locked => 'Locked';
+
+  @override
+  String get lockedHint => 'Drag across it to create an event.';
+
+  @override
+  String get clearSelection => 'Clear selection';
 }

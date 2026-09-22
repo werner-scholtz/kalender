@@ -57,5 +57,8 @@
   "newEventTitle": "Nouvel événement",
   "hideConfiguration": "Masquer la configuration",
   "showConfiguration": "Afficher la configuration",
-  "tileLayout": "Disposition des tuiles"
+  "tileLayout": "Disposition des tuiles",
+  "locked": "Verrouillé",
+  "lockedHint": "Glissez par-dessus pour créer un événement.",
+  "clearSelection": "Effacer la sélection"
 }

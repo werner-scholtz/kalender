@@ -57,5 +57,8 @@
   "newEventTitle": "Nuevo evento",
   "hideConfiguration": "Ocultar configuración",
   "showConfiguration": "Mostrar configuración",
-  "tileLayout": "Disposición de mosaicos"
+  "tileLayout": "Disposición de mosaicos",
+  "locked": "Bloqueado",
+  "lockedHint": "Arrastra sobre él para crear un evento.",
+  "clearSelection": "Borrar selección"
 }

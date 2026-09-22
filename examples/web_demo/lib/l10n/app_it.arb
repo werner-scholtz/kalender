@@ -57,5 +57,8 @@
   "newEventTitle": "Nuovo evento",
   "hideConfiguration": "Nascondi configurazione",
   "showConfiguration": "Mostra configurazione",
-  "tileLayout": "Layout riquadri"
+  "tileLayout": "Layout riquadri",
+  "locked": "Bloccato",
+  "lockedHint": "Trascina sopra per creare un evento.",
+  "clearSelection": "Cancella selezione"
 }

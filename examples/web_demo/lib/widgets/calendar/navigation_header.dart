@@ -45,6 +45,9 @@ class NavigationHeader extends StatelessWidget {
         final showNav = isTouch ? maxW >= 315 : maxW > 300;
         // Drop the location menu on very narrow mobile widths (< ~225px).
         final showLocation = !isTouch || maxW >= 225;
+        // The selection chip takes ~170 on top of the full date label and the
+        // labelled location and view chips.
+        final showSelection = maxW >= 840;
 
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: isTouch ? 4 : 2, vertical: isTouch ? 4 : 2),
@@ -56,6 +59,7 @@ class NavigationHeader extends StatelessWidget {
               // space instead of pushing the buttons around. The navigation
               // controls live in the right-hand cluster.
               HeaderDateButton(controller: controller, compact: compactDate),
+              if (showSelection) SelectionChip(controller: controller),
               const Spacer(),
               if (showNav) ...[
                 IconButton(
@@ -79,6 +83,34 @@ class NavigationHeader extends StatelessWidget {
               if (onToggleConfig != null) ConfigToggle(onPressed: onToggleConfig, configVisible: configVisible),
             ],
           ),
+        );
+      },
+    );
+  }
+}
+
+/// The selected days, with a button that clears them. Nothing while nothing is selected.
+class SelectionChip extends StatelessWidget {
+  final KalenderController controller;
+  const SelectionChip({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: controller.selectedRange,
+      builder: (context, range, child) {
+        if (range == null) return const SizedBox.shrink();
+        final locale = MaterialLocalizations.of(context);
+        final first = locale.formatShortDate(range.start);
+        final last = locale.formatShortDate(range.end.subtract(const Duration(days: 1)));
+        return InputChip(
+          avatar: Icon(Icons.check_circle_outline, color: context.colorScheme.primary),
+          label: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 160),
+            child: Text(first == last ? first : '$first - $last', overflow: TextOverflow.ellipsis),
+          ),
+          onDeleted: controller.deselectRange,
+          deleteButtonTooltipMessage: context.l10n.clearSelection,
         );
       },
     );

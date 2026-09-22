@@ -197,4 +197,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tileLayout => 'Disposición de mosaicos';
+
+  @override
+  String get locked => 'Bloqueado';
+
+  @override
+  String get lockedHint => 'Arrastra sobre él para crear un evento.';
+
+  @override
+  String get clearSelection => 'Borrar selección';
 }

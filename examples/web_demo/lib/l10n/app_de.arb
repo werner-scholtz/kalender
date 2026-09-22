@@ -57,5 +57,8 @@
   "newEventTitle": "Neues Ereignis",
   "hideConfiguration": "Konfiguration ausblenden",
   "showConfiguration": "Konfiguration anzeigen",
-  "tileLayout": "Kachel-Layout"
+  "tileLayout": "Kachel-Layout",
+  "locked": "Gesperrt",
+  "lockedHint": "Darüber ziehen, um ein Ereignis zu erstellen.",
+  "clearSelection": "Auswahl aufheben"
 }

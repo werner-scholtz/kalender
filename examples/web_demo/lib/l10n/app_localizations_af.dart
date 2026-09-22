@@ -197,4 +197,13 @@ class AppLocalizationsAf extends AppLocalizations {
 
   @override
   String get tileLayout => 'Teël-uitleg';
+
+  @override
+  String get locked => 'Gesluit';
+
+  @override
+  String get lockedHint => 'Sleep daaroor om \'n gebeurtenis te skep.';
+
+  @override
+  String get clearSelection => 'Wis seleksie';
 }

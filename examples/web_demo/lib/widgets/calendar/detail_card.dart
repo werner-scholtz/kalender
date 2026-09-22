@@ -98,11 +98,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
                                 contentPadding: const EdgeInsets.symmetric(vertical: 4),
                                 isDense: true,
                               ),
-                              onChanged: (value) {
-                                final updatedEvent = event.copyWith(title: value);
-                                widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
-                                setState(() => event = updatedEvent);
-                              },
+                              onChanged: (value) => _replace(event.copyWith(title: value)),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -181,6 +177,15 @@ class _EventDetailCardState extends State<EventDetailCard> {
                           _updateEvent(KalenderDateTimeRange(start: event.start, end: newEnd));
                         },
                       ),
+                      const SizedBox(height: 8),
+                      _LockRow(
+                        locked: event.isLocked,
+                        onChanged: (locked) => _replace(
+                          event.copyWith(
+                            interaction: locked ? EventInteraction.allowNone() : EventInteraction.allowAll(),
+                          ),
+                        ),
+                      ),
                       const Spacer(),
                       // Delete button
                       SizedBox(
@@ -232,9 +237,61 @@ class _EventDetailCardState extends State<EventDetailCard> {
   }
 
   void _updateEvent(KalenderDateTimeRange newRange) {
-    final updatedEvent = event.copyWith(start: newRange.start, end: newRange.end);
+    _replace(event.copyWith(start: newRange.start, end: newRange.end));
+  }
+
+  void _replace(Event updatedEvent) {
     widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
     setState(() => event = updatedEvent);
+  }
+}
+
+class _LockRow extends StatelessWidget {
+  final bool locked;
+  final ValueChanged<bool> onChanged;
+
+  const _LockRow({required this.locked, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Row(
+      children: [
+        Icon(
+          locked ? Icons.lock_outline : Icons.lock_open,
+          size: 18,
+          color: locked ? colorScheme.primary : colorScheme.onSurfaceVariant,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.l10n.locked, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
+              if (locked)
+                Text(
+                  context.l10n.lockedHint,
+                  style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          height: 28,
+          child: FittedBox(
+            child: Switch(
+              value: locked,
+              onChanged: onChanged,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -21,6 +21,7 @@ class Event extends KalenderEvent {
     this.color,
     super.interaction,
     super.multiDayRule,
+    super.isAllDay,
   });
 
   /// The title of the [Event].
@@ -41,21 +42,33 @@ class Event extends KalenderEvent {
     return Event(start: start, end: end, title: title, description: description, color: color);
   }
 
-  /// A copy with the given fields replaced.
+  /// A copy with the given fields replaced, keeping the id.
   ///
   /// This is the demo's own method rather than an override, so it takes whatever
-  /// parameters are useful here. [carryOver] keeps the copy's identity.
-  Event copyWith({DateTime? start, DateTime? end, String? title, String? description, Color? color}) {
-    return carryOver(
-      Event(
-        start: start ?? this.start,
-        end: end ?? this.end,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        color: color ?? this.color,
-      ),
+  /// parameters are useful here.
+  Event copyWith({
+    DateTime? start,
+    DateTime? end,
+    String? title,
+    String? description,
+    Color? color,
+    EventInteraction? interaction,
+  }) {
+    return Event(
+      id: id,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      color: color ?? this.color,
+      interaction: interaction ?? this.interaction,
+      multiDayRule: multiDayRule,
+      isAllDay: isAllDay,
     );
   }
+
+  /// Whether the event can be neither moved nor resized.
+  bool get isLocked => !interaction.allowRescheduling && !interaction.allowStartResize && !interaction.allowEndResize;
 
   @override
   operator ==(Object other) {

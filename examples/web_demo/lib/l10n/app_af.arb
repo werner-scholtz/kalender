@@ -57,5 +57,8 @@
   "newEventTitle": "Nuwe gebeurtenis",
   "hideConfiguration": "Versteek konfigurasie",
   "showConfiguration": "Wys konfigurasie",
-  "tileLayout": "Teël-uitleg"
+  "tileLayout": "Teël-uitleg",
+  "locked": "Gesluit",
+  "lockedHint": "Sleep daaroor om 'n gebeurtenis te skep.",
+  "clearSelection": "Wis seleksie"
 }

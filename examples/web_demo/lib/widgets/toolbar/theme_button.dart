@@ -12,13 +12,11 @@ class ThemeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.themeModeNotifier,
-      builder: (context, themeMode, _) => IconButton.filledTonal(
-        onPressed: () =>
-            context.themeModeNotifier.value = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark,
-        icon: Icon(themeMode == ThemeMode.dark ? Icons.brightness_2_rounded : Icons.brightness_7_rounded),
-      ),
+    // The mode starts as ThemeMode.system, so the resolved brightness decides.
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return IconButton.filledTonal(
+      onPressed: () => context.themeModeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark,
+      icon: Icon(isDark ? Icons.brightness_2_rounded : Icons.brightness_7_rounded),
     );
   }
 }

@@ -464,6 +464,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tile Layout'**
   String get tileLayout;
+
+  /// No description provided for @locked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get locked;
+
+  /// No description provided for @lockedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag across it to create an event.'**
+  String get lockedHint;
+
+  /// No description provided for @clearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get clearSelection;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

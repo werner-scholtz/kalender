@@ -24,6 +24,8 @@ abstract class BaseEventTile extends StatelessWidget {
   bool get continuesBefore => event.dateTimeRange.start.isBefore(tileRange.start);
   String title(BuildContext context) => event.title;
 
+  Widget get lockIcon => Icon(Icons.lock_outline, size: 12, color: color.withAlpha(180));
+
   static BorderRadius defaultBorderRadius = BorderRadius.circular(6);
 }
 
@@ -53,10 +55,18 @@ class EventTile extends BaseEventTile {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        child: Text(
-          title(context),
-          style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w500),
-          overflow: TextOverflow.ellipsis,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                title(context),
+                style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (event.isLocked) lockIcon,
+          ],
         ),
       ),
     );
@@ -103,6 +113,7 @@ class MultiDayEventTile extends BaseEventTile {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            if (event.isLocked) lockIcon,
             if (continuesAfter) Icon(Icons.chevron_right, size: 14, color: color.withAlpha(150)),
           ],
         ),
