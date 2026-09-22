@@ -16,8 +16,8 @@ enum Scenario {
   /// Realistic load.
   Ten_Events_Per_Day(10),
 
-  /// Heavy load — where regressions in kalender's own layout/build code surface
-  /// above Flutter framework overhead.
+  /// Heavy load, where regressions in kalender's own layout and build code surface
+  /// above the Flutter framework overhead.
   Fifty_Events_Per_Day(50);
 
   const Scenario(this.numberOfEvents);

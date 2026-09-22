@@ -38,13 +38,12 @@ class TestConfiguration {
   static List<KalenderEvent> generate(List<KalenderTimeRange> timeOfDayRanges) {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
 
-    // Loop through the test range and create events.
     final events = <KalenderEvent>[
-      for (var date in FloatingDateTimeRange.fromDateTimeRange(testRange).dates()) ...[
+      for (var date = start; date.isBefore(end); date = DateTime(date.year, date.month, date.day + 1)) ...[
         for (var timeOfDayRange in timeOfDayRanges)
           Event(
-            start: timeOfDayRange.start.toFloatingDateTime(date),
-            end: timeOfDayRange.end.toFloatingDateTime(date),
+            start: timeOfDayRange.start.toDateTime(date),
+            end: timeOfDayRange.end.toDateTime(date),
             title: 'Event',
             description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
             color: Colors.primaries[date.day % Colors.primaries.length],

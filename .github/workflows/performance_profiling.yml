@@ -50,6 +50,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      # The dashboard compares against history, so a bump of .fvmrc shows up as
+      # a step in the frame series that no package commit caused. Check the SDK
+      # version of the runs on either side before reading a step as a regression.
       - uses: subosito/flutter-action@v2
         with:
           cache: true
@@ -64,14 +67,14 @@ jobs:
           sudo apt-get install -y libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev
           sudo apt-get install -y mesa-common-dev
 
-      # --- Micro-benchmarks (pure Dart, low noise — the primary signal) --------
+      # --- Micro-benchmarks (pure Dart, low noise, the primary signal) ---------
       - name: Get package dependencies
         run: flutter pub get
 
       - name: Run micro-benchmarks
         run: flutter test benchmark/micro_benchmark_test.dart
 
-      # --- Frame profiling (flutter drive, higher noise — supplementary) -------
+      # --- Frame profiling (flutter drive, higher noise, supplementary) --------
       - name: Get example dependencies
         working-directory: ./examples/testing
         run: flutter pub get
