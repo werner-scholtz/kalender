@@ -4,13 +4,13 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:testing/main.dart';
 import 'package:testing/test_configuration.dart';
-import 'package:testing/tiles.dart';
 import '../test_driver/perf_driver.dart';
 import 'utils.dart';
 
@@ -109,12 +109,10 @@ void main() {
             final bottomLeft = tester.getBottomLeft(body) + const Offset(25, -25);
             final bottomRight = tester.getBottomRight(body) - const Offset(25, 25);
 
-            final tileFinder = find.byType(switch (view) {
-              Views.week => EventTile,
-              Views.month => MultiDayEventTile,
-              Views.schedule => MultiDayEventTile,
-            }).first;
-            final dragStart = tester.getCenter(tileFinder) + const Offset(-2, 0);
+            final tile = firstTileInside(tileRects(tester, tileTypeOf(view)), pressableArea(tester, view));
+            final dragStart = tile.center + const Offset(-2, 0);
+            final before = snapshotEvents(config.eventsController);
+            final drag = DragProbe(config.kalenderController);
 
             await binding.traceAction(() async {
               final dragGesture = await tester.startGesture(dragStart, pointer: 1);
@@ -132,6 +130,13 @@ void main() {
               await dragGesture.up();
               await tester.pumpAndSettle(Duration(milliseconds: 100));
             }, reportKey: scenario.getReportKey(view, ReportKeys.rescheduling, run));
+
+            drag.dispose();
+            expect(drag.dragged, isTrue, reason: 'No drag started, so the trace measured idle frames.');
+            // A schedule drop on the day the event came from changes nothing.
+            if (view != Views.schedule) {
+              expect(changedEvents(config.eventsController, before), hasLength(1), reason: 'The drop changed nothing.');
+            }
           });
 
           // 5. Profile resizing.
@@ -139,47 +144,42 @@ void main() {
             await tester.pumpWidget(MyApp(config: config));
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
-            final tileFinder = find.byType(switch (view) {
-              Views.week => EventTile,
-              Views.month => MultiDayEventTile,
-              _ => MultiDayEventTile,
-            }).first;
+            final tiles = tileRects(tester, tileTypeOf(view));
+            final area = pressableArea(tester, view);
+            final (dragStart, dragDelta) = switch (view) {
+              Views.week => (endHandleInside(tiles, area, room: 50), const Offset(0, 50)),
+              _ => (rightEdgeInside(tiles, area, room: 100), const Offset(100, 0)),
+            };
+            final before = snapshotEvents(config.eventsController);
+            final drag = DragProbe(config.kalenderController);
 
-            final size = tester.getSize(tileFinder);
-
-            final gesture = await tester.createGesture();
+            // The resize handles show for a hovering mouse. A touch pointer would press the tile and reschedule it.
+            final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
             await gesture.addPointer(location: Offset.zero);
             addTearDown(gesture.removePointer);
             await tester.pump();
-
-            final dragStart =
-                tester.getCenter(tileFinder) +
-                switch (view) {
-                  Views.week => Offset(0, (size.height / 2) - 2),
-                  Views.month => Offset((size.width / 2) - 2, 0),
-                  _ => const Offset(0, 0),
-                };
 
             await binding.traceAction(() async {
               await gesture.moveTo(dragStart);
               await tester.pumpAndSettle(Duration(milliseconds: 200));
               await gesture.down(dragStart);
-              await performSegmentedDrag(
-                gesture,
-                tester,
-                dragStart,
-                dragStart +
-                    switch (view) {
-                      Views.week => Offset(0, 50),
-                      Views.month => Offset(100, 0),
-                      _ => const Offset(0, 0),
-                    },
-              );
+              await performSegmentedDrag(gesture, tester, dragStart, dragStart + dragDelta);
               await tester.pumpAndSettle();
 
               await gesture.up();
               await tester.pumpAndSettle(Duration(milliseconds: 100));
             }, reportKey: scenario.getReportKey(view, ReportKeys.resizing, run));
+
+            drag.dispose();
+            expect(drag.dragged, isTrue, reason: 'No drag started, so the trace measured idle frames.');
+            final changed = changedEvents(config.eventsController, before);
+            expect(changed, hasLength(1), reason: 'The drop changed nothing.');
+            final resized = config.eventsController.byId(changed.single)!;
+            expect(
+              resized.start,
+              before[changed.single]!.$1,
+              reason: 'The drag moved the event instead of resizing it.',
+            );
           });
         }
       }

@@ -4,21 +4,104 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:testing/test_configuration.dart';
+import 'package:testing/tiles.dart';
 
 import '../test_driver/perf_driver.dart';
 
-/// Performs a segmented drag operation to simulate realistic user interaction.
+/// The tile widget the app builds for events in [view].
+Type tileTypeOf(Views view) => view == Views.week ? EventTile : MultiDayEventTile;
+
+/// The rects of every tile of [type], in tree order, which is also paint order.
+List<Rect> tileRects(WidgetTester tester, Type type) {
+  final tiles = find.byType(type);
+  final count = tiles.evaluate().length;
+  return [for (var i = 0; i < count; i++) tester.getRect(tiles.at(i))];
+}
+
+/// The part of the [KalenderBody] a press reaches a tile in.
 ///
-/// [dragGesture] - The test gesture to perform the drag with
-/// [tester] - The widget tester instance
-/// [start] - Starting position of the drag
-/// [end] - Ending position of the drag
-/// [segmentCount] - Number of segments to split the drag into (default: 5)
-/// [segmentDurationMs] - Duration between segments in milliseconds (default: 100)
-/// [pumpDurationMs] - Duration to pump after each segment in milliseconds (default: 20)
+/// A tile drawn past the edge of the window cannot be pressed, and the paged views turn the page while the pointer
+/// is over their left and right edges.
+Rect pressableArea(WidgetTester tester, Views view) {
+  final body = tester.getRect(find.byType(KalenderBody));
+  if (view == Views.schedule) return body;
+  final margin = body.width / 10;
+  return Rect.fromLTRB(body.left + margin, body.top, body.right - margin, body.bottom);
+}
+
+bool _inside(Rect area, Rect rect) => area.contains(rect.topLeft) && area.contains(rect.bottomRight);
+
+/// The first tile inside [area], in tree order.
+Rect firstTileInside(List<Rect> tiles, Rect area) {
+  return tiles.firstWhere((rect) => _inside(area, rect), orElse: () => throw StateError('No tile lies inside $area.'));
+}
+
+/// The end handle of the latest-ending tile inside [area] that leaves [room] below it and that nothing covers.
+///
+/// A later tile containing the point is painted over it, and hides the handle unless the point lies within
+/// [handleLength] of that tile's own bottom, where its end handle takes the press instead.
+Offset endHandleInside(List<Rect> tiles, Rect area, {required double room, double handleLength = 16}) {
+  Offset? handle;
+  var bottom = double.negativeInfinity;
+  for (var i = 0; i < tiles.length; i++) {
+    final rect = tiles[i];
+    if (!_inside(area, rect) || rect.bottom + room > area.bottom || rect.bottom <= bottom) continue;
+    final point = Offset(rect.center.dx, rect.bottom - 2);
+    final covered = tiles.skip(i + 1).any((later) => later.contains(point) && later.bottom - point.dy > handleLength);
+    if (covered) continue;
+    handle = point;
+    bottom = rect.bottom;
+  }
+  return handle ?? (throw StateError('No tile inside $area has a reachable end handle with $room below it.'));
+}
+
+/// The right edge of the first tile inside [area] that leaves [room] to its right.
+Offset rightEdgeInside(List<Rect> tiles, Rect area, {required double room}) {
+  final rect = tiles.firstWhere(
+    (rect) => _inside(area, rect) && rect.right + room <= area.right,
+    orElse: () => throw StateError('No tile inside $area has $room to its right.'),
+  );
+  return Offset(rect.right - 2, rect.center.dy);
+}
+
+/// Records whether [controller] reported an event under a drag, which every processed drag move sets.
+class DragProbe {
+  DragProbe(this.controller) {
+    controller.selectedEvent.addListener(_onSelectedEvent);
+  }
+
+  final KalenderController controller;
+
+  /// Whether a drag moved at least once since this probe was created.
+  var dragged = false;
+
+  void _onSelectedEvent() {
+    if (controller.selectedEvent.value != null) dragged = true;
+  }
+
+  void dispose() => controller.selectedEvent.removeListener(_onSelectedEvent);
+}
+
+/// The start and end of every event in [controller], by id.
+Map<String, (DateTime, DateTime)> snapshotEvents(DefaultEventsController controller) {
+  return {for (final event in controller.events) event.id: (event.start, event.end)};
+}
+
+/// The ids of the events whose start or end differs from [before].
+List<String> changedEvents(DefaultEventsController controller, Map<String, (DateTime, DateTime)> before) {
+  final changed = <String>[];
+  for (final entry in before.entries) {
+    final event = controller.byId(entry.key);
+    if (event != null && (event.start, event.end) != entry.value) changed.add(entry.key);
+  }
+  return changed;
+}
+
+/// Moves [dragGesture] from [start] to [end] in [segmentCount] steps, pumping a frame after each.
 Future<void> performSegmentedDrag(
   TestGesture dragGesture,
   WidgetTester tester,
