@@ -73,7 +73,7 @@ If Flutter promotes a canonical range type ([#97496](https://github.com/flutter/
 
 **Members are named for what they are, not for their type.** [AGENTS.md](AGENTS.md#naming-the-two-range-spaces) carries the rule.
 
-### 0.32.0, done
+### 0.32.0, selection, done
 
 A release that adds and does not break, built around selection. It has no migration section.
 
@@ -133,13 +133,12 @@ Most of the open issues should land before 1.0.0 rather than after it. Each one 
 
 | Issue | Needs |
 |---|---|
-| [#215](https://github.com/werner-scholtz/kalender/issues/215) a portal for every cell in the month body | A way to open the day overlay for any date. It exists only for days whose events overflow, and only the "+N more" button opens it. Planned for 0.32.0. |
-| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. Selection lands in 0.32.0, the slots in 0.33.0. |
-| [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. It lands in 0.32.0 on the day number. Drawing it on a multi-day body cell needs the slots in 0.33.0. |
+| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. The controller holds the selection, the slots wait for 0.33.0. |
+| [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. The day number draws it. Drawing it on a multi-day body cell needs the slots in 0.33.0. |
 | [#40](https://github.com/werner-scholtz/kalender/issues/40) yearly view | A view registry. |
 | [#264](https://github.com/werner-scholtz/kalender/issues/264) mobile month view | A view registry. A grid of days over a list, not a configuration of the current month view. |
 
-Selection is the thread through the middle three. 0.32.0 adds it to the controller, and 0.33.0 adds the structure the rest waits on.
+Selection runs through [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The controller holds it, and 0.33.0 adds the structure the rest waits on.
 
 **Independent.** These wait on nothing and can land in any release.
 
@@ -147,7 +146,6 @@ Selection is the thread through the middle three. 0.32.0 adds it to the controll
 |---|---|
 | [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A set of visible weekdays on the view configuration. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. Scoped below. |
 | [#98](https://github.com/werner-scholtz/kalender/issues/98) named and uneditable time regions | A second thing the calendar draws besides events, that events sit on top of. The largest new model here. |
-| [#259](https://github.com/werner-scholtz/kalender/issues/259) drag to create over a locked event | A drag starting on an unmodifiable event should fall through to creation instead of doing nothing. Mostly behavior. Planned for 0.32.0. |
 | [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `KalenderView`. |
 
 **Arbitrary visible weekdays, [#90](https://github.com/werner-scholtz/kalender/issues/90), needs the page to stop being one date range.** 0.26.0 covers the contiguous case with `numberOfDays` on `week` and `workWeek`, which is what the reporter of [#444](https://github.com/werner-scholtz/kalender/issues/444) asked for. Every contiguous span starting on `firstDayOfWeek` is expressible that way, so what a set of weekdays adds is the non-contiguous case, Monday, Wednesday and Friday, and a span that starts somewhere other than `firstDayOfWeek`.
