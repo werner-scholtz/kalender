@@ -178,17 +178,13 @@ class _EventDetailCardState extends State<EventDetailCard> {
                         },
                       ),
                       const SizedBox(height: 8),
-                      SwitchListTile(
-                        value: event.isLocked,
+                      _LockRow(
+                        locked: event.isLocked,
                         onChanged: (locked) => _replace(
                           event.copyWith(
                             interaction: locked ? EventInteraction.allowNone() : EventInteraction.allowAll(),
                           ),
                         ),
-                        secondary: Icon(event.isLocked ? Icons.lock_outline : Icons.lock_open, size: 18),
-                        title: Text(context.l10n.locked),
-                        subtitle: Text(context.l10n.lockedHint, maxLines: 2, overflow: TextOverflow.ellipsis),
-                        contentPadding: EdgeInsets.zero,
                       ),
                       const Spacer(),
                       // Delete button
@@ -247,6 +243,55 @@ class _EventDetailCardState extends State<EventDetailCard> {
   void _replace(Event updatedEvent) {
     widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
     setState(() => event = updatedEvent);
+  }
+}
+
+class _LockRow extends StatelessWidget {
+  final bool locked;
+  final ValueChanged<bool> onChanged;
+
+  const _LockRow({required this.locked, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Row(
+      children: [
+        Icon(
+          locked ? Icons.lock_outline : Icons.lock_open,
+          size: 18,
+          color: locked ? colorScheme.primary : colorScheme.onSurfaceVariant,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.l10n.locked, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
+              if (locked)
+                Text(
+                  context.l10n.lockedHint,
+                  style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          height: 28,
+          child: FittedBox(
+            child: Switch(
+              value: locked,
+              onChanged: onChanged,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
