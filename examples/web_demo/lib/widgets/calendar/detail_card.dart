@@ -98,11 +98,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
                                 contentPadding: const EdgeInsets.symmetric(vertical: 4),
                                 isDense: true,
                               ),
-                              onChanged: (value) {
-                                final updatedEvent = event.copyWith(title: value);
-                                widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
-                                setState(() => event = updatedEvent);
-                              },
+                              onChanged: (value) => _replace(event.copyWith(title: value)),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -181,6 +177,19 @@ class _EventDetailCardState extends State<EventDetailCard> {
                           _updateEvent(KalenderDateTimeRange(start: event.start, end: newEnd));
                         },
                       ),
+                      const SizedBox(height: 8),
+                      SwitchListTile(
+                        value: event.isLocked,
+                        onChanged: (locked) => _replace(
+                          event.copyWith(
+                            interaction: locked ? EventInteraction.allowNone() : EventInteraction.allowAll(),
+                          ),
+                        ),
+                        secondary: Icon(event.isLocked ? Icons.lock_outline : Icons.lock_open, size: 18),
+                        title: Text(context.l10n.locked),
+                        subtitle: Text(context.l10n.lockedHint, maxLines: 2, overflow: TextOverflow.ellipsis),
+                        contentPadding: EdgeInsets.zero,
+                      ),
                       const Spacer(),
                       // Delete button
                       SizedBox(
@@ -232,7 +241,10 @@ class _EventDetailCardState extends State<EventDetailCard> {
   }
 
   void _updateEvent(KalenderDateTimeRange newRange) {
-    final updatedEvent = event.copyWith(start: newRange.start, end: newRange.end);
+    _replace(event.copyWith(start: newRange.start, end: newRange.end));
+  }
+
+  void _replace(Event updatedEvent) {
     widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
     setState(() => event = updatedEvent);
   }

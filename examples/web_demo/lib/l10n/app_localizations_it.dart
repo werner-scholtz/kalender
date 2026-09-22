@@ -197,4 +197,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tileLayout => 'Layout riquadri';
+
+  @override
+  String get locked => 'Bloccato';
+
+  @override
+  String get lockedHint => 'Trascina sopra per creare un evento.';
+
+  @override
+  String get clearSelection => 'Cancella selezione';
 }

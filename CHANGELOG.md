@@ -37,6 +37,7 @@
 ### Examples
 
 - `examples/example/lib/selection_demo.dart` shows date selection and opening the day overlay.
+- The web demo selects days from the date labels and week numbers, opens the day overlay from a right-click or long press, and locks and unlocks events from the detail card.
 
 ## 0.31.3
 

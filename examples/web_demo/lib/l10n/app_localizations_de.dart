@@ -197,4 +197,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tileLayout => 'Kachel-Layout';
+
+  @override
+  String get locked => 'Gesperrt';
+
+  @override
+  String get lockedHint => 'Darüber ziehen, um ein Ereignis zu erstellen.';
+
+  @override
+  String get clearSelection => 'Auswahl aufheben';
 }

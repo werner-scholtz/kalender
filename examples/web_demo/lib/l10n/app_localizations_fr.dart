@@ -197,4 +197,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tileLayout => 'Disposition des tuiles';
+
+  @override
+  String get locked => 'Verrouillé';
+
+  @override
+  String get lockedHint => 'Glissez par-dessus pour créer un événement.';
+
+  @override
+  String get clearSelection => 'Effacer la sélection';
 }

@@ -80,7 +80,16 @@ List<KalenderEvent> generateEvents(BuildContext context) {
 
   final events = <KalenderEvent>[];
 
-  Event timed(DateTime day, int hour, int minute, Duration duration, String title, Color color, {String? description}) {
+  Event timed(
+    DateTime day,
+    int hour,
+    int minute,
+    Duration duration,
+    String title,
+    Color color, {
+    String? description,
+    bool locked = false,
+  }) {
     final start = DateTime(day.year, day.month, day.day, hour, minute);
     return Event(
       start: start,
@@ -88,6 +97,7 @@ List<KalenderEvent> generateEvents(BuildContext context) {
       title: title,
       description: description,
       color: color,
+      interaction: locked ? EventInteraction.allowNone() : null,
     );
   }
 
@@ -98,8 +108,9 @@ List<KalenderEvent> generateEvents(BuildContext context) {
 
     if (!isWeekend) {
       // The daily standup anchors every weekday morning. Kept at 30 minutes so
-      // its title stays legible at the default zoom.
-      events.add(timed(day, 9, 0, const Duration(minutes: 30), 'Daily standup', _standupColor));
+      // its title stays legible at the default zoom. Locked, so a drag across it
+      // creates an event.
+      events.add(timed(day, 9, 0, const Duration(minutes: 30), 'Daily standup', _standupColor, locked: true));
 
       // A weekly rhythm that repeats on the same day each week.
       if (weekday == DateTime.monday) {
@@ -126,7 +137,7 @@ List<KalenderEvent> generateEvents(BuildContext context) {
       if (weekday == DateTime.tuesday || weekday == DateTime.friday) {
         events.add(
           timed(day, 22, 0, const Duration(hours: 4), 'On-call shift', _overnightColor,
-              description: 'Runs to 02:00 the next morning.'),
+              description: 'Runs to 02:00 the next morning.', locked: true),
         );
       }
 
@@ -147,7 +158,7 @@ List<KalenderEvent> generateEvents(BuildContext context) {
   }
 
   // A few multi-day events, positioned relative to today.
-  void multiDay(int startOffset, int days, String title, Color color, {String? description}) {
+  void multiDay(int startOffset, int days, String title, Color color, {String? description, bool locked = false}) {
     final start = today.add(Duration(days: startOffset));
     events.add(
       Event(
@@ -156,13 +167,14 @@ List<KalenderEvent> generateEvents(BuildContext context) {
         title: title,
         description: description,
         color: color,
+        interaction: locked ? EventInteraction.allowNone() : null,
       ),
     );
   }
 
   multiDay(-9, 2, 'Team offsite', _multiDayColor, description: 'Two days away with the team.');
   multiDay(4, 3, 'Flutter conference', _multiDayColor);
-  multiDay(14, 1, 'Public holiday', _wrapUpColor);
+  multiDay(14, 1, 'Public holiday', _wrapUpColor, locked: true);
   multiDay(24, 7, 'Vacation', _personalColor, description: 'Out of office.');
 
   return events;

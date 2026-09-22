@@ -79,7 +79,7 @@ class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTicke
         return LayoutBuilder(
           builder: (context, constraints) {
             var width = min(300.0, constraints.maxWidth);
-            var height = 200.0;
+            var height = 280.0;
 
             var position = selectedRenderBox!.localToGlobal(Offset.zero);
             final size = constraints.biggest;

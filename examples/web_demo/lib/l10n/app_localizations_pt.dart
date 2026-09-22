@@ -197,4 +197,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tileLayout => 'Layout de blocos';
+
+  @override
+  String get locked => 'Bloqueado';
+
+  @override
+  String get lockedHint => 'Arraste por cima para criar um evento.';
+
+  @override
+  String get clearSelection => 'Limpar seleção';
 }

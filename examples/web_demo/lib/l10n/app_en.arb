@@ -57,5 +57,8 @@
   "newEventTitle": "New Event",
   "hideConfiguration": "Hide configuration",
   "showConfiguration": "Show configuration",
-  "tileLayout": "Tile Layout"
+  "tileLayout": "Tile Layout",
+  "locked": "Locked",
+  "lockedHint": "Drag across it to create an event.",
+  "clearSelection": "Clear selection"
 }

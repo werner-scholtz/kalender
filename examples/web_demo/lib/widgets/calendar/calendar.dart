@@ -259,7 +259,36 @@ class _CalendarContentState extends State<CalendarContent> {
         dragAnchorStrategy: _dragAnchorStrategy,
       );
 
+  /// Selects the day, or clears a selection of only that day.
+  void _toggleDay(DayDetail detail) {
+    final controller = context.controller;
+    final range = controller.selectedRange.value;
+    final isSingleDay = range != null && range.end.difference(range.start).inDays == 1;
+    if (isSingleDay && controller.isDateSelected(detail.date)) {
+      controller.deselectRange();
+    } else {
+      controller.selectDate(detail.date);
+    }
+  }
+
+  /// Selects the week, or clears a selection of exactly that week.
+  void _toggleWeek(MultiDayDetail detail) {
+    final controller = context.controller;
+    final selected = controller.selectedRange.value?.forLocation(location: context.location.value);
+    if (selected == detail.dateTimeRange) {
+      controller.deselectRange();
+    } else {
+      controller.selectRange(detail.dateTimeRange);
+    }
+  }
+
   KalenderCallbacks get _callbacks => KalenderCallbacks(
+        dateLabel: GestureCallbacks(
+          onTap: _toggleDay,
+          onSecondaryTap: (detail) => context.controller.showDayOverlay(detail.date),
+          onLongPress: (detail) => context.controller.showDayOverlay(detail.date),
+        ),
+        weekNumber: GestureCallbacks(onTap: _toggleWeek),
         onEventTappedWithDetail: (event, detail) {
           context.controller.deselectEvent();
           context.controller.selectEvent(event);

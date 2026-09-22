@@ -13,6 +13,9 @@ devices. It is the source behind the [live demo](https://werner-scholtz.github.i
   and a single-calendar mobile layout.
 - Timezone-aware events, with the timezone package bootstrapped through conditional
   imports for browser, IO, and stub targets.
+- Day and week selection from the date labels and week numbers, the day overlay
+  from a right-click or long press on a date label, and locked events that a
+  drag creates over, with a lock switch in the event's detail card.
 
 ## Run and build
 
