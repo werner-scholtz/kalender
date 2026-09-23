@@ -34,8 +34,8 @@ void main() {
     FloatingDateTime visibleStart(ViewConfiguration config) => build(config).floatingVisibleRange.value!.start;
 
     // Month, week and work week start on the Monday of the week containing 1 January in every location. Custom(3)
-    // and schedule anchor page 0 to the display-range start, which moves with the UTC offset, so their starts come
-    // from the controllers.
+    // anchors page 0 to the display-range start, which moves with the UTC offset, so its start comes from the
+    // controller. A schedule that has not shown its list reports the date it opens on.
     final monthOrWeekStart = FloatingDateTime(2024, 12, 30);
     final dayStart = FloatingDateTime(2025, 1, 1);
     final dominantJanuary = FloatingDateTime(2025, 1, 1);
@@ -55,7 +55,7 @@ void main() {
         config: MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range),
         expected: dayStart,
       ),
-      (name: 'Schedule', config: schedule, expected: visibleStart(schedule)),
+      (name: 'Schedule', config: schedule, expected: dayStart),
     ];
 
     test('[$location] the deprecated functions return the carried date', () {

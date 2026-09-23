@@ -120,7 +120,8 @@ class ViewTransitionContext {
   /// The location the new view controller is created in.
   final Location? location;
 
-  /// Where the new view opens, over the transition settings and resolvers. Set for a [KalenderView] mounted again.
+  /// Where the new view opens, over the transition settings and resolvers. Set for a [KalenderView] mounted again and
+  /// for a navigation made while no [KalenderView] is mounted.
   ///
   /// A null [ViewSnapshot.timeOfDay] or [ViewSnapshot.heightPerMinute] keeps what the transition decides.
   final ViewSnapshot? target;

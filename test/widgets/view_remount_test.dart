@@ -189,4 +189,49 @@ void main() {
 
     expect(kalenderController.visibleEvents.value, isEmpty);
   });
+
+  group('navigation while no view is mounted moves where the next view opens', () {
+    final june11 = DateTime(2025, 6, 11);
+    for (final c in [
+      (
+        name: 'jumpToDate before the first mount',
+        mountFirst: false,
+        navigate: () => kalenderController.jumpToDate(june11),
+        expected: (FloatingDateTime(2025, 6, 9), kDefaultInitialTimeOfDay),
+      ),
+      (
+        name: 'jumpToDate between an unmount and a remount',
+        mountFirst: true,
+        navigate: () => kalenderController.jumpToDate(june11),
+        expected: (FloatingDateTime(2025, 6, 9), kDefaultInitialTimeOfDay),
+      ),
+      (
+        name: 'animateToEvent before the first mount',
+        mountFirst: false,
+        navigate: () => kalenderController.animateToEvent(
+          KalenderEvent(start: DateTime(2025, 6, 11, 9), end: DateTime(2025, 6, 11, 10)),
+        ),
+        expected: (FloatingDateTime(2025, 6, 9), const KalenderTime(hour: 9, minute: 0)),
+      ),
+      (
+        name: 'animateToNextPage before the first mount',
+        mountFirst: false,
+        navigate: () => kalenderController.animateToNextPage(),
+        expected: (FloatingDateTime(2025, 3, 10), kDefaultInitialTimeOfDay),
+      ),
+    ]) {
+      testWidgets(c.name, (tester) async {
+        if (c.mountFirst) {
+          await pumpAndSettleWithMaterialApp(tester, view());
+          await tester.pumpWidget(const SizedBox());
+        }
+
+        c.navigate();
+        await pumpAndSettleWithMaterialApp(tester, view());
+
+        final snapshot = kalenderController.viewController.snapshot();
+        expect((snapshot.date, snapshot.timeOfDay), c.expected);
+      });
+    }
+  });
 }

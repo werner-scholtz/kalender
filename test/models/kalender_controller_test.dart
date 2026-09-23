@@ -186,4 +186,68 @@ void main() {
       expect(() => viewController.floatingVisibleRange.addListener(() {}), throwsFlutterError);
     });
   });
+
+  group('navigation with no view attached', () {
+    test('replaces the view controller and notifies', () {
+      final controller = KalenderController(
+        viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
+      );
+      addTearDown(controller.dispose);
+      final before = controller.viewController;
+      var notifications = 0;
+      controller.addListener(() => notifications++);
+
+      controller.jumpToDate(DateTime(2025, 6, 11));
+
+      expect(
+        (identical(controller.viewController, before), notifications, controller.viewController.snapshot().date),
+        (false, 1, FloatingDateTime(2025, 6, 9)),
+      );
+    });
+
+    final january31 = DateTime(2025, 1, 31);
+    for (final c in [
+      (
+        name: 'the next page of a continuous schedule is the next month',
+        configuration: ScheduleViewConfiguration.continuous(
+          displayRange: year2025DisplayRange,
+          initialDateTime: january31,
+        ),
+        navigate: (KalenderController controller) => controller.animateToNextPage(),
+        expected: (FloatingDateTime(2025, 2), null),
+      ),
+      (
+        name: 'jumpToPage leaves a continuous schedule where it is',
+        configuration: ScheduleViewConfiguration.continuous(
+          displayRange: year2025DisplayRange,
+          initialDateTime: january31,
+        ),
+        navigate: (KalenderController controller) => controller.jumpToPage(3),
+        expected: (FloatingDateTime(2025, 1, 31), null),
+      ),
+      (
+        name: 'an event before the time of day range opens at its start',
+        configuration: MultiDayViewConfiguration.singleDay(
+          displayRange: year2025DisplayRange,
+          timeOfDayRange: KalenderTimeRange(
+            start: const KalenderTime(hour: 8, minute: 0),
+            end: const KalenderTime(hour: 18, minute: 0),
+          ),
+        ),
+        navigate: (KalenderController controller) =>
+            controller.animateToEvent(KalenderEvent(start: DateTime(2025, 6, 11, 6), end: DateTime(2025, 6, 11, 7))),
+        expected: (FloatingDateTime(2025, 6, 11), const KalenderTime(hour: 8, minute: 0)),
+      ),
+    ]) {
+      test(c.name, () {
+        final controller = KalenderController(viewConfiguration: c.configuration);
+        addTearDown(controller.dispose);
+
+        c.navigate(controller);
+
+        final snapshot = controller.viewController.snapshot();
+        expect((snapshot.date, snapshot.timeOfDay), c.expected);
+      });
+    }
+  });
 }

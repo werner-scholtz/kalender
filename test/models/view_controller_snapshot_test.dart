@@ -32,7 +32,7 @@ void main() {
     (
       name: 'continuous schedule',
       configuration: ScheduleViewConfiguration.continuous(displayRange: range, initialDateTime: wednesday),
-      expected: (FloatingDateTime(2025), null, null),
+      expected: (FloatingDateTime(2025, 3, 5), null, null),
     ),
     (
       name: 'paginated schedule',
