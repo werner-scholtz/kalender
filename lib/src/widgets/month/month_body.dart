@@ -63,6 +63,15 @@ class MonthBody extends StatelessWidget {
         final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
         final controller = context.kalenderController;
         controller.floatingVisibleRange.value = visibleRange;
+        viewController.visibleEvents.value = context.eventsController
+            .eventsInRange(
+              visibleRange,
+              multiDayRule: viewConfiguration.multiDayRule,
+              includeDayEvents: configuration.allowSingleDayEvents,
+              includeMultiDayEvents: true,
+              location: context.location,
+            )
+            .toSet();
         context.callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {

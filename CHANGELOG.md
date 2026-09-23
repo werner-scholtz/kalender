@@ -1,3 +1,9 @@
+## 0.32.1
+
+### Fixes
+
+- `KalenderController.visibleEvents` holds the events of the month on screen. The month view only added to it, so it kept the events of every month visited.
+
 ## 0.32.0
 
 ### Deprecations
