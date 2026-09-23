@@ -7,6 +7,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
+import 'package:kalender/src/models/controllers/kalender_controller.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
@@ -288,6 +290,38 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       zoomTransition: zoomTransition ?? this.zoomTransition,
       zoomResolver: zoomResolver ?? this.zoomResolver,
     );
+  }
+
+  @override
+  MultiDayViewController createViewController(KalenderController controller, ViewTransitionContext? transition) {
+    return MultiDayViewController(
+      viewConfiguration: this,
+      floatingVisibleRange: controller.floatingVisibleRange,
+      visibleEvents: controller.visibleEvents,
+      initial: ViewSnapshot(
+        date: resolveDate(controller.location, transition),
+        timeOfDay: transition == null ? null : scrollResolver?.call(transition) ?? _resolveScroll(transition),
+        heightPerMinute: transition == null ? null : zoomResolver?.call(transition) ?? _resolveZoom(transition),
+      ),
+      location: controller.location,
+    );
+  }
+
+  KalenderTime? _resolveScroll(ViewTransitionContext transition) {
+    return switch (scrollTransition) {
+      ScrollTransition.preserve => transition.lastMultiDay?.timeOfDay,
+      ScrollTransition.reset => null,
+      ScrollTransition.restorePerView => transition.byView[name]?.timeOfDay ?? transition.lastMultiDay?.timeOfDay,
+    };
+  }
+
+  double? _resolveZoom(ViewTransitionContext transition) {
+    return switch (zoomTransition) {
+      ZoomTransition.preserve => transition.lastMultiDay?.heightPerMinute,
+      ZoomTransition.reset => null,
+      ZoomTransition.restorePerView =>
+        transition.byView[name]?.heightPerMinute ?? transition.lastMultiDay?.heightPerMinute,
+    };
   }
 
   @override

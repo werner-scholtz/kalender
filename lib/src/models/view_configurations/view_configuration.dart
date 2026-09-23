@@ -7,6 +7,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
+import 'package:kalender/src/models/controllers/kalender_controller.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
@@ -79,6 +81,29 @@ abstract class ViewConfiguration {
 
   /// The functions for navigating the [PageView].
   PageIndexCalculator get pageIndexCalculator;
+
+  /// Creates the view controller for this configuration, in the location of [controller].
+  ///
+  /// [transition] is null when the calendar is first built, and describes the view being replaced on a view switch or
+  /// a change of location.
+  ViewController createViewController(KalenderController controller, ViewTransitionContext? transition);
+
+  /// The date the view opens on.
+  ///
+  /// Without a [transition] this is [initialDateTime], else now in [location]. Otherwise [dateResolver] decides, else
+  /// [dateTransition].
+  @protected
+  FloatingDateTime resolveDate(Location? location, ViewTransitionContext? transition) {
+    if (transition == null) {
+      final now = location == null ? DateTime.now() : TZDateTime.now(location);
+      return FloatingDateTime.fromExternal(initialDateTime ?? now, location: location);
+    }
+    if (dateResolver case final resolver?) return resolver(transition);
+    return switch (dateTransition) {
+      DateTransition.carryFocus => kCarryFocusDate(transition),
+      DateTransition.restorePerView => transition.byView[name]?.date ?? kCarryFocusDate(transition),
+    };
+  }
 
   /// The [KalenderDateTimeRange] that the calendar can display.
   ///

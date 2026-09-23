@@ -35,8 +35,8 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
     required this.viewConfiguration,
     required super.floatingVisibleRange,
     required this.visibleEvents,
-    required this.initialDate,
-  }) {
+    required ViewSnapshot initial,
+  }) : initialDate = initial.date {
     currentPage = viewConfiguration.pageIndexCalculator.indexFromDate(initialDate, location);
     final numberOfPages = viewConfiguration.pageIndexCalculator.numberOfPages(location);
     populateMaps(numberOfPages);
@@ -123,7 +123,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
     required super.viewConfiguration,
     required super.floatingVisibleRange,
     required super.visibleEvents,
-    required super.initialDate,
+    required super.initial,
   }) {
     floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
     visibleEvents.value = {};
@@ -197,7 +197,7 @@ class PaginatedScheduleViewController extends ScheduleViewController {
     required super.viewConfiguration,
     required super.floatingVisibleRange,
     required super.visibleEvents,
-    required super.initialDate,
+    required super.initial,
   }) {
     floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
     visibleEvents.value = {};
@@ -291,5 +291,11 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   void jumpToPage(int page) {
     if (!pageController.hasClients) return;
     pageController.jumpToPage(page);
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 }

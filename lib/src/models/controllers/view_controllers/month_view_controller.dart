@@ -14,11 +14,11 @@ class MonthViewController extends ViewController {
     required this.viewConfiguration,
     required super.floatingVisibleRange,
     required this.visibleEvents,
-    FloatingDateTime? initialDate,
+    required ViewSnapshot initial,
     super.location,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.timestamp(), location);
+    initialPage = pageNavigationFunctions.indexFromDate(initial.date, location);
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages(location);
     floatingVisibleRange.value = pageNavigationFunctions.rangeFromIndex(initialPage, location);
@@ -39,6 +39,11 @@ class MonthViewController extends ViewController {
 
   @override
   late final ValueNotifier<Set<KalenderEvent>> visibleEvents;
+
+  /// Returns the first day of the month with the most visible days.
+  @override
+  ViewSnapshot snapshot() =>
+      ViewSnapshot(date: FloatingDateTime.fromDateTime(floatingVisibleRange.value!.dominantMonthDate));
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
