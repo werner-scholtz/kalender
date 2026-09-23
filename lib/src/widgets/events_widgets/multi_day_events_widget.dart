@@ -467,8 +467,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           events: frame.eventsForColumn(column),
           numberOfHiddenRows: numberOfHiddenRows,
           tileHeight: widget.configuration.tileHeight,
-          getMultiDayEventLayoutRenderBox: getRenderBox,
-          overlayTileBuilder: _overlayEventTileBuilder,
           overlayBuilders: overlayBuilders,
         ) ??
         MultiDayOverlayPortal(

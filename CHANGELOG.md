@@ -8,6 +8,7 @@
 - `kDefaultNewEventDuration` is removed.
 - `ResizeHandleDetails.continuesBefore`, `continuesAfter`, `showStart` and `showEnd` are getters, and their `location` parameter is removed.
 - The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of `MultiDayOverlayPortal` are removed.
+- `MultiDayOverlayPortalBuilder` no longer passes `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder`.
 
 ## 0.32.0
 

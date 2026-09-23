@@ -21,8 +21,6 @@ typedef MultiDayOverlayPortalBuilder =
       required List<KalenderEvent> events,
       required int numberOfHiddenRows,
       required double tileHeight,
-      required RenderBoxCallback getMultiDayEventLayoutRenderBox,
-      required MultiDayOverlayEventTileBuilder overlayTileBuilder,
       required OverlayBuilders? overlayBuilders,
     });
 
