@@ -41,30 +41,12 @@ class MultiDayOverlayPortal extends StatelessWidget {
   /// The builders for the overlay.
   final OverlayBuilders? overlayBuilders;
 
-  @Deprecated(_unused)
-  final List<KalenderEvent> events;
-
-  @Deprecated(_unused)
-  final double tileHeight;
-
-  @Deprecated(_unused)
-  final RenderBoxCallback? getMultiDayEventLayoutRenderBox;
-
-  @Deprecated(_unused)
-  final MultiDayOverlayEventTileBuilder? overlayTileBuilder;
-
   const MultiDayOverlayPortal({
     required this.date,
     required this.numberOfHiddenRows,
     required this.overlayBuilders,
-    @Deprecated(_unused) this.events = const [],
-    @Deprecated(_unused) this.tileHeight = 0,
-    @Deprecated(_unused) this.getMultiDayEventLayoutRenderBox,
-    @Deprecated(_unused) this.overlayTileBuilder,
     super.key,
   });
-
-  static const _unused = 'The calendar builds the overlay. Will be removed in 0.33.0.';
 
   /// Returns a [Key] for the overlay portal based on the date.
   static Key getKey(DateTime date) {

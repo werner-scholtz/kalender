@@ -41,6 +41,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The `ResizeHandleDetails` checks are getters. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -55,6 +56,21 @@ The sections below cover what is left after the fixes have run.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.32.x → v0.33.0
+
+### The `ResizeHandleDetails` checks are getters
+
+`continuesBefore`, `continuesAfter`, `showStart` and `showEnd` are getters and
+read the location the details carry. `dart fix` does not apply.
+
+```dart
+// Before
+if (details.showStart()) ...
+
+// After
+if (details.showStart) ...
+```
 
 ## v0.30.x → v0.31.0
 
