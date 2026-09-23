@@ -12,12 +12,7 @@ import '../utilities.dart';
 
 /// Records what [KalenderController.animateToEvent] passes down.
 class _RecordingViewController extends MultiDayViewController {
-  _RecordingViewController({
-    required super.viewConfiguration,
-    required super.floatingVisibleRange,
-    required super.visibleEvents,
-    required super.initial,
-  });
+  _RecordingViewController({required super.viewConfiguration, required super.initial});
 
   Duration? pageDuration;
   Curve? pageCurve;
@@ -49,8 +44,6 @@ void main() {
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026)),
       ),
-      floatingVisibleRange: controller.floatingVisibleRange,
-      visibleEvents: controller.visibleEvents,
       initial: todaySnapshot(),
     );
     controller.attach(viewController);

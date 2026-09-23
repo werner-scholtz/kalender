@@ -42,10 +42,6 @@ void main() {
     kalenderController = KalenderController();
     viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
-      floatingVisibleRange: ValueNotifier(
-        FloatingDateTimeRange(start: floatingStart.startOfDay, end: floatingStart.endOfDay),
-      ),
-      visibleEvents: ValueNotifier({}),
       initial: todaySnapshot(),
     );
     kalenderController.attach(viewController);

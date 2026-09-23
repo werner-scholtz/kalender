@@ -49,7 +49,11 @@ void main() {
       final controller = KalenderController();
       addTearDown(controller.dispose);
       final viewController = c.configuration.createViewController(controller, null);
-      final notifiers = c.notifiers(viewController);
+      final notifiers = [
+        viewController.floatingVisibleRange,
+        viewController.visibleEvents,
+        ...c.notifiers(viewController),
+      ];
 
       viewController.dispose();
 

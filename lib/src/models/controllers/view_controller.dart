@@ -26,15 +26,15 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// This is the unzoned counterpart of [KalenderController.visibleDateTimeRange],
   /// which carries the same range as a [KalenderDateTimeRange] for an app to read.
   /// Call [FloatingDateTimeRange.forLocation] to cross between them.
-  final ValueNotifier<FloatingDateTimeRange?> floatingVisibleRange;
+  final floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
 
-  ViewController({this.location, required this.floatingVisibleRange});
+  ViewController({this.location});
 
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 
   /// The [KalenderEvent]s that are currently visible.
-  ValueNotifier<Set<KalenderEvent>> get visibleEvents;
+  final visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
 
   /// The cache used by the event layout delegate.
   final EventLayoutDelegateCache cache = EventLayoutDelegateCache();
@@ -50,5 +50,9 @@ abstract class ViewController with KalenderNavigationFunctions {
   @override
   FutureOr<void> jumpToDate(DateTime date);
 
-  void dispose();
+  @mustCallSuper
+  void dispose() {
+    floatingVisibleRange.dispose();
+    visibleEvents.dispose();
+  }
 }

@@ -11,13 +11,7 @@ import 'package:linked_pageview/linked_pageview.dart';
 
 /// {@category Controllers and callbacks}
 class MultiDayViewController extends ViewController {
-  MultiDayViewController({
-    required this.viewConfiguration,
-    required super.floatingVisibleRange,
-    required this.visibleEvents,
-    required ViewSnapshot initial,
-    super.location,
-  }) {
+  MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location}) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
     final now = FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
     initialPage = pageIndexCalculator.indexFromDate(initial.date, location);
@@ -48,8 +42,6 @@ class MultiDayViewController extends ViewController {
     // Seed the visible time-of-day from the initial offset, since a ScrollController
     // does not necessarily notify its listeners when it first attaches.
     visibleTimeOfDay.value = _timeOfDayFromOffset(scrollOffset);
-
-    visibleEvents.value = {};
 
     pageController.addListener(_offsetListener);
     scrollController.addListener(_updateVisibleTimeOfDay);
@@ -92,9 +84,6 @@ class MultiDayViewController extends ViewController {
   /// Updates as the view is scrolled vertically or zoomed. It is `null` until the
   /// [scrollController] has been attached to a scroll view.
   final ValueNotifier<KalenderTime?> visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
-
-  @override
-  final ValueNotifier<Set<KalenderEvent>> visibleEvents;
 
   void _offsetListener() =>
       pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
@@ -229,5 +218,6 @@ class MultiDayViewController extends ViewController {
     heightPerMinute.dispose();
     pageOffset.dispose();
     visibleTimeOfDay.dispose();
+    super.dispose();
   }
 }

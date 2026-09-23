@@ -223,10 +223,9 @@ Finder resizeHandleFor(String eventId, ResizeDirection direction) {
 ViewSnapshot todaySnapshot([Location? location]) =>
     ViewSnapshot(date: FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location)));
 
-/// Builds a 700 by 100 [TimeIndicatorPositioner] showing [visibleRange], with its indicator keyed [indicatorKey].
+/// Builds a 700 by 100 [TimeIndicatorPositioner] for page 0, with its indicator keyed [indicatorKey].
 Widget timeIndicatorPositioner({
   required MultiDayViewConfiguration viewConfiguration,
-  required FloatingDateTimeRange visibleRange,
   required Key indicatorKey,
   FloatingDateTime? initialDate,
   DateTime? dateOverride,
@@ -239,8 +238,6 @@ Widget timeIndicatorPositioner({
         TimeIndicatorPositioner(
           viewController: MultiDayViewController(
             viewConfiguration: viewConfiguration,
-            floatingVisibleRange: ValueNotifier(visibleRange),
-            visibleEvents: ValueNotifier(<KalenderEvent>{}),
             initial: initialDate == null ? todaySnapshot() : ViewSnapshot(date: initialDate),
           ),
           initialPage: 0,

@@ -24,19 +24,11 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   @override
   final ScheduleViewConfiguration viewConfiguration;
 
-  @override
-  late final ValueNotifier<Set<KalenderEvent>> visibleEvents;
-
   /// The initial date to display in the schedule view.
   final FloatingDateTime initialDate;
 
-  ScheduleViewController({
-    super.location,
-    required this.viewConfiguration,
-    required super.floatingVisibleRange,
-    required this.visibleEvents,
-    required ViewSnapshot initial,
-  }) : initialDate = initial.date {
+  ScheduleViewController({super.location, required this.viewConfiguration, required ViewSnapshot initial})
+    : initialDate = initial.date {
     currentPage = viewConfiguration.pageIndexCalculator.indexFromDate(initialDate, location);
     final numberOfPages = viewConfiguration.pageIndexCalculator.numberOfPages(location);
     populateMaps(numberOfPages);
@@ -110,7 +102,10 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   }
 
   @override
-  void dispose() => highlightedRange.dispose();
+  void dispose() {
+    highlightedRange.dispose();
+    super.dispose();
+  }
 
   /// Check if the controller has been initialized with the necessary components.
   bool get hasInitialized => itemScrollController != null && itemPositionsListener != null;
@@ -118,15 +113,8 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
 
 /// {@category Controllers and callbacks}
 class ContinuousScheduleViewController extends ScheduleViewController {
-  ContinuousScheduleViewController({
-    super.location,
-    required super.viewConfiguration,
-    required super.floatingVisibleRange,
-    required super.visibleEvents,
-    required super.initial,
-  }) {
+  ContinuousScheduleViewController({super.location, required super.viewConfiguration, required super.initial}) {
     floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
-    visibleEvents.value = {};
   }
 
   @override
@@ -192,15 +180,8 @@ class ContinuousScheduleViewController extends ScheduleViewController {
 
 /// {@category Controllers and callbacks}
 class PaginatedScheduleViewController extends ScheduleViewController {
-  PaginatedScheduleViewController({
-    super.location,
-    required super.viewConfiguration,
-    required super.floatingVisibleRange,
-    required super.visibleEvents,
-    required super.initial,
-  }) {
+  PaginatedScheduleViewController({super.location, required super.viewConfiguration, required super.initial}) {
     floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
-    visibleEvents.value = {};
     pageController = PageController(initialPage: currentPage);
   }
 
