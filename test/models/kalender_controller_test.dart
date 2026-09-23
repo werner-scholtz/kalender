@@ -67,4 +67,49 @@ void main() {
       expect(controller.isDateSelected(DateTime(2025, 3, 15)), isFalse);
     });
   });
+
+  group('the attached view controller', () {
+    final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
+    final march = MonthViewConfiguration.singleMonth(displayRange: range, initialDateTime: DateTime(2025, 3, 15));
+    final june = MonthViewConfiguration.singleMonth(displayRange: range, initialDateTime: DateTime(2025, 6, 15));
+    final event = KalenderEvent(start: DateTime(2025, 3, 4, 9), end: DateTime(2025, 3, 4, 10));
+
+    late KalenderController controller;
+    late ViewController attached;
+    late ViewController other;
+    setUp(() {
+      controller = KalenderController();
+      attached = june.createViewController(controller, null);
+      other = march.createViewController(controller, null);
+      controller.attach(attached);
+    });
+    tearDown(() {
+      controller.dispose();
+      attached.dispose();
+      other.dispose();
+    });
+
+    test('supplies the visible range and events', () {
+      attached.visibleEvents.value = {event};
+      expect(controller.floatingVisibleRange.value, attached.floatingVisibleRange.value);
+      expect(controller.visibleEvents.value, {event});
+    });
+
+    test('another view controller does not reach the controller', () {
+      other.visibleEvents.value = {event};
+      other.floatingVisibleRange.value = FloatingDateTimeRange(
+        start: FloatingDateTime(2025),
+        end: FloatingDateTime(2025, 2),
+      );
+      expect(controller.floatingVisibleRange.value, attached.floatingVisibleRange.value);
+      expect(controller.visibleEvents.value, isEmpty);
+    });
+
+    test('a detached view controller does not reach the controller', () {
+      controller.attach(other);
+      attached.visibleEvents.value = {event};
+      expect(controller.floatingVisibleRange.value, other.floatingVisibleRange.value);
+      expect(controller.visibleEvents.value, isEmpty);
+    });
+  });
 }

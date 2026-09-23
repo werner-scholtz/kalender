@@ -92,9 +92,10 @@ if (details.showStart) ...
 ### A configuration creates its view controller
 
 A class that extends `ViewConfiguration` directly implements
-`createViewController`. Build the view controller from `resolveDate` and the
-controller's notifiers. The view controllers take one `initial` snapshot in
-place of three parameters.
+`createViewController`, building the view controller from `resolveDate` and the
+controller's location. The view controllers take one `initial` snapshot in place
+of three parameters, and create their own visible range and visible events. A
+class that extends `ViewController` calls `super.dispose()`.
 
 ```dart
 // Before
@@ -110,8 +111,6 @@ MultiDayViewController(
 // After
 MultiDayViewController(
   viewConfiguration: configuration,
-  floatingVisibleRange: range,
-  visibleEvents: events,
   initial: ViewSnapshot(date: date, timeOfDay: time, heightPerMinute: zoom),
 );
 ```

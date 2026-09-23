@@ -18,7 +18,6 @@ void main() {
   Future<void> pumpPositioner(
     WidgetTester tester,
     MultiDayViewConfiguration viewConfiguration, {
-    FloatingDateTimeRange? visibleRange,
     DateTime? dateOverride,
     FloatingDateTime? initialDate,
   }) {
@@ -26,7 +25,6 @@ void main() {
       tester,
       timeIndicatorPositioner(
         viewConfiguration: viewConfiguration,
-        visibleRange: visibleRange ?? range,
         indicatorKey: key,
         initialDate: initialDate,
         dateOverride: dateOverride,
@@ -83,11 +81,7 @@ void main() {
             .toList()
             .indexWhere((d) => d.isSameDay(today.startOfDay));
 
-        await pumpPositioner(
-          tester,
-          MultiDayViewConfiguration.week(displayRange: todayRange.forLocation()),
-          visibleRange: todayRange,
-        );
+        await pumpPositioner(tester, MultiDayViewConfiguration.week(displayRange: todayRange.forLocation()));
         expect(tester.getTopLeft(find.byKey(key)).dx, todayIndex * 100.0);
       });
 

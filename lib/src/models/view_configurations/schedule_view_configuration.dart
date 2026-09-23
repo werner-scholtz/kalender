@@ -83,8 +83,6 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     };
     return create(
       viewConfiguration: this,
-      floatingVisibleRange: controller.floatingVisibleRange,
-      visibleEvents: controller.visibleEvents,
       initial: ViewSnapshot(date: resolveDate(controller.location, transition)),
       location: controller.location,
     );

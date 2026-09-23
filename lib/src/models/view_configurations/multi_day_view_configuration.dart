@@ -300,8 +300,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     final date = resolveDate(controller.location, transition);
     return MultiDayViewController(
       viewConfiguration: this,
-      floatingVisibleRange: controller.floatingVisibleRange,
-      visibleEvents: controller.visibleEvents,
       initial: transition == null
           ? ViewSnapshot(date: date)
           : ViewSnapshot(
