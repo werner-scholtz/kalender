@@ -12,6 +12,7 @@ import 'package:timezone/timezone.dart';
 import '../utilities.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   initializeTimeZones();
 
   group('KalenderController', () {

@@ -19,10 +19,13 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
+    // The resets show that a view mounted again ignores the transition settings.
     kalenderController = KalenderController(
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: year2025DisplayRange,
         initialDateTime: DateTime(2025, 3, 5),
+        scrollTransition: ScrollTransition.reset,
+        zoomTransition: ZoomTransition.reset,
       ),
     );
   });
@@ -97,6 +100,10 @@ void main() {
             valueListenable: kalenderController.visibleDateTimeRange,
             builder: (context, range, _) => Text('${range?.start}'),
           ),
+          ValueListenableBuilder(
+            valueListenable: kalenderController.visibleTimeOfDay,
+            builder: (context, time, _) => Text('$time'),
+          ),
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: showCalendar,
@@ -107,6 +114,8 @@ void main() {
       ),
     );
 
+    kalenderController.multiDayViewController.scrollController.jumpTo(600);
+    await tester.pumpAndSettle();
     showCalendar.value = false;
     await tester.pumpAndSettle();
     showCalendar.value = true;

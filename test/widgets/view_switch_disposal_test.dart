@@ -4,13 +4,15 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// When [KalenderController] disposes a view controller it replaced.
+/// Switching the view through [KalenderController], and when it disposes the view controllers it replaced.
 void main() {
   final week = MultiDayViewConfiguration.week(displayRange: year2025DisplayRange);
   final month = MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
@@ -72,5 +74,45 @@ void main() {
     kalenderController.dispose();
 
     expect((afterUnmount, isDisposed(shown)), (false, true));
+  });
+
+  testWidgets('disposing the controller leaves the view controller a view shows until the view is gone', (
+    tester,
+  ) async {
+    final eventsController = DefaultEventsController();
+    final kalenderController = KalenderController(viewConfiguration: week);
+    addTearDown(eventsController.dispose);
+    await pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      body: const KalenderBody(),
+    );
+    final shown = kalenderController.viewController;
+
+    kalenderController.dispose();
+    final whileShown = isDisposed(shown);
+    await tester.pumpWidget(const SizedBox());
+
+    expect((whileShown, isDisposed(shown)), (false, true));
+  });
+
+  testWidgets('navigation right after a switch reaches the new view once it is built', (tester) async {
+    final eventsController = DefaultEventsController();
+    final kalenderController = KalenderController(viewConfiguration: week);
+    addTearDown(eventsController.dispose);
+    addTearDown(kalenderController.dispose);
+    await pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      body: const KalenderBody(),
+    );
+
+    kalenderController.viewConfiguration = month;
+    unawaited(kalenderController.animateToDate(DateTime(2025, 8, 15)));
+    await tester.pumpAndSettle();
+
+    expect(kalenderController.viewController.snapshot().date, FloatingDateTime(2025, 8));
   });
 }

@@ -32,6 +32,7 @@
 - `ViewController.snapshot` returns the date, time of day and zoom a view shows.
 - `ViewTransitionContext.location` is the location the new view controller is created in.
 - Setting `KalenderController.viewConfiguration` or `location` switches the view.
+- `ViewTransitionContext.target` is where the new view opens, over the transition settings and resolvers.
 
 ### Fixes
 

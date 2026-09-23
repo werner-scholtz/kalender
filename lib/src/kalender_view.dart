@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
@@ -74,7 +75,12 @@ class KalenderViewState extends State<KalenderView> {
 
   /// Follows a switch of view or location while this view is the active one.
   void _onControllerChanged() {
-    if (!_controller.isActiveView(this)) return;
+    if (_controller.isActiveView(this)) becameActive();
+  }
+
+  /// Shows the controller's view controller, after a switch or when the view above this one left.
+  @internal
+  void becameActive() {
     final next = _controller.attachView(this);
     setState(() => _show(next, _controller));
   }
@@ -95,9 +101,7 @@ class KalenderViewState extends State<KalenderView> {
     oldController
       ..removeListener(_onControllerChanged)
       ..detachView(this);
-    final old = _viewController;
-    _viewController = _controller.attachView(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => oldController.releaseView(this, old));
+    _show(_controller.attachView(this), oldController);
     _controller.addListener(_onControllerChanged);
   }
 

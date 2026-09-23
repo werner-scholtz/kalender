@@ -97,6 +97,7 @@ class ViewTransitionContext {
     required this.lastMultiDay,
     this.locationChanged = false,
     this.location,
+    this.target,
   });
 
   /// The controller of the view being switched away from.
@@ -118,6 +119,11 @@ class ViewTransitionContext {
 
   /// The location the new view controller is created in.
   final Location? location;
+
+  /// Where the new view opens, over the transition settings and resolvers. Set for a [KalenderView] mounted again.
+  ///
+  /// A null [ViewSnapshot.timeOfDay] or [ViewSnapshot.heightPerMinute] keeps what the transition decides.
+  final ViewSnapshot? target;
 }
 
 /// The date the previous view focused on, from its [ViewController.snapshot]. Used by [DateTransition.carryFocus].
