@@ -12,6 +12,10 @@
 - `ViewConfiguration.createViewController` is abstract.
 - `MultiDayViewController`, `MonthViewController`, `ContinuousScheduleViewController` and `PaginatedScheduleViewController` take `initial`, a `ViewSnapshot`, in place of `initialDate`, `initialTimeOfDayOverride` and `initialHeightPerMinute`.
 - `ViewController.location` is final.
+- `ViewController` and the four view controllers no longer take `floatingVisibleRange` and `visibleEvents`. Each creates its own, and `KalenderController` forwards those of the attached one.
+- `ViewController.visibleEvents` is a field instead of an abstract getter.
+- `ViewController.dispose` disposes the visible range and visible events, and an override calls `super.dispose()`.
+- `KalenderController.floatingVisibleRange` and `visibleEvents` are `ValueListenable`s.
 
 ### Deprecations
 
@@ -27,6 +31,7 @@
 - A subclass of `MultiDayViewConfiguration`, `MonthViewConfiguration` or `ScheduleViewConfiguration` no longer throws when the calendar builds.
 - `MultiDayViewController` disposes `heightPerMinute` and `pageOffset`, and `PaginatedScheduleViewController` its `PageController`.
 - `KalenderView` disposes its view controller when it leaves the tree.
+- A view controller that is not attached no longer writes to `KalenderController.visibleEvents` and `floatingVisibleRange`.
 
 ## 0.32.0
 

@@ -152,8 +152,6 @@ void main() {
     test('ScheduleViewConfiguration.$name (uninitialized)', () async {
       final viewController = create(
         viewConfiguration: configuration,
-        floatingVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
-        visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
         initial: ViewSnapshot(date: initialDate),
       );
 

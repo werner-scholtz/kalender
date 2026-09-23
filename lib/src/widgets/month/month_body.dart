@@ -61,9 +61,8 @@ class MonthBody extends StatelessWidget {
       itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
         final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
-        final controller = context.kalenderController;
-        controller.floatingVisibleRange.value = visibleRange;
-        context.callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
+        viewController.floatingVisibleRange.value = visibleRange;
+        context.callbacks?.onPageChanged?.call(visibleRange.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
@@ -176,7 +175,7 @@ class MonthWeek extends StatelessWidget {
                       floatingRange: floatingRange,
                       configuration: configuration,
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-                      multiDayCache: viewController.multiDayCache,
+                      viewController: viewController,
                       overlayBuilders: monthComponents.bodyComponents.overlayBuilders ?? components.overlayBuilders,
                     );
                   },

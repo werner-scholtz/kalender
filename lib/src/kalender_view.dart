@@ -101,7 +101,7 @@ class KalenderViewState extends State<KalenderView> {
 
     final didChangeKalenderController = widget.kalenderController != oldWidget.kalenderController;
     if (didChangeKalenderController) {
-      oldWidget.kalenderController.detach();
+      if (oldWidget.kalenderController.isAttachedTo(_viewController)) oldWidget.kalenderController.detach();
       widget.kalenderController.attach(_viewController);
     }
 
@@ -136,7 +136,7 @@ class KalenderViewState extends State<KalenderView> {
   @override
   void deactivate() {
     super.deactivate();
-    widget.kalenderController.detach();
+    if (widget.kalenderController.isAttachedTo(_viewController)) widget.kalenderController.detach();
   }
 
   @override

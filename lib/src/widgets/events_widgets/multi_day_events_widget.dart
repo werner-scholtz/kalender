@@ -18,7 +18,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 
 /// Displays the multi-day events from the [EventsController] and rebuilds when they change.
 ///
-/// Adds the events it shows to [KalenderController.visibleEvents] without clearing it.
+/// Adds the events it shows to [ViewController.visibleEvents] without clearing it.
 class MultiDayEventWidget extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;
@@ -32,8 +32,8 @@ class MultiDayEventWidget extends StatefulWidget {
   /// The maximum number of vertical events that can be displayed.
   final int? maxNumberOfVerticalEvents;
 
-  /// The cache used to store layout frames for multi-day events.
-  final MultiDayLayoutFrameCache? multiDayCache;
+  /// The view controller whose layout cache and visible events this widget uses.
+  final ViewController viewController;
 
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders? overlayBuilders;
@@ -44,7 +44,7 @@ class MultiDayEventWidget extends StatefulWidget {
     required this.configuration,
     required this.floatingRange,
     required this.maxNumberOfVerticalEvents,
-    required this.multiDayCache,
+    required this.viewController,
     required this.overlayBuilders,
   });
 
@@ -102,11 +102,11 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final controller = context.kalenderController;
+        final visibleEvents = widget.viewController.visibleEvents;
         // A new set notifies listeners even when its contents match, so assign only when something is added.
-        final current = controller.visibleEvents.value;
+        final current = visibleEvents.value;
         if (_events.any((event) => !current.contains(event))) {
-          controller.visibleEvents.value = {...current, ..._events};
+          visibleEvents.value = {...current, ..._events};
         }
       }
     });
@@ -117,7 +117,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
       textDirection: Directionality.of(context),
       configuration: widget.configuration,
       maxNumberOfVerticalEvents: widget.maxNumberOfVerticalEvents,
-      multiDayCache: widget.multiDayCache,
+      multiDayCache: widget.viewController.multiDayCache,
       multiDayOverlayBuilders: widget.overlayBuilders,
       location: context.location,
     );

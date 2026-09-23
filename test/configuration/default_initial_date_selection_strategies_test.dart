@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:timezone/data/latest_10y.dart';
@@ -18,31 +17,14 @@ void main() {
 
   for (final location in locations) {
     final range = KalenderDateTimeRange(start: TZDateTime(location, 2025), end: TZDateTime(location, 2026));
-    final visibleEvents = ValueNotifier(<KalenderEvent>{});
 
-    // The constructors overwrite the initial visible range.
     ViewController build(ViewConfiguration config) {
-      final floatingVisibleRange = ValueNotifier(
-        FloatingDateTimeRange(start: FloatingDateTime(2025), end: FloatingDateTime(2025, 2)),
-      );
       final initial = ViewSnapshot(date: FloatingDateTime(2025, 1, 1));
       return switch (config) {
-        final MonthViewConfiguration config => MonthViewController(
-          viewConfiguration: config,
-          floatingVisibleRange: floatingVisibleRange,
-          visibleEvents: visibleEvents,
-          initial: initial,
-        ),
-        final MultiDayViewConfiguration config => MultiDayViewController(
-          viewConfiguration: config,
-          floatingVisibleRange: floatingVisibleRange,
-          visibleEvents: visibleEvents,
-          initial: initial,
-        ),
+        final MonthViewConfiguration config => MonthViewController(viewConfiguration: config, initial: initial),
+        final MultiDayViewConfiguration config => MultiDayViewController(viewConfiguration: config, initial: initial),
         final ScheduleViewConfiguration config => ContinuousScheduleViewController(
           viewConfiguration: config,
-          floatingVisibleRange: floatingVisibleRange,
-          visibleEvents: visibleEvents,
           initial: initial,
         ),
         _ => throw ArgumentError.value(config),

@@ -23,7 +23,6 @@ void main() {
 
     return timeIndicatorPositioner(
       viewConfiguration: MultiDayViewConfiguration.week(displayRange: range.forLocation(), nowCallback: now),
-      visibleRange: range,
       indicatorKey: indicatorKey,
     );
   }
