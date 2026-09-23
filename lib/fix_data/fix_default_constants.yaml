@@ -18,16 +18,6 @@ transforms:
         newName: 'kDefaultTileHeight'
 
   # Changes made in https://github.com/werner-scholtz/kalender/pull/474
-  - title: "Rename to 'kDefaultNewEventDuration'"
-    date: 2026-08-18
-    element:
-      uris: [ 'package:kalender/kalender.dart' ]
-      variable: 'defaultNewEventDuration'
-    changes:
-      - kind: 'rename'
-        newName: 'kDefaultNewEventDuration'
-
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/474
   - title: "Rename to 'kDefaultShowMultiDayEvents'"
     date: 2026-08-18
     element:

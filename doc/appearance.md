@@ -53,9 +53,9 @@ TileComponents(
   resizeHandlePositioner: (context, details) => Stack(
     fit: StackFit.expand,
     children: [
-      if (details.showStart())
+      if (details.showStart)
         Positioned(top: 0, left: 0, right: 0, height: 8, child: details.startResizeDetector),
-      if (details.showEnd())
+      if (details.showEnd)
         Positioned(bottom: 0, left: 0, right: 0, height: 8, child: details.endResizeDetector),
     ],
   ),

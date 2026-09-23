@@ -41,8 +41,6 @@ void main() {
                   required events,
                   required numberOfHiddenRows,
                   required tileHeight,
-                  required getMultiDayEventLayoutRenderBox,
-                  required overlayTileBuilder,
                   required overlayBuilders,
                 }) {
                   received = KalenderTheme.of(context).multiDayOverlayStyle;

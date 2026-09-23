@@ -40,26 +40,16 @@ void main() {
       end: TZDateTime(pagoPago, 2025, 1, 1, 23, 30),
     );
 
-    test('uses its location when given none', () {
-      expect(details(early, location: kiritimati).continuesBefore(), isFalse);
-      expect(details(early, location: kiritimati).showStart(), isTrue);
-      expect(details(late, location: pagoPago).continuesAfter(), isFalse);
-      expect(details(late, location: pagoPago).showEnd(), isTrue);
-    });
-
-    test('prefers the location passed to the method', () {
-      // ignore_for_file: deprecated_member_use_from_same_package
-      final before = details(early, location: pagoPago);
-      expect(before.continuesBefore(location: kiritimati), isFalse);
-      expect(before.showStart(location: kiritimati), isTrue);
-      final after = details(late, location: kiritimati);
-      expect(after.continuesAfter(location: pagoPago), isFalse);
-      expect(after.showEnd(location: pagoPago), isTrue);
+    test('uses its location', () {
+      expect(details(early, location: kiritimati).continuesBefore, isFalse);
+      expect(details(early, location: kiritimati).showStart, isTrue);
+      expect(details(late, location: pagoPago).continuesAfter, isFalse);
+      expect(details(late, location: pagoPago).showEnd, isTrue);
     });
 
     test('uses the device timezone without a location', () {
-      expect(details(early).continuesBefore(), FloatingDateTime.fromExternal(early.start).isBefore(day.start));
-      expect(details(late).continuesAfter(), FloatingDateTime.fromExternal(late.end).isAfter(day.end));
+      expect(details(early).continuesBefore, FloatingDateTime.fromExternal(early.start).isBefore(day.start));
+      expect(details(late).continuesAfter, FloatingDateTime.fromExternal(late.end).isAfter(day.end));
     });
   });
 

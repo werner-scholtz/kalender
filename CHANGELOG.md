@@ -1,3 +1,15 @@
+## 0.33.0
+
+### Breaking Changes
+
+- `ScheduleViewController.itemCount`, `item`, `addItem`, `clear` and `initialScrollIndex` are removed.
+- `DefaultEventStore.dateIds` is removed.
+- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` are removed.
+- `kDefaultNewEventDuration` is removed.
+- `ResizeHandleDetails.continuesBefore`, `continuesAfter`, `showStart` and `showEnd` are getters, and their `location` parameter is removed.
+- The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of `MultiDayOverlayPortal` are removed.
+- `MultiDayOverlayPortalBuilder` no longer passes `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder`.
+
 ## 0.32.0
 
 ### Deprecations
