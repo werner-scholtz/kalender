@@ -51,8 +51,7 @@ abstract final class KalenderScope {
 
   /// What the calendar allows at this point in the tree.
   ///
-  /// [KalenderHeader] and [KalenderBody] each take their own, so this is the
-  /// nearest one rather than the calendar's.
+  /// A header or body given its own `interaction` overrides [KalenderView.interaction], so this is the nearest one.
   static KalenderInteraction interactionOf(BuildContext context) => Interaction.of(context);
 
   /// How a dragged event snaps at this point in the tree.

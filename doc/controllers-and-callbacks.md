@@ -120,8 +120,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: KalenderView(
             eventsController: eventsController,
             kalenderController: kalenderController,
-            header: KalenderHeader(),
-            body: KalenderBody(),
           ),
         ),
       ],

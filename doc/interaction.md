@@ -10,16 +10,19 @@ Reacting to what they did is separate, see
 
 ## Interaction & Snapping
 
-`interaction` sets what the user may do. `KalenderHeader` and `KalenderBody` both
-accept it, so a calendar can allow different things in its header than in its
-body. `snapping` is accepted by `KalenderBody` only, and only the multi-day body
-reads it.
+`interaction` sets what the user may do. Set on `KalenderView`, it applies to
+every view. `MultiDayHeader`, `MultiDayBody`, `MonthBody` and `ScheduleBody`
+also accept it and use their own over the calendar's, so a calendar can allow
+different things in its header than in its body. `snapping` is accepted by
+`MultiDayBody` only.
 
 Both blocks below show every option **at its default value**.
 
 <!-- snippet: expression -->
 ```dart
-KalenderBody(
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: kalenderController,
   interaction: KalenderInteraction(
     allowResizing: true,
     allowRescheduling: true,
@@ -36,6 +39,12 @@ KalenderBody(
     // Opt in to horizontal resize handles in imprecise/touch mode.
     allowHorizontalImpreciseResize: false,
   ),
+)
+```
+
+<!-- snippet: expression -->
+```dart
+MultiDayBody(
   snapping: KalenderSnapping(
     snapIntervalMinutes: 10,
     snapToTimeIndicator: true,

@@ -50,7 +50,12 @@ void main() {
       eventsController: eventsController,
       kalenderController: kalenderController,
       callbacks: callbacks,
-      body: KalenderBody(interaction: interaction, multiDayTileComponents: components),
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(interaction: interaction, tileComponents: components),
+        ),
+      ],
     );
   }
 

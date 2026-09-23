@@ -37,11 +37,18 @@ void main() {
     return KalenderView(
       eventsController: eventsController,
       kalenderController: controllerFor(configuration),
-      header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderTheme(
-        data: bodyTheme,
-        child: KalenderBody(multiDayTileComponents: tiles),
-      ),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(tileComponents: tiles),
+          body: KalenderTheme(
+            data: bodyTheme,
+            child: MultiDayBody(tileComponents: tiles),
+          ),
+        ),
+        MonthViewParts(
+          body: KalenderTheme(data: bodyTheme, child: const MonthBody()),
+        ),
+      ],
     );
   }
 
@@ -50,8 +57,13 @@ void main() {
       eventsController: eventsController,
       kalenderController: controllerFor(configuration),
       components: components,
-      header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderBody(multiDayTileComponents: tiles),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(tileComponents: tiles),
+          body: MultiDayBody(tileComponents: tiles),
+        ),
+        const MonthViewParts(),
+      ],
     );
     return theme == null ? view : KalenderTheme(data: theme, child: view);
   }
@@ -220,8 +232,8 @@ void main() {
     });
   });
 
-  // The builders run above KalenderHeader and KalenderBody, so what the calendar
-  // installs resolves and the four those two install do not.
+  // The builders run above the header and body, so what the calendar installs resolves and what those two install
+  // does not.
   testWidgets('a width builder reaches the calendar state', (tester) async {
     _resolved.clear();
     _widthBuilderCalls = 0;
@@ -246,7 +258,7 @@ void main() {
       'componentsOf': true,
       'callbacksOf': true,
       'multiDayRuleOf': true,
-      'interactionOf': false,
+      'interactionOf': true,
       'snappingOf': false,
       'tileComponentsOf': false,
       'heightPerMinuteOf': false,

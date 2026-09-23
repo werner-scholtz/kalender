@@ -48,7 +48,12 @@ void main() {
     eventsController: eventsController,
     kalenderController: kalenderController,
     locale: locale,
-    body: KalenderBody(multiDayTileComponents: tiles),
+    views: [
+      MultiDayViewParts(
+        header: const SizedBox.shrink(),
+        body: MultiDayBody(tileComponents: tiles),
+      ),
+    ],
   );
 
   String labelAt(WidgetTester tester, int hour) {

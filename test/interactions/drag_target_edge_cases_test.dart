@@ -43,7 +43,7 @@ Future<void> _pumpView(WidgetTester tester, KalenderController controller, {Even
     tester,
     eventsController: eventsController ?? DefaultEventsController(),
     kalenderController: controller,
-    body: const KalenderBody(),
+    views: bodyOnlyViews,
   );
 }
 

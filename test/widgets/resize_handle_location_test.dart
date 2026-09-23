@@ -76,15 +76,20 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        body: KalenderBody(
-          multiDayTileComponents: TileComponents(
-            tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
-            resizeHandlePositioner: (context, details) {
-              received = details.location;
-              return DefaultResizeHandles(details: details);
-            },
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              tileComponents: TileComponents(
+                tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
+                resizeHandlePositioner: (context, details) {
+                  received = details.location;
+                  return DefaultResizeHandles(details: details);
+                },
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
 

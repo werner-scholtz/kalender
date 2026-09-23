@@ -4,8 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
@@ -68,8 +68,7 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      header: KalenderHeader(interaction: interaction),
-      body: KalenderBody(interaction: interaction),
+      interaction: interaction,
     );
   }
 
@@ -238,6 +237,86 @@ void main() {
       expect(find.byKey(ResizeDetector.startResizeDraggableKey(multiDayEventID)), findsNothing);
       expect(find.byKey(ResizeDetector.endResizeDraggableKey(multiDayEventID)), findsNothing);
     });
+  });
+
+  group('calendar-wide interaction', () {
+    final calendarWide = KalenderInteraction(allowResizing: false);
+    final own = KalenderInteraction(allowRescheduling: false);
+    final cases = <(String, ViewConfiguration Function(), ViewParts Function(KalenderInteraction?, TileBuilder))>[
+      (
+        'MultiDayBody',
+        singleDay,
+        (interaction, tile) => MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(
+            interaction: interaction,
+            tileComponents: TileComponents(tileBuilder: tile),
+          ),
+        ),
+      ),
+      (
+        'MultiDayHeader',
+        singleDay,
+        (interaction, tile) => MultiDayViewParts(
+          header: MultiDayHeader(
+            interaction: interaction,
+            tileComponents: TileComponents(tileBuilder: tile),
+          ),
+          body: const SizedBox.shrink(),
+        ),
+      ),
+      (
+        'MonthBody',
+        singleMonth,
+        (interaction, tile) => MonthViewParts(
+          header: const SizedBox.shrink(),
+          body: MonthBody(
+            interaction: interaction,
+            tileComponents: TileComponents(tileBuilder: tile),
+          ),
+        ),
+      ),
+      (
+        'ScheduleBody',
+        () => ScheduleViewConfiguration.continuous(
+          displayRange: year2025DisplayRange,
+          initialDateTime: DateTime(2025, 1, 1),
+        ),
+        (interaction, tile) => ScheduleViewParts(
+          body: ScheduleBody(
+            interaction: interaction,
+            tileComponents: ScheduleTileComponents(tileBuilder: tile),
+          ),
+        ),
+      ),
+    ];
+
+    for (final (name, configuration, parts) in cases) {
+      for (final (label, widgetInteraction, expected) in [
+        ('reaches $name when it has none', null, calendarWide),
+        ('loses to the one given to $name', own, own),
+      ]) {
+        testWidgets(label, (tester) async {
+          final seen = <KalenderInteraction>{};
+          kalenderController = KalenderController(viewConfiguration: configuration());
+          addTearDown(kalenderController.dispose);
+          await pumpKalender(
+            tester,
+            eventsController: eventsController,
+            kalenderController: kalenderController,
+            interaction: calendarWide,
+            views: [
+              parts(widgetInteraction, (context, event, tileRange) {
+                seen.add(KalenderScope.interactionOf(context));
+                return const SizedBox(height: 20);
+              }),
+            ],
+          );
+
+          expect(seen, {expected});
+        });
+      }
+    }
   });
 
   group('MultiDayView auto interaction', () {

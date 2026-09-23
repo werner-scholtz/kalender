@@ -102,7 +102,7 @@ void main() {
             await tester.pumpWidget(MyApp(config: config));
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
-            final body = find.byType(KalenderBody);
+            final body = calendarBody;
             final center = tester.getCenter(body);
             final topLeft = tester.getTopLeft(body) + const Offset(25, 25);
             final topRight = tester.getTopRight(body) + const Offset(-25, 25);

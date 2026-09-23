@@ -49,8 +49,8 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration, interaction: preciseInteraction),
-        body: KalenderBody(interaction: preciseInteraction),
+        interaction: preciseInteraction,
+        views: const [MultiDayViewParts(header: MultiDayHeader(configuration: headerConfiguration))],
       ),
     );
   }

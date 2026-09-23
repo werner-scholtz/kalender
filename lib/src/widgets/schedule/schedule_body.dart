@@ -14,6 +14,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
+import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 /// Displays events as a vertical list.
@@ -27,7 +28,32 @@ class ScheduleBody extends StatelessWidget {
   /// If not provided, default [ScheduleBodyConfiguration] will be used.
   final ScheduleBodyConfiguration? configuration;
 
-  const ScheduleBody({super.key, this.configuration});
+  /// Overrides the [KalenderView.callbacks] for this widget.
+  final KalenderCallbacks? callbacks;
+
+  /// Overrides the [KalenderView.interaction] for this widget.
+  final KalenderInteraction? interaction;
+
+  /// The tile components. Defaults to [ScheduleTileComponents.defaultComponents].
+  final ScheduleTileComponents? tileComponents;
+
+  const ScheduleBody({super.key, this.configuration, this.callbacks, this.interaction, this.tileComponents});
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewProviders(
+      callbacks: callbacks,
+      interaction: interaction,
+      tileComponents: tileComponents ?? ScheduleTileComponents.defaultComponents(),
+      child: _ScheduleBody(configuration: configuration),
+    );
+  }
+}
+
+class _ScheduleBody extends StatelessWidget {
+  final ScheduleBodyConfiguration? configuration;
+
+  const _ScheduleBody({this.configuration});
 
   @override
   Widget build(BuildContext context) {

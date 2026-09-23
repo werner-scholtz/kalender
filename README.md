@@ -115,8 +115,6 @@ class _MyCalendarState extends State<MyCalendar> {
       callbacks: KalenderCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),
       ),
-      header: KalenderHeader(),
-      body: KalenderBody(),
     );
   }
 }

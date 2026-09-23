@@ -206,22 +206,23 @@ class _SelectionDemoState extends State<SelectionDemo> {
                   onEventChanged: (event, updatedEvent) =>
                       eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
                 ),
-                header: Material(
-                  color: scheme.surface,
-                  elevation: 2,
-                  child: Column(
-                    children: [
-                      _toolbar(),
-                      const KalenderHeader(multiDayTileComponents: tileComponents),
-                    ],
+                views: [
+                  MultiDayViewParts(
+                    header: _header(scheme, const MultiDayHeader(tileComponents: tileComponents)),
+                    body: const MultiDayBody(tileComponents: tileComponents),
                   ),
-                ),
-                body: KalenderBody(
-                  multiDayTileComponents: tileComponents,
-                  monthTileComponents: tileComponents,
-                  scheduleTileComponents: scheduleTileComponents,
-                  scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
-                ),
+                  MonthViewParts(
+                    header: _header(scheme, const MonthHeader()),
+                    body: const MonthBody(tileComponents: tileComponents),
+                  ),
+                  ScheduleViewParts(
+                    header: _header(scheme),
+                    body: ScheduleBody(
+                      tileComponents: scheduleTileComponents,
+                      configuration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -229,6 +230,15 @@ class _SelectionDemoState extends State<SelectionDemo> {
           SizedBox(width: 360, child: _panel(context)),
         ],
       ),
+    );
+  }
+
+  /// The toolbar above [child].
+  Widget _header(ColorScheme scheme, [Widget? child]) {
+    return Material(
+      color: scheme.surface,
+      elevation: 2,
+      child: Column(children: [_toolbar(), if (child != null) child]),
     );
   }
 

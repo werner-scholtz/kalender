@@ -69,24 +69,31 @@ class HomeScreen extends ConsumerWidget {
             updatedEvent: updatedEvent,
           ),
         ),
-        header: Material(
-          color: Theme.of(context).colorScheme.surface,
-          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-          elevation: 2,
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Row(children: [ViewSwitcher()]),
-              ),
-              KalenderHeader(),
-            ],
+        views: [
+          MultiDayViewParts(
+            header: _header(context, const MultiDayHeader()),
+            body: const MultiDayBody(configuration: MultiDayBodyConfiguration(showMultiDayEvents: false)),
           ),
-        ),
-        body: KalenderBody(
-          multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
-          monthBodyConfiguration: MonthBodyConfiguration(),
-        ),
+          MonthViewParts(header: _header(context, const MonthHeader())),
+        ],
+      ),
+    );
+  }
+
+  /// The view switcher above [child].
+  Widget _header(BuildContext context, Widget child) {
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+      elevation: 2,
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(8),
+            child: Row(children: [ViewSwitcher()]),
+          ),
+          child,
+        ],
       ),
     );
   }

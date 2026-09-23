@@ -55,12 +55,14 @@ void main() {
         onEventTapped: tapCallback ? tapped.add : null,
         onTapped: emptySpaceTaps.add,
       ),
-      header: KalenderHeader(interaction: interaction(gesture), multiDayTileComponents: components),
-      body: KalenderBody(
-        interaction: interaction(gesture),
-        multiDayTileComponents: components,
-        monthTileComponents: components,
-      ),
+      interaction: interaction(gesture),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(tileComponents: components),
+          body: MultiDayBody(tileComponents: components),
+        ),
+        MonthViewParts(body: MonthBody(tileComponents: components)),
+      ],
     );
   }
 

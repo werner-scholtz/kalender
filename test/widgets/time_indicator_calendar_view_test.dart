@@ -27,11 +27,7 @@ void main() {
     kalenderController = KalenderController(viewConfiguration: viewConfiguration);
     return pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        body: const KalenderBody(),
-      ),
+      KalenderView(eventsController: eventsController, kalenderController: kalenderController, views: bodyOnlyViews),
     );
   }
 

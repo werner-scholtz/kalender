@@ -52,7 +52,7 @@ void main() {
     expect(created, isNull);
     expect(confirmed, isNull);
 
-    final headerRect = tester.getRect(find.byType(KalenderHeader));
+    final headerRect = tester.getRect(find.byType(MultiDayHeader));
     final startPoint = Offset(headerRect.left + headerRect.width * 0.25, headerRect.bottom - 4);
     await tester.dragFrom(startPoint, Offset(headerRect.width * 0.4, 0));
     await tester.pumpAndSettle();
@@ -101,7 +101,7 @@ void main() {
     final pageBefore = controller.page ?? 0;
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
-    final headerRect = tester.getRect(find.byType(KalenderHeader));
+    final headerRect = tester.getRect(find.byType(MultiDayHeader));
 
     final gesture = await tester.holdDragAt(tile, Offset(headerRect.right - 2, tester.getCenter(tile).dy));
     await gesture.up();

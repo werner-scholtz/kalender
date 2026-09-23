@@ -46,7 +46,7 @@ void main() {
             location: location,
           ),
           components: components,
-          body: const KalenderBody(),
+          views: bodyOnlyViews,
         ),
       );
 
@@ -128,8 +128,6 @@ void main() {
               nowCallback: nowCallback,
             ),
           ),
-          header: const KalenderHeader(),
-          body: const KalenderBody(),
         ),
       );
 

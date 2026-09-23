@@ -40,7 +40,13 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: KalenderBody(multiDayTileComponents: components, interaction: kPreciseInteraction),
+      interaction: kPreciseInteraction,
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(tileComponents: components),
+        ),
+      ],
     );
   }
 
@@ -74,7 +80,7 @@ void main() {
       final offsetBefore = kalenderController.multiDayViewController.scrollController.offset;
 
       final tile = find.byKey(DayEventTile.tileKey(id));
-      final bodyRect = tester.getRect(find.byType(KalenderBody));
+      final bodyRect = tester.getRect(find.byType(MultiDayBody));
       final gesture = await tester.holdDragAt(tile, Offset(tester.getCenter(tile).dx, c.targetY(bodyRect)));
       await gesture.up();
       await tester.pumpAndSettle();

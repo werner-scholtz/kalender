@@ -32,7 +32,7 @@ void main() {
     final view = KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: const KalenderBody(),
+      views: bodyOnlyViews,
     );
     return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
   }

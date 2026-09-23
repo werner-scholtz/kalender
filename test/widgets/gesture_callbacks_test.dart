@@ -55,8 +55,11 @@ void main() {
           dateLabel: dateLabel,
           weekNumber: weekNumber,
         ),
-        header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration),
-        body: KalenderBody(scheduleBodyConfiguration: scheduleConfiguration),
+        views: [
+          MultiDayViewParts(header: MultiDayHeader(configuration: headerConfiguration)),
+          const MonthViewParts(),
+          ScheduleViewParts(body: ScheduleBody(configuration: scheduleConfiguration)),
+        ],
       ),
     );
   }

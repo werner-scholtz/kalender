@@ -100,9 +100,39 @@ Presents events in a chronological scrollable list.
 
 ---
 
+## Headers and bodies
+
+`KalenderView` shows a header above a body. Its `views` list holds one `ViewParts` per kind of view, and the parts that accept the controller's configuration decide what is shown. The default list holds all three built-in parts:
+
+| Parts               | Built-in header  | Built-in body  |
+| ------------------- | ---------------- | -------------- |
+| `MultiDayViewParts` | `MultiDayHeader` | `MultiDayBody` |
+| `MonthViewParts`    | `MonthHeader`    | `MonthBody`    |
+| `ScheduleViewParts` | None             | `ScheduleBody` |
+
+A null `header` or `body` shows the built-in widget, and `SizedBox.shrink()` shows nothing. Any widget can be a header, so a header can wrap the built-in one, for example to put a toolbar above it.
+
+The list needs parts for every kind of configuration the controller shows. Parts with a `name` show only the configuration with that `name`, and come before the unnamed parts of their kind. Use this when two configurations of one kind, such as a week and a day, need different parts:
+
+<!-- snippet: expression -->
+```dart
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: kalenderController,
+  views: [
+    // Shown for the configuration named 'Day'.
+    const MultiDayViewParts(name: 'Day', header: SizedBox.shrink()),
+    // Shown for every other multi-day configuration.
+    MultiDayViewParts(header: Column(children: [CustomWidget(), const MultiDayHeader()])),
+    const MonthViewParts(),
+    const ScheduleViewParts(),
+  ],
+)
+```
+
 ## Per-view configuration
 
-`KalenderHeader` and `KalenderBody` accept view-specific configuration objects:
+The built-in header and body widgets accept view-specific configuration objects:
 
 | View     | Header config class           | Body config class           |
 | -------- | ----------------------------- | --------------------------- |
@@ -110,7 +140,7 @@ Presents events in a chronological scrollable list.
 | Month    | None                          | `MonthBodyConfiguration`    |
 | Schedule | None                          | `ScheduleBodyConfiguration` |
 
-Both also accept `interaction`. `KalenderBody` additionally accepts `snapping`, which the header has no equivalent of. Both are covered in [Interaction](interaction.md).
+They also accept `callbacks` and `interaction`, which override the ones on `KalenderView`, and `tileComponents`, see [Appearance](appearance.md). `MultiDayBody` additionally accepts `snapping`. Interaction and snapping are covered in [Interaction](interaction.md).
 
 Every option below is shown at its default.
 
@@ -119,8 +149,8 @@ Every option below is shown at its default.
 
   <!-- snippet: expression -->
   ```dart
-  KalenderHeader(
-    multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
+  MultiDayHeader(
+    configuration: MultiDayHeaderConfiguration(
       showTiles: true,
       allowSingleDayEvents: false,
       tileHeight: 24,
@@ -140,8 +170,8 @@ Every option below is shown at its default.
 
   <!-- snippet: expression -->
   ```dart
-  KalenderBody(
-    multiDayBodyConfiguration: MultiDayBodyConfiguration(
+  MultiDayBody(
+    configuration: MultiDayBodyConfiguration(
       showMultiDayEvents: false,
       horizontalPadding: EdgeInsets.only(left: 0, right: 4),
       eventLayoutStrategy: const EventLayoutStrategy.overlap(),
@@ -164,8 +194,8 @@ Every option below is shown at its default.
 
   <!-- snippet: expression -->
   ```dart
-  KalenderBody(
-    monthBodyConfiguration: MonthBodyConfiguration(
+  MonthBody(
+    configuration: MonthBodyConfiguration(
       tileHeight: 24,
       eventPadding: EdgeInsets.only(left: 0, right: 4, bottom: 2),
       pageTriggerConfiguration: PageTriggerConfiguration(),
@@ -181,8 +211,8 @@ Every option below is shown at its default.
 
   <!-- snippet: expression -->
   ```dart
-  KalenderBody(
-    scheduleBodyConfiguration: ScheduleBodyConfiguration(
+  ScheduleBody(
+    configuration: ScheduleBodyConfiguration(
       emptyDay: EmptyDayBehavior.showOnlyToday,
       leadingWidth: 56,
       pageTriggerConfiguration: PageTriggerConfiguration(),

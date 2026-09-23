@@ -51,7 +51,7 @@ void main() {
           kalenderController: kalenderController,
           locale: locale,
           components: components,
-          body: KalenderBody(scheduleTileComponents: tiles),
+          views: [ScheduleViewParts(body: ScheduleBody(tileComponents: tiles))],
         ),
       ),
     );

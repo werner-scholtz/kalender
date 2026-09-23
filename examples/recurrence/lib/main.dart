@@ -77,24 +77,38 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           onEventChanged: controller.updateEvent,
         ),
-        header: Material(
-          color: Theme.of(context).colorScheme.surface,
-          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-          elevation: 2,
-          child: Column(
-            children: [
-              CalendarToolBar(kalenderController: kalenderController),
-              KalenderHeader(multiDayTileComponents: tileComponents(context, body: false)),
-            ],
+        views: [
+          MultiDayViewParts(
+            header: _header(context, MultiDayHeader(tileComponents: tileComponents(context, body: false))),
+            body: MultiDayBody(
+              configuration: MultiDayBodyConfiguration(showMultiDayEvents: false),
+              tileComponents: tileComponents(context),
+            ),
           ),
-        ),
-        body: KalenderBody(
-          multiDayTileComponents: tileComponents(context),
-          monthTileComponents: tileComponents(context, body: false),
-          scheduleTileComponents: scheduleTileComponents(context),
-          multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
-          monthBodyConfiguration: MonthBodyConfiguration(),
-        ),
+          MonthViewParts(
+            header: _header(context, const MonthHeader()),
+            body: MonthBody(tileComponents: tileComponents(context, body: false)),
+          ),
+          ScheduleViewParts(
+            header: _header(context),
+            body: ScheduleBody(tileComponents: scheduleTileComponents(context)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// The toolbar above [child].
+  Widget _header(BuildContext context, [Widget? child]) {
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+      elevation: 2,
+      child: Column(
+        children: [
+          CalendarToolBar(kalenderController: kalenderController),
+          if (child != null) child,
+        ],
       ),
     );
   }

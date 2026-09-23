@@ -40,10 +40,14 @@ void main() {
       eventsController: eventsController,
       kalenderController: kalenderController,
       callbacks: callbacks,
-      body: KalenderBody(
-        interaction: kPreciseInteraction,
-        scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
-      ),
+      views: [
+        ScheduleViewParts(
+          body: ScheduleBody(
+            interaction: kPreciseInteraction,
+            configuration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
+          ),
+        ),
+      ],
     );
   }
 

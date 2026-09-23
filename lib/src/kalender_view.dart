@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
-import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// {@category Views}
@@ -33,11 +32,14 @@ class KalenderView extends StatefulWidget {
   /// `ThemeData.extensions`, or wrap a calendar in a [KalenderTheme] to scope it.
   final KalenderComponents? components;
 
-  /// The header widget that will be displayed above the body.
-  final Widget? header;
+  /// The header and body shown for each kind of view configuration.
+  ///
+  /// The first parts that accept the controller's configuration are shown, a named one before an unnamed one. See
+  /// [ViewParts].
+  final List<ViewParts> views;
 
-  /// The body widget that will be displayed below the header.
-  final Widget? body;
+  /// The interaction of every view. A header or body given its own `interaction` uses that instead.
+  final KalenderInteraction? interaction;
 
   /// The locale used for internationalization, for example `const Locale('en', 'US')`.
   ///
@@ -48,10 +50,10 @@ class KalenderView extends StatefulWidget {
     super.key,
     required this.eventsController,
     required this.kalenderController,
+    this.views = const [MultiDayViewParts(), MonthViewParts(), ScheduleViewParts()],
     this.callbacks,
+    this.interaction,
     this.components,
-    this.header,
-    this.body,
     this.locale,
   });
 
@@ -65,6 +67,14 @@ class KalenderViewState extends State<KalenderView> {
   late ViewController _viewController;
 
   KalenderController get _controller => widget.kalenderController;
+
+  late final _interaction = ValueNotifier(widget.interaction ?? KalenderInteraction());
+
+  /// Keeps the header and body in place when the parts change the widgets that wrap them.
+  final _layoutKey = GlobalKey();
+
+  /// The configuration names already reported as matching several parts.
+  final _reportedDuplicates = <String>{};
 
   @override
   void initState() {
@@ -96,6 +106,7 @@ class KalenderViewState extends State<KalenderView> {
   @override
   void didUpdateWidget(covariant KalenderView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.interaction != oldWidget.interaction) _interaction.value = widget.interaction ?? KalenderInteraction();
     final oldController = oldWidget.kalenderController;
     if (_controller == oldController) return;
     oldController
@@ -122,21 +133,38 @@ class KalenderViewState extends State<KalenderView> {
     _controller
       ..removeListener(_onControllerChanged)
       ..releaseView(this, _viewController);
+    _interaction.dispose();
     super.dispose();
+  }
+
+  /// The parts that show [configuration], or null when none do.
+  ViewParts? _partsFor(ViewConfiguration configuration) {
+    final accepting = widget.views.where((parts) => parts.accepts(configuration));
+    final named = accepting.where((parts) => parts.name != null).toList();
+    final candidates = named.isNotEmpty ? named : accepting.toList();
+    assert(
+      candidates.isNotEmpty,
+      'No ViewParts in KalenderView.views accepts the ${configuration.runtimeType} named "${configuration.name}". '
+      'The built-in parts are MultiDayViewParts, MonthViewParts and ScheduleViewParts.',
+    );
+    if (candidates.length > 1 && _reportedDuplicates.add(configuration.name)) {
+      debugPrint(
+        'KalenderView: ${candidates.length} ViewParts accept the ${configuration.runtimeType} named '
+        '"${configuration.name}", so the first is shown. Give each parts a name matching its configuration\'s name '
+        'to pick one.',
+      );
+    }
+    return candidates.firstOrNull;
   }
 
   @override
   Widget build(BuildContext context) {
-    final bodyId = widget.body == null ? null : KalenderLayoutDelegate.body;
-    final headerId = widget.header == null ? null : KalenderLayoutDelegate.header;
-
+    final parts = _partsFor(_viewController.viewConfiguration);
+    final header = parts?.header ?? parts?.builtInHeader;
+    final body = parts?.body ?? parts?.builtInBody;
+    final headerId = header == null ? null : KalenderLayoutDelegate.header;
+    final bodyId = body == null ? null : KalenderLayoutDelegate.body;
     final components = widget.components ?? const KalenderComponents();
-    // Each gutter is measured only for the view that draws it.
-    final viewConfiguration = _viewController.viewConfiguration;
-    final multiDayConfiguration = viewConfiguration is MultiDayViewConfiguration ? viewConfiguration : null;
-    final monthConfiguration = viewConfiguration is MonthViewConfiguration && viewConfiguration.showWeekNumbers
-        ? viewConfiguration
-        : null;
 
     return LocationProvider(
       location: _viewController.location,
@@ -144,34 +172,28 @@ class KalenderViewState extends State<KalenderView> {
         locale: widget.locale,
         child: Callbacks(
           callbacks: widget.callbacks,
-          child: Components(
-            components: components,
-            child: EventsControllerProvider(
-              eventsController: widget.eventsController,
-              child: KalenderControllerProvider(
-                notifier: widget.kalenderController,
-                child: ViewControllerProvider(
-                  viewController: _viewController,
-                  // Below every provider a width builder may read, and above both
-                  // halves so they cannot be given different widths.
-                  child: Builder(
-                    builder: (context) => GutterWidths(
-                      weekNumber: monthConfiguration == null
-                          ? null
-                          : components.monthComponents.bodyComponents.buildWeekNumberWidth(context),
-                      timeline: multiDayConfiguration == null
-                          ? null
-                          : components.multiDayComponents.bodyComponents.buildTimelineWidth(
-                              context,
-                              multiDayConfiguration.timeOfDayRange,
-                            ),
-                      child: CustomMultiChildLayout(
-                        delegate: KalenderLayoutDelegate(headerId, bodyId),
-                        children: [
-                          if (bodyId != null) LayoutId(id: bodyId, child: widget.body!),
-                          if (headerId != null) LayoutId(id: headerId, child: widget.header!),
-                        ],
-                      ),
+          child: Interaction(
+            notifier: _interaction,
+            child: Components(
+              components: components,
+              child: EventsControllerProvider(
+                eventsController: widget.eventsController,
+                child: KalenderControllerProvider(
+                  notifier: widget.kalenderController,
+                  child: ViewControllerProvider(
+                    viewController: _viewController,
+                    child: Builder(
+                      builder: (context) {
+                        final layout = CustomMultiChildLayout(
+                          key: _layoutKey,
+                          delegate: KalenderLayoutDelegate(headerId, bodyId),
+                          children: [
+                            if (bodyId != null) LayoutId(id: bodyId, child: body!),
+                            if (headerId != null) LayoutId(id: headerId, child: header!),
+                          ],
+                        );
+                        return parts?.wrap(context, layout) ?? layout;
+                      },
                     ),
                   ),
                 ),

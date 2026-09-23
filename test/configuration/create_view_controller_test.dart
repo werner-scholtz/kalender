@@ -60,13 +60,7 @@ void main() {
       addTearDown(eventsController.dispose);
       final kalenderController = KalenderController(viewConfiguration: configuration);
       addTearDown(kalenderController.dispose);
-      await pumpKalender(
-        tester,
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        header: const KalenderHeader(),
-        body: const KalenderBody(),
-      );
+      await pumpKalender(tester, eventsController: eventsController, kalenderController: kalenderController);
     });
   }
 

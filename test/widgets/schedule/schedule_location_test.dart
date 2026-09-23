@@ -43,7 +43,11 @@ void main() {
       kalenderController: kalenderController,
       components: components,
       callbacks: callbacks,
-      body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay)),
+      views: [
+        ScheduleViewParts(
+          body: ScheduleBody(configuration: ScheduleBodyConfiguration(emptyDay: emptyDay)),
+        ),
+      ],
     );
   }
 
