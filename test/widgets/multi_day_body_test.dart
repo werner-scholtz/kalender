@@ -32,7 +32,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
     callbacks = KalenderCallbacks(
       onEventCreated: eventsController.addEvent,
       onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
@@ -45,11 +44,11 @@ void main() {
     MultiDayViewConfiguration viewConfiguration, {
     KalenderInteraction? interaction,
   }) {
+    kalenderController = KalenderController(viewConfiguration: viewConfiguration);
     return pumpKalender(
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: viewConfiguration,
       callbacks: callbacks,
       body: KalenderBody(interaction: interaction, multiDayTileComponents: components),
     );

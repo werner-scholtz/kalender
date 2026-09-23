@@ -15,7 +15,6 @@ import '../utilities.dart';
 /// the header whatever the view's rule says and whatever its duration is.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController kalenderController;
 
   final start = DateTime(2025, 1, 6); // A Monday.
 
@@ -34,22 +33,23 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule, {KalenderCallbacks? callbacks}) {
+    final kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: start,
+        multiDayRule: rule,
+      ),
+    );
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
         callbacks: callbacks,
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: year2025DisplayRange,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialDateTime: start,
-          multiDayRule: rule,
-        ),
         header: KalenderHeader(interaction: interaction),
         body: KalenderBody(interaction: interaction),
       ),

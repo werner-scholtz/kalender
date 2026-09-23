@@ -19,7 +19,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   Future<void> pumpFreeScroll(
@@ -28,15 +27,14 @@ void main() {
     DateTime? initialDateTime,
     int numberOfDays = 7,
   }) {
+    kalenderController = freeScrollController(
+      displayRange: range ?? displayRange,
+      initialDateTime: initialDateTime ?? start,
+      numberOfDays: numberOfDays,
+    );
     return pumpAndSettleWithMaterialApp(
       tester,
-      freeScrollView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        displayRange: range ?? displayRange,
-        initialDateTime: initialDateTime ?? start,
-        numberOfDays: numberOfDays,
-      ),
+      freeScrollView(eventsController: eventsController, kalenderController: kalenderController),
     );
   }
 

@@ -48,23 +48,20 @@ void main() {
     (date: initialDate, event: middleEvent),
   ];
 
-  final controller = KalenderController();
-  final repeatableFunctions = [controller.jumpToDate, controller.animateToDate, controller.animateToDateTime];
-
-  Future<void> pumpCalendarView(WidgetTester tester, ViewConfiguration viewConfiguration) {
-    return pumpAndSettleWithMaterialApp(
+  Future<KalenderController> pumpCalendarView(WidgetTester tester, ViewConfiguration viewConfiguration) async {
+    final controller = KalenderController(viewConfiguration: viewConfiguration);
+    addTearDown(controller.dispose);
+    await pumpKalender(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: controller,
-        viewConfiguration: viewConfiguration,
-        body: KalenderBody(
-          multiDayTileComponents: components,
-          monthTileComponents: components,
-          scheduleTileComponents: scheduleComponents,
-        ),
+      eventsController: eventsController,
+      kalenderController: controller,
+      body: KalenderBody(
+        multiDayTileComponents: components,
+        monthTileComponents: components,
+        scheduleTileComponents: scheduleComponents,
       ),
     );
+    return controller;
   }
 
   for (final testCase in [
@@ -118,12 +115,12 @@ void main() {
     ),
   ]) {
     testWidgets(testCase.name, (tester) async {
-      await pumpCalendarView(tester, testCase.configuration);
+      final controller = await pumpCalendarView(tester, testCase.configuration);
 
       expect(find.byType(testCase.body), findsOneWidget);
       expect(controller.visibleEvents.value, isNotEmpty);
 
-      for (final function in repeatableFunctions) {
+      for (final function in [controller.jumpToDate, controller.animateToDate, controller.animateToDateTime]) {
         for (final (i, target) in targets.indexed) {
           await tester.testDateFunction(
             controller: controller,

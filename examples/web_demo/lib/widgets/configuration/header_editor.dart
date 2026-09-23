@@ -31,7 +31,7 @@ class MultiDayHeaderEditor extends StatelessWidget {
           value: demoConfiguration.showHeader,
           onChanged: (value) => demoConfiguration.showHeader = value,
           title: Text(context.l10n.showHeader),
-          subtitle: Text(context.l10n.showHeaderForView(demoConfiguration.viewConfiguration.name)),
+          subtitle: Text(context.l10n.showHeaderForView(context.controller.viewConfiguration.name)),
         ),
         SwitchListTile.adaptive(
           value: configuration.showTiles,

@@ -15,11 +15,11 @@ import '../../utilities.dart';
 /// Row alignment and the scroll target when today has no events (#253) in the continuous schedule view.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController kalenderController;
+  KalenderController? kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = null;
   });
 
   // A one-hour event at [hour] on [day].
@@ -35,22 +35,24 @@ void main() {
     DateTime? initialDate,
     KalenderComponents? components,
   }) {
+    final configuration = ScheduleViewConfiguration.continuous(
+      displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026)),
+      initialDateTime: initialDate ?? DateTime(2025, 1, 15),
+      nowCallback: nowCallback ?? () => DateTime(2025, 1, 15, 10),
+    );
+    final controller = kalenderController ??= KalenderController(viewConfiguration: configuration);
+    controller.viewConfiguration = configuration;
     return KalenderView(
       eventsController: eventsController,
-      kalenderController: kalenderController,
+      kalenderController: controller,
       components: components,
-      viewConfiguration: ScheduleViewConfiguration.continuous(
-        displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026)),
-        initialDateTime: initialDate ?? DateTime(2025, 1, 15),
-        nowCallback: nowCallback ?? () => DateTime(2025, 1, 15, 10),
-      ),
       body: KalenderBody(
         scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay, leadingWidth: leadingWidth),
       ),
     );
   }
 
-  ScheduleViewController schedule() => kalenderController.viewController as ScheduleViewController;
+  ScheduleViewController schedule() => kalenderController!.viewController as ScheduleViewController;
 
   double tileLeft(WidgetTester tester, String id) => tester.getTopLeft(find.byKey(ScheduleEventTile.tileKey(id))).dx;
 

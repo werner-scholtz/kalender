@@ -35,7 +35,7 @@ void main() {
 
     setUp(() {
       eventsController = DefaultEventsController();
-      controller = KalenderController();
+      controller = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
     });
 
     Widget buildLayoutWidget({required HorizontalConfiguration configuration, double? width, double? height}) {

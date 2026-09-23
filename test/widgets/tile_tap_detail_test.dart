@@ -19,7 +19,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
     taps = _Taps();
   });
 
@@ -46,14 +45,16 @@ void main() {
           final id = eventsController.addEvent(
             KalenderEvent(start: day.copyWith(hour: 10), end: day.copyWith(hour: 11)),
           );
-          await pumpKalender(
-            tester,
-            eventsController: eventsController,
-            kalenderController: kalenderController,
+          kalenderController = KalenderController(
             viewConfiguration: ScheduleViewConfiguration.continuous(
               displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
               initialDateTime: day,
             ),
+          );
+          await pumpKalender(
+            tester,
+            eventsController: eventsController,
+            kalenderController: kalenderController,
             callbacks: recordingCallbacks(),
             body: KalenderBody(interaction: kPreciseInteraction),
           );
@@ -91,14 +92,16 @@ void main() {
         Future<String> openOverlay(WidgetTester tester) async {
           final id = eventsController.addEvent(KalenderEvent(start: monday, end: monday.add(const Duration(days: 2))));
           eventsController.addEvent(KalenderEvent(start: monday, end: monday.add(const Duration(days: 2))));
-          await pumpKalender(
-            tester,
-            eventsController: eventsController,
-            kalenderController: kalenderController,
+          kalenderController = KalenderController(
             viewConfiguration: MultiDayViewConfiguration.week(
               displayRange: KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7))),
               initialDateTime: monday,
             ),
+          );
+          await pumpKalender(
+            tester,
+            eventsController: eventsController,
+            kalenderController: kalenderController,
             callbacks: recordingCallbacks(),
             header: KalenderHeader(
               multiDayHeaderConfiguration: const MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),

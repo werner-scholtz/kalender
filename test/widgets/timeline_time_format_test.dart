@@ -24,7 +24,9 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
+    );
   });
 
   tearDown(() {
@@ -46,7 +48,6 @@ void main() {
     eventsController: eventsController,
     kalenderController: kalenderController,
     locale: locale,
-    viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
     body: KalenderBody(multiDayTileComponents: tiles),
   );
 

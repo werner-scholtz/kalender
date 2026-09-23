@@ -17,7 +17,9 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
+    );
   });
 
   tearDown(() {
@@ -34,7 +36,6 @@ void main() {
         eventsController: eventsController,
         kalenderController: kalenderController,
         locale: const Locale('de'),
-        viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(dayHeaderStringBuilder: (context, date) => read(context)),
@@ -67,7 +68,6 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(

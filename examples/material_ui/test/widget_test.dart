@@ -40,7 +40,14 @@ class _Calendar extends StatefulWidget {
 
 class _CalendarState extends State<_Calendar> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
+  final kalenderController = KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(
+      displayRange: KalenderDateTimeRange(
+        start: DateTime.now().subtract(const Duration(days: 7)),
+        end: DateTime.now().add(const Duration(days: 7)),
+      ),
+    ),
+  );
 
   @override
   void dispose() {
@@ -51,16 +58,9 @@ class _CalendarState extends State<_Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: KalenderDateTimeRange(
-          start: now.subtract(const Duration(days: 7)),
-          end: now.add(const Duration(days: 7)),
-        ),
-      ),
       body: const KalenderBody(),
     );
   }

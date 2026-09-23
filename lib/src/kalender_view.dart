@@ -15,11 +15,8 @@ class KalenderView extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
   final EventsController eventsController;
 
-  /// The [KalenderController] that is used to control the calendar view.
+  /// The [KalenderController] that holds the view configuration and location.
   final KalenderController kalenderController;
-
-  /// The [ViewConfiguration] that will be used to render the calendar view.
-  final ViewConfiguration viewConfiguration;
 
   /// The [KalenderCallbacks] used by the [KalenderView]
   final KalenderCallbacks? callbacks;
@@ -46,23 +43,15 @@ class KalenderView extends StatefulWidget {
   /// If not provided, intl's default locale is used.
   final Locale? locale;
 
-  /// The location of the calendar view. (from the timezone package)
-  ///
-  /// If not provided, the default location will be used.
-  final Location? location;
-
-  /// Creates a [ViewController] from [viewConfiguration] and attaches it to [kalenderController].
   const KalenderView({
     super.key,
     required this.eventsController,
     required this.kalenderController,
-    required this.viewConfiguration,
     this.callbacks,
     this.components,
     this.header,
     this.body,
     this.locale,
-    this.location,
   });
 
   @override
@@ -71,84 +60,64 @@ class KalenderView extends StatefulWidget {
 
 /// {@category Views}
 class KalenderViewState extends State<KalenderView> {
-  /// The [ViewController] that will be used by the children of the [KalenderView].
+  /// The [ViewController] this view shows.
   late ViewController _viewController;
 
-  /// Last snapshot of each view, keyed by configuration name.
-  final Map<String, ViewSnapshot> _viewHistory = {};
-  ViewSnapshot? _lastMultiDaySnapshot;
-  // TODO: update this to be a valueNotifier.
-  late final _location = ValueNotifier<Location?>(widget.location);
+  KalenderController get _controller => widget.kalenderController;
 
   @override
   void initState() {
     super.initState();
-    widget.kalenderController.location = widget.location;
-    _viewController = widget.viewConfiguration.createViewController(widget.kalenderController, null);
-    widget.kalenderController.attach(_viewController);
+    _viewController = _controller.attachView(this);
+    _controller.addListener(_onControllerChanged);
+  }
+
+  /// Follows a switch of view or location while this view is the active one.
+  void _onControllerChanged() {
+    if (!_controller.isActiveView(this)) return;
+    final next = _controller.attachView(this);
+    setState(() => _show(next, _controller));
+  }
+
+  /// Shows [next] and releases the view controller shown before once its widgets are gone.
+  void _show(ViewController next, KalenderController controller) {
+    final old = _viewController;
+    if (identical(next, old)) return;
+    _viewController = next;
+    WidgetsBinding.instance.addPostFrameCallback((_) => controller.releaseView(this, old));
   }
 
   @override
   void didUpdateWidget(covariant KalenderView oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    final didChangeLocale = widget.locale != oldWidget.locale;
-
-    final didChangeLocation = widget.location != oldWidget.location;
-    if (didChangeLocation) {
-      _location.value = widget.location;
-    }
-
-    final didChangeKalenderController = widget.kalenderController != oldWidget.kalenderController;
-    if (didChangeKalenderController) {
-      if (oldWidget.kalenderController.isAttachedTo(_viewController)) oldWidget.kalenderController.detach();
-      widget.kalenderController.attach(_viewController);
-    }
-
-    final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
-    if (didChangeViewConfiguration || didChangeLocation) {
-      // The snapshot is kept even when switching to a view without vertical scroll (e.g. Month), so a
-      // Week → Month → Week round-trip still restores the position.
-      final old = _viewController;
-      final snapshot = old.snapshot();
-      _viewHistory[old.viewConfiguration.name] = snapshot;
-      if (snapshot.heightPerMinute != null) _lastMultiDaySnapshot = snapshot;
-
-      final transition = ViewTransitionContext(
-        oldViewController: old,
-        newViewConfiguration: widget.viewConfiguration,
-        byView: _viewHistory,
-        lastMultiDay: _lastMultiDaySnapshot,
-        locationChanged: didChangeLocation,
-        location: widget.location,
-      );
-      widget.kalenderController.location = widget.location;
-      _viewController = widget.viewConfiguration.createViewController(widget.kalenderController, transition);
-      widget.kalenderController.attach(_viewController);
-      old.dispose();
-    }
-
-    if (didChangeViewConfiguration || didChangeLocation || didChangeLocale || didChangeKalenderController) {
-      setState(() {});
-    }
+    final oldController = oldWidget.kalenderController;
+    if (_controller == oldController) return;
+    oldController
+      ..removeListener(_onControllerChanged)
+      ..detachView(this);
+    final old = _viewController;
+    _viewController = _controller.attachView(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => oldController.releaseView(this, old));
+    _controller.addListener(_onControllerChanged);
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    if (widget.kalenderController.isAttachedTo(_viewController)) widget.kalenderController.detach();
+    _controller.detachView(this);
   }
 
   @override
   void activate() {
     super.activate();
-    widget.kalenderController.attach(_viewController);
+    _show(_controller.attachView(this), _controller);
   }
 
   @override
   void dispose() {
-    _viewController.dispose();
-    _location.dispose();
+    _controller
+      ..removeListener(_onControllerChanged)
+      ..releaseView(this, _viewController);
     super.dispose();
   }
 
@@ -159,14 +128,14 @@ class KalenderViewState extends State<KalenderView> {
 
     final components = widget.components ?? const KalenderComponents();
     // Each gutter is measured only for the view that draws it.
-    final viewConfiguration = widget.viewConfiguration;
+    final viewConfiguration = _viewController.viewConfiguration;
     final multiDayConfiguration = viewConfiguration is MultiDayViewConfiguration ? viewConfiguration : null;
     final monthConfiguration = viewConfiguration is MonthViewConfiguration && viewConfiguration.showWeekNumbers
         ? viewConfiguration
         : null;
 
     return LocationProvider(
-      notifier: _location,
+      location: _viewController.location,
       child: LocaleProvider(
         locale: widget.locale,
         child: Callbacks(
@@ -177,25 +146,28 @@ class KalenderViewState extends State<KalenderView> {
               eventsController: widget.eventsController,
               child: KalenderControllerProvider(
                 notifier: widget.kalenderController,
-                // Below every provider a width builder may read, and above both
-                // halves so they cannot be given different widths.
-                child: Builder(
-                  builder: (context) => GutterWidths(
-                    weekNumber: monthConfiguration == null
-                        ? null
-                        : components.monthComponents.bodyComponents.buildWeekNumberWidth(context),
-                    timeline: multiDayConfiguration == null
-                        ? null
-                        : components.multiDayComponents.bodyComponents.buildTimelineWidth(
-                            context,
-                            multiDayConfiguration.timeOfDayRange,
-                          ),
-                    child: CustomMultiChildLayout(
-                      delegate: KalenderLayoutDelegate(headerId, bodyId),
-                      children: [
-                        if (bodyId != null) LayoutId(id: bodyId, child: widget.body!),
-                        if (headerId != null) LayoutId(id: headerId, child: widget.header!),
-                      ],
+                child: ViewControllerProvider(
+                  viewController: _viewController,
+                  // Below every provider a width builder may read, and above both
+                  // halves so they cannot be given different widths.
+                  child: Builder(
+                    builder: (context) => GutterWidths(
+                      weekNumber: monthConfiguration == null
+                          ? null
+                          : components.monthComponents.bodyComponents.buildWeekNumberWidth(context),
+                      timeline: multiDayConfiguration == null
+                          ? null
+                          : components.multiDayComponents.bodyComponents.buildTimelineWidth(
+                              context,
+                              multiDayConfiguration.timeOfDayRange,
+                            ),
+                      child: CustomMultiChildLayout(
+                        delegate: KalenderLayoutDelegate(headerId, bodyId),
+                        children: [
+                          if (bodyId != null) LayoutId(id: bodyId, child: widget.body!),
+                          if (headerId != null) LayoutId(id: headerId, child: widget.header!),
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -14,7 +14,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 double timelineWidthOf(BuildContext context) {
   final measured = GutterWidths.maybeOf(context)?.timeline;
   if (measured != null) return measured;
-  final configuration = context.kalenderController.viewController?.viewConfiguration;
+  final configuration = context.kalenderController.viewController.viewConfiguration;
   final timeOfDayRange = configuration is MultiDayViewConfiguration
       ? configuration.timeOfDayRange
       : KalenderTimeRange.allDay();

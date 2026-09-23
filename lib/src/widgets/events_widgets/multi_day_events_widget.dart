@@ -53,7 +53,10 @@ class MultiDayEventWidget extends StatefulWidget {
 }
 
 class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
-  ValueNotifier<Location?>? _locationNotifier;
+  Location? _location;
+
+  /// Whether the first frame has built, after which [_events] follows the location.
+  bool _ready = false;
 
   /// The list of visible events.
   List<KalenderEvent> _events = [];
@@ -65,18 +68,24 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     widget.eventsController.addListener(_updateEvents);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _locationNotifier = context.locationNotifier;
-        _updateEvents();
-        _locationNotifier?.addListener(_updateEvents);
-      }
+      if (!mounted) return;
+      _ready = true;
+      _updateEvents();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final location = context.location;
+    if (location == _location) return;
+    _location = location;
+    if (_ready) _updateEvents();
   }
 
   @override
   void dispose() {
     widget.eventsController.removeListener(_updateEvents);
-    _locationNotifier?.removeListener(_updateEvents);
     super.dispose();
   }
 
@@ -88,7 +97,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
           multiDayRule: context.multiDayRule,
           includeDayEvents: widget.configuration.allowSingleDayEvents,
           includeMultiDayEvents: true,
-          location: _locationNotifier?.value,
+          location: _location,
         )
         .toList();
 

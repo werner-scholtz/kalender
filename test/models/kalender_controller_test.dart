@@ -6,18 +6,24 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:timezone/data/latest_10y.dart';
+import 'package:timezone/timezone.dart';
+
+import '../utilities.dart';
 
 void main() {
+  initializeTimeZones();
+
   group('KalenderController', () {
     test('every controller gets its own id', () {
-      final ids = List.generate(100, (_) => KalenderController().id);
+      final ids = List.generate(100, (_) => KalenderController(viewConfiguration: MultiDayViewConfiguration.week()).id);
       expect(ids.toSet().length, ids.length);
     });
   });
 
   group('date selection', () {
     late KalenderController controller;
-    setUp(() => controller = KalenderController());
+    setUp(() => controller = KalenderController(viewConfiguration: MultiDayViewConfiguration.week()));
     tearDown(() => controller.dispose());
 
     test('selectDate selects the whole day', () {
@@ -68,34 +74,32 @@ void main() {
     });
   });
 
-  group('the attached view controller', () {
+  group('the view controller', () {
     final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
     final march = MonthViewConfiguration.singleMonth(displayRange: range, initialDateTime: DateTime(2025, 3, 15));
     final june = MonthViewConfiguration.singleMonth(displayRange: range, initialDateTime: DateTime(2025, 6, 15));
     final event = KalenderEvent(start: DateTime(2025, 3, 4, 9), end: DateTime(2025, 3, 4, 10));
 
     late KalenderController controller;
-    late ViewController attached;
+    late ViewController first;
     late ViewController other;
     setUp(() {
-      controller = KalenderController();
-      attached = june.createViewController(controller, null);
+      controller = KalenderController(viewConfiguration: june);
+      first = controller.viewController;
       other = march.createViewController(controller, null);
-      controller.attach(attached);
     });
     tearDown(() {
       controller.dispose();
-      attached.dispose();
       other.dispose();
     });
 
     test('supplies the visible range and events', () {
-      attached.floatingVisibleRange.value = FloatingDateTimeRange(
+      first.floatingVisibleRange.value = FloatingDateTimeRange(
         start: FloatingDateTime(2025),
         end: FloatingDateTime(2025, 2),
       );
-      attached.visibleEvents.value = {event};
-      expect(controller.floatingVisibleRange.value, attached.floatingVisibleRange.value);
+      first.visibleEvents.value = {event};
+      expect(controller.floatingVisibleRange.value, first.floatingVisibleRange.value);
       expect(controller.visibleEvents.value, {event});
     });
 
@@ -105,15 +109,80 @@ void main() {
         start: FloatingDateTime(2025),
         end: FloatingDateTime(2025, 2),
       );
-      expect(controller.floatingVisibleRange.value, attached.floatingVisibleRange.value);
+      expect(controller.floatingVisibleRange.value, first.floatingVisibleRange.value);
       expect(controller.visibleEvents.value, isEmpty);
     });
 
-    test('a detached view controller does not reach the controller', () {
-      controller.attach(other);
-      attached.visibleEvents.value = {event};
-      expect(controller.floatingVisibleRange.value, other.floatingVisibleRange.value);
+    test('a replaced view controller does not reach the controller', () {
+      final view = Object();
+      controller.attachView(view);
+      controller.viewConfiguration = march;
+      first.visibleEvents.value = {event};
+      expect(controller.floatingVisibleRange.value, controller.viewController.floatingVisibleRange.value);
       expect(controller.visibleEvents.value, isEmpty);
+      controller.releaseView(view, first);
+    });
+  });
+
+  group('the view configuration and location', () {
+    final week = MultiDayViewConfiguration.week(
+      displayRange: year2025DisplayRange,
+      initialDateTime: DateTime(2025, 3, 5),
+    );
+    final month = MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
+
+    late KalenderController controller;
+    late int notifications;
+    setUp(() {
+      controller = KalenderController(viewConfiguration: week);
+      notifications = 0;
+      controller.addListener(() => notifications++);
+    });
+    tearDown(() => controller.dispose());
+
+    test('the constructor creates the view controller and supplies its range', () {
+      expect(
+        (controller.viewController.runtimeType, controller.visibleDateTimeRange.value),
+        (MultiDayViewController, controller.viewController.floatingVisibleRange.value!.forLocation()),
+      );
+    });
+
+    test('an equal configuration changes nothing', () {
+      final viewController = controller.viewController;
+      controller.viewConfiguration = MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 3, 5),
+      );
+      expect((identical(controller.viewController, viewController), notifications), (true, 0));
+    });
+
+    test('another configuration switches the view and carries the date', () {
+      controller.viewConfiguration = month;
+      expect(
+        (controller.viewController.runtimeType, controller.viewController.snapshot().date, notifications),
+        (MonthViewController, FloatingDateTime(2025, 3), 1),
+      );
+    });
+
+    test('another location recreates the view controller in it', () {
+      final tokyo = getLocation('Asia/Tokyo');
+      final viewController = controller.viewController;
+      controller.location = tokyo;
+      expect(
+        (controller.viewController.location, controller.viewController == viewController, notifications),
+        (tokyo, false, 1),
+      );
+      expect(
+        controller.visibleDateTimeRange.value,
+        controller.viewController.floatingVisibleRange.value!.forLocation(location: tokyo),
+      );
+    });
+
+    test('dispose disposes the view controller', () {
+      final other = KalenderController(viewConfiguration: week);
+      final viewController = other.viewController;
+      other.dispose();
+      expect(() => viewController.floatingVisibleRange.addListener(() {}), throwsFlutterError);
     });
   });
 }

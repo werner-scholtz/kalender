@@ -68,7 +68,6 @@ class SelectionDemo extends StatefulWidget {
 
 class _SelectionDemoState extends State<SelectionDemo> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
 
   final now = DateTime.now();
   late final today = DateTime(now.year, now.month, now.day);
@@ -97,7 +96,7 @@ class _SelectionDemoState extends State<SelectionDemo> {
     ),
     ScheduleViewConfiguration.continuous(displayRange: displayRange, initialDateTime: now, nowCallback: () => now),
   ];
-  late ViewConfiguration viewConfiguration = viewConfigurations.first;
+  late final kalenderController = KalenderController(viewConfiguration: viewConfigurations.first);
 
   var tapMode = TapMode.day;
   var navigate = false;
@@ -198,7 +197,6 @@ class _SelectionDemoState extends State<SelectionDemo> {
               child: KalenderView(
                 eventsController: eventsController,
                 kalenderController: kalenderController,
-                viewConfiguration: viewConfiguration,
                 callbacks: KalenderCallbacks(
                   onTapped: onTapped,
                   dateLabel: GestureCallbacks(
@@ -256,9 +254,9 @@ class _SelectionDemoState extends State<SelectionDemo> {
           IconButton(onPressed: () => kalenderController.animateToNextPage(), icon: const Icon(Icons.chevron_right)),
           DropdownMenu(
             dropdownMenuEntries: [for (final c in viewConfigurations) DropdownMenuEntry(value: c, label: c.name)],
-            initialSelection: viewConfiguration,
+            initialSelection: kalenderController.viewConfiguration,
             onSelected: (value) {
-              if (value != null) setState(() => viewConfiguration = value);
+              if (value != null) kalenderController.viewConfiguration = value;
             },
           ),
         ],

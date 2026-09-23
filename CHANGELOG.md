@@ -16,6 +16,12 @@
 - `ViewController.visibleEvents` is a field instead of an abstract getter.
 - `ViewController.dispose` disposes the visible range and visible events, and an override calls `super.dispose()`.
 - `KalenderController.floatingVisibleRange` and `visibleEvents` are `ValueListenable`s.
+- `KalenderController` takes `viewConfiguration` and `location`, and `KalenderView` no longer does.
+- `KalenderController.attach`, `detach`, `isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
+
+### Behavior Changes
+
+- A `KalenderView` built again on the same `KalenderController` opens on the date, scroll and zoom the previous one showed.
 
 ### Deprecations
 
@@ -25,12 +31,15 @@
 
 - `ViewController.snapshot` returns the date, time of day and zoom a view shows.
 - `ViewTransitionContext.location` is the location the new view controller is created in.
+- Setting `KalenderController.viewConfiguration` or `location` switches the view.
 
 ### Fixes
 
 - A subclass of `MultiDayViewConfiguration`, `MonthViewConfiguration` or `ScheduleViewConfiguration` no longer throws when the calendar builds.
 - `MultiDayViewController` disposes `heightPerMinute` and `pageOffset`, and `PaginatedScheduleViewController` its `PageController`.
-- `KalenderView` disposes its view controller when it leaves the tree.
+- `KalenderController.dispose` disposes its view controllers, `visibleDateTimeRange` and `selectedEvent`, and a view controller is disposed once no `KalenderView` shows it.
+- Two `KalenderView`s mounted on one `KalenderController`, for example during a route transition, each keep the view controller they show.
+- Mounting a `KalenderView` no longer notifies the listeners of its `KalenderController` during the build.
 - A view controller that is not attached no longer writes to `KalenderController.visibleEvents` and `floatingVisibleRange`.
 
 ## 0.32.0

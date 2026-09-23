@@ -27,7 +27,13 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: start,
+      ),
+    );
     // A two-day event starting on the Tuesday.
     eventId = eventsController.addEvent(
       KalenderEvent(
@@ -44,11 +50,6 @@ void main() {
         eventsController: eventsController,
         kalenderController: kalenderController,
         callbacks: callbacks,
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: year2025DisplayRange,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialDateTime: start,
-        ),
         header: KalenderHeader(interaction: interaction),
         body: KalenderBody(interaction: interaction),
       ),

@@ -50,7 +50,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController(locations: [utcLocation]);
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
   });
 
   tearDown(() {

@@ -59,8 +59,8 @@ class VerticalDragTarget extends StatefulWidget {
         // not constrain it. Accepted so that dropping here commits the date the
         // header has been previewing.
         final isMultiDay = event.spansMultipleDays(
-          location: controller.viewController?.location,
-          defaultRule: controller.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule,
+          location: controller.location,
+          defaultRule: controller.viewConfiguration.multiDayRule,
         );
         if (isMultiDay) return true;
 

@@ -89,7 +89,7 @@ class _KalenderBodyState extends State<KalenderBody> {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = context.kalenderController.viewController;
+    final viewController = context.viewController;
     return Callbacks(
       callbacks: widget.callbacks ?? context.callbacks,
       child: Interaction(

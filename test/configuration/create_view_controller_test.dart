@@ -34,7 +34,7 @@ void main() {
   final range = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
   late KalenderController controller;
-  setUp(() => controller = KalenderController());
+  setUp(() => controller = KalenderController(viewConfiguration: MultiDayViewConfiguration.singleDay()));
   tearDown(() => controller.dispose());
 
   ViewController create(ViewConfiguration configuration, [ViewTransitionContext? transition]) {
@@ -58,11 +58,12 @@ void main() {
     testWidgets('a subclass of a built-in configuration builds (${configuration.runtimeType})', (tester) async {
       final eventsController = DefaultEventsController();
       addTearDown(eventsController.dispose);
+      final kalenderController = KalenderController(viewConfiguration: configuration);
+      addTearDown(kalenderController.dispose);
       await pumpKalender(
         tester,
         eventsController: eventsController,
-        kalenderController: controller,
-        viewConfiguration: configuration,
+        kalenderController: kalenderController,
         header: const KalenderHeader(),
         body: const KalenderBody(),
       );

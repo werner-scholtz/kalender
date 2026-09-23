@@ -23,7 +23,13 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+    );
     eventId = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)));
   });
 
@@ -40,11 +46,6 @@ void main() {
         child: KalenderView(
           eventsController: eventsController,
           kalenderController: kalenderController,
-          viewConfiguration: MultiDayViewConfiguration.singleDay(
-            displayRange: year2025DisplayRange,
-            initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-            initialDateTime: DateTime(2025, 1, 1),
-          ),
           body: KalenderBody(interaction: interaction, multiDayTileComponents: tiles),
         ),
       ),

@@ -75,19 +75,40 @@ class LocaleProvider extends InheritedWidget {
 }
 
 /// The [LocationProvider] is used to provide the [Location] for the calendar.
-class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
-  const LocationProvider({super.key, required super.notifier, required super.child});
+class LocationProvider extends InheritedWidget {
+  final Location? location;
+
+  const LocationProvider({super.key, required this.location, required super.child});
 
   static Location? of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
     assert(result != null, 'No LocationProvider found.');
-    return result!.notifier!.value;
+    return result!.location;
   }
 
-  static ValueNotifier<Location?> ofNotifier(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
-    assert(result != null, 'No LocationProvider found.');
-    return result!.notifier!;
+  @override
+  bool updateShouldNotify(covariant LocationProvider oldWidget) => location != oldWidget.location;
+}
+
+/// Provides the [ViewController] a [KalenderView] shows to its descendants.
+class ViewControllerProvider extends InheritedWidget {
+  final ViewController viewController;
+
+  const ViewControllerProvider({super.key, required this.viewController, required super.child});
+
+  static ViewController of(BuildContext context) {
+    final result = maybeOf(context);
+    assert(result != null, 'No ViewControllerProvider found.');
+    return result!;
+  }
+
+  static ViewController? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ViewControllerProvider>()?.viewController;
+  }
+
+  @override
+  bool updateShouldNotify(covariant ViewControllerProvider oldWidget) {
+    return !identical(viewController, oldWidget.viewController);
   }
 }
 
@@ -181,6 +202,9 @@ extension ProviderContext on BuildContext {
   /// Retrieve the [KalenderController].
   KalenderController get kalenderController => KalenderControllerProvider.of(this);
 
+  /// The [ViewController] of the enclosing [KalenderView].
+  ViewController get viewController => ViewControllerProvider.of(this);
+
   /// Retrieve the [KalenderComponents].
   KalenderComponents get components => Components.of(this);
 
@@ -210,19 +234,17 @@ extension ProviderContext on BuildContext {
 
   /// The rule deciding which events belong in the multi-day header.
   ///
-  /// Comes from the current view's [ViewConfiguration.multiDayRule], falling
-  /// back to [kDefaultMultiDayRule] before a view is attached.
+  /// Comes from the view's [ViewConfiguration.multiDayRule], falling back to [kDefaultMultiDayRule] outside a view.
   MultiDayRule get multiDayRule =>
-      kalenderController.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
+      ViewControllerProvider.maybeOf(this)?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
 
   /// Retrieve the [Location] of the calendar.
   Location? get location => LocationProvider.of(this);
-  ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
 
   /// Whether [date] is today, honouring the view's `nowCallback` when set and
   /// otherwise the calendar's [location].
   bool isToday(FloatingDateTime date) {
-    final now = kalenderController.viewController?.viewConfiguration.nowCallback?.call();
+    final now = ViewControllerProvider.maybeOf(this)?.viewConfiguration.nowCallback?.call();
     return now != null ? date.isToday(now: now) : date.isToday(location: location);
   }
 }

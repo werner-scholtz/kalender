@@ -42,13 +42,14 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        kalenderController: KalenderController(),
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7))),
-          initialDateTime: monday,
-          timeOfDayRange: timeOfDayRange,
-          initialTimeOfDay: const KalenderTime(hour: 8, minute: 0),
-          initialHeightPerMinute: 1,
+        kalenderController: KalenderController(
+          viewConfiguration: MultiDayViewConfiguration.week(
+            displayRange: KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7))),
+            initialDateTime: monday,
+            timeOfDayRange: timeOfDayRange,
+            initialTimeOfDay: const KalenderTime(hour: 8, minute: 0),
+            initialHeightPerMinute: 1,
+          ),
         ),
         callbacks: KalenderCallbacks(
           onEventCreated: eventsController.addEvent,

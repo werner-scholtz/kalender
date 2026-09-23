@@ -144,7 +144,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   Future<void> pumpView(
@@ -153,16 +152,15 @@ void main() {
     required KalenderCallbacks callbacks,
     KalenderInteraction? interaction,
   }) async {
-    await pumpAndSettleWithMaterialApp(
+    kalenderController = KalenderController(viewConfiguration: view.configuration);
+    addTearDown(kalenderController.dispose);
+    await pumpKalender(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: view.configuration,
-        callbacks: callbacks,
-        header: KalenderHeader(interaction: interaction ?? preciseInteraction),
-        body: KalenderBody(interaction: interaction ?? preciseInteraction),
-      ),
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      callbacks: callbacks,
+      header: KalenderHeader(interaction: interaction ?? preciseInteraction),
+      body: KalenderBody(interaction: interaction ?? preciseInteraction),
     );
   }
 

@@ -28,7 +28,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
     // 23:00 to 01:00. Two calendar days, two hours long, so the two rules
     // disagree about it and nothing else does.
     eventId = eventsController.addEvent(
@@ -39,18 +38,20 @@ void main() {
     );
   });
 
+  MultiDayViewConfiguration week(MultiDayRule rule) => MultiDayViewConfiguration.week(
+    displayRange: year2025DisplayRange,
+    initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+    initialDateTime: start,
+    multiDayRule: rule,
+  );
+
   Future<void> pumpWeek(WidgetTester tester, MultiDayRule rule) {
+    kalenderController = KalenderController(viewConfiguration: week(rule));
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: year2025DisplayRange,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialDateTime: start,
-          multiDayRule: rule,
-        ),
         header: KalenderHeader(interaction: interaction),
         body: KalenderBody(interaction: interaction),
       ),
@@ -76,7 +77,8 @@ void main() {
 
     final before = eventsController.byId(eventId)!;
 
-    await pumpWeek(tester, const MultiDayRule.calendarDays());
+    kalenderController.viewConfiguration = week(const MultiDayRule.calendarDays());
+    await tester.pumpAndSettle();
 
     expect(find.byKey(MultiDayEventTile.tileKey(eventId)), findsOneWidget);
     expect(

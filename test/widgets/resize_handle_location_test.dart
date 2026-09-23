@@ -55,7 +55,14 @@ void main() {
 
   testWidgets('a resize handle positioner receives the calendar location', (tester) async {
     final eventsController = DefaultEventsController();
-    final kalenderController = KalenderController();
+    final kalenderController = KalenderController(
+      location: kiritimati,
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: KalenderDateTimeRange(start: DateTime.utc(2024, 12), end: DateTime.utc(2025, 2)),
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: TZDateTime(kiritimati, 2025, 1, 1),
+      ),
+    );
     addTearDown(eventsController.dispose);
     addTearDown(kalenderController.dispose);
 
@@ -69,12 +76,6 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        location: kiritimati,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(
-          displayRange: KalenderDateTimeRange(start: DateTime.utc(2024, 12), end: DateTime.utc(2025, 2)),
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialDateTime: TZDateTime(kiritimati, 2025, 1, 1),
-        ),
         body: KalenderBody(
           multiDayTileComponents: TileComponents(
             tileBuilder: (context, event, tileRange) => const SizedBox.expand(),

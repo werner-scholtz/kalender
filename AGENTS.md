@@ -86,7 +86,7 @@ State reaches widgets through the `InheritedWidget` providers in `lib/src/models
 
 ### Controllers
 
-- `KalenderController` drives one `KalenderView`: navigation, `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`, `selectedRange` and `openDayOverlay`. It attaches to the active `ViewController`.
+- `KalenderController` drives one `KalenderView`: navigation, `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`, `selectedRange` and `openDayOverlay`. It holds the active `viewConfiguration` and `location`, and owns the `ViewController` built from them.
 - `EventsController` is the abstract store. `DefaultEventsController` is the one apps use.
 - The calendar never selects a day on its own. An app selects from the callbacks.
 
