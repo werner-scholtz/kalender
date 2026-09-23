@@ -146,7 +146,7 @@ class KalenderViewState extends State<KalenderView> {
 
   @override
   void dispose() {
-    widget.kalenderController.viewController?.dispose();
+    _viewController.dispose();
     _location.dispose();
     super.dispose();
   }

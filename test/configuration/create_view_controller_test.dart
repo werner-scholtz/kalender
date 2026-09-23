@@ -66,7 +66,6 @@ void main() {
         header: const KalenderHeader(),
         body: const KalenderBody(),
       );
-      expect(tester.takeException(), isNull);
     });
   }
 
@@ -79,8 +78,10 @@ void main() {
     test('opens on today in the location without initialDateTime', () {
       final kiritimati = getLocation('Pacific/Kiritimati');
       controller.location = kiritimati;
+      FloatingDateTime today() => FloatingDateTime.fromDateTime(TZDateTime.now(kiritimati)).startOfDay;
+      final before = today();
       final start = create(MultiDayViewConfiguration.singleDay()).floatingVisibleRange.value!.start;
-      expect(start, FloatingDateTime.fromDateTime(TZDateTime.now(kiritimati)).startOfDay);
+      expect(start, anyOf(before, today()));
     });
 
     test('opens on the location of the controller', () {

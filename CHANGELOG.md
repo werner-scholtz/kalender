@@ -26,6 +26,7 @@
 
 - A subclass of `MultiDayViewConfiguration`, `MonthViewConfiguration` or `ScheduleViewConfiguration` no longer throws when the calendar builds.
 - `MultiDayViewController` disposes `heightPerMinute` and `pageOffset`, and `PaginatedScheduleViewController` its `PageController`.
+- `KalenderView` disposes its view controller when it leaves the tree.
 
 ## 0.32.0
 
