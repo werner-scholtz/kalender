@@ -304,8 +304,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           ? ViewSnapshot(date: date)
           : ViewSnapshot(
               date: date,
-              timeOfDay: scrollResolver?.call(transition) ?? _resolveScroll(transition),
-              heightPerMinute: zoomResolver?.call(transition) ?? _resolveZoom(transition),
+              timeOfDay: transition.target?.timeOfDay ?? scrollResolver?.call(transition) ?? _resolveScroll(transition),
+              heightPerMinute:
+                  transition.target?.heightPerMinute ?? zoomResolver?.call(transition) ?? _resolveZoom(transition),
             ),
       location: controller.location,
     );

@@ -41,7 +41,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, the members deprecated in 0.32.0 are removed, and a configuration creates its view controller. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, and a configuration creates its view controller. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |

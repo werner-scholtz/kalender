@@ -47,7 +47,8 @@ class VerticalDragTarget extends StatefulWidget {
     KalenderController controller,
     VerticalConfiguration configuration,
   ) {
-    final viewController = controller.viewController as MultiDayViewController;
+    final viewController = controller.viewController;
+    if (viewController is! MultiDayViewController) return false;
     final timeOfDayRange = viewController.viewConfiguration.timeOfDayRange;
 
     return DragTargetUtilities.handleDragDetails(
