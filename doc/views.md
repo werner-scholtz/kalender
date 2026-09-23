@@ -13,7 +13,7 @@ Switch between views by passing a different `ViewConfiguration` to `KalenderView
 - **Date** (all views): `dateTransition`. Use `DateTransition.carryFocus` (default, follows your current date) or `DateTransition.restorePerView` (each view reopens its own last date, matched by `name`).
 - **Scroll & zoom** (multi-day views): `scrollTransition` / `zoomTransition`. Use `preserve` (default), `reset`, or `restorePerView`.
 
-For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. Each overrides the matching enum. `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
+For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. Each overrides the matching enum, and a null from `scrollResolver` or `zoomResolver` falls back to it. `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
 
 `initialDateTime` is only used when the calendar is first built. To show a fixed date on a switch, return it from a `dateResolver`. The resolvers also run when the location changes, which `transition.locationChanged` reports.
 

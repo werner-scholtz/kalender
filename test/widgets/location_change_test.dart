@@ -83,10 +83,10 @@ void main() {
           });
         }
 
-        testWidgets('tells a dateResolver whether the location changed', (tester) async {
-          final locationChanged = <bool>[];
+        testWidgets('tells a dateResolver whether the location changed and the new location', (tester) async {
+          final seen = <(bool, Location?)>[];
           FloatingDateTime record(ViewTransitionContext transition) {
-            locationChanged.add(transition.locationChanged);
+            seen.add((transition.locationChanged, transition.location));
             return kCarryFocusDate(transition);
           }
 
@@ -96,7 +96,7 @@ void main() {
           await pumpView(tester, week, tokyo);
           await pumpView(tester, day, tokyo);
 
-          expect(locationChanged, [true, false]);
+          expect(seen, [(true, tokyo), (false, tokyo)]);
         });
 
         testWidgets('the schedule files each event under its day in the new location', (tester) async {

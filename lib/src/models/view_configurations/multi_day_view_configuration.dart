@@ -7,6 +7,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
+import 'package:kalender/src/models/controllers/kalender_controller.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
@@ -46,20 +48,23 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   final double initialHeightPerMinute;
 
   /// How the vertical scroll position (time-of-day) is chosen when switching to
-  /// this view from another. Defaults to [ScrollTransition.preserve]. Overridden
-  /// by [scrollResolver] when that is provided.
+  /// this view from another. Defaults to [ScrollTransition.preserve]. Applies
+  /// when [scrollResolver] is null or returns null.
   final ScrollTransition scrollTransition;
 
-  /// Optional resolver for the initial time-of-day on a view switch. Overrides
-  /// [scrollTransition] when non-null; return `null` to use [initialTimeOfDay].
+  /// Decides the time of day on a view switch before [scrollTransition].
+  ///
+  /// See [ScrollResolver].
   final ScrollResolver? scrollResolver;
 
   /// How the zoom (`heightPerMinute`) is chosen when switching to this view from
-  /// another. Defaults to [ZoomTransition.preserve]. Overridden by [zoomResolver].
+  /// another. Defaults to [ZoomTransition.preserve]. Applies when [zoomResolver]
+  /// is null or returns null.
   final ZoomTransition zoomTransition;
 
-  /// Optional resolver for the initial zoom on a view switch. Overrides
-  /// [zoomTransition] when non-null; return `null` to use [initialHeightPerMinute].
+  /// Decides the zoom on a view switch before [zoomTransition].
+  ///
+  /// See [ZoomResolver].
   final ZoomResolver? zoomResolver;
 
   MultiDayViewConfiguration({
@@ -288,6 +293,43 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       zoomTransition: zoomTransition ?? this.zoomTransition,
       zoomResolver: zoomResolver ?? this.zoomResolver,
     );
+  }
+
+  @override
+  MultiDayViewController createViewController(KalenderController controller, ViewTransitionContext? transition) {
+    final date = resolveDate(controller.location, transition);
+    return MultiDayViewController(
+      viewConfiguration: this,
+      floatingVisibleRange: controller.floatingVisibleRange,
+      visibleEvents: controller.visibleEvents,
+      initial: transition == null
+          ? ViewSnapshot(date: date)
+          : ViewSnapshot(
+              date: date,
+              timeOfDay: scrollResolver?.call(transition) ?? _resolveScroll(transition),
+              heightPerMinute: zoomResolver?.call(transition) ?? _resolveZoom(transition),
+            ),
+      location: controller.location,
+    );
+  }
+
+  KalenderTime? _resolveScroll(ViewTransitionContext transition) => switch (scrollTransition) {
+    ScrollTransition.preserve => _carry(transition, (snapshot) => snapshot.timeOfDay),
+    ScrollTransition.reset => null,
+    ScrollTransition.restorePerView => _carry(transition, (snapshot) => snapshot.timeOfDay, perView: true),
+  };
+
+  double? _resolveZoom(ViewTransitionContext transition) => switch (zoomTransition) {
+    ZoomTransition.preserve => _carry(transition, (snapshot) => snapshot.heightPerMinute),
+    ZoomTransition.reset => null,
+    ZoomTransition.restorePerView => _carry(transition, (snapshot) => snapshot.heightPerMinute, perView: true),
+  };
+
+  /// The value [read] from the last multi-day view, or with [perView] first from this view's own history.
+  T? _carry<T>(ViewTransitionContext transition, T? Function(ViewSnapshot snapshot) read, {bool perView = false}) {
+    final own = perView ? transition.byView[name] : null;
+    final last = transition.lastMultiDay;
+    return (own == null ? null : read(own)) ?? (last == null ? null : read(last));
   }
 
   @override

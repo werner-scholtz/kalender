@@ -56,33 +56,33 @@ enum ZoomTransition {
 /// {@category Views}
 typedef DateResolver = FloatingDateTime Function(ViewTransitionContext transition);
 
-/// Resolves the initial time-of-day for the incoming multi-day view. Overrides
-/// [ScrollTransition]. Return `null` to use the view's `initialTimeOfDay`.
+/// Resolves the time of day the incoming multi-day view opens on. A null result falls back to [ScrollTransition].
 ///
 /// {@category Views}
 typedef ScrollResolver = KalenderTime? Function(ViewTransitionContext transition);
 
-/// Resolves the initial zoom (`heightPerMinute`) for the incoming multi-day view.
-/// Overrides [ZoomTransition]. Return `null` to use `initialHeightPerMinute`.
+/// Resolves the zoom (`heightPerMinute`) the incoming multi-day view opens on. A null result falls back to
+/// [ZoomTransition].
 ///
 /// {@category Views}
 typedef ZoomResolver = double? Function(ViewTransitionContext transition);
 
-/// A snapshot of what a view was displaying, captured when it is switched away
-/// from. Used to restore per-view state on a later switch.
+/// What a view shows, as returned by [ViewController.snapshot].
+///
+/// A view controller also opens on one. There a null [timeOfDay] or [heightPerMinute] means the configuration's
+/// `initialTimeOfDay` or `initialHeightPerMinute`.
 ///
 /// {@category Views}
 class ViewSnapshot {
   const ViewSnapshot({required this.date, this.timeOfDay, this.heightPerMinute});
 
-  /// The representative date the view was showing.
+  /// The date the view focuses on.
   final FloatingDateTime date;
 
-  /// The time-of-day at the top of the viewport, or `null` for views without a
-  /// vertical scroll (month/schedule).
+  /// The time of day at the top of the viewport. Null for a view without vertical scroll.
   final KalenderTime? timeOfDay;
 
-  /// The zoom level, or `null` for non-multi-day views.
+  /// The zoom. Null for a view without vertical scroll.
   final double? heightPerMinute;
 }
 
@@ -96,6 +96,7 @@ class ViewTransitionContext {
     required this.byView,
     required this.lastMultiDay,
     this.locationChanged = false,
+    this.location,
   });
 
   /// The controller of the view being switched away from.
@@ -114,56 +115,38 @@ class ViewTransitionContext {
   /// Whether the calendar's location changed. A location change runs the resolvers even when the view
   /// configuration stays the same.
   final bool locationChanged;
+
+  /// The location the new view controller is created in.
+  final Location? location;
 }
 
-/// The "carry the current focus forward" date used by [DateTransition.carryFocus].
+/// The date the previous view focused on, from its [ViewController.snapshot]. Used by [DateTransition.carryFocus].
 ///
-/// Routes to [kDefaultToMonthly] / [kDefaultToWeekly] / [kDefaultToDaily] /
-/// [kDefaultToSchedule] based on the view being switched *to*. Exposed so a
-/// custom [DateResolver] can build on the default behaviour, e.g.
-/// `dateResolver: (transition) => nextBusinessDay(kCarryFocusDate(transition))`.
+/// A custom [DateResolver] can build on it: `dateResolver: (t) => nextBusinessDay(kCarryFocusDate(t))`.
 ///
 /// {@category Views}
-FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) {
-  final old = transition.oldViewController;
-  return switch (transition.newViewConfiguration) {
-    MonthViewConfiguration _ => kDefaultToMonthly(old),
-    ScheduleViewConfiguration _ => kDefaultToSchedule(old),
-    MultiDayViewConfiguration(numberOfDays: 1) => kDefaultToDaily(old),
-    MultiDayViewConfiguration _ => kDefaultToWeekly(old),
-    _ => kDefaultToDaily(old),
-  };
-}
+FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) => transition.oldViewController.snapshot().date;
 
-/// Carry-focus date when switching **to** a month view, derived from [old].
+/// The date [old] focused on.
 ///
 /// {@category Views}
-FloatingDateTime kDefaultToMonthly(ViewController old) {
-  final oldRange = old.floatingVisibleRange.value!;
-  return switch (old.viewConfiguration) {
-    MultiDayViewConfiguration _ || ScheduleViewConfiguration _ => oldRange.start,
-    _ => FloatingDateTime.fromDateTime(oldRange.dominantMonthDate),
-  };
-}
+@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
+FloatingDateTime kDefaultToMonthly(ViewController old) => old.snapshot().date;
 
-/// Carry-focus date when switching **to** a weekly (multi-day) view, derived from [old].
+/// The date [old] focused on.
 ///
 /// {@category Views}
-FloatingDateTime kDefaultToWeekly(ViewController old) => _focusDate(old);
+@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
+FloatingDateTime kDefaultToWeekly(ViewController old) => old.snapshot().date;
 
-/// Carry-focus date when switching **to** a daily view, derived from [old].
+/// The date [old] focused on.
 ///
 /// {@category Views}
-FloatingDateTime kDefaultToDaily(ViewController old) => _focusDate(old);
+@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
+FloatingDateTime kDefaultToDaily(ViewController old) => old.snapshot().date;
 
-/// Carry-focus date when switching **to** a schedule view, derived from [old].
+/// The date [old] focused on.
 ///
 /// {@category Views}
-FloatingDateTime kDefaultToSchedule(ViewController old) => _focusDate(old);
-
-/// The first day of the month with the most visible days for a month view, else the start of the visible range.
-FloatingDateTime _focusDate(ViewController old) {
-  final oldRange = old.floatingVisibleRange.value!;
-  if (old.viewConfiguration is MonthViewConfiguration) return FloatingDateTime.fromDateTime(oldRange.dominantMonthDate);
-  return oldRange.start;
-}
+@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
+FloatingDateTime kDefaultToSchedule(ViewController old) => old.snapshot().date;

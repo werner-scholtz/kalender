@@ -9,6 +9,24 @@
 - `ResizeHandleDetails.continuesBefore`, `continuesAfter`, `showStart` and `showEnd` are getters, and their `location` parameter is removed.
 - The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of `MultiDayOverlayPortal` are removed.
 - `MultiDayOverlayPortalBuilder` no longer passes `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder`.
+- `ViewConfiguration.createViewController` is abstract.
+- `MultiDayViewController`, `MonthViewController`, `ContinuousScheduleViewController` and `PaginatedScheduleViewController` take `initial`, a `ViewSnapshot`, in place of `initialDate`, `initialTimeOfDayOverride` and `initialHeightPerMinute`.
+- `ViewController.location` is final.
+
+### Deprecations
+
+- `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are deprecated and are removed in 0.34.0. Use `ViewController.snapshot`.
+
+### Features
+
+- `ViewController.snapshot` returns the date, time of day and zoom a view shows.
+- `ViewTransitionContext.location` is the location the new view controller is created in.
+
+### Fixes
+
+- A subclass of `MultiDayViewConfiguration`, `MonthViewConfiguration` or `ScheduleViewConfiguration` no longer throws when the calendar builds.
+- `MultiDayViewController` disposes `heightPerMinute` and `pageOffset`, and `PaginatedScheduleViewController` its `PageController`.
+- `KalenderView` disposes its view controller when it leaves the tree.
 
 ## 0.32.0
 
