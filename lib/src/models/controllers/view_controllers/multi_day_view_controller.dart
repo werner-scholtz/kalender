@@ -37,7 +37,11 @@ class MultiDayViewController extends ViewController {
 
     final topOfDay = (initial.timeOfDay ?? viewConfiguration.initialTimeOfDay).toFloatingDateTime(now);
     final dayStart = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(now);
-    final scrollOffset = topOfDay.difference(dayStart).inMinutes * heightPerMinute.value;
+    final minutes = topOfDay
+        .difference(dayStart)
+        .inMinutes
+        .clamp(0, viewConfiguration.timeOfDayRange.duration.inMinutes);
+    final scrollOffset = minutes * heightPerMinute.value;
     scrollController = ScrollController(initialScrollOffset: scrollOffset);
     // Seed the visible time-of-day from the initial offset, since a ScrollController
     // does not necessarily notify its listeners when it first attaches.

@@ -101,14 +101,13 @@ void main() {
       expect(visible().dominantMonthDate.month, 6);
     });
 
-    testWidgets('deselecting drops the pending selection', (tester) async {
+    testWidgets('deselecting clears the selection and keeps the navigation', (tester) async {
       kalenderController = KalenderController(viewConfiguration: march);
       kalenderController.selectDate(DateTime(2025, 6, 18), navigate: true);
       kalenderController.deselectRange();
 
       await pump(tester);
-      expect(kalenderController.selectedRange.value, isNull);
-      expect(visible().dominantMonthDate.month, 3);
+      expect((kalenderController.selectedRange.value, visible().dominantMonthDate.month), (null, 6));
     });
   });
 }

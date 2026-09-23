@@ -172,6 +172,26 @@ void main() {
       });
     }
 
+    test('a navigation target wins over the resolvers', () {
+      final targetDate = FloatingDateTime(2025, 9, 1);
+      const targetTime = KalenderTime(hour: 6, minute: 0);
+      final day = MultiDayViewConfiguration.singleDay(
+        displayRange: range,
+        dateResolver: (_) => FloatingDateTime(2025, 8, 1),
+        scrollResolver: (_) => const KalenderTime(hour: 7, minute: 0),
+      );
+      final base = transition(day);
+      final withTarget = ViewTransitionContext(
+        oldViewController: base.oldViewController,
+        newViewConfiguration: day,
+        byView: base.byView,
+        lastMultiDay: base.lastMultiDay,
+        target: ViewSnapshot(date: targetDate, timeOfDay: targetTime),
+      );
+      final snapshot = create(day, withTarget).snapshot();
+      expect((snapshot.date, snapshot.timeOfDay), (targetDate, targetTime));
+    });
+
     test('resolvers win over the transitions', () {
       final resolvedDate = FloatingDateTime(2025, 8, 1);
       const resolvedTime = KalenderTime(hour: 7, minute: 0);
