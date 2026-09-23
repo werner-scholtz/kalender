@@ -33,6 +33,7 @@
 - `ViewTransitionContext.location` is the location the new view controller is created in.
 - Setting `KalenderController.viewConfiguration` or `location` switches the view.
 - `ViewTransitionContext.target` is where the new view opens, over the transition settings and resolvers.
+- `KalenderController` navigation works before a `KalenderView` is mounted and sets the date the view opens on.
 
 ### Fixes
 
@@ -41,6 +42,9 @@
 - `KalenderController.dispose` disposes its view controllers, `visibleDateTimeRange` and `selectedEvent`, and a view controller is disposed once no `KalenderView` shows it.
 - Two `KalenderView`s mounted on one `KalenderController`, for example during a route transition, each keep the view controller they show.
 - Mounting a `KalenderView` no longer notifies the listeners of its `KalenderController` during the build.
+- The next and previous page of a continuous schedule no longer skip a month from the 29th to the 31st.
+- A multi-day view opens scrolled inside its `timeOfDayRange` when the requested time of day is outside it.
+- A continuous schedule that has not shown its list reports the date it opens on in `ViewController.snapshot`.
 - A view controller that is not attached no longer writes to `KalenderController.visibleEvents` and `floatingVisibleRange`.
 
 ## 0.32.0

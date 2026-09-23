@@ -163,7 +163,7 @@ void main() {
       await capturePrints(() => kalenderController.showDayOverlay(busyDay));
 
       expect(kalenderController.openDayOverlay.value, isNull);
-      expect(printed, [contains('is not visible')]);
+      expect(printed, [contains('no KalenderView is mounted')]);
     });
 
     testWidgets('a day that is open when the calendar builds shows its overlay', (tester) async {

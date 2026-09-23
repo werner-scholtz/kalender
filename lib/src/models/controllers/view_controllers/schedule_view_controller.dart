@@ -115,7 +115,20 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
 class ContinuousScheduleViewController extends ScheduleViewController {
   ContinuousScheduleViewController({super.location, required super.viewConfiguration, required super.initial}) {
     floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
+    floatingVisibleRange.addListener(_markListShown);
   }
+
+  /// Whether the list has reported the range it shows. Until then the range is the whole display range.
+  bool _listShown = false;
+
+  void _markListShown() {
+    _listShown = true;
+    floatingVisibleRange.removeListener(_markListShown);
+  }
+
+  /// Returns [initialDate] until the list has shown a range.
+  @override
+  ViewSnapshot snapshot() => _listShown ? super.snapshot() : ViewSnapshot(date: initialDate);
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
@@ -153,7 +166,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
 
     final date = dateTimeFromIndex(currentIndex);
     if (date == null) return;
-    final month = FloatingDateTime.fromDateTime(date.copyWith(month: date.month + delta)).startOfMonth;
+    final month = FloatingDateTime.fromDateTime(date).startOfMonthIn(delta);
 
     final index = monthIndexFromDateTime(currentPage, month) ?? closestIndex(month);
     return _animateToIndex(index);
