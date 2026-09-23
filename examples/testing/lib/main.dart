@@ -48,7 +48,6 @@ class _HomeState extends State<Home> {
       body: KalenderView(
         eventsController: config.eventsController,
         kalenderController: config.kalenderController,
-        viewConfiguration: config.viewConfiguration,
         components: KalenderComponents(),
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),

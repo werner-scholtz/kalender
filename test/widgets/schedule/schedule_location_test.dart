@@ -24,7 +24,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   KalenderEvent eventAt(DateTime day, int hour) => KalenderEvent(
@@ -38,13 +37,12 @@ void main() {
     KalenderComponents? components,
     KalenderCallbacks? callbacks,
   }) {
+    kalenderController = KalenderController(viewConfiguration: configuration, location: tokyo);
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      location: tokyo,
       components: components,
       callbacks: callbacks,
-      viewConfiguration: configuration,
       body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay)),
     );
   }

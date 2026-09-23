@@ -28,8 +28,7 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController ?? DefaultEventsController(),
-        kalenderController: KalenderController(),
-        viewConfiguration: viewConfiguration,
+        kalenderController: KalenderController(viewConfiguration: viewConfiguration),
         components: components,
         header: header,
         body: body,
@@ -160,8 +159,7 @@ void main() {
           textDirection: textDirection,
           child: KalenderView(
             eventsController: controllerWithOverflowOn(day),
-            kalenderController: KalenderController(),
-            viewConfiguration: week,
+            kalenderController: KalenderController(viewConfiguration: week),
             header: const KalenderHeader(
               multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
             ),

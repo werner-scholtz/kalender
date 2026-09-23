@@ -114,12 +114,13 @@ void main() {
         tester,
         KalenderView(
           eventsController: DefaultEventsController(),
-          kalenderController: KalenderController(),
-          viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: displayRange,
-            initialDateTime: monday,
-            firstDayOfWeek: DateTime.monday,
-            numberOfDays: numberOfDays,
+          kalenderController: KalenderController(
+            viewConfiguration: MultiDayViewConfiguration.week(
+              displayRange: displayRange,
+              initialDateTime: monday,
+              firstDayOfWeek: DateTime.monday,
+              numberOfDays: numberOfDays,
+            ),
           ),
           header: const KalenderHeader(),
           body: const KalenderBody(),

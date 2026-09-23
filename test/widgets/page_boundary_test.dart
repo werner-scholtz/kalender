@@ -16,16 +16,15 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   Future<void> pump(WidgetTester tester, ViewConfiguration config) {
+    kalenderController = KalenderController(viewConfiguration: config);
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: config,
         body: const KalenderBody(),
       ),
     );
@@ -80,7 +79,7 @@ void main() {
       ),
     );
 
-    final viewController = kalenderController.viewController! as MultiDayViewController;
+    final viewController = kalenderController.viewController as MultiDayViewController;
     expect(viewController.numberOfPages, 7, reason: 'one column per day in the range, and no more');
 
     final last = viewController.viewConfiguration.pageIndexCalculator.rangeFromIndex(

@@ -17,23 +17,23 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   // A known Monday and the week that starts on it.
   final monday = DateTime(2026, 4, 13);
   final weekRange = KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7)));
 
-  Future<void> pumpCalendarView(WidgetTester tester, ViewConfiguration viewConfiguration) =>
-      pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: viewConfiguration,
-          body: const KalenderBody(),
-        ),
-      );
+  Future<void> pumpCalendarView(WidgetTester tester, ViewConfiguration viewConfiguration) {
+    kalenderController = KalenderController(viewConfiguration: viewConfiguration);
+    return pumpAndSettleWithMaterialApp(
+      tester,
+      KalenderView(
+        eventsController: eventsController,
+        kalenderController: kalenderController,
+        body: const KalenderBody(),
+      ),
+    );
+  }
 
   group('TimeIndicator in KalenderView (#261)', () {
     // Noon is inside the default time-of-day range, so the indicator is drawn.

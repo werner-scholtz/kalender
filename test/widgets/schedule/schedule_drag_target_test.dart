@@ -23,7 +23,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   String addEvent(DateTime start, Duration duration) {
@@ -31,14 +30,16 @@ void main() {
   }
 
   Future<void> pumpSchedule(WidgetTester tester, {KalenderCallbacks? callbacks, bool paginated = false}) {
+    kalenderController = KalenderController(
+      viewConfiguration: paginated
+          ? ScheduleViewConfiguration.paginated(displayRange: displayRange, initialDateTime: DateTime(2025, 6, 2))
+          : ScheduleViewConfiguration.continuous(displayRange: displayRange, initialDateTime: DateTime(2025, 6, 2)),
+    );
     return pumpKalender(
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
       callbacks: callbacks,
-      viewConfiguration: paginated
-          ? ScheduleViewConfiguration.paginated(displayRange: displayRange, initialDateTime: DateTime(2025, 6, 2))
-          : ScheduleViewConfiguration.continuous(displayRange: displayRange, initialDateTime: DateTime(2025, 6, 2)),
       body: KalenderBody(
         interaction: kPreciseInteraction,
         scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
@@ -46,7 +47,7 @@ void main() {
     );
   }
 
-  ScheduleViewController schedule() => kalenderController.viewController! as ScheduleViewController;
+  ScheduleViewController schedule() => kalenderController.viewController as ScheduleViewController;
 
   /// Picks [tile] up and moves it down by [dy] without releasing.
   Future<TestGesture> dragDownBy(WidgetTester tester, Finder tile, double dy) async {

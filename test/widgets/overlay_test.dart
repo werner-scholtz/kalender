@@ -15,8 +15,7 @@ import '../utilities.dart';
 
 void main() {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
-  final viewConfiguration = MultiDayViewConfiguration.week();
+  final kalenderController = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
   final preciseInteraction = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
@@ -50,7 +49,6 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: viewConfiguration,
         header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration, interaction: preciseInteraction),
         body: KalenderBody(interaction: preciseInteraction),
       ),

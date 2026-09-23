@@ -51,8 +51,8 @@ class HorizontalDragTarget extends StatefulWidget {
         // reject single-day events. They belong in the body, not the header.
         return configuration.allowSingleDayEvents ||
             event.spansMultipleDays(
-              location: controller.viewController?.location,
-              defaultRule: controller.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule,
+              location: controller.location,
+              defaultRule: controller.viewConfiguration.multiDayRule,
             );
       },
       onOther: () => false,
@@ -72,7 +72,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   bool get multiDayDragTarget => true;
 
-  ViewController get viewController => controller.viewController!;
+  ViewController get viewController => context.viewController;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
 
   @override

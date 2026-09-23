@@ -4,11 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-
-import '../utilities.dart';
 
 /// [ViewController.dispose] disposes every notifier the view controller creates.
 void main() {
@@ -46,7 +44,7 @@ void main() {
     ),
   ]) {
     test(c.configuration.name, () {
-      final controller = KalenderController();
+      final controller = KalenderController(viewConfiguration: c.configuration);
       addTearDown(controller.dispose);
       final viewController = c.configuration.createViewController(controller, null);
       final notifiers = [
@@ -62,23 +60,4 @@ void main() {
       }
     });
   }
-
-  testWidgets('a KalenderView disposes its view controller when it leaves the tree', (tester) async {
-    final eventsController = DefaultEventsController();
-    final controller = KalenderController();
-    addTearDown(eventsController.dispose);
-    addTearDown(controller.dispose);
-    await pumpKalender(
-      tester,
-      eventsController: eventsController,
-      kalenderController: controller,
-      viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
-      body: const KalenderBody(),
-    );
-    final viewController = controller.viewController! as MonthViewController;
-
-    await tester.pumpWidget(const SizedBox());
-
-    expect(() => viewController.pageController.addListener(() {}), throwsFlutterError);
-  });
 }

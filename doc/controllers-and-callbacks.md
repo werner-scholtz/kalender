@@ -69,7 +69,7 @@ life of the app, and is disposed there rather than in a single screen.
 
 The calendar draws no toolbar of its own. Switching views, moving between pages
 and showing the current month are all built in your app, using the navigation
-methods above and a `ViewConfiguration` held in state.
+methods above and the controller's `viewConfiguration`.
 
 <!-- snippet: file -->
 ```dart
@@ -85,7 +85,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
     MultiDayViewConfiguration.week(),
     MonthViewConfiguration.singleMonth(),
   ];
-  late ViewConfiguration viewConfiguration = viewConfigurations.first;
+  late final kalenderController = KalenderController(viewConfiguration: viewConfigurations.first);
+
+  @override
+  void dispose() {
+    kalenderController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +106,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             IconButton(onPressed: kalenderController.animateToPreviousPage, icon: const Icon(Icons.chevron_left)),
             IconButton(onPressed: kalenderController.animateToNextPage, icon: const Icon(Icons.chevron_right)),
-            DropdownButton<ViewConfiguration>(
-              value: viewConfiguration,
-              items: [for (final c in viewConfigurations) DropdownMenuItem(value: c, child: Text(c.name))],
-              onChanged: (value) => setState(() => viewConfiguration = value!),
+            ListenableBuilder(
+              listenable: kalenderController,
+              builder: (context, child) => DropdownButton<ViewConfiguration>(
+                value: kalenderController.viewConfiguration,
+                items: [for (final c in viewConfigurations) DropdownMenuItem(value: c, child: Text(c.name))],
+                onChanged: (value) => kalenderController.viewConfiguration = value!,
+              ),
             ),
           ],
         ),
@@ -111,7 +120,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: KalenderView(
             eventsController: eventsController,
             kalenderController: kalenderController,
-            viewConfiguration: viewConfiguration,
             header: KalenderHeader(),
             body: KalenderBody(),
           ),
@@ -122,7 +130,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 }
 ```
 
-Switching `viewConfiguration` is all a view change takes. What carries over,
+Setting `kalenderController.viewConfiguration` is all a view change takes. What carries over,
 such as the date and scroll position, is set on the configuration itself, see
 [Views](views.md#switching-between-views).
 

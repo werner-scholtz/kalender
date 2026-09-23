@@ -60,8 +60,9 @@ void main() {
       final day = DateTime.utc(2025, 1, 15);
       final view = KalenderView(
         eventsController: controllerWithOverflowOn(day),
-        kalenderController: KalenderController(),
-        viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
+        kalenderController: KalenderController(
+          viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
+        ),
         components: components,
         header: const KalenderHeader(
           multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),

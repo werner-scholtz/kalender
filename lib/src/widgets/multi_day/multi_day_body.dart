@@ -41,11 +41,11 @@ class MultiDayBody extends StatelessWidget {
     final controller = context.kalenderController;
 
     assert(
-      controller.viewController is MultiDayViewController,
+      context.viewController is MultiDayViewController,
       'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
     );
 
-    final viewController = controller.viewController as MultiDayViewController;
+    final viewController = context.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
 

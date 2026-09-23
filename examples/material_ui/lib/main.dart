@@ -36,7 +36,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
 
   final now = DateTime.now();
 
@@ -45,9 +44,11 @@ class _HomePageState extends State<HomePage> {
     end: now.add(const Duration(days: 365)),
   );
 
-  late final viewConfiguration = MultiDayViewConfiguration.week(
-    displayRange: displayRange,
-    initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
+  late final kalenderController = KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(
+      displayRange: displayRange,
+      initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
+    ),
   );
 
   @override
@@ -81,7 +82,6 @@ class _HomePageState extends State<HomePage> {
         child: KalenderView(
           eventsController: eventsController,
           kalenderController: kalenderController,
-          viewConfiguration: viewConfiguration,
           header: const KalenderHeader(),
           body: const KalenderBody(),
         ),

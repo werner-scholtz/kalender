@@ -79,7 +79,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
 
   final now = DateTime.now();
 
@@ -91,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // Without this the day opens at midnight, on hours no one has events in.
   static const initialTimeOfDay = KalenderTime(hour: 7, minute: 0);
 
-  late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(
       displayRange: displayRange,
@@ -108,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MonthViewConfiguration.singleMonth(displayRange: displayRange),
     ScheduleViewConfiguration.continuous(displayRange: displayRange),
   ];
+  late final kalenderController = KalenderController(viewConfiguration: viewConfigurations[0]);
 
   @override
   void initState() {
@@ -149,7 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreate: (event) {
@@ -206,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
               final String month;
               final int year;
 
-              if (viewConfiguration is MonthViewConfiguration) {
+              if (kalenderController.viewConfiguration is MonthViewConfiguration) {
                 final dominantMonthDate = FloatingDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
                 year = dominantMonthDate.year;
                 month = dominantMonthDate.monthNameLocalized();
@@ -240,10 +238,10 @@ class _MyHomePageState extends State<MyHomePage> {
           const Spacer(),
           DropdownMenu(
             dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
-            initialSelection: viewConfiguration,
+            initialSelection: kalenderController.viewConfiguration,
             onSelected: (value) {
               if (value == null) return;
-              setState(() => viewConfiguration = value);
+              kalenderController.viewConfiguration = value;
             },
           ),
         ],

@@ -21,7 +21,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
     calls = [];
   });
 
@@ -42,12 +41,12 @@ void main() {
     MultiDayHeaderConfiguration? headerConfiguration,
     ScheduleBodyConfiguration? scheduleConfiguration,
   }) {
+    kalenderController = KalenderController(viewConfiguration: configuration);
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: configuration,
         components: components,
         callbacks: KalenderCallbacks(
           onTapped: (date) => calls.add('onTapped ${day(date)}'),
@@ -180,7 +179,7 @@ void main() {
         await pumpAndSettleWithMaterialApp(
           tester,
           TestProvider(
-            kalenderController: kalenderController,
+            kalenderController: KalenderController(viewConfiguration: week),
             eventsController: eventsController,
             tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
             callbacks: KalenderCallbacks(weekNumber: weekNumber),

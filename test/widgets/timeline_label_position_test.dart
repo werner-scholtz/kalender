@@ -18,7 +18,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   tearDown(() {
@@ -27,17 +26,19 @@ void main() {
   });
 
   Future<void> pumpDay(WidgetTester tester, KalenderTimeRange timeOfDayRange) {
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        timeOfDayRange: timeOfDayRange,
+        initialTimeOfDay: timeOfDayRange.start,
+        initialDateTime: DateTime(2025),
+      ),
+    );
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(
-          displayRange: year2025DisplayRange,
-          timeOfDayRange: timeOfDayRange,
-          initialTimeOfDay: timeOfDayRange.start,
-          initialDateTime: DateTime(2025),
-        ),
         body: KalenderBody(
           multiDayTileComponents: TileComponents(tileBuilder: (context, event, range) => const SizedBox()),
         ),

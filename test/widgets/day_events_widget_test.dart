@@ -39,12 +39,8 @@ void main() {
     ];
 
     eventsController = DefaultEventsController()..addEvents(events);
-    kalenderController = KalenderController();
-    viewController = MultiDayViewController(
-      viewConfiguration: MultiDayViewConfiguration.singleDay(),
-      initial: todaySnapshot(),
-    );
-    kalenderController.attach(viewController);
+    kalenderController = KalenderController(viewConfiguration: MultiDayViewConfiguration.singleDay());
+    viewController = kalenderController.viewController as MultiDayViewController;
   });
 
   Future<void> pumpEventsRow(WidgetTester tester) async {

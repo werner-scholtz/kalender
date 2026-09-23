@@ -20,7 +20,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   final components = TileComponents(
@@ -30,15 +29,17 @@ void main() {
   // Align the top of the viewport with [hour] so each test starts with room to
   // scroll in the direction it drags.
   Future<void> pumpWeek(WidgetTester tester, int hour) {
-    return pumpKalender(
-      tester,
-      eventsController: eventsController,
-      kalenderController: kalenderController,
+    kalenderController = KalenderController(
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 7))),
         initialDateTime: start,
         initialTimeOfDay: KalenderTime(hour: hour, minute: 0),
       ),
+    );
+    return pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
       body: KalenderBody(multiDayTileComponents: components, interaction: kPreciseInteraction),
     );
   }

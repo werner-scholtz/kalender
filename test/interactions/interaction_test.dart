@@ -33,7 +33,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
 
     dayEventID = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)));
     multiDayEventID = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)));
@@ -62,17 +61,17 @@ void main() {
   MonthViewConfiguration singleMonth() =>
       MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, initialDateTime: DateTime(2025));
 
-  Future<void> pump(WidgetTester tester, ViewConfiguration viewConfiguration, KalenderInteraction interaction) =>
-      pumpAndSettleWithMaterialApp(
-        tester,
-        KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: viewConfiguration,
-          header: KalenderHeader(interaction: interaction),
-          body: KalenderBody(interaction: interaction),
-        ),
-      );
+  Future<void> pump(WidgetTester tester, ViewConfiguration viewConfiguration, KalenderInteraction interaction) {
+    kalenderController = KalenderController(viewConfiguration: viewConfiguration);
+    addTearDown(kalenderController.dispose);
+    return pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      header: KalenderHeader(interaction: interaction),
+      body: KalenderBody(interaction: interaction),
+    );
+  }
 
   void expectHandles(
     String id,

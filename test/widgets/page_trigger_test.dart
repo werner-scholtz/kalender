@@ -22,7 +22,13 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: displayRange,
+        initialDateTime: start,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+      ),
+    );
   });
 
   final components = TileComponents(
@@ -41,11 +47,6 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: displayRange,
-          initialDateTime: start,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        ),
         header: KalenderHeader(multiDayTileComponents: components, interaction: precise),
         body: KalenderBody(multiDayTileComponents: components, interaction: precise),
       ),

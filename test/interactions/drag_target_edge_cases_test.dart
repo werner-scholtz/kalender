@@ -18,20 +18,32 @@ import '../utilities.dart';
 /// date assertions in all cursor-position tests.
 final _weekInitialDate = DateTime(2025, 1, 6);
 
-Future<void> _pumpView(
-  WidgetTester tester,
-  ViewConfiguration viewConfiguration, {
-  EventsController? eventsController,
-  KalenderController? controller,
-}) {
-  return pumpAndSettleWithMaterialApp(
-    tester,
-    KalenderView(
-      eventsController: eventsController ?? DefaultEventsController(),
-      kalenderController: controller ?? KalenderController(),
-      viewConfiguration: viewConfiguration,
-      body: const KalenderBody(),
+KalenderController _weekController({KalenderTimeRange? timeOfDayRange}) {
+  return KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(
+      displayRange: year2025DisplayRange,
+      initialDateTime: _weekInitialDate,
+      timeOfDayRange: timeOfDayRange,
+      initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
     ),
+  );
+}
+
+KalenderController _monthController() {
+  return KalenderController(
+    viewConfiguration: MonthViewConfiguration.singleMonth(
+      displayRange: year2025DisplayRange,
+      initialDateTime: DateTime(2025, 1, 1),
+    ),
+  );
+}
+
+Future<void> _pumpView(WidgetTester tester, KalenderController controller, {EventsController? eventsController}) {
+  return pumpKalender(
+    tester,
+    eventsController: eventsController ?? DefaultEventsController(),
+    kalenderController: controller,
+    body: const KalenderBody(),
   );
 }
 
@@ -39,19 +51,8 @@ Future<dynamic> _pumpWeekView(
   WidgetTester tester, {
   EventsController? eventsController,
   KalenderController? controller,
-  KalenderTimeRange? timeOfDayRange,
 }) async {
-  await _pumpView(
-    tester,
-    MultiDayViewConfiguration.week(
-      displayRange: year2025DisplayRange,
-      initialDateTime: _weekInitialDate,
-      timeOfDayRange: timeOfDayRange,
-      initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-    ),
-    eventsController: eventsController,
-    controller: controller,
-  );
+  await _pumpView(tester, controller ?? _weekController(), eventsController: eventsController);
   return tester.state<State>(find.byType(VerticalDragTarget)) as dynamic;
 }
 
@@ -60,12 +61,7 @@ Future<dynamic> _pumpMonthView(
   EventsController? eventsController,
   KalenderController? controller,
 }) async {
-  await _pumpView(
-    tester,
-    MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, initialDateTime: DateTime(2025, 1, 1)),
-    eventsController: eventsController,
-    controller: controller,
-  );
+  await _pumpView(tester, controller ?? _monthController(), eventsController: eventsController);
   return tester.state<State>(find.byType(HorizontalDragTarget).first) as dynamic;
 }
 
@@ -83,13 +79,13 @@ DragTargetDetails<Object?> _dragDetails(Object? data) => DragTargetDetails(data:
 
 void main() {
   group('HorizontalDragTarget.onWillAcceptWithDetails', () {
-    final controller = KalenderController();
+    final controller = _weekController();
     const headerConfig = MultiDayHeaderConfiguration();
     const monthConfig = MonthBodyConfiguration();
 
     final cases = <(String, Object?, HorizontalConfiguration, bool)>[
       ('Create with matching controller id', Create(controllerId: controller.id), headerConfig, true),
-      ('Create with mismatched controller id', Create(controllerId: KalenderController().id), headerConfig, false),
+      ('Create with mismatched controller id', Create(controllerId: _weekController().id), headerConfig, false),
       (
         'Resize right (horizontal)',
         Resize(event: _singleDayEvent(), direction: ResizeDirection.right),
@@ -134,14 +130,14 @@ void main() {
   group('VerticalDragTarget.onWillAcceptWithDetails', () {
     final cases = <(String, Object Function(KalenderController controller), bool)>[
       ('Create with matching controller id', (controller) => Create(controllerId: controller.id), true),
-      ('Create with mismatched controller id', (_) => Create(controllerId: KalenderController().id), false),
+      ('Create with mismatched controller id', (_) => Create(controllerId: _weekController().id), false),
       ('Resize bottom (vertical)', (_) => Resize(event: _singleDayEvent(), direction: ResizeDirection.bottom), true),
       ('Resize left (horizontal)', (_) => Resize(event: _singleDayEvent(), direction: ResizeDirection.left), false),
     ];
 
     for (final (name, payload, expected) in cases) {
       testWidgets('$name → $expected', (tester) async {
-        final controller = KalenderController();
+        final controller = _weekController();
         await _pumpWeekView(tester, controller: controller);
 
         expect(
@@ -158,15 +154,13 @@ void main() {
     testWidgets('Reschedule event whose duration exceeds restricted timeOfDayRange → false', (tester) async {
       // Time range 09:00–17:00 has duration = 8h 1min.
       // An event from 08:00–18:00 (10 h) exceeds that, so it should be rejected.
-      final controller = KalenderController();
-      await _pumpWeekView(
-        tester,
-        controller: controller,
+      final controller = _weekController(
         timeOfDayRange: KalenderTimeRange(
           start: const KalenderTime(hour: 9, minute: 0),
           end: const KalenderTime(hour: 17, minute: 0),
         ),
       );
+      await _pumpWeekView(tester, controller: controller);
       const config = MultiDayBodyConfiguration();
 
       final hugeEvent = KalenderEvent(start: DateTime(2025, 1, 6, 8, 0), end: DateTime(2025, 1, 6, 18, 0));
@@ -349,7 +343,7 @@ void main() {
         're-entry with Resize data restores it', (tester) async {
       final ec = DefaultEventsController();
       ec.addEvent(_singleDayEvent());
-      final controller = KalenderController();
+      final controller = _weekController();
 
       final state = await _pumpWeekView(tester, eventsController: ec, controller: controller);
 
@@ -377,7 +371,7 @@ void main() {
       final ec = DefaultEventsController();
       // Multi-day event so it lives in the HorizontalDragTarget (header/month).
       ec.addEvent(_multiDayEvent());
-      final controller = KalenderController();
+      final controller = _monthController();
 
       final state = await _pumpMonthView(tester, eventsController: ec, controller: controller);
 

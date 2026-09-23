@@ -21,24 +21,14 @@ void main() {
   setUpAll(initializeTimeZones);
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
-  Future<void> pump(
-    WidgetTester tester,
-    ViewConfiguration configuration, {
-    Location? location,
-    KalenderBody body = const KalenderBody(),
-  }) {
+  final march = MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10));
+
+  Future<void> pump(WidgetTester tester, {KalenderBody body = const KalenderBody()}) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: configuration,
-        location: location,
-        body: body,
-      ),
+      KalenderView(eventsController: eventsController, kalenderController: kalenderController, body: body),
     );
   }
 
@@ -46,10 +36,8 @@ void main() {
 
   group('navigate', () {
     testWidgets('moves to a day that is not visible', (tester) async {
-      await pump(
-        tester,
-        MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10)),
-      );
+      kalenderController = KalenderController(viewConfiguration: march);
+      await pump(tester);
 
       kalenderController.selectDate(DateTime(2025, 6, 18), navigate: true);
       await tester.pumpAndSettle();
@@ -57,10 +45,8 @@ void main() {
     });
 
     testWidgets('leaves the view alone when the day is visible or when false', (tester) async {
-      await pump(
-        tester,
-        MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10)),
-      );
+      kalenderController = KalenderController(viewConfiguration: march);
+      await pump(tester);
       final before = visible();
 
       kalenderController.selectDate(DateTime(2025, 3, 20), navigate: true);
@@ -73,9 +59,14 @@ void main() {
     });
 
     testWidgets('leaves the continuous schedule alone when the last visible day is selected', (tester) async {
+      kalenderController = KalenderController(
+        viewConfiguration: ScheduleViewConfiguration.continuous(
+          displayRange: displayRange,
+          initialDateTime: DateTime(2025, 3, 10),
+        ),
+      );
       await pump(
         tester,
-        ScheduleViewConfiguration.continuous(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10)),
         body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
       );
       final before = visible();
@@ -94,36 +85,28 @@ void main() {
 
   group('before a view attaches', () {
     testWidgets('the selection is resolved in the calendar location', (tester) async {
+      kalenderController = KalenderController(viewConfiguration: march, location: getLocation('Pacific/Kiritimati'));
       // 23:00 UTC on the 15th is the 16th at UTC+14.
       kalenderController.selectDate(TZDateTime.utc(2025, 3, 15, 23));
-      expect(kalenderController.isAttached, isFalse);
 
-      await pump(
-        tester,
-        MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10)),
-        location: getLocation('Pacific/Kiritimati'),
-      );
+      await pump(tester);
       expect(kalenderController.selectedRange.value, FloatingDateTime(2025, 3, 16).dayRange);
     });
 
     testWidgets('navigate moves the view once it has built', (tester) async {
+      kalenderController = KalenderController(viewConfiguration: march);
       kalenderController.selectDate(DateTime(2025, 6, 18), navigate: true);
 
-      await pump(
-        tester,
-        MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10)),
-      );
+      await pump(tester);
       expect(visible().dominantMonthDate.month, 6);
     });
 
     testWidgets('deselecting drops the pending selection', (tester) async {
+      kalenderController = KalenderController(viewConfiguration: march);
       kalenderController.selectDate(DateTime(2025, 6, 18), navigate: true);
       kalenderController.deselectRange();
 
-      await pump(
-        tester,
-        MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10)),
-      );
+      await pump(tester);
       expect(kalenderController.selectedRange.value, isNull);
       expect(visible().dominantMonthDate.month, 3);
     });

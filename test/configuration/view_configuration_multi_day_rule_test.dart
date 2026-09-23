@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
@@ -49,7 +48,6 @@ void main() {
   });
 
   testWidgets('a rule swapped in through copyWith re-sorts the events', (tester) async {
-    final kalenderController = KalenderController();
     final eventsController = DefaultEventsController();
 
     // Crosses midnight but lasts under 24 hours, the only shape the two rules
@@ -58,22 +56,21 @@ void main() {
       KalenderEvent(start: DateTime(2025, 1, 15, 22), end: DateTime(2025, 1, 16, 2)),
     );
     final base = MultiDayViewConfiguration.week(displayRange: displayRange, initialDateTime: DateTime(2025, 1, 15));
+    final kalenderController = KalenderController(viewConfiguration: base);
+    addTearDown(kalenderController.dispose);
 
-    Widget build(MultiDayViewConfiguration configuration) {
-      return KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: configuration,
-        header: const KalenderHeader(),
-        body: const KalenderBody(),
-      );
-    }
-
-    await pumpAndSettleWithMaterialApp(tester, build(base));
+    await pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      header: const KalenderHeader(),
+      body: const KalenderBody(),
+    );
     expect(find.byKey(DayEventTile.tileKey(id)), findsOneWidget, reason: 'the default rule keeps it in the timeline');
     expect(find.byKey(MultiDayEventTile.tileKey(id)), findsNothing);
 
-    await pumpAndSettleWithMaterialApp(tester, build(base.copyWith(multiDayRule: calendarDays)));
+    kalenderController.viewConfiguration = base.copyWith(multiDayRule: calendarDays);
+    await tester.pumpAndSettle();
     expect(find.byKey(MultiDayEventTile.tileKey(id)), findsOneWidget, reason: 'calendarDays moves it to the header');
   });
 }

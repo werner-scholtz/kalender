@@ -18,21 +18,22 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
   Future<void> pumpWeek(WidgetTester tester, {KalenderComponents? components, KalenderThemeData? theme}) async {
-    final view = KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
+    kalenderController = KalenderController(
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
         // Pin "now" inside the display range, so the time indicator is on screen.
         initialDateTime: DateTime(2025, 1, 15),
         nowCallback: () => DateTime(2025, 1, 15, 12),
       ),
+    );
+    final view = KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
       components: components,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),

@@ -23,25 +23,26 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
   // [today] is the day the indicator marks. The view opens on [start].
   Future<void> pumpFreeScroll(WidgetTester tester, DateTime today) {
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.freeScroll(
+        numberOfDays: numberOfDays,
+        displayRange: displayRange,
+        initialDateTime: start,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        nowCallback: () => today,
+      ),
+    );
     return pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.freeScroll(
-          numberOfDays: numberOfDays,
-          displayRange: displayRange,
-          initialDateTime: start,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          nowCallback: () => today,
-        ),
         components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
             bodyComponents: MultiDayBodyComponents(

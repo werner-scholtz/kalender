@@ -22,7 +22,12 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: ScheduleViewConfiguration.continuous(
+        displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 3)),
+        initialDateTime: DateTime(2025),
+      ),
+    );
     // The schedule draws a month heading and a day row only where events exist.
     eventsController.addEvent(
       KalenderEvent(
@@ -46,10 +51,6 @@ void main() {
           kalenderController: kalenderController,
           locale: locale,
           components: components,
-          viewConfiguration: ScheduleViewConfiguration.continuous(
-            displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 3)),
-            initialDateTime: DateTime(2025),
-          ),
           body: KalenderBody(scheduleTileComponents: tiles),
         ),
       ),

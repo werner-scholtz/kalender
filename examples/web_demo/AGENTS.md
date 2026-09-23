@@ -34,14 +34,14 @@ flutter build web --release --wasm --base-href /kalender/
 ### State ownership
 
 - `lib/providers.dart` defines lightweight `InheritedWidget` providers for app settings and the shared `EventsController`.
-- Each `Calendar` widget creates its own `CalendarScope`, which means each visible calendar instance gets its own `KalenderController`, `DemoConfiguration`, and timezone `Location` notifier.
+- Each `Calendar` widget creates its own `CalendarScope`, which means each visible calendar instance gets its own `KalenderController` and `DemoConfiguration`. The controller holds the timezone `Location`.
 - In desktop split view, both calendars share the same event store but do not share view/controller state unless you explicitly refactor them to do so.
 
 ### Demo configuration
 
 - `lib/models/demo_configuration.dart` is the source of truth for selectable `ViewConfiguration`s, interaction settings, snapping, and visibility toggles.
 - Prefer extending `DemoConfiguration` when exposing new demo knobs instead of hard-coding behavior directly inside widgets.
-- `viewConfigurationNotifier` drives the active calendar mode; keep new view options aligned with the navigation/configuration UI.
+- The controller's `viewConfiguration` holds the active calendar mode. Keep new view options aligned with the navigation and configuration UI.
 
 ### UI composition
 

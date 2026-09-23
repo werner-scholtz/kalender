@@ -20,17 +20,15 @@ import '../utilities.dart';
 /// the way it does for every other style.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController kalenderController;
 
-  setUp(() {
-    eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
-  });
+  setUp(() => eventsController = DefaultEventsController());
+  tearDown(() => eventsController.dispose());
 
-  tearDown(() {
-    kalenderController.dispose();
-    eventsController.dispose();
-  });
+  KalenderController controllerFor(ViewConfiguration configuration) {
+    final kalenderController = KalenderController(viewConfiguration: configuration);
+    addTearDown(kalenderController.dispose);
+    return kalenderController;
+  }
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
@@ -38,8 +36,7 @@ void main() {
   Widget splitTheme(ViewConfiguration configuration, KalenderThemeData bodyTheme) {
     return KalenderView(
       eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: configuration,
+      kalenderController: controllerFor(configuration),
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderTheme(
         data: bodyTheme,
@@ -51,8 +48,7 @@ void main() {
   Widget plain(ViewConfiguration configuration, {KalenderThemeData? theme, KalenderComponents? components}) {
     final view = KalenderView(
       eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: configuration,
+      kalenderController: controllerFor(configuration),
       components: components,
       header: KalenderHeader(multiDayTileComponents: tiles),
       body: KalenderBody(multiDayTileComponents: tiles),

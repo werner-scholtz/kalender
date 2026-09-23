@@ -8,24 +8,26 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
-import 'package:kalender/src/models/floating_date_time.dart';
-import 'package:kalender/src/models/floating_date_time_range.dart';
-import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
-import 'package:timezone/timezone.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/models/view_transition.dart';
 
-/// The [KalenderController] controls a single [KalenderView].
+/// Holds the [ViewConfiguration] and [Location] of a calendar and the [ViewController] a [KalenderView] shows.
 ///
-/// The [KalenderView] attaches itself by calling [attach] and detaches itself by calling [detach].
+/// Setting [viewConfiguration] switches the view. Setting [location] recreates it in the new location.
 ///
 /// {@category Controllers and callbacks}
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
-  KalenderController() : id = _nextId++ {
+  KalenderController({required ViewConfiguration viewConfiguration, Location? location})
+    : id = _nextId++,
+      _viewConfiguration = viewConfiguration,
+      _location = location {
     _floatingVisibleRange.addListener(_updateVisibleDateTimeRange);
+    _adopt(viewConfiguration.createViewController(this, null));
   }
 
   static int _nextId = 0;
@@ -34,38 +36,169 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// create gesture belongs to their calendar.
   final int id;
 
-  /// This is a reference to the [ViewController] that is currently attached to this [KalenderController].
-  ViewController? _viewController;
-  ViewController? get viewController => _viewController;
+  /// The configuration of the view.
+  ///
+  /// Setting a configuration that is not `==` to the current one switches the view. The date, scroll and zoom the new
+  /// view opens on follow the new configuration's transition settings.
+  ViewConfiguration get viewConfiguration => _viewConfiguration;
+  ViewConfiguration _viewConfiguration;
+  set viewConfiguration(ViewConfiguration value) {
+    if (value == _viewConfiguration) return;
+    _switchTo(value);
+  }
 
-  /// The location new view controllers are created in.
+  /// The location of the calendar. Null uses the device's local time.
+  ///
+  /// Setting a different location recreates the view controller in it.
+  Location? get location => _location;
+  Location? _location;
+  set location(Location? value) {
+    if (value == _location) return;
+    _location = value;
+    _switchTo(_viewConfiguration, locationChanged: true);
+  }
+
+  /// The view controller of the active [KalenderView].
+  ViewController get viewController => _viewController;
+  late ViewController _viewController;
+
+  /// The last snapshot of each view, keyed by its configuration `name`.
+  final _viewHistory = <String, ViewSnapshot>{};
+
+  /// The last snapshot of a multi-day view.
+  ViewSnapshot? _lastMultiDaySnapshot;
+
+  /// The attached views, the active one last.
+  final _views = <Object>[];
+
+  /// The views holding each view controller that a view holds.
+  final _holders = <ViewController, Set<Object>>{};
+
+  /// Marks a view controller a view has held.
+  final _held = Expando<bool>();
+
+  /// Replaces the view controller with one [configuration] creates.
+  ///
+  /// A [replacement] reopens the current view for a view that attaches, and does not notify, because it runs during a
+  /// build.
+  void _switchTo(ViewConfiguration configuration, {bool locationChanged = false, bool replacement = false}) {
+    final old = _viewController;
+    final snapshot = old.snapshot();
+    _viewHistory[old.viewConfiguration.name] = snapshot;
+    if (snapshot.heightPerMinute != null) _lastMultiDaySnapshot = snapshot;
+
+    final transition = ViewTransitionContext(
+      oldViewController: old,
+      newViewConfiguration: configuration,
+      byView: _viewHistory,
+      lastMultiDay: _lastMultiDaySnapshot,
+      locationChanged: locationChanged,
+      location: _location,
+    );
+    _viewConfiguration = configuration;
+    final next = configuration.createViewController(this, transition);
+    // The same page, so the listeners of the forwarded set are not notified.
+    if (replacement) next.visibleEvents.value = old.visibleEvents.value;
+
+    _removeForwarders();
+    _adopt(next);
+    _retire(old);
+    if (!replacement) notifyListeners();
+  }
+
+  void _adopt(ViewController viewController) {
+    _viewController = viewController;
+    _forward(viewController.floatingVisibleRange, _floatingVisibleRange);
+    _forward(viewController.visibleEvents, _visibleEvents);
+    // Views without vertical scroll (month and schedule) have no visible time of day.
+    if (viewController is MultiDayViewController) {
+      _forward(viewController.visibleTimeOfDay, visibleTimeOfDay);
+    } else {
+      visibleTimeOfDay.value = null;
+    }
+    _updateVisibleDateTimeRange();
+  }
+
+  /// Disposes [viewController] once no view holds it.
+  void _retire(ViewController viewController) {
+    if (_holders[viewController]?.isNotEmpty ?? false) return;
+    _holders.remove(viewController);
+    viewController.dispose();
+  }
+
+  /// Makes [view] the active view and returns the view controller it shows.
+  ///
+  /// A view that does not hold the current view controller gets a new one when a view has held it before, because
+  /// its page and scroll controllers keep the position they were created with. The new one opens where the current
+  /// one is, as the configuration's transition settings decide.
   @internal
-  Location? location;
-  bool get isAttached => _viewController != null;
+  ViewController attachView(Object view) {
+    _views
+      ..remove(view)
+      ..add(view);
+    final holdsCurrent = _holders[_viewController]?.contains(view) ?? false;
+    if (!holdsCurrent && (_held[_viewController] ?? false)) {
+      _switchTo(_viewConfiguration, replacement: true);
+    }
+    final viewController = _viewController;
+    (_holders[viewController] ??= {}).add(view);
+    _held[viewController] = true;
+    _resolvePendingSelection();
+    return viewController;
+  }
 
-  /// The [ViewController.floatingVisibleRange] of the attached view controller.
+  /// Removes [view] from the attached views. The next newest view becomes active after this frame.
+  @internal
+  void detachView(Object view) {
+    final wasActive = isActiveView(view);
+    _views.remove(view);
+    if (!wasActive || _views.isEmpty) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_isDisposed) notifyListeners();
+    });
+  }
+
+  /// Whether [view] is the active view.
+  @internal
+  bool isActiveView(Object view) => _views.isNotEmpty && identical(_views.last, view);
+
+  /// Tells the controller that [view] no longer shows [viewController].
+  @internal
+  void releaseView(Object view, ViewController viewController) {
+    if (_isDisposed) return;
+    final holders = _holders[viewController];
+    if (holders == null) return;
+    holders.remove(view);
+    if (holders.isNotEmpty) return;
+    _holders.remove(viewController);
+    if (!identical(viewController, _viewController)) viewController.dispose();
+  }
+
+  /// Whether a view is attached.
+  bool get _hasView => _views.isNotEmpty;
+
+  /// The [ViewController.floatingVisibleRange] of [viewController].
   late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
   ValueListenable<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
-    final newRange = _floatingVisibleRange.value?.forLocation(location: _viewController?.location);
-    visibleDateTimeRange.value = newRange;
+    visibleDateTimeRange.value = _floatingVisibleRange.value?.forLocation(location: _location);
   }
 
-  /// The [KalenderDateTimeRange] that is currently visible for the current location of the calendar this controller is attached to.
+  /// The [floatingVisibleRange] in [location].
   final visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
 
-  /// The [ViewController.visibleEvents] of the attached view controller.
+  /// The [ViewController.visibleEvents] of [viewController].
   ValueListenable<Set<KalenderEvent>> get visibleEvents => _visibleEvents;
   final _visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
 
   /// The [KalenderTime] currently aligned with the top of the visible viewport.
   ///
   /// This reflects the vertical scroll position of a multi-day view (day/week/etc)
-  /// and updates as the user scrolls or zooms. It is `null` when the attached view
+  /// and updates as the user scrolls or zooms. It is `null` when the view
   /// has no vertical scroll (e.g. month or schedule views).
   final visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
-  /// The listeners that copy the attached view controller's notifiers into this controller's.
+  /// The listeners that copy the notifiers of [viewController] into this controller's.
   final _forwarders = <(Listenable, VoidCallback)>[];
 
   void _forward<T>(ValueNotifier<T> source, ValueNotifier<T> target) {
@@ -118,7 +251,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// [FloatingDateTimeRange.end] is midnight after the last.
   final selectedRange = ValueNotifier<FloatingDateTimeRange?>(null);
 
-  /// A selection made while no view is attached. [attach] resolves it in the view's location.
+  /// A selection made while no view is attached. [attachView] resolves it.
   (KalenderDateTimeRange, {bool navigate})? _pendingSelection;
 
   /// Selects the day of [date].
@@ -138,10 +271,9 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   ///
   /// When [navigate] is true and the first day is not visible, the view moves to it.
   void selectRange(KalenderDateTimeRange range, {bool navigate = false}) {
-    final viewController = _viewController;
-    final days = _daysOf(range, viewController?.location);
+    final days = _daysOf(range, _location);
     selectedRange.value = days;
-    if (viewController == null) {
+    if (!_hasView) {
       _pendingSelection = (range, navigate: navigate);
     } else if (navigate) {
       _navigateTo(days.start);
@@ -157,7 +289,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// Whether [date] falls on a selected day.
   bool isDateSelected(DateTime date) {
     final range = selectedRange.value;
-    return range != null && FloatingDateTime.fromExternal(date, location: _viewController?.location).isWithin(range);
+    return range != null && FloatingDateTime.fromExternal(date, location: _location).isWithin(range);
   }
 
   FloatingDateTimeRange _daysOf(KalenderDateTimeRange range, Location? location) {
@@ -169,19 +301,19 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   void _navigateTo(FloatingDateTime day) {
     if (_isVisible(day)) return;
-    animateToDate(day.forLocation(location: _viewController?.location));
+    animateToDate(day.forLocation(location: _location));
   }
 
-  void _resolvePendingSelection(ViewController viewController) {
+  void _resolvePendingSelection() {
     final pending = _pendingSelection;
     if (pending == null) return;
     _pendingSelection = null;
-    final days = _daysOf(pending.$1, viewController.location);
+    final days = _daysOf(pending.$1, _location);
     selectedRange.value = days;
     if (!pending.navigate) return;
     // The view builds after attaching, so its pages exist only once the frame is done.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_viewController == viewController) _navigateTo(days.start);
+      if (!_isDisposed && _hasView) _navigateTo(days.start);
     });
   }
 
@@ -197,10 +329,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// A day that is not visible opens nothing, unless [navigate] is true, which moves the view to it first.
   Future<void> showDayOverlay(DateTime date, {bool navigate = false}) async {
     if (_isDisposed) return;
-    final location = _viewController?.location;
+    final location = _location;
     final day = FloatingDateTime.fromExternal(date, location: location).startOfDay;
 
-    if (_viewController?.viewConfiguration is ScheduleViewConfiguration) {
+    if (_viewConfiguration is ScheduleViewConfiguration) {
       debugPrint('KalenderController.showDayOverlay: the schedule view has no day overlay.');
       return;
     }
@@ -225,7 +357,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// Whether [day] is on screen in the attached view.
   bool _isVisible(FloatingDateTime day) {
     final visible = _floatingVisibleRange.value;
-    return isAttached && visible != null && day.isWithin(visible);
+    return _hasView && visible != null && day.isWithin(visible);
   }
 
   /// Closes the open day overlay.
@@ -236,62 +368,29 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   bool _isDisposed = false;
 
-  bool isAttachedTo(ViewController viewController) {
-    return viewController == _viewController;
-  }
-
-  /// Attach the [ViewController] to this [KalenderController].
-  void attach(ViewController viewController) {
-    if (isAttached) detach();
-
-    _viewController = viewController;
-    _forward(viewController.floatingVisibleRange, _floatingVisibleRange);
-    _forward(viewController.visibleEvents, _visibleEvents);
-    final newRange = viewController.floatingVisibleRange.value!.forLocation(location: viewController.location);
-    visibleDateTimeRange.value = null;
-    visibleDateTimeRange.value = newRange;
-    _resolvePendingSelection(viewController);
-
-    // Views without vertical scroll (month and schedule) have no visible time of day.
-    if (viewController is MultiDayViewController) {
-      _forward(viewController.visibleTimeOfDay, visibleTimeOfDay);
-    } else {
-      visibleTimeOfDay.value = null;
-    }
-
-    notifyListeners();
-  }
-
-  /// Detach the [ViewController] from this [KalenderController].
-  void detach() {
-    _removeForwarders();
-    visibleTimeOfDay.value = null;
-    _viewController = null;
-  }
-
   @override
   void jumpToPage(int page) {
-    viewController?.jumpToPage(page);
+    if (_hasView) _viewController.jumpToPage(page);
   }
 
   @override
   void jumpToDate(DateTime date) {
-    viewController?.jumpToDate(date);
+    if (_hasView) _viewController.jumpToDate(date);
   }
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
-    await viewController?.animateToNextPage(duration: duration, curve: curve);
+    if (_hasView) await _viewController.animateToNextPage(duration: duration, curve: curve);
   }
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    return viewController?.animateToPreviousPage(duration: duration, curve: curve);
+    if (_hasView) await _viewController.animateToPreviousPage(duration: duration, curve: curve);
   }
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    return viewController?.animateToDate(date, duration: duration, curve: curve);
+    if (_hasView) await _viewController.animateToDate(date, duration: duration, curve: curve);
   }
 
   @override
@@ -302,7 +401,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    return viewController?.animateToDateTime(
+    if (!_hasView) return;
+    await _viewController.animateToDateTime(
       date,
       pageDuration: pageDuration,
       pageCurve: pageCurve,
@@ -320,7 +420,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    return viewController?.animateToEvent(
+    if (!_hasView) return;
+    await _viewController.animateToEvent(
       event,
       pageDuration: pageDuration,
       pageCurve: pageCurve,
@@ -334,9 +435,15 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   void dispose() {
     _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _removeForwarders();
+    for (final viewController in {_viewController, ..._holders.keys}) {
+      viewController.dispose();
+    }
+    _holders.clear();
     _floatingVisibleRange.dispose();
     _visibleEvents.dispose();
+    visibleDateTimeRange.dispose();
     visibleTimeOfDay.dispose();
+    selectedEvent.dispose();
     selectedRange.dispose();
     openDayOverlay.dispose();
     _isDisposed = true;

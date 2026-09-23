@@ -102,12 +102,11 @@ const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Pers
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
-  late MultiDayViewConfiguration _viewConfiguration = _viewConfigurations.first;
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 2),
     MultiDayViewConfiguration.week(initialHeightPerMinute: 2),
   ];
+  late final kalenderController = KalenderController(viewConfiguration: _viewConfigurations.first);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: _viewConfiguration,
         components: KalenderComponents(),
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
@@ -134,13 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   dropdownMenuEntries: _viewConfigurations.map((e) {
                     return DropdownMenuEntry(value: e, label: e.name);
                   }).toList(),
-                  initialSelection: _viewConfiguration,
+                  initialSelection: kalenderController.viewConfiguration,
                   onSelected: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _viewConfiguration = value;
-                      });
-                    }
+                    if (value == null) return;
+                    kalenderController.viewConfiguration = value;
                   },
                 ),
               ],
@@ -148,7 +143,11 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 8),
             KalenderHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
             const Divider(),
-            PeopleWidget(viewConfiguration: _viewConfiguration),
+            ListenableBuilder(
+              listenable: kalenderController,
+              builder: (context, _) =>
+                  PeopleWidget(viewConfiguration: kalenderController.viewConfiguration as MultiDayViewConfiguration),
+            ),
             const Divider(),
           ],
         ),

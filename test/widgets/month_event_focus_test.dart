@@ -13,7 +13,12 @@ import '../utilities.dart';
 void main() {
   testWidgets('#233 selected event focus lands on the event row', (tester) async {
     final eventsController = DefaultEventsController();
-    final kalenderController = KalenderController();
+    final kalenderController = KalenderController(
+      viewConfiguration: MonthViewConfiguration.singleMonth(
+        displayRange: KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
+        initialDateTime: DateTime(2025, 1),
+      ),
+    );
 
     // Two events covering the same days (Tue–Thu of the first full week) so they
     // stack: one on row 0, one on row 1.
@@ -33,10 +38,6 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MonthViewConfiguration.singleMonth(
-          displayRange: KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 3)),
-          initialDateTime: DateTime(2025, 1),
-        ),
         body: KalenderBody(monthTileComponents: tiles),
       ),
     );
