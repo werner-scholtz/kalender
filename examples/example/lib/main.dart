@@ -160,24 +160,31 @@ class _MyHomePageState extends State<MyHomePage> {
             updatedEvent: updatedEvent,
           ),
         ),
-        // Style the header with a Material widget.
-        header: Material(
-          color: Theme.of(context).colorScheme.surface,
-          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-          elevation: 2,
-          child: Column(
-            children: [
-              _calendarToolbar(),
-              const KalenderHeader(multiDayTileComponents: tileComponents),
-            ],
+        views: [
+          MultiDayViewParts(
+            header: _header(const MultiDayHeader(tileComponents: tileComponents)),
+            body: const MultiDayBody(tileComponents: tileComponents),
           ),
-        ),
-        body: const KalenderBody(
-          multiDayTileComponents: tileComponents,
-          monthTileComponents: tileComponents,
-          scheduleTileComponents: scheduleTileComponents,
-        ),
+          MonthViewParts(
+            header: _header(const MonthHeader()),
+            body: const MonthBody(tileComponents: tileComponents),
+          ),
+          ScheduleViewParts(
+            header: _header(),
+            body: const ScheduleBody(tileComponents: scheduleTileComponents),
+          ),
+        ],
       ),
+    );
+  }
+
+  /// The toolbar above [child], styled with a Material widget.
+  Widget _header([Widget? child]) {
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+      elevation: 2,
+      child: Column(children: [_calendarToolbar(), if (child != null) child]),
     );
   }
 

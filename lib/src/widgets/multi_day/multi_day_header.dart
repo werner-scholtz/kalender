@@ -14,6 +14,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
+import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
 /// The multi-day header decides which header to display the:
@@ -24,9 +25,34 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// {@category Views}
 class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
-  final HorizontalConfiguration? configuration;
+  final MultiDayHeaderConfiguration? configuration;
 
-  const MultiDayHeader({super.key, this.configuration});
+  /// Overrides the [KalenderView.callbacks] for this widget.
+  final KalenderCallbacks? callbacks;
+
+  /// Overrides the [KalenderView.interaction] for this widget.
+  final KalenderInteraction? interaction;
+
+  /// The tile components. Defaults to [TileComponents.defaultComponents].
+  final TileComponents? tileComponents;
+
+  const MultiDayHeader({super.key, this.configuration, this.callbacks, this.interaction, this.tileComponents});
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewProviders(
+      callbacks: callbacks,
+      interaction: interaction,
+      tileComponents: tileComponents ?? TileComponents.defaultComponents(),
+      child: _MultiDayHeaderSwitch(configuration: configuration),
+    );
+  }
+}
+
+class _MultiDayHeaderSwitch extends StatelessWidget {
+  final MultiDayHeaderConfiguration? configuration;
+
+  const _MultiDayHeaderSwitch({this.configuration});
 
   @override
   Widget build(BuildContext context) {

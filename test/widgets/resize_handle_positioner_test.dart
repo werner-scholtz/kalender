@@ -46,7 +46,12 @@ void main() {
         child: KalenderView(
           eventsController: eventsController,
           kalenderController: kalenderController,
-          body: KalenderBody(interaction: interaction, multiDayTileComponents: tiles),
+          views: [
+            MultiDayViewParts(
+              header: const SizedBox.shrink(),
+              body: MultiDayBody(interaction: interaction, tileComponents: tiles),
+            ),
+          ],
         ),
       ),
     );

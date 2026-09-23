@@ -50,8 +50,7 @@ void main() {
         eventsController: eventsController,
         kalenderController: kalenderController,
         callbacks: callbacks,
-        header: KalenderHeader(interaction: interaction),
-        body: KalenderBody(interaction: interaction),
+        interaction: interaction,
       ),
     );
   }

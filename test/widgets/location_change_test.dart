@@ -34,7 +34,7 @@ void main() {
     ViewConfiguration config,
     Location location, {
     KalenderComponents? components,
-    Widget body = const KalenderBody(),
+    List<ViewParts> views = bodyOnlyViews,
   }) {
     kalenderController = KalenderController(viewConfiguration: config, location: location);
     return pumpKalender(
@@ -42,7 +42,7 @@ void main() {
       eventsController: eventsController,
       kalenderController: kalenderController,
       components: components,
-      body: body,
+      views: views,
     );
   }
 
@@ -133,7 +133,11 @@ void main() {
             config,
             newYork,
             components: components,
-            body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
+            views: [
+              ScheduleViewParts(
+                body: ScheduleBody(configuration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
+              ),
+            ],
           );
           expect(emptyDays, isNot(contains(14)));
           expect(emptyDays, contains(15));

@@ -33,12 +33,7 @@ void main() {
           alignment: Alignment.topLeft,
           child: SizedBox(
             height: 1,
-            child: KalenderView(
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              header: const KalenderHeader(),
-              body: const KalenderBody(),
-            ),
+            child: KalenderView(eventsController: eventsController, kalenderController: kalenderController),
           ),
         ),
       );

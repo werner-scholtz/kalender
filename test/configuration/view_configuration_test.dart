@@ -55,11 +55,17 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: controller,
-      body: KalenderBody(
-        multiDayTileComponents: components,
-        monthTileComponents: components,
-        scheduleTileComponents: scheduleComponents,
-      ),
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(tileComponents: components),
+        ),
+        MonthViewParts(
+          header: const SizedBox.shrink(),
+          body: MonthBody(tileComponents: components),
+        ),
+        ScheduleViewParts(body: ScheduleBody(tileComponents: scheduleComponents)),
+      ],
     );
     return controller;
   }

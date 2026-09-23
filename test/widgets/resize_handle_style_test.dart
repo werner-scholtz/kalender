@@ -42,13 +42,18 @@ void main() {
     final view = KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: KalenderBody(
-        interaction: interactionFor(mode),
-        multiDayTileComponents: TileComponents(
-          tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
-          verticalResizeHandle: const SizedBox.expand(),
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(
+            interaction: interactionFor(mode),
+            tileComponents: TileComponents(
+              tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
+              verticalResizeHandle: const SizedBox.expand(),
+            ),
+          ),
         ),
-      ),
+      ],
     );
 
     return pumpAndSettleWithMaterialApp(

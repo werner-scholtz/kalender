@@ -55,19 +55,24 @@ void main() {
           onEventCreated: eventsController.addEvent,
           onEventChanged: (event, updated) => eventsController.updateEvent(event: event, updatedEvent: updated),
         ),
-        body: KalenderBody(
-          interaction: KalenderInteraction(
-            inputMode: InputMode.precise,
-            createEventGesture: EventInteractionGesture.tap,
-            modifyEventGesture: EventInteractionGesture.tap,
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              interaction: KalenderInteraction(
+                inputMode: InputMode.precise,
+                createEventGesture: EventInteractionGesture.tap,
+                modifyEventGesture: EventInteractionGesture.tap,
+              ),
+              snapping: const KalenderSnapping(
+                snapIntervalMinutes: 15,
+                snapToTimeIndicator: false,
+                snapToOtherEvents: false,
+              ),
+              tileComponents: TileComponents(tileBuilder: (context, event, range) => Container(color: Colors.red)),
+            ),
           ),
-          snapping: const KalenderSnapping(
-            snapIntervalMinutes: 15,
-            snapToTimeIndicator: false,
-            snapToOtherEvents: false,
-          ),
-          multiDayTileComponents: TileComponents(tileBuilder: (context, event, range) => Container(color: Colors.red)),
-        ),
+        ],
       ),
     );
     return tester.getRect(find.byType(MultiDayBody));

@@ -45,7 +45,7 @@ flutter build web --release --wasm --base-href /kalender/
 
 ### UI composition
 
-- `lib/widgets/calendar/calendar.dart` is the main composition point for `KalenderView`, `KalenderHeader`, `KalenderBody`, overlay behavior, tile components, and the configuration panel.
+- `lib/widgets/calendar/calendar.dart` is the main composition point for `KalenderView`, the header and body of each view (`views`), overlay behavior, tile components, and the configuration panel.
 - `lib/widgets/toolbar/` contains app-level controls such as theme, locale, text direction, warnings, and view type selection.
 - `lib/widgets/configuration/` contains the editors for runtime calendar customization.
 - `lib/widgets/calendar/` contains demo-specific calendar chrome and tile rendering; keep package internals in `kalender` and demo presentation concerns here.

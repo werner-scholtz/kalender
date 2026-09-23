@@ -37,8 +37,12 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      header: KalenderHeader(multiDayHeaderConfiguration: headerConfiguration, multiDayTileComponents: tileComponents),
-      body: KalenderBody(multiDayTileComponents: tileComponents),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(configuration: headerConfiguration, tileComponents: tileComponents),
+          body: MultiDayBody(tileComponents: tileComponents),
+        ),
+      ],
     );
 
     final date = kalenderController.floatingVisibleRange.value!.dates().first;

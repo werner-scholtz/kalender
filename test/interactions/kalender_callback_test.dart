@@ -159,8 +159,7 @@ void main() {
       eventsController: eventsController,
       kalenderController: kalenderController,
       callbacks: callbacks,
-      header: KalenderHeader(interaction: interaction ?? preciseInteraction),
-      body: KalenderBody(interaction: interaction ?? preciseInteraction),
+      interaction: interaction ?? preciseInteraction,
     );
   }
 

@@ -49,13 +49,18 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        body: KalenderBody(
-          interaction: interaction,
-          multiDayTileComponents: TileComponents(
-            tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
-            verticalResizeHandle: const SizedBox.expand(),
+        interaction: interaction,
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              tileComponents: TileComponents(
+                tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
+                verticalResizeHandle: const SizedBox.expand(),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
     await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());

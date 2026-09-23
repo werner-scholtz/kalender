@@ -57,12 +57,12 @@ void main() {
         ValueListenableBuilder(valueListenable: rebuild, builder: (context, _, __) => buildView()),
       );
 
-      final heightBefore = tester.getSize(find.byType(KalenderHeader)).height;
+      final heightBefore = tester.getSize(find.byType(MultiDayHeader)).height;
 
       rebuild.value++;
       await tester.pumpAndSettle();
 
-      final heightAfter = tester.getSize(find.byType(KalenderHeader)).height;
+      final heightAfter = tester.getSize(find.byType(MultiDayHeader)).height;
       expect(heightAfter, closeTo(heightBefore, 0.5), reason: 'the header must not wobble on rebuild');
     });
 
@@ -72,7 +72,7 @@ void main() {
       kalenderController = controllerOn(initialDate);
       addTwoRowDay();
       await pumpAndSettleWithMaterialApp(tester, buildView());
-      return tester.getSize(find.byType(KalenderHeader)).height;
+      return tester.getSize(find.byType(MultiDayHeader)).height;
     }
 
     // #283

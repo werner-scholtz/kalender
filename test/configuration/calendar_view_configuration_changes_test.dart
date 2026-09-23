@@ -10,6 +10,12 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
+const _emptyViews = <ViewParts>[
+  MultiDayViewParts(header: SizedBox.shrink(), body: SizedBox.shrink()),
+  MonthViewParts(header: SizedBox.shrink(), body: SizedBox.shrink()),
+  ScheduleViewParts(body: SizedBox.shrink()),
+];
+
 void main() {
   late EventsController eventsController;
   late KalenderController kalenderController;
@@ -41,7 +47,7 @@ void main() {
         eventsController: eventsController,
         kalenderController: kalenderController,
         callbacks: callbacks,
-        body: withBody ? const KalenderBody() : null,
+        views: withBody ? bodyOnlyViews : _emptyViews,
       ),
     );
   }

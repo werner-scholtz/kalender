@@ -21,8 +21,7 @@ void main() {
     required ViewConfiguration viewConfiguration,
     KalenderComponents? components,
     EventsController? eventsController,
-    Widget? header,
-    Widget? body,
+    required List<ViewParts> views,
   }) {
     return pumpAndSettleWithMaterialApp(
       tester,
@@ -30,8 +29,7 @@ void main() {
         eventsController: eventsController ?? DefaultEventsController(),
         kalenderController: KalenderController(viewConfiguration: viewConfiguration),
         components: components,
-        header: header,
-        body: body,
+        views: views,
       ),
     );
   }
@@ -44,8 +42,13 @@ void main() {
       tester,
       viewConfiguration: viewConfiguration,
       components: components,
-      header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderBody(multiDayTileComponents: tiles),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(tileComponents: tiles),
+          body: MultiDayBody(tileComponents: tiles),
+        ),
+        const MonthViewParts(),
+      ],
     );
   }
 
@@ -144,7 +147,7 @@ void main() {
         components: KalenderComponents(
           scheduleComponents: ScheduleComponents(leadingDateStringBuilder: (context, date) => 'sd'),
         ),
-        body: KalenderBody(scheduleTileComponents: scheduleTiles),
+        views: [ScheduleViewParts(body: ScheduleBody(tileComponents: scheduleTiles))],
       );
 
       expect(find.text('sd'), findsWidgets);
@@ -160,9 +163,12 @@ void main() {
           child: KalenderView(
             eventsController: controllerWithOverflowOn(day),
             kalenderController: KalenderController(viewConfiguration: week),
-            header: const KalenderHeader(
-              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
-            ),
+            views: const [
+              MultiDayViewParts(
+                header: MultiDayHeader(configuration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1)),
+                body: SizedBox.shrink(),
+              ),
+            ],
           ),
         ),
       );

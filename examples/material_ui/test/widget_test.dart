@@ -12,13 +12,13 @@ void main() {
   testWidgets('the calendar renders without the bridge', (tester) async {
     await tester.pumpWidget(_app(bridge: false));
     expect(tester.takeException(), isNull);
-    expect(find.byType(KalenderBody), findsOneWidget);
+    expect(find.byType(MultiDayBody), findsOneWidget);
   });
 
   testWidgets('with the bridge the calendar renders', (tester) async {
     await tester.pumpWidget(_app(bridge: true));
     expect(tester.takeException(), isNull);
-    expect(find.byType(KalenderBody), findsOneWidget);
+    expect(find.byType(MultiDayBody), findsOneWidget);
   });
 }
 
@@ -61,7 +61,7 @@ class _CalendarState extends State<_Calendar> {
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: const KalenderBody(),
+      views: const [MultiDayViewParts(header: SizedBox.shrink())],
     );
   }
 }

@@ -42,16 +42,21 @@ void main() {
           onEventChanged: (event, updatedEvent) =>
               eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
-        body: KalenderBody(
-          interaction: KalenderInteraction(
-            inputMode: InputMode.precise,
-            createEventGesture: EventInteractionGesture.tap,
-            modifyEventGesture: EventInteractionGesture.tap,
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              interaction: KalenderInteraction(
+                inputMode: InputMode.precise,
+                createEventGesture: EventInteractionGesture.tap,
+                modifyEventGesture: EventInteractionGesture.tap,
+              ),
+              tileComponents: TileComponents(
+                tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
+              ),
+            ),
           ),
-          multiDayTileComponents: TileComponents(
-            tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
-          ),
-        ),
+        ],
       ),
     );
   }

@@ -34,7 +34,12 @@ void main() {
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: KalenderBody(snapping: snapping),
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(snapping: snapping),
+        ),
+      ],
     );
   }
 

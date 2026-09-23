@@ -107,7 +107,7 @@ void main() {
               return KalenderView(
                 eventsController: DefaultEventsController(),
                 kalenderController: KalenderController(viewConfiguration: MultiDayViewConfiguration.week()),
-                body: const _Dependent(),
+                views: const [MultiDayViewParts(header: SizedBox.shrink(), body: _Dependent())],
               );
             },
           ),

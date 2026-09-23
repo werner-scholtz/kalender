@@ -46,7 +46,12 @@ void main() {
         eventsController: eventsController,
         kalenderController: kalenderController,
         components: components,
-        body: KalenderBody(monthBodyConfiguration: bodyConfiguration),
+        views: [
+          MonthViewParts(
+            header: const SizedBox.shrink(),
+            body: MonthBody(configuration: bodyConfiguration),
+          ),
+        ],
       );
 
       return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));

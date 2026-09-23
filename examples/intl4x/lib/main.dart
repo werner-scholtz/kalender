@@ -135,8 +135,12 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
           kalenderController: _calendarController,
           locale: _locale,
           components: intl4xComponents(),
-          header: KalenderHeader(multiDayTileComponents: tiles),
-          body: KalenderBody(multiDayTileComponents: tiles),
+          views: [
+            MultiDayViewParts(
+              header: MultiDayHeader(tileComponents: tiles),
+              body: MultiDayBody(tileComponents: tiles),
+            ),
+          ],
         ),
       ),
     );

@@ -41,7 +41,7 @@ void main() {
       child: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        body: const KalenderBody(),
+        views: bodyOnlyViews,
       ),
     );
   }

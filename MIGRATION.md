@@ -41,7 +41,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, and a configuration creates its view controller. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, and a configuration creates its view controller. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -74,8 +74,6 @@ KalenderView(
   kalenderController: controller,
   viewConfiguration: configuration,
   location: location,
-  header: const KalenderHeader(),
-  body: const KalenderBody(),
 );
 
 // After
@@ -84,8 +82,6 @@ final controller = KalenderController(viewConfiguration: configuration, location
 KalenderView(
   eventsController: eventsController,
   kalenderController: controller,
-  header: const KalenderHeader(),
-  body: const KalenderBody(),
 );
 ```
 
@@ -104,6 +100,81 @@ Set a configuration computed from `MediaQuery` or layout constraints in
 `didChangeDependencies` or an event handler. Set in the `build` of a widget
 below the calendar, the controller's notification throws. `attach`, `detach`,
 `isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
+
+### Views are `ViewParts` on `KalenderView`
+
+`dart fix` does not apply. `KalenderBody`, `KalenderHeader` and `ScheduleHeader`
+are removed, and `KalenderView` takes `views` in place of `header` and `body`.
+An app that passed both without arguments deletes them.
+
+```dart
+// Before
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  header: const KalenderHeader(),
+  body: const KalenderBody(),
+);
+
+// After
+KalenderView(eventsController: eventsController, kalenderController: controller);
+```
+
+Otherwise each view's arguments move to the header or body of its parts. An
+`interaction` given to both halves moves to `KalenderView`.
+
+```dart
+// Before
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  header: KalenderHeader(multiDayTileComponents: tiles),
+  body: KalenderBody(
+    multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: true),
+    multiDayTileComponents: tiles,
+    monthTileComponents: tiles,
+    interaction: interaction,
+  ),
+);
+
+// After
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  interaction: interaction,
+  views: [
+    MultiDayViewParts(
+      header: MultiDayHeader(tileComponents: tiles),
+      body: MultiDayBody(
+        configuration: MultiDayBodyConfiguration(showMultiDayEvents: true),
+        tileComponents: tiles,
+      ),
+    ),
+    MonthViewParts(body: MonthBody(tileComponents: tiles)),
+    const ScheduleViewParts(),
+  ],
+);
+```
+
+| Before | After |
+| --- | --- |
+| `KalenderBody(multiDayBodyConfiguration:, multiDayTileComponents:, snapping:)` | `MultiDayViewParts(body: MultiDayBody(configuration:, tileComponents:, snapping:))` |
+| `KalenderBody(monthBodyConfiguration:, monthTileComponents:)` | `MonthViewParts(body: MonthBody(configuration:, tileComponents:))` |
+| `KalenderBody(scheduleBodyConfiguration:, scheduleTileComponents:)` | `ScheduleViewParts(body: ScheduleBody(configuration:, tileComponents:))` |
+| `KalenderHeader(multiDayHeaderConfiguration:, multiDayTileComponents:)` | `MultiDayViewParts(header: MultiDayHeader(configuration:, tileComponents:))` |
+| `KalenderBody(interaction:)` and `KalenderHeader(interaction:)` | `KalenderView(interaction:)`, or `interaction:` on one widget |
+| `KalenderBody(callbacks:)` and `KalenderHeader(callbacks:)` | `callbacks:` on the widget |
+| `ScheduleHeader()` | Nothing. The schedule has no header. |
+
+A null `header` or `body` shows the built-in widget, and `SizedBox.shrink()`
+shows none. An app that passed a body and no header passes `header: const
+SizedBox.shrink()`. A header that wrapped `KalenderHeader`, such as a toolbar
+above it, now wraps the built-in header in each parts that shows it. Two views
+of one kind that need different widgets each get parts with the `name` of their
+configuration.
+
+A `KalenderBody(interaction:)` moved to `KalenderView` now also applies to the
+multi-day header, which `KalenderHeader` did not take from the body.
 
 ### The members deprecated in 0.32.0 are removed
 

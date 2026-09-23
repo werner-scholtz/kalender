@@ -37,18 +37,22 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: KalenderBody(
-        multiDayTileComponents: TileComponents(
-          tileBuilder: (context, event, tileRange) {
-            builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
-            return const SizedBox.expand();
-          },
-          tileWhenDraggingBuilder: (context, event) {
-            builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
-            return const SizedBox.expand();
-          },
+      views: [
+        MultiDayViewParts(
+          body: MultiDayBody(
+            tileComponents: TileComponents(
+              tileBuilder: (context, event, tileRange) {
+                builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
+                return const SizedBox.expand();
+              },
+              tileWhenDraggingBuilder: (context, event) {
+                builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
+                return const SizedBox.expand();
+              },
+            ),
+          ),
         ),
-      ),
+      ],
     );
 
     Future<Map<String, int>> rebuildsAfter(VoidCallback change) async {

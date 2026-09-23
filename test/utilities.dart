@@ -96,23 +96,51 @@ Future<void> pumpKalender(
   WidgetTester tester, {
   required EventsController eventsController,
   required KalenderController kalenderController,
+  List<ViewParts>? views,
   KalenderCallbacks? callbacks,
+  KalenderInteraction? interaction,
   KalenderComponents? components,
-  Widget? header,
-  Widget? body,
 }) {
   return pumpAndSettleWithMaterialApp(
     tester,
-    KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      callbacks: callbacks,
-      components: components,
-      header: header,
-      body: body,
-    ),
+    views == null
+        ? KalenderView(
+            eventsController: eventsController,
+            kalenderController: kalenderController,
+            callbacks: callbacks,
+            interaction: interaction,
+            components: components,
+          )
+        : KalenderView(
+            eventsController: eventsController,
+            kalenderController: kalenderController,
+            views: views,
+            callbacks: callbacks,
+            interaction: interaction,
+            components: components,
+          ),
   );
 }
+
+/// Runs [body] and returns what [debugPrint] printed meanwhile.
+Future<List<String>> collectPrints(Future<void> Function() body) async {
+  final printed = <String>[];
+  final original = debugPrint;
+  debugPrint = (message, {wrapWidth}) => printed.add(message ?? '');
+  try {
+    await body();
+  } finally {
+    debugPrint = original;
+  }
+  return printed;
+}
+
+/// The built-in parts without a header, for a test that shows only the body.
+const bodyOnlyViews = <ViewParts>[
+  MultiDayViewParts(header: SizedBox.shrink()),
+  MonthViewParts(header: SizedBox.shrink()),
+  ScheduleViewParts(),
+];
 
 /// Shows [configuration] in a calendar with a header and body, and returns its controller.
 ///
@@ -125,13 +153,7 @@ Future<KalenderController> pumpConfiguration(
 }) async {
   final controller = kalenderController ?? KalenderController(viewConfiguration: configuration);
   controller.viewConfiguration = configuration;
-  await pumpKalender(
-    tester,
-    eventsController: eventsController,
-    kalenderController: controller,
-    header: const KalenderHeader(),
-    body: const KalenderBody(),
-  );
+  await pumpKalender(tester, eventsController: eventsController, kalenderController: controller);
   return controller;
 }
 
@@ -172,7 +194,7 @@ Future<void> pumpOverflowingMonth(
     eventsController: eventsController,
     kalenderController: kalenderController,
     components: components,
-    body: const KalenderBody(),
+    views: bodyOnlyViews,
   );
   if (scoped != null) view = KalenderTheme(data: scoped, child: view);
   if (textDirection != null) view = Directionality(textDirection: textDirection, child: view);
@@ -228,12 +250,13 @@ KalenderView freeScrollView({
     eventsController: eventsController,
     kalenderController: kalenderController,
     callbacks: callbacks,
-    header: KalenderHeader(
-      multiDayTileComponents: _colouredTiles,
-      multiDayHeaderConfiguration: headerConfiguration,
-      interaction: interaction,
-    ),
-    body: KalenderBody(multiDayTileComponents: _colouredTiles, interaction: interaction),
+    interaction: interaction,
+    views: [
+      MultiDayViewParts(
+        header: MultiDayHeader(tileComponents: _colouredTiles, configuration: headerConfiguration),
+        body: MultiDayBody(tileComponents: _colouredTiles),
+      ),
+    ],
   );
 }
 

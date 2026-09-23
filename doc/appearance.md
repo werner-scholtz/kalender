@@ -8,9 +8,9 @@ components. For where tiles are placed rather than how they look, see
 
 ## Tile Components
 
-`TileComponents` is the primary way to control how events look in the calendar. Pass it to `KalenderHeader` and/or `KalenderBody` for day, multi-day, and month views.
+`TileComponents` is the primary way to control how events look in the calendar. Pass it as `tileComponents` to `MultiDayHeader`, `MultiDayBody` and `MonthBody`, the header and body widgets of the day, multi-day and month views. See [Headers and bodies](views.md#headers-and-bodies) for passing those to `KalenderView`.
 
-For schedule views, use `ScheduleTileComponents` instead (passed via `KalenderBody.scheduleTileComponents`).
+For schedule views, use `ScheduleTileComponents` instead (passed via `ScheduleBody.tileComponents`).
 
 ### Simple tile
 
@@ -18,8 +18,8 @@ For most apps a plain `tileBuilder` is all you need:
 
 <!-- snippet: expression -->
 ```dart
-KalenderBody(
-  multiDayTileComponents: TileComponents(
+MultiDayBody(
+  tileComponents: TileComponents(
     tileBuilder: (context, event, tileRange) {
       final myEvent = event as Event;
       return Container(
@@ -171,7 +171,6 @@ KalenderTheme(
   child: KalenderView(
     eventsController: DefaultEventsController(),
     kalenderController: KalenderController(viewConfiguration: MultiDayViewConfiguration.week()),
-    body: KalenderBody(),
   ),
 )
 ```

@@ -41,8 +41,12 @@ void main() {
             headerComponents: MultiDayHeaderComponents(dayHeaderStringBuilder: (context, date) => read(context)),
           ),
         ),
-        header: KalenderHeader(multiDayTileComponents: tiles),
-        body: KalenderBody(multiDayTileComponents: tiles),
+        views: [
+          MultiDayViewParts(
+            header: MultiDayHeader(tileComponents: tiles),
+            body: MultiDayBody(tileComponents: tiles),
+          ),
+        ],
       ),
     );
   }
@@ -75,8 +79,12 @@ void main() {
             ),
           ),
         ),
-        header: KalenderHeader(multiDayTileComponents: tiles, interaction: KalenderInteraction(allowResizing: false)),
-        body: KalenderBody(multiDayTileComponents: tiles, interaction: KalenderInteraction(allowResizing: true)),
+        views: [
+          MultiDayViewParts(
+            header: MultiDayHeader(tileComponents: tiles, interaction: KalenderInteraction(allowResizing: false)),
+            body: MultiDayBody(tileComponents: tiles, interaction: KalenderInteraction(allowResizing: true)),
+          ),
+        ],
       ),
     );
 

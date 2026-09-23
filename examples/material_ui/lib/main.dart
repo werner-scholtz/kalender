@@ -79,12 +79,7 @@ class _HomePageState extends State<HomePage> {
       // app-wide styling goes through this widget instead.
       body: KalenderTheme(
         data: const KalenderThemeData(timeIndicatorStyle: TimeIndicatorStyle(lineColor: Color(0xFFE91E63))),
-        child: KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          header: const KalenderHeader(),
-          body: const KalenderBody(),
-        ),
+        child: KalenderView(eventsController: eventsController, kalenderController: kalenderController),
       ),
     );
   }

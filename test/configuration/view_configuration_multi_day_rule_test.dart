@@ -59,13 +59,7 @@ void main() {
     final kalenderController = KalenderController(viewConfiguration: base);
     addTearDown(kalenderController.dispose);
 
-    await pumpKalender(
-      tester,
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      header: const KalenderHeader(),
-      body: const KalenderBody(),
-    );
+    await pumpKalender(tester, eventsController: eventsController, kalenderController: kalenderController);
     expect(find.byKey(DayEventTile.tileKey(id)), findsOneWidget, reason: 'the default rule keeps it in the timeline');
     expect(find.byKey(MultiDayEventTile.tileKey(id)), findsNothing);
 

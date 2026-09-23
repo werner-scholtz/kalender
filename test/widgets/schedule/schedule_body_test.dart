@@ -46,9 +46,13 @@ void main() {
       eventsController: eventsController,
       kalenderController: controller,
       components: components,
-      body: KalenderBody(
-        scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: emptyDay, leadingWidth: leadingWidth),
-      ),
+      views: [
+        ScheduleViewParts(
+          body: ScheduleBody(
+            configuration: ScheduleBodyConfiguration(emptyDay: emptyDay, leadingWidth: leadingWidth),
+          ),
+        ),
+      ],
     );
   }
 

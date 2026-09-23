@@ -35,13 +35,8 @@ void main() {
     eventsController.dispose();
   });
 
-  Widget view({Key? key}) => KalenderView(
-    key: key,
-    eventsController: eventsController,
-    kalenderController: kalenderController,
-    header: const KalenderHeader(),
-    body: const KalenderBody(),
-  );
+  Widget view({Key? key}) =>
+      KalenderView(key: key, eventsController: eventsController, kalenderController: kalenderController);
 
   (FloatingDateTime, KalenderTime?, double?) shown() {
     final snapshot = kalenderController.viewController.snapshot();

@@ -122,8 +122,6 @@ void main() {
               numberOfDays: numberOfDays,
             ),
           ),
-          header: const KalenderHeader(),
-          body: const KalenderBody(),
         ),
       );
     }

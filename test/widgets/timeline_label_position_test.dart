@@ -39,9 +39,14 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        body: KalenderBody(
-          multiDayTileComponents: TileComponents(tileBuilder: (context, event, range) => const SizedBox()),
-        ),
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              tileComponents: TileComponents(tileBuilder: (context, event, range) => const SizedBox()),
+            ),
+          ),
+        ],
       ),
     );
   }

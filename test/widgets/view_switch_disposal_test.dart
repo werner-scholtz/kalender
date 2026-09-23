@@ -31,13 +31,7 @@ void main() {
     final kalenderController = KalenderController(viewConfiguration: week);
     addTearDown(eventsController.dispose);
     addTearDown(kalenderController.dispose);
-    await pumpKalender(
-      tester,
-      eventsController: eventsController,
-      kalenderController: kalenderController,
-      header: const KalenderHeader(),
-      body: const KalenderBody(),
-    );
+    await pumpKalender(tester, eventsController: eventsController, kalenderController: kalenderController);
     final old = kalenderController.viewController;
 
     kalenderController.viewConfiguration = month;
@@ -65,7 +59,7 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: const KalenderBody(),
+      views: bodyOnlyViews,
     );
     final shown = kalenderController.viewController;
     await tester.pumpWidget(const SizedBox());
@@ -86,7 +80,7 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: const KalenderBody(),
+      views: bodyOnlyViews,
     );
     final shown = kalenderController.viewController;
 
@@ -106,7 +100,7 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: const KalenderBody(),
+      views: bodyOnlyViews,
     );
 
     kalenderController.viewConfiguration = month;

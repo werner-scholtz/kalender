@@ -52,8 +52,7 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        header: KalenderHeader(interaction: interaction),
-        body: KalenderBody(interaction: interaction),
+        interaction: interaction,
       ),
     );
   }
