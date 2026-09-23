@@ -162,8 +162,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-          MonthViewParts(body: MonthBody(tileComponents: multiDayTileComponents)),
-          ScheduleViewParts(body: ScheduleBody(tileComponents: scheduleTileComponents)),
         ],
       ),
     );

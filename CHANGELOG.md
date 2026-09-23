@@ -18,7 +18,7 @@
 - `KalenderController.floatingVisibleRange` and `visibleEvents` are `ValueListenable`s.
 - `KalenderController` takes `viewConfiguration` and `location`, and `KalenderView` no longer does.
 - `KalenderController.attach`, `detach`, `isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
-- `KalenderView.header` and `body` are replaced by `views`, which defaults to a `MultiDayViewParts`, a `MonthViewParts` and a `ScheduleViewParts`.
+- `KalenderView.header` and `body` are replaced by `views`, which defaults to `KalenderView.defaultViews`: a `MultiDayViewParts`, a `MonthViewParts` and a `ScheduleViewParts`.
 - `KalenderBody`, `KalenderHeader` and `ScheduleHeader` are removed.
 - `MonthBody.configuration` is a `MonthBodyConfiguration` and `MultiDayHeader.configuration` a `MultiDayHeaderConfiguration`.
 
@@ -37,7 +37,7 @@
 - Setting `KalenderController.viewConfiguration` or `location` switches the view.
 - `ViewTransitionContext.target` is where the new view opens, over the transition settings and resolvers.
 - `KalenderController` navigation works before a `KalenderView` is mounted and sets the date the view opens on.
-- `ViewParts` pairs a header and a body with a kind of `ViewConfiguration`, so an app can add its own view to `KalenderView`.
+- `ViewParts` pairs a header and a body with a kind of `ViewConfiguration`.
 - `MultiDayBody`, `MultiDayHeader`, `MonthBody` and `ScheduleBody` take `callbacks`, `interaction` and `tileComponents`, `MonthHeader` takes `callbacks`, and `MultiDayBody` takes `snapping`.
 - `KalenderView.interaction` sets the interaction for every view, and each view's widgets can override it.
 

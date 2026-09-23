@@ -28,10 +28,10 @@ class MonthBody extends StatelessWidget {
   /// The configuration of the body, a [MonthBodyConfiguration] by default.
   final MonthBodyConfiguration? configuration;
 
-  /// Overrides the [KalenderView.callbacks] for this widget.
+  /// See [KalenderView.callbacks].
   final KalenderCallbacks? callbacks;
 
-  /// Overrides the [KalenderView.interaction] for this widget.
+  /// See [KalenderView.interaction].
   final KalenderInteraction? interaction;
 
   /// The tile components. Defaults to [TileComponents.defaultComponents].

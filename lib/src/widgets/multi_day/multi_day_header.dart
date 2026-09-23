@@ -27,10 +27,10 @@ class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? configuration;
 
-  /// Overrides the [KalenderView.callbacks] for this widget.
+  /// See [KalenderView.callbacks].
   final KalenderCallbacks? callbacks;
 
-  /// Overrides the [KalenderView.interaction] for this widget.
+  /// See [KalenderView.interaction].
   final KalenderInteraction? interaction;
 
   /// The tile components. Defaults to [TileComponents.defaultComponents].

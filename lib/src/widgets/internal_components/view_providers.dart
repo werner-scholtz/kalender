@@ -38,7 +38,7 @@ class ViewProviders extends StatefulWidget {
 
 class _ViewProvidersState extends State<ViewProviders> {
   late final ValueNotifier<KalenderInteraction> _interaction;
-  late final _snapping = ValueNotifier(widget.snapping ?? const KalenderSnapping());
+  late final _snapping = widget.installSnapping ? ValueNotifier(widget.snapping ?? const KalenderSnapping()) : null;
   bool _initialized = false;
 
   @override
@@ -57,13 +57,13 @@ class _ViewProvidersState extends State<ViewProviders> {
   void didUpdateWidget(covariant ViewProviders oldWidget) {
     super.didUpdateWidget(oldWidget);
     _interaction.value = widget.interaction ?? context.interaction;
-    if (oldWidget.snapping != widget.snapping) _snapping.value = widget.snapping ?? const KalenderSnapping();
+    if (oldWidget.snapping != widget.snapping) _snapping?.value = widget.snapping ?? const KalenderSnapping();
   }
 
   @override
   void dispose() {
     _interaction.dispose();
-    _snapping.dispose();
+    _snapping?.dispose();
     super.dispose();
   }
 
@@ -73,7 +73,7 @@ class _ViewProvidersState extends State<ViewProviders> {
     if (widget.heightPerMinute case final heightPerMinute?) {
       child = HeightPerMinute(notifier: heightPerMinute, child: child);
     }
-    if (widget.installSnapping) child = Snapping(notifier: _snapping, child: child);
+    if (_snapping case final snapping?) child = Snapping(notifier: snapping, child: child);
     return Callbacks(
       callbacks: widget.callbacks ?? context.callbacks,
       child: Interaction(

@@ -53,7 +53,7 @@ Every builder takes a `BuildContext` first and resolves its own styles from it, 
 
 **The state layer is public as `KalenderScope`, in the shape of `MediaQuery`.** It has one static accessor per value, each depending on that value alone. The providers behind it are not exported, so apps cannot depend on the tree shape, and the granularity can change without a break.
 
-**An accessor reads the nearest value.** Most values exist once per calendar. The ones `KalenderBody` and `KalenderHeader` each take, such as the callbacks and the tile components, are scoped to that half. Gutter widths are shared as measured numbers rather than styles, so the rule has no exception.
+**An accessor reads the nearest value.** Most values exist once per calendar. The ones a header or body widget takes, such as the callbacks, the interaction and the tile components, are scoped to that widget. Gutter widths are shared as measured numbers rather than styles, so the rule has no exception.
 
 intl stays the default formatter, since a calendar with no localized names out of the box is a regression. `examples/intl4x` shows the substitution.
 

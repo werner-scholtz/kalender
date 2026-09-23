@@ -13,7 +13,7 @@ import 'package:kalender/src/widgets/internal_components/month_week_number_gutte
 ///
 /// {@category Views}
 class MonthHeader extends StatelessWidget {
-  /// Overrides the [KalenderView.callbacks] for this widget.
+  /// See [KalenderView.callbacks].
   final KalenderCallbacks? callbacks;
 
   const MonthHeader({super.key, this.callbacks});
