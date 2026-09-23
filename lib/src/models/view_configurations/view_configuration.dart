@@ -82,16 +82,14 @@ abstract class ViewConfiguration {
   /// The functions for navigating the [PageView].
   PageIndexCalculator get pageIndexCalculator;
 
-  /// Creates the view controller for this configuration, in the location of [controller].
-  ///
   /// [transition] is null when the calendar is first built, and describes the view being replaced on a view switch or
   /// a change of location.
   ViewController createViewController(KalenderController controller, ViewTransitionContext? transition);
 
   /// The date the view opens on.
   ///
-  /// Without a [transition] this is [initialDateTime], else now in [location]. Otherwise [dateResolver] decides, else
-  /// [dateTransition].
+  /// On the first build [transition] is null and the date is [initialDateTime], or today in [location] without one. On
+  /// a transition [dateResolver] decides, or [dateTransition] without one.
   @protected
   FloatingDateTime resolveDate(Location? location, ViewTransitionContext? transition) {
     if (transition == null) {
