@@ -307,21 +307,23 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     );
   }
 
-  KalenderTime? _resolveScroll(ViewTransitionContext transition) {
-    return switch (scrollTransition) {
-      ScrollTransition.preserve => transition.lastMultiDay?.timeOfDay,
-      ScrollTransition.reset => null,
-      ScrollTransition.restorePerView => transition.byView[name]?.timeOfDay ?? transition.lastMultiDay?.timeOfDay,
-    };
-  }
+  KalenderTime? _resolveScroll(ViewTransitionContext transition) => switch (scrollTransition) {
+    ScrollTransition.preserve => _carry(transition, (snapshot) => snapshot.timeOfDay),
+    ScrollTransition.reset => null,
+    ScrollTransition.restorePerView => _carry(transition, (snapshot) => snapshot.timeOfDay, perView: true),
+  };
 
-  double? _resolveZoom(ViewTransitionContext transition) {
-    return switch (zoomTransition) {
-      ZoomTransition.preserve => transition.lastMultiDay?.heightPerMinute,
-      ZoomTransition.reset => null,
-      ZoomTransition.restorePerView =>
-        transition.byView[name]?.heightPerMinute ?? transition.lastMultiDay?.heightPerMinute,
-    };
+  double? _resolveZoom(ViewTransitionContext transition) => switch (zoomTransition) {
+    ZoomTransition.preserve => _carry(transition, (snapshot) => snapshot.heightPerMinute),
+    ZoomTransition.reset => null,
+    ZoomTransition.restorePerView => _carry(transition, (snapshot) => snapshot.heightPerMinute, perView: true),
+  };
+
+  /// The value [read] from the last multi-day view, or with [perView] first from this view's own history.
+  T? _carry<T>(ViewTransitionContext transition, T? Function(ViewSnapshot snapshot) read, {bool perView = false}) {
+    final own = perView ? transition.byView[name] : null;
+    final last = transition.lastMultiDay;
+    return (own == null ? null : read(own)) ?? (last == null ? null : read(last));
   }
 
   @override

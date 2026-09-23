@@ -68,21 +68,22 @@ typedef ScrollResolver = KalenderTime? Function(ViewTransitionContext transition
 /// {@category Views}
 typedef ZoomResolver = double? Function(ViewTransitionContext transition);
 
-/// A snapshot of what a view was displaying, captured when it is switched away
-/// from. Used to restore per-view state on a later switch.
+/// What a view shows, as returned by [ViewController.snapshot].
+///
+/// A view controller also opens on one. There a null [timeOfDay] or [heightPerMinute] means the configuration's
+/// `initialTimeOfDay` or `initialHeightPerMinute`.
 ///
 /// {@category Views}
 class ViewSnapshot {
   const ViewSnapshot({required this.date, this.timeOfDay, this.heightPerMinute});
 
-  /// The representative date the view was showing.
+  /// The date the view focuses on.
   final FloatingDateTime date;
 
-  /// The time-of-day at the top of the viewport, or `null` for views without a
-  /// vertical scroll (month/schedule).
+  /// The time of day at the top of the viewport. Null for a view without vertical scroll.
   final KalenderTime? timeOfDay;
 
-  /// The zoom level, or `null` for non-multi-day views.
+  /// The zoom. Null for a view without vertical scroll.
   final double? heightPerMinute;
 }
 
@@ -120,8 +121,7 @@ class ViewTransitionContext {
   final Location? location;
 }
 
-/// The date the previous view focused on: the first day of the month with the most visible days when it was a month
-/// view, else the start of its visible range. Used by [DateTransition.carryFocus].
+/// The date the previous view focused on, from its [ViewController.snapshot]. Used by [DateTransition.carryFocus].
 ///
 /// A custom [DateResolver] can build on it: `dateResolver: (t) => nextBusinessDay(kCarryFocusDate(t))`.
 ///
