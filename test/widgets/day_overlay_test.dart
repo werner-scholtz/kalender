@@ -268,8 +268,6 @@ void main() {
                 required events,
                 required numberOfHiddenRows,
                 required tileHeight,
-                required getMultiDayEventLayoutRenderBox,
-                required overlayTileBuilder,
                 required overlayBuilders,
               }) => const Text('custom'),
         ),
@@ -293,8 +291,6 @@ void main() {
                 required events,
                 required numberOfHiddenRows,
                 required tileHeight,
-                required getMultiDayEventLayoutRenderBox,
-                required overlayTileBuilder,
                 required overlayBuilders,
               }) => MultiDayOverlayPortal(
                 date: FloatingDateTime.fromDateTime(date),

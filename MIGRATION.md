@@ -74,6 +74,7 @@ The sections below cover what is left after the fixes have run.
 | `DefaultEventStore.dateIds` | Nothing. It was never populated. |
 | `kDefaultNewEventDuration` | Nothing. A created event is as long as the drag that created it. |
 | The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` arguments of `MultiDayOverlayPortal` | Delete them. The calendar builds the overlay. |
+| The `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of a `MultiDayOverlayPortalBuilder` | Delete them from the builder's parameter list. |
 
 ### The `ResizeHandleDetails` checks are getters
 
