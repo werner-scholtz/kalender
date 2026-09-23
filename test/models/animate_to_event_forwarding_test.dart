@@ -14,6 +14,7 @@ class _RecordingViewController extends MultiDayViewController {
     required super.viewConfiguration,
     required super.floatingVisibleRange,
     required super.visibleEvents,
+    required super.initial,
   });
 
   Duration? pageDuration;
@@ -48,6 +49,7 @@ void main() {
       ),
       floatingVisibleRange: controller.floatingVisibleRange,
       visibleEvents: controller.visibleEvents,
+      initial: ViewSnapshot(date: FloatingDateTime.fromDateTime(DateTime.now())),
     );
     controller.attach(viewController);
 

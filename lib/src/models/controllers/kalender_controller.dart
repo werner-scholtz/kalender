@@ -15,6 +15,7 @@ import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
+import 'package:meta/meta.dart' show internal;
 import 'package:timezone/timezone.dart';
 
 /// The [KalenderController] controls a single [KalenderView].
@@ -36,6 +37,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// This is a reference to the [ViewController] that is currently attached to this [KalenderController].
   ViewController? _viewController;
   ViewController? get viewController => _viewController;
+
+  /// The location new view controllers are created in.
+  @internal
+  Location? location;
   bool get isAttached => _viewController != null;
 
   /// The [FloatingDateTimeRange] that is currently visible.

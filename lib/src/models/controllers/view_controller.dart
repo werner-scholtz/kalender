@@ -19,7 +19,7 @@ export 'view_controllers/schedule_view_controller.dart';
 /// {@category Controllers and callbacks}
 abstract class ViewController with KalenderNavigationFunctions {
   /// The location of the current view.
-  Location? location;
+  final Location? location;
 
   /// The range currently visible.
   ///
@@ -41,6 +41,11 @@ abstract class ViewController with KalenderNavigationFunctions {
 
   /// The cache used for the multi-day event layout.
   final MultiDayLayoutFrameCache multiDayCache = MultiDayLayoutFrameCache();
+
+  /// What this view shows, for the view created on the next switch.
+  ///
+  /// The base returns the start of [floatingVisibleRange].
+  ViewSnapshot snapshot() => ViewSnapshot(date: floatingVisibleRange.value!.start);
 
   @override
   FutureOr<void> jumpToDate(DateTime date);

@@ -46,6 +46,7 @@ void main() {
         FloatingDateTimeRange(start: floatingStart.startOfDay, end: floatingStart.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),
+      initial: ViewSnapshot(date: FloatingDateTime.fromDateTime(DateTime.now())),
     );
     kalenderController.attach(viewController);
   });

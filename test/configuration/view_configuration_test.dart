@@ -154,7 +154,7 @@ void main() {
         viewConfiguration: configuration,
         floatingVisibleRange: ValueNotifier(FloatingDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<KalenderEvent>>({}),
-        initialDate: initialDate,
+        initial: ViewSnapshot(date: initialDate),
       );
 
       await expectLater(viewController.animateToDate(DateTime.now()), completes);

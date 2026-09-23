@@ -237,7 +237,7 @@ Widget timeIndicatorPositioner({
             viewConfiguration: viewConfiguration,
             floatingVisibleRange: ValueNotifier(visibleRange),
             visibleEvents: ValueNotifier(<KalenderEvent>{}),
-            initialDate: initialDate,
+            initial: ViewSnapshot(date: initialDate ?? FloatingDateTime.fromDateTime(DateTime.now())),
           ),
           initialPage: 0,
           dateOverride: dateOverride,

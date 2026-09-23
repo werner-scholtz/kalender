@@ -33,6 +33,9 @@ void main() {
       viewConfiguration: viewConfiguration,
       floatingVisibleRange: ValueNotifier(FloatingDateTimeRange(start: monday, end: monday.endOfWeek())),
       visibleEvents: ValueNotifier(<KalenderEvent>{}),
+      initial: ViewSnapshot(
+        date: FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location)),
+      ),
       location: location,
     );
     kalenderController.attach(viewController);

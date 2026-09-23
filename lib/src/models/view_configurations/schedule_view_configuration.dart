@@ -76,6 +76,27 @@ class ScheduleViewConfiguration extends ViewConfiguration {
        viewType = ScheduleViewType.paginated;
 
   @override
+  ScheduleViewController createViewController(KalenderController controller, ViewTransitionContext? transition) {
+    final initial = ViewSnapshot(date: resolveDate(controller.location, transition));
+    return switch (viewType) {
+      ScheduleViewType.continuous => ContinuousScheduleViewController(
+        viewConfiguration: this,
+        floatingVisibleRange: controller.floatingVisibleRange,
+        visibleEvents: controller.visibleEvents,
+        initial: initial,
+        location: controller.location,
+      ),
+      ScheduleViewType.paginated => PaginatedScheduleViewController(
+        viewConfiguration: this,
+        floatingVisibleRange: controller.floatingVisibleRange,
+        visibleEvents: controller.visibleEvents,
+        initial: initial,
+        location: controller.location,
+      ),
+    };
+  }
+
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
