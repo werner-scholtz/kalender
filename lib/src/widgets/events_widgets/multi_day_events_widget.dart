@@ -18,7 +18,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 
 /// Displays the multi-day events from the [EventsController] and rebuilds when they change.
 ///
-/// Adds the events it shows to the [ViewController.visibleEvents] of [viewController] without clearing it.
+/// Adds the events it shows to [ViewController.visibleEvents] without clearing it.
 class MultiDayEventWidget extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;

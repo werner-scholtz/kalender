@@ -95,8 +95,9 @@ A class that extends `ViewConfiguration` directly implements
 `createViewController`, building the view controller from `resolveDate` and the
 controller's location. The view controllers take one `initial` snapshot in place
 of three parameters, and create their own visible range and visible events. A
-class that extends `ViewController` no longer overrides `visibleEvents` and
-calls `super.dispose()`.
+class that extends `ViewController` no longer passes `floatingVisibleRange` to
+`super` or overrides `visibleEvents`. Its `dispose` override calls
+`super.dispose()`.
 
 ```dart
 // Before
