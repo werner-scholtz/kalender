@@ -76,8 +76,8 @@ class MyApp extends StatelessWidget {
 }
 
 final eventsController = DefaultEventsController();
-final kalenderController = KalenderController();
 final viewConfiguration = MultiDayViewConfiguration.week();
+final kalenderController = KalenderController(viewConfiguration: viewConfiguration);
 
 final location = tz.getLocation('Etc/UTC');
 final range = KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));

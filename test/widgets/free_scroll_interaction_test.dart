@@ -19,7 +19,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = freeScrollController(displayRange: displayRange, initialDateTime: start);
   });
 
   Future<void> pumpFreeScroll(WidgetTester tester, KalenderCallbacks callbacks) {
@@ -28,8 +28,6 @@ void main() {
       freeScrollView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        displayRange: displayRange,
-        initialDateTime: start,
         callbacks: callbacks,
         interaction: kPreciseInteraction,
       ),

@@ -16,14 +16,14 @@ void main() {
 
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
-  late MonthViewConfiguration configuration;
 
   setUp(() {
     eventsController = controllerWithOverflowOn(day);
-    kalenderController = KalenderController();
-    configuration = MonthViewConfiguration.singleMonth(
-      displayRange: year2025DisplayRange,
-      initialDateTime: DateTime(2025, 1, 15),
+    kalenderController = KalenderController(
+      viewConfiguration: MonthViewConfiguration.singleMonth(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 15),
+      ),
     );
   });
 
@@ -41,7 +41,6 @@ void main() {
       child: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: configuration,
         body: const KalenderBody(),
       ),
     );

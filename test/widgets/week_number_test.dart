@@ -23,7 +23,7 @@ void main() {
     setUpAll(tz.initializeTimeZones);
 
     setUp(() {
-      kalenderController = KalenderController();
+      kalenderController = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
       eventsController = DefaultEventsController();
     });
 

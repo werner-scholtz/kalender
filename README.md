@@ -93,7 +93,12 @@ class MyCalendar extends StatefulWidget {
 
 class _MyCalendarState extends State<MyCalendar> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
+  final kalenderController = KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(
+      // Without this the day opens at midnight.
+      initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
+    ),
+  );
 
   @override
   void dispose() {
@@ -107,10 +112,6 @@ class _MyCalendarState extends State<MyCalendar> {
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.week(
-        // Without this the day opens at midnight.
-        initialTimeOfDay: const KalenderTime(hour: 7, minute: 0),
-      ),
       callbacks: KalenderCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),
       ),

@@ -20,16 +20,15 @@ void main() {
 
     setUp(() {
       eventsController = DefaultEventsController();
-      kalenderController = KalenderController();
     });
 
     Future<void> pump(WidgetTester tester, ViewConfiguration config) {
+      kalenderController = KalenderController(viewConfiguration: config);
       return pumpAndSettleWithMaterialApp(
         tester,
         KalenderView(
           eventsController: eventsController,
           kalenderController: kalenderController,
-          viewConfiguration: config,
           body: const KalenderBody(),
         ),
       );

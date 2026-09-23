@@ -106,7 +106,6 @@ Listener(
   child: KalenderView(
     eventsController: eventsController,
     kalenderController: kalenderController,
-    viewConfiguration: viewConfiguration,
   ),
 )
 ```

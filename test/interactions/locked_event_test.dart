@@ -25,7 +25,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
     created = [];
     tapped = [];
     emptySpaceTaps = [];
@@ -44,25 +43,23 @@ void main() {
     final components = TileComponents(
       tileBuilder: tileBuilder ?? (context, event, tileRange) => Container(color: Colors.red),
     );
-    return pumpAndSettleWithMaterialApp(
+    kalenderController = KalenderController(viewConfiguration: configuration);
+    addTearDown(kalenderController.dispose);
+    return pumpKalender(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: configuration,
-        callbacks: KalenderCallbacks(
-          onEventCreated: created.add,
-          onEventChanged: (event, updatedEvent) =>
-              eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
-          onEventTapped: tapCallback ? tapped.add : null,
-          onTapped: emptySpaceTaps.add,
-        ),
-        header: KalenderHeader(interaction: interaction(gesture), multiDayTileComponents: components),
-        body: KalenderBody(
-          interaction: interaction(gesture),
-          multiDayTileComponents: components,
-          monthTileComponents: components,
-        ),
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      callbacks: KalenderCallbacks(
+        onEventCreated: created.add,
+        onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
+        onEventTapped: tapCallback ? tapped.add : null,
+        onTapped: emptySpaceTaps.add,
+      ),
+      header: KalenderHeader(interaction: interaction(gesture), multiDayTileComponents: components),
+      body: KalenderBody(
+        interaction: interaction(gesture),
+        multiDayTileComponents: components,
+        monthTileComponents: components,
       ),
     );
   }

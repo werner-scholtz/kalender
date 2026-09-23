@@ -35,7 +35,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
 
   final now = DateTime.now();
   late final displayRange = KalenderDateTimeRange(
@@ -48,7 +47,7 @@ class _HomePageState extends State<HomePage> {
     MonthViewConfiguration.singleMonth(displayRange: displayRange),
     ScheduleViewConfiguration.continuous(displayRange: displayRange),
   ];
-  late ViewConfiguration viewConfiguration = viewConfigurations.first;
+  late final kalenderController = KalenderController(viewConfiguration: viewConfigurations.first);
 
   List<IcsSource> _sources = [];
 
@@ -142,7 +141,6 @@ class _HomePageState extends State<HomePage> {
       body: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(onEventTapped: (event) => _onEventTapped(event)),
         header: Material(
           elevation: 2,
@@ -153,11 +151,13 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
                     DropdownMenu<ViewConfiguration>(
-                      initialSelection: viewConfiguration,
+                      initialSelection: kalenderController.viewConfiguration,
                       dropdownMenuEntries: [
                         for (final config in viewConfigurations) DropdownMenuEntry(value: config, label: config.name),
                       ],
-                      onSelected: (value) => setState(() => viewConfiguration = value ?? viewConfiguration),
+                      onSelected: (value) {
+                        if (value != null) kalenderController.viewConfiguration = value;
+                      },
                     ),
                   ],
                 ),

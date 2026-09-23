@@ -16,7 +16,7 @@ void main() {
   final date = FloatingDateTime(2025, 3, 15);
 
   late KalenderController controller;
-  setUp(() => controller = KalenderController());
+  setUp(() => controller = KalenderController(viewConfiguration: MultiDayViewConfiguration.singleDay()));
   tearDown(() => controller.dispose());
 
   Future<ColorScheme> pump(WidgetTester tester, {required bool isToday, Size? size, DayNumberStyle? style}) async {

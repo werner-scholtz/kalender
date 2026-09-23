@@ -52,7 +52,7 @@ class MultiDayViewEditor extends StatelessWidget {
         if (showFirstDay)
           FirstDayOfWeekEditor(
             firstDayOfWeek: viewConfiguration.firstDayOfWeek,
-            onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
               firstDayOfWeek: value,
             ),
           ),
@@ -61,14 +61,14 @@ class MultiDayViewEditor extends StatelessWidget {
             label: context.l10n.numberOfDays,
             value: viewConfiguration.numberOfDays,
             items: List.generate(7, (index) => index + 1),
-            onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
               numberOfDays: value,
             ),
             itemToString: (value) => value.toString(),
           ),
         MultiDayRuleEditor(
           multiDayRule: viewConfiguration.multiDayRule,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             multiDayRule: value,
           ),
         ),
@@ -82,7 +82,7 @@ class MultiDayViewEditor extends StatelessWidget {
                   viewConfiguration.timeOfDayRange.end.hour,
                   (index) => KalenderTime(hour: index, minute: 0),
                 ),
-                onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+                onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
                   initialTimeOfDay: value,
                 ),
                 itemToString: (value) => '${value.hour}:${value.minute < 10 ? '00' : value.minute}',
@@ -104,7 +104,7 @@ class MultiDayViewEditor extends StatelessWidget {
                     return KalenderTime(hour: value, minute: minute);
                   },
                 ),
-                onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+                onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
                   initialTimeOfDay: value,
                 ),
                 itemToString: (value) => '${value.hour}:${value.minute < 10 ? '00' : value.minute}',
@@ -116,7 +116,7 @@ class MultiDayViewEditor extends StatelessWidget {
           label: 'Date on view change',
           value: viewConfiguration.dateTransition,
           items: DateTransition.values,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             dateTransition: value,
           ),
           itemToString: (value) => value.name,
@@ -125,7 +125,7 @@ class MultiDayViewEditor extends StatelessWidget {
           label: 'Scroll on view change',
           value: viewConfiguration.scrollTransition,
           items: ScrollTransition.values,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             scrollTransition: value,
           ),
           itemToString: (value) => value.name,
@@ -134,7 +134,7 @@ class MultiDayViewEditor extends StatelessWidget {
           label: 'Zoom on view change',
           value: viewConfiguration.zoomTransition,
           items: ZoomTransition.values,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             zoomTransition: value,
           ),
           itemToString: (value) => value.name,
@@ -156,13 +156,13 @@ class MonthViewEditor extends StatelessWidget {
       children: [
         FirstDayOfWeekEditor(
           firstDayOfWeek: viewConfiguration.firstDayOfWeek,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             firstDayOfWeek: value,
           ),
         ),
         SwitchListTile.adaptive(
           value: viewConfiguration.showWeekNumbers,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             showWeekNumbers: value,
           ),
           title: const Text('Show Week Numbers'),
@@ -171,14 +171,14 @@ class MonthViewEditor extends StatelessWidget {
           label: 'Date on view change',
           value: viewConfiguration.dateTransition,
           items: DateTransition.values,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             dateTransition: value,
           ),
           itemToString: (value) => value.name,
         ),
         MultiDayRuleEditor(
           multiDayRule: viewConfiguration.multiDayRule,
-          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+          onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             multiDayRule: value,
           ),
         ),

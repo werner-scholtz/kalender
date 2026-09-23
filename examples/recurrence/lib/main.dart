@@ -56,12 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final now = DateTime.now();
   late final displayRange =
       KalenderDateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
-  final kalenderController = KalenderController();
-  final controller = RecurrenceController();
-  late ViewConfiguration viewConfiguration = MultiDayViewConfiguration.week(
-    displayRange: displayRange,
-    firstDayOfWeek: 1,
+  late final kalenderController = KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
   );
+  final controller = RecurrenceController();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: KalenderView(
         eventsController: controller.controller,
         kalenderController: kalenderController,
-        viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => _onEventTapped(event),
           onEventCreate: (event) => event,

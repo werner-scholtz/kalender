@@ -26,18 +26,19 @@ void main() {
             KalenderEvent(start: DateTime(2025, 1, day, hour), end: DateTime(2025, 1, day, hour + 1)),
         KalenderEvent(start: DateTime(2025, 2, 3, 9), end: DateTime(2025, 2, 3, 10)),
       ]);
-    kalenderController = KalenderController();
   });
 
   Future<void> pumpSchedule(WidgetTester tester) {
-    return pumpKalender(
-      tester,
-      eventsController: eventsController,
-      kalenderController: kalenderController,
+    kalenderController = KalenderController(
       viewConfiguration: ScheduleViewConfiguration.paginated(
         displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 3)),
         initialDateTime: DateTime(2025),
       ),
+    );
+    return pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
       body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.hide)),
     );
   }

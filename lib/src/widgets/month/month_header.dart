@@ -17,22 +17,21 @@ class MonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kalenderController = context.kalenderController;
-
     assert(
-      kalenderController.viewController is MonthViewController,
+      context.viewController is MonthViewController,
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
-    final viewController = kalenderController.viewController as MonthViewController;
+    final viewController = context.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
     final components = calendarComponents.monthComponents.headerComponents;
 
     return ValueListenableBuilder(
-      valueListenable: kalenderController.visibleDateTimeRange,
-      builder: (context, visibleDateTimeRange, child) {
-        if (visibleDateTimeRange == null) return const SizedBox.shrink();
+      valueListenable: viewController.floatingVisibleRange,
+      builder: (context, visibleRange, child) {
+        if (visibleRange == null) return const SizedBox.shrink();
+        final visibleDateTimeRange = visibleRange.forLocation(location: context.location);
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
 
         return Row(

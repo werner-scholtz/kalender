@@ -41,7 +41,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, and a configuration creates its view controller. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, and a configuration creates its view controller. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -58,6 +58,52 @@ The sections below cover what is left after the fixes have run.
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
 
 ## v0.32.x → v0.33.0
+
+### The controller holds the view configuration and location
+
+`dart fix` does not apply. The compiler reports `viewConfiguration` and
+`location` as undefined on `KalenderView`, and a missing required argument on
+`KalenderController()`.
+
+```dart
+// Before
+final controller = KalenderController();
+
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  viewConfiguration: configuration,
+  location: location,
+  header: const KalenderHeader(),
+  body: const KalenderBody(),
+);
+
+// After
+final controller = KalenderController(viewConfiguration: configuration, location: location);
+
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  header: const KalenderHeader(),
+  body: const KalenderBody(),
+);
+```
+
+Switch the view or the location through the controller instead of rebuilding the
+`KalenderView`:
+
+```dart
+// Before
+setState(() => configuration = MultiDayViewConfiguration.singleDay());
+
+// After
+controller.viewConfiguration = MultiDayViewConfiguration.singleDay();
+```
+
+Set a configuration computed from `MediaQuery` or layout constraints in
+`didChangeDependencies` or an event handler. Set in the `build` of a widget
+below the calendar, the controller's notification throws. `attach`, `detach`,
+`isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
 
 ### The members deprecated in 0.32.0 are removed
 

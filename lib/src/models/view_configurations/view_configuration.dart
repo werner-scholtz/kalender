@@ -89,13 +89,14 @@ abstract class ViewConfiguration {
   /// The date the view opens on.
   ///
   /// On the first build [transition] is null and the date is [initialDateTime], or today in [location] without one. On
-  /// a transition [dateResolver] decides, or [dateTransition] without one.
+  /// a transition the date of [ViewTransitionContext.target] wins, then [dateResolver], then [dateTransition].
   @protected
   FloatingDateTime resolveDate(Location? location, ViewTransitionContext? transition) {
     if (transition == null) {
       final now = location == null ? DateTime.now() : TZDateTime.now(location);
       return FloatingDateTime.fromExternal(initialDateTime ?? now, location: location);
     }
+    if (transition.target case final target?) return target.date;
     if (dateResolver case final resolver?) return resolver(transition);
     return switch (dateTransition) {
       DateTransition.carryFocus => kCarryFocusDate(transition),

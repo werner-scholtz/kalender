@@ -41,7 +41,7 @@ void main() {
     ),
   ]) {
     test(c.name, () {
-      final controller = KalenderController();
+      final controller = KalenderController(viewConfiguration: c.configuration);
       addTearDown(controller.dispose);
       final viewController = c.configuration.createViewController(controller, null);
       addTearDown(viewController.dispose);

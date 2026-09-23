@@ -28,7 +28,7 @@ class Calendar extends StatelessWidget {
     return DemoScope(
       child: Builder(
         builder: (context) => EventDetailOverlay(
-          location: context.location.value,
+          location: context.controller.location,
           child: CalendarContent(initialShowConfig: initialShowConfig),
         ),
       ),
@@ -60,19 +60,16 @@ class _CalendarContentState extends State<CalendarContent> {
                 controller: context.controller,
                 child: ListenableBuilder(
                   listenable: Listenable.merge([
-                    context.configuration.viewConfigurationNotifier,
+                    context.controller,
                     context.configuration.shadeAdjacentMonthNotifier,
                     context.configuration.scopedThemeNotifier,
-                    context.location,
                   ]),
                   builder: (context, _) => _scope(
                     context,
                     KalenderView(
-                      location: context.location.value,
                       locale: Localizations.localeOf(context),
                       kalenderController: context.controller,
                       eventsController: context.eventsController,
-                      viewConfiguration: context.configuration.viewConfiguration,
                       components: _components(context),
                       callbacks: _callbacks,
                       header: Column(
@@ -94,7 +91,7 @@ class _CalendarContentState extends State<CalendarContent> {
                               child: NavigationHeader(
                                 controller: context.controller,
                                 viewConfigurations: context.configuration.viewConfigurations,
-                                viewConfiguration: context.configuration.viewConfiguration,
+                                viewConfiguration: context.controller.viewConfiguration,
                                 onToggleConfig:
                                     canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null,
                                 configVisible: _showConfig,
@@ -274,7 +271,7 @@ class _CalendarContentState extends State<CalendarContent> {
   /// Selects the week, or clears a selection of exactly that week.
   void _toggleWeek(MultiDayDetail detail) {
     final controller = context.controller;
-    final selected = controller.selectedRange.value?.forLocation(location: context.location.value);
+    final selected = controller.selectedRange.value?.forLocation(location: context.controller.location);
     if (selected == detail.dateTimeRange) {
       controller.deselectRange();
     } else {
