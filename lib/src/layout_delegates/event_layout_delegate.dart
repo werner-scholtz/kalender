@@ -183,20 +183,6 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// Sorts [events] before layout.
   List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events);
 
-  /// Calculates the height of an item based on the [KalenderEvent.duration] and [heightPerMinute] of the event.
-  ///
-  /// [event] - The event to calculate the height of.
-  /// [heightPerMinute] - The per minute of the current view.
-  @Deprecated('Not used by the calendar. Use calculateVerticalLayoutData. Will be removed in 0.33.0.')
-  double calculateHeight(KalenderEvent event) {
-    final durationOnDate = event.floatingRange(location: location).rangeOnDate(date)?.duration ?? Duration.zero;
-    final height = durationOnDate.inSeconds * heightPerMinute / 60;
-    if (minimumTileHeight != null && height < minimumTileHeight!) {
-      return minimumTileHeight!;
-    }
-    return height;
-  }
-
   /// The pixel offset of [instant] from the top of the day.
   ///
   /// The top and bottom of every tile come from this one conversion, so back-to-back tiles get identical boundaries.
@@ -204,17 +190,6 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     final dateStart = timeOfDayRange.start.toFloatingDateTime(date);
     final difference = instant.difference(dateStart);
     return difference.inSeconds * heightPerMinute / 60;
-  }
-
-  /// Calculates the distance from the start of the day to the start of the [event].
-  ///
-  /// [event] - The event to calculate the distance from.
-  ///
-  /// * Note: this takes into account the [KalenderTimeRange] of the [EventLayoutDelegate].
-  @Deprecated('Not used by the calendar. Use calculateVerticalLayoutData. Will be removed in 0.33.0.')
-  double calculateDistanceFromStart(KalenderEvent event) {
-    final eventStart = event.floatingRange(location: location).rangeOnDate(date)?.start ?? date.startOfDay;
-    return _offsetFromDayStart(eventStart);
   }
 
   /// This is used to sort the vertical layout data after calculation.

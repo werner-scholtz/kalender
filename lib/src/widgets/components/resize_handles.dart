@@ -72,22 +72,16 @@ class ResizeHandleDetails {
   EventInteraction get eventInteraction => event.interaction;
 
   /// Whether the event continues before the current date range.
-  bool continuesBefore({@Deprecated(_locationParameter) Location? location}) =>
-      event.floatingStart(location: location ?? this.location).isBefore(range.start);
+  bool get continuesBefore => event.floatingStart(location: location).isBefore(range.start);
 
   /// Whether the event continues after the current date range.
-  bool continuesAfter({@Deprecated(_locationParameter) Location? location}) =>
-      event.floatingEnd(location: location ?? this.location).isAfter(range.end);
+  bool get continuesAfter => event.floatingEnd(location: location).isAfter(range.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
-  bool showStart({@Deprecated(_locationParameter) Location? location}) =>
-      event.canResizeStart(interaction, range, location: location ?? this.location);
+  bool get showStart => event.canResizeStart(interaction, range, location: location);
 
   /// Whether to show the end resize handle, based on interaction settings and event continuation.
-  bool showEnd({@Deprecated(_locationParameter) Location? location}) =>
-      event.canResizeEnd(interaction, range, location: location ?? this.location);
-
-  static const _locationParameter = 'The details carry the location. Will be removed in 0.33.0.';
+  bool get showEnd => event.canResizeEnd(interaction, range, location: location);
 
   /// The resize handle to use, resolved from the [TileComponents] of [context].
   ///
@@ -183,8 +177,8 @@ class DefaultResizeHandles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showStart = details.showStart();
-    final showEnd = details.showEnd();
+    final showStart = details.showStart;
+    final showEnd = details.showEnd;
     if (!showStart && !showEnd) return const SizedBox();
 
     final isImprecise = details.isImprecise;

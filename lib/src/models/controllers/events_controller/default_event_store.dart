@@ -33,9 +33,6 @@ class DefaultEventStore extends EventStore {
   /// Locations not listed here get their index built on first use.
   final List<Location> locations;
 
-  @Deprecated('Never populated. Will be removed in 0.33.0.')
-  final Map<DateTime, Set<String>> dateIds = {};
-
   /// A Map containing all events.
   final idEvent = EventIdToEvent();
 
