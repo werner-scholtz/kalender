@@ -56,14 +56,13 @@ enum ZoomTransition {
 /// {@category Views}
 typedef DateResolver = FloatingDateTime Function(ViewTransitionContext transition);
 
-/// Resolves the initial time-of-day for the incoming multi-day view. Overrides
-/// [ScrollTransition]. Return `null` to use the view's `initialTimeOfDay`.
+/// Resolves the time of day the incoming multi-day view opens on. A null result falls back to [ScrollTransition].
 ///
 /// {@category Views}
 typedef ScrollResolver = KalenderTime? Function(ViewTransitionContext transition);
 
-/// Resolves the initial zoom (`heightPerMinute`) for the incoming multi-day view.
-/// Overrides [ZoomTransition]. Return `null` to use `initialHeightPerMinute`.
+/// Resolves the zoom (`heightPerMinute`) the incoming multi-day view opens on. A null result falls back to
+/// [ZoomTransition].
 ///
 /// {@category Views}
 typedef ZoomResolver = double? Function(ViewTransitionContext transition);
