@@ -41,7 +41,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The `ResizeHandleDetails` checks are getters. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The members deprecated in 0.32.0 are removed and the `ResizeHandleDetails` checks are getters. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -58,6 +58,22 @@ The sections below cover what is left after the fixes have run.
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
 
 ## v0.32.x → v0.33.0
+
+### The members deprecated in 0.32.0 are removed
+
+`dart fix` does not apply.
+
+| Removed | Use instead |
+| --- | --- |
+| `ScheduleViewController.itemCount` | `itemCountForPage(currentPage)` |
+| `ScheduleViewController.item(index)` | `indexItem(currentPage)[index]` |
+| `ScheduleViewController.addItem(...)` | `addItemForPage(..., pageIndex: currentPage)` |
+| `ScheduleViewController.clear()` | `clearPage(currentPage)` |
+| `ScheduleViewController.initialScrollIndex(date)` | `closestIndex(date)` |
+| `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` | `calculateVerticalLayoutData` |
+| `DefaultEventStore.dateIds` | Nothing. It was never populated. |
+| `kDefaultNewEventDuration` | Nothing. A created event is as long as the drag that created it. |
+| The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` arguments of `MultiDayOverlayPortal` | Delete them. The calendar builds the overlay. |
 
 ### The `ResizeHandleDetails` checks are getters
 

@@ -88,7 +88,7 @@ A release that adds and does not break, built around selection. It has no migrat
 - [#215](https://github.com/werner-scholtz/kalender/issues/215): open the day overlay for any date, not only through the "+N more" button.
 - [#259](https://github.com/werner-scholtz/kalender/issues/259): a drag that starts on an unmodifiable event creates an event instead of doing nothing.
 - `ResizeHandleDetails` carries the calendar's location, so `showStart` and `showEnd` stop falling back to the device timezone.
-- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` decided which tiles are built but not where they are drawn, which had been true since 0.19.1. Culling uses the geometry placement uses, and the two are deprecated for removal in 0.33.0.
+- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` decided which tiles are built but not where they are drawn, which had been true since 0.19.1. Culling uses the geometry placement uses.
 
 ### 0.33.0, planned
 
