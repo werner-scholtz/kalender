@@ -53,7 +53,7 @@ Every builder takes a `BuildContext` first and resolves its own styles from it, 
 
 **The state layer is public as `KalenderScope`, in the shape of `MediaQuery`.** It has one static accessor per value, each depending on that value alone. The providers behind it are not exported, so apps cannot depend on the tree shape, and the granularity can change without a break.
 
-**An accessor reads the nearest value.** Most values exist once per calendar. The ones `KalenderBody` and `KalenderHeader` each take, such as the callbacks and the tile components, are scoped to that half. Gutter widths are shared as measured numbers rather than styles, so the rule has no exception.
+**An accessor reads the nearest value.** Most values exist once per calendar. The ones a header or body widget takes, such as the callbacks, the interaction and the tile components, are scoped to that widget. Gutter widths are shared as measured numbers rather than styles, so the rule has no exception.
 
 intl stays the default formatter, since a calendar with no localized names out of the box is a regression. `examples/intl4x` shows the substitution.
 
@@ -81,7 +81,7 @@ A release that adds and does not break, built around selection. It has no migrat
 
 **Taps on dates and week numbers.** Nothing reported a tap on a day number, a day name or a week number, and in the month view the day number kept the tap from reaching its cell. `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses, one `GestureCallbacks` group per part, so the callbacks do not grow by eight fields for every part that reports gestures. An empty day in the schedule reports the `onTapped` callbacks, the way an empty month cell does.
 
-**The calendar does not select on its own.** An app selects from the callbacks, so it always knows what changed, and there is no selection-changed callback. Selecting on tap, a range by dragging across days ([#89](https://github.com/werner-scholtz/kalender/issues/89)), and a selection drawn behind a cell wait for 0.33.0.
+**The calendar does not select on its own.** An app selects from the callbacks, so it always knows what changed, and there is no selection-changed callback. Selecting on tap, a range by dragging across days ([#89](https://github.com/werner-scholtz/kalender/issues/89)), and a selection drawn behind a cell still wait.
 
 **Four smaller items.**
 
@@ -90,17 +90,19 @@ A release that adds and does not break, built around selection. It has no migrat
 - `ResizeHandleDetails` carries the calendar's location, so `showStart` and `showEnd` stop falling back to the device timezone.
 - `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` decided which tiles are built but not where they are drawn, which had been true since 0.19.1. Culling uses the geometry placement uses.
 
-### 0.33.0, planned
+### 0.33.0, composability
 
-**Composability, as a pairing problem.** [#264](https://github.com/werner-scholtz/kalender/issues/264) raised the question of whether a compact month grid is a view inside `KalenderView` or a separate widget sharing its controllers. The code answers neither. `KalenderBody` and `KalenderHeader` each take every view's tile components and configuration and switch on the controller type, so most of what they are given is unused at any moment, and a month configuration, controller, header and body that belong together are never expressed as a set. `TabBar` and `TabBarView` have the same shape: two widgets, one shared controller, and an assertion when they disagree. kalender has the shared controller and lacks the pairing.
+**Composability, as a pairing problem.** [#264](https://github.com/werner-scholtz/kalender/issues/264) raised the question of whether a compact month grid is a view inside `KalenderView` or a separate widget sharing its controllers. `KalenderBody` and `KalenderHeader` took every view's tile components and configuration and switched on the controller type, so a month configuration, controller, header and body that belong together were never expressed as a set. `TabBar` and `TabBarView` have the same shape: two widgets, one shared controller. kalender had the shared controller and lacked the pairing.
 
-Registering views as sets of a header and a body is the shape to explore, with the built-in views registered by default. It is the view registry and the pairing at once, and an app adds a view by adding an entry. One question comes first: once views are registered, is `viewConfiguration` still what picks the active view, or does each entry carry its own configuration? The answer changes how every app constructs a calendar, so 0.33.0 most likely breaks.
+**Settled: the controller holds the view configuration and location, and the views are sets of widgets.** `KalenderController` takes `viewConfiguration` and `location` and creates the view controller, so a view switch is a setter call. `KalenderView` takes a list of `ViewParts`, each a header and a body with an `accepts` check against the active configuration, rather than a configuration of its own. The configuration still picks the active view, which keeps one place for it. An app adds a view with a `ViewParts`, a `ViewConfiguration` that implements `createViewController`, and a `ViewController`.
 
-What waits on it:
+**Settled: each `KalenderView` holds the view controller it shows.** Two views on one controller, during a route transition or with a calendar route pushed over another, no longer share page controllers, and a view mounted again reopens where the last one was. An animated switch between views needs the same thing, an outgoing view that stays on screen, so [#280](https://github.com/werner-scholtz/kalender/issues/280) builds on it.
 
-- A view registry, for [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264).
+What still waits:
+
 - Cell and background slots in the multi-day body, for [#89](https://github.com/werner-scholtz/kalender/issues/89), the multi-day half of [#262](https://github.com/werner-scholtz/kalender/issues/262), and a selection drawn behind a cell.
 - The calendar selecting on its own.
+- A yearly view and a mobile month view, [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264), now possible as `ViewParts` and not built.
 
 ### The next breaking window
 
@@ -116,14 +118,13 @@ The `TODO` comments in `lib/` mark possible defects, none confirmed. `grep -rn T
 
 ### Composability
 
-It reshapes public API, so the shape has to settle before 1.0.0. The coverage gate it waited on is met, and 0.33.0 takes it up.
+It reshapes public API, so the shape has to settle before 1.0.0. The coverage gate it waited on is met, and 0.33.0 settles the pairing of views.
 
-Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. The state layer was the second, public since 0.29.0 as `KalenderScope`. Two pieces are unbuilt.
+Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. The state layer was the second, public since 0.29.0 as `KalenderScope`, and the view parts the third. One piece is unbuilt.
 
-- **View types are hardcoded.** Three switches map a `ViewConfiguration` to its controller, body and header, so a view type cannot be added without forking.
 - **The multi-day body has no cell or background slots.** It exposes nowhere to draw behind or inside a cell. The month body has `monthDayCellBuilder`.
 
-Four of the open feature issues wait on one of those two pieces.
+Two of the open feature issues wait on it.
 
 ### Features
 
@@ -133,12 +134,12 @@ Most of the open issues should land before 1.0.0 rather than after it. Each one 
 
 | Issue | Needs |
 |---|---|
-| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. The controller holds the selection, the slots wait for 0.33.0. |
-| [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. The day number draws it. Drawing it on a multi-day body cell needs the slots in 0.33.0. |
-| [#40](https://github.com/werner-scholtz/kalender/issues/40) yearly view | A view registry. |
-| [#264](https://github.com/werner-scholtz/kalender/issues/264) mobile month view | A view registry. A grid of days over a list, not a configuration of the current month view. |
+| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. The controller holds the selection. |
+| [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. The day number draws it. Drawing it on a multi-day body cell needs the slots. |
+| [#40](https://github.com/werner-scholtz/kalender/issues/40) yearly view | Its own `ViewParts`, configuration and view controller. |
+| [#264](https://github.com/werner-scholtz/kalender/issues/264) mobile month view | Its own `ViewParts`, configuration and view controller. A grid of days over a list, not a configuration of the current month view. |
 
-Selection runs through [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The controller holds it, and 0.33.0 adds the structure the rest waits on.
+Selection runs through [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The controller holds it.
 
 **Independent.** These wait on nothing and can land in any release.
 
@@ -146,7 +147,7 @@ Selection runs through [#89](https://github.com/werner-scholtz/kalender/issues/8
 |---|---|
 | [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A set of visible weekdays on the view configuration. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. Scoped below. |
 | [#98](https://github.com/werner-scholtz/kalender/issues/98) named and uneditable time regions | A second thing the calendar draws besides events, that events sit on top of. The largest new model here. |
-| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware, wrapping the controller swap in `KalenderView`. |
+| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware. `animateTo` and `animation` sit beside the `viewConfiguration` setter, and `KalenderView` keeps the outgoing view controller until the animation ends. |
 
 **Arbitrary visible weekdays, [#90](https://github.com/werner-scholtz/kalender/issues/90), needs the page to stop being one date range.** 0.26.0 covers the contiguous case with `numberOfDays` on `week` and `workWeek`, which is what the reporter of [#444](https://github.com/werner-scholtz/kalender/issues/444) asked for. Every contiguous span starting on `firstDayOfWeek` is expressible that way, so what a set of weekdays adds is the non-contiguous case, Monday, Wednesday and Friday, and a span that starts somewhere other than `firstDayOfWeek`.
 

@@ -38,7 +38,12 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        body: KalenderBody(monthTileComponents: tiles),
+        views: [
+          MonthViewParts(
+            header: const SizedBox.shrink(),
+            body: MonthBody(tileComponents: tiles),
+          ),
+        ],
       ),
     );
 

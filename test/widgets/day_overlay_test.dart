@@ -35,15 +35,7 @@ void main() {
     kalenderController.dispose();
   });
 
-  Future<void> capturePrints(Future<void> Function() body) async {
-    final original = debugPrint;
-    debugPrint = (message, {wrapWidth}) => printed.add(message ?? '');
-    try {
-      await body();
-    } finally {
-      debugPrint = original;
-    }
-  }
+  Future<void> capturePrints(Future<void> Function() body) async => printed.addAll(await collectPrints(body));
 
   void startOn(ViewConfiguration configuration) {
     kalenderController.dispose();
@@ -67,8 +59,6 @@ void main() {
           kalenderController: kalenderController,
           callbacks: callbacks,
           components: KalenderComponents(overlayBuilders: overlayBuilders),
-          header: const KalenderHeader(),
-          body: const KalenderBody(),
         ),
       ),
     );

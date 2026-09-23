@@ -64,9 +64,12 @@ void main() {
           viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
         ),
         components: components,
-        header: const KalenderHeader(
-          multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
-        ),
+        views: const [
+          MultiDayViewParts(
+            header: MultiDayHeader(configuration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1)),
+            body: SizedBox.shrink(),
+          ),
+        ],
       );
 
       return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));

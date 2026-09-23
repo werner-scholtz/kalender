@@ -35,8 +35,12 @@ void main() {
       eventsController: eventsController,
       kalenderController: kalenderController,
       components: components,
-      header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderBody(multiDayTileComponents: tiles),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(tileComponents: tiles),
+          body: MultiDayBody(tileComponents: tiles),
+        ),
+      ],
     );
     await pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
   }

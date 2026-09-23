@@ -56,7 +56,7 @@ void main() {
             eventsController: eventsController,
             kalenderController: kalenderController,
             callbacks: recordingCallbacks(),
-            body: KalenderBody(interaction: kPreciseInteraction),
+            interaction: kPreciseInteraction,
           );
           return id;
         }
@@ -103,11 +103,12 @@ void main() {
             eventsController: eventsController,
             kalenderController: kalenderController,
             callbacks: recordingCallbacks(),
-            header: KalenderHeader(
-              multiDayHeaderConfiguration: const MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
-              interaction: kPreciseInteraction,
-            ),
-            body: KalenderBody(interaction: kPreciseInteraction),
+            interaction: kPreciseInteraction,
+            views: const [
+              MultiDayViewParts(
+                header: MultiDayHeader(configuration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1)),
+              ),
+            ],
           );
 
           final firstDay = kalenderController.floatingVisibleRange.value!.dates().first;

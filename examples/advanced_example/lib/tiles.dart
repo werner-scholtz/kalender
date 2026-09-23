@@ -17,24 +17,6 @@ TileComponents get tileComponents {
   );
 }
 
-TileComponents get multiDayTileComponents {
-  return TileComponents(
-    tileBuilder: MultiDayEventTile.builder,
-    overlayTileBuilder: OverlayEventTile.builder,
-    dropTargetTile: DropTargetTile.builder,
-    feedbackTileBuilder: FeedbackTile.builder,
-    tileWhenDraggingBuilder: TileWhenDragging.builder,
-  );
-}
-
-ScheduleTileComponents get scheduleTileComponents {
-  return ScheduleTileComponents(
-    tileBuilder: MultiDayEventTile.builder,
-    feedbackTileBuilder: FeedbackTile.builder,
-    tileWhenDraggingBuilder: TileWhenDragging.builder,
-  );
-}
-
 abstract class BaseEventTile extends StatelessWidget {
   final Event event;
   final KalenderDateTimeRange tileRange;

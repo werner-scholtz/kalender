@@ -122,44 +122,47 @@ class _MyHomePageState extends State<MyHomePage> {
           onEventChanged: (event, updatedEvent) =>
               eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
-        header: Column(
-          children: [
-            const SizedBox(height: 8),
-            Row(
+        views: [
+          MultiDayViewParts(
+            header: Column(
               children: [
-                const SizedBox(width: 8),
-                DropdownMenu(
-                  dropdownMenuEntries: _viewConfigurations.map((e) {
-                    return DropdownMenuEntry(value: e, label: e.name);
-                  }).toList(),
-                  initialSelection: kalenderController.viewConfiguration,
-                  onSelected: (value) {
-                    if (value == null) return;
-                    kalenderController.viewConfiguration = value;
-                  },
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const SizedBox(width: 8),
+                    DropdownMenu(
+                      dropdownMenuEntries: _viewConfigurations.map((e) {
+                        return DropdownMenuEntry(value: e, label: e.name);
+                      }).toList(),
+                      initialSelection: kalenderController.viewConfiguration,
+                      onSelected: (value) {
+                        if (value == null) return;
+                        kalenderController.viewConfiguration = value;
+                      },
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 8),
+                const MultiDayHeader(configuration: MultiDayHeaderConfiguration(showTiles: false)),
+                const Divider(),
+                ListenableBuilder(
+                  listenable: kalenderController,
+                  builder: (context, _) => PeopleWidget(
+                    viewConfiguration: kalenderController.viewConfiguration as MultiDayViewConfiguration,
+                  ),
+                ),
+                const Divider(),
               ],
             ),
-            const SizedBox(height: 8),
-            KalenderHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
-            const Divider(),
-            ListenableBuilder(
-              listenable: kalenderController,
-              builder: (context, _) =>
-                  PeopleWidget(viewConfiguration: kalenderController.viewConfiguration as MultiDayViewConfiguration),
+            body: ZoomDetector(
+              controller: kalenderController,
+              child: MultiDayBody(
+                configuration: MultiDayBodyConfiguration(eventLayoutStrategy: PeopleLayoutStrategy(people)),
+                tileComponents: tileComponents,
+              ),
             ),
-            const Divider(),
-          ],
-        ),
-        body: ZoomDetector(
-          controller: kalenderController,
-          child: KalenderBody(
-            multiDayTileComponents: tileComponents,
-            monthTileComponents: multiDayTileComponents,
-            scheduleTileComponents: scheduleTileComponents,
-            multiDayBodyConfiguration: MultiDayBodyConfiguration(eventLayoutStrategy: PeopleLayoutStrategy(people)),
           ),
-        ),
+        ],
       ),
     );
   }

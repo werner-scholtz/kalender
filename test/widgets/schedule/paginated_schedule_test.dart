@@ -39,7 +39,11 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.hide)),
+      views: [
+        ScheduleViewParts(
+          body: ScheduleBody(configuration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.hide)),
+        ),
+      ],
     );
   }
 

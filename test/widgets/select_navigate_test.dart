@@ -25,10 +25,10 @@ void main() {
 
   final march = MonthViewConfiguration.singleMonth(displayRange: displayRange, initialDateTime: DateTime(2025, 3, 10));
 
-  Future<void> pump(WidgetTester tester, {KalenderBody body = const KalenderBody()}) {
+  Future<void> pump(WidgetTester tester, {List<ViewParts> views = bodyOnlyViews}) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      KalenderView(eventsController: eventsController, kalenderController: kalenderController, body: body),
+      KalenderView(eventsController: eventsController, kalenderController: kalenderController, views: views),
     );
   }
 
@@ -67,7 +67,11 @@ void main() {
       );
       await pump(
         tester,
-        body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
+        views: [
+          ScheduleViewParts(
+            body: ScheduleBody(configuration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
+          ),
+        ],
       );
       final before = visible();
       final schedule = kalenderController.viewController as ScheduleViewController;

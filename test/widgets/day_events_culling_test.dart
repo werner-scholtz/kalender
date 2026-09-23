@@ -48,10 +48,15 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      body: KalenderBody(
-        multiDayTileComponents: components,
-        multiDayBodyConfiguration: strategy == null ? null : MultiDayBodyConfiguration(eventLayoutStrategy: strategy),
-      ),
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(
+            tileComponents: components,
+            configuration: strategy == null ? null : MultiDayBodyConfiguration(eventLayoutStrategy: strategy),
+          ),
+        ),
+      ],
     );
   }
 

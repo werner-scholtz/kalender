@@ -22,12 +22,17 @@ List<Rect> tileRects(WidgetTester tester, Type type) {
   return [for (var i = 0; i < count; i++) tester.getRect(tiles.at(i))];
 }
 
-/// The part of the [KalenderBody] a press reaches a tile in.
+/// The body of the active view.
+final Finder calendarBody = find.byWidgetPredicate(
+  (widget) => widget is MultiDayBody || widget is MonthBody || widget is ScheduleBody,
+);
+
+/// The part of the [calendarBody] a press reaches a tile in.
 ///
 /// A tile drawn past the edge of the window cannot be pressed, and the paged views turn the page while the pointer
 /// is over their left and right edges.
 Rect pressableArea(WidgetTester tester, Views view) {
-  final body = tester.getRect(find.byType(KalenderBody));
+  final body = tester.getRect(calendarBody);
   if (view == Views.schedule) return body;
   final margin = body.width / 10;
   return Rect.fromLTRB(body.left + margin, body.top, body.right - margin, body.bottom);
