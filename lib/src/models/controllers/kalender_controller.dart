@@ -43,7 +43,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   Location? location;
   bool get isAttached => _viewController != null;
 
-  /// The [FloatingDateTimeRange] that is currently visible.
+  /// The [ViewController.floatingVisibleRange] of the attached view controller.
   late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
   ValueListenable<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
@@ -54,7 +54,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// The [KalenderDateTimeRange] that is currently visible for the current location of the calendar this controller is attached to.
   final visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
 
-  /// The [KalenderEvent]s that are currently visible.
+  /// The [ViewController.visibleEvents] of the attached view controller.
   ValueListenable<Set<KalenderEvent>> get visibleEvents => _visibleEvents;
   final _visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
 
@@ -334,6 +334,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   void dispose() {
     _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _removeForwarders();
+    _floatingVisibleRange.dispose();
+    _visibleEvents.dispose();
     visibleTimeOfDay.dispose();
     selectedRange.dispose();
     openDayOverlay.dispose();

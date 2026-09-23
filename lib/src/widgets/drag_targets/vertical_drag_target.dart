@@ -116,6 +116,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       _updateSnapPoints();
       widget.snapping.addListener(_updateSnapPoints);
       widget.viewController.visibleEvents.addListener(_updateSnapPoints);
