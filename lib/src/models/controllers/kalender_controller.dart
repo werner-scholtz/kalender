@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
@@ -15,7 +16,6 @@ import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
-import 'package:meta/meta.dart' show internal;
 import 'package:timezone/timezone.dart';
 
 /// The [KalenderController] controls a single [KalenderView].
@@ -45,7 +45,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// The [FloatingDateTimeRange] that is currently visible.
   late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
-  ValueNotifier<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
+  ValueListenable<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
     final newRange = _floatingVisibleRange.value?.forLocation(location: _viewController?.location);
     visibleDateTimeRange.value = newRange;
@@ -55,7 +55,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   final visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
 
   /// The [KalenderEvent]s that are currently visible.
-  final visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
+  ValueListenable<Set<KalenderEvent>> get visibleEvents => _visibleEvents;
+  final _visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
 
   /// The [KalenderTime] currently aligned with the top of the visible viewport.
   ///
@@ -245,7 +246,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
     _viewController = viewController;
     _forward(viewController.floatingVisibleRange, _floatingVisibleRange);
-    _forward(viewController.visibleEvents, visibleEvents);
+    _forward(viewController.visibleEvents, _visibleEvents);
     final newRange = viewController.floatingVisibleRange.value!.forLocation(location: viewController.location);
     visibleDateTimeRange.value = null;
     visibleDateTimeRange.value = newRange;

@@ -118,7 +118,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateSnapPoints();
       widget.snapping.addListener(_updateSnapPoints);
-      controller.visibleEvents.addListener(_updateSnapPoints);
+      widget.viewController.visibleEvents.addListener(_updateSnapPoints);
     });
   }
 
@@ -129,16 +129,16 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       oldWidget.snapping.removeListener(_updateSnapPoints);
       widget.snapping.addListener(_updateSnapPoints);
     }
-    if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.visibleEvents.removeListener(_updateSnapPoints);
-      widget.controller.visibleEvents.addListener(_updateSnapPoints);
+    if (oldWidget.viewController != widget.viewController) {
+      oldWidget.viewController.visibleEvents.removeListener(_updateSnapPoints);
+      widget.viewController.visibleEvents.addListener(_updateSnapPoints);
     }
   }
 
   @override
   void dispose() {
     widget.snapping.removeListener(_updateSnapPoints);
-    controller.visibleEvents.removeListener(_updateSnapPoints);
+    widget.viewController.visibleEvents.removeListener(_updateSnapPoints);
     super.dispose();
   }
 
@@ -146,7 +146,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   void _updateSnapPoints() {
     if (!snapping.snapToOtherEvents) return;
     clearSnapPoints();
-    addEventSnapPoints(controller.visibleEvents.value, context.location);
+    addEventSnapPoints(widget.viewController.visibleEvents.value, context.location);
   }
 
   @override
