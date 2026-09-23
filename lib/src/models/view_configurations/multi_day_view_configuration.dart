@@ -294,15 +294,18 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   @override
   MultiDayViewController createViewController(KalenderController controller, ViewTransitionContext? transition) {
+    final date = resolveDate(controller.location, transition);
     return MultiDayViewController(
       viewConfiguration: this,
       floatingVisibleRange: controller.floatingVisibleRange,
       visibleEvents: controller.visibleEvents,
-      initial: ViewSnapshot(
-        date: resolveDate(controller.location, transition),
-        timeOfDay: transition == null ? null : scrollResolver?.call(transition) ?? _resolveScroll(transition),
-        heightPerMinute: transition == null ? null : zoomResolver?.call(transition) ?? _resolveZoom(transition),
-      ),
+      initial: transition == null
+          ? ViewSnapshot(date: date)
+          : ViewSnapshot(
+              date: date,
+              timeOfDay: scrollResolver?.call(transition) ?? _resolveScroll(transition),
+              heightPerMinute: zoomResolver?.call(transition) ?? _resolveZoom(transition),
+            ),
       location: controller.location,
     );
   }

@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
+import '../utilities.dart';
+
 /// Records what [KalenderController.animateToEvent] passes down.
 class _RecordingViewController extends MultiDayViewController {
   _RecordingViewController({
@@ -49,7 +51,7 @@ void main() {
       ),
       floatingVisibleRange: controller.floatingVisibleRange,
       visibleEvents: controller.visibleEvents,
-      initial: ViewSnapshot(date: FloatingDateTime.fromDateTime(DateTime.now())),
+      initial: todaySnapshot(),
     );
     controller.attach(viewController);
 

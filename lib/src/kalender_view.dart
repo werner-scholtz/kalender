@@ -109,12 +109,13 @@ class KalenderViewState extends State<KalenderView> {
     if (didChangeViewConfiguration || didChangeLocation) {
       // The snapshot is kept even when switching to a view without vertical scroll (e.g. Month), so a
       // Week → Month → Week round-trip still restores the position.
-      final snapshot = _viewController.snapshot();
-      _viewHistory[_viewController.viewConfiguration.name] = snapshot;
+      final old = _viewController;
+      final snapshot = old.snapshot();
+      _viewHistory[old.viewConfiguration.name] = snapshot;
       if (snapshot.heightPerMinute != null) _lastMultiDaySnapshot = snapshot;
 
       final transition = ViewTransitionContext(
-        oldViewController: _viewController,
+        oldViewController: old,
         newViewConfiguration: widget.viewConfiguration,
         byView: _viewHistory,
         lastMultiDay: _lastMultiDaySnapshot,
@@ -123,8 +124,8 @@ class KalenderViewState extends State<KalenderView> {
       );
       widget.kalenderController.location = widget.location;
       _viewController = widget.viewConfiguration.createViewController(widget.kalenderController, transition);
-      widget.kalenderController.viewController?.dispose();
       widget.kalenderController.attach(_viewController);
+      old.dispose();
     }
 
     if (didChangeViewConfiguration || didChangeLocation || didChangeLocale || didChangeKalenderController) {

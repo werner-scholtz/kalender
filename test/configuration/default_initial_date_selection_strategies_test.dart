@@ -76,6 +76,13 @@ void main() {
       (name: 'Schedule', config: schedule, expected: visibleStart(schedule)),
     ];
 
+    test('[$location] the deprecated functions return the carried date', () {
+      final old = build(week);
+      // ignore: deprecated_member_use_from_same_package
+      final deprecated = [kDefaultToMonthly, kDefaultToWeekly, kDefaultToDaily, kDefaultToSchedule];
+      expect(deprecated.map((function) => function(old)), everyElement(monthOrWeekStart));
+    });
+
     group('[$location] kCarryFocusDate', () {
       for (final view in views) {
         test('from ${view.name}', () {
