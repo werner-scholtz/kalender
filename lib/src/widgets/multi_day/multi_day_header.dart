@@ -86,7 +86,7 @@ class _SingleDayHeader extends StatelessWidget {
 
     final headerComponents = components.multiDayComponents.headerComponents;
     final dayHeaderWidget = _visibleRangeBuilder(
-      context,
+      viewController,
       (context, range) => headerComponents.buildDayHeader(context, range.start.forLocation(location: context.location)),
     );
 
@@ -145,7 +145,7 @@ class _MultiDayHeader extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = _visibleRangeBuilder(
-      context,
+      viewController,
       (context, range) => headerComponents.buildWeekNumber(context, range.forLocation(location: context.location)),
     );
 
@@ -205,7 +205,7 @@ class _FreeScrollHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = _visibleRangeBuilder(
-      context,
+      viewController,
       (context, range) => headerComponents.buildWeekNumber(context, range.forLocation(location: context.location)),
     );
 
@@ -402,13 +402,14 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
   }
 }
 
-/// A [ValueListenableBuilder] on [KalenderController.floatingVisibleRange] that builds nothing while it is null.
+/// A [ValueListenableBuilder] on the [ViewController.floatingVisibleRange] of [viewController] that builds nothing
+/// while it is null.
 Widget _visibleRangeBuilder(
-  BuildContext context,
+  ViewController viewController,
   Widget Function(BuildContext context, FloatingDateTimeRange range) builder,
 ) {
   return ValueListenableBuilder(
-    valueListenable: context.kalenderController.floatingVisibleRange,
+    valueListenable: viewController.floatingVisibleRange,
     builder: (context, value, child) {
       if (value == null) return const SizedBox.shrink();
       return builder(context, value);

@@ -248,10 +248,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
             : visibleRange;
         widget.viewController.floatingVisibleRange.value = range;
         _updateVisibleEvents(index, context.location);
-        final controller = context.kalenderController;
-
-        final callbacks = context.callbacks;
-        callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
+        context.callbacks?.onPageChanged?.call(range.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {
         final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);

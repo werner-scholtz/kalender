@@ -95,7 +95,8 @@ A class that extends `ViewConfiguration` directly implements
 `createViewController`, building the view controller from `resolveDate` and the
 controller's location. The view controllers take one `initial` snapshot in place
 of three parameters, and create their own visible range and visible events. A
-class that extends `ViewController` calls `super.dispose()`.
+class that extends `ViewController` no longer overrides `visibleEvents` and
+calls `super.dispose()`.
 
 ```dart
 // Before
@@ -117,6 +118,20 @@ MultiDayViewController(
 
 `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and
 `kDefaultToSchedule` all return `old.snapshot().date`.
+
+### The controller's visible range and events are read-only
+
+`KalenderController.floatingVisibleRange` and `visibleEvents` are
+`ValueListenable`s that follow the attached view controller. Read them as
+before. A write goes to the view controller's own notifier.
+
+```dart
+// Before
+kalenderController.visibleEvents.value = events;
+
+// After
+kalenderController.viewController!.visibleEvents.value = events;
+```
 
 ## v0.30.x → v0.31.0
 

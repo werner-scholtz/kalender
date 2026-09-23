@@ -14,6 +14,7 @@
 - `ViewController.location` is final.
 - The four view controllers no longer take `floatingVisibleRange` and `visibleEvents`. Each creates its own, and `KalenderController` forwards those of the attached one.
 - `ViewController.dispose` disposes the visible range and visible events, and an override calls `super.dispose()`.
+- `KalenderController.floatingVisibleRange` and `visibleEvents` are `ValueListenable`s.
 
 ### Deprecations
 

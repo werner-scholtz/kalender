@@ -90,6 +90,10 @@ void main() {
     });
 
     test('supplies the visible range and events', () {
+      attached.floatingVisibleRange.value = FloatingDateTimeRange(
+        start: FloatingDateTime(2025),
+        end: FloatingDateTime(2025, 2),
+      );
       attached.visibleEvents.value = {event};
       expect(controller.floatingVisibleRange.value, attached.floatingVisibleRange.value);
       expect(controller.visibleEvents.value, {event});
