@@ -28,10 +28,10 @@ class ScheduleBody extends StatelessWidget {
   /// If not provided, default [ScheduleBodyConfiguration] will be used.
   final ScheduleBodyConfiguration? configuration;
 
-  /// Overrides the [KalenderView.callbacks] for this widget.
+  /// See [KalenderView.callbacks].
   final KalenderCallbacks? callbacks;
 
-  /// Overrides the [KalenderView.interaction] for this widget.
+  /// See [KalenderView.interaction].
   final KalenderInteraction? interaction;
 
   /// The tile components. Defaults to [ScheduleTileComponents.defaultComponents].

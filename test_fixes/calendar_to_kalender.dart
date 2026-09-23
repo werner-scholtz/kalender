@@ -16,12 +16,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
-CalendarBody? body;
 CalendarCallbacks? callbacks;
 CalendarComponents? components;
 CalendarController? controller;
 CalendarEvent? event;
-CalendarHeader? header;
 CalendarInteraction? interaction;
 CalendarSnapping? snapping;
 

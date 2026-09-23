@@ -18,7 +18,7 @@ class KalenderView extends StatefulWidget {
   /// The [KalenderController] that holds the view configuration and location.
   final KalenderController kalenderController;
 
-  /// The [KalenderCallbacks] used by the [KalenderView]
+  /// The callbacks of every view. A header or body given its own `callbacks` uses those instead.
   final KalenderCallbacks? callbacks;
 
   /// The components and styles used by the calendar.
@@ -50,12 +50,15 @@ class KalenderView extends StatefulWidget {
     super.key,
     required this.eventsController,
     required this.kalenderController,
-    this.views = const [MultiDayViewParts(), MonthViewParts(), ScheduleViewParts()],
+    this.views = defaultViews,
     this.callbacks,
     this.interaction,
     this.components,
     this.locale,
   });
+
+  /// The built-in parts of every view.
+  static const defaultViews = <ViewParts>[MultiDayViewParts(), MonthViewParts(), ScheduleViewParts()];
 
   @override
   State<KalenderView> createState() => KalenderViewState();
@@ -73,8 +76,8 @@ class KalenderViewState extends State<KalenderView> {
   /// Keeps the header and body in place when the parts change the widgets that wrap them.
   final _layoutKey = GlobalKey();
 
-  /// The configuration names already reported as matching several parts.
-  final _reportedDuplicates = <String>{};
+  /// The configuration types and names already reported as matching several parts.
+  final _reportedDuplicates = <(Type, String)>{};
 
   @override
   void initState() {
@@ -147,7 +150,7 @@ class KalenderViewState extends State<KalenderView> {
       'No ViewParts in KalenderView.views accepts the ${configuration.runtimeType} named "${configuration.name}". '
       'The built-in parts are MultiDayViewParts, MonthViewParts and ScheduleViewParts.',
     );
-    if (candidates.length > 1 && _reportedDuplicates.add(configuration.name)) {
+    if (candidates.length > 1 && _reportedDuplicates.add((configuration.runtimeType, configuration.name))) {
       debugPrint(
         'KalenderView: ${candidates.length} ViewParts accept the ${configuration.runtimeType} named '
         '"${configuration.name}", so the first is shown. Give each parts a name matching its configuration\'s name '

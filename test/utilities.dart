@@ -103,22 +103,14 @@ Future<void> pumpKalender(
 }) {
   return pumpAndSettleWithMaterialApp(
     tester,
-    views == null
-        ? KalenderView(
-            eventsController: eventsController,
-            kalenderController: kalenderController,
-            callbacks: callbacks,
-            interaction: interaction,
-            components: components,
-          )
-        : KalenderView(
-            eventsController: eventsController,
-            kalenderController: kalenderController,
-            views: views,
-            callbacks: callbacks,
-            interaction: interaction,
-            components: components,
-          ),
+    KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      views: views ?? KalenderView.defaultViews,
+      callbacks: callbacks,
+      interaction: interaction,
+      components: components,
+    ),
   );
 }
 

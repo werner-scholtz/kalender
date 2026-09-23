@@ -29,10 +29,10 @@ class MultiDayBody extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
 
-  /// Overrides the [KalenderView.callbacks] for this widget.
+  /// See [KalenderView.callbacks].
   final KalenderCallbacks? callbacks;
 
-  /// Overrides the [KalenderView.interaction] for this widget.
+  /// See [KalenderView.interaction].
   final KalenderInteraction? interaction;
 
   /// The snapping of dragged and resized events. Defaults to [KalenderSnapping].
