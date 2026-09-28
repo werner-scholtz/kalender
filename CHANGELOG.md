@@ -1,3 +1,9 @@
+## 0.32.1
+
+### Fixes
+
+- Dragging an event in the multi-day body repaints only the day columns the drag changes.
+
 ## 0.32.0
 
 ### Deprecations

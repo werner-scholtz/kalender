@@ -308,7 +308,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Positioned.fill(child: eventsWidget),
+        // The drop target repaints on every drag move. The boundary keeps the tiles from repainting with it.
+        Positioned.fill(child: RepaintBoundary(child: eventsWidget)),
         Positioned.fill(
           child: PassThroughPointer(
             child: DayDropTargetColumn(
