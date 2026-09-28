@@ -1,0 +1,122 @@
+name: Site
+
+# Publishes the web demo at /kalender/ and the benchmark dashboard at
+# /kalender/dev/bench/ to GitHub Pages.
+#
+# The demo is built from a release once publish.yml has published it, or from
+# the ref given to a manual run. Every other run reuses the last demo build from
+# the Actions cache, and builds the latest release when the cache has expired.
+# The dashboard page comes from main and its data from refs/benchmarks/data.
+
+on:
+  workflow_run:
+    workflows: [Publish to pub.dev, Performance Benchmarks]
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - benchmark/dashboard/**
+      - .github/workflows/site.yml
+  workflow_dispatch:
+    inputs:
+      demo_ref:
+        description: Branch, tag or commit to build the demo from. Leave empty to keep the current demo.
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # A dev release keeps the current demo, and only benchmark runs on main
+    # change the stored results.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+        ((github.event.workflow_run.name == 'Publish to pub.dev' && !contains(github.event.workflow_run.head_branch, '-')) ||
+         (github.event.workflow_run.name == 'Performance Benchmarks' && github.event.workflow_run.event == 'push')))
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Choose the demo source
+        id: source
+        env:
+          RELEASE_SHA: ${{ github.event.workflow_run.name == 'Publish to pub.dev' && github.event.workflow_run.head_sha || '' }}
+          DEMO_REF: ${{ inputs.demo_ref }}
+        run: echo "ref=${RELEASE_SHA:-$DEMO_REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the last demo build
+        id: cache
+        if: steps.source.outputs.ref == ''
+        uses: actions/cache/restore@v6
+        with:
+          path: demo
+          key: web-demo
+          restore-keys: web-demo-
+
+      - name: Choose the demo build
+        env:
+          REF: ${{ steps.source.outputs.ref }}
+          RESTORED: ${{ steps.cache.outputs.cache-matched-key }}
+        run: |
+          if [ -z "$REF" ] && [ -z "$RESTORED" ]; then
+            REF=$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##' \
+              | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+          fi
+          echo "BUILD_REF=$REF" >> "$GITHUB_ENV"
+
+      # The examples depend on ../../../kalender/, so the checkout sits in a
+      # folder named kalender.
+      - uses: actions/checkout@v5
+        if: env.BUILD_REF != ''
+        with:
+          ref: ${{ env.BUILD_REF }}
+          path: demo-source/kalender
+
+      - uses: subosito/flutter-action@v2
+        if: env.BUILD_REF != ''
+        with:
+          cache: true
+          flutter-version-file: demo-source/kalender/.fvmrc
+
+      - name: Build the demo
+        if: env.BUILD_REF != ''
+        working-directory: demo-source/kalender/examples/web_demo
+        run: |
+          flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
+          rm -rf "$GITHUB_WORKSPACE/demo"
+          cp -r build/web "$GITHUB_WORKSPACE/demo"
+
+      - name: Save the demo build
+        if: env.BUILD_REF != ''
+        uses: actions/cache/save@v6
+        with:
+          path: demo
+          key: web-demo-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Assemble the site
+        run: |
+          mkdir -p site/dev/bench
+          cp -r demo/. site/
+          cp benchmark/dashboard/index.html benchmark/dashboard/chart.umd.js benchmark/dashboard/chart.js-LICENSE.md site/dev/bench/
+          git fetch --depth=1 origin refs/benchmarks/data
+          git show FETCH_HEAD:data.json > site/dev/bench/data.json
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v5

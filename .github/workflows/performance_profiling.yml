@@ -20,8 +20,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Required so github-action-benchmark can push results to gh-pages and comment
-# on pull requests.
+# Required to push results to refs/benchmarks/data and to comment on pull
+# requests.
 permissions:
   contents: write
   pull-requests: write
@@ -30,18 +30,15 @@ permissions:
 # stack of pull requests pushes to main once per merge, so without this every
 # intermediate commit is profiled for 17 minutes and publishes a data point that
 # the next merge immediately supersedes. Cancelling also keeps two runs from
-# pushing to the gh-pages data file at once.
+# pushing to refs/benchmarks/data at once.
 concurrency:
   group: benchmarks-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   benchmark:
-    # Empty "web demo" rebuild commits change no files, so the path filter above
-    # does not catch them. Skip those pushes here too.
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'push' && !contains(github.event.head_commit.message, 'web demo')) ||
+      github.event_name != 'pull_request' ||
       contains(github.event.pull_request.labels.*.name, 'profile')
     runs-on: ubuntu-latest
 
@@ -104,15 +101,17 @@ jobs:
           path: examples/testing/build/*.timeline.json
           retention-days: 30
 
-      # `flutter pub get` rewrites analysis_options.yaml to exclude the build and
-      # platform directories, here and in examples/testing. The publish steps below
-      # switch to gh-pages, which carries neither file, and git refuses to switch
-      # while they are modified. Every result this job produces sits in an ignored
-      # build/ directory, so restoring the tracked files discards nothing.
-      - name: Restore files the SDK rewrote
-        run: git restore .
+      # --- Store results in refs/benchmarks/data ------------------------------
+      # The history lives in data.json on refs/benchmarks/data, a ref outside
+      # refs/heads so a plain clone does not download it. The fetch fails when the
+      # ref is missing, so a run never starts an empty history.
+      - name: Fetch stored results
+        run: |
+          git fetch --depth=1 origin refs/benchmarks/data
+          mkdir -p build/benchmarks
+          git show FETCH_HEAD:data.json > build/benchmarks/data.json
+          echo "BENCHMARK_DATA_PARENT=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_ENV"
 
-      # --- Publish to the dashboard at gh-pages/dev/bench ----------------------
       # A run is only cancelled while main moves under it if the cancellation
       # arrives in time. This covers the rest: results for a commit that is no
       # longer the tip are measured but not stored, so the dashboard carries one
@@ -133,43 +132,51 @@ jobs:
 
       # Comment-only: fail-on-alert is false, so regressions are surfaced in a PR
       # comment but never block the build. Alert thresholds sit above the
-      # measured noise floors (micro is far tighter than frame). On main we
-      # persist (auto-push). On PRs we only compare and comment (save-data-file
-      # false) so PR runs never mutate the stored history.
-      - name: Store micro-benchmark results
+      # measured noise floors (micro is far tighter than frame). Both steps
+      # compare against and add to the local data.json. Only a push to main
+      # saves the result.
+      - name: Compare micro-benchmark results
         if: steps.tip.outputs.superseded != 'true'
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: Kalender Micro-benchmarks
           tool: customSmallerIsBetter
           output-file-path: build/micro_results.json
+          external-data-json-path: build/benchmarks/data.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          gh-pages-branch: gh-pages
-          benchmark-data-dir-path: dev/bench
-          auto-push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           save-data-file: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           comment-always: true
           fail-on-alert: false
           alert-threshold: '125%'
           summary-always: true
 
-      - name: Store frame profiling results
+      - name: Compare frame profiling results
         if: steps.tip.outputs.superseded != 'true'
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: Kalender Frame Profiling
           tool: customSmallerIsBetter
           output-file-path: examples/testing/build/frame_results.json
+          external-data-json-path: build/benchmarks/data.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          gh-pages-branch: gh-pages
-          benchmark-data-dir-path: dev/bench
-          # Second invocation in this job: reuse the local gh-pages branch the
-          # first step already fetched/updated. Without this the re-fetch is
-          # rejected as non-fast-forward.
-          skip-fetch-gh-pages: true
-          auto-push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           save-data-file: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           comment-always: true
           fail-on-alert: false
           alert-threshold: '150%'
           summary-always: true
+
+      # Adds the Flutter version to this run's entries and pushes data.json as a
+      # new commit on refs/benchmarks/data. site.yml publishes it after this
+      # workflow finishes.
+      - name: Save results
+        if: steps.tip.outputs.superseded == 'false'
+        run: |
+          jq --arg sha "$GITHUB_SHA" --arg flutter "$(jq -r .flutter .fvmrc)" \
+            '.entries |= map_values(map(if .commit.id == $sha then .flutter = $flutter else . end))' \
+            build/benchmarks/data.json > "$RUNNER_TEMP/data.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          blob=$(git hash-object -w "$RUNNER_TEMP/data.json")
+          tree=$(printf '100644 blob %s\tdata.json\n' "$blob" | git mktree)
+          commit=$(git commit-tree "$tree" -p "$BENCHMARK_DATA_PARENT" -m "Results for $GITHUB_SHA")
+          git push origin "$commit:refs/benchmarks/data"
