@@ -120,7 +120,7 @@ class KalenderEvent {
   /// The end as an [FloatingDateTime], adjusted for [location].
   FloatingDateTime floatingEnd({Location? location}) => _floatingFor(location).end;
 
-  /// The last conversion of [start] and [end], since a conversion without a location reads the device timezone.
+  /// The last conversion of [start] and [end].
   _FloatingConversion? _floating;
 
   _FloatingConversion _floatingFor(Location? location) {
