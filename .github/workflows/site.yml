@@ -29,10 +29,6 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   publish:
     # A dev release keeps the current demo, and only benchmark runs on main
@@ -43,6 +39,10 @@ jobs:
         ((github.event.workflow_run.name == 'Publish to pub.dev' && !contains(github.event.workflow_run.head_branch, '-')) ||
          (github.event.workflow_run.name == 'Performance Benchmarks' && github.event.workflow_run.event == 'push')))
     runs-on: ubuntu-latest
+    # On the job, so a run whose job is skipped does not replace a waiting one.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
