@@ -2,6 +2,10 @@
 
 ### Fixes
 
+- An event tile builds its resize handles only while they show, so a change to the events builds each tile once instead of twice.
+- The overlap layout converts each event's start once when it sorts a day's events.
+- The tiles of one day convert their shared range once.
+- Event tiles and resize handles read the selection through one listener per calendar instead of one each.
 - Dragging an event in the multi-day body repaints only the day columns the drag changes.
 
 ## 0.32.0

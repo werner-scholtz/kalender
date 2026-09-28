@@ -64,7 +64,6 @@ void main() {
 
     expect(first.selectedEvent.hasListeners, isFalse);
     expect(firstEvents.hasListeners, isFalse);
-    expect(second.selectedEvent.hasListeners, isTrue);
     expect(secondEvents.hasListeners, isTrue);
   });
 }

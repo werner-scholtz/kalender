@@ -285,25 +285,28 @@ class KalenderViewState extends State<KalenderView> {
               eventsController: widget.eventsController,
               child: KalenderControllerProvider(
                 notifier: widget.kalenderController,
-                // Below every provider a width builder may read, and above both
-                // halves so they cannot be given different widths.
-                child: Builder(
-                  builder: (context) => GutterWidths(
-                    weekNumber: monthConfiguration == null
-                        ? null
-                        : components.monthComponents.bodyComponents.buildWeekNumberWidth(context),
-                    timeline: multiDayConfiguration == null
-                        ? null
-                        : components.multiDayComponents.bodyComponents.buildTimelineWidth(
-                            context,
-                            multiDayConfiguration.timeOfDayRange,
-                          ),
-                    child: CustomMultiChildLayout(
-                      delegate: KalenderLayoutDelegate(headerId, bodyId),
-                      children: [
-                        if (bodyId != null) LayoutId(id: bodyId, child: widget.body!),
-                        if (headerId != null) LayoutId(id: headerId, child: widget.header!),
-                      ],
+                child: SelectionScope(
+                  controller: widget.kalenderController,
+                  // Below every provider a width builder may read, and above both
+                  // halves so they cannot be given different widths.
+                  child: Builder(
+                    builder: (context) => GutterWidths(
+                      weekNumber: monthConfiguration == null
+                          ? null
+                          : components.monthComponents.bodyComponents.buildWeekNumberWidth(context),
+                      timeline: multiDayConfiguration == null
+                          ? null
+                          : components.multiDayComponents.bodyComponents.buildTimelineWidth(
+                              context,
+                              multiDayConfiguration.timeOfDayRange,
+                            ),
+                      child: CustomMultiChildLayout(
+                        delegate: KalenderLayoutDelegate(headerId, bodyId),
+                        children: [
+                          if (bodyId != null) LayoutId(id: bodyId, child: widget.body!),
+                          if (headerId != null) LayoutId(id: headerId, child: widget.header!),
+                        ],
+                      ),
                     ),
                   ),
                 ),
