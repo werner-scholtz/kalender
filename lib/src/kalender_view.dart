@@ -7,6 +7,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
+import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
@@ -83,6 +84,7 @@ class KalenderViewState extends State<KalenderView> {
   @override
   void initState() {
     super.initState();
+    DeviceTimeZone.observe();
     late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
     final initialDateTime = widget.viewConfiguration.initialDateTime ?? now;
     final initialDate = FloatingDateTime.fromExternal(initialDateTime, location: widget.location);

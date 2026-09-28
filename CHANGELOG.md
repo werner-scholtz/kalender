@@ -6,6 +6,7 @@
 - The overlap layout converts each event's start once when it sorts a day's events.
 - The tiles of one day convert their shared range once.
 - Event tiles and resize handles read the selection through one listener per calendar instead of one each.
+- An event keeps its start and end converted for a location. Without a location it converts again after the app resumes with a different device timezone.
 
 ## 0.32.0
 
