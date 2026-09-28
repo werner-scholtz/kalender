@@ -9,8 +9,10 @@ import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/kalender_controller.dart';
 import 'package:kalender/src/models/floating_date_time_range.dart';
+import 'package:kalender/src/models/kalender_date_time_range.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:timezone/timezone.dart';
 
 /// The tile widget that displays the user-defined event content.
 ///
@@ -92,5 +94,16 @@ class _TileState extends State<Tile> {
   @override
   Widget build(BuildContext context) => _isDragging && widget.tileWhenDraggingBuilder != null
       ? widget.tileWhenDraggingBuilder!.call(context, _event)
-      : widget.tileBuilder.call(context, _event, widget.floatingRange.forLocation(location: context.location));
+      : widget.tileBuilder.call(context, _event, _convertedRange(widget.floatingRange, context.location));
+}
+
+/// Tile ranges converted for a location. The tiles of one column share a range object, so it converts once per column.
+final _convertedRanges = Expando<(Location?, KalenderDateTimeRange)>();
+
+KalenderDateTimeRange _convertedRange(FloatingDateTimeRange range, Location? location) {
+  final cached = _convertedRanges[range];
+  if (cached != null && cached.$1 == location) return cached.$2;
+  final converted = range.forLocation(location: location);
+  _convertedRanges[range] = (location, converted);
+  return converted;
 }
