@@ -47,20 +47,11 @@ class Tile extends StatefulWidget {
 
 class _TileState extends State<Tile> {
   late KalenderEvent _event = widget.initialEvent;
-  KalenderController? _controller;
   EventsController? _eventsController;
-  bool _isDragging = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    final controller = context.kalenderController;
-    if (controller != _controller) {
-      _controller?.selectedEvent.removeListener(_calendarControllerListener);
-      _controller = controller;
-      _controller?.selectedEvent.addListener(_calendarControllerListener);
-    }
 
     final eventsController = context.eventsController;
     if (eventsController != _eventsController) {
@@ -72,16 +63,8 @@ class _TileState extends State<Tile> {
 
   @override
   void dispose() {
-    _controller?.selectedEvent.removeListener(_calendarControllerListener);
     _eventsController?.removeListener(_eventsControllerListener);
     super.dispose();
-  }
-
-  /// The listener for the calendar controller's selected event.
-  void _calendarControllerListener() {
-    final isDragging = _controller?.selectedEventId == widget.initialEvent.id && (_controller?.internalFocus ?? false);
-    if (_isDragging == isDragging) return;
-    if (mounted) setState(() => _isDragging = isDragging);
   }
 
   void _eventsControllerListener() {
@@ -92,7 +75,8 @@ class _TileState extends State<Tile> {
   }
 
   @override
-  Widget build(BuildContext context) => _isDragging && widget.tileWhenDraggingBuilder != null
+  Widget build(BuildContext context) =>
+      SelectionModel.of(context, widget.initialEvent.id).moving && widget.tileWhenDraggingBuilder != null
       ? widget.tileWhenDraggingBuilder!.call(context, _event)
       : widget.tileBuilder.call(context, _event, _convertedRange(widget.floatingRange, context.location));
 }

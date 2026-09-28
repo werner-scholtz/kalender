@@ -39,9 +39,6 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// Whether the resize handles are shown due to a hover event (precise input).
   bool _showFromHover = false;
 
-  /// Whether the resize handles are shown due to event selection (imprecise input).
-  bool _showFromSelection = false;
-
   /// Whether the pointer event should be treated as precise input.
   bool _isPrecisePointer(PointerEvent event) {
     return switch (event.kind) {
@@ -50,46 +47,10 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
     };
   }
 
-  /// Whether to show the resize handles (derived from hover or selection).
-  bool get _showHandles => _showFromHover || _showFromSelection;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final controller = context.kalenderController;
-    if (controller != _controller) {
-      _controller?.selectedEvent.removeListener(listener);
-      _controller = controller;
-      _controller?.selectedEvent.addListener(listener);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller?.selectedEvent.removeListener(listener);
-    super.dispose();
-  }
-
-  void listener() {
-    final controller = _controller;
-    if (controller == null) return;
-
-    if (controller.internalFocus) {
-      // Suppress handles during internal drag/resize operations.
-      if (_showHandles && mounted) {
-        setState(() {
-          _showFromHover = false;
-          _showFromSelection = false;
-        });
-      }
-      return;
-    }
-
-    final selectedEvent = controller.selectedEvent.value;
-    final isSelected = selectedEvent != null && selectedEvent.id == widget.event.id;
-    if (isSelected != _showFromSelection && mounted) {
-      setState(() => _showFromSelection = isSelected);
-    }
+    _controller = context.kalenderController;
   }
 
   /// Shows the resize handles on enter and hover from a precise pointer.
@@ -119,12 +80,16 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final selection = SelectionModel.of(context, widget.event.id);
+    final showFromHover = _showFromHover && !SelectionModel.anyMoving(context);
+    final showHandles = showFromHover || (selection.selected && !selection.moving);
+
     return MouseRegion(
       onEnter: _show,
       onExit: _onExit,
       onHover: _show,
       opaque: false,
-      child: _showHandles ? LayoutBuilder(builder: _buildHandles) : const SizedBox.shrink(),
+      child: showHandles ? LayoutBuilder(builder: _buildHandles) : const SizedBox.shrink(),
     );
   }
 
