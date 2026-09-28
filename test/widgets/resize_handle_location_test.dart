@@ -69,9 +69,11 @@ void main() {
     addTearDown(eventsController.dispose);
     addTearDown(kalenderController.dispose);
 
-    eventsController.addEvent(
-      KalenderEvent(start: TZDateTime(kiritimati, 2025, 1, 1, 1), end: TZDateTime(kiritimati, 2025, 1, 1, 4)),
+    final event = KalenderEvent(
+      start: TZDateTime(kiritimati, 2025, 1, 1, 1),
+      end: TZDateTime(kiritimati, 2025, 1, 1, 4),
     );
+    eventsController.addEvent(event);
 
     Location? received;
     await pumpAndSettleWithMaterialApp(
@@ -96,6 +98,8 @@ void main() {
         ),
       ),
     );
+    kalenderController.selectEvent(event);
+    await tester.pumpAndSettle();
 
     expect(received, kiritimati);
   });
