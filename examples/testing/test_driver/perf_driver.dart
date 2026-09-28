@@ -25,14 +25,29 @@ enum Scenario {
 
   String getReportKey(Views view, ReportKeys key, int run) => '${name.toLowerCase()}-${view.name}-${key.name}-$run';
 
-  static String baseKeyFromReportKey(String key) {
-    return key.split('-').take(3).join('-');
-  }
+  /// The series name on the dashboard, such as `Week · navigation · 50 events/day`.
+  String seriesName(Views view, ReportKeys key) => '${view.title} · ${key.label} · $numberOfEvents events/day';
 }
 
-enum ReportKeys { loadingEvents, navigation, scrolling, rescheduling, resizing }
+enum ReportKeys {
+  loadingEvents('loading'),
+  navigation('navigation'),
+  scrolling('scrolling'),
+  rescheduling('rescheduling'),
+  resizing('resizing');
 
-enum Views { week, month, schedule }
+  const ReportKeys(this.label);
+  final String label;
+}
+
+enum Views {
+  week('Week'),
+  month('Month'),
+  schedule('Schedule');
+
+  const Views(this.title);
+  final String title;
+}
 
 /// Number of repeats per workload. The summary uses the median across runs, so
 /// more runs tightens the estimate against the ~6% run-to-run noise floor
@@ -62,9 +77,9 @@ Future<void> main() {
         return;
       }
 
-      // Collect every metric value per base key (scenario-view-workload) across
-      // all runs, so we can take a robust median rather than a weighted mean.
-      final byBaseKey = <String, Map<String, List<num>>>{};
+      // Collect every metric value per series across all runs, so we can take a
+      // robust median rather than a weighted mean.
+      final bySeries = <String, Map<String, List<num>>>{};
 
       for (var run = 1; run <= numberOfRuns; run++) {
         for (final scenario in Scenario.values) {
@@ -86,8 +101,7 @@ Future<void> main() {
                 continue;
               }
 
-              final base = Scenario.baseKeyFromReportKey(reportKey);
-              final metrics = byBaseKey.putIfAbsent(base, () => {});
+              final metrics = bySeries.putIfAbsent(scenario.seriesName(view, key), () => {});
               for (final entry in values.entries) {
                 metrics.putIfAbsent(entry.key, () => <num>[]).add(entry.value);
               }
@@ -96,12 +110,12 @@ Future<void> main() {
         }
       }
 
-      // Emit github-action-benchmark `customSmallerIsBetter` entries. We chart a
-      // single headline series per base key (median average-build-time) to keep
-      // the dashboard readable; the remaining metrics ride along in `extra`.
+      // Emit github-action-benchmark `customSmallerIsBetter` entries, one series
+      // per scenario, view and workload with the median average build time. The
+      // other metrics go in `extra`.
       final results = <Map<String, dynamic>>[];
-      for (final entry in byBaseKey.entries) {
-        final base = entry.key;
+      for (final entry in bySeries.entries) {
+        final name = entry.key;
         final metrics = entry.value;
 
         final buildValues = metrics[_buildMetric];
@@ -124,14 +138,14 @@ Future<void> main() {
             '(runs=${buildValues.length})';
 
         results.add({
-          'name': '$base / avg_build_ms',
+          'name': name,
           'unit': 'ms',
           'value': avgBuild,
           'range': '± ${iqr.toStringAsFixed(2)}',
           'extra': extra,
         });
 
-        print('✅ $base  avg_build=${avgBuild.toStringAsFixed(2)}ms (±${iqr.toStringAsFixed(2)})  $extra');
+        print('✅ $name  avg_build=${avgBuild.toStringAsFixed(2)}ms (±${iqr.toStringAsFixed(2)})  $extra');
       }
 
       final output = File('build/frame_results.json');

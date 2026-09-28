@@ -26,8 +26,8 @@ flutter run -d chrome
 flutter build web --release --wasm --base-href /kalender/
 ```
 
-The `web_demo.yml` workflow builds and deploys this app to GitHub Pages on pushes
-to `main` whose commit message contains `web demo`.
+The `site.yml` workflow publishes this app to GitHub Pages after each release, see
+[Site and benchmarks](../../AGENTS.md#site-and-benchmarks).
 
 ## Layout
 

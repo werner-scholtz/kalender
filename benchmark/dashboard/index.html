@@ -5,41 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kalender Benchmarks</title>
   <!--
-    Custom dashboard for github-action-benchmark data.
+    Dashboard for the github-action-benchmark results, with Chart.js 4.4.1 from npm. site.yml
+    publishes it to /kalender/dev/bench/ next to data.json from refs/benchmarks/data.
 
-    Source of truth: benchmark/dashboard/, with Chart.js 4.4.1 from npm (deployed to gh-pages/dev/bench/ by
-    .github/workflows/deploy_dashboard.yml). github-action-benchmark only writes its default
-    index.html when one does not already exist, so this custom page persists; benchmark runs only
-    update the sibling data.js.
-
-    It reads the same `window.BENCHMARK_DATA` and adds three things the default template lacks:
-      1. Human-readable chart titles (display-only; the underlying series keys are untouched so
-         backfilled history is preserved).
-      2. A consolidated overview trend per suite.
-      3. Frame charts grouped by view · workload, with one line per event-count scenario, so the
-         same operation (e.g. Week · loading) is compared across 10 vs 50 events/day on one chart.
+    Frame series are named "<view> · <workload> · <N> events/day" and are grouped into one chart
+    per view and workload, with one line per event count.
   -->
   <script src="chart.umd.js"></script>
   <style>
-    :root { color-scheme: light dark; }
-    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; background: #fafafa; color: #1f2937; }
-    h1 { font-size: 22px; margin: 0 0 4px; }
-    h2 { font-size: 18px; margin: 32px 0 4px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
-    .meta { color: #6b7280; font-size: 13px; margin-bottom: 16px; }
-    .legend-note { color: #6b7280; font-size: 12px; margin: 4px 0 12px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
-    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; }
-    .card.overview { border-color: #c7d2fe; background: #f8faff; }
-    .card h3 { font-size: 14px; margin: 2px 0 8px; font-weight: 600; }
-    .chart-wrap { position: relative; height: 240px; }
-    .empty { color: #6b7280; }
-    @media (prefers-color-scheme: dark) {
-      body { background: #0b0e14; color: #e5e7eb; }
-      .card { background: #131722; border-color: #232838; }
-      .card.overview { background: #141a2e; border-color: #2b3a55; }
-      h2 { border-color: #232838; }
+    :root {
+      color-scheme: light dark;
+      --bg: #fafafa; --fg: #1f2937; --muted: #6b7280; --line: #e5e7eb;
+      --card: #fff; --button: #fff; --button-on: #1f2937; --button-on-fg: #fff;
+      --alert: #dc2626; --grid: rgba(0, 0, 0, .08); --marker: rgba(107, 114, 128, .7);
     }
-    /* Floating DOM tooltip — lives outside the (short) chart canvas so it never covers the plot. */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0e14; --fg: #e5e7eb; --muted: #9aa4b2; --line: #232838;
+        --card: #131722; --button: #131722; --button-on: #e5e7eb; --button-on-fg: #0b0e14;
+        --alert: #f87171; --grid: rgba(255, 255, 255, .08); --marker: rgba(154, 164, 178, .7);
+      }
+    }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px 16px; background: var(--bg); color: var(--fg); }
+    main { max-width: 1400px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    h2 { font-size: 18px; margin: 32px 0 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    a { color: inherit; }
+    .meta { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+    .note { color: var(--muted); font-size: 12px; margin: 4px 0 16px; max-width: 900px; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; font-size: 13px; }
+    .control { display: flex; align-items: center; gap: 6px; }
+    .control button {
+      font: inherit; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--button); color: var(--fg); cursor: pointer;
+    }
+    .control button[aria-pressed="true"] { background: var(--button-on); color: var(--button-on-fg); border-color: var(--button-on); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); gap: 16px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-width: 0; }
+    .card h3 { font-size: 14px; margin: 2px 0 4px; font-weight: 600; }
+    .latest { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .latest div { display: flex; align-items: center; gap: 6px; }
+    .latest .swatch { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+    .latest .alert { color: var(--alert); font-weight: 600; }
+    .chart-wrap { position: relative; height: 220px; }
+    .empty { color: var(--muted); }
     #chart-tooltip {
       position: absolute; pointer-events: none; z-index: 30; opacity: 0;
       transition: opacity .1s ease; max-width: 340px;
@@ -55,81 +64,175 @@
   </style>
 </head>
 <body>
-  <h1>Kalender Performance Benchmarks</h1>
-  <div class="meta" id="meta"></div>
-  <div class="legend-note">↓ Lower is better on every chart. Frame timings come from a shared GitHub runner (<code>ubuntu-latest</code>) whose hardware is unknown and varies between runs, and a CI VM is not a real device. Read the millisecond charts as relative trends between commits, not as absolute frame rates. The micro-benchmarks are the primary signal.</div>
-  <div id="root"></div>
-  <script src="data.js"></script>
+  <main>
+    <h1>Kalender Performance Benchmarks</h1>
+    <div class="meta" id="meta"></div>
+    <div class="note">
+      Lower is better on every chart. Frame timings come from a shared GitHub runner (<code>ubuntu-latest</code>) whose
+      hardware is unknown and varies between runs, and a CI VM is not a real device. Read them as trends between
+      commits, not as frame rates. The micro-benchmarks are the primary signal. The shaded area is the interquartile
+      range of the runs for one commit. A dashed line marks a Flutter version change. Click a point to open its commit.
+    </div>
+    <div class="controls">
+      <div class="control" id="runs-control"><span>Runs</span></div>
+      <div class="control" id="metric-control"><span>Frame metric</span></div>
+    </div>
+    <div id="root"></div>
+  </main>
   <script>
     "use strict";
 
-    // Explicit friendly titles for the micro-benchmark series keys.
-    var MICRO_LABELS = {
-      "dates x200 / 7d": "Date expansion · 7-day range (×200)",
-      "dates x200 / 30d": "Date expansion · 30-day range (×200)",
-      "dates x200 / 90d": "Date expansion · 90-day range (×200)",
-      "dates x200 / 365d": "Date expansion · 365-day range (×200)",
-      "multiDayFrame / 100ev x 30d": "Multi-day layout · 100 events × 30 days",
-      "multiDayFrame / 300ev x 30d": "Multi-day layout · 300 events × 30 days",
-      "findLongestChain / 60ev": "Overlap chain depth · 60 events",
-      "eventsFromRange / query 1d": "Event query · 1-day window",
-      "eventsFromRange / query 7d": "Event query · 7-day window",
-      "eventsFromRange / query 30d": "Event query · 30-day window",
+    var FRAME_SUITE = "Kalender Frame Profiling";
+    var MICRO_SUITE = "Kalender Micro-benchmarks";
+
+    // The alert thresholds in performance_profiling.yml, as a ratio to the previous runs.
+    var THRESHOLDS = {};
+    THRESHOLDS[FRAME_SUITE] = 1.5;
+    THRESHOLDS[MICRO_SUITE] = 1.25;
+
+    var RUN_OPTIONS = [{ value: 30, label: "30" }, { value: 100, label: "100" }, { value: 0, label: "All" }];
+    var METRICS = {
+      avg: { label: "Average", unit: "ms" },
+      p90: { label: "p90", unit: "ms" },
+      missed: { label: "Missed frames", unit: "frames" },
     };
+    var VIEWS = ["Week", "Month", "Schedule"];
+    var PREVIOUS_RUNS = 10;
 
-    var SCENARIOS = { ten_events_per_day: "10 events/day", fifty_events_per_day: "50 events/day" };
-    var WORKLOADS = {
-      loadingEvents: "loading", navigation: "navigation", scrolling: "scrolling",
-      rescheduling: "rescheduling", resizing: "resizing",
-    };
-    // Line colour per event-count scenario, so a scenario reads the same across every frame chart.
-    var SCENARIO_COLORS = { ten_events_per_day: "#2563eb", fifty_events_per_day: "#7c3aed" };
+    // Line colour per event count, so it reads the same across every frame chart.
+    var SCENARIO_COLORS = { "10 events/day": "#2563eb", "50 events/day": "#7c3aed" };
+    var PALETTE = ["#2563eb", "#059669", "#7c3aed", "#db2777", "#0891b2", "#ca8a04", "#dc2626", "#475569"];
 
-    function titleCase(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+    var state = { runs: readSetting("runs", 100), metric: readSetting("metric", "avg") };
+    if (!METRICS[state.metric]) state.metric = "avg";
+    if (!RUN_OPTIONS.some(function (o) { return o.value === state.runs; })) state.runs = 100;
+    var charts = [];
+    var data = null;
 
-    // Frame series keys look like "fifty_events_per_day-week-navigation / avg_build_ms". Returns the
-    // parsed dimensions, or null for anything that is not a frame series.
-    function parseFrameKey(name) {
-      if (name.indexOf(" / avg_build_ms") === -1) return null;
-      var seg = name.split(" / ")[0].split("-");
-      if (seg.length < 3) return null;
-      return { scenarioKey: seg[0], view: seg[1], workload: seg.slice(2).join("-") };
+    function readSetting(key, fallback) {
+      try {
+        var value = localStorage.getItem("kalender-bench-" + key);
+        if (value === null) return fallback;
+        return typeof fallback === "number" ? Number(value) : value;
+      } catch (e) {
+        return fallback;
+      }
     }
 
-    function friendlyName(suite, name) {
-      return MICRO_LABELS[name] || name;
+    function writeSetting(key, value) {
+      try { localStorage.setItem("kalender-bench-" + key, String(value)); } catch (e) { /* not stored */ }
+    }
+
+    function cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    // Returns the parts of a frame series name such as "Week · navigation · 50 events/day", or null
+    // for anything that is not a frame series.
+    function parseFrameKey(name) {
+      var seg = name.split(" · ");
+      if (seg.length !== 3 || !/ events\/day$/.test(seg[2])) return null;
+      return { view: seg[0], workload: seg[1], scenario: seg[2] };
+    }
+
+    // Frame results carry p90 and missed frames in `extra`, as in
+    // "p90_build=4.67ms p99_build=9.13ms missed_build=0 (runs=5)".
+    function parseExtra(extra) {
+      var p90 = /p90_build=([\d.]+)ms/.exec(extra || "");
+      var missed = /missed_build=(\d+)/.exec(extra || "");
+      return { p90: p90 ? Number(p90[1]) : null, missed: missed ? Number(missed[1]) : null };
+    }
+
+    function parseRange(range) {
+      var match = /([\d.]+)/.exec(range || "");
+      return match ? Number(match[1]) : null;
     }
 
     function median(values) {
-      var v = values.filter(function (x) { return typeof x === "number"; }).sort(function (a, b) { return a - b; });
+      var v = values.slice().sort(function (a, b) { return a - b; });
       if (!v.length) return null;
       var m = Math.floor(v.length / 2);
       return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
     }
 
-    // Collect, for a suite, the ordered run list and a per-series aligned value array.
-    function buildSeries(runs) {
-      var labels = runs.map(function (r) { return (r.commit && r.commit.id ? r.commit.id.slice(0, 7) : "?"); });
-      var commits = runs.map(function (r) { return r.commit || {}; });
-      var order = [];
-      var seen = {};
-      runs.forEach(function (r) {
-        (r.benches || []).forEach(function (b) { if (!seen[b.name]) { seen[b.name] = true; order.push(b.name); } });
-      });
-      var series = {};
-      order.forEach(function (name) {
-        series[name] = runs.map(function (r) {
-          var b = (r.benches || []).find(function (x) { return x.name === name; });
-          return b ? { y: b.value, unit: b.unit, range: b.range, extra: b.extra } : null;
-        });
-      });
-      return { labels: labels, commits: commits, order: order, series: series };
+    function formatValue(value, unit) {
+      if (value === null || value === undefined) return "n/a";
+      if (unit === "frames") return Math.round(value) + (Math.round(value) === 1 ? " frame" : " frames");
+      if (unit === "us") return Math.round(value).toLocaleString("en") + " µs";
+      return (value < 10 ? value.toFixed(2) : value.toFixed(1)) + " " + unit;
     }
 
-    var palette = ["#2563eb", "#059669", "#7c3aed", "#db2777", "#0891b2", "#ca8a04", "#dc2626", "#475569"];
+    function formatDate(timestamp) {
+      var date = new Date(timestamp);
+      return isNaN(date) ? "?" : date.toISOString().slice(0, 10);
+    }
+
+    function shortDate(timestamp) {
+      var date = new Date(timestamp);
+      return isNaN(date) ? "?" : date.toLocaleDateString("en", { month: "short", day: "numeric" });
+    }
+
+    // One point per run for a series under the selected metric, or null where the run lacks it.
+    function seriesPoints(runs, name, metric) {
+      return runs.map(function (run) {
+        var bench = (run.benches || []).find(function (b) { return b.name === name; });
+        if (!bench) return null;
+        if (metric === "avg" || !bench.extra) {
+          return { y: bench.value, unit: bench.unit, spread: parseRange(bench.range), extra: bench.extra };
+        }
+        var extra = parseExtra(bench.extra);
+        var y = metric === "p90" ? extra.p90 : extra.missed;
+        return y === null ? null : { y: y, unit: METRICS[metric].unit, spread: null, extra: bench.extra };
+      });
+    }
+
+    // The latest value against the median of the runs before it.
+    function latestChange(points) {
+      var values = points.filter(function (p) { return p; }).map(function (p) { return p.y; });
+      if (!values.length) return null;
+      var latest = values[values.length - 1];
+      var base = median(values.slice(-PREVIOUS_RUNS - 1, -1));
+      return { latest: latest, base: base, ratio: base ? latest / base : null };
+    }
+
+    // Indices where the Flutter version differs from the last run that recorded one.
+    function flutterChanges(runs) {
+      var changes = [];
+      var previous = null;
+      runs.forEach(function (run, i) {
+        if (!run.flutter) return;
+        if (previous && previous !== run.flutter) changes.push({ index: i, version: run.flutter });
+        previous = run.flutter;
+      });
+      return changes;
+    }
+
+    var flutterMarkers = {
+      id: "flutterMarkers",
+      afterDatasetsDraw: function (chart, args, options) {
+        var ctx = chart.ctx;
+        var area = chart.chartArea;
+        (options.changes || []).forEach(function (change) {
+          var x = chart.scales.x.getPixelForValue(change.index);
+          if (x < area.left || x > area.right) return;
+          ctx.save();
+          ctx.strokeStyle = cssVar("--marker");
+          ctx.fillStyle = cssVar("--muted");
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(x, area.top);
+          ctx.lineTo(x, area.bottom);
+          ctx.stroke();
+          ctx.font = "10px sans-serif";
+          ctx.textAlign = x > area.right - 60 ? "right" : "left";
+          ctx.fillText("Flutter " + change.version, x + (ctx.textAlign === "left" ? 4 : -4), area.top + 10);
+          ctx.restore();
+        });
+      },
+    };
 
     // Render the tooltip as a floating DOM node docked to the side of the chart, so it never
-    // overlaps the plot (a canvas tooltip is clipped to the short chart and would cover the data).
+    // covers the plot.
     function externalTooltip(context) {
       var el = document.getElementById("chart-tooltip");
       if (!el) { el = document.createElement("div"); el.id = "chart-tooltip"; document.body.appendChild(el); }
@@ -137,30 +240,28 @@
       if (!tt || tt.opacity === 0) { el.style.opacity = 0; return; }
 
       var html = "";
-      if (tt.title && tt.title.length) html += '<div class="tt-title">' + tt.title.join(" ") + "</div>";
+      if (tt.title && tt.title.length) html += '<div class="tt-title">' + escapeHtml(tt.title.join(" ")) + "</div>";
       (tt.body || []).forEach(function (b, i) {
         var color = (tt.labelColors[i] || {}).borderColor || "#888";
         var lines = b.lines || [];
         if (!lines.length) return;
-        html += '<div class="tt-row"><span class="tt-swatch" style="background:' + color + '"></span><span>' + lines[0] + "</span></div>";
-        // afterLabel output lands in b.after (and beforeLabel in b.before); render as detail lines.
-        var extras = lines.slice(1).concat(b.before || []).concat(b.after || []);
-        extras.forEach(function (line) {
+        html += '<div class="tt-row"><span class="tt-swatch" style="background:' + color + '"></span><span>' + escapeHtml(lines[0]) + "</span></div>";
+        (b.after || []).forEach(function (line) {
           var extra = String(line).trim();
-          if (extra) html += '<div class="tt-extra">' + extra + "</div>";
+          if (extra) html += '<div class="tt-extra">' + escapeHtml(extra) + "</div>";
         });
       });
-      if (tt.footer && tt.footer.length) html += '<div class="tt-footer">' + tt.footer.join(" ") + "</div>";
+      (tt.footer || []).forEach(function (line) { html += '<div class="tt-footer">' + escapeHtml(line) + "</div>"; });
       el.innerHTML = html;
 
-      // Dock to the right of the chart; flip to the left when there is no room.
+      // Dock to the right of the chart, or to the left when there is no room.
       var rect = context.chart.canvas.getBoundingClientRect();
       el.style.opacity = 1;
       var ttW = el.offsetWidth, ttH = el.offsetHeight, gap = 10;
       var vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
       var left = rect.right + gap;
       if (left + ttW > vw - 4) left = rect.left - ttW - gap;
-      if (left < 4) left = Math.max(4, rect.right - ttW);
+      if (left < 4) left = Math.max(4, Math.min(rect.right - ttW, vw - ttW - 4));
       var top = rect.top + tt.caretY - ttH / 2;
       if (top < 4) top = 4;
       if (top + ttH > vh - 4) top = vh - ttH - 4;
@@ -168,175 +269,253 @@
       el.style.top = (top + window.scrollY) + "px";
     }
 
-    function makeChart(canvas, cfg) {
-      // cfg: { labels, commits, unit, title, series:[{label, points:[{y,unit,range,extra}|null], color}] }
-      var multi = cfg.series.length > 1;
-      var datasets = cfg.series.map(function (s) {
-        return {
-          label: s.label,
-          data: s.points.map(function (p) { return p ? p.y : null; }),
-          borderColor: s.color, backgroundColor: s.color, spanGaps: false, tension: 0.2, pointRadius: 2, fill: false,
-          _meta: s.points,
-        };
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+
+    function withAlpha(hex, alpha) {
+      var n = parseInt(hex.slice(1), 16);
+      return "rgba(" + (n >> 16) + ", " + ((n >> 8) & 255) + ", " + (n & 255) + ", " + alpha + ")";
+    }
+
+    function makeChart(canvas, runs, card, changes) {
+      var datasets = [];
+      card.series.forEach(function (s) {
+        datasets.push({
+          label: s.label, data: s.points.map(function (p) { return p ? p.y : null; }),
+          borderColor: s.color, backgroundColor: s.color, tension: 0.2, fill: false,
+          pointRadius: 2, pointHitRadius: 6, borderWidth: 1.5, _points: s.points,
+        });
+        if (!s.points.some(function (p) { return p && p.spread; })) return;
+        var band = { borderWidth: 0, pointRadius: 0, pointHitRadius: 0, tension: 0.2, _band: true };
+        datasets.push(Object.assign({}, band, {
+          data: s.points.map(function (p) { return p && p.spread !== null ? p.y - p.spread / 2 : null; }),
+          fill: false,
+        }));
+        datasets.push(Object.assign({}, band, {
+          data: s.points.map(function (p) { return p && p.spread !== null ? p.y + p.spread / 2 : null; }),
+          fill: "-1", backgroundColor: withAlpha(s.color, 0.15),
+        }));
       });
 
-      new Chart(canvas.getContext("2d"), {
+      var grid = cssVar("--grid");
+      var muted = cssVar("--muted");
+      charts.push(new Chart(canvas.getContext("2d"), {
         type: "line",
-        data: { labels: cfg.labels, datasets: datasets },
+        data: { labels: runs.map(function (r) { return shortDate(r.commit && r.commit.timestamp); }), datasets: datasets },
+        plugins: [flutterMarkers],
         options: {
-          responsive: true, maintainAspectRatio: false,
+          responsive: true, maintainAspectRatio: false, animation: false,
           interaction: { mode: "index", intersect: false },
+          onClick: function (event, elements, chart) {
+            var hit = chart.getElementsAtEventForMode(event, "nearest", { intersect: true }, false)
+              .find(function (e) { return !chart.data.datasets[e.datasetIndex]._band; });
+            var commit = hit && runs[hit.index].commit;
+            if (commit && commit.url) window.open(commit.url, "_blank", "noopener");
+          },
           plugins: {
-            legend: { display: multi, labels: { boxHeight: 2, font: { size: 10 } } },
+            flutterMarkers: { changes: changes },
+            legend: { display: false },
             tooltip: {
               enabled: false,
               external: externalTooltip,
+              filter: function (item) { return !item.dataset._band; },
               callbacks: {
                 title: function (items) {
-                  var c = cfg.commits[items[0].dataIndex] || {};
-                  return c.id ? c.id.slice(0, 7) + (c.message ? " — " + c.message : "") : "";
+                  var c = runs[items[0].dataIndex].commit || {};
+                  return (c.id ? c.id.slice(0, 7) : "?") + " · " + formatDate(c.timestamp);
                 },
                 label: function (item) {
-                  var p = (item.dataset._meta || [])[item.dataIndex];
+                  var p = item.dataset._points[item.dataIndex];
                   if (!p) return "";
-                  var s = item.dataset.label + ": " + (Math.round(p.y * 1000) / 1000) + " " + (p.unit || cfg.unit || "");
-                  if (p.range) s += " (" + p.range + ")";
-                  return s;
+                  var text = item.dataset.label + ": " + formatValue(p.y, p.unit);
+                  if (p.spread !== null) text += " (IQR " + formatValue(p.spread, p.unit) + ")";
+                  return text;
                 },
                 afterLabel: function (item) {
-                  var p = (item.dataset._meta || [])[item.dataIndex];
-                  return p && p.extra ? "  " + p.extra : "";
+                  var p = item.dataset._points[item.dataIndex];
+                  return p && p.extra ? p.extra : "";
                 },
-                footer: function () { return "↓ lower is better"; },
+                footer: function (items) {
+                  var run = runs[items[0].dataIndex];
+                  var lines = [];
+                  var message = run.commit && run.commit.message;
+                  if (message) lines.push(message.split("\n")[0]);
+                  if (run.flutter) lines.push("Flutter " + run.flutter);
+                  return lines;
+                },
               },
             },
           },
           scales: {
-            x: { title: { display: true, text: "commit" }, ticks: { maxRotation: 0, autoSkip: true } },
-            y: { title: { display: true, text: cfg.unit || "" }, beginAtZero: true },
+            x: { grid: { color: grid }, ticks: { color: muted, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 } },
+            y: {
+              beginAtZero: true, grid: { color: grid }, ticks: { color: muted },
+              title: { display: true, text: card.unit, color: muted },
+            },
           },
         },
-      });
+      }));
     }
 
-    // Group a suite's series into cards: frame series collapse into one card per view · workload
-    // (one line per event-count scenario); everything else stays a single-line card.
-    function buildCards(suiteName, built) {
+    // Frame series collapse into one card per view and workload, with one line per event count.
+    // Every other series gets a card of its own.
+    function buildCards(allRuns, names, metric) {
       var cards = [];
-      var groupIndex = {};
-      var paletteIdx = 0;
-      built.order.forEach(function (name) {
-        var pts = built.series[name];
-        var firstPt = pts.find(function (p) { return p; }) || {};
-        var unit = firstPt.unit || "";
-        var fk = parseFrameKey(name);
-        if (fk) {
-          var groupKey = fk.view + "-" + fk.workload;
-          if (groupIndex[groupKey] === undefined) {
-            groupIndex[groupKey] = cards.length;
-            cards.push({
-              title: titleCase(fk.view) + " · " + (WORKLOADS[fk.workload] || fk.workload),
-              series: [], unit: unit,
-            });
-          }
-          var card = cards[groupIndex[groupKey]];
-          card.series.push({
-            label: SCENARIOS[fk.scenarioKey] || fk.scenarioKey.replace(/_/g, " "),
-            points: pts,
-            color: SCENARIO_COLORS[fk.scenarioKey] || palette[card.series.length % palette.length],
-          });
-        } else {
-          cards.push({
-            title: friendlyName(suiteName, name),
-            series: [{ label: friendlyName(suiteName, name), points: pts, color: palette[paletteIdx++ % palette.length] }],
-            unit: unit,
-          });
+      var byKey = {};
+      names.forEach(function (name, i) {
+        var frame = parseFrameKey(name);
+        var points = seriesPoints(allRuns, name, frame ? metric : "avg");
+        var unit = (points.find(function (p) { return p; }) || {}).unit || "";
+        if (!frame) {
+          cards.push({ title: name, unit: unit, series: [{ label: name, points: points, color: PALETTE[i % PALETTE.length] }] });
+          return;
         }
+        var key = frame.view + " · " + frame.workload;
+        if (!byKey[key]) {
+          byKey[key] = { title: key, view: frame.view, unit: unit, series: [] };
+          cards.push(byKey[key]);
+        }
+        byKey[key].series.push({
+          label: frame.scenario, points: points,
+          color: SCENARIO_COLORS[frame.scenario] || PALETTE[byKey[key].series.length % PALETTE.length],
+        });
       });
       return cards;
     }
 
-    function overviewPoints(suiteName, built, runs) {
-      // Frame (ms) → median of all ms benches per run (absolute). Otherwise → normalised
-      // index: mean of value/firstSeenValue across metrics, ×100 (unit-agnostic).
-      var anyMs = built.order.some(function (n) {
-        return runs.some(function (r) { return (r.benches || []).some(function (b) { return b.name === n && b.unit === "ms"; }); });
+    function seriesNames(runs) {
+      var names = [];
+      runs.forEach(function (run) {
+        (run.benches || []).forEach(function (b) { if (names.indexOf(b.name) === -1) names.push(b.name); });
       });
-      if (anyMs) {
-        var pts = runs.map(function (r) {
-          var vals = (r.benches || []).filter(function (b) { return b.unit === "ms"; }).map(function (b) { return b.value; });
-          var m = median(vals);
-          return m == null ? null : { y: m, unit: "ms" };
-        });
-        return { points: pts, unit: "ms", title: "Overview · median build time" };
-      }
-      var baseline = {};
-      built.order.forEach(function (n) {
-        for (var i = 0; i < built.series[n].length; i++) { if (built.series[n][i]) { baseline[n] = built.series[n][i].y; break; } }
+      return names;
+    }
+
+    function latestSummary(card, threshold) {
+      var el = document.createElement("div");
+      el.className = "latest";
+      card.series.forEach(function (s) {
+        var change = latestChange(s.points);
+        if (!change) return;
+        var row = document.createElement("div");
+        var text = (card.series.length > 1 ? s.label + ": " : "Latest: ") + formatValue(change.latest, card.unit);
+        var diff = "";
+        var alert = change.ratio !== null ? change.ratio >= threshold : change.base === 0 && change.latest > 0;
+        if (change.ratio !== null) {
+          var percent = Math.round((change.ratio - 1) * 100);
+          diff = (percent > 0 ? "+" : "") + percent + "% against the previous " + PREVIOUS_RUNS;
+        } else if (change.base === 0 && change.latest > 0) {
+          diff = "up from 0 in the previous " + PREVIOUS_RUNS;
+        }
+        row.innerHTML = '<span class="swatch" style="background:' + s.color + '"></span><span>' + escapeHtml(text) + "</span>" +
+          (diff ? '<span class="' + (alert ? "alert" : "") + '">' + escapeHtml(diff) + "</span>" : "");
+        el.appendChild(row);
       });
-      var pts2 = runs.map(function (r, i) {
-        var ratios = [];
-        built.order.forEach(function (n) {
-          var p = built.series[n][i];
-          if (p && baseline[n]) ratios.push(p.y / baseline[n]);
-        });
-        if (!ratios.length) return null;
-        var mean = ratios.reduce(function (a, b) { return a + b; }, 0) / ratios.length;
-        return { y: Math.round(mean * 1000) / 10, unit: "% of baseline" };
+      return el;
+    }
+
+    function renderSection(root, title, cards, allRuns, threshold) {
+      if (!cards.length) return;
+      var h2 = document.createElement("h2");
+      h2.textContent = title;
+      root.appendChild(h2);
+      var grid = document.createElement("div");
+      grid.className = "grid";
+      root.appendChild(grid);
+
+      var start = state.runs ? Math.max(0, allRuns.length - state.runs) : 0;
+      var runs = allRuns.slice(start);
+      var changes = flutterChanges(allRuns)
+        .filter(function (c) { return c.index >= start; })
+        .map(function (c) { return { index: c.index - start, version: c.version }; });
+
+      cards.forEach(function (card) {
+        var el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = "<h3>" + escapeHtml(card.title) + "</h3>";
+        el.appendChild(latestSummary(card, threshold));
+        var wrap = document.createElement("div");
+        wrap.className = "chart-wrap";
+        var canvas = document.createElement("canvas");
+        wrap.appendChild(canvas);
+        el.appendChild(wrap);
+        grid.appendChild(el);
+        var visible = {
+          title: card.title, unit: card.unit,
+          series: card.series.map(function (s) { return Object.assign({}, s, { points: s.points.slice(start) }); }),
+        };
+        makeChart(canvas, runs, visible, changes);
       });
-      return { points: pts2, unit: "% of baseline", title: "Overview · relative to first commit" };
     }
 
     function render() {
-      var data = window.BENCHMARK_DATA;
+      charts.forEach(function (chart) { chart.destroy(); });
+      charts = [];
       var root = document.getElementById("root");
+      root.innerHTML = "";
       if (!data || !data.entries) { root.innerHTML = '<p class="empty">No benchmark data found.</p>'; return; }
 
-      var lu = data.lastUpdate ? new Date(data.lastUpdate).toUTCString() : "unknown";
-      document.getElementById("meta").innerHTML =
-        "Last updated " + lu + " · <a href=\"" + (data.repoUrl || "#") + "\">" + (data.repoUrl || "") + "</a>";
+      var frameRuns = data.entries[FRAME_SUITE] || [];
+      var frameCards = buildCards(frameRuns, seriesNames(frameRuns), state.metric);
+      VIEWS.forEach(function (view) {
+        var cards = frameCards.filter(function (c) { return c.view === view; });
+        renderSection(root, view + " view", cards, frameRuns, THRESHOLDS[FRAME_SUITE]);
+      });
 
-      Object.keys(data.entries).forEach(function (suiteName) {
-        var runs = data.entries[suiteName] || [];
-        var h2 = document.createElement("h2");
-        h2.textContent = suiteName + " (" + runs.length + " runs)";
-        root.appendChild(h2);
+      var microRuns = data.entries[MICRO_SUITE] || [];
+      renderSection(root, "Micro-benchmarks", buildCards(microRuns, seriesNames(microRuns), "avg"), microRuns, THRESHOLDS[MICRO_SUITE]);
+    }
 
-        if (!runs.length) {
-          var p = document.createElement("p"); p.className = "empty"; p.textContent = "No data."; root.appendChild(p); return;
-        }
-
-        var built = buildSeries(runs);
-
-        // Overview card (full width row of its own).
-        var ov = overviewPoints(suiteName, built, runs);
-        var ovCard = document.createElement("div");
-        ovCard.className = "card overview";
-        ovCard.innerHTML = '<h3>' + ov.title + '</h3><div class="chart-wrap"><canvas></canvas></div>';
-        root.appendChild(ovCard);
-        makeChart(ovCard.querySelector("canvas"), {
-          labels: built.labels, commits: built.commits, unit: ov.unit, title: ov.title,
-          series: [{ label: ov.title, points: ov.points, color: "#4f46e5" }],
+    function renderControl(id, options, selected, onSelect) {
+      var control = document.getElementById(id);
+      options.forEach(function (option) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.textContent = option.label;
+        button.setAttribute("aria-pressed", String(option.value === selected));
+        button.addEventListener("click", function () {
+          control.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b === button)); });
+          onSelect(option.value);
         });
-
-        // Per-metric grid — frame series grouped by view · workload, one line per scenario.
-        var grid = document.createElement("div");
-        grid.className = "grid";
-        root.appendChild(grid);
-        buildCards(suiteName, built).forEach(function (card) {
-          var el = document.createElement("div");
-          el.className = "card";
-          el.innerHTML = '<h3>' + card.title + '</h3><div class="chart-wrap"><canvas></canvas></div>';
-          grid.appendChild(el);
-          makeChart(el.querySelector("canvas"), {
-            labels: built.labels, commits: built.commits, unit: card.unit,
-            title: card.title, series: card.series,
-          });
-        });
+        control.appendChild(button);
       });
     }
 
-    render();
+    function renderMeta() {
+      var runs = (data.entries[MICRO_SUITE] || data.entries[FRAME_SUITE] || []).length;
+      var updated = data.lastUpdate ? new Date(data.lastUpdate).toUTCString() : "unknown";
+      var meta = document.getElementById("meta");
+      meta.textContent = runs + " runs · last updated " + updated + " · ";
+      var link = document.createElement("a");
+      link.href = data.repoUrl || "#";
+      link.textContent = data.repoUrl || "";
+      meta.appendChild(link);
+    }
+
+    renderControl("runs-control", RUN_OPTIONS, state.runs, function (value) {
+      state.runs = value;
+      writeSetting("runs", value);
+      render();
+    });
+    renderControl("metric-control", Object.keys(METRICS).map(function (key) {
+      return { value: key, label: METRICS[key].label };
+    }), state.metric, function (value) {
+      state.metric = value;
+      writeSetting("metric", value);
+      render();
+    });
+
+    fetch("data.json")
+      .then(function (response) { return response.ok ? response.json() : null; })
+      .catch(function () { return null; })
+      .then(function (json) {
+        data = json;
+        if (data && data.entries) renderMeta();
+        render();
+      });
   </script>
 </body>
 </html>

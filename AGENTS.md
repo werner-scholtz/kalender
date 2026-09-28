@@ -20,7 +20,7 @@ Kalender is a Flutter calendar package with three views, multi-day (day and week
 | `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page |
 | `examples/` | Runnable apps, indexed by `examples/README.md`. `example/` is the pub.dev Example tab and only links there |
 | `tool/` | `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart` and `pin_release_links.dart` |
-| `.github/workflows/` | `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `deploy_dashboard.yml`, `publish.yml` and `web_demo.yml` |
+| `.github/workflows/` | `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `publish.yml` and `site.yml` |
 
 Every example depends on the package by path, `../../../kalender/` for most of them, so the checkout has to sit in a folder named `kalender`.
 
@@ -173,11 +173,30 @@ git tag -s v0.32.0 -m v0.32.0 && git push origin v0.32.0
 
 `publish.yml` refuses a tag that is not on main, does not match `pubspec.yaml` or has no changelog heading. It then analyzes, tests, runs `tool/pin_release_links.dart <tag>` and publishes. The pinning rewrites the links in `README.md`, `example/README.md`, `CHANGELOG.md` and `doc/*.md` to the tag, inside the runner only, so the pub.dev pages link to the documentation they shipped with and the repository keeps its relative links. Preview it locally by running the script with any tag and restore with `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
 
-The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/). A push to main whose message contains `web demo` rebuilds it from main.
+Once the release is on pub.dev, `site.yml` rebuilds the live demo from it, see [Site and benchmarks](#site-and-benchmarks).
 
 A pre-release takes a `-dev.N` suffix, as in `v0.33.0-dev.1`. A patch for an older release starts from its tag when needed: `git branch release/0.32.x v0.32.0`.
 
 `.pubignore` keeps `AGENTS.md`, `ROADMAP.md`, the tests, examples and tools out of the archive. `flutter pub publish --dry-run` lists what ships.
+
+## Site and benchmarks
+
+`site.yml` publishes the [live demo](https://werner-scholtz.github.io/kalender/) and the [benchmarks dashboard](https://werner-scholtz.github.io/kalender/dev/bench/) to GitHub Pages. There is no `gh-pages` branch. It runs after a release is published, after a benchmark run on main, when `benchmark/dashboard/` changes on main, and by hand.
+
+- The demo is built from a release once `publish.yml` has published it. A dev release keeps the current demo.
+- To publish the demo from another ref, run the Site workflow from main with `demo_ref` set, for example to `main`. The next release replaces it.
+- Every other run reuses the last demo build from the Actions cache, and builds the latest release when the cache has expired.
+- The dashboard is `benchmark/dashboard/index.html`, published from main.
+
+`performance_profiling.yml` runs the micro-benchmarks in `benchmark/` and the frame profiling in `examples/testing/`. It runs on pushes to main that touch the package or the benchmarks, and on pull requests labelled `profile`. Each run is compared with the stored results, and the comparison is posted on the pull request. On main the run, with the Flutter version from `.fvmrc`, is added to `data.json` on `refs/benchmarks/data`.
+
+`refs/benchmarks/data` is outside `refs/heads`, so a clone does not download it:
+
+```bash
+git fetch origin refs/benchmarks/data && git show FETCH_HEAD:data.json
+```
+
+Results are stored by series name. Renaming a benchmark starts a new series unless the names in `data.json` are changed to match.
 
 ## Documentation
 
