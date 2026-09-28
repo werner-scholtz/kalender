@@ -71,11 +71,13 @@
       Lower is better on every chart. Frame timings come from a shared GitHub runner (<code>ubuntu-latest</code>) whose
       hardware is unknown and varies between runs, and a CI VM is not a real device. Read them as trends between
       commits, not as frame rates. The micro-benchmarks are the primary signal. The shaded area is the interquartile
-      range of the runs for one commit. A dashed line marks a Flutter version change. Click a point to open its commit.
+      range of the runs for one commit. A dashed line marks a Flutter version change. A hollow point ran on a CPU other
+      than the most common one. Runs record their CPU from 2026-09-28 on. Click a point to open its commit.
     </div>
     <div class="controls">
       <div class="control" id="runs-control"><span>Runs</span></div>
       <div class="control" id="metric-control"><span>Frame metric</span></div>
+      <div class="control" id="cpu-control"><span>Other CPUs</span></div>
     </div>
     <div id="root"></div>
   </main>
@@ -103,7 +105,9 @@
     var SCENARIO_COLORS = { "10 events/day": "#2563eb", "50 events/day": "#7c3aed" };
     var PALETTE = ["#2563eb", "#059669", "#7c3aed", "#db2777", "#0891b2", "#ca8a04", "#dc2626", "#475569"];
 
-    var state = { runs: readSetting("runs", 100), metric: readSetting("metric", "avg") };
+    var CPU_OPTIONS = [{ value: "show", label: "Show" }, { value: "hide", label: "Hide" }];
+    var state = { runs: readSetting("runs", 100), metric: readSetting("metric", "avg"), cpus: readSetting("cpus", "show") };
+    if (state.cpus !== "hide") state.cpus = "show";
     if (!METRICS[state.metric]) state.metric = "avg";
     if (!RUN_OPTIONS.some(function (o) { return o.value === state.runs; })) state.runs = 100;
     var charts = [];
@@ -172,9 +176,11 @@
       return isNaN(date) ? "?" : date.toLocaleDateString("en", { month: "short", day: "numeric" });
     }
 
-    // One point per run for a series under the selected metric, or null where the run lacks it.
-    function seriesPoints(runs, name, metric) {
+    // One point per run for a series under the selected metric, or null where the run lacks it or
+    // [otherCpu] hides it.
+    function seriesPoints(runs, name, metric, otherCpu) {
       return runs.map(function (run) {
+        if (state.cpus === "hide" && otherCpu(run)) return null;
         var bench = (run.benches || []).find(function (b) { return b.name === name; });
         if (!bench) return null;
         if (metric === "avg" || !bench.extra) {
@@ -193,6 +199,14 @@
       var latest = values[values.length - 1];
       var base = median(values.slice(-PREVIOUS_RUNS - 1, -1));
       return { latest: latest, base: base, ratio: base ? latest / base : null };
+    }
+
+    // Whether a run recorded a CPU other than the most common one among [runs].
+    function otherCpuTest(runs) {
+      var counts = {};
+      runs.forEach(function (run) { if (run.cpu) counts[run.cpu] = (counts[run.cpu] || 0) + 1; });
+      var common = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; })[0];
+      return function (run) { return Boolean(common && run.cpu && run.cpu !== common); };
     }
 
     // Indices where the Flutter version differs from the last run that recorded one.
@@ -280,13 +294,15 @@
       return "rgba(" + (n >> 16) + ", " + ((n >> 8) & 255) + ", " + (n & 255) + ", " + alpha + ")";
     }
 
-    function makeChart(canvas, runs, card, changes) {
+    function makeChart(canvas, runs, card, changes, otherCpu) {
       var datasets = [];
       card.series.forEach(function (s) {
         datasets.push({
           label: s.label, data: s.points.map(function (p) { return p ? p.y : null; }),
           borderColor: s.color, backgroundColor: s.color, tension: 0.2, fill: false,
-          pointRadius: 2, pointHitRadius: 6, borderWidth: 1.5, _points: s.points,
+          pointBackgroundColor: function (ctx) { return otherCpu(runs[ctx.dataIndex]) ? "transparent" : s.color; },
+          pointRadius: function (ctx) { return otherCpu(runs[ctx.dataIndex]) ? 3 : 2; },
+          pointHitRadius: 6, borderWidth: 1.5, spanGaps: true, _points: s.points,
         });
         if (!s.points.some(function (p) { return p && p.spread; })) return;
         var band = { borderWidth: 0, pointRadius: 0, pointHitRadius: 0, tension: 0.2, _band: true };
@@ -344,6 +360,7 @@
                   var message = run.commit && run.commit.message;
                   if (message) lines.push(message.split("\n")[0]);
                   if (run.flutter) lines.push("Flutter " + run.flutter);
+                  if (run.cpu) lines.push(run.cpu);
                   return lines;
                 },
               },
@@ -362,12 +379,12 @@
 
     // Frame series collapse into one card per view and workload, with one line per event count.
     // Every other series gets a card of its own.
-    function buildCards(allRuns, names, metric) {
+    function buildCards(allRuns, names, metric, otherCpu) {
       var cards = [];
       var byKey = {};
       names.forEach(function (name, i) {
         var frame = parseFrameKey(name);
-        var points = seriesPoints(allRuns, name, frame ? metric : "avg");
+        var points = seriesPoints(allRuns, name, frame ? metric : "avg", otherCpu);
         var unit = (points.find(function (p) { return p; }) || {}).unit || "";
         if (!frame) {
           cards.push({ title: name, unit: unit, series: [{ label: name, points: points, color: PALETTE[i % PALETTE.length] }] });
@@ -417,7 +434,7 @@
       return el;
     }
 
-    function renderSection(root, title, cards, allRuns, threshold) {
+    function renderSection(root, title, cards, allRuns, threshold, otherCpu) {
       if (!cards.length) return;
       var h2 = document.createElement("h2");
       h2.textContent = title;
@@ -447,7 +464,7 @@
           title: card.title, unit: card.unit,
           series: card.series.map(function (s) { return Object.assign({}, s, { points: s.points.slice(start) }); }),
         };
-        makeChart(canvas, runs, visible, changes);
+        makeChart(canvas, runs, visible, changes, otherCpu);
       });
     }
 
@@ -459,14 +476,17 @@
       if (!data || !data.entries) { root.innerHTML = '<p class="empty">No benchmark data found.</p>'; return; }
 
       var frameRuns = data.entries[FRAME_SUITE] || [];
-      var frameCards = buildCards(frameRuns, seriesNames(frameRuns), state.metric);
+      var frameCpu = otherCpuTest(frameRuns);
+      var frameCards = buildCards(frameRuns, seriesNames(frameRuns), state.metric, frameCpu);
       VIEWS.forEach(function (view) {
         var cards = frameCards.filter(function (c) { return c.view === view; });
-        renderSection(root, view + " view", cards, frameRuns, THRESHOLDS[FRAME_SUITE]);
+        renderSection(root, view + " view", cards, frameRuns, THRESHOLDS[FRAME_SUITE], frameCpu);
       });
 
       var microRuns = data.entries[MICRO_SUITE] || [];
-      renderSection(root, "Micro-benchmarks", buildCards(microRuns, seriesNames(microRuns), "avg"), microRuns, THRESHOLDS[MICRO_SUITE]);
+      var microCpu = otherCpuTest(microRuns);
+      var microCards = buildCards(microRuns, seriesNames(microRuns), "avg", microCpu);
+      renderSection(root, "Micro-benchmarks", microCards, microRuns, THRESHOLDS[MICRO_SUITE], microCpu);
     }
 
     function renderControl(id, options, selected, onSelect) {
@@ -505,6 +525,12 @@
     }), state.metric, function (value) {
       state.metric = value;
       writeSetting("metric", value);
+      render();
+    });
+
+    renderControl("cpu-control", CPU_OPTIONS, state.cpus, function (value) {
+      state.cpus = value;
+      writeSetting("cpus", value);
       render();
     });
 
