@@ -55,6 +55,63 @@ class KalenderControllerProvider extends InheritedNotifier<KalenderController> {
   }
 }
 
+/// Provides [SelectionModel] for [controller]'s selection.
+class SelectionScope extends StatelessWidget {
+  final KalenderController controller;
+  final Widget child;
+
+  const SelectionScope({super.key, required this.controller, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: controller.selectedEvent,
+      builder: (context, _, child) => SelectionModel(
+        selectedEventId: controller.selectedEventId,
+        internalFocus: controller.internalFocus,
+        child: child!,
+      ),
+      child: child,
+    );
+  }
+}
+
+/// The selected event's id and whether the calendar is moving it.
+///
+/// A widget depends on one event's id, so a change of selection rebuilds only the widgets of the events it involves.
+class SelectionModel extends InheritedModel<String> {
+  const SelectionModel({super.key, required this.selectedEventId, required this.internalFocus, required super.child});
+
+  /// The aspect of a widget that depends on [internalFocus] whichever event is selected.
+  static const anyFocus = '';
+
+  final String? selectedEventId;
+  final bool internalFocus;
+
+  /// Whether [eventId] is selected, and whether the calendar is moving it.
+  static ({bool selected, bool moving}) of(BuildContext context, String eventId) {
+    final model = InheritedModel.inheritFrom<SelectionModel>(context, aspect: eventId);
+    final selected = model != null && model.selectedEventId == eventId;
+    return (selected: selected, moving: selected && model.internalFocus);
+  }
+
+  /// Whether the calendar is moving any event.
+  static bool anyMoving(BuildContext context) {
+    return InheritedModel.inheritFrom<SelectionModel>(context, aspect: anyFocus)?.internalFocus ?? false;
+  }
+
+  @override
+  bool updateShouldNotify(SelectionModel oldWidget) {
+    return selectedEventId != oldWidget.selectedEventId || internalFocus != oldWidget.internalFocus;
+  }
+
+  @override
+  bool updateShouldNotifyDependent(SelectionModel oldWidget, Set<String> dependencies) {
+    if (dependencies.contains(anyFocus) && internalFocus != oldWidget.internalFocus) return true;
+    return dependencies.contains(selectedEventId) || dependencies.contains(oldWidget.selectedEventId);
+  }
+}
+
 /// The [LocaleProvider] is used to provide the locale for internationalization.
 class LocaleProvider extends InheritedWidget {
   /// The locale used for internationalization.

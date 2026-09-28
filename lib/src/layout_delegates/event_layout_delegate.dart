@@ -362,11 +362,17 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
 
   @override
   List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events) {
-    return events.toList()..sort((a, b) {
+    // Each start is converted once, since a conversion reads the device timezone.
+    final keyed = [
+      for (final event in events)
+        (event: event, duration: event.duration, start: event.floatingStart(location: location)),
+    ];
+    keyed.sort((a, b) {
       final byDuration = b.duration.compareTo(a.duration);
       if (byDuration != 0) return byDuration;
-      return b.floatingStart(location: location).compareTo(a.floatingStart(location: location));
+      return b.start.compareTo(a.start);
     });
+    return [for (final item in keyed) item.event];
   }
 
   @override
