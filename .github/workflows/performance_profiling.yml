@@ -64,14 +64,12 @@ jobs:
           sudo apt-get install -y libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev
           sudo apt-get install -y mesa-common-dev
 
-      # --- Micro-benchmarks (pure Dart, low noise, the primary signal) ---------
       - name: Get package dependencies
         run: flutter pub get
 
       - name: Run micro-benchmarks
         run: flutter test benchmark/micro_benchmark_test.dart
 
-      # --- Frame profiling (flutter drive, higher noise, supplementary) --------
       - name: Get example dependencies
         working-directory: ./examples/testing
         run: flutter pub get
@@ -101,7 +99,6 @@ jobs:
           path: examples/testing/build/*.timeline.json
           retention-days: 30
 
-      # --- Store results in refs/benchmarks/data ------------------------------
       # The history lives in data.json on refs/benchmarks/data, a ref outside
       # refs/heads so a plain clone does not download it. The fetch fails when the
       # ref is missing, so a run never starts an empty history.

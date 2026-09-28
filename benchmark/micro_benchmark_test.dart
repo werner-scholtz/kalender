@@ -4,18 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-// Micro-benchmarks for kalender's pure-Dart hot paths.
-//
-// Run with:
-//   flutter test benchmark/micro_benchmark_test.dart
-//
-// Results are written to `build/micro_results.json` in the
-// github-action-benchmark `customSmallerIsBetter` format:
-//   [ { "name": ..., "unit": "us", "value": ... }, ... ]
-//
-// These exercise CPU-bound algorithms with no widget tree, so they are far
-// less noisy than the frame-profiling suite and are the primary regression
-// signal for the library's own code.
+// Micro-benchmarks for kalender's pure-Dart code paths, run with `flutter test benchmark/micro_benchmark_test.dart`.
+// Results go to `build/micro_results.json` in the github-action-benchmark `customSmallerIsBetter` format.
 
 import 'dart:convert';
 import 'dart:io';
@@ -27,15 +17,10 @@ import 'package:kalender/kalender.dart';
 
 import 'fixtures.dart';
 
-/// Sink used to defeat dead-code elimination: every benchmark folds its result
-/// in here and we print it at the end so the compiler cannot prove the work is
-/// unused.
+/// Every benchmark folds its result in here and the total is printed, so the compiler keeps the work.
 int _sink = 0;
 
-/// Base class that measures the cost of a single [run] call (in microseconds).
-///
-/// [BenchmarkBase] defaults `exercise()` to 10 `run()` calls; we override it to
-/// a single call so [BenchmarkBase.measure] reports per-`run` microseconds.
+/// Measures one [run] call in microseconds. [BenchmarkBase.exercise] runs [run] ten times by default.
 abstract class _KalenderBenchmark extends BenchmarkBase {
   _KalenderBenchmark(super.name);
 
@@ -43,13 +28,8 @@ abstract class _KalenderBenchmark extends BenchmarkBase {
   void exercise() => run();
 }
 
-/// `FloatingDateTimeRange.dates()`: linear day expansion, called all over the
-/// layout and event-store code.
-///
-/// A single expansion is sub-microsecond and dominated by timer/JIT noise, so
-/// we measure a fixed [_batch] of calls per run. This is also realistic:
-/// `dates()` is invoked many times per frame (once per event in several code
-/// paths), so a batch reflects the actual per-frame cost.
+/// `FloatingDateTimeRange.dates()` over [days] days, called [_batch] times per run. One call is below the timer's
+/// resolution.
 class _DatesBenchmark extends _KalenderBenchmark {
   _DatesBenchmark(this.days) : super('Date expansion · $days days (x$_batch)');
   static const _batch = 200;
@@ -74,7 +54,7 @@ class _DatesBenchmark extends _KalenderBenchmark {
   }
 }
 
-/// `defaultMultiDayFrameGenerator` — O(N²·D) multi-day event row assignment.
+/// `defaultMultiDayFrameGenerator`, which assigns multi-day events to rows.
 class _MultiDayFrameBenchmark extends _KalenderBenchmark {
   _MultiDayFrameBenchmark(this.eventCount, this.days) : super('Multi-day layout · $eventCount events over $days days');
   final int eventCount;
@@ -103,9 +83,7 @@ class _MultiDayFrameBenchmark extends _KalenderBenchmark {
   }
 }
 
-/// `defaultMultiDayFrameGenerator` with dense single-day events, matching the
-/// month/week header layout at a realistic event density (50 events per day).
-/// This is the path behind the reported month/week navigation jank.
+/// `defaultMultiDayFrameGenerator` with [eventsPerDay] single-day events per day, as in the week and month headers.
 class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
   _MultiDayFrameDenseBenchmark(this.eventsPerDay, this.days)
     : super('Multi-day layout · $eventsPerDay events/day over $days days');
@@ -135,8 +113,7 @@ class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
   }
 }
 
-/// `findLongestChain` — DFS overlap-depth used to size side-by-side tiles;
-/// flagged in-code as "expensive, use sparingly".
+/// `SideBySideLayoutDelegate.findLongestChain`, the overlap depth that sizes side-by-side tiles.
 class _LongestChainBenchmark extends _KalenderBenchmark {
   _LongestChainBenchmark(this.count) : super('Overlap depth · $count events');
   final int count;
@@ -154,8 +131,7 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
       minimumTileHeight: null,
       layoutCache: EventLayoutDelegateCache(),
     );
-    // Staircase overlap: each event overlaps a handful of neighbours, giving a
-    // realistic bounded chain depth rather than a pathological fully-dense set.
+    // Each event overlaps the next few, so the chain depth stays bounded.
     data = [for (var i = 0; i < count; i++) VerticalLayoutData(id: i, top: i * 10.0, bottom: i * 10.0 + 35.0)];
   }
 
@@ -163,9 +139,7 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
   void run() => _sink ^= delegate.findLongestChain(data);
 }
 
-/// `DefaultEventsController.eventsInRange`: the per-frame event query
-/// path (covers `eventIdsInRange` + type filtering). A full year of
-/// events is loaded once; the benchmark queries a [queryDays]-day window.
+/// `DefaultEventsController.eventsInRange` over [queryDays] days of a year with 10 events per day.
 class _EventQueryBenchmark extends _KalenderBenchmark {
   _EventQueryBenchmark(this.queryDays) : super('Event query · $queryDays ${queryDays == 1 ? 'day' : 'days'}');
   final int queryDays;
