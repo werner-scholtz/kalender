@@ -34,7 +34,6 @@ class ResizeHandleWidget extends StatefulWidget {
 }
 
 class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
-  /// The calendar controller (nullable to handle dispose before initialization).
   KalenderController? _controller;
 
   /// Whether the resize handles are shown due to a hover event (precise input).
@@ -54,26 +53,15 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// Whether to show the resize handles (derived from hover or selection).
   bool get _showHandles => _showFromHover || _showFromSelection;
 
-  /// The size of the event tile.
-  Size _size = Size.zero;
-
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _controller = context.kalenderController;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final controller = context.kalenderController;
+    if (controller != _controller) {
+      _controller?.selectedEvent.removeListener(listener);
+      _controller = controller;
       _controller?.selectedEvent.addListener(listener);
-      setState(() => _size = context.size ?? Size.zero);
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant ResizeHandleWidget oldWidget) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) setState(() => _size = context.size ?? Size.zero);
-    });
-    super.didUpdateWidget(oldWidget);
+    }
   }
 
   @override
@@ -131,27 +119,32 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final interaction = context.interaction;
-    final isImprecise = _resolveIsImprecise(interaction);
+    return MouseRegion(
+      onEnter: _show,
+      onExit: _onExit,
+      onHover: _show,
+      opaque: false,
+      child: _showHandles ? LayoutBuilder(builder: _buildHandles) : const SizedBox.shrink(),
+    );
+  }
 
-    final visibility = Visibility(
-      visible: _showHandles && _size != Size.zero,
-      maintainState: false,
-      child: context.tileComponents.buildResizeHandles(
-        context,
-        ResizeHandleDetails(
-          event: widget.event,
-          interaction: interaction,
-          range: widget.floatingRange,
-          size: _size,
-          axis: widget.axis,
-          isImprecise: isImprecise,
-          location: context.location,
-        ),
+  Widget _buildHandles(BuildContext context, BoxConstraints constraints) {
+    final size = constraints.biggest;
+    if (size.isEmpty) return const SizedBox.shrink();
+
+    final interaction = context.interaction;
+    return context.tileComponents.buildResizeHandles(
+      context,
+      ResizeHandleDetails(
+        event: widget.event,
+        interaction: interaction,
+        range: widget.floatingRange,
+        size: size,
+        axis: widget.axis,
+        isImprecise: _resolveIsImprecise(interaction),
+        location: context.location,
       ),
     );
-
-    return MouseRegion(onEnter: _show, onExit: _onExit, onHover: _show, opaque: false, child: visibility);
   }
 }
 

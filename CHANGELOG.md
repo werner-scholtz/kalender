@@ -1,3 +1,10 @@
+## 0.32.1
+
+### Fixes
+
+- An event tile builds its resize handles only while they show, so a change to the events builds each tile once instead of twice.
+- The overlap layout converts each event's start once when it sorts a day's events.
+
 ## 0.32.0
 
 ### Deprecations
