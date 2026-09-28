@@ -9,7 +9,7 @@ This file applies to work under `examples/web_demo/`. It supplements the reposit
 - Package name: `web_demo`
 - Primary dependency under test: local path dependency on `kalender`
 - Generated localization output: `lib/l10n/app_localizations.dart`
-- Web deploy workflow: `.github/workflows/web_demo.yml`
+- Web deploy workflow: `.github/workflows/site.yml`, see [Site and benchmarks](../../AGENTS.md#site-and-benchmarks)
 
 ## Working Directory
 

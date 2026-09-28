@@ -51,7 +51,7 @@ abstract class _KalenderBenchmark extends BenchmarkBase {
 /// `dates()` is invoked many times per frame (once per event in several code
 /// paths), so a batch reflects the actual per-frame cost.
 class _DatesBenchmark extends _KalenderBenchmark {
-  _DatesBenchmark(this.days) : super('dates x$_batch / ${days}d');
+  _DatesBenchmark(this.days) : super('Date expansion · $days days (x$_batch)');
   static const _batch = 200;
   final int days;
   late FloatingDateTimeRange range;
@@ -76,7 +76,7 @@ class _DatesBenchmark extends _KalenderBenchmark {
 
 /// `defaultMultiDayFrameGenerator` — O(N²·D) multi-day event row assignment.
 class _MultiDayFrameBenchmark extends _KalenderBenchmark {
-  _MultiDayFrameBenchmark(this.eventCount, this.days) : super('multiDayFrame / ${eventCount}ev x ${days}d');
+  _MultiDayFrameBenchmark(this.eventCount, this.days) : super('Multi-day layout · $eventCount events over $days days');
   final int eventCount;
   final int days;
   late FloatingDateTimeRange range;
@@ -108,7 +108,7 @@ class _MultiDayFrameBenchmark extends _KalenderBenchmark {
 /// This is the path behind the reported month/week navigation jank.
 class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
   _MultiDayFrameDenseBenchmark(this.eventsPerDay, this.days)
-    : super('multiDayFrame / ${eventsPerDay}ev-per-day x ${days}d');
+    : super('Multi-day layout · $eventsPerDay events/day over $days days');
   final int eventsPerDay;
   final int days;
   late FloatingDateTimeRange range;
@@ -138,7 +138,7 @@ class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
 /// `findLongestChain` — DFS overlap-depth used to size side-by-side tiles;
 /// flagged in-code as "expensive, use sparingly".
 class _LongestChainBenchmark extends _KalenderBenchmark {
-  _LongestChainBenchmark(this.count) : super('findLongestChain / ${count}ev');
+  _LongestChainBenchmark(this.count) : super('Overlap depth · $count events');
   final int count;
   late SideBySideLayoutDelegate delegate;
   late List<VerticalLayoutData> data;
@@ -167,7 +167,7 @@ class _LongestChainBenchmark extends _KalenderBenchmark {
 /// path (covers `eventIdsInRange` + type filtering). A full year of
 /// events is loaded once; the benchmark queries a [queryDays]-day window.
 class _EventQueryBenchmark extends _KalenderBenchmark {
-  _EventQueryBenchmark(this.queryDays) : super('eventsFromRange / query ${queryDays}d');
+  _EventQueryBenchmark(this.queryDays) : super('Event query · $queryDays ${queryDays == 1 ? 'day' : 'days'}');
   final int queryDays;
   late DefaultEventsController controller;
   late FloatingDateTimeRange queryRange;

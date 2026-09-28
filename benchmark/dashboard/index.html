@@ -5,19 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kalender Benchmarks</title>
   <!--
-    Custom dashboard for github-action-benchmark data.
+    Dashboard for the github-action-benchmark results, with Chart.js 4.4.1 from npm. site.yml
+    publishes it to /kalender/dev/bench/ next to data.json from refs/benchmarks/data.
 
-    Source of truth: benchmark/dashboard/, with Chart.js 4.4.1 from npm (deployed to gh-pages/dev/bench/ by
-    .github/workflows/deploy_dashboard.yml). github-action-benchmark only writes its default
-    index.html when one does not already exist, so this custom page persists; benchmark runs only
-    update the sibling data.js.
-
-    It reads the same `window.BENCHMARK_DATA` and adds three things the default template lacks:
-      1. Human-readable chart titles (display-only; the underlying series keys are untouched so
-         backfilled history is preserved).
-      2. A consolidated overview trend per suite.
-      3. Frame charts grouped by view · workload, with one line per event-count scenario, so the
-         same operation (e.g. Week · loading) is compared across 10 vs 50 events/day on one chart.
+    Frame series are named "<view> · <workload> · <N> events/day" and are grouped into one chart
+    per view and workload, with one line per event count.
   -->
   <script src="chart.umd.js"></script>
   <style>
@@ -59,45 +51,18 @@
   <div class="meta" id="meta"></div>
   <div class="legend-note">↓ Lower is better on every chart. Frame timings come from a shared GitHub runner (<code>ubuntu-latest</code>) whose hardware is unknown and varies between runs, and a CI VM is not a real device. Read the millisecond charts as relative trends between commits, not as absolute frame rates. The micro-benchmarks are the primary signal.</div>
   <div id="root"></div>
-  <script src="data.js"></script>
   <script>
     "use strict";
 
-    // Explicit friendly titles for the micro-benchmark series keys.
-    var MICRO_LABELS = {
-      "dates x200 / 7d": "Date expansion · 7-day range (×200)",
-      "dates x200 / 30d": "Date expansion · 30-day range (×200)",
-      "dates x200 / 90d": "Date expansion · 90-day range (×200)",
-      "dates x200 / 365d": "Date expansion · 365-day range (×200)",
-      "multiDayFrame / 100ev x 30d": "Multi-day layout · 100 events × 30 days",
-      "multiDayFrame / 300ev x 30d": "Multi-day layout · 300 events × 30 days",
-      "findLongestChain / 60ev": "Overlap chain depth · 60 events",
-      "eventsFromRange / query 1d": "Event query · 1-day window",
-      "eventsFromRange / query 7d": "Event query · 7-day window",
-      "eventsFromRange / query 30d": "Event query · 30-day window",
-    };
+    // Line colour per event count, so it reads the same across every frame chart.
+    var SCENARIO_COLORS = { "10 events/day": "#2563eb", "50 events/day": "#7c3aed" };
 
-    var SCENARIOS = { ten_events_per_day: "10 events/day", fifty_events_per_day: "50 events/day" };
-    var WORKLOADS = {
-      loadingEvents: "loading", navigation: "navigation", scrolling: "scrolling",
-      rescheduling: "rescheduling", resizing: "resizing",
-    };
-    // Line colour per event-count scenario, so a scenario reads the same across every frame chart.
-    var SCENARIO_COLORS = { ten_events_per_day: "#2563eb", fifty_events_per_day: "#7c3aed" };
-
-    function titleCase(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-    // Frame series keys look like "fifty_events_per_day-week-navigation / avg_build_ms". Returns the
-    // parsed dimensions, or null for anything that is not a frame series.
+    // Returns the parts of a frame series name such as "Week · navigation · 50 events/day", or null
+    // for anything that is not a frame series.
     function parseFrameKey(name) {
-      if (name.indexOf(" / avg_build_ms") === -1) return null;
-      var seg = name.split(" / ")[0].split("-");
-      if (seg.length < 3) return null;
-      return { scenarioKey: seg[0], view: seg[1], workload: seg.slice(2).join("-") };
-    }
-
-    function friendlyName(suite, name) {
-      return MICRO_LABELS[name] || name;
+      var seg = name.split(" · ");
+      if (seg.length !== 3 || !/ events\/day$/.test(seg[2])) return null;
+      return { view: seg[0], workload: seg[1], scenario: seg[2] };
     }
 
     function median(values) {
@@ -221,7 +186,7 @@
 
     // Group a suite's series into cards: frame series collapse into one card per view · workload
     // (one line per event-count scenario); everything else stays a single-line card.
-    function buildCards(suiteName, built) {
+    function buildCards(built) {
       var cards = [];
       var groupIndex = {};
       var paletteIdx = 0;
@@ -234,21 +199,18 @@
           var groupKey = fk.view + "-" + fk.workload;
           if (groupIndex[groupKey] === undefined) {
             groupIndex[groupKey] = cards.length;
-            cards.push({
-              title: titleCase(fk.view) + " · " + (WORKLOADS[fk.workload] || fk.workload),
-              series: [], unit: unit,
-            });
+            cards.push({ title: fk.view + " · " + fk.workload, series: [], unit: unit });
           }
           var card = cards[groupIndex[groupKey]];
           card.series.push({
-            label: SCENARIOS[fk.scenarioKey] || fk.scenarioKey.replace(/_/g, " "),
+            label: fk.scenario,
             points: pts,
-            color: SCENARIO_COLORS[fk.scenarioKey] || palette[card.series.length % palette.length],
+            color: SCENARIO_COLORS[fk.scenario] || palette[card.series.length % palette.length],
           });
         } else {
           cards.push({
-            title: friendlyName(suiteName, name),
-            series: [{ label: friendlyName(suiteName, name), points: pts, color: palette[paletteIdx++ % palette.length] }],
+            title: name,
+            series: [{ label: name, points: pts, color: palette[paletteIdx++ % palette.length] }],
             unit: unit,
           });
         }
@@ -287,8 +249,7 @@
       return { points: pts2, unit: "% of baseline", title: "Overview · relative to first commit" };
     }
 
-    function render() {
-      var data = window.BENCHMARK_DATA;
+    function render(data) {
       var root = document.getElementById("root");
       if (!data || !data.entries) { root.innerHTML = '<p class="empty">No benchmark data found.</p>'; return; }
 
@@ -323,7 +284,7 @@
         var grid = document.createElement("div");
         grid.className = "grid";
         root.appendChild(grid);
-        buildCards(suiteName, built).forEach(function (card) {
+        buildCards(built).forEach(function (card) {
           var el = document.createElement("div");
           el.className = "card";
           el.innerHTML = '<h3>' + card.title + '</h3><div class="chart-wrap"><canvas></canvas></div>';
@@ -336,7 +297,10 @@
       });
     }
 
-    render();
+    fetch("data.json")
+      .then(function (response) { return response.ok ? response.json() : null; })
+      .catch(function () { return null; })
+      .then(render);
   </script>
 </body>
 </html>
