@@ -98,12 +98,21 @@ class KalenderViewState extends State<KalenderView> {
     setState(() => _show(next, _controller));
   }
 
-  /// Shows [next] and releases the view controller shown before once its widgets are gone.
+  /// The view controllers shown before [_viewController], with the controller of each, until a build replaces them.
+  final _replaced = <(ViewController, KalenderController)>[];
+
+  /// Shows [next] and releases the view controller shown before once a build has replaced its widgets.
   void _show(ViewController next, KalenderController controller) {
     final old = _viewController;
     if (identical(next, old)) return;
     _viewController = next;
-    WidgetsBinding.instance.addPostFrameCallback((_) => controller.releaseView(this, old));
+    _replaced.add((old, controller));
+  }
+
+  void _release(List<(ViewController, KalenderController)> replaced) {
+    for (final (viewController, controller) in replaced) {
+      controller.releaseView(this, viewController);
+    }
   }
 
   @override
@@ -133,6 +142,7 @@ class KalenderViewState extends State<KalenderView> {
 
   @override
   void dispose() {
+    _release(_replaced);
     _controller
       ..removeListener(_onControllerChanged)
       ..releaseView(this, _viewController);
@@ -162,6 +172,11 @@ class KalenderViewState extends State<KalenderView> {
 
   @override
   Widget build(BuildContext context) {
+    if (_replaced.isNotEmpty) {
+      final replaced = [..._replaced];
+      _replaced.clear();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _release(replaced));
+    }
     final parts = _partsFor(_viewController.viewConfiguration);
     final header = parts?.header ?? parts?.builtInHeader;
     final body = parts?.body ?? parts?.builtInBody;
