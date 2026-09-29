@@ -8,15 +8,6 @@ import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// The tile widgets, each with a static `builder`.
-///
-/// Kept out of `main.dart` so the calendar setup there stays readable. Each
-/// tile reads the theme from its own context rather than capturing it from the
-/// enclosing build, which is what lets the builder be a static function and the
-/// components be a single `const`.
-///
-/// An inline builder works just as well. This is a readability choice.
-
 Color eventColor(BuildContext context, KalenderEvent event) =>
     (event is Event ? event.color : null) ?? Theme.of(context).colorScheme.primaryContainer;
 
@@ -96,7 +87,6 @@ class TileWhenDragging extends StatelessWidget {
   }
 }
 
-/// Reads its color from the theme, so both handles can be one const widget.
 class ResizeHandle extends StatelessWidget {
   const ResizeHandle({super.key});
 
@@ -132,7 +122,6 @@ class ScheduleEventTile extends StatelessWidget {
   }
 }
 
-/// Declared once rather than rebuilt by a method called from `build`.
 const tileComponents = TileComponents(
   tileBuilder: EventTile.builder,
   dropTargetTile: DropTargetTile.builder,

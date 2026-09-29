@@ -87,6 +87,7 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 - The web demo's configuration labels and options are translated.
 - The intl4x example renders in every locale it offers and switches between the week, month and schedule views.
 - The recurrence example's tiles show the start and end time of their event.
+- The basic example's three-day view is named 3 Days.
 
 ## 0.32.0
 
