@@ -57,9 +57,10 @@ class MultiDayBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is MultiDayViewController,
-      'The view controller needs to be a $MultiDayViewController',
+    final viewController = context.viewControllerFor<MultiDayViewController>(
+      MultiDayBody,
+      MultiDayViewConfiguration,
+      MultiDayViewParts,
     );
     return ViewProviders(
       callbacks: callbacks,
@@ -67,7 +68,7 @@ class MultiDayBody extends StatelessWidget {
       snapping: snapping,
       installSnapping: true,
       tileComponents: tileComponents ?? TileComponents.defaultComponents(),
-      heightPerMinute: (context.viewController as MultiDayViewController).heightPerMinute,
+      heightPerMinute: viewController.heightPerMinute,
       child: _MultiDayBody(configuration: configuration),
     );
   }
@@ -81,12 +82,6 @@ class _MultiDayBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.kalenderController;
-
-    assert(
-      context.viewController is MultiDayViewController,
-      'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
-    );
-
     final viewController = context.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;

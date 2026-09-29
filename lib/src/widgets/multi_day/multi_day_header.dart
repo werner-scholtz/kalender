@@ -56,12 +56,11 @@ class _MultiDayHeaderSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is MultiDayViewController,
-      'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
+    final viewController = context.viewControllerFor<MultiDayViewController>(
+      MultiDayHeader,
+      MultiDayViewConfiguration,
+      MultiDayViewParts,
     );
-
-    final viewController = context.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = configuration ?? const MultiDayHeaderConfiguration();
     final components = context.components;

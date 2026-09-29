@@ -57,11 +57,11 @@ class _ScheduleBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is ScheduleViewController,
-      'The KalenderController\'s $ViewController needs to be a $ScheduleViewController',
+    final viewController = context.viewControllerFor<ScheduleViewController>(
+      ScheduleBody,
+      ScheduleViewConfiguration,
+      ScheduleViewParts,
     );
-    final viewController = context.viewController as ScheduleViewController;
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
     if (viewController is ContinuousScheduleViewController) {
       return SchedulePositionList(

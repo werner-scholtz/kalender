@@ -262,6 +262,18 @@ extension ProviderContext on BuildContext {
   /// The [ViewController] of the enclosing [KalenderView].
   ViewController get viewController => ViewControllerProvider.of(this);
 
+  /// [viewController] as a [T], asserting that [widget], which shows a [configuration], is in its [parts].
+  T viewControllerFor<T extends ViewController>(Type widget, Type configuration, Type parts) {
+    final viewController = this.viewController;
+    final shown = viewController.viewConfiguration;
+    assert(
+      viewController is T,
+      '$widget shows a $configuration and goes in $parts, but it is in the parts that show the ${shown.runtimeType} '
+      'named "${shown.name}".',
+    );
+    return viewController as T;
+  }
+
   /// Retrieve the [KalenderComponents].
   KalenderComponents get components => Components.of(this);
 

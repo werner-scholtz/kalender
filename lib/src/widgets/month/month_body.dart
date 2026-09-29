@@ -58,9 +58,11 @@ class _MonthBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(context.viewController is MonthViewController, 'The view controller needs to be a $MonthViewController');
-
-    final viewController = context.viewController as MonthViewController;
+    final viewController = context.viewControllerFor<MonthViewController>(
+      MonthBody,
+      MonthViewConfiguration,
+      MonthViewParts,
+    );
     final viewConfiguration = viewController.viewConfiguration;
     final showWeekNumbers = viewConfiguration.showWeekNumbers;
     final configuration = this.configuration ?? const MonthBodyConfiguration();

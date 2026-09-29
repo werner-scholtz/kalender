@@ -31,12 +31,11 @@ class _MonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is MonthViewController,
-      'The KalenderController\'s $ViewController needs to be a $MonthViewController',
+    final viewController = context.viewControllerFor<MonthViewController>(
+      MonthHeader,
+      MonthViewConfiguration,
+      MonthViewParts,
     );
-
-    final viewController = context.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
     final components = calendarComponents.monthComponents.headerComponents;
