@@ -16,14 +16,12 @@ import 'package:web_demo/widgets/toolbar/chip_dropdown.dart';
 class NavigationHeader extends StatelessWidget {
   final KalenderController controller;
   final List<ViewConfiguration> viewConfigurations;
-  final ViewConfiguration viewConfiguration;
   final VoidCallback? onToggleConfig;
   final bool configVisible;
   const NavigationHeader({
     super.key,
     required this.controller,
     required this.viewConfigurations,
-    required this.viewConfiguration,
     this.onToggleConfig,
     this.configVisible = true,
   });
@@ -36,8 +34,7 @@ class NavigationHeader extends StatelessWidget {
         final useChips = !isTouch && maxW >= 700;
         final isCompact = maxW < 400;
 
-        // On touch devices buttons are 44px; account for that when deciding
-        // which elements to show so the Row never overflows.
+        // Touch devices use 44px buttons, which these widths account for.
         // Minimum widths (approx): date~80 + 2×nav~88 + loc~44 + view~44 + cfg~44 + spacing = ~315
         // The full date label needs ~180 where the compact one takes ~80, so it
         // only appears once it and the right-hand cluster both fit.
@@ -74,11 +71,18 @@ class NavigationHeader extends StatelessWidget {
                 ),
               ],
               if (!isTouch) TodayButton(controller: controller, compact: isCompact),
-              if (showLocation) LocationMenu(useChips: useChips),
-              ViewMenu(
-                viewConfigurations: viewConfigurations,
-                viewConfiguration: viewConfiguration,
-                useChips: useChips,
+              if (showLocation)
+                ListenableBuilder(
+                  listenable: controller,
+                  builder: (context, _) => LocationMenu(useChips: useChips),
+                ),
+              ListenableBuilder(
+                listenable: controller,
+                builder: (context, _) => ViewMenu(
+                  viewConfigurations: viewConfigurations,
+                  viewConfiguration: controller.viewConfiguration,
+                  useChips: useChips,
+                ),
               ),
               if (onToggleConfig != null) ConfigToggle(onPressed: onToggleConfig, configVisible: configVisible),
             ],
@@ -284,20 +288,11 @@ class HeaderDateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: controller.visibleDateTimeRange,
+      valueListenable: controller.floatingVisibleRange,
       builder: (context, value, child) {
-        if (value == null) return const SizedBox.shrink();
-        final String month;
-        final int year;
-
-        if (controller.viewController is MonthViewController) {
-          final secondWeek = value.start.copyWith(day: value.start.day + 7);
-          year = secondWeek.year;
-          month = secondWeek.monthNameLocalized(Localizations.localeOf(context));
-        } else {
-          year = value.start.year;
-          month = value.start.monthNameLocalized(Localizations.localeOf(context));
-        }
+        final date = controller.viewConfiguration is MonthViewConfiguration ? value.dominantMonthDate : value.start;
+        final year = date.year;
+        final month = date.monthNameLocalized(Localizations.localeOf(context));
 
         final button = FilledButton.tonal(
           onPressed: () async {

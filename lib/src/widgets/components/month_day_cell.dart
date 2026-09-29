@@ -20,9 +20,8 @@ typedef MonthDayCellBuilder = Widget Function(BuildContext context, MonthDayCell
 class MonthDayCellDetails {
   const MonthDayCellDetails({required this.date, required this.isToday, required this.isInFocusedMonth});
 
-  /// The cell's date, as a wall-clock [DateTime] in the calendar's configured
-  /// location (via `.forLocation()`), so comparisons against `DateTime.now()`
-  /// behave correctly.
+  /// The cell's date, as a wall-clock [DateTime] in the calendar's configured location (via `.forLocation()`), so
+  /// comparisons against `DateTime.now()` behave correctly.
   final DateTime date;
 
   /// Whether [date] is today.
@@ -30,8 +29,8 @@ class MonthDayCellDetails {
 
   /// Whether [date] falls within the focused month.
   ///
-  /// `false` for the leading and trailing days that belong to the previous or
-  /// next month but are shown to fill out the grid.
+  /// `false` for the leading and trailing days that belong to the previous or next month but are shown to fill out the
+  /// grid.
   final bool isInFocusedMonth;
 }
 
@@ -43,12 +42,11 @@ class MonthDayCellDetails {
 class MonthDayCell extends StatelessWidget {
   const MonthDayCell({super.key});
 
-  /// A ready-made [MonthDayCellBuilder] that shades the leading and trailing
-  /// adjacent-month days, leaving the focused month's days unchanged.
+  /// A ready-made [MonthDayCellBuilder] that shades the leading and trailing adjacent-month days, leaving the focused
+  /// month's days unchanged.
   ///
-  /// Pass [color] to set the shade. When omitted it defaults to a low-opacity
-  /// [ColorScheme.onSurface] overlay (the Material 3 way to express a greyed-out
-  /// or de-emphasized surface), read from the ambient theme, so it adapts to
+  /// Pass [color] to set the shade. When omitted it defaults to a low-opacity [ColorScheme.onSurface] overlay (the
+  /// Material 3 way to express a greyed-out or de-emphasized surface), read from the ambient theme, so it adapts to
   /// light and dark modes and to any custom [ColorScheme]. Enable it with:
   ///
   /// ```dart

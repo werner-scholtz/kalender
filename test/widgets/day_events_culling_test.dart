@@ -22,9 +22,8 @@ void main() {
     eventsController = DefaultEventsController();
   });
 
-  // Adds one event on [day], starting at [hour] for [durationHours]. The view
-  // uses 1 pixel per minute and starts the day at 00:00, so the tile's top
-  // pixel is hour * 60.
+  // Adds one event on [day], starting at [hour] for [durationHours]. The view uses 1 pixel per minute and starts the
+  // day at 00:00, so the tile's top pixel is hour * 60.
   String addEvent(int hour, {int durationHours = 1}) {
     return eventsController.addEvent(
       KalenderEvent(

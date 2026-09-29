@@ -51,10 +51,7 @@ class Event extends KalenderEvent {
   }
 
   @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is Event && other.title == title && other.person == person && other.dateTimeRange == dateTimeRange;
-  }
+  bool operator ==(Object other) => super == other && other is Event && other.title == title && other.person == person;
 
   @override
   int get hashCode => Object.hash(super.hashCode, title, person);
@@ -109,12 +106,18 @@ class _MyHomePageState extends State<MyHomePage> {
   late final kalenderController = KalenderController(viewConfiguration: _viewConfigurations.first);
 
   @override
+  void dispose() {
+    kalenderController.dispose();
+    eventsController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        components: KalenderComponents(),
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreateWithDetail: Event.fromDetail,
@@ -175,7 +178,7 @@ class PeopleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Needed for proper spacing — matches the body's timeline gutter width.
+        // Matches the body's timeline gutter width.
         SizedBox(width: defaultTimelineWidth(context, KalenderTimeRange.allDay())),
         ...List.generate(
           viewConfiguration.numberOfDays,

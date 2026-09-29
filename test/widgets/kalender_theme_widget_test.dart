@@ -179,8 +179,8 @@ void main() {
   });
 
   testWidgets('changing the data notifies dependents, an equal value does not', (tester) async {
-    // Counts didChangeDependencies, not builds. A build counter cannot tell a
-    // real notification from the child being replaced by its parent rebuilding.
+    // Counts didChangeDependencies, not builds. A build counter cannot tell a real notification from the child being
+    // replaced by its parent rebuilding.
     _DependentState.notifications = 0;
 
     Widget build(KalenderThemeData data) {
@@ -201,9 +201,8 @@ void main() {
   });
 
   testWidgets('wrap carries the theme into a detached tree', (tester) async {
-    // What InheritedTheme adds over a plain InheritedWidget, and the reason the
-    // dragged tile is themed: the captured themes are replayed somewhere that
-    // is not a descendant.
+    // What InheritedTheme adds over a plain InheritedWidget, and the reason the dragged tile is themed: the captured
+    // themes are replayed somewhere that is not a descendant.
     const scoped = Color(0xFF00FF00);
     late Widget captured;
 

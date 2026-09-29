@@ -57,9 +57,8 @@ class TileDraggable extends StatelessWidget {
     }(
       key: rescheduleDraggableKey,
       data: Reschedule(event: event),
-      // The feedback is built into the Overlay, which is not below this widget,
-      // so it inherits nothing from here. Capturing carries the themes across,
-      // which is why a scoped KalenderTheme reaches the dragged tile.
+      // The feedback is built into the Overlay, which is not below this widget, so it inherits nothing from here.
+      // Capturing carries the themes across, which is why a scoped KalenderTheme reaches the dragged tile.
       feedback: InheritedTheme.captureAll(
         context,
         FeedbackWidget(
@@ -86,8 +85,8 @@ class FeedbackWidget extends StatefulWidget {
 
   /// The events controller, used to listen for updates to the event being dragged.
   ///
-  /// This is passed explicitly because the feedback widget is rendered in an overlay
-  /// which is not a descendant of the [EventsControllerProvider].
+  /// This is passed explicitly because the feedback widget is rendered in an overlay which is not a descendant of the
+  /// [EventsControllerProvider].
   final EventsController eventsController;
 
   /// The builder used to create the feedback tile.

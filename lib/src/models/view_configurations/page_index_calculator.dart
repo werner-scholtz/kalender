@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
@@ -24,8 +24,7 @@ abstract class PageIndexCalculator {
 
   const PageIndexCalculator({required this.start, required this.end});
 
-  /// [start] and [end] resolved into [location], before a view adjusts them to
-  /// its own page boundaries.
+  /// [start] and [end] resolved into [location], before a view adjusts them to its own page boundaries.
   @protected
   FloatingDateTimeRange rawRange(Location? location) {
     return FloatingDateTimeRange(
@@ -41,8 +40,8 @@ abstract class PageIndexCalculator {
 
   /// Creates a [PageIndexCalculator] for a week [MultiDayViewConfiguration.week].
   ///
-  /// [daysToDisplay] shortens the page without changing the weekly pagination,
-  /// so 6 shows Monday to Saturday on a week that still turns every 7 days.
+  /// [daysToDisplay] shortens the page without changing the weekly pagination, so 6 shows Monday to Saturday on a week
+  /// that still turns every 7 days.
   factory PageIndexCalculator.week(
     KalenderDateTimeRange dateTimeRange,
     int firstDayOfWeek, {
@@ -80,8 +79,7 @@ abstract class PageIndexCalculator {
 
   /// Creates a [PageIndexCalculator] for a free scrolling [MultiDayViewConfiguration.freeScroll].
   ///
-  /// The band scrolls continuously rather than paging, so an index is a day offset from the start of
-  /// the range.
+  /// The band scrolls continuously rather than paging, so an index is a day offset from the start of the range.
   factory PageIndexCalculator.freeScroll(KalenderDateTimeRange dateTimeRange) {
     return DayIndexCalculator(start: dateTimeRange.start, end: dateTimeRange.end);
   }
@@ -98,6 +96,10 @@ abstract class PageIndexCalculator {
 
   /// Calculates the VisibleDateRange from the [index].
   FloatingDateTimeRange rangeFromIndex(int index, Location? location);
+
+  /// A date on the page at [index], which [indexFromDate] maps back to [index].
+  @internal
+  FloatingDateTime dateFromIndex(int index, Location? location) => rangeFromIndex(index, location).start;
 
   /// Calculates the page index of the [date].
   ///
@@ -141,8 +143,8 @@ class DayIndexCalculator extends PageIndexCalculator {
     final startOfDate = FloatingDateTime.fromExternal(date, location: location);
     final startOfRange = floatingRange(location).start;
     final days = startOfDate.difference(startOfRange).inDays;
-    // Guard against an empty range (numberOfPages == 0), where numberOfPages - 1
-    // would be a negative upper bound and make clamp throw.
+    // Guard against an empty range (numberOfPages == 0), where numberOfPages - 1 would be a negative upper bound and
+    // make clamp throw.
     final pageCount = numberOfPages(location);
     return pageCount == 0 ? 0 : days.clamp(0, pageCount - 1);
   }
@@ -173,9 +175,8 @@ class WeekIndexCalculator extends PageIndexCalculator {
 
   /// The number of days to display in a week view. Usually 7.
   ///
-  /// Fewer than 7 shortens the page and leaves the pagination alone, so the page
-  /// still turns every 7 days from [firstDayOfWeek]. More than 7 would make
-  /// consecutive pages overlap.
+  /// Fewer than 7 shortens the page and leaves the pagination alone, so the page still turns every 7 days from
+  /// [firstDayOfWeek]. More than 7 would make consecutive pages overlap.
   final int daysToDisplay;
 
   WeekIndexCalculator({
@@ -322,6 +323,9 @@ class MonthIndexCalculator extends PageIndexCalculator with _MonthPages {
     final floatingStart = floatingRange(location).start;
     return FloatingDateTime.fromDateTime(floatingStart.copyWith(month: floatingStart.month + index));
   }
+
+  @override
+  FloatingDateTime dateFromIndex(int index, Location? location) => monthStartFromIndex(index, location);
 
   @override
   FloatingDateTimeRange rangeFromIndex(int index, Location? location) {

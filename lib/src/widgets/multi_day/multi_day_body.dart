@@ -18,14 +18,12 @@ import 'package:linked_pageview/linked_pageview.dart';
 // TODO: Remove the split between the content and the header, and with it the duplicate page views. The timeline then
 //  scrolls with the page view. A pinned timeline can be added back if it is requested.
 
-/// The scrollable body of a multi-day view.
-///
-/// Holds the [TimeLine], [HourLines], a [PageView] of day columns and a [VerticalDragTarget] that handles the
-/// rescheduling and resizing of events.
+/// The scrollable body of a multi-day view: a timeline and one column of events per day. The default body of
+/// [MultiDayViewParts].
 ///
 /// {@category Views}
 class MultiDayBody extends StatelessWidget {
-  /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
+  /// Null uses a default [MultiDayBodyConfiguration].
   final MultiDayBodyConfiguration? configuration;
 
   /// See [KalenderView.callbacks].
@@ -57,9 +55,10 @@ class MultiDayBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is MultiDayViewController,
-      'The view controller needs to be a $MultiDayViewController',
+    final viewController = context.viewControllerFor<MultiDayViewController>(
+      MultiDayBody,
+      MultiDayViewConfiguration,
+      MultiDayViewParts,
     );
     return ViewProviders(
       callbacks: callbacks,
@@ -67,7 +66,7 @@ class MultiDayBody extends StatelessWidget {
       snapping: snapping,
       installSnapping: true,
       tileComponents: tileComponents ?? TileComponents.defaultComponents(),
-      heightPerMinute: (context.viewController as MultiDayViewController).heightPerMinute,
+      heightPerMinute: viewController.heightPerMinute,
       child: _MultiDayBody(configuration: configuration),
     );
   }
@@ -81,12 +80,6 @@ class _MultiDayBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.kalenderController;
-
-    assert(
-      context.viewController is MultiDayViewController,
-      'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
-    );
-
     final viewController = context.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
@@ -110,8 +103,8 @@ class _MultiDayBody extends StatelessWidget {
               height: pageHeight,
               child: Row(
                 children: [
-                  // The timeline is always on the left side of the page, but should not scroll with the pageview.
-                  // Its width is fixed to the shared timeline width so it aligns with the header and drag overlay.
+                  // The timeline is always on the left side of the page, but should not scroll with the pageview. Its
+                  // width is fixed to the shared timeline width so it aligns with the header and drag overlay.
                   SizedBox(
                     key: MultiDayBody.timelineKey,
                     width: timelineWidth,
@@ -220,9 +213,11 @@ class _MultiDayPageState extends State<MultiDayPage> {
   @override
   void initState() {
     super.initState();
-    _initialPage();
     widget.viewController.visibleTimeOfDay.addListener(_onVisibleTimeOfDayChanged);
+    // Listeners of the visible events may be outside the calendar, so they are not notified during the build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _initialPage();
       widget.eventsController.addListener(_currentPage);
     });
   }
@@ -325,16 +320,16 @@ class _MultiDayPageState extends State<MultiDayPage> {
           ],
         );
 
-        // Optionally keep the page alive so navigating back to it reuses its
-        // built content instead of rebuilding every tile.
+        // Optionally keep the page alive so navigating back to it reuses its built content instead of rebuilding every
+        // tile.
         return widget.configuration.keepPagesAlive ? _KeepAlivePage(child: page) : page;
       },
     );
   }
 }
 
-/// Keeps its [child] alive within a lazily-built page view, so a page that
-/// scrolls out of view is not disposed and rebuilt when it comes back.
+/// Keeps its [child] alive within a lazily-built page view, so a page that scrolls out of view is not disposed and
+/// rebuilt when it comes back.
 class _KeepAlivePage extends StatefulWidget {
   const _KeepAlivePage({required this.child});
 

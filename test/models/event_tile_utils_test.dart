@@ -41,8 +41,8 @@ class _MultiDayTileHarness extends StatelessWidget with MultiDayEventTileUtils {
 void main() {
   initializeTimeZones();
 
-  // A UTC location keeps wall-clock arithmetic equal to the UTC inputs so these
-  // tests are deterministic regardless of the `TZ` the suite runs under.
+  // A UTC location keeps wall-clock arithmetic equal to the UTC inputs so these tests are deterministic regardless of
+  // the `TZ` the suite runs under.
   final utcLocation = getLocation('Etc/UTC');
 
   late DefaultEventsController eventsController;

@@ -47,9 +47,8 @@ void main() {
     return tester.widget<Snapping>(find.byType(Snapping)).notifier!.value;
   }
 
-  /// 00:08 with a 15 minute interval. [EventSnapStrategy.interval] moves it to
-  /// 00:15 and [EventSnapStrategy.none] leaves it alone, so the result names the
-  /// strategy in use by behavior rather than by identity alone.
+  /// 00:08 with a 15 minute interval. [EventSnapStrategy.interval] moves it to 00:15 and [EventSnapStrategy.none]
+  /// leaves it alone, so the result names the strategy in use by behavior rather than by identity alone.
   FloatingDateTime applyStrategy(KalenderSnapping snapping) {
     return snapping.eventSnapStrategy.snap(
       cursorDate: FloatingDateTime(2025, 1, 1, 0, 8),

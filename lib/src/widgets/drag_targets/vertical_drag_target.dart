@@ -40,14 +40,22 @@ class VerticalDragTarget extends StatefulWidget {
   @override
   State<VerticalDragTarget> createState() => _VerticalDragTargetState();
 
-  /// The default [KalenderCallbacks.onWillAcceptWithDetailsVertical]. Accepts [Create], [Resize] and
-  /// [Reschedule] payloads.
+  /// The default [KalenderCallbacks.onWillAcceptWithDetailsVertical]. Accepts [Create], [Resize] and [Reschedule]
+  /// payloads.
+  ///
+  /// Checks them against [KalenderController.viewController], the active view. A drag target without this callback set
+  /// checks them against its own view.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
     KalenderController controller,
     VerticalConfiguration configuration,
+  ) => _accepts(details, controller, controller.viewController);
+
+  static bool _accepts(
+    DragTargetDetails<Object?> details,
+    KalenderController controller,
+    ViewController viewController,
   ) {
-    final viewController = controller.viewController;
     if (viewController is! MultiDayViewController) return false;
     final timeOfDayRange = viewController.viewConfiguration.timeOfDayRange;
 
@@ -56,12 +64,11 @@ class VerticalDragTarget extends StatefulWidget {
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: (event, direction) => direction.vertical,
       onReschedule: (event) {
-        // A multi-day event stays in the header, so the time of day range does
-        // not constrain it. Accepted so that dropping here commits the date the
-        // header has been previewing.
+        // A multi-day event stays in the header, so the time of day range does not constrain it. Accepted so that
+        // dropping here commits the date the header has been previewing.
         final isMultiDay = event.spansMultipleDays(
-          location: controller.location,
-          defaultRule: controller.viewConfiguration.multiDayRule,
+          location: viewController.location,
+          defaultRule: viewController.viewConfiguration.multiDayRule,
         );
         if (isMultiDay) return true;
 
@@ -82,9 +89,8 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   @override
   KalenderController get controller => widget.controller;
 
-  // Every view controller sets this in its constructor.
   @override
-  List<FloatingDateTime> get visibleDates => viewController.floatingVisibleRange.value!.dates();
+  List<FloatingDateTime> get visibleDates => viewController.floatingVisibleRange.value.dates();
 
   @override
   KalenderCallbacks? get callbacks => context.callbacks;
@@ -161,7 +167,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
         // First test if the details can be accepted at all.
         final accepted =
             callbacks?.onWillAcceptWithDetailsVertical?.call(details, controller, bodyConfiguration) ??
-            VerticalDragTarget.onWillAcceptWithDetails(details, controller, bodyConfiguration);
+            VerticalDragTarget._accepts(details, controller, viewController);
         if (!accepted) return accepted;
 
         DragTargetUtilities.handleDragDetails(
@@ -174,8 +180,8 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
           },
           onResize: (event, direction) {
             if (controller.selectedEvent.value?.id != event.id) {
-              // Re-select the event so that _selectedEventId is restored when the
-              // cursor re-enters after having left the widget (onLeave clears it).
+              // Re-select the event so that _selectedEventId is restored when the cursor re-enters after having left
+              // the widget (onLeave clears it).
               controller.selectEvent(event, internal: true);
             }
           },
@@ -270,9 +276,8 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   @override
   KalenderEvent? rescheduleEvent(KalenderEvent event, FloatingDateTime cursorDateTime) {
-    // A multi-day event is laid out in the header, so dragging it across the
-    // body can only change which date it starts on. Updating it here is what
-    // moves the header's drop target as the cursor crosses day columns.
+    // A multi-day event is laid out in the header, so dragging it across the body can only change which date it starts
+    // on. Updating it here is what moves the header's drop target as the cursor crosses day columns.
     if (event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
       return rescheduleToDate(event, cursorDateTime);
     }
@@ -312,8 +317,8 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       start = end.subtract(duration);
     }
 
-    // Convert only start and recompute end from the original duration to avoid
-    // the DST spring-forward gap collapsing start and end to the same UTC instant.
+    // Convert only start and recompute end from the original duration to avoid the DST spring-forward gap collapsing
+    // start and end to the same UTC instant.
     final convertedStart = start.forLocation(location: context.location);
     final updatedEvent = event.withDateTimeRange(
       KalenderDateTimeRange(start: convertedStart, end: convertedStart.add(duration)),

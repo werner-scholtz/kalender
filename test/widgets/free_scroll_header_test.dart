@@ -26,8 +26,7 @@ void main() {
 
   final base = DateTime(2025, 3, 24); // Monday
 
-  // Two overlapping multi-day events: 26 Mar is a two-row day, its neighbours
-  // are single-row.
+  // Two overlapping multi-day events: 26 Mar is a two-row day, its neighbours are single-row.
   void addTwoRowDay() {
     eventsController.addEvents([
       KalenderEvent(start: base.add(const Duration(days: 1)), end: base.add(const Duration(days: 3))),

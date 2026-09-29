@@ -15,7 +15,6 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/models/view_transition.dart';
-import 'package:kalender/src/widgets/month/month_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
@@ -113,11 +112,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// Creates a [MultiDayViewConfiguration] for a week.
   ///
-  /// [numberOfDays] shortens the page without changing the pagination, so 6 with
-  /// a [firstDayOfWeek] of [DateTime.monday] shows Monday to Saturday and still
-  /// turns the page a week at a time. It must be between 1 and 7. Use
-  /// [MultiDayViewConfiguration.custom] for a page of any other length, which
-  /// pages by [numberOfDays] rather than by the week.
+  /// [numberOfDays] shortens the page without changing the pagination, so 6 with a [firstDayOfWeek] of
+  /// [DateTime.monday] shows Monday to Saturday and still turns the page a week at a time. It must be between 1 and 7.
+  /// Use [MultiDayViewConfiguration.custom] for a page of any other length, which pages by [numberOfDays] rather than
+  /// by the week.
   MultiDayViewConfiguration.week({
     super.name = 'Week',
     super.initialDateTime,
@@ -150,8 +148,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// Creates a [MultiDayViewConfiguration] for a work week.
   ///
-  /// [numberOfDays] shortens the page without changing the pagination, which
-  /// starts every page on a Monday. It must be between 1 and 7.
+  /// [numberOfDays] shortens the page without changing the pagination, which starts every page on a Monday. It must be
+  /// between 1 and 7.
   MultiDayViewConfiguration.workWeek({
     super.name = 'Work Week',
     super.initialDateTime,
@@ -438,7 +436,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
   int get hashCode => Object.hash(super.hashCode, keepPagesAlive);
 }
 
-/// The configuration used by the [MultiDayHeader] and [MonthBody].
+/// The configuration used by the [MultiDayHeader].
 ///
 /// {@category Views}
 class MultiDayHeaderConfiguration extends HorizontalConfiguration {

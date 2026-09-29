@@ -14,7 +14,7 @@ import 'package:web_demo/widgets/toolbar/locale_dropdown.dart';
 import 'package:web_demo/widgets/toolbar/theme_button.dart';
 
 void main() {
-  // main() normally does this before runApp; the tests pump MyApp directly.
+  // main() does this before runApp. The tests pump MyApp directly.
   setUpAll(() async {
     await initializeTimeZonePackage();
   });

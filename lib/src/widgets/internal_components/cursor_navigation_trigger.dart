@@ -26,15 +26,12 @@ class CursorNavigationTrigger extends StatefulWidget {
     this.triggerDelay = const Duration(milliseconds: 500),
   });
 
-  /// A page-navigation trigger that advances the view by one page while a drag
-  /// hovers it.
+  /// A page-navigation trigger that advances the view by one page while a drag hovers it.
   ///
-  /// [forward] picks the direction: `true` goes to the next page, `false` to the
-  /// previous one. Both use the delay, duration, and curve from [configuration].
-  /// When no [builder] is given it falls back to an edge strip sized by
-  /// [configuration]'s `triggerWidth` (or [pageWidth] / 50 by default). The
-  /// trigger is meant to sit inside a [Positioned] that pins its top and bottom,
-  /// so the fallback only sets a width.
+  /// [forward] picks the direction: `true` goes to the next page, `false` to the previous one. Both use the delay,
+  /// duration, and curve from [configuration]. When no [builder] is given it falls back to an edge strip sized by
+  /// [configuration]'s `triggerWidth` (or [pageWidth] / 50 by default). The trigger is meant to sit inside a
+  /// [Positioned] that pins its top and bottom, so the fallback only sets a width.
   factory CursorNavigationTrigger.page({
     Key? key,
     required PageTriggerConfiguration configuration,
@@ -62,13 +59,11 @@ class CursorNavigationTrigger extends StatefulWidget {
     );
   }
 
-  /// A scroll trigger that nudges the view along its scroll axis while a drag
-  /// hovers it.
+  /// A scroll trigger that nudges the view along its scroll axis while a drag hovers it.
   ///
-  /// The actual scrolling is left to [onTrigger] because the body scrolls by
-  /// pixels while the schedule scrolls by item index. This only shares the
-  /// delay from [configuration] and the default strip ([triggerHeight] tall,
-  /// [width] wide) used when no [builder] is given.
+  /// The actual scrolling is left to [onTrigger] because the body scrolls by pixels while the schedule scrolls by item
+  /// index. This only shares the delay from [configuration] and the default strip ([triggerHeight] tall, [width] wide)
+  /// used when no [builder] is given.
   factory CursorNavigationTrigger.scroll({
     Key? key,
     required ScrollTriggerConfiguration configuration,

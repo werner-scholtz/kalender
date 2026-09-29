@@ -91,10 +91,9 @@ mixin ScheduleMap {
 
   /// Find the index of the row whose date is closest to [date].
   ///
-  /// Distances are measured against the first row of each date, so the result
-  /// points at the start of the nearest day rather than an arbitrary event
-  /// within it. This handles targets before the first day, after the last day,
-  /// and in between uniformly. Ties resolve to the earlier date.
+  /// Distances are measured against the first row of each date, so the result points at the start of the nearest day
+  /// rather than an arbitrary event within it. This handles targets before the first day, after the last day, and in
+  /// between uniformly. Ties resolve to the earlier date.
   int closestIndexForPage(int pageIndex, DateTime date) {
     final target = FloatingDateTime.fromExternal(date, location: location).startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
@@ -118,8 +117,7 @@ mixin ScheduleMap {
   /// Get the [DateTimeItemIndex] for the given pageIndex.
   DateTimeItemIndex monthIndices(int pageIndex) => _forPage(_indexedMonthIndices, pageIndex, 'Month indices');
 
-  /// Returns the item index of the month header for the month of [date] on [pageIndex], or `null` when there is
-  /// none.
+  /// Returns the item index of the month header for the month of [date] on [pageIndex], or `null` when there is none.
   int? monthIndexFromDateTime(int pageIndex, FloatingDateTime date) {
     final monthIndicesForPage = monthIndices(pageIndex);
     return monthIndicesForPage[date.startOfMonth];

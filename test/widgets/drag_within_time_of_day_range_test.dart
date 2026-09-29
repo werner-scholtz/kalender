@@ -11,8 +11,8 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 
 import '../utilities.dart';
 
-/// Creating, resizing and rescheduling stop at the bottom of the day, which is the start of `timeOfDayRange` plus
-/// its `duration`.
+/// Creating, resizing and rescheduling stop at the bottom of the day, which is the start of `timeOfDayRange` plus its
+/// `duration`.
 void main() {
   final monday = DateTime(2025, 6, 2);
   final wednesday = monday.add(const Duration(days: 2));

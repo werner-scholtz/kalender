@@ -100,6 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.workWeek(displayRange: displayRange, initialTimeOfDay: initialTimeOfDay),
     MultiDayViewConfiguration.custom(
       numberOfDays: 3,
+      name: '3 Days',
       displayRange: displayRange,
       initialTimeOfDay: initialTimeOfDay,
     ),
@@ -140,6 +141,13 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.purple,
       ),
     ]);
+  }
+
+  @override
+  void dispose() {
+    kalenderController.dispose();
+    eventsController.dispose();
+    super.dispose();
   }
 
   @override
@@ -205,20 +213,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ValueListenableBuilder(
             valueListenable: kalenderController.floatingVisibleRange,
             builder: (context, value, child) {
-              if (value == null) return const SizedBox.shrink();
-              final localRange = value.forLocation();
-
-              final String month;
-              final int year;
-
-              if (kalenderController.viewConfiguration is MonthViewConfiguration) {
-                final dominantMonthDate = FloatingDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
-                year = dominantMonthDate.year;
-                month = dominantMonthDate.monthNameLocalized();
-              } else {
-                year = localRange.start.year;
-                month = localRange.start.monthNameLocalized();
-              }
+              final date = kalenderController.viewConfiguration is MonthViewConfiguration
+                  ? value.dominantMonthDate
+                  : value.start;
+              final month = date.monthNameLocalized();
+              final year = date.year;
 
               return FilledButton.tonal(
                 onPressed: () => kalenderController.animateToDate(DateTime.now()),

@@ -16,9 +16,8 @@ import 'package:timezone/timezone.dart';
 
 /// The tile widget that displays the user-defined event content.
 ///
-/// This widget manages the visual transition between normal and dragging states
-/// by switching between [tileBuilder] and [tileWhenDraggingBuilder] based on
-/// the current drag state from [KalenderController].
+/// This widget manages the visual transition between normal and dragging states by switching between [tileBuilder] and
+/// [tileWhenDraggingBuilder] based on the current drag state from [KalenderController].
 class Tile extends StatefulWidget {
   /// The event associated with the tile.
   final KalenderEvent initialEvent;

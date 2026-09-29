@@ -31,7 +31,7 @@ void main() {
       };
     }
 
-    FloatingDateTime visibleStart(ViewConfiguration config) => build(config).floatingVisibleRange.value!.start;
+    FloatingDateTime visibleStart(ViewConfiguration config) => build(config).floatingVisibleRange.value.start;
 
     // Month, week and work week start on the Monday of the week containing 1 January in every location. Custom(3)
     // anchors page 0 to the display-range start, which moves with the UTC offset, so its start comes from the

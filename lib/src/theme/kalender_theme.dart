@@ -11,22 +11,18 @@ import 'package:kalender/src/theme/kalender_palette.dart';
 
 /// The Material defaults for a [ThemeData], built once.
 ///
-/// [KalenderThemeData.defaults] constructs fourteen style objects, and the
-/// calendar resolves the theme on nearly every widget build. An [Expando] holds
-/// its keys weakly, so an entry is collected with the theme it belongs to.
+/// [KalenderThemeData.defaults] constructs fourteen style objects, and the calendar resolves the theme on nearly every
+/// widget build. An [Expando] holds its keys weakly, so an entry is collected with the theme it belongs to.
 final _defaultsCache = Expando<KalenderThemeData>('kalender defaults');
 
-/// The defaults merged with the [ThemeExtension] registered on the same
-/// [ThemeData]. Both inputs come from the theme, so one entry serves every
-/// lookup that finds no scoped [KalenderTheme].
+/// The defaults merged with the [ThemeExtension] registered on the same [ThemeData]. Both inputs come from the theme,
+/// so one entry serves every lookup that finds no scoped [KalenderTheme].
 final _extendedCache = Expando<KalenderThemeData>('kalender defaults + extension');
 
 /// The calendar's visual theme, following the same layering as Flutter's own component themes.
 ///
-/// Styling is resolved in four layers, most specific first. Each fills in the
-/// fields the layer above it leaves null:
-/// 1. A style passed directly to a widget, which is how a custom builder styles
-///    the widget it returns.
+/// Styling is resolved in four layers, most specific first. Each fills in the fields the layer above it leaves null:
+/// 1. A style passed directly to a widget, which is how a custom builder styles the widget it returns.
 /// 2. The nearest [KalenderTheme] above the calendar.
 /// 3. A [KalenderThemeData] registered as a [ThemeExtension] on the app's [ThemeData].
 /// 4. Material 3 defaults derived from the ambient [Theme], see [KalenderThemeData.defaults].
@@ -157,8 +153,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       monthGridStyle: MonthGridStyle(color: palette.surface, thickness: 0),
       monthDayHeaderStyle: MonthDayHeaderStyle(
         numberTextStyle: palette.medium,
-        // Keeps the today highlight clear of the gridline above it and the
-        // event tiles below it.
+        // Keeps the today highlight clear of the gridline above it and the event tiles below it.
         margin: const EdgeInsets.symmetric(vertical: 2),
       ),
       weekDayHeaderStyle: WeekDayHeaderStyle(
@@ -364,9 +359,8 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
 
 /// Applies a [KalenderThemeData] to the calendars below it.
 ///
-/// Use this to theme part of the tree. Registering a [KalenderThemeData] on
-/// [ThemeData.extensions] themes the whole app, which is the right place for an
-/// app-wide look, but two calendars in one app cannot differ that way.
+/// Use this to theme part of the tree. Registering a [KalenderThemeData] on [ThemeData.extensions] themes the whole
+/// app, which is the right place for an app-wide look, but two calendars in one app cannot differ that way.
 ///
 /// ```dart
 /// KalenderTheme(
@@ -375,10 +369,9 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
 /// )
 /// ```
 ///
-/// This extends [InheritedTheme], so the theme also reaches widgets the
-/// calendar builds into an [Overlay], such as the tile that follows a drag.
-/// Those are not descendants of this widget, so a plain [InheritedWidget] would
-/// not reach them.
+/// This extends [InheritedTheme], so the theme also reaches widgets the calendar builds into an [Overlay], such as the
+/// tile that follows a drag. Those are not descendants of this widget, so a plain [InheritedWidget] would not reach
+/// them.
 ///
 /// {@category Appearance}
 class KalenderTheme extends InheritedTheme {
@@ -389,8 +382,7 @@ class KalenderTheme extends InheritedTheme {
 
   /// The effective theme for [context].
   ///
-  /// Resolved in this order, each layer filling in the fields the one above
-  /// leaves null:
+  /// Resolved in this order, each layer filling in the fields the one above leaves null:
   ///
   /// 1. the nearest [KalenderTheme] ancestor,
   /// 2. a [KalenderThemeData] registered on [ThemeData.extensions],

@@ -67,9 +67,8 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
   /// Resolves whether the current input is imprecise.
   ///
-  /// If the [InputMode] is [InputMode.auto], the input is considered imprecise
-  /// when the handles were shown via selection (not hover).
-  /// Otherwise, the explicit [InputMode] setting is used.
+  /// If the [InputMode] is [InputMode.auto], the input is considered imprecise when the handles were shown via
+  /// selection (not hover). Otherwise, the explicit [InputMode] setting is used.
   bool _resolveIsImprecise(KalenderInteraction interaction) {
     return switch (interaction.inputMode) {
       InputMode.precise => false,
@@ -113,8 +112,8 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   }
 }
 
-/// The draggable that detects a resize gesture, wrapping the handle widget from
-/// [TileComponents.verticalResizeHandle] or [TileComponents.horizontalResizeHandle].
+/// The draggable that detects a resize gesture, wrapping the handle widget from [TileComponents.verticalResizeHandle]
+/// or [TileComponents.horizontalResizeHandle].
 ///
 /// {@category Interaction}
 class ResizeDetector extends StatelessWidget {
@@ -141,11 +140,10 @@ class ResizeDetector extends StatelessWidget {
     final tileComponents = context.tileComponents;
     final resizeHandle = isVertical ? tileComponents.verticalResizeHandle : tileComponents.horizontalResizeHandle;
 
-    // Anchor a vertical resize to the pointer so the target day follows the
-    // cursor itself. With childDragAnchorStrategy the drag reports the handle's
-    // top-left, which for a full-width vertical handle is the column's left
-    // edge, so the day flipped to the previous column on the smallest sideways
-    // move. A caller-provided resizeDragAnchorStrategy still wins.
+    // Anchor a vertical resize to the pointer so the target day follows the cursor itself. With childDragAnchorStrategy
+    // the drag reports the handle's top-left, which for a full-width vertical handle is the column's left edge, so the
+    // day flipped to the previous column on the smallest sideways move. A caller-provided resizeDragAnchorStrategy
+    // still wins.
     final anchorStrategy =
         tileComponents.resizeDragAnchorStrategy ?? (isVertical ? pointerDragAnchorStrategy : childDragAnchorStrategy);
 

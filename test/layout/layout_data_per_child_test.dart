@@ -9,10 +9,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 
-/// The delegate caches layout data in a map keyed by event hash, and
-/// `CustomMultiChildLayout` asserts when a child is not laid out. So the
-/// returned list has to hold one entry per event even when two events share a
-/// key, otherwise a child is silently dropped and layout throws.
+/// The delegate caches layout data in a map keyed by event hash, and `CustomMultiChildLayout` asserts when a child is
+/// not laid out. So the returned list has to hold one entry per event even when two events share a key, otherwise a
+/// child is silently dropped and layout throws.
 void main() {
   final date = FloatingDateTime(2024, 1, 1);
 

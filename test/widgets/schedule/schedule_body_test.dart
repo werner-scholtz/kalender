@@ -207,8 +207,24 @@ void main() {
       first.addEvent(eventAt(DateTime(2025, 1, 15), 9));
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('a change of emptyDay keeps the list on the date it shows', (tester) async {
+      eventsController.addEvents([
+        for (var month = 1; month <= 12; month++)
+          for (final day in [3, 10, 17, 24]) eventAt(DateTime(2025, month, day), 9),
+      ]);
+      KalenderView schedule(EmptyDayBehavior emptyDay) =>
+          buildSchedule(emptyDay: emptyDay, nowCallback: _now, initialDate: DateTime(2025, 6, 17));
+      await pumpAndSettleWithMaterialApp(tester, schedule(EmptyDayBehavior.hide));
+
+      await pumpAndSettleWithMaterialApp(tester, schedule(EmptyDayBehavior.show));
+
+      expect(kalenderController!.floatingVisibleRange.value.start, FloatingDateTime(2025, 6, 17));
+    });
   });
 }
+
+DateTime _now() => DateTime(2025, 1, 15, 10);
 
 class _CountingEventsController extends DefaultEventsController {
   int eventsInRangeCalls = 0;

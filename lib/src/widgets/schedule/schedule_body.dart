@@ -17,15 +17,13 @@ import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detec
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-/// Displays events as a vertical list.
+/// Displays events as a vertical list. The default body of [ScheduleViewParts].
 ///
 /// One list for a [ContinuousScheduleViewController], one list per page for a [PaginatedScheduleViewController].
 ///
 /// {@category Views}
 class ScheduleBody extends StatelessWidget {
-  /// Configuration options for the schedule body behavior and appearance.
-  ///
-  /// If not provided, default [ScheduleBodyConfiguration] will be used.
+  /// Null uses a default [ScheduleBodyConfiguration].
   final ScheduleBodyConfiguration? configuration;
 
   /// See [KalenderView.callbacks].
@@ -57,11 +55,11 @@ class _ScheduleBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is ScheduleViewController,
-      'The KalenderController\'s $ViewController needs to be a $ScheduleViewController',
+    final viewController = context.viewControllerFor<ScheduleViewController>(
+      ScheduleBody,
+      ScheduleViewConfiguration,
+      ScheduleViewParts,
     );
-    final viewController = context.viewController as ScheduleViewController;
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
     if (viewController is ContinuousScheduleViewController) {
       return SchedulePositionList(
@@ -184,16 +182,41 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   int get page => widget.currentPage;
 
   /// Controller for programmatically scrolling to specific items in the list.
-  final ItemScrollController _itemScrollController = ItemScrollController();
+  var _itemScrollController = ItemScrollController();
 
   /// Listener for tracking which items are currently visible in the viewport.
-  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+  var _itemPositionsListener = ItemPositionsListener.create();
+
+  /// The date the list opens on, and the alignment of its first row.
+  late var _opening = (date: viewController.initialDate, alignment: 0.0);
 
   @override
   void didUpdateWidget(covariant SchedulePositionList oldWidget) {
+    final sameList = oldWidget.viewController == viewController && oldWidget.currentPage == page;
+    final shown = sameList ? _shown() : null;
     _teardown(oldWidget);
-    _setup();
+    _generateMap();
+    // A list whose rows moved opens again on the date it showed.
+    if (shown != null && viewController.closestIndexForPage(page, shown.date) != shown.index) {
+      _itemScrollController = ItemScrollController();
+      _itemPositionsListener = ItemPositionsListener.create();
+      _opening = (date: shown.date, alignment: shown.alignment);
+    }
+    _setupViewController();
+    _addListeners();
     super.didUpdateWidget(oldWidget);
+  }
+
+  /// The first date on screen, the index of its first row and where that row sits.
+  ({FloatingDateTime date, int index, double alignment})? _shown() {
+    final positions = _itemPositionsListener.itemPositions.value;
+    if (positions.isEmpty) return null;
+    final first = positions.reduce((a, b) => a.index < b.index ? a : b);
+    final date = viewController.dateTimeFromIndexForPage(page, first.index);
+    if (date == null) return null;
+    final index = viewController.closestIndexForPage(page, date);
+    final row = positions.where((position) => position.index == index).firstOrNull ?? first;
+    return (date: date, index: index, alignment: row.itemLeadingEdge);
   }
 
   @override
@@ -259,8 +282,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
         switch (widget.configuration.emptyDay) {
           case EmptyDayBehavior.show:
-            // Record the empty day as the first (only) row of its date so it can
-            // be scrolled or animated to directly.
+            // Record the empty day as the first (only) row of its date so it can be scrolled or animated to directly.
             viewController.addItemForPage(item: EmptyItem(), date: date, pageIndex: page, isFirst: true);
             continue;
 
@@ -333,10 +355,12 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
     return Stack(
       children: [
         ScrollablePositionedList.builder(
+          key: ObjectKey(_itemScrollController),
           itemScrollController: _itemScrollController,
           itemPositionsListener: _itemPositionsListener,
           itemCount: viewController.itemCountForPage(page),
-          initialScrollIndex: viewController.closestIndexForPage(page, viewController.initialDate),
+          initialScrollIndex: viewController.closestIndexForPage(page, _opening.date),
+          initialAlignment: _opening.alignment,
           physics: widget.configuration.scrollPhysics,
           itemBuilder: (context, index) {
             final item = viewController.indexItem(page)[index];

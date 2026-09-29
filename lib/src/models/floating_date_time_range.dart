@@ -45,8 +45,7 @@ final class FloatingDateTimeRange {
 
   /// Returns the list of calendar dates covered by this range (at midnight each).
   ///
-  /// By default the end date is excluded (half-open). Set [inclusive] to `true`
-  /// to include the end date itself.
+  /// By default the end date is excluded (half-open). Set [inclusive] to `true` to include the end date itself.
   List<FloatingDateTime> dates({bool inclusive = false}) {
     final dates = [start.startOfDay];
 
@@ -67,8 +66,7 @@ final class FloatingDateTimeRange {
     return dates;
   }
 
-  /// Returns the sub-range of this range that falls on [date], or `null` if
-  /// [date] is outside the range.
+  /// Returns the sub-range of this range that falls on [date], or `null` if [date] is outside the range.
   ///
   /// * If [date] is on the start day → `[start, endOfDay)`.
   /// * If [date] is on the end day → `[startOfDay, end)`.
@@ -90,8 +88,8 @@ final class FloatingDateTimeRange {
 
   /// Whether this range shares any time with [other].
   ///
-  /// Ranges that only touch at a boundary (e.g. one ends where the other starts)
-  /// return `false` by default. Set [touching] to `true` to treat those as overlapping.
+  /// Ranges that only touch at a boundary (e.g. one ends where the other starts) return `false` by default. Set
+  /// [touching] to `true` to treat those as overlapping.
   bool overlaps(FloatingDateTimeRange other, {bool touching = false}) {
     final overlap = start.isBefore(other.end) && end.isAfter(other.start);
     if (!touching) return overlap;
@@ -126,9 +124,8 @@ final class FloatingDateTimeRange {
 
   /// The ISO 8601 week number(s) this range spans.
   ///
-  /// Returns `(weekNumber, null)` for a single-week range, or
-  /// `(firstWeek, lastWeek)` when the range crosses a week boundary.
-  /// A midnight end is treated as the previous day.
+  /// Returns `(weekNumber, null)` for a single-week range, or `(firstWeek, lastWeek)` when the range crosses a week
+  /// boundary. A midnight end is treated as the previous day.
   (int first, int? last) get weekNumbers {
     final days = dates();
     final isSingleWeek = days.length <= 7;

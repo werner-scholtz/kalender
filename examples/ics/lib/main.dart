@@ -72,13 +72,13 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadSample() async {
     final text = await rootBundle.loadString('assets/sample.ics');
     _sources = parseIcs(text);
-    // Seed a window around today; the range listener keeps it in sync afterwards.
+    // Seeds a window around today. The range listener keeps it in sync afterwards.
     _regenerate(_windowAround(KalenderDateTimeRange(start: now, end: now)));
   }
 
   void _onVisibleRangeChanged() {
     final visible = kalenderController.visibleDateTimeRange.value;
-    if (visible == null || _sources.isEmpty) return;
+    if (_sources.isEmpty) return;
     final covered = _covered;
     if (covered != null && !visible.start.isBefore(covered.start) && !visible.end.isAfter(covered.end)) {
       return; // still inside the materialized window
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
   void _onEventTapped(KalenderEvent event) {
     if (event is! IcsEvent) return;
     kalenderController.selectEvent(event);
-    final message = event.description == null ? event.title : '${event.title} — ${event.description}';
+    final message = event.description == null ? event.title : '${event.title}: ${event.description}';
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));

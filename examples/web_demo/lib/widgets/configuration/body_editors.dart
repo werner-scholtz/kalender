@@ -38,7 +38,7 @@ class MultiDayBodyEditor extends StatelessWidget {
           onChanged: (value) => demoConfiguration.multiDayBodyConfiguration = configuration.copyWith(
             eventLayoutStrategy: value ? const EventLayoutStrategy.sideBySide() : const EventLayoutStrategy.overlap(),
           ),
-          itemToString: (value) => value ? 'Side-by-side' : 'Overlap',
+          itemToString: (value) => value ? context.l10n.sideBySide : context.l10n.overlap,
         ),
         DropDownEditor<EdgeInsets>(
           label: context.l10n.eventPaddingLR,
@@ -60,11 +60,18 @@ class MultiDayBodyEditor extends StatelessWidget {
           label: context.l10n.minimumTileHeight,
           value: configuration.minimumTileHeight,
           items: const [-1, 24.0, 32.0, 40.0, 48.0],
-          onChanged: (value) => demoConfiguration.multiDayBodyConfiguration = MultiDayBodyConfiguration(
-            minimumTileHeight: value == -1 ? null : value,
-            showMultiDayEvents: configuration.showMultiDayEvents,
-            horizontalPadding: configuration.horizontalPadding,
-          ),
+          onChanged: (value) => demoConfiguration.multiDayBodyConfiguration = value == -1
+              ? MultiDayBodyConfiguration(
+                  showMultiDayEvents: configuration.showMultiDayEvents,
+                  horizontalPadding: configuration.horizontalPadding,
+                  eventLayoutStrategy: configuration.eventLayoutStrategy,
+                  scrollPhysics: configuration.scrollPhysics,
+                  pageScrollPhysics: configuration.pageScrollPhysics,
+                  pageTriggerConfiguration: configuration.pageTriggerConfiguration,
+                  scrollTriggerConfiguration: configuration.scrollTriggerConfiguration,
+                  keepPagesAlive: configuration.keepPagesAlive,
+                )
+              : configuration.copyWith(minimumTileHeight: value),
           itemToString: (value) => value == -1 ? context.l10n.none : value.toString(),
         ),
         SnappingEditorWidget(snapping: snapping),
@@ -116,7 +123,7 @@ class MonthBodyEditor extends StatelessWidget {
         ValueListenableBuilder<bool>(
           valueListenable: demoConfiguration.shadeAdjacentMonthNotifier,
           builder: (context, value, _) => SwitchListTile.adaptive(
-            title: const Text('Shade adjacent-month days'),
+            title: Text(context.l10n.shadeAdjacentMonthDays),
             value: value,
             onChanged: (value) => demoConfiguration.shadeAdjacentMonth = value,
           ),
@@ -142,12 +149,16 @@ class ScheduleBodyEditor extends StatelessWidget {
       children: [
         DropDownEditor<EmptyDayBehavior>(
           label: context.l10n.emptyDayBehavior,
-          value: demoConfiguration.scheduleBodyConfiguration.emptyDay,
+          value: configuration.emptyDay,
           items: EmptyDayBehavior.values,
           onChanged: (value) => demoConfiguration.scheduleBodyConfiguration = configuration.copyWith(
             emptyDay: value,
           ),
-          itemToString: (value) => value.toString(),
+          itemToString: (value) => switch (value) {
+            EmptyDayBehavior.show => context.l10n.emptyDayShow,
+            EmptyDayBehavior.showOnlyToday => context.l10n.emptyDayShowOnlyToday,
+            EmptyDayBehavior.hide => context.l10n.emptyDayHide,
+          },
         ),
         InteractionEditorWidget(interaction: interaction),
       ],

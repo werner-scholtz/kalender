@@ -92,12 +92,12 @@ class DayEventsColumn extends StatefulWidget {
 
   /// The vertical scroll controller of the multi-day body.
   ///
-  /// Used to only build the event tiles whose time band is within the visible
-  /// scroll window (plus an overscan margin), instead of every event of the day.
+  /// Used to only build the event tiles whose time band is within the visible scroll window (plus an overscan margin),
+  /// instead of every event of the day.
   final ScrollController scrollController;
 
-  /// The calendar controller, used to keep a selected (being dragged/resized)
-  /// event built even when it scrolls out of view.
+  /// The calendar controller, used to keep a selected (being dragged/resized) event built even when it scrolls out of
+  /// view.
   final KalenderController kalenderController;
 
   const DayEventsColumn({
@@ -122,12 +122,12 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   /// The events that are displayed on the day.
   List<KalenderEvent> _events = [];
 
-  /// The (top, bottom) pixel band of each event in [_events] by index, used to decide which events fall inside
-  /// the visible scroll window. An event the delegate lays out no data for has no band and is never built.
+  /// The (top, bottom) pixel band of each event in [_events] by index, used to decide which events fall inside the
+  /// visible scroll window. An event the delegate lays out no data for has no band and is never built.
   Map<int, (double, double)> _bands = const {};
 
-  /// The indices into [_events] whose tiles are currently built. Only events
-  /// within the visible scroll window (plus an overscan margin) are built.
+  /// The indices into [_events] whose tiles are currently built. Only events within the visible scroll window (plus an
+  /// overscan margin) are built.
   Set<int> _visibleIndices = const {};
 
   @override
@@ -137,8 +137,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     widget.eventsController.addListener(_update);
     widget.scrollController.addListener(_onViewportChanged);
     widget.kalenderController.selectedEvent.addListener(_onViewportChanged);
-    // The scroll view may not be attached on the first build, in which case
-    // everything is built. Re-cull once it is attached.
+    // The scroll view may not be attached on the first build, in which case everything is built. Re-cull once it is
+    // attached.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _onViewportChanged();
     });
@@ -197,8 +197,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     if (eventLayoutChanged(sortedEvents, _events)) setState(() => _setEvents(sortedEvents));
   }
 
-  /// Recomputes the visible events as the scroll position (or selection)
-  /// changes, and rebuilds only when the set actually changes.
+  /// Recomputes the visible events as the scroll position (or selection) changes, and rebuilds only when the set
+  /// actually changes.
   void _onViewportChanged() {
     final next = _computeVisibleIndices();
     if (!setEquals(next, _visibleIndices)) {
@@ -206,8 +206,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     }
   }
 
-  /// Computes the (top, bottom) pixel band of each event with
-  /// [EventLayoutDelegate.calculateVerticalLayoutData], so culling lines up with what is drawn.
+  /// Computes the (top, bottom) pixel band of each event with [EventLayoutDelegate.calculateVerticalLayoutData], so
+  /// culling lines up with what is drawn.
   Map<int, (double, double)> _computeBands(List<KalenderEvent> events) {
     if (events.isEmpty) return const {};
     final delegate = widget.configuration.eventLayoutStrategy.createDelegate(
@@ -225,16 +225,15 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     };
   }
 
-  /// The indices of the events whose band intersects the visible scroll window
-  /// (plus an overscan margin). Falls back to all events when the scroll view is
-  /// not attached yet.
+  /// The indices of the events whose band intersects the visible scroll window (plus an overscan margin). Falls back to
+  /// all events when the scroll view is not attached yet.
   Set<int> _computeVisibleIndices() {
     final controller = widget.scrollController;
     if (!controller.hasClients || controller.positions.length != 1) return _bands.keys.toSet();
 
     final position = controller.position;
-    // The viewport and pixels are not available until the scroll view has been laid out. Until then everything is built,
-    // and the post-frame callback culls again.
+    // The viewport and pixels are not available until the scroll view has been laid out. Until then everything is
+    // built, and the post-frame callback culls again.
     if (!position.hasViewportDimension || !position.hasPixels) return _bands.keys.toSet();
     final overscan = position.viewportDimension * 0.5;
     final windowTop = position.pixels - overscan;
@@ -245,8 +244,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
       if (bottom >= windowTop && top <= windowBottom) visible.add(index);
     }
 
-    // Keep a selected (being dragged/resized) event built even when it scrolls
-    // out of view, so the interaction is not interrupted.
+    // Keep a selected (being dragged/resized) event built even when it scrolls out of view, so the interaction is not
+    // interrupted.
     final selectedId = widget.kalenderController.selectedEventId;
     if (selectedId != null) {
       final index = _events.indexWhere((event) => event.id == selectedId);
@@ -274,8 +273,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   @override
   Widget build(BuildContext context) {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
-    // The tile range is the same for every tile in this column, so compute it
-    // once instead of allocating a new range per event.
+    // The tile range is the same for every tile in this column, so compute it once instead of allocating a new range
+    // per event.
     final tileRange = widget.date.dayRange;
     final eventsWidget = _DayTileLayout(
       delegate: layoutStrategy.createDelegate(
@@ -287,9 +286,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
         cache: widget.cache,
         location: widget.location,
       ),
-      // Only build the tiles within the visible scroll window. The delegate
-      // still receives every event (above) so overlap widths stay correct even
-      // when an overlapping partner is culled.
+      // Only build the tiles within the visible scroll window. The delegate still receives every event (above) so
+      // overlap widths stay correct even when an overlapping partner is culled.
       children: [
         for (final index in _visibleIndices)
           LayoutId(

@@ -11,7 +11,8 @@ import 'package:linked_pageview/linked_pageview.dart';
 
 /// {@category Controllers and callbacks}
 class MultiDayViewController extends ViewController {
-  MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location}) {
+  MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location})
+    : super(initialVisibleRange: _initialVisibleRange(viewConfiguration, initial.date, location)) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
     final now = FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
     initialPage = pageIndexCalculator.indexFromDate(initial.date, location);
@@ -24,17 +25,6 @@ class MultiDayViewController extends ViewController {
     numberOfPages = pageIndexCalculator.numberOfPages(location);
     heightPerMinute = ValueNotifier<double>(initial.heightPerMinute ?? viewConfiguration.initialHeightPerMinute);
 
-    final range = pageIndexCalculator.rangeFromIndex(initialPage, location);
-
-    if (type == MultiDayViewType.freeScroll) {
-      floatingVisibleRange.value = FloatingDateTimeRange(
-        start: range.start,
-        end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
-      );
-    } else {
-      floatingVisibleRange.value = range;
-    }
-
     final topOfDay = (initial.timeOfDay ?? viewConfiguration.initialTimeOfDay).toFloatingDateTime(now);
     final dayStart = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(now);
     final minutes = topOfDay
@@ -43,13 +33,26 @@ class MultiDayViewController extends ViewController {
         .clamp(0, viewConfiguration.timeOfDayRange.duration.inMinutes);
     final scrollOffset = minutes * heightPerMinute.value;
     scrollController = ScrollController(initialScrollOffset: scrollOffset);
-    // Seed the visible time-of-day from the initial offset, since a ScrollController
-    // does not necessarily notify its listeners when it first attaches.
+    // Seed the visible time-of-day from the initial offset, since a ScrollController does not necessarily notify its
+    // listeners when it first attaches.
     visibleTimeOfDay.value = _timeOfDayFromOffset(scrollOffset);
 
     pageController.addListener(_offsetListener);
     scrollController.addListener(_updateVisibleTimeOfDay);
     heightPerMinute.addListener(_updateVisibleTimeOfDay);
+  }
+
+  static FloatingDateTimeRange _initialVisibleRange(
+    MultiDayViewConfiguration viewConfiguration,
+    FloatingDateTime date,
+    Location? location,
+  ) {
+    final range = viewConfiguration.pageIndexCalculator.rangeFromDate(date, location);
+    if (viewConfiguration.type != MultiDayViewType.freeScroll) return range;
+    return FloatingDateTimeRange(
+      start: range.start,
+      end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
+    );
   }
 
   @override
@@ -67,11 +70,11 @@ class MultiDayViewController extends ViewController {
   /// The page controller used by the view.
   late final LinkedPageController pageController;
 
-  /// The page controller for the paged single-day and multi-day headers, linked
-  /// to [pageController] so the header and body scroll together.
+  /// The page controller for the paged single-day and multi-day headers, linked to [pageController] so the header and
+  /// body scroll together.
   ///
-  /// The free-scroll header does not use it. It renders one continuous band and
-  /// derives its position from [pageOffset] instead.
+  /// The free-scroll header does not use it. It renders one continuous band and derives its position from [pageOffset]
+  /// instead.
   late final LinkedPageController headerController;
 
   /// The scroll controller used by the view.
@@ -85,15 +88,14 @@ class MultiDayViewController extends ViewController {
 
   /// The [KalenderTime] currently aligned with the top of the visible viewport.
   ///
-  /// Updates as the view is scrolled vertically or zoomed. It is `null` until the
-  /// [scrollController] has been attached to a scroll view.
+  /// Updates as the view is scrolled vertically or zoomed.
   final ValueNotifier<KalenderTime?> visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
   void _offsetListener() =>
       pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
 
-  /// Converts a vertical scroll [offset] (in pixels) to the [KalenderTime] aligned
-  /// with the top of the viewport, using the current zoom level and time range.
+  /// Converts a vertical scroll [offset] (in pixels) to the [KalenderTime] aligned with the top of the viewport, using
+  /// the current zoom level and time range.
   KalenderTime _timeOfDayFromOffset(double offset) {
     final perMinute = heightPerMinute.value;
     final minutesFromStart = perMinute <= 0 ? 0 : (offset / perMinute).round();
@@ -200,7 +202,7 @@ class MultiDayViewController extends ViewController {
   /// Adds the time of day at the top of the viewport and the zoom.
   @override
   ViewSnapshot snapshot() => ViewSnapshot(
-    date: floatingVisibleRange.value!.start,
+    date: floatingVisibleRange.value.start,
     timeOfDay: visibleTimeOfDay.value,
     heightPerMinute: heightPerMinute.value,
   );

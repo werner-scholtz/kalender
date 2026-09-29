@@ -41,6 +41,38 @@ void main() {
     expect((beforeFrame, isDisposed(old)), (false, true));
   });
 
+  testWidgets('a switch during a build below the view keeps the view controller the view shows', (tester) async {
+    final eventsController = DefaultEventsController();
+    final kalenderController = KalenderController(viewConfiguration: week);
+    addTearDown(eventsController.dispose);
+    addTearDown(kalenderController.dispose);
+    final errors = <String>{};
+    final onError = FlutterError.onError;
+    FlutterError.onError = (details) => errors.add(details.exceptionAsString().split('\n').first);
+
+    var switched = false;
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      Column(
+        children: [
+          Expanded(
+            child: KalenderView(eventsController: eventsController, kalenderController: kalenderController),
+          ),
+          Builder(
+            builder: (context) {
+              if (!switched) kalenderController.viewConfiguration = month;
+              switched = true;
+              return const SizedBox();
+            },
+          ),
+        ],
+      ),
+    );
+    FlutterError.onError = onError;
+
+    expect(errors, {'setState() or markNeedsBuild() called during build.'});
+  });
+
   test('a switch without a view disposes the old view controller at once', () {
     final kalenderController = KalenderController(viewConfiguration: week);
     addTearDown(kalenderController.dispose);

@@ -11,25 +11,22 @@ import 'package:kalender/src/models/providers/kalender_scope.dart';
 
 /// Builds the text displayed for [date].
 ///
-/// The [date] is a wall-clock [DateTime] in the calendar's configured location.
-/// Read the calendar's locale from the [context] with
-/// [KalenderLocale.kalenderLocale].
+/// The [date] is a wall-clock [DateTime] in the calendar's configured location. Read the calendar's locale from the
+/// [context] with [KalenderLocale.kalenderLocale].
 ///
 /// {@category Appearance}
 typedef DateStringBuilder = String Function(BuildContext context, DateTime date);
 
 /// Builds the text displayed for [time].
 ///
-/// Read the calendar's locale from the [context] with
-/// [KalenderLocale.kalenderLocale].
+/// Read the calendar's locale from the [context] with [KalenderLocale.kalenderLocale].
 ///
 /// {@category Appearance}
 typedef KalenderTimeStringBuilder = String Function(BuildContext context, KalenderTime time);
 
 /// Builds the text displayed on the overlay button that opens the hidden events.
 ///
-/// Read the calendar's locale from the [context] with
-/// [KalenderLocale.kalenderLocale].
+/// Read the calendar's locale from the [context] with [KalenderLocale.kalenderLocale].
 ///
 /// {@category Appearance}
 typedef HiddenEventCountStringBuilder = String Function(BuildContext context, int numberOfHiddenEvents);

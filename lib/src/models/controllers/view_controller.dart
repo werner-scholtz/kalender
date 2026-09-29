@@ -23,12 +23,12 @@ abstract class ViewController with KalenderNavigationFunctions {
 
   /// The range currently visible.
   ///
-  /// This is the unzoned counterpart of [KalenderController.visibleDateTimeRange],
-  /// which carries the same range as a [KalenderDateTimeRange] for an app to read.
-  /// Call [FloatingDateTimeRange.forLocation] to cross between them.
-  final floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
+  /// This is the unzoned counterpart of [KalenderController.visibleDateTimeRange], which carries the same range as a
+  /// [KalenderDateTimeRange] for an app to read. Call [FloatingDateTimeRange.forLocation] to cross between them.
+  final ValueNotifier<FloatingDateTimeRange> floatingVisibleRange;
 
-  ViewController({this.location});
+  ViewController({this.location, required FloatingDateTimeRange initialVisibleRange})
+    : floatingVisibleRange = ValueNotifier(initialVisibleRange);
 
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
@@ -45,7 +45,7 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// What this view shows, for the view created on the next switch.
   ///
   /// The base returns the start of [floatingVisibleRange].
-  ViewSnapshot snapshot() => ViewSnapshot(date: floatingVisibleRange.value!.start);
+  ViewSnapshot snapshot() => ViewSnapshot(date: floatingVisibleRange.value.start);
 
   @override
   FutureOr<void> jumpToDate(DateTime date);

@@ -31,8 +31,8 @@ final relativeImage = RegExp(r'!\[([^\]]*)\]\((?!https?://|#)([^)#\s]+)(#[^)]*)?
 /// A relative markdown link, capturing the path and anchor.
 final relativeLink = RegExp(r'\]\((?!https?://|#)([^)#\s]+)(#[^)]*)?\)');
 
-/// An `<img>` tag, so its `src` can be inspected. The README centres images in
-/// HTML rather than markdown, and those are invisible to [relativeImage].
+/// An `<img>` tag, so its `src` can be inspected. The README centres images in HTML rather than markdown, and those are
+/// invisible to [relativeImage].
 final htmlImageTag = RegExp(r'<img\b[^>]*>');
 
 /// A relative `src` on an HTML tag, capturing the path.
@@ -57,15 +57,14 @@ String packageName(String pubspec) {
   return match.group(1)!;
 }
 
-/// Rewrites relative links to `blob/<tag>` URLs and relative images to raw
-/// URLs on the tag, matching how pub.dev resolves each kind.
+/// Rewrites relative links to `blob/<tag>` URLs and relative images to raw URLs on the tag, matching how pub.dev
+/// resolves each kind.
 ///
-/// Images are rewritten in both markdown and `<img>` form. pub.dev resolves a
-/// README image against the repository rather than the archive, so a relative
-/// image that survives shows the default branch instead of the tag.
+/// Images are rewritten in both markdown and `<img>` form. pub.dev resolves a README image against the repository
+/// rather than the archive, so a relative image that survives shows the default branch instead of the tag.
 ///
-/// Links resolve against the directory of [path], the file [content] was read from.
-/// A link to a guide in [topicPages] points at that guide's API reference topic page.
+/// Links resolve against the directory of [path], the file [content] was read from. A link to a guide in [topicPages]
+/// points at that guide's API reference topic page.
 String pinRelativeLinks(
   String content,
   String repoUrl,
@@ -102,11 +101,11 @@ Map<String, String> topicPageUrls(String dartdocOptions, String package, String 
 /// A pub.dev API documentation link for [package] on the `latest` version.
 RegExp pubDevLatest(String package) => RegExp('https://pub\\.dev/documentation/$package/latest/');
 
-/// Rewrites this package's pub.dev API documentation links from `latest` to the
-/// released version, so an old release links to the API it actually shipped.
+/// Rewrites this package's pub.dev API documentation links from `latest` to the released version, so an old release
+/// links to the API it actually shipped.
 ///
-/// Only [package] is rewritten. Another package's `latest` is correct as it
-/// stands, because this tag says nothing about that package's versions.
+/// Only [package] is rewritten. Another package's `latest` is correct as it stands, because this tag says nothing about
+/// that package's versions.
 String pinPubDevDocs(String content, String package, String tag) {
   final version = tag.startsWith('v') ? tag.substring(1) : tag;
   return content.replaceAll(pubDevLatest(package), 'https://pub.dev/documentation/$package/$version/');
@@ -121,8 +120,8 @@ String pinBranchUrls(String content, String repoUrl, String tag) {
       .replaceAll('$repoUrl/blob/main/', '$repoUrl/blob/$tag/');
 }
 
-/// Rewrites only the relative MIGRATION.md links. The changelog's historical
-/// entries reference the main branch on purpose, so they must stay untouched.
+/// Rewrites only the relative MIGRATION.md links. The changelog's historical entries reference the main branch on
+/// purpose, so they must stay untouched.
 String pinChangelog(String content, String repoUrl, String tag) {
   return content.replaceAllMapped(
     RegExp(r'\]\(MIGRATION\.md(#[^)]*)?\)'),
@@ -130,11 +129,10 @@ String pinChangelog(String content, String repoUrl, String tag) {
   );
 }
 
-/// Lines in [content] that still carry a relative link, or a link that floats to
-/// the newest documentation rather than this release's.
+/// Lines in [content] that still carry a relative link, or a link that floats to the newest documentation rather than
+/// this release's.
 ///
-/// Set [allowUnpinnedLinks] for files that keep such links on purpose, such as
-/// the changelog's historical entries.
+/// Set [allowUnpinnedLinks] for files that keep such links on purpose, such as the changelog's historical entries.
 List<String> leftoverProblems(
   String path,
   String content,

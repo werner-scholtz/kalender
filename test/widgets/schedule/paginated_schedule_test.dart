@@ -53,7 +53,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  KalenderDateTimeRange? visibleRange() => kalenderController.visibleDateTimeRange.value;
+  KalenderDateTimeRange visibleRange() => kalenderController.visibleDateTimeRange.value;
 
   testWidgets('a cancelled swipe keeps the visible range of the page on screen', (tester) async {
     await pumpSchedule(tester);

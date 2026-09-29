@@ -13,9 +13,8 @@ import 'package:kalender/kalender.dart';
 
 /// The time indicator builder.
 ///
-/// The [timeOfDayRange] is the range of time that the time indicator will be displayed for.
-/// The [heightPerMinute] is the height of each minute.
-/// The [location] is the calendar's time zone.
+/// The [timeOfDayRange] is the range of time that the time indicator will be displayed for. The [heightPerMinute] is
+/// the height of each minute. The [location] is the calendar's time zone.
 ///
 /// Resolve the style with [KalenderTheme].
 ///
@@ -116,8 +115,8 @@ class TimeIndicator extends StatefulWidget {
 
   /// An optional callback that returns the current [DateTime] for the time indicator.
   ///
-  /// When provided, the wall-clock components of the returned [DateTime] are used
-  /// directly, bypassing the [location]-based time resolution.
+  /// When provided, the wall-clock components of the returned [DateTime] are used directly, bypassing the
+  /// [location]-based time resolution.
   final NowCallback? nowCallback;
 
   /// Creates a new [TimeIndicator] widget.

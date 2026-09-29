@@ -17,7 +17,6 @@ class EventDetailCard extends StatefulWidget {
   final VoidCallback onDismiss;
   final EventsController eventsController;
   final KalenderController controller;
-  final Location? location;
 
   const EventDetailCard({
     super.key,
@@ -28,7 +27,6 @@ class EventDetailCard extends StatefulWidget {
     required this.onDismiss,
     required this.eventsController,
     required this.controller,
-    required this.location,
   });
 
   @override
@@ -38,7 +36,7 @@ class EventDetailCard extends StatefulWidget {
 class _EventDetailCardState extends State<EventDetailCard> {
   late Event event = widget.event;
 
-  Location? get _location => widget.location;
+  Location? get _location => widget.controller.location;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +60,6 @@ class _EventDetailCardState extends State<EventDetailCard> {
           height: widget.height,
           child: Column(
             children: [
-              // Color accent bar at top
               Container(
                 height: 4,
                 color: eventColor,
@@ -72,7 +69,6 @@ class _EventDetailCardState extends State<EventDetailCard> {
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                   child: Column(
                     children: [
-                      // Title row
                       Row(
                         children: [
                           Container(
@@ -114,7 +110,6 @@ class _EventDetailCardState extends State<EventDetailCard> {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      // Start time row
                       _DateTimeRow(
                         icon: Icons.play_circle_outline,
                         iconColor: Colors.green,
@@ -149,7 +144,6 @@ class _EventDetailCardState extends State<EventDetailCard> {
                         },
                       ),
                       const SizedBox(height: 4),
-                      // End time row
                       _DateTimeRow(
                         icon: Icons.stop_circle_outlined,
                         iconColor: colorScheme.error,
@@ -187,7 +181,6 @@ class _EventDetailCardState extends State<EventDetailCard> {
                         ),
                       ),
                       const Spacer(),
-                      // Delete button
                       SizedBox(
                         width: double.infinity,
                         child: FilledButton.icon(

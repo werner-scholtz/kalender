@@ -11,15 +11,15 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show
 
 import '../utilities.dart';
 
-/// `isAllDay` decides the lane on its own, so an event carrying it renders in
-/// the header whatever the view's rule says and whatever its duration is.
+/// `isAllDay` decides the lane on its own, so an event carrying it renders in the header whatever the view's rule says
+/// and whatever its duration is.
 void main() {
   late DefaultEventsController eventsController;
 
   final start = DateTime(2025, 1, 6); // A Monday.
 
-  // One hour, inside a single calendar day. Neither built-in rule calls this
-  // multi-day, so only the flag can put it in the header.
+  // One hour, inside a single calendar day. Neither built-in rule calls this multi-day, so only the flag can put it in
+  // the header.
   final shortRange = KalenderDateTimeRange(
     start: start.add(const Duration(days: 1, hours: 9)),
     end: start.add(const Duration(days: 1, hours: 10)),

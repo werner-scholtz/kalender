@@ -16,9 +16,8 @@ void main() {
 
   /// Pumps a month view and opens the overlay for [day].
   ///
-  /// [extension] goes on `ThemeData.extensions`, [style] into a [KalenderTheme]
-  /// scoped to the calendar, which is the precedence ladder: scoped theme over
-  /// extension over M3 defaults.
+  /// [extension] goes on `ThemeData.extensions`, [style] into a [KalenderTheme] scoped to the calendar, which is the
+  /// precedence ladder: scoped theme over extension over M3 defaults.
   Future<void> openOverlay(
     WidgetTester tester, {
     KalenderThemeData? extension,

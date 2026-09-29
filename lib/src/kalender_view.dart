@@ -12,6 +12,8 @@ import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
+/// A calendar that shows the events of [eventsController] in the view [kalenderController] holds.
+///
 /// {@category Views}
 class KalenderView extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
@@ -30,14 +32,11 @@ class KalenderView extends StatefulWidget {
   /// - [MonthComponents]
   /// - [ScheduleComponents]
   ///
-  /// Styles live on [KalenderThemeData] rather than here. Register one on
-  /// `ThemeData.extensions`, or wrap a calendar in a [KalenderTheme] to scope it.
+  /// Styles live on [KalenderThemeData] rather than here. Register one on `ThemeData.extensions`, or wrap a calendar in
+  /// a [KalenderTheme] to scope it.
   final KalenderComponents? components;
 
-  /// The header and body shown for each kind of view configuration.
-  ///
-  /// The first parts that accept the controller's configuration are shown, a named one before an unnamed one. See
-  /// [ViewParts].
+  /// The header and body shown for each kind of view configuration. See [ViewParts].
   final List<ViewParts> views;
 
   /// The interaction of every view. A header or body given its own `interaction` uses that instead.
@@ -98,12 +97,21 @@ class KalenderViewState extends State<KalenderView> {
     setState(() => _show(next, _controller));
   }
 
-  /// Shows [next] and releases the view controller shown before once its widgets are gone.
+  /// The view controllers shown before [_viewController], with the controller of each, until a build replaces them.
+  final _replaced = <(ViewController, KalenderController)>[];
+
+  /// Shows [next] and releases the view controller shown before once a build has replaced its widgets.
   void _show(ViewController next, KalenderController controller) {
     final old = _viewController;
     if (identical(next, old)) return;
     _viewController = next;
-    WidgetsBinding.instance.addPostFrameCallback((_) => controller.releaseView(this, old));
+    _replaced.add((old, controller));
+  }
+
+  void _release(List<(ViewController, KalenderController)> replaced) {
+    for (final (viewController, controller) in replaced) {
+      controller.releaseView(this, viewController);
+    }
   }
 
   @override
@@ -133,6 +141,7 @@ class KalenderViewState extends State<KalenderView> {
 
   @override
   void dispose() {
+    _release(_replaced);
     _controller
       ..removeListener(_onControllerChanged)
       ..releaseView(this, _viewController);
@@ -151,10 +160,12 @@ class KalenderViewState extends State<KalenderView> {
       'The built-in parts are MultiDayViewParts, MonthViewParts and ScheduleViewParts.',
     );
     if (candidates.length > 1 && _reportedDuplicates.add((configuration.runtimeType, configuration.name))) {
+      final advice = named.isEmpty
+          ? "Put the parts meant for it before the others, or give them name: '${configuration.name}'."
+          : 'Put the parts meant for it before the others.';
       debugPrint(
-        'KalenderView: ${candidates.length} ViewParts accept the ${configuration.runtimeType} named '
-        '"${configuration.name}", so the first is shown. Give each parts a name matching its configuration\'s name '
-        'to pick one.',
+        'KalenderView: ${candidates.length} ViewParts in views accept the ${configuration.runtimeType} named '
+        '"${configuration.name}", and the first of them is shown. $advice',
       );
     }
     return candidates.firstOrNull;
@@ -162,6 +173,11 @@ class KalenderViewState extends State<KalenderView> {
 
   @override
   Widget build(BuildContext context) {
+    if (_replaced.isNotEmpty) {
+      final replaced = [..._replaced];
+      _replaced.clear();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _release(replaced));
+    }
     final parts = _partsFor(_viewController.viewConfiguration);
     final header = parts?.header ?? parts?.builtInHeader;
     final body = parts?.body ?? parts?.builtInBody;

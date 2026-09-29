@@ -28,8 +28,8 @@ void main() {
     });
 
     test('converts a Material range that carries a subtype', () {
-      // The extension is generic over DateTimeRange<T extends DateTime>, so a
-      // range of TZDateTime converts and each end keeps its own type.
+      // The extension is generic over DateTimeRange<T extends DateTime>, so a range of TZDateTime converts and each end
+      // keeps its own type.
       final tokyo = getLocation('Asia/Tokyo');
       final material = DateTimeRange<TZDateTime>(
         start: TZDateTime(tokyo, 2026, 3, 1, 9),

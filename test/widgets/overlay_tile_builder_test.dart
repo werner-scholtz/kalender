@@ -10,8 +10,8 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// Covers the regression where [TileComponents.overlayTileBuilder] was ignored,
-/// and overlay tiles rendered with [TileComponents.tileBuilder] instead.
+/// Covers the regression where [TileComponents.overlayTileBuilder] was ignored, and overlay tiles rendered with
+/// [TileComponents.tileBuilder] instead.
 void main() {
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
@@ -45,7 +45,7 @@ void main() {
       ],
     );
 
-    final date = kalenderController.floatingVisibleRange.value!.dates().first;
+    final date = kalenderController.floatingVisibleRange.value.dates().first;
     await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
     await tester.pumpAndSettle();
     expect(find.byType(MultiDayOverlay), findsOne);

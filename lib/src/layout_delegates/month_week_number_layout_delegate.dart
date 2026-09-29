@@ -46,8 +46,8 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
 
     final contentConstraints = BoxConstraints.tight(Size(contentWidth, size.height));
 
-    // The background occupies the same rect as the content but is painted first,
-    // so it sits below the grid lines and the day content.
+    // The background occupies the same rect as the content but is painted first, so it sits below the grid lines and
+    // the day content.
     if (backgroundId != null && hasChild(backgroundId!)) {
       layoutChild(backgroundId!, contentConstraints);
       positionChild(backgroundId!, contentOffset);

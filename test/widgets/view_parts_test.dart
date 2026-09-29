@@ -67,7 +67,7 @@ void main() {
           MultiDayViewParts(name: 'Day', body: Text('day')),
         ],
         shown: 'day',
-        printed: 0,
+        printed: <String>[],
       ),
       (
         name: 'unnamed parts show a configuration no named parts accept',
@@ -76,7 +76,7 @@ void main() {
           MultiDayViewParts(body: Text('any')),
         ],
         shown: 'any',
-        printed: 0,
+        printed: <String>[],
       ),
       (
         name: 'of two unnamed parts the first shows and one message is printed',
@@ -85,7 +85,10 @@ void main() {
           MultiDayViewParts(body: Text('second')),
         ],
         shown: 'first',
-        printed: 1,
+        printed: [
+          'KalenderView: 2 ViewParts in views accept the MultiDayViewConfiguration named "Day", and the first of them '
+              "is shown. Put the parts meant for it before the others, or give them name: 'Day'.",
+        ],
       ),
       (
         name: 'of two parts with one name the first shows and one message is printed',
@@ -94,7 +97,10 @@ void main() {
           MultiDayViewParts(name: 'Day', body: Text('second')),
         ],
         shown: 'first',
-        printed: 1,
+        printed: [
+          'KalenderView: 2 ViewParts in views accept the MultiDayViewConfiguration named "Day", and the first of them '
+              'is shown. Put the parts meant for it before the others.',
+        ],
       ),
     ]) {
       testWidgets(c.name, (tester) async {
@@ -104,7 +110,8 @@ void main() {
           await tester.pump();
         });
 
-        expect((find.text(c.shown).evaluate().length, printed.length), (1, c.printed));
+        expect(find.text(c.shown), findsOneWidget);
+        expect(printed, c.printed);
       });
     }
   });
@@ -129,6 +136,63 @@ void main() {
         contains('MultiDayViewConfiguration named "Week"'),
       ),
     );
+  });
+
+  group('a widget in the parts of another kind of view fails an assertion naming its parts', () {
+    for (final c in [
+      (
+        widget: 'MultiDayBody',
+        configuration: month,
+        views: const <ViewParts>[MonthViewParts(body: MultiDayBody())],
+        message:
+            'MultiDayBody shows a MultiDayViewConfiguration and goes in MultiDayViewParts, but it is in the parts that '
+            'show the MonthViewConfiguration named "${month.name}".',
+      ),
+      (
+        widget: 'MultiDayHeader',
+        configuration: month,
+        views: const <ViewParts>[MonthViewParts(header: MultiDayHeader())],
+        message:
+            'MultiDayHeader shows a MultiDayViewConfiguration and goes in MultiDayViewParts, but it is in the parts '
+            'that show the MonthViewConfiguration named "${month.name}".',
+      ),
+      (
+        widget: 'MonthBody',
+        configuration: schedule,
+        views: const <ViewParts>[ScheduleViewParts(body: MonthBody())],
+        message:
+            'MonthBody shows a MonthViewConfiguration and goes in MonthViewParts, but it is in the parts that show the '
+            'ScheduleViewConfiguration named "${schedule.name}".',
+      ),
+      (
+        widget: 'MonthHeader',
+        configuration: schedule,
+        views: const <ViewParts>[ScheduleViewParts(header: MonthHeader())],
+        message:
+            'MonthHeader shows a MonthViewConfiguration and goes in MonthViewParts, but it is in the parts that show '
+            'the ScheduleViewConfiguration named "${schedule.name}".',
+      ),
+      (
+        widget: 'ScheduleBody',
+        configuration: month,
+        views: const <ViewParts>[MonthViewParts(body: ScheduleBody())],
+        message:
+            'ScheduleBody shows a ScheduleViewConfiguration and goes in ScheduleViewParts, but it is in the parts that '
+            'show the MonthViewConfiguration named "${month.name}".',
+      ),
+    ]) {
+      testWidgets(c.widget, (tester) async {
+        final kalenderController = KalenderController(viewConfiguration: c.configuration);
+        addTearDown(kalenderController.dispose);
+        await tester.pumpWidget(
+          wrapWithMaterialApp(
+            KalenderView(eventsController: eventsController, kalenderController: kalenderController, views: c.views),
+          ),
+        );
+
+        expect(tester.takeException(), isA<AssertionError>().having((error) => error.message, 'message', c.message));
+      });
+    }
   });
 
   testWidgets('a header shared by every view keeps its state across views', (tester) async {

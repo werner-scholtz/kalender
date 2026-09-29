@@ -10,8 +10,8 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// The multi-day body builders take a [BuildContext] and resolve their own
-/// styles from it, all of them from the nearest [KalenderTheme].
+/// The multi-day body builders take a [BuildContext] and resolve their own styles from it, all of them from the nearest
+/// [KalenderTheme].
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -124,8 +124,8 @@ void main() {
   });
 }
 
-/// Renders nothing. Carries the colour its builder resolved from the context, so
-/// a test can read it back without keying widgets that repeat per day column.
+/// Renders nothing. Carries the colour its builder resolved from the context, so a test can read it back without keying
+/// widgets that repeat per day column.
 class _Probe extends StatelessWidget {
   const _Probe(this.color);
 

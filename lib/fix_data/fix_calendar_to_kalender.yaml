@@ -7,7 +7,6 @@
 
 version: 1
 transforms:
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderCallbacks'"
     date: 2026-09-03
     element:
@@ -17,7 +16,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderCallbacks'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderComponents'"
     date: 2026-09-03
     element:
@@ -27,7 +25,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderComponents'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderController'"
     date: 2026-09-03
     element:
@@ -37,7 +34,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderController'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderEvent'"
     date: 2026-09-03
     element:
@@ -47,7 +43,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderEvent'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderInteraction'"
     date: 2026-09-03
     element:
@@ -57,7 +52,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderInteraction'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderSnapping'"
     date: 2026-09-03
     element:
@@ -67,7 +61,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderSnapping'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderLocale'"
     date: 2026-09-03
     element:

@@ -83,8 +83,8 @@ class MonthGrid extends StatelessWidget {
     final style = (KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle()).merge(this.style);
     final thickness = style.thickness ?? 0;
     final color = style.color;
-    // Painting each line as a BorderSide keeps a thickness of 0 a hairline, and
-    // matches the week number gutter, which builds a BorderSide from this style.
+    // Painting each line as a BorderSide keeps a thickness of 0 a hairline, and matches the week number gutter, which
+    // builds a BorderSide from this style.
     final side = color == null ? null : BorderSide(color: color, width: thickness);
     return Stack(
       children: <Widget>[

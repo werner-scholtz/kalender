@@ -20,8 +20,8 @@ const kDefaultSnapStrategy = EventSnapStrategy.interval();
 abstract class EventSnapStrategy {
   const EventSnapStrategy();
 
-  /// Snaps to the nearest multiple of [KalenderSnapping.snapIntervalMinutes]
-  /// measured from the start of the day. The default.
+  /// Snaps to the nearest multiple of [KalenderSnapping.snapIntervalMinutes] measured from the start of the day. The
+  /// default.
   const factory EventSnapStrategy.interval() = IntervalSnapStrategy;
 
   /// Leaves the cursor position alone.
@@ -29,9 +29,8 @@ abstract class EventSnapStrategy {
 
   /// The time the event snaps to.
   ///
-  /// [cursorDate] is where the cursor sits, [startOfDay] is the start of the day
-  /// it sits in, and [snapIntervalMinutes] comes from
-  /// [KalenderSnapping.snapIntervalMinutes].
+  /// [cursorDate] is where the cursor sits, [startOfDay] is the start of the day it sits in, and [snapIntervalMinutes]
+  /// comes from [KalenderSnapping.snapIntervalMinutes].
   FloatingDateTime snap({
     required FloatingDateTime cursorDate,
     required FloatingDateTime startOfDay,
@@ -94,8 +93,8 @@ class NoSnapStrategy extends EventSnapStrategy {
 enum InputMode {
   /// Automatically detect input type.
   ///
-  /// Uses the platform heuristic as a fallback (iOS/Android → [imprecise], otherwise → [precise]).
-  /// At runtime, hover events indicate precise input and selection indicates imprecise input.
+  /// Uses the platform heuristic as a fallback (iOS/Android → [imprecise], otherwise → [precise]). At runtime, hover
+  /// events indicate precise input and selection indicates imprecise input.
   auto,
 
   /// Precise input mode (mouse, stylus, trackpad).
@@ -156,8 +155,8 @@ class KalenderInteraction {
 
   /// Resolves whether the current input mode is imprecise.
   ///
-  /// If [inputMode] is [InputMode.auto], falls back to a platform heuristic
-  /// (iOS/Android → imprecise, otherwise → precise).
+  /// If [inputMode] is [InputMode.auto], falls back to a platform heuristic (iOS/Android → imprecise, otherwise →
+  /// precise).
   bool resolveIsImprecise() {
     return switch (inputMode) {
       InputMode.precise => false,

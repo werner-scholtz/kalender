@@ -28,7 +28,7 @@ class ZoomDetector extends StatelessWidget {
 
 mixin ZoomUtils {
   KalenderController get controller;
-  ViewController? get viewController => controller.viewController;
+  ViewController get viewController => controller.viewController;
 
   /// The minimum zoom level for the calendar.
   final minimumZoomLevel = 0.5;
@@ -59,7 +59,7 @@ mixin ZoomUtils {
   /// The [ValueNotifier] that holds the state of the control key.
   ValueNotifier<bool> lock = ValueNotifier(false);
 
-  ///
+  /// The pointer's vertical position, which zooming keeps in place.
   double yOffset = 0;
 
   double scaleTrackpad(PointerPanZoomUpdateEvent event, double height) {
@@ -212,10 +212,6 @@ class ScrollBehaviorNever extends ScrollBehavior {
 
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) => const NeverScrollableScrollPhysics();
-}
-
-class ZoomIntent extends Intent {
-  const ZoomIntent();
 }
 
 class AllowMultipleGestureRecognizer extends ScaleGestureRecognizer {

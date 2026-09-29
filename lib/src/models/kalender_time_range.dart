@@ -53,8 +53,8 @@ final class KalenderTimeRange {
   /// Whether this range runs from 00:00 to 23:59.
   bool get coversWholeDay => start.hour == 0 && start.minute == 0 && end.hour == 23 && end.minute == 59;
 
-  /// Returns a [Duration] representing the time difference between the [start] and [end].
-  /// Inclusive of [end], so one minute longer than the clock difference.
+  /// Returns a [Duration] representing the time difference between the [start] and [end]. Inclusive of [end], so one
+  /// minute longer than the clock difference.
   Duration get duration {
     return Duration(hours: end.hour - start.hour, minutes: (end.minute - start.minute) + 1);
   }

@@ -60,5 +60,21 @@
   "tileLayout": "Tile Layout",
   "locked": "Locked",
   "lockedHint": "Drag across it to create an event.",
-  "clearSelection": "Clear selection"
+  "clearSelection": "Clear selection",
+  "scopedTheme": "Scoped theme",
+  "scopedThemeHint": "Wraps this calendar in a KalenderTheme",
+  "shadeAdjacentMonthDays": "Shade adjacent-month days",
+  "sideBySide": "Side by side",
+  "overlap": "Overlap",
+  "showWeekNumbers": "Show week numbers",
+  "dateOnViewChange": "Date on view change",
+  "scrollOnViewChange": "Scroll on view change",
+  "zoomOnViewChange": "Zoom on view change",
+  "transitionCarryFocus": "Carry over",
+  "transitionRestorePerView": "Restore per view",
+  "transitionPreserve": "Keep",
+  "transitionReset": "Reset",
+  "emptyDayShow": "Show",
+  "emptyDayShowOnlyToday": "Show only today",
+  "emptyDayHide": "Hide"
 }

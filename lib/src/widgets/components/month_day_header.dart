@@ -12,8 +12,8 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
 /// The month day header builder.
 ///
-/// The [date] is a wall-clock [DateTime] in the calendar's configured location,
-/// so comparisons against `DateTime.now()` behave correctly.
+/// The [date] is a wall-clock [DateTime] in the calendar's configured location, so comparisons against `DateTime.now()`
+/// behave correctly.
 ///
 /// Resolve the style with [KalenderTheme].
 ///
@@ -29,12 +29,12 @@ class MonthDayHeaderStyle with Diagnosticable {
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
 
-  /// The size of the day number button, which is also the today highlight.
-  /// When null, the button keeps its natural size.
+  /// The size of the day number button, which is also the today highlight. When null, the button keeps its natural
+  /// size.
   final Size? buttonSize;
 
-  /// The margin around the day number button. This keeps the button clear of
-  /// the gridline above it and the event tiles below it.
+  /// The margin around the day number button. This keeps the button clear of the gridline above it and the event tiles
+  /// below it.
   final EdgeInsets? margin;
 
   /// Creates a copy of this style with the given fields replaced with the new values.

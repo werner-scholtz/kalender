@@ -79,8 +79,8 @@ void main() {
       ),
     );
 
-    // January 2025 in Tokyo starts at 2025-01-01 00:00+09:00, which is
-    // 2024-12-31 15:00Z. An unconverted internal value reads 2025-01-01 00:00Z.
+    // January 2025 in Tokyo starts at 2025-01-01 00:00+09:00, which is 2024-12-31 15:00Z. An unconverted internal value
+    // reads 2025-01-01 00:00Z.
     expect(ranges.first.start.toUtc(), DateTime.utc(2024, 12, 31, 15));
     expect(ranges.first.end.toUtc(), DateTime.utc(2025, 1, 31, 15));
   });
@@ -134,8 +134,8 @@ void main() {
 
     expect(changedRange, isNotNull);
 
-    // A paginated schedule pages by month, so February 2025 in Tokyo starts at
-    // 2025-02-01 00:00+09:00, which is 2025-01-31 15:00Z.
+    // A paginated schedule pages by month, so February 2025 in Tokyo starts at 2025-02-01 00:00+09:00, which is
+    // 2025-01-31 15:00Z.
     expect(changedRange!.start.toUtc(), DateTime.utc(2025, 1, 31, 15));
     expect(changedRange!.end.toUtc(), DateTime.utc(2025, 2, 28, 15));
   });

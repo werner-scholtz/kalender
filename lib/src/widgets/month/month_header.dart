@@ -9,7 +9,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
 
-/// The month header is a simple widget that just displays the day names.
+/// The weekday names above a [MonthBody]. The default header of [MonthViewParts].
 ///
 /// {@category Views}
 class MonthHeader extends StatelessWidget {
@@ -31,12 +31,11 @@ class _MonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is MonthViewController,
-      'The KalenderController\'s $ViewController needs to be a $MonthViewController',
+    final viewController = context.viewControllerFor<MonthViewController>(
+      MonthHeader,
+      MonthViewConfiguration,
+      MonthViewParts,
     );
-
-    final viewController = context.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
     final components = calendarComponents.monthComponents.headerComponents;
@@ -44,7 +43,6 @@ class _MonthHeader extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: viewController.floatingVisibleRange,
       builder: (context, visibleRange, child) {
-        if (visibleRange == null) return const SizedBox.shrink();
         final visibleDateTimeRange = visibleRange.forLocation(location: context.location);
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
 

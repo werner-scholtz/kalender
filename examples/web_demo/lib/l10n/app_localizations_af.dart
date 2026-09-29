@@ -206,4 +206,52 @@ class AppLocalizationsAf extends AppLocalizations {
 
   @override
   String get clearSelection => 'Wis seleksie';
+
+  @override
+  String get scopedTheme => 'Plaaslike tema';
+
+  @override
+  String get scopedThemeHint => 'Omvou hierdie kalender in \'n KalenderTheme';
+
+  @override
+  String get shadeAdjacentMonthDays => 'Skadu dae van aangrensende maande';
+
+  @override
+  String get sideBySide => 'Langs mekaar';
+
+  @override
+  String get overlap => 'Oorvleuel';
+
+  @override
+  String get showWeekNumbers => 'Wys weeknommers';
+
+  @override
+  String get dateOnViewChange => 'Datum by aansigwisseling';
+
+  @override
+  String get scrollOnViewChange => 'Rol by aansigwisseling';
+
+  @override
+  String get zoomOnViewChange => 'Zoem by aansigwisseling';
+
+  @override
+  String get transitionCarryFocus => 'Oordra';
+
+  @override
+  String get transitionRestorePerView => 'Herstel per aansig';
+
+  @override
+  String get transitionPreserve => 'Behou';
+
+  @override
+  String get transitionReset => 'Stel terug';
+
+  @override
+  String get emptyDayShow => 'Wys';
+
+  @override
+  String get emptyDayShowOnlyToday => 'Wys net vandag';
+
+  @override
+  String get emptyDayHide => 'Versteek';
 }

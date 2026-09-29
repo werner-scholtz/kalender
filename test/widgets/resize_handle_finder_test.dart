@@ -13,9 +13,9 @@ import '../utilities.dart';
 
 /// [ResizeDetector] is findable without a key.
 ///
-/// It is exported and carries [ResizeDetector.event] and [ResizeDetector.direction],
-/// so a predicate picks out one handle where the type alone matches several.
-/// Making either field private, or dropping the export, breaks these tests.
+/// It is exported and carries [ResizeDetector.event] and [ResizeDetector.direction], so a predicate picks out one
+/// handle where the type alone matches several. Making either field private, or dropping the export, breaks these
+/// tests.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -86,8 +86,8 @@ void main() {
   testWidgets('scoping to a tile finds only that tile\'s handles', (tester) async {
     await pumpAndHover(tester);
 
-    // The recipe for a tree where the same event could be built more than once,
-    // which a page kept alive or an overlay can do.
+    // The recipe for a tree where the same event could be built more than once, which a page kept alive or an overlay
+    // can do.
     final tile = find.byKey(DayEventTile.tileKey(eventId));
     final other = find.byKey(DayEventTile.tileKey(otherId));
 

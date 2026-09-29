@@ -357,8 +357,8 @@ class TestProvider extends StatelessWidget {
 extension WidgetTesterUtils on WidgetTester {
   /// Moves [gesture] to the centre of [tile] and waits for the frame to settle.
   ///
-  /// Resize handles are only shown on hover for non-mobile devices, so tests
-  /// that check for them must hover over the tile first.
+  /// Resize handles are only shown on hover for non-mobile devices, so tests that check for them must hover over the
+  /// tile first.
   Future<void> hoverOn(Finder tile, TestGesture gesture) async {
     await pump();
     await gesture.moveTo(getCenter(tile));
@@ -411,8 +411,8 @@ extension WidgetTesterUtils on WidgetTester {
     return card;
   }
 
-  /// Creates a mouse [TestGesture] positioned at [Offset.zero] and registers
-  /// [TestGesture.removePointer] as a teardown so callers don't have to.
+  /// Creates a mouse [TestGesture] positioned at [Offset.zero] and registers [TestGesture.removePointer] as a teardown
+  /// so callers don't have to.
   Future<TestGesture> createMouseGesture() async {
     final gesture = await createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: Offset.zero);

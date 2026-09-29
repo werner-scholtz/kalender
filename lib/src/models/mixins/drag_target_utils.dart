@@ -79,8 +79,7 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
       _processMove(pending);
     });
 
-    // addPostFrameCallback does not schedule a frame, and without one the
-    // pending move would sit unprocessed.
+    // addPostFrameCallback does not schedule a frame, and without one the pending move would sit unprocessed.
     WidgetsBinding.instance.scheduleFrame();
   }
 
@@ -189,8 +188,8 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   /// The event being created.
   KalenderEvent? createEvent(FloatingDateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
-  /// Resolves the latest version of the [event] from the [EventsController],
-  /// falling back to the provided instance if not found.
+  /// Resolves the latest version of the [event] from the [EventsController], falling back to the provided instance if
+  /// not found.
   KalenderEvent _resolveEvent(KalenderEvent event) {
     return eventsController.byId(event.id) ?? event;
   }
@@ -252,8 +251,8 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     }
   }
 
-  /// Converts an [FloatingDateTimeRange] to a [KalenderDateTimeRange] for the current location,
-  /// handling DST spring-forward gaps where start can get pushed past end.
+  /// Converts an [FloatingDateTimeRange] to a [KalenderDateTimeRange] for the current location, handling DST
+  /// spring-forward gaps where start can get pushed past end.
   KalenderDateTimeRange toLocationDateTimeRange(FloatingDateTimeRange range) {
     final location = context.location;
     var start = range.start.forLocation(location: location);
@@ -262,11 +261,9 @@ mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
     return KalenderDateTimeRange(start: start, end: end);
   }
 
-  /// Moves [event] to the date of [cursorDateTime], keeping its time of day and
-  /// duration.
+  /// Moves [event] to the date of [cursorDateTime], keeping its time of day and duration.
   ///
-  /// Used where only the date can meaningfully change: the header, and a
-  /// multi-day event dragged across the body.
+  /// Used where only the date can meaningfully change: the header, and a multi-day event dragged across the body.
   KalenderEvent rescheduleToDate(KalenderEvent event, FloatingDateTime cursorDateTime) {
     final start = event.floatingStart(location: context.location);
     final newStart = cursorDateTime.copyWith(

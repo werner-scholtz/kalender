@@ -64,7 +64,7 @@ void main() {
         expect(find.byType(MultiDayOverlayPortal), findsNWidgets(2));
         expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(2));
 
-        final visibleDates = kalenderController.floatingVisibleRange.value!.dates();
+        final visibleDates = kalenderController.floatingVisibleRange.value.dates();
         for (final date in visibleDates.take(2)) {
           await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
           await tester.pumpAndSettle();
@@ -90,7 +90,7 @@ void main() {
       await pumpWeek(tester);
 
       final overlay = find.byType(MultiDayOverlay);
-      final date = kalenderController.floatingVisibleRange.value!.dates().first;
+      final date = kalenderController.floatingVisibleRange.value.dates().first;
       await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
       await tester.pumpAndSettle();
       expect(overlay, findsOne);
@@ -122,8 +122,8 @@ void main() {
       return (card: tester.getRect(card), view: tester.getRect(find.byType(KalenderView)));
     }
 
-    // January 2025 lays out as 5 rows (Mon 30 Dec - Sun 2 Feb), so the 29th
-    // sits in the last row, closest to the bottom edge.
+    // January 2025 lays out as 5 rows (Mon 30 Dec - Sun 2 Feb), so the 29th sits in the last row, closest to the bottom
+    // edge.
     final lastRowDay = DateTime.utc(2025, 1, 29);
     final firstRowDay = DateTime.utc(2025, 1, 2);
 

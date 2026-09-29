@@ -1,4 +1,4 @@
-# web_demo – Local Guidelines
+# web_demo: Local Guidelines
 
 This file applies to work under `examples/web_demo/`. It supplements the repository-level `AGENTS.md` at the root. Follow both, and this file wins for demo-specific details.
 

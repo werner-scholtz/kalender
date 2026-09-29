@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
@@ -60,8 +61,7 @@ class MultiDayComponents {
 ///
 /// {@category Appearance}
 class MultiDayHeaderComponents {
-  /// A function that builds the day header widget.
-  /// Null uses [DayHeader].
+  /// A function that builds the day header widget. Null uses [DayHeader].
   final DayHeaderBuilder? dayHeaderBuilder;
 
   /// Builds the day name displayed under the day number.
@@ -74,8 +74,7 @@ class MultiDayHeaderComponents {
   /// Defaults to [DateTime.day].
   final DateStringBuilder? dayHeaderNumberStringBuilder;
 
-  /// A function that builds the week number widget.
-  /// Null uses [WeekNumber].
+  /// A function that builds the week number widget. Null uses [WeekNumber].
   final WeekNumberBuilder? weekNumberBuilder;
 
   /// A function that builds the left trigger widget.
@@ -166,14 +165,12 @@ class MultiDayHeaderComponents {
 ///
 /// {@category Appearance}
 class MultiDayBodyComponents {
-  /// A function that builds the hour lines widget.
-  /// Null uses [HourLines].
+  /// A function that builds the hour lines widget. Null uses [HourLines].
   final HourLinesBuilder? hourLines;
 
   /// A function that builds the timeline widget.
   ///
-  /// The widget fills the width [timelineWidth] resolves to.
-  /// Null uses [TimeLine].
+  /// The widget fills the width [timelineWidth] resolves to. Null uses [TimeLine].
   final TimeLineBuilder? timeline;
 
   /// Builds the labels displayed by the timeline.
@@ -183,16 +180,14 @@ class MultiDayBodyComponents {
 
   /// Resolves the width of the timeline gutter.
   ///
-  /// The body, the header and the drag overlay share this width so their day columns align.
-  /// Null uses [defaultTimelineWidth].
+  /// The body, the header and the drag overlay share this width so their day columns align. Null uses
+  /// [defaultTimelineWidth].
   final TimelineWidthBuilder? timelineWidth;
 
-  /// A function that builds the day separator widget.
-  /// Null uses [DaySeparator].
+  /// A function that builds the day separator widget. Null uses [DaySeparator].
   final DaySeparatorBuilder? daySeparator;
 
-  /// A function that builds the time indicator widget.
-  /// Null uses [TimeIndicator].
+  /// A function that builds the time indicator widget. Null uses [TimeIndicator].
   final TimeIndicatorBuilder? timeIndicator;
 
   /// A function that builds the left trigger widget.
@@ -232,7 +227,7 @@ class MultiDayBodyComponents {
     double heightPerMinute,
     KalenderTimeRange timeOfDayRange,
     ValueNotifier<KalenderEvent?> eventBeingDragged,
-    ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
+    ValueListenable<KalenderDateTimeRange> visibleDateTimeRange,
   ) {
     return timeline?.call(context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) ??
         TimeLine(
@@ -255,8 +250,8 @@ class MultiDayBodyComponents {
 
   /// Builds the time indicator, with [timeIndicator] when set.
   ///
-  /// [nowCallback] reaches the default [TimeIndicator] only. A custom
-  /// [timeIndicator] decides for itself what the current time is.
+  /// [nowCallback] reaches the default [TimeIndicator] only. A custom [timeIndicator] decides for itself what the
+  /// current time is.
   Widget buildTimeIndicator(
     BuildContext context,
     KalenderTimeRange timeOfDayRange,

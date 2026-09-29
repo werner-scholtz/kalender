@@ -86,7 +86,7 @@ State reaches widgets through the `InheritedWidget` providers in `lib/src/models
 
 ### Controllers
 
-- `KalenderController` drives one `KalenderView`: navigation, `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`, `selectedRange` and `openDayOverlay`. It holds the active `viewConfiguration` and `location`, and owns the `ViewController` built from them.
+- `KalenderController` drives the `KalenderView`s built on it: navigation, `visibleDateTimeRange`, `visibleEvents`, `selectedEvent`, `selectedRange` and `openDayOverlay`. It holds the active `viewConfiguration` and `location`, and owns the `ViewController` built from them.
 - `EventsController` is the abstract store. `DefaultEventsController` is the one apps use.
 - The calendar never selects a day on its own. An app selects from the callbacks.
 
@@ -113,7 +113,7 @@ The minor version is the breaking slot until 1.0.0. Breaking changes are batched
 ### Deprecations
 
 - Deprecate only when the old member still gives a correct answer. A member that compiles and does nothing is worse than a compile error.
-- The window is one minor release. Deprecated in 0.32.0 means removed in 0.33.0. Do not extend it or remove early.
+- The window is one minor release. A member deprecated in one minor release is removed in the next. Do not extend it or remove early.
 - Every `@Deprecated` message names the replacement and the removal version. Check with `grep -rn "@Deprecated" lib/`.
 
 ```dart
@@ -150,7 +150,7 @@ What a fix reaches, measured against a subclass overriding a `@mustBeOverridden`
 
 - A `renameParameter` reaches only the element it names. Give each function and method an app calls or overrides its own transform.
 - A `renameParameter` on a constructor does not reach a subclass's `super.` parameter.
-- `date` is the day the pull request merged. Name the pull request in a comment above the transform.
+- `date` is the day the pull request merged.
 - Every fix has a fixture pair in `test_fixes/<name>.dart` and `<name>.dart.expect`, checked by `dart fix --compare-to-golden test_fixes`.
 
 Say in the migration guide which edits the fixes leave to the reader.
@@ -175,7 +175,7 @@ git tag -s v<version> -m v<version> && git push origin v<version>
 
 Once the release is on pub.dev, `site.yml` rebuilds the live demo from it, see [Site and benchmarks](#site-and-benchmarks).
 
-A pre-release takes a `-dev.N` suffix, as in `v0.33.0-dev.1`. A patch for an older release starts from its tag when needed: `git branch release/0.32.x v0.32.0`.
+A pre-release takes a `-dev.N` suffix, as in `v<version>-dev.1`. A patch for an older release starts from its tag when needed: `git branch release/<major>.<minor>.x v<major>.<minor>.0`.
 
 `.pubignore` keeps `AGENTS.md`, `ROADMAP.md`, the tests, examples and tools out of the archive. `flutter pub publish --dry-run` lists what ships.
 

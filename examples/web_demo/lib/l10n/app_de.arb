@@ -60,5 +60,21 @@
   "tileLayout": "Kachel-Layout",
   "locked": "Gesperrt",
   "lockedHint": "Darüber ziehen, um ein Ereignis zu erstellen.",
-  "clearSelection": "Auswahl aufheben"
+  "clearSelection": "Auswahl aufheben",
+  "scopedTheme": "Eigenes Theme",
+  "scopedThemeHint": "Umschließt diesen Kalender mit einem KalenderTheme",
+  "shadeAdjacentMonthDays": "Tage angrenzender Monate schattieren",
+  "sideBySide": "Nebeneinander",
+  "overlap": "Überlappend",
+  "showWeekNumbers": "Kalenderwochen anzeigen",
+  "dateOnViewChange": "Datum beim Ansichtswechsel",
+  "scrollOnViewChange": "Scrollen beim Ansichtswechsel",
+  "zoomOnViewChange": "Zoom beim Ansichtswechsel",
+  "transitionCarryFocus": "Übernehmen",
+  "transitionRestorePerView": "Pro Ansicht wiederherstellen",
+  "transitionPreserve": "Beibehalten",
+  "transitionReset": "Zurücksetzen",
+  "emptyDayShow": "Anzeigen",
+  "emptyDayShowOnlyToday": "Nur heute anzeigen",
+  "emptyDayHide": "Ausblenden"
 }

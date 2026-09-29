@@ -205,9 +205,8 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     final currentCache = <int, VerticalLayoutData>{};
     final cache = layoutCache.getCache(date, heightPerMinute, timeOfDayRange);
 
-    // Collected per child rather than read back out of the cache. The cache is
-    // keyed by event hash, so two equal events share one entry, and using its
-    // values as the result would leave a child with no layout data at all.
+    // Collected per child rather than read back out of the cache. The cache is keyed by event hash, so two equal events
+    // share one entry, and using its values as the result would leave a child with no layout data at all.
     final layoutData = <VerticalLayoutData>[];
 
     for (var i = 0; i < numberOfChildren; i++) {
@@ -243,8 +242,8 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
       bottom += overlap;
     }
 
-    // Round top and bottom to one decimal place.
-    // This is to prevent floating point errors from causing issues with the layout.
+    // Round top and bottom to one decimal place. This is to prevent floating point errors from causing issues with the
+    // layout.
     top = (top * 10).roundToDouble() / 10;
     bottom = (bottom * 10).roundToDouble() / 10;
 
@@ -322,7 +321,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   }
 }
 
-/// The [OverlapLayoutDelegate] lays out [KalenderEvent]'s, by stacking them on top of one another.
+/// The [OverlapLayoutDelegate] lays out [KalenderEvent]s, by stacking them on top of one another.
 ///
 /// {@category Layout}
 class OverlapLayoutDelegate extends EventLayoutDelegate {
@@ -378,9 +377,8 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
           xOffset = size.width - width;
         }
 
-        // Layout and position the tile if it was built. The width math above
-        // still runs for every event (including culled ones) so on-screen tiles
-        // keep the correct width even when an overlapping partner is off-screen.
+        // Layout and position the tile if it was built. The width math above still runs for every event (including
+        // culled ones) so on-screen tiles keep the correct width even when an overlapping partner is off-screen.
         if (hasChild(data.id)) {
           layoutChild(data.id, BoxConstraints.tightFor(width: width, height: data.height));
           positionChild(data.id, Offset(xOffset, data.top));
@@ -395,7 +393,7 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
   List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) => layoutData;
 }
 
-/// The [SideBySideLayoutDelegate] lays out [KalenderEvent]'s next to one another.
+/// The [SideBySideLayoutDelegate] lays out [KalenderEvent]s next to one another.
 ///
 /// {@category Layout}
 class SideBySideLayoutDelegate extends EventLayoutDelegate {
@@ -413,8 +411,7 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
   List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events) => events.toList();
   @override
   List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
-    // Sort the data from top to bottom.
-    // If the top values are equal compare the bottom
+    // Sort the data from top to bottom. If the top values are equal compare the bottom
     return layoutData..sort((a, b) {
       return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
     });
@@ -423,8 +420,8 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
   @override
   void performLayout(Size size) {
     final verticalLayoutData = {for (final data in calculateVerticalLayoutData(size)) data.id: data};
-    // Every event is placed, including culled ones, so an on-screen tile keeps its column when an overlapping
-    // partner is off-screen.
+    // Every event is placed, including culled ones, so an on-screen tile keeps its column when an overlapping partner
+    // is off-screen.
     for (final placement in arrange(verticalLayoutData.values)) {
       final id = placement.id;
       if (!hasChild(id)) continue;
@@ -437,9 +434,9 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
 
   /// Places [verticalLayoutData] in columns, so tiles that overlap never share horizontal space.
   ///
-  /// Tiles are taken by top, then by bottom. A tile that starts at or after the bottom of every tile before it starts
-  /// a new group. Each tile goes into the first column free at its top and widens over the columns to its right that
-  /// stay free for its whole height. A group has as many columns as it has tiles running at once.
+  /// Tiles are taken by top, then by bottom. A tile that starts at or after the bottom of every tile before it starts a
+  /// new group. Each tile goes into the first column free at its top and widens over the columns to its right that stay
+  /// free for its whole height. A group has as many columns as it has tiles running at once.
   static List<SideBySidePlacement> arrange(Iterable<VerticalLayoutData> verticalLayoutData) {
     final sorted = verticalLayoutData.toList()
       ..sort((a, b) {

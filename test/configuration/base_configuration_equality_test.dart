@@ -8,10 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-/// Exercises the `==` / `hashCode` defined on the abstract [VerticalConfiguration]
-/// and [HorizontalConfiguration] base classes, through the concrete subclasses
-/// that reach them ([MultiDayBodyConfiguration] / [MultiDayHeaderConfiguration]),
-/// and the runtime type check that keeps two subclasses of one base apart.
+/// Exercises the `==` / `hashCode` defined on the abstract [VerticalConfiguration] and [HorizontalConfiguration] base
+/// classes, through the concrete subclasses that reach them ([MultiDayBodyConfiguration] /
+/// [MultiDayHeaderConfiguration]), and the runtime type check that keeps two subclasses of one base apart.
 void main() {
   group('VerticalConfiguration equality', () {
     test('identical configurations are equal with matching hashCodes', () {

@@ -28,8 +28,8 @@ const kDefaultWeekNumberWidth = 56.0;
 
 /// The default [WeekNumberWidthBuilder].
 ///
-/// Returns the width of [WeekNumberStyle.buttonSize] plus its padding when the
-/// style sets one, and [kDefaultWeekNumberWidth] otherwise.
+/// Returns the width of [WeekNumberStyle.buttonSize] plus its padding when the style sets one, and
+/// [kDefaultWeekNumberWidth] otherwise.
 ///
 /// {@category Appearance}
 double defaultWeekNumberWidth(BuildContext context) {
@@ -44,8 +44,8 @@ double defaultWeekNumberWidth(BuildContext context) {
 ///
 /// The [visibleDateTimeRange] is the range of dates that the week number will be displayed for.
 ///
-/// Resolve the style with [KalenderTheme]. The month gutter merges its own
-/// defaults into that scope, so the same call returns the month's value there.
+/// Resolve the style with [KalenderTheme]. The month gutter merges its own defaults into that scope, so the same call
+/// returns the month's value there.
 ///
 /// {@category Appearance}
 typedef WeekNumberBuilder = Widget Function(BuildContext context, KalenderDateTimeRange visibleDateTimeRange);
@@ -59,8 +59,7 @@ class WeekNumberStyle with Diagnosticable {
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.
   final TextStyle? textStyle;
 
-  /// The size of the week number button. When null the button keeps its
-  /// natural size.
+  /// The size of the week number button. When null the button keeps its natural size.
   final Size? buttonSize;
 
   /// The tooltip used by the [WeekNumber] widget.
@@ -171,9 +170,8 @@ class WeekNumber extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       padding: buttonSize == null ? null : EdgeInsets.zero,
       constraints: buttonSize == null ? null : BoxConstraints.tight(buttonSize),
-      // The gutter is sized by the calendar, not by this label, so a range
-      // spanning two weeks wraps. Without this the short second line sits
-      // against the leading edge.
+      // The gutter is sized by the calendar, not by this label, so a range spanning two weeks wraps. Without this the
+      // short second line sits against the leading edge.
       icon: Text(weekNumber, textAlign: TextAlign.center, style: style.textStyle),
     );
 

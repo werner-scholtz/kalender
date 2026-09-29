@@ -10,29 +10,27 @@ import 'package:kalender/kalender.dart';
 ///
 /// {@category Views}
 enum DateTransition {
-  /// Carry the current focus forward from the view being switched away from
-  /// (e.g. the visible week's start becomes the new day). This is the default.
+  /// Carry the current focus forward from the view being switched away from (e.g. the visible week's start becomes the
+  /// new day). This is the default.
   carryFocus,
 
-  /// Restore the date this view last displayed (matched by configuration `name`),
-  /// falling back to [carryFocus] when the view has no recorded history yet.
+  /// Restore the date this view last displayed (matched by configuration `name`), falling back to [carryFocus] when the
+  /// view has no recorded history yet.
   restorePerView,
 }
 
-/// How the vertical scroll position (time-of-day) is chosen when switching to a
-/// multi-day view.
+/// How the vertical scroll position (time-of-day) is chosen when switching to a multi-day view.
 ///
 /// {@category Views}
 enum ScrollTransition {
-  /// Keep the time-of-day the user was last looking at in a multi-day view
-  /// (survives a round-trip through a view without scroll, e.g. Month). Default.
+  /// Keep the time-of-day the user was last looking at in a multi-day view (survives a round-trip through a view
+  /// without scroll, e.g. Month). Default.
   preserve,
 
   /// Reset to the view's configured `initialTimeOfDay`.
   reset,
 
-  /// Restore the time-of-day this view last displayed (matched by configuration
-  /// `name`), falling back to [preserve].
+  /// Restore the time-of-day this view last displayed (matched by configuration `name`), falling back to [preserve].
   restorePerView,
 }
 
@@ -46,8 +44,7 @@ enum ZoomTransition {
   /// Reset to the view's configured `initialHeightPerMinute`.
   reset,
 
-  /// Restore the zoom this view last used (matched by configuration `name`),
-  /// falling back to [preserve].
+  /// Restore the zoom this view last used (matched by configuration `name`), falling back to [preserve].
   restorePerView,
 }
 
@@ -109,12 +106,12 @@ class ViewTransitionContext {
   /// The last snapshot of each view, keyed by its configuration `name`.
   final Map<String, ViewSnapshot> byView;
 
-  /// The most recent multi-day snapshot, kept even across an intermediate view
-  /// without scroll (e.g. Week → Month → Week).
+  /// The most recent multi-day snapshot, kept even across an intermediate view without scroll (e.g. Week → Month →
+  /// Week).
   final ViewSnapshot? lastMultiDay;
 
-  /// Whether the calendar's location changed. A location change runs the resolvers even when the view
-  /// configuration stays the same.
+  /// Whether the calendar's location changed. A location change runs the resolvers even when the view configuration
+  /// stays the same.
   final bool locationChanged;
 
   /// The location the new view controller is created in.

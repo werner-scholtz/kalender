@@ -249,10 +249,9 @@ class _SelectionDemoState extends State<SelectionDemo> {
         spacing: 4,
         children: [
           ValueListenableBuilder(
-            valueListenable: kalenderController.visibleDateTimeRange,
+            valueListenable: kalenderController.floatingVisibleRange,
             builder: (context, range, _) {
-              if (range == null) return const SizedBox.shrink();
-              final date = FloatingDateTimeRange.fromDateTimeRange(range).dominantMonthDate;
+              final date = range.dominantMonthDate;
               return Text('${date.monthNameLocalized()} ${date.year}', style: Theme.of(context).textTheme.titleMedium);
             },
           ),

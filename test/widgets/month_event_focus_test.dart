@@ -20,8 +20,7 @@ void main() {
       ),
     );
 
-    // Two events covering the same days (Tue–Thu of the first full week) so they
-    // stack: one on row 0, one on row 1.
+    // Two events covering the same days (Tue–Thu of the first full week) so they stack: one on row 0, one on row 1.
     final range = KalenderDateTimeRange(start: DateTime(2025, 1, 7), end: DateTime(2025, 1, 10));
     final eventA = KalenderEvent(start: range.start, end: range.end);
     final eventB = KalenderEvent(start: range.start, end: range.end);

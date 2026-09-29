@@ -14,25 +14,22 @@ export 'package:kalender/kalender_extensions.dart';
 mixin EventTileUtils {
   /// The [KalenderEvent] that the tile is representing.
   ///
-  /// This is provided by a [TileComponents.tileBuilder] and represents
-  /// the event data that this tile is displaying.
+  /// This is provided by a [TileComponents.tileBuilder] and represents the event data that this tile is displaying.
   KalenderEvent get event;
 
   /// The [KalenderDateTimeRange] that the tile is being displayed within.
   ///
-  /// This represents the time span that the tile is displayed on,
-  /// as provided by the [TileComponents.tileBuilder]. For day views, this is
-  /// typically a single day's range.
+  /// This represents the time span that the tile is displayed on, as provided by the [TileComponents.tileBuilder]. For
+  /// day views, this is typically a single day's range.
   ///
-  /// The values are **wall-clock** [DateTime]s (local or [TZDateTime]),
-  /// not UTC. See [floatingTileRange] to obtain an [FloatingDateTimeRange].
+  /// The values are **wall-clock** [DateTime]s (local or [TZDateTime]), not UTC. See [floatingTileRange] to obtain an
+  /// [FloatingDateTimeRange].
   KalenderDateTimeRange get tileRange;
 
-  /// Converts [tileRange] into an [FloatingDateTimeRange] using the
-  /// current [LocationProvider].
+  /// Converts [tileRange] into an [FloatingDateTimeRange] using the current [LocationProvider].
   ///
-  /// This is useful when mixin helpers need DST-safe arithmetic on the
-  /// tile's date boundaries (e.g. [DayEventTileUtils.eventRangeOnDate]).
+  /// This is useful when mixin helpers need DST-safe arithmetic on the tile's date boundaries (e.g.
+  /// [DayEventTileUtils.eventRangeOnDate]).
   FloatingDateTimeRange floatingTileRange(BuildContext context) {
     final location = context.location;
     return FloatingDateTimeRange(
@@ -122,8 +119,7 @@ mixin DayEventTileUtils implements EventTileUtils {
   }
 }
 
-/// Utilities for a tile that represents an event spanning several days, in the month view or the multi-day
-/// header.
+/// Utilities for a tile that represents an event spanning several days, in the month view or the multi-day header.
 ///
 /// Mixed in the same way as [DayEventTileUtils].
 ///
@@ -177,8 +173,8 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
   DateTime dateFromPosition(BuildContext context, Offset localPosition) {
     final renderBox = context.findRenderObject() as RenderBox;
 
-    // Clip the event to the tile so the column width maps to the days actually
-    // visible in this tile (events can start before / end after the tile).
+    // Clip the event to the tile so the column width maps to the days actually visible in this tile (events can start
+    // before / end after the tile).
     final start = event.floatingStart(location: context.location);
     final end = event.floatingEnd(location: context.location);
     final range = FloatingDateTimeRange(
@@ -187,8 +183,8 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
     );
 
     final numberOfDays = range.dates().length;
-    // Clamp so a tap on the trailing edge (dx == width) or just outside the tile
-    // resolves to a day within the visible range rather than one day past it.
+    // Clamp so a tap on the trailing edge (dx == width) or just outside the tile resolves to a day within the visible
+    // range rather than one day past it.
     final dateClicked = (localPosition.dx ~/ (renderBox.size.width / numberOfDays)).clamp(0, numberOfDays - 1);
     final date = FloatingDateTime.fromDateTime(
       range.start.copyWith(day: range.start.day + dateClicked),

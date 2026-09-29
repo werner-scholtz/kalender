@@ -13,8 +13,8 @@ import '../utilities.dart';
 
 /// [ScheduleDate] shows the locale's short day name from [DateTimeExtensions.dayNameShortLocalized].
 void main() {
-  // 15 January 2025 is a Wednesday, whose abbreviation differs from the first
-  // three letters of its full name in several locales.
+  // 15 January 2025 is a Wednesday, whose abbreviation differs from the first three letters of its full name in several
+  // locales.
   final wednesday = FloatingDateTime(2025, 1, 15);
 
   Future<void> pumpInLocale(WidgetTester tester, Locale locale, {Widget? child}) async {

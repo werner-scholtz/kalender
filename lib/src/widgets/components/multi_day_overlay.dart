@@ -78,8 +78,8 @@ class MultiDayOverlayStyle with Diagnosticable {
 
   /// The [ButtonStyle] used for the close button.
   ///
-  /// This is merged over the defaults of the filled tonal icon button, so a
-  /// value only has to set the fields it wants to change.
+  /// This is merged over the defaults of the filled tonal icon button, so a value only has to set the fields it wants
+  /// to change.
   final ButtonStyle? closeButtonStyle;
 
   /// The color drawn behind the card, covering the rest of the calendar.
@@ -89,14 +89,12 @@ class MultiDayOverlayStyle with Diagnosticable {
 
   /// The width of the card.
   ///
-  /// Defaults to [MultiDayOverlay.defaultWidth]. The card is never wider than
-  /// the space available to it.
+  /// Defaults to [MultiDayOverlay.defaultWidth]. The card is never wider than the space available to it.
   final double? width;
 
   /// The height of the header above the event list.
   ///
-  /// Defaults to [MultiDayOverlay.defaultHeaderHeight]. The header is never
-  /// taller than the space available to it.
+  /// Defaults to [MultiDayOverlay.defaultHeaderHeight]. The header is never taller than the space available to it.
   final double? headerHeight;
 
   const MultiDayOverlayStyle({
@@ -175,8 +173,8 @@ class MultiDayOverlayStyle with Diagnosticable {
       headerPadding: EdgeInsets.lerp(a?.headerPadding, b?.headerPadding, t),
       eventsPadding: EdgeInsets.lerp(a?.eventsPadding, b?.eventsPadding, t),
       eventPadding: EdgeInsets.lerp(a?.eventPadding, b?.eventPadding, t),
-      // CardThemeData.lerp never returns null, so keep null when neither side
-      // sets a theme rather than inventing an empty one.
+      // CardThemeData.lerp never returns null, so keep null when neither side sets a theme rather than inventing an
+      // empty one.
       cardTheme: a?.cardTheme == null && b?.cardTheme == null
           ? null
           : CardThemeData.lerp(a?.cardTheme, b?.cardTheme, t),
@@ -242,10 +240,9 @@ class MultiDayOverlayStyle with Diagnosticable {
 
 /// Positions the overlay card, keeping all four of its edges inside the overlay.
 ///
-/// The card has to be measured before it can be placed, since it is always
-/// taller than the day cell it is anchored to. A [SingleChildLayoutDelegate]
-/// receives the measured size in [getPositionForChild], so the card is placed
-/// and clamped in a single pass.
+/// The card has to be measured before it can be placed, since it is always taller than the day cell it is anchored to.
+/// A [SingleChildLayoutDelegate] receives the measured size in [getPositionForChild], so the card is placed and clamped
+/// in a single pass.
 class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
   const _MultiDayOverlayLayoutDelegate({required this.anchorTop, required this.anchorCenterX, required this.width});
 
@@ -268,8 +265,8 @@ class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
-    // Pull the card up before pushing it down, so that a card which fills the
-    // overlay is aligned to the top rather than the bottom.
+    // Pull the card up before pushing it down, so that a card which fills the overlay is aligned to the top rather than
+    // the bottom.
     var top = anchorTop;
     if (top + childSize.height > size.height) top = size.height - childSize.height;
     if (top < 0) top = 0;
@@ -350,8 +347,8 @@ class MultiDayOverlay extends StatelessWidget {
   /// Key applied to the [IconButton] when the date is today.
   static const todayKey = ValueKey('MultiDayOverlay.today');
 
-  /// The ideal top and horizontal center of the overlay card, and its width. The top puts the card's event list
-  /// over the day cell's event area, and [_MultiDayOverlayLayoutDelegate] clamps it to the viewport after measuring.
+  /// The ideal top and horizontal center of the overlay card, and its width. The top puts the card's event list over
+  /// the day cell's event area, and [_MultiDayOverlayLayoutDelegate] clamps it to the viewport after measuring.
   (double anchorTop, double anchorCenterX, double width) _calculateAnchor(
     BoxConstraints constraints,
     MultiDayOverlayStyle style,
@@ -467,10 +464,9 @@ class MultiDayOverlay extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Flexible and the scroll view belong together: without
-                      // Flexible the column child keeps an unbounded height and
-                      // never scrolls, and without the scroll view the bounded
-                      // height reaches ListBody, which requires an unbounded one.
+                      // Flexible and the scroll view belong together: without Flexible the column child keeps an
+                      // unbounded height and never scrolls, and without the scroll view the bounded height reaches
+                      // ListBody, which requires an unbounded one.
                       Flexible(
                         child: SingleChildScrollView(
                           primary: false,

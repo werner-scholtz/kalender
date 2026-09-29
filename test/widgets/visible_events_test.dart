@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -65,6 +66,72 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(kalenderController.visibleEvents.value, expected);
+    });
+  }
+
+  final week = MultiDayViewConfiguration.week(initialDateTime: DateTime(2025, 1, 15));
+  final january2 = timed(DateTime(2025, 1, 2));
+  for (final c in [
+    (
+      name: 'a switch from a month to a week view',
+      initial: month,
+      showFirst: true,
+      change: (KalenderController controller, ValueNotifier<bool> show) {
+        controller.viewConfiguration = week;
+      },
+      // The week view opens on the first of the month the month view showed.
+      expected: {january2},
+    ),
+    (
+      name: 'a switch from a week to a work week view',
+      initial: week,
+      showFirst: true,
+      change: (KalenderController controller, ValueNotifier<bool> show) {
+        controller.viewConfiguration = MultiDayViewConfiguration.workWeek(initialDateTime: DateTime(2025, 1, 15));
+      },
+      expected: {january},
+    ),
+    (
+      name: 'a week view mounted by a rebuild',
+      initial: week,
+      showFirst: false,
+      change: (KalenderController controller, ValueNotifier<bool> show) {
+        show.value = true;
+      },
+      expected: {january},
+    ),
+  ]) {
+    testWidgets('${c.name} fills the visible events without notifying during the build', (tester) async {
+      final eventsController = DefaultEventsController()..addEvents([january2, january, february]);
+      final kalenderController = KalenderController(viewConfiguration: c.initial);
+      final show = ValueNotifier(c.showFirst);
+      addTearDown(eventsController.dispose);
+      addTearDown(kalenderController.dispose);
+      addTearDown(show.dispose);
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        Column(
+          children: [
+            ValueListenableBuilder(
+              valueListenable: kalenderController.visibleEvents,
+              builder: (context, events, _) => Text('${events.length}'),
+            ),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: show,
+                builder: (context, visible, _) => visible
+                    ? KalenderView(eventsController: eventsController, kalenderController: kalenderController)
+                    : const SizedBox(),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      c.change(kalenderController, show);
+      await tester.pumpAndSettle();
+
+      expect(kalenderController.visibleEvents.value, c.expected);
     });
   }
 }

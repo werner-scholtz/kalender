@@ -12,12 +12,10 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
 import '../utilities.dart';
 
-/// The month week number column and the multi-day timeline are each drawn in the
-/// body and reserved again in the header. [KalenderView] measures each once and
-/// publishes the number, so the two halves cannot be given different widths.
+/// The month week number column and the multi-day timeline are each drawn in the body and reserved again in the header.
+/// [KalenderView] measures each once and publishes the number, so the two halves cannot be given different widths.
 ///
-/// Only the width is shared. A scoped [KalenderTheme] restyles what is drawn,
-/// the way it does for every other style.
+/// Only the width is shared. A scoped [KalenderTheme] restyles what is drawn, the way it does for every other style.
 void main() {
   late DefaultEventsController eventsController;
 
@@ -109,8 +107,8 @@ void main() {
       expect(spacerWidth(tester), 90);
     });
 
-    // The header lays its spacer out in a Row, which mirrors on its own, while the
-    // body positions the gutter through a layout delegate.
+    // The header lays its spacer out in a Row, which mirrors on its own, while the body positions the gutter through a
+    // layout delegate.
     for (final direction in TextDirection.values) {
       testWidgets('the gutter and the spacer sit on the same side in $direction', (tester) async {
         await pumpAndSettleWithMaterialApp(tester, Directionality(textDirection: direction, child: plain(month())));
@@ -232,8 +230,8 @@ void main() {
     });
   });
 
-  // The builders run above the header and body, so what the calendar installs resolves and what those two install
-  // does not.
+  // The builders run above the header and body, so what the calendar installs resolves and what those two install does
+  // not.
   testWidgets('a width builder reaches the calendar state', (tester) async {
     _resolved.clear();
     _widthBuilderCalls = 0;
@@ -253,6 +251,7 @@ void main() {
     expect(_resolved, {
       'eventsControllerOf': true,
       'kalenderControllerOf': true,
+      'viewControllerOf': true,
       'localeOf': true,
       'locationOf': true,
       'componentsOf': true,
@@ -282,6 +281,7 @@ double _readsCalendarState(BuildContext context, KalenderTimeRange range) {
   _widthBuilderCalls++;
   _record('eventsControllerOf', KalenderScope.eventsControllerOf, context);
   _record('kalenderControllerOf', KalenderScope.kalenderControllerOf, context);
+  _record('viewControllerOf', KalenderScope.viewControllerOf, context);
   _record('localeOf', KalenderScope.localeOf, context);
   _record('locationOf', KalenderScope.locationOf, context);
   _record('componentsOf', KalenderScope.componentsOf, context);

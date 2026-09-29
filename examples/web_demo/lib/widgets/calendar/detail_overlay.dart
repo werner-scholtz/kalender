@@ -14,8 +14,7 @@ import 'package:web_demo/widgets/calendar/detail_card.dart';
 
 class EventDetailOverlay extends StatefulWidget {
   final Widget child;
-  final Location? location;
-  const EventDetailOverlay({super.key, required this.child, required this.location});
+  const EventDetailOverlay({super.key, required this.child});
 
   static void createEventOverlay(BuildContext context, Event event, RenderBox renderBox) {
     final state = context.findAncestorStateOfType<EventDetailOverlayState>();
@@ -136,7 +135,6 @@ class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTicke
                         onDismiss: _dismissOverlay,
                         eventsController: context.eventsController,
                         controller: context.controller,
-                        location: widget.location,
                       ),
                     ),
                   ),

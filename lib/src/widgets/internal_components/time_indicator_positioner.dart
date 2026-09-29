@@ -23,18 +23,17 @@ extension MultiDayViewControllerPage on MultiDayViewController {
 
 /// A widget that positions a time indicator to follow the current page position.
 ///
-/// The [TimeIndicatorPositioner] calculates the position of a time indicator
-/// based on the current page offset and positions it accordingly. It's designed
-/// to work with multi-day calendar views where the time indicator needs to
+/// The [TimeIndicatorPositioner] calculates the position of a time indicator based on the current page offset and
+/// positions it accordingly. It's designed to work with multi-day calendar views where the time indicator needs to
 /// track the current day across different pages.
 ///
-/// The widget listens to page offset changes and automatically repositions
-/// the time indicator to maintain proper alignment with the current view.
+/// The widget listens to page offset changes and automatically repositions the time indicator to maintain proper
+/// alignment with the current view.
 class TimeIndicatorPositioner extends StatefulWidget {
   /// The [MultiDayViewController] that controls the calendar view.
   ///
-  /// This controller provides access to the page offset and view configuration
-  /// needed to calculate the time indicator position.
+  /// This controller provides access to the page offset and view configuration needed to calculate the time indicator
+  /// position.
   final MultiDayViewController viewController;
 
   /// The initial page number to start from.
@@ -68,21 +67,19 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   /// The page number that contains today's date.
   late int todayPageNumber;
 
-  /// The index of today's date on the page that contains it, or `-1` when today
-  /// falls outside the view's display range.
+  /// The index of today's date on the page that contains it, or `-1` when today falls outside the view's display range.
   late int todayIndex;
 
   /// The number of days one page covers.
   ///
-  /// A free scrolling view pages by the day while showing several at a time, so
-  /// this is not the number of days on screen.
+  /// A free scrolling view pages by the day while showing several at a time, so this is not the number of days on
+  /// screen.
   late int daysPerPage;
 
   /// Days between the left edge of the viewport and the start of today.
   ///
-  /// Negative when today has scrolled off the leading edge. The indicator is on
-  /// screen while this is greater than `-1` and less than the number of days the
-  /// viewport shows.
+  /// Negative when today has scrolled off the leading edge. The indicator is on screen while this is greater than `-1`
+  /// and less than the number of days the viewport shows.
   late double daysFromLeftEdge;
 
   /// The number of days the viewport shows.
@@ -147,9 +144,8 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     final previous = daysFromLeftEdge;
     daysFromLeftEdge = _daysFromLeftEdge();
 
-    // Skip the rebuild while the indicator is off-screen both before and after,
-    // and take it when either side is on-screen so it is repainted on the frame
-    // it enters or leaves the viewport.
+    // Skip the rebuild while the indicator is off-screen both before and after, and take it when either side is
+    // on-screen so it is repainted on the frame it enters or leaves the viewport.
     if (!_isVisible(previous) && !_isVisible(daysFromLeftEdge)) return;
 
     setState(() {});

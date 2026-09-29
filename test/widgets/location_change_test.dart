@@ -51,7 +51,7 @@ void main() {
     return tester.pumpAndSettle();
   }
 
-  FloatingDateTime visibleStart() => kalenderController.floatingVisibleRange.value!.start;
+  FloatingDateTime visibleStart() => kalenderController.floatingVisibleRange.value.start;
 
   testWithTimeZones(
     body: (timezone, _) {

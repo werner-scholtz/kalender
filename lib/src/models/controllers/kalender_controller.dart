@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
@@ -22,8 +23,8 @@ import 'package:kalender/src/models/view_transition.dart';
 ///
 /// Setting [viewConfiguration] switches the view. Setting [location] recreates it in the new location.
 ///
-/// Navigation while no [KalenderView] is mounted replaces [viewController] with one that opens on the target, and
-/// the next view opens there. A time of day from [animateToDateTime] or [animateToEvent] opens the view scrolled to it.
+/// Navigation while no [KalenderView] is mounted replaces [viewController] with one that opens on the target, and the
+/// next view opens there. A time of day from [animateToDateTime] or [animateToEvent] opens the view scrolled to it.
 ///
 /// {@category Controllers and callbacks}
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
@@ -31,14 +32,18 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     : id = _nextId++,
       _viewConfiguration = viewConfiguration,
       _location = location {
+    final viewController = viewConfiguration.createViewController(this, null);
+    final range = viewController.floatingVisibleRange.value;
+    _floatingVisibleRange = ValueNotifier(range);
+    _visibleDateTimeRange = ValueNotifier(range.forLocation(location: location));
     _floatingVisibleRange.addListener(_updateVisibleDateTimeRange);
-    _adopt(viewConfiguration.createViewController(this, null));
+    _adopt(viewController);
+    DeviceTimeZone.changes.addListener(_onDeviceTimeZoneChanged);
   }
 
   static int _nextId = 0;
 
-  /// Unique to this instance. The drag targets compare it to decide whether a
-  /// create gesture belongs to their calendar.
+  /// Unique to this instance. The drag targets compare it to decide whether a create gesture belongs to their calendar.
   final int id;
 
   /// The configuration of the view.
@@ -54,7 +59,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// The location of the calendar. Null uses the device's local time.
   ///
-  /// Setting a different location recreates the view controller in it.
+  /// Setting a different location recreates the view controller in it. With a null location, so does a change of the
+  /// device timezone found when the app resumes.
   Location? get location => _location;
   Location? _location;
   set location(Location? value) {
@@ -91,10 +97,14 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// Whether [viewController] was created since the last frame while a view was attached, so no widget uses it yet.
   bool _awaitingBuild = false;
 
+  void _onDeviceTimeZoneChanged() {
+    if (_location == null) _switchTo(_viewConfiguration, locationChanged: true);
+  }
+
   /// Replaces the view controller with one [configuration] creates.
   ///
-  /// A [reopen] recreates the current view where it is, seeds its visible events and does not notify. A [target] opens
-  /// the new view there.
+  /// A [reopen] recreates the current view where it is, seeds its visible range and events and does not notify. A
+  /// [target] opens the new view there.
   void _switchTo(
     ViewConfiguration configuration, {
     bool locationChanged = false,
@@ -117,7 +127,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     );
     final next = configuration.createViewController(this, transition);
     _viewConfiguration = configuration;
-    if (reopen) next.visibleEvents.value = old.visibleEvents.value;
+    if (reopen) {
+      next.floatingVisibleRange.value = old.floatingVisibleRange.value;
+      next.visibleEvents.value = old.visibleEvents.value;
+    }
 
     _removeForwarders();
     _adopt(next);
@@ -137,9 +150,9 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _forward(viewController.visibleEvents, _visibleEvents);
     // Views without vertical scroll (month and schedule) have no visible time of day.
     if (viewController is MultiDayViewController) {
-      _forward(viewController.visibleTimeOfDay, visibleTimeOfDay);
+      _forward(viewController.visibleTimeOfDay, _visibleTimeOfDay);
     } else {
-      visibleTimeOfDay.value = null;
+      _visibleTimeOfDay.value = null;
     }
     _updateVisibleDateTimeRange();
   }
@@ -153,9 +166,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// Makes [view] the active view and returns the view controller it shows.
   ///
-  /// A view that does not hold the current view controller gets a new one when a view has held it before, because
-  /// its page and scroll controllers keep the position they were created with. The new one opens where the current
-  /// one is.
+  /// A view that does not hold the current view controller gets a new one when a view has held it before, because its
+  /// page and scroll controllers keep the position they were created with. The new one opens where the current one is.
   @internal
   ViewController attachView(Object view) {
     _views
@@ -197,8 +209,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   bool get _hasView => _views.isNotEmpty;
 
-  /// Runs [withView] once the view has built [viewController]. Without an attached view, replaces [viewController]
-  /// with one that opens on the snapshot [withoutView] returns, when it returns one.
+  /// Runs [withView] once the view has built [viewController]. Without an attached view, replaces [viewController] with
+  /// one that opens on the snapshot [withoutView] returns, when it returns one.
   Future<void> _navigate(
     FutureOr<void> Function(ViewController viewController) withView,
     ViewSnapshot? Function() withoutView,
@@ -226,7 +238,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     final pages = calculator.numberOfPages(_location);
     if (pages == 0) return date;
     final index = (calculator.indexFromDate(date, _location) + delta).clamp(0, pages - 1);
-    return calculator.rangeFromIndex(index, _location).start;
+    return calculator.dateFromIndex(index, _location);
   }
 
   ViewSnapshot _snapshotAt(FloatingDateTime date) => ViewSnapshot(
@@ -234,15 +246,20 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     timeOfDay: KalenderTime(hour: date.hour, minute: date.minute),
   );
 
+  late final ValueNotifier<FloatingDateTimeRange> _floatingVisibleRange;
+
   /// The [ViewController.floatingVisibleRange] of [viewController].
-  late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
-  ValueListenable<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
+  ValueListenable<FloatingDateTimeRange> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
-    visibleDateTimeRange.value = _floatingVisibleRange.value?.forLocation(location: _location);
+    _visibleDateTimeRange.value = _floatingVisibleRange.value.forLocation(location: _location);
   }
 
   /// The [floatingVisibleRange] in [location].
-  final visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
+  ///
+  /// A month view's range covers whole weeks, so it can start in the previous month.
+  /// [FloatingDateTimeRange.dominantMonthDate] gives the month on screen.
+  ValueListenable<KalenderDateTimeRange> get visibleDateTimeRange => _visibleDateTimeRange;
+  late final ValueNotifier<KalenderDateTimeRange> _visibleDateTimeRange;
 
   /// The [ViewController.visibleEvents] of [viewController].
   ValueListenable<Set<KalenderEvent>> get visibleEvents => _visibleEvents;
@@ -250,7 +267,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// The [KalenderTime] aligned with the top of the viewport of a multi-day view. It follows scrolling and zooming, and
   /// is null in the month and schedule views.
-  final visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
+  ValueListenable<KalenderTime?> get visibleTimeOfDay => _visibleTimeOfDay;
+  final _visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
   /// The listeners that copy the notifiers of [viewController] into this controller's.
   final _forwarders = <(Listenable, VoidCallback)>[];
@@ -270,7 +288,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   }
 
   /// The event currently being focused on.
-  final selectedEvent = ValueNotifier<KalenderEvent?>(null);
+  ///
+  /// Also notifies when [internalFocus] changes.
+  ValueNotifier<KalenderEvent?> get selectedEvent => _selectedEvent;
+  final _selectedEvent = _SelectedEvent();
   String? _selectedEventId;
   String? get selectedEventId => _selectedEventId;
 
@@ -283,20 +304,25 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// [internal] leave false if not called from within the package.
   void selectEvent(KalenderEvent event, {bool internal = false}) {
     _selectedEventId = event.id;
-    _internalFocus = internal;
-    selectedEvent.value = event;
+    _focus(event, internal: internal);
   }
 
-  void updateEvent(KalenderEvent event, {bool internal = false}) {
-    _internalFocus = internal;
-    selectedEvent.value = event;
-  }
+  void updateEvent(KalenderEvent event, {bool internal = false}) => _focus(event, internal: internal);
 
   /// Deselect the event.
   void deselectEvent() {
-    _internalFocus = false;
     _selectedEventId = null;
-    selectedEvent.value = null;
+    _focus(null, internal: false);
+  }
+
+  void _focus(KalenderEvent? event, {required bool internal}) {
+    final focusChanged = internal != _internalFocus;
+    _internalFocus = internal;
+    if (focusChanged && _selectedEvent.value == event) {
+      _selectedEvent.notify();
+    } else {
+      _selectedEvent.value = event;
+    }
   }
 
   /// The selected days, or null when nothing is selected.
@@ -396,10 +422,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   bool _isVisible(FloatingDateTime day) => _hasView && _inVisibleRange(day);
 
   /// Whether [day] is in the visible range of [viewController], shown or not.
-  bool _inVisibleRange(FloatingDateTime day) {
-    final visible = _floatingVisibleRange.value;
-    return visible != null && day.isWithin(visible);
-  }
+  bool _inVisibleRange(FloatingDateTime day) => day.isWithin(_floatingVisibleRange.value);
 
   /// Closes the open day overlay.
   void hideDayOverlay() {
@@ -415,7 +438,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
       (viewController) => viewController.jumpToPage(page),
       () => _isContinuousSchedule
           ? null
-          : ViewSnapshot(date: _viewConfiguration.pageIndexCalculator.rangeFromIndex(page, _location).start),
+          : ViewSnapshot(date: _viewConfiguration.pageIndexCalculator.dateFromIndex(page, _location)),
     ),
   );
 
@@ -485,6 +508,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   @override
   void dispose() {
+    DeviceTimeZone.changes.removeListener(_onDeviceTimeZoneChanged);
     _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _removeForwarders();
     // A view controller a view still shows is disposed when the view releases it.
@@ -493,12 +517,18 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     }
     _floatingVisibleRange.dispose();
     _visibleEvents.dispose();
-    visibleDateTimeRange.dispose();
-    visibleTimeOfDay.dispose();
+    _visibleDateTimeRange.dispose();
+    _visibleTimeOfDay.dispose();
     selectedEvent.dispose();
     selectedRange.dispose();
     openDayOverlay.dispose();
     _isDisposed = true;
     super.dispose();
   }
+}
+
+class _SelectedEvent extends ValueNotifier<KalenderEvent?> {
+  _SelectedEvent() : super(null);
+
+  void notify() => notifyListeners();
 }

@@ -17,14 +17,11 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
-/// The multi-day header decides which header to display the:
-/// - [_SingleDayHeader] this is used for a body that only displays a single day.
-/// - [_MultiDayHeader] this is used for a body that displays multiple days.
-/// - [_FreeScrollHeader] this is used for a body that scrolls freely.
+/// The day headers and multi-day events above a [MultiDayBody]. The default header of [MultiDayViewParts].
 ///
 /// {@category Views}
 class MultiDayHeader extends StatelessWidget {
-  /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
+  /// Null uses a default [MultiDayHeaderConfiguration].
   final MultiDayHeaderConfiguration? configuration;
 
   /// See [KalenderView.callbacks].
@@ -56,12 +53,11 @@ class _MultiDayHeaderSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(
-      context.viewController is MultiDayViewController,
-      'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
+    final viewController = context.viewControllerFor<MultiDayViewController>(
+      MultiDayHeader,
+      MultiDayViewConfiguration,
+      MultiDayViewParts,
     );
-
-    final viewController = context.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = configuration ?? const MultiDayHeaderConfiguration();
     final components = context.components;
@@ -211,9 +207,8 @@ class _MultiDayHeader extends StatelessWidget {
 
 /// A header for the free-scroll body.
 ///
-/// Unlike the paged headers, the multi-day events here are drawn as one
-/// continuous band (see [_FreeScrollMultiDayBand]) so an event spanning several
-/// days renders as a single tile instead of being split across per-day pages.
+/// Unlike the paged headers, the multi-day events here are drawn as one continuous band (see [_FreeScrollMultiDayBand])
+/// so an event spanning several days renders as a single tile instead of being split across per-day pages.
 class _FreeScrollHeader extends StatelessWidget {
   final MultiDayViewController viewController;
   final HorizontalConfiguration configuration;
@@ -245,20 +240,16 @@ class _FreeScrollHeader extends StatelessWidget {
   }
 }
 
-/// The continuous weekday-label and multi-day-event band for the free-scroll
-/// header.
+/// The continuous weekday-label and multi-day-event band for the free-scroll header.
 ///
-/// The free-scroll body pages one day at a time (viewport fraction
-/// `1 / numberOfDays`), so a per-page multi-day band would clip each day and
-/// split a spanning event. Instead this renders the visible days (plus a buffer
-/// on each side) as one strip and slides it to follow the body's scroll, so a
-/// multi-day event is a single tile positioned across its day columns.
+/// The free-scroll body pages one day at a time (viewport fraction `1 / numberOfDays`), so a per-page multi-day band
+/// would clip each day and split a spanning event. Instead this renders the visible days (plus a buffer on each side)
+/// as one strip and slides it to follow the body's scroll, so a multi-day event is a single tile positioned across its
+/// day columns.
 ///
-/// Only the visible window is rendered, so the strip stays small regardless of
-/// how large the display range is. The horizontal position is derived from
-/// [MultiDayViewController.pageOffset] and applied synchronously in `build`, so
-/// re-anchoring the window and its offset compensation happen on the same frame
-/// (no visible jump).
+/// Only the visible window is rendered, so the strip stays small regardless of how large the display range is. The
+/// horizontal position is derived from [MultiDayViewController.pageOffset] and applied synchronously in `build`, so
+/// re-anchoring the window and its offset compensation happen on the same frame (no visible jump).
 class _FreeScrollMultiDayBand extends StatefulWidget {
   final MultiDayViewController viewController;
   final HorizontalConfiguration configuration;
@@ -278,8 +269,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
   /// The absolute day index of the first day of the currently rendered window.
   int? _domainStart;
 
-  /// Extra days rendered on each side of the visible window so tiles that scroll
-  /// in are already laid out.
+  /// Extra days rendered on each side of the visible window so tiles that scroll in are already laid out.
   int get _bufferDays => _numberOfDays;
 
   @override
@@ -309,9 +299,8 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
     return start > maxStart ? maxStart : start;
   }
 
-  /// Re-anchors the rendered window when the leftmost visible day changes. The
-  /// continuous motion itself is applied in [build], so there is nothing to
-  /// correct afterwards.
+  /// Re-anchors the rendered window when the leftmost visible day changes. The continuous motion itself is applied in
+  /// [build], so there is nothing to correct afterwards.
   void _maybeReanchor() {
     if (_dayWidth == 0) return;
     final desiredStart = _clampStart(widget.viewController.currentPage().floor() - _bufferDays);
@@ -347,8 +336,8 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
         final windowDates = windowRange.dates();
         final bandWidth = domainCount * dayWidth;
 
-        // Re-anchor once the real scroll position is known (the page controller
-        // may not be attached on the first frames).
+        // Re-anchor once the real scroll position is known (the page controller may not be attached on the first
+        // frames).
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) _maybeReanchor();
         });
@@ -372,9 +361,8 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
                   viewController: viewController,
                   components: widget.components,
                   minHeight: widget.configuration.tileHeight,
-                  // The page-edge triggers are anchored to the viewport
-                  // below, not to this window-wide (translated) target,
-                  // so disable the built-in ones here.
+                  // The page-edge triggers are anchored to the viewport below, not to this window-wide (translated)
+                  // target, so disable the built-in ones here.
                   leftPageTrigger: (_, __) => const SizedBox.shrink(),
                   rightPageTrigger: (_, __) => const SizedBox.shrink(),
                 ),
@@ -393,8 +381,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
               final maxTranslate = bandWidth - pageWidth;
               final raw = (widget.viewController.currentPage() - start) * dayWidth;
               final translate = maxTranslate <= 0 ? 0.0 : raw.clamp(0.0, maxTranslate);
-              // In right-to-left the day columns are mirrored, so scrolling
-              // forward moves the strip the other way.
+              // In right-to-left the day columns are mirrored, so scrolling forward moves the strip the other way.
               final sign = Directionality.of(context) == TextDirection.rtl ? 1.0 : -1.0;
               return Transform.translate(offset: Offset(sign * translate, 0), child: child);
             },
@@ -427,18 +414,14 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
   }
 }
 
-/// A [ValueListenableBuilder] on the [ViewController.floatingVisibleRange] of [viewController] that builds nothing
-/// while it is null.
+/// A [ValueListenableBuilder] on the [ViewController.floatingVisibleRange] of [viewController].
 Widget _visibleRangeBuilder(
   ViewController viewController,
   Widget Function(BuildContext context, FloatingDateTimeRange range) builder,
 ) {
   return ValueListenableBuilder(
     valueListenable: viewController.floatingVisibleRange,
-    builder: (context, value, child) {
-      if (value == null) return const SizedBox.shrink();
-      return builder(context, value);
-    },
+    builder: (context, value, child) => builder(context, value),
   );
 }
 

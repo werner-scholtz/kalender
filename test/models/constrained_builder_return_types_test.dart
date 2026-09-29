@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-/// Two builder typedefs return a package class rather than a [Widget], so the class has to be exported or the
-/// typedef cannot be implemented.
+/// Two builder typedefs return a package class rather than a [Widget], so the class has to be exported or the typedef
+/// cannot be implemented.
 ///
 /// These are compile-time checks, so a regression fails the analyzer rather than the expectation below.
 void main() {

@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 /// Formats [date] and replaces intl's uninitialized locale data error with one that names the setup step and the
 /// library it comes from.
 ///
-/// The format is built inside the guard because intl resolves its locale data lazily, so either the construction or
-/// the format call can fail.
+/// The format is built inside the guard because intl resolves its locale data lazily, so either the construction or the
+/// format call can fail.
 String _formatLocalized(DateFormat Function() format, DateTime date, Locale? locale) {
   try {
     return format().format(date);
@@ -51,8 +51,8 @@ String _formatLocalized(DateFormat Function() format, DateTime date, Locale? loc
 extension DateTimeExtensions on DateTime {
   /// Gets the day name in a specific locale.
   ///
-  /// Requires `initializeDateFormatting()` from `package:intl/date_symbol_data_local.dart` to have been awaited,
-  /// unless [locale] is null or `en_US`. Throws a [FlutterError] naming the missing call otherwise.
+  /// Requires `initializeDateFormatting()` from `package:intl/date_symbol_data_local.dart` to have been awaited, unless
+  /// [locale] is null or `en_US`. Throws a [FlutterError] naming the missing call otherwise.
   String dayNameLocalized([Locale? locale]) =>
       _formatLocalized(() => DateFormat.EEEE(locale?.toLanguageTag()), this, locale);
 
@@ -70,8 +70,7 @@ extension DateTimeExtensions on DateTime {
 
   /// Gets the time of day in a specific locale.
   ///
-  /// [use24HourFormat] forces `HH:mm`. Otherwise the locale decides, which is
-  /// what intl resolves for `jm`.
+  /// [use24HourFormat] forces `HH:mm`. Otherwise the locale decides, which is what intl resolves for `jm`.
   String timeLocalized({Locale? locale, bool use24HourFormat = false}) {
     final tag = locale?.toLanguageTag();
     return _formatLocalized(() => use24HourFormat ? DateFormat.Hm(tag) : DateFormat.jm(tag), this, locale);

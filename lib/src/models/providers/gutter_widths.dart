@@ -6,8 +6,8 @@
 
 import 'package:flutter/widgets.dart';
 
-/// The measured widths of the week number column and the timeline, read by the header and the body so their day
-/// columns align. Null where the view draws no such gutter.
+/// The measured widths of the week number column and the timeline, read by the header and the body so their day columns
+/// align. Null where the view draws no such gutter.
 class GutterWidths extends InheritedWidget {
   /// The width of the month week number column, or null where none is drawn.
   final double? weekNumber;

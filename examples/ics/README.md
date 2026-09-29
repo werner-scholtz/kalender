@@ -11,8 +11,8 @@ events.
 - **Expand recurrence lazily.** `enough_icalendar` reads the `RRULE` but does not
   compute the individual occurrences, so the rule is handed to
   [`rrule`](https://pub.dev/packages/rrule), which expands it. Instances are
-  produced only for the calendar's visible window, so a "repeat forever" rule stays
-  cheap. The window is refreshed as you navigate.
+  produced only for the calendar's visible window, also for a rule that repeats
+  forever. The window is refreshed as you navigate.
 - **All-day events.** RFC 5545 encodes all-day as a date-valued `DTSTART`
   (`DTSTART;VALUE=DATE:20250110`), which becomes `KalenderEvent.isAllDay` so the
   occurrence renders in the multi-day header. Export writes it back as

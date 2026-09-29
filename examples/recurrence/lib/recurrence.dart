@@ -13,20 +13,15 @@ class RecurrenceController {
 
   final Map<String, RecurrenceGroup> groups = {};
 
+  void dispose() => controller.dispose();
+
   static int _groupCounter = 0;
   String get _nextGroupId => 'group_${_groupCounter++}';
 
   /// Add a recurring event.
   void addEvent(KalenderEvent event, Recurrence recurrence) {
     final groupId = _nextGroupId;
-
-    // Generate events for the recurrences.
-    final events = recurrence.generateEvents(groupId);
-
-    // Add the events to the controller.
-    final ids = controller.addEvents(events);
-
-    // Create the group.
+    final ids = controller.addEvents(recurrence.generateEvents(groupId));
     groups.putIfAbsent(groupId, () => RecurrenceGroup(id: groupId, eventIds: ids, recurrence: recurrence));
   }
 
@@ -34,18 +29,14 @@ class RecurrenceController {
     KalenderEvent event,
     KalenderEvent updatedEvent,
   ) {
-    // Get the groupId of the event.
     final groupId = (event as RecurringCalendarEvent).groupId;
     final group = groups[groupId]!;
 
-    // Update the recurrence.
     final updatedRecurrence = group.recurrence.updateWithEvent(event, updatedEvent);
     groups.update(groupId, (e) => e.copyWith(recurrence: updatedRecurrence));
 
-    // Grab all the existing events so they can be rescheduled.
     final events = group.eventIds.map((id) => controller.byId(id)! as RecurringCalendarEvent).toList();
 
-    // Update the events.
     final updates = updatedRecurrence.updateEvents(groupId, events);
     for (var item in updates) {
       controller.updateEvent(event: item.$1, updatedEvent: item.$2);
@@ -64,16 +55,13 @@ class RecurrenceController {
   void replaceRecurrence(String groupId, Recurrence newRecurrence) {
     final group = groups[groupId]!;
 
-    // Remove existing events.
     for (final id in group.eventIds) {
       controller.removeById(id);
     }
 
-    // Generate new events.
     final newEvents = newRecurrence.generateEvents(groupId);
     final newIds = controller.addEvents(newEvents);
 
-    // Update the group.
     groups[groupId] = RecurrenceGroup(id: groupId, eventIds: newIds, recurrence: newRecurrence);
   }
 

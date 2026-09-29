@@ -4,8 +4,8 @@ Renders the calendar's localized strings with [intl4x](https://pub.dev/packages/
 intl.
 
 Kalender formats day names, month names and the overflow count with intl, and each of those has a
-builder. Supplying all of them replaces intl at runtime without the package knowing. `lib/main.dart`
-holds the six in `intl4xComponents`.
+builder. With all of them supplied kalender itself never formats with intl. `lib/main.dart`
+holds the five in `intl4xComponents`.
 
 `test/intl4x_replaces_intl_test.dart` calls no `initializeDateFormatting`, so the default builders
 throw for `de` and the intl4x builders render it.
@@ -14,7 +14,11 @@ throw for `de` and the intl4x builders render it.
 
 **Weekday names.** There is no weekday-only formatter. `DateTimeFormat.yearMonthDayWeekday` returns
 the whole date, `Mon, 1/6/25`, and `DisplayNames` covers languages, regions, scripts and currencies
-only. The day headers here use `MaterialLocalizations.narrowWeekdays` instead.
+only. The day headers, and the multi-day overlay through `intl4xTheme`, use
+`MaterialLocalizations.narrowWeekdays` instead.
+
+**Hour labels.** The timeline takes them from `MaterialLocalizations`, which `lib/main.dart`
+installs with `GlobalMaterialLocalizations.delegates`.
 
 **Month names default to numbers.** `DateTimeFormat.month` defaults to `DateTimeLength.short`, which
 formats January as `1`. `DateTimeLength.long` gives `January`.

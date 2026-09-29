@@ -69,8 +69,7 @@ void main() {
   });
 
   group('fields that must break equality', () {
-    // Each of these is read when the view controller is created, so a change to
-    // one has to recreate it.
+    // Each of these is read when the view controller is created, so a change to one has to recreate it.
     test('initialTimeOfDay', () {
       expect(week(), isNot(equals(weekWith(initialTimeOfDay: const KalenderTime(hour: 15, minute: 0)))));
     });
@@ -83,14 +82,14 @@ void main() {
       expect(week(), isNot(equals(weekWith(nowCallback: _stubNow))));
     });
 
-    // nowCallback was in `==` but not in `hashCode`, which is legal but a sign
-    // the field was missed when the others were added.
+    // nowCallback was in `==` but not in `hashCode`, which is legal but a sign the field was missed when the others
+    // were added.
     test('nowCallback also reaches hashCode', () {
       expect(week().hashCode, isNot(equals(weekWith(nowCallback: _stubNow).hashCode)));
     });
 
-    // A free scroll view and a single day view over the same range share a page
-    // index calculator, so `type` is what tells the two configurations apart.
+    // A free scroll view and a single day view over the same range share a page index calculator, so `type` is what
+    // tells the two configurations apart.
     test('type', () {
       final singleDay = MultiDayViewConfiguration.singleDay(
         name: 'same',
@@ -110,8 +109,8 @@ void main() {
   });
 
   group('fields that deliberately do not break equality', () {
-    // Resolvers are read from the incoming configuration when a view switch
-    // happens, so they are always current and need not recreate anything.
+    // Resolvers are read from the incoming configuration when a view switch happens, so they are always current and
+    // need not recreate anything.
     test('dateResolver', () {
       expect(monthConfig(), equals(monthConfigWith(dateResolver: _stubResolver)));
     });

@@ -26,8 +26,8 @@ void main() {
     });
 
     test('a subclass of a built-in is not equal to it', () {
-      // A bare `other is OverlapLayoutStrategy` check would call these equal, so
-      // a configuration holding one would report no change when the strategy did.
+      // A bare `other is OverlapLayoutStrategy` check would call these equal, so a configuration holding one would
+      // report no change when the strategy did.
       expect(const OverlapLayoutStrategy(), isNot(equals(const _TintedOverlap(Color(0xFFFF0000)))));
       expect(const _TintedOverlap(Color(0xFFFF0000)), isNot(equals(const OverlapLayoutStrategy())));
       expect(const _TintedOverlap(Color(0xFFFF0000)), isNot(equals(const _TintedOverlap(Color(0xFF0000FF)))));
@@ -114,8 +114,7 @@ void main() {
   });
 }
 
-/// A strategy that reverses the event order, used only to be distinguishable
-/// from the built-in one.
+/// A strategy that reverses the event order, used only to be distinguishable from the built-in one.
 class _ReverseStrategy extends MultiDayLayoutStrategy {
   const _ReverseStrategy();
 
@@ -143,8 +142,7 @@ class _ReverseStrategy extends MultiDayLayoutStrategy {
   int get hashCode => (_ReverseStrategy).hashCode;
 }
 
-/// Extends a built-in to reuse its delegate, which is the case a bare
-/// `other is X` check gets wrong.
+/// Extends a built-in to reuse its delegate, which is the case a bare `other is X` check gets wrong.
 class _TintedOverlap extends OverlapLayoutStrategy {
   const _TintedOverlap(this.tint);
 

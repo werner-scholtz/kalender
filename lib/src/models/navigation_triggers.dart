@@ -37,8 +37,7 @@ class PageTriggerConfiguration {
   /// The curve of the page animation.
   final Curve animationCurve;
 
-  /// Width of the edge strip that triggers a page change, given the page width.
-  /// Defaults to `pageWidth / 50` when null.
+  /// Width of the edge strip that triggers a page change, given the page width. Defaults to `pageWidth / 50` when null.
   final double Function(double pageWidth)? triggerWidth;
 
   PageTriggerConfiguration copyWith({

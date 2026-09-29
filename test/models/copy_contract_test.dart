@@ -27,8 +27,7 @@ class _Task extends KalenderEvent {
   }
 }
 
-/// Ignores the analyzer warning and writes no hook at all, so the base
-/// implementation returns a plain [KalenderEvent].
+/// Ignores the analyzer warning and writes no hook at all, so the base implementation returns a plain [KalenderEvent].
 // ignore: missing_override_of_must_be_overridden
 class _NoHook extends KalenderEvent {
   _NoHook({required super.start, required super.end});

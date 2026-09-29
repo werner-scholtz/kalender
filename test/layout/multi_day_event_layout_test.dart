@@ -346,8 +346,8 @@ void main() {
   });
 }
 
-/// Keeps the built-in row assignment but orders the events with [comparator],
-/// which [MultiDayLayoutStrategy] itself does not expose.
+/// Keeps the built-in row assignment but orders the events with [comparator], which [MultiDayLayoutStrategy] itself
+/// does not expose.
 class _ComparatorStrategy extends MultiDayLayoutStrategy {
   const _ComparatorStrategy(this.comparator);
 

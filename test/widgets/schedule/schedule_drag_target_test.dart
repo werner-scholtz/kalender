@@ -13,8 +13,8 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 
 import '../../utilities.dart';
 
-/// Rescheduling in the schedule view, which is a list of day rows rather than a
-/// grid, so a drop carries a day and no time of day.
+/// Rescheduling in the schedule view, which is a list of day rows rather than a grid, so a drop carries a day and no
+/// time of day.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -95,8 +95,8 @@ void main() {
   });
 
   testWidgets('a drop commits the new date and keeps the time of day of the event', (tester) async {
-    // The schedule view has no time axis, so a drop carries only a date. The
-    // event takes that date and keeps 09:00, the way the multi-day header does.
+    // The schedule view has no time axis, so a drop carries only a date. The event takes that date and keeps 09:00, the
+    // way the multi-day header does.
     KalenderEvent? changed;
     final id = addEvent(DateTime(2025, 6, 2, 9), const Duration(hours: 1));
     await pumpSchedule(tester, callbacks: KalenderCallbacks(onEventChanged: (_, updated) => changed = updated));
@@ -166,8 +166,7 @@ void main() {
 
     testWidgets('holding a drag at the top edge scrolls the schedule back', (tester) async {
       addEvent(DateTime(2025, 6, 15, 9), const Duration(hours: 1));
-      // Two rows below the top of the viewport, so the drag starts outside the
-      // trigger band and entering it registers.
+      // Two rows below the top of the viewport, so the drag starts outside the trigger band and entering it registers.
       final id = addEvent(DateTime(2025, 6, 17, 9), const Duration(hours: 1));
       await pumpSchedule(tester);
       kalenderController.jumpToDate(DateTime(2025, 6, 15));
@@ -204,8 +203,8 @@ void main() {
       await pumpSchedule(tester);
 
       final gesture = await dragDownBy(tester, find.byKey(ScheduleEventTile.tileKey(id)), 120);
-      // A continuous schedule is not paginated, so the two page triggers are
-      // not built and only the top and bottom scroll triggers remain.
+      // A continuous schedule is not paginated, so the two page triggers are not built and only the top and bottom
+      // scroll triggers remain.
       expect(find.byType(CursorNavigationTrigger), findsNWidgets(2));
 
       await gesture.up();

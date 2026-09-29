@@ -22,8 +22,8 @@ void main() {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    // Replacing the tree disposes the calendar; this catches dispose() paths that
-    // touch a deactivated context.
+    // Replacing the tree disposes the calendar, which catches dispose() paths
+    // that touch a deactivated context.
     await tester.pumpWidget(const SizedBox());
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);

@@ -60,5 +60,21 @@
   "tileLayout": "Teël-uitleg",
   "locked": "Gesluit",
   "lockedHint": "Sleep daaroor om 'n gebeurtenis te skep.",
-  "clearSelection": "Wis seleksie"
+  "clearSelection": "Wis seleksie",
+  "scopedTheme": "Plaaslike tema",
+  "scopedThemeHint": "Omvou hierdie kalender in 'n KalenderTheme",
+  "shadeAdjacentMonthDays": "Skadu dae van aangrensende maande",
+  "sideBySide": "Langs mekaar",
+  "overlap": "Oorvleuel",
+  "showWeekNumbers": "Wys weeknommers",
+  "dateOnViewChange": "Datum by aansigwisseling",
+  "scrollOnViewChange": "Rol by aansigwisseling",
+  "zoomOnViewChange": "Zoem by aansigwisseling",
+  "transitionCarryFocus": "Oordra",
+  "transitionRestorePerView": "Herstel per aansig",
+  "transitionPreserve": "Behou",
+  "transitionReset": "Stel terug",
+  "emptyDayShow": "Wys",
+  "emptyDayShowOnlyToday": "Wys net vandag",
+  "emptyDayHide": "Versteek"
 }

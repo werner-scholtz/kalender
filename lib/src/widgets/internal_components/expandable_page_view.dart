@@ -46,8 +46,8 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 
   /// Computes the inclusive range of page indices currently in the viewport.
   ///
-  /// A fractional page position means a transition is in progress, so one extra
-  /// trailing page is partially visible and must be included.
+  /// A fractional page position means a transition is in progress, so one extra trailing page is partially visible and
+  /// must be included.
   (int, int) _computeVisibleRange() {
     final visibleCount = (1 / widget.controller.viewportFraction).round().clamp(1, widget.itemCount);
     final page = widget.controller.hasClients ? widget.controller.page : null;
@@ -128,8 +128,8 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
     );
   }
 
-  /// Rebuilds when the set of pages in the viewport changes so [_visibleHeight]
-  /// tracks the tallest visible page as the user scrolls.
+  /// Rebuilds when the set of pages in the viewport changes so [_visibleHeight] tracks the tallest visible page as the
+  /// user scrolls.
   void _onScroll() {
     if (_updateVisibleRange()) setState(() {});
   }

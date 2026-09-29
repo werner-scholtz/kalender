@@ -113,31 +113,31 @@ class MultiDayViewEditor extends StatelessWidget {
           ],
         ),
         DropDownEditor<DateTransition>(
-          label: 'Date on view change',
+          label: context.l10n.dateOnViewChange,
           value: viewConfiguration.dateTransition,
           items: DateTransition.values,
           onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             dateTransition: value,
           ),
-          itemToString: (value) => value.name,
+          itemToString: (value) => _dateTransitionName(context, value),
         ),
         DropDownEditor<ScrollTransition>(
-          label: 'Scroll on view change',
+          label: context.l10n.scrollOnViewChange,
           value: viewConfiguration.scrollTransition,
           items: ScrollTransition.values,
           onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             scrollTransition: value,
           ),
-          itemToString: (value) => value.name,
+          itemToString: (value) => _scrollTransitionName(context, value),
         ),
         DropDownEditor<ZoomTransition>(
-          label: 'Zoom on view change',
+          label: context.l10n.zoomOnViewChange,
           value: viewConfiguration.zoomTransition,
           items: ZoomTransition.values,
           onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             zoomTransition: value,
           ),
-          itemToString: (value) => value.name,
+          itemToString: (value) => _zoomTransitionName(context, value),
         ),
       ],
     );
@@ -165,16 +165,16 @@ class MonthViewEditor extends StatelessWidget {
           onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             showWeekNumbers: value,
           ),
-          title: const Text('Show Week Numbers'),
+          title: Text(context.l10n.showWeekNumbers),
         ),
         DropDownEditor<DateTransition>(
-          label: 'Date on view change',
+          label: context.l10n.dateOnViewChange,
           value: viewConfiguration.dateTransition,
           items: DateTransition.values,
           onChanged: (value) => context.controller.viewConfiguration = viewConfiguration.copyWith(
             dateTransition: value,
           ),
-          itemToString: (value) => value.name,
+          itemToString: (value) => _dateTransitionName(context, value),
         ),
         MultiDayRuleEditor(
           multiDayRule: viewConfiguration.multiDayRule,
@@ -202,3 +202,20 @@ class ScheduleViewEditor extends StatelessWidget {
     );
   }
 }
+
+String _dateTransitionName(BuildContext context, DateTransition value) => switch (value) {
+      DateTransition.carryFocus => context.l10n.transitionCarryFocus,
+      DateTransition.restorePerView => context.l10n.transitionRestorePerView,
+    };
+
+String _scrollTransitionName(BuildContext context, ScrollTransition value) => switch (value) {
+      ScrollTransition.preserve => context.l10n.transitionPreserve,
+      ScrollTransition.reset => context.l10n.transitionReset,
+      ScrollTransition.restorePerView => context.l10n.transitionRestorePerView,
+    };
+
+String _zoomTransitionName(BuildContext context, ZoomTransition value) => switch (value) {
+      ZoomTransition.preserve => context.l10n.transitionPreserve,
+      ZoomTransition.reset => context.l10n.transitionReset,
+      ZoomTransition.restorePerView => context.l10n.transitionRestorePerView,
+    };

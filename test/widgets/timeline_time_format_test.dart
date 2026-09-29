@@ -11,11 +11,11 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// The timeline labels its hours with `MaterialLocalizations` where the app
-/// installs them, and with intl where it does not.
+/// The timeline labels its hours with `MaterialLocalizations` where the app installs them, and with intl where it does
+/// not.
 ///
-/// The second path is what an app on the standalone `material_ui` package hits,
-/// which used to throw `No MaterialLocalizations found`. See issue #491.
+/// The second path is what an app on the standalone `material_ui` package hits, which used to throw `No
+/// MaterialLocalizations found`. See issue #491.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -36,8 +36,8 @@ void main() {
 
   final tiles = TileComponents(tileBuilder: (context, event, range) => const SizedBox());
 
-  /// A calendar with no Material ancestor at all, so no `MaterialLocalizations`.
-  /// The overlay is what the drag targets need and `MaterialApp` would provide.
+  /// A calendar with no Material ancestor at all, so no `MaterialLocalizations`. The overlay is what the drag targets
+  /// need and `MaterialApp` would provide.
   Widget withoutMaterial(Locale locale, Widget child) => WidgetsApp(
     color: const Color(0xFF000000),
     locale: locale,
@@ -71,8 +71,8 @@ void main() {
     await tester.pumpWidget(withoutMaterial(const Locale('en'), calendar(const Locale('en'))));
     await tester.pumpAndSettle();
 
-    // intl writes a narrow no-break space before the marker where Material uses
-    // a plain one, so compare on the parts rather than the separator.
+    // intl writes a narrow no-break space before the marker where Material uses a plain one, so compare on the parts
+    // rather than the separator.
     expect(labelAt(tester, 9), startsWith('9:00'));
     expect(labelAt(tester, 9), endsWith('AM'));
   });

@@ -153,9 +153,9 @@ Slow frames come from the size of the widget, render and semantics tree, not fro
 - **Deferred tile rendering for dense days.** A new column of many events renders no tiles on its first frame and fills them in on the next, moving the cost off the navigation. Prototyped, and opt-in because it changes render timing. One run measured week navigation at 30ms against 54ms, still to be confirmed over several runs.
 - **Lighter event tiles.** Every event builds a draggable, a gesture detector and an entry in a parallel drop target column. Fewer widgets per tile is the largest remaining lever. One attempt measured worse than what it replaced.
 - **A bounded version of `MultiDayBodyConfiguration.keepPagesAlive`,** which is currently unbounded and grows with the number of distinct pages visited.
-- **Recycling day tiles rather than culling them,** building on the geometry model added when culling landed. Culling only helps tiles that are off screen, so it does little for a desktop week at default zoom.
-- **Revisit the schedule view,** the slowest of the four when this work started and untouched by the fixes that followed.
-- **Explain the schedule rescheduling step change.** The benchmark roughly doubled at the merge that replaced `throttleMilliseconds` with per-frame coalescing, to 1.97ms at ten events per day and 3.92ms at fifty. Part of it is expected, since the old throttle dropped moves and the average was taken over frames that did no work, but the missed frames in the same run are not explained by that.
+- **Recycling day tiles rather than culling them,** building on the geometry model culling uses. Culling only helps tiles that are off screen, so it does little for a desktop week at default zoom.
+- **Revisit the schedule view,** the slowest of the four and not yet optimized.
+- **Explain the schedule rescheduling step change.** With per-frame coalescing the benchmark is roughly double what it was with `throttleMilliseconds`: 1.97ms at ten events per day and 3.92ms at fifty. Part of it is expected, since the throttle dropped moves and the average was taken over frames that did no work, but the missed frames in the same run are not explained by that.
 - [#222](https://github.com/werner-scholtz/kalender/issues/222) performance when swiping, still unconfirmed.
 
 ### Documentation

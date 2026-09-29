@@ -1,5 +1,7 @@
 ## 0.33.0
 
+See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
+
 ### Breaking Changes
 
 - `ScheduleViewController.itemCount`, `item`, `addItem`, `clear` and `initialScrollIndex` are removed.
@@ -10,12 +12,14 @@
 - The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of `MultiDayOverlayPortal` are removed.
 - `MultiDayOverlayPortalBuilder` no longer passes `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder`.
 - `ViewConfiguration` has an abstract `createViewController`, which a class that extends it directly implements.
-- `MultiDayViewController`, `MonthViewController`, `ScheduleViewController`, `ContinuousScheduleViewController` and `PaginatedScheduleViewController` take `initial`, a `ViewSnapshot`, in place of `initialDate`, `initialTimeOfDayOverride` and `initialHeightPerMinute`.
+- `MultiDayViewController`, `MonthViewController`, `ScheduleViewController`, `ContinuousScheduleViewController` and `PaginatedScheduleViewController` take `initial`, a `ViewSnapshot`. Their `initialDate`, `initialTimeOfDayOverride` and `initialHeightPerMinute` are removed.
 - `ViewController.location` is final.
-- `ViewController` no longer takes `floatingVisibleRange`, and the view controllers no longer take it or `visibleEvents`. Each creates its own, and `KalenderController` forwards those of the attached one.
-- `ViewController.visibleEvents` is a field instead of an abstract getter.
+- `ViewController` takes `initialVisibleRange` in place of `floatingVisibleRange`, and the view controllers no longer take `floatingVisibleRange` or `visibleEvents`. Each creates its own, and `KalenderController` forwards those of `KalenderController.viewController`.
+- `ViewController.floatingVisibleRange`, `KalenderController.floatingVisibleRange` and `visibleDateTimeRange`, and the visible range a `TimeLineBuilder` receives are never null.
+- `ViewController.visibleEvents` is a final field.
 - `ViewController.dispose` disposes the visible range and visible events, and an override calls `super.dispose()`.
-- `KalenderController.floatingVisibleRange` and `visibleEvents` are `ValueListenable`s.
+- `KalenderController.floatingVisibleRange`, `visibleDateTimeRange`, `visibleTimeOfDay` and `visibleEvents` are `ValueListenable`s.
+- `TimeLineBuilder`, `MultiDayBodyComponents.buildTimeline` and `TimeLine` take the visible range as a `ValueListenable`.
 - `KalenderController` takes `viewConfiguration` and `location`, and `KalenderView` no longer does.
 - `KalenderController.attach`, `detach`, `isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
 - `KalenderView.header` and `body` are replaced by `views`, which defaults to `KalenderView.defaultViews`: a `MultiDayViewParts`, a `MonthViewParts` and a `ScheduleViewParts`.
@@ -26,7 +30,7 @@
 
 - An event tile merges the widgets inside it into one semantics node. `TileComponents.mergeSemantics` turns this off.
 - A `KalenderView` built again on the same `KalenderController` opens on the date, scroll and zoom the previous one showed.
-- `EventLayoutStrategy.sideBySide()` gives a group of tiles as many columns as it has events running at once and puts each tile in the first free column, so tiles no longer cover each other.
+- `EventLayoutStrategy.sideBySide()` gives a group of tiles as many columns as it has events running at once and puts each tile in the first free column.
 
 ### Deprecations
 
@@ -42,9 +46,10 @@
 - `ViewTransitionContext.target` is where the new view opens, and takes precedence over the transition settings and resolvers.
 - `KalenderController` navigation works before a `KalenderView` is mounted and sets the date the view opens on.
 - `ViewParts` pairs a header and a body with a kind of `ViewConfiguration`.
+- `KalenderScope.viewControllerOf` and `maybeViewControllerOf` return the view controller of the surrounding `KalenderView`.
 - `MultiDayBody`, `MultiDayHeader`, `MonthBody` and `ScheduleBody` take `callbacks`, `interaction` and `tileComponents`, `MonthHeader` takes `callbacks`, and `MultiDayBody` takes `snapping`.
 - `KalenderView.interaction` sets the interaction for every view, and each view's widgets can override it.
-- `SideBySideLayoutDelegate.arrange` returns the column of each tile as a `SideBySidePlacement`, for a custom layout delegate to reuse.
+- `SideBySideLayoutDelegate.arrange` returns the column of each tile as a `SideBySidePlacement`.
 
 ### Fixes
 
@@ -56,20 +61,33 @@
 - The next and previous page of a continuous schedule no longer skip a month from the 29th to the 31st.
 - A multi-day view opens scrolled inside its `timeOfDayRange` when the requested time of day is outside it.
 - Switching away from a continuous schedule before its list shows carries the date it opened on, not the start of the display range.
-- A view controller that is not attached no longer writes to `KalenderController.visibleEvents` and `floatingVisibleRange`.
-- An event tile builds its resize handles only while they show, so a change to the events builds each tile once instead of twice.
+- A view controller other than `KalenderController.viewController` no longer writes to `KalenderController.visibleEvents` and `floatingVisibleRange`.
+- An event tile builds its resize handles only while they show.
 - The overlap layout converts each event's start once when it sorts a day's events.
 - The tiles of one day convert their shared range once.
-- Event tiles and resize handles read the selection through one listener per calendar instead of one each.
+- Event tiles and resize handles share one selection listener per calendar.
 - Dragging an event in the multi-day body repaints only the day columns the drag changes.
 - An event keeps its start and end converted for a location, and converts them again when the app resumes in another device timezone.
 - After a page change, `KalenderController.visibleEvents` holds only the events of the page on screen.
 - A side-by-side tile no longer gets a negative width when `minimumTileHeight` stretches tiles at a low zoom.
+- After a switch between two views of one kind or a change of location, the new view opens at the date and time of day it reports and fills `KalenderController.visibleEvents`.
+- Switching to a multi-day view or mounting one no longer notifies the listeners of `KalenderController.visibleEvents` during the build.
+- A tile selected by touch shows `tileWhenDraggingBuilder` and hides its resize handles while it is dragged.
+- After the app resumes in another device timezone, a calendar without a location and `DefaultEventsController` use the dates of the new timezone.
+- A month view in a short calendar no longer overflows its week rows.
+- Changing `ScheduleBodyConfiguration.emptyDay` keeps the schedule on the date it shows.
 
 ### Examples
 
 - The web demo's header editor sets the interaction of the multi-day header.
 - The ics example creates, moves and resizes single events, and imports pasted `.ics` text.
+- The web demo's show header switch and schedule empty day setting take effect.
+- The web demo's event card shows and edits times in the location picked after the calendar opened.
+- The web demo's minimum tile height and unlimited header rows settings keep the other settings.
+- The web demo's configuration labels and options are translated.
+- The intl4x example renders in every locale it offers and switches between the week, month and schedule views.
+- The recurrence example's tiles show the start and end time of their event.
+- The basic example's three-day view is named 3 Days.
 
 ## 0.32.0
 

@@ -110,8 +110,7 @@ void main() {
     final positions = labelPositions(tester);
     final spacing = positions[1] - positions[0];
 
-    // The last label marks the end of the range, one segment below the one
-    // before it and within the drawn area.
+    // The last label marks the end of the range, one segment below the one before it and within the drawn area.
     expect(positions.last - positions[positions.length - 2], moreOrLessEquals(spacing, epsilon: 0.5));
     expect(positions.last, lessThan(content.bottom));
   });

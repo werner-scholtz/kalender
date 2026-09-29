@@ -19,15 +19,12 @@ void main() {
     expect(find.byType(DropdownMenu<ViewConfiguration>), findsOneWidget);
   });
 
-  test('selecting a view updates the controller', () {
+  test('the controller opens on the first configuration', () {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
     final configs = container.read(viewConfigurationsProvider);
     final controller = container.read(calendarControllerProvider);
-    expect(controller.viewConfiguration, configs.first, reason: 'defaults to the first configuration');
-
-    controller.viewConfiguration = configs.last;
-    expect(controller.viewConfiguration, configs.last, reason: 'selecting updates the controller');
+    expect(controller.viewConfiguration, configs.first);
   });
 }

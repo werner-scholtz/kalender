@@ -28,8 +28,8 @@ abstract class MultiDayRule {
 
   /// Multi-day when the event covers part of more than one calendar day.
   ///
-  /// Unlike [MultiDayRule.minimumDuration] this depends on where the day
-  /// boundaries fall, so a short event crossing midnight counts.
+  /// Unlike [MultiDayRule.minimumDuration] this depends on where the day boundaries fall, so a short event crossing
+  /// midnight counts.
   const factory MultiDayRule.calendarDays() = _CalendarDaysRule;
 
   /// Whether [event] is multi-day, with calendar days measured in [location].
@@ -59,8 +59,8 @@ class _CalendarDaysRule extends MultiDayRule {
     final range = event.floatingRange(location: location);
     if (range.dates().length > 1) return true;
 
-    // `dates()` is half-open, so a full day (00:00 to the next 00:00) counts as
-    // one day above. Keep it multi-day so all-day events stay in the header.
+    // `dates()` is half-open, so a full day (00:00 to the next 00:00) counts as one day above. Keep it multi-day so
+    // all-day events stay in the header.
     final start = range.start;
     final end = range.end;
     return start.isStartOfDay && end.isStartOfDay && end.isAfter(start);

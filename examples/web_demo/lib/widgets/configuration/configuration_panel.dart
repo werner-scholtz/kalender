@@ -76,8 +76,8 @@ class ConfigurationPanel extends StatelessWidget {
                   child: ValueListenableBuilder<bool>(
                     valueListenable: configuration.scopedThemeNotifier,
                     builder: (context, value, _) => SwitchListTile.adaptive(
-                      title: const Text('Scoped theme'),
-                      subtitle: const Text('Wraps this calendar in a KalenderTheme'),
+                      title: Text(context.l10n.scopedTheme),
+                      subtitle: Text(context.l10n.scopedThemeHint),
                       value: value,
                       onChanged: (value) => configuration.scopedTheme = value,
                     ),
