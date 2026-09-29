@@ -34,6 +34,28 @@ class IcsSource {
 
   /// The recurrence rule, kept as-is so it can be written back out on export.
   final Recurrence? recurrence;
+
+  /// A single event created in the calendar.
+  IcsSource.fromEvent(IcsEvent event)
+      : uid = event.uid,
+        summary = event.title,
+        description = event.description,
+        start = event.start.toLocal(),
+        end = event.end.toLocal(),
+        isAllDay = event.isAllDay,
+        recurrence = null;
+
+  IcsSource copyWith({DateTime? start, DateTime? end}) {
+    return IcsSource(
+      uid: uid,
+      summary: summary,
+      description: description,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      isAllDay: isAllDay,
+      recurrence: recurrence,
+    );
+  }
 }
 
 /// Parse the master events from `.ics` text.
@@ -59,6 +81,13 @@ List<IcsSource> parseIcs(String text) {
   return sources;
 }
 
+/// Adds the events parsed from [text] to [sources]. An imported event replaces the one with the same uid.
+List<IcsSource> importIcs(List<IcsSource> sources, String text) {
+  final imported = parseIcs(text);
+  final uids = {for (final source in imported) source.uid};
+  return [...sources.where((source) => !uids.contains(source.uid)), ...imported];
+}
+
 /// Whether [name] carries `VALUE=DATE` rather than a date and time.
 ///
 /// `VEvent.isAllDayEvent` reads `X-MICROSOFT-CDO-ALLDAYEVENT` instead, which
@@ -72,11 +101,13 @@ bool _isDateValued(VEvent event, String name) {
 /// Expand [sources] into concrete events that fall within [window].
 ///
 /// Recurring events are expanded lazily with the rrule package: only instances
-/// inside the window are produced, so a "repeat forever" rule stays cheap.
+/// inside the window are produced, so a "repeat forever" rule stays cheap. An
+/// instance of a recurring event cannot be moved or resized, since that would
+/// need an exception written into the rule.
 List<IcsEvent> expandEvents(List<IcsSource> sources, KalenderDateTimeRange window) {
   final events = <IcsEvent>[];
   for (final source in sources) {
-    final color = _colorFor(source.uid);
+    final color = colorFor(source.uid);
     final duration = source.end.difference(source.start);
 
     if (source.recurrence == null) {
@@ -146,6 +177,7 @@ IcsEvent _event(IcsSource source, DateTime start, DateTime end, Color color) {
     description: source.description,
     color: color,
     isAllDay: source.isAllDay,
+    interaction: source.recurrence == null ? null : EventInteraction.allowNone(),
   );
 }
 
@@ -159,7 +191,8 @@ const _palette = [
   Colors.indigo,
 ];
 
-Color _colorFor(String uid) => _palette[uid.hashCode.abs() % _palette.length];
+/// The color of the events with [uid].
+Color colorFor(String uid) => _palette[uid.hashCode.abs() % _palette.length];
 
 DateTime _utcWall(DateTime d) => DateTime.utc(d.year, d.month, d.day, d.hour, d.minute, d.second);
 DateTime _localWall(DateTime d) => DateTime(d.year, d.month, d.day, d.hour, d.minute, d.second);
