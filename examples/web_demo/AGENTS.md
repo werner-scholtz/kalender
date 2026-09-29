@@ -20,7 +20,7 @@ flutter pub get
 flutter analyze
 flutter test
 flutter run -d chrome
-flutter build web --release --wasm --base-href /kalender/
+flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
 ```
 
 ## Architecture

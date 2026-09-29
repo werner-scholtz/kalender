@@ -23,7 +23,7 @@ From this directory:
 
 ```sh
 flutter run -d chrome
-flutter build web --release --wasm --base-href /kalender/
+flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
 ```
 
 The `site.yml` workflow publishes this app to GitHub Pages after each release, see
