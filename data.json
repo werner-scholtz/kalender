@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1790596941806,
+  "lastUpdate": 1790667954916,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -13947,6 +13947,91 @@
           {
             "name": "Event query · 30 days",
             "value": 1692.4400299850074,
+            "unit": "us"
+          }
+        ],
+        "flutter": "3.47.4"
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "62b459986116643b111971cd850ce86632cdef87",
+          "message": "Merge pull request #624 from werner-scholtz/feat/tile-merge-semantics\n\nfeat!: an event tile is one semantics node",
+          "timestamp": "2026-09-29T09:17:45+02:00",
+          "tree_id": "d85068ec9366e11232c76e86fefec71a49af586a",
+          "url": "https://github.com/werner-scholtz/kalender/commit/62b459986116643b111971cd850ce86632cdef87"
+        },
+        "date": 1790667953982,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Date expansion · 7 days (x200)",
+            "value": 174.89202904891067,
+            "unit": "us"
+          },
+          {
+            "name": "Date expansion · 30 days (x200)",
+            "value": 701.14675,
+            "unit": "us"
+          },
+          {
+            "name": "Date expansion · 90 days (x200)",
+            "value": 2070.773,
+            "unit": "us"
+          },
+          {
+            "name": "Date expansion · 365 days (x200)",
+            "value": 8065.036,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 100 events over 30 days",
+            "value": 721.089,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 300 events over 30 days",
+            "value": 2196.437,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 50 events/day over 7 days",
+            "value": 2418.6475,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 50 events/day over 35 days",
+            "value": 12381.892215568862,
+            "unit": "us"
+          },
+          {
+            "name": "Overlap depth · 60 events",
+            "value": 250.1291170945523,
+            "unit": "us"
+          },
+          {
+            "name": "Event query · 1 day",
+            "value": 112.14408108410797,
+            "unit": "us"
+          },
+          {
+            "name": "Event query · 7 days",
+            "value": 779.69675,
+            "unit": "us"
+          },
+          {
+            "name": "Event query · 30 days",
+            "value": 3324.527736131934,
             "unit": "us"
           }
         ],
@@ -47251,6 +47336,199 @@
             "range": "± 0.69",
             "unit": "ms",
             "extra": "p90_build=18.64ms p99_build=34.30ms missed_build=8 (runs=5)"
+          }
+        ],
+        "flutter": "3.47.4"
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "62b459986116643b111971cd850ce86632cdef87",
+          "message": "Merge pull request #624 from werner-scholtz/feat/tile-merge-semantics\n\nfeat!: an event tile is one semantics node",
+          "timestamp": "2026-09-29T09:17:45+02:00",
+          "tree_id": "d85068ec9366e11232c76e86fefec71a49af586a",
+          "url": "https://github.com/werner-scholtz/kalender/commit/62b459986116643b111971cd850ce86632cdef87"
+        },
+        "date": 1790667954906,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Week · loading · 10 events/day",
+            "value": 2.4545500000000002,
+            "range": "± 0.5",
+            "unit": "ms",
+            "extra": "p90_build=5.81ms p99_build=9.38ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · navigation · 10 events/day",
+            "value": 9.553200000000002,
+            "range": "± 0.56",
+            "unit": "ms",
+            "extra": "p90_build=29.65ms p99_build=35.27ms missed_build=3 (runs=5)"
+          },
+          {
+            "name": "Week · scrolling · 10 events/day",
+            "value": 2.063095238095238,
+            "range": "± 0.26",
+            "unit": "ms",
+            "extra": "p90_build=3.29ms p99_build=5.37ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · rescheduling · 10 events/day",
+            "value": 2.3491410256410257,
+            "range": "± 0.23",
+            "unit": "ms",
+            "extra": "p90_build=5.41ms p99_build=6.36ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · resizing · 10 events/day",
+            "value": 2.243823529411765,
+            "range": "± 0.64",
+            "unit": "ms",
+            "extra": "p90_build=4.98ms p99_build=8.06ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Month · loading · 10 events/day",
+            "value": 10.121500000000001,
+            "range": "± 0.96",
+            "unit": "ms",
+            "extra": "p90_build=25.25ms p99_build=31.16ms missed_build=6 (runs=5)"
+          },
+          {
+            "name": "Month · navigation · 10 events/day",
+            "value": 14.096416666666668,
+            "range": "± 3.79",
+            "unit": "ms",
+            "extra": "p90_build=40.60ms p99_build=56.88ms missed_build=4 (runs=5)"
+          },
+          {
+            "name": "Month · rescheduling · 10 events/day",
+            "value": 2.6791309523809526,
+            "range": "± 0.79",
+            "unit": "ms",
+            "extra": "p90_build=6.79ms p99_build=9.38ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Month · resizing · 10 events/day",
+            "value": 1.4574444444444445,
+            "range": "± 0.57",
+            "unit": "ms",
+            "extra": "p90_build=3.73ms p99_build=6.09ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Schedule · loading · 10 events/day",
+            "value": 7.17244,
+            "range": "± 0.88",
+            "unit": "ms",
+            "extra": "p90_build=21.43ms p99_build=34.95ms missed_build=6 (runs=5)"
+          },
+          {
+            "name": "Schedule · navigation · 10 events/day",
+            "value": 33.60328571428572,
+            "range": "± 12.68",
+            "unit": "ms",
+            "extra": "p90_build=47.86ms p99_build=60.52ms missed_build=6 (runs=5)"
+          },
+          {
+            "name": "Schedule · rescheduling · 10 events/day",
+            "value": 2.3802166666666675,
+            "range": "± 0.21",
+            "unit": "ms",
+            "extra": "p90_build=8.31ms p99_build=17.92ms missed_build=3 (runs=5)"
+          },
+          {
+            "name": "Week · loading · 50 events/day",
+            "value": 11.642711864406778,
+            "range": "± 0.98",
+            "unit": "ms",
+            "extra": "p90_build=30.06ms p99_build=38.55ms missed_build=22 (runs=5)"
+          },
+          {
+            "name": "Week · navigation · 50 events/day",
+            "value": 26.932000000000002,
+            "range": "± 12.43",
+            "unit": "ms",
+            "extra": "p90_build=53.56ms p99_build=53.56ms missed_build=1 (runs=5)"
+          },
+          {
+            "name": "Week · scrolling · 50 events/day",
+            "value": 1.6651428571428573,
+            "range": "± 0.41",
+            "unit": "ms",
+            "extra": "p90_build=2.27ms p99_build=3.60ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · rescheduling · 50 events/day",
+            "value": 8.460518987341771,
+            "range": "± 0.31",
+            "unit": "ms",
+            "extra": "p90_build=17.05ms p99_build=20.20ms missed_build=14 (runs=5)"
+          },
+          {
+            "name": "Week · resizing · 50 events/day",
+            "value": 7.748562500000001,
+            "range": "± 1.27",
+            "unit": "ms",
+            "extra": "p90_build=16.43ms p99_build=19.84ms missed_build=3 (runs=5)"
+          },
+          {
+            "name": "Month · loading · 50 events/day",
+            "value": 13.348838709677421,
+            "range": "± 0.69",
+            "unit": "ms",
+            "extra": "p90_build=26.34ms p99_build=43.99ms missed_build=16 (runs=5)"
+          },
+          {
+            "name": "Month · navigation · 50 events/day",
+            "value": 19.036833333333334,
+            "range": "± 1.53",
+            "unit": "ms",
+            "extra": "p90_build=46.91ms p99_build=81.35ms missed_build=4 (runs=5)"
+          },
+          {
+            "name": "Month · rescheduling · 50 events/day",
+            "value": 5.298261904761905,
+            "range": "± 0.62",
+            "unit": "ms",
+            "extra": "p90_build=12.46ms p99_build=18.07ms missed_build=3 (runs=5)"
+          },
+          {
+            "name": "Month · resizing · 50 events/day",
+            "value": 2.8488750000000005,
+            "range": "± 0.37",
+            "unit": "ms",
+            "extra": "p90_build=9.82ms p99_build=11.13ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Schedule · loading · 50 events/day",
+            "value": 5.899970149253731,
+            "range": "± 0.39",
+            "unit": "ms",
+            "extra": "p90_build=16.50ms p99_build=19.36ms missed_build=7 (runs=5)"
+          },
+          {
+            "name": "Schedule · navigation · 50 events/day",
+            "value": 31.222299999999997,
+            "range": "± 1.69",
+            "unit": "ms",
+            "extra": "p90_build=58.15ms p99_build=61.48ms missed_build=7 (runs=5)"
+          },
+          {
+            "name": "Schedule · rescheduling · 50 events/day",
+            "value": 5.28428947368421,
+            "range": "± 1.16",
+            "unit": "ms",
+            "extra": "p90_build=19.62ms p99_build=43.39ms missed_build=5 (runs=5)"
           }
         ],
         "flutter": "3.47.4"
