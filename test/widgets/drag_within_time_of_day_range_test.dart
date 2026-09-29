@@ -42,31 +42,37 @@ void main() {
       tester,
       KalenderView(
         eventsController: eventsController,
-        kalenderController: KalenderController(),
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7))),
-          initialDateTime: monday,
-          timeOfDayRange: timeOfDayRange,
-          initialTimeOfDay: const KalenderTime(hour: 8, minute: 0),
-          initialHeightPerMinute: 1,
+        kalenderController: KalenderController(
+          viewConfiguration: MultiDayViewConfiguration.week(
+            displayRange: KalenderDateTimeRange(start: monday, end: monday.add(const Duration(days: 7))),
+            initialDateTime: monday,
+            timeOfDayRange: timeOfDayRange,
+            initialTimeOfDay: const KalenderTime(hour: 8, minute: 0),
+            initialHeightPerMinute: 1,
+          ),
         ),
         callbacks: KalenderCallbacks(
           onEventCreated: eventsController.addEvent,
           onEventChanged: (event, updated) => eventsController.updateEvent(event: event, updatedEvent: updated),
         ),
-        body: KalenderBody(
-          interaction: KalenderInteraction(
-            inputMode: InputMode.precise,
-            createEventGesture: EventInteractionGesture.tap,
-            modifyEventGesture: EventInteractionGesture.tap,
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              interaction: KalenderInteraction(
+                inputMode: InputMode.precise,
+                createEventGesture: EventInteractionGesture.tap,
+                modifyEventGesture: EventInteractionGesture.tap,
+              ),
+              snapping: const KalenderSnapping(
+                snapIntervalMinutes: 15,
+                snapToTimeIndicator: false,
+                snapToOtherEvents: false,
+              ),
+              tileComponents: TileComponents(tileBuilder: (context, event, range) => Container(color: Colors.red)),
+            ),
           ),
-          snapping: const KalenderSnapping(
-            snapIntervalMinutes: 15,
-            snapToTimeIndicator: false,
-            snapToOtherEvents: false,
-          ),
-          multiDayTileComponents: TileComponents(tileBuilder: (context, event, range) => Container(color: Colors.red)),
-        ),
+        ],
       ),
     );
     return tester.getRect(find.byType(MultiDayBody));

@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -12,15 +11,15 @@ import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController kalenderController;
+  KalenderController? kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   tearDown(() {
-    kalenderController.dispose();
+    kalenderController?.dispose();
+    kalenderController = null;
     eventsController.dispose();
   });
 
@@ -45,13 +44,13 @@ void main() {
 
   MonthViewConfiguration monthConfig() => MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
 
-  Widget build(ViewConfiguration configuration) {
-    return KalenderView(
+  /// Pumps a calendar on [configuration], switching the controller to it after the first pump.
+  Future<void> show(WidgetTester tester, ViewConfiguration configuration) async {
+    kalenderController = await pumpConfiguration(
+      tester,
       eventsController: eventsController,
+      configuration: configuration,
       kalenderController: kalenderController,
-      viewConfiguration: configuration,
-      header: const KalenderHeader(),
-      body: const KalenderBody(),
     );
   }
 
@@ -121,46 +120,46 @@ void main() {
   group('rebuilding with an equivalent configuration', () {
     testWidgets('keeps the same view controller', (tester) async {
       final held = week();
-      await pumpAndSettleWithMaterialApp(tester, build(held));
-      final first = kalenderController.viewController;
+      await show(tester, held);
+      final first = kalenderController!.viewController;
 
-      await pumpAndSettleWithMaterialApp(tester, build(held));
-      expect(kalenderController.viewController, same(first), reason: 'a configuration held in state');
+      await show(tester, held);
+      expect(kalenderController!.viewController, same(first), reason: 'a configuration held in state');
 
       // The same calendar rebuilt, as happens on any setState in the parent.
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
-      expect(kalenderController.viewController, same(first), reason: 'an equal configuration built again');
+      await show(tester, week());
+      expect(kalenderController!.viewController, same(first), reason: 'an equal configuration built again');
     });
 
     testWidgets('the layout caches survive a rebuild', (tester) async {
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
-      final firstCache = kalenderController.viewController!.cache;
-      final firstFrameCache = kalenderController.viewController!.multiDayCache;
+      await show(tester, week());
+      final firstCache = kalenderController!.viewController.cache;
+      final firstFrameCache = kalenderController!.viewController.multiDayCache;
 
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
+      await show(tester, week());
 
       expect(
-        identical(kalenderController.viewController!.cache, firstCache),
+        identical(kalenderController!.viewController.cache, firstCache),
         isTrue,
         reason: 'the event layout cache should survive a rebuild',
       );
       expect(
-        identical(kalenderController.viewController!.multiDayCache, firstFrameCache),
+        identical(kalenderController!.viewController.multiDayCache, firstFrameCache),
         isTrue,
         reason: 'the multi-day frame cache should survive a rebuild',
       );
     });
 
     testWidgets('keeps the scroll position', (tester) async {
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
-      final controller = kalenderController.viewController! as MultiDayViewController;
+      await show(tester, week());
+      final controller = kalenderController!.viewController as MultiDayViewController;
       controller.scrollController.jumpTo(300);
       await tester.pumpAndSettle();
       expect(controller.scrollController.offset, equals(300));
 
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
+      await show(tester, week());
 
-      final after = kalenderController.viewController! as MultiDayViewController;
+      final after = kalenderController!.viewController as MultiDayViewController;
       expect(after.scrollController.offset, equals(300));
     });
   });

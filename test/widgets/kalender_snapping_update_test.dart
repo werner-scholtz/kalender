@@ -17,7 +17,12 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+    );
   });
 
   tearDown(() {
@@ -29,11 +34,12 @@ void main() {
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: year2025DisplayRange,
-        initialDateTime: DateTime(2025, 1, 1),
-      ),
-      body: KalenderBody(snapping: snapping),
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(snapping: snapping),
+        ),
+      ],
     );
   }
 

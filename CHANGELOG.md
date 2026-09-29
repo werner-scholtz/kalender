@@ -1,3 +1,63 @@
+## 0.33.0
+
+### Breaking Changes
+
+- `ScheduleViewController.itemCount`, `item`, `addItem`, `clear` and `initialScrollIndex` are removed.
+- `DefaultEventStore.dateIds` is removed.
+- `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` are removed.
+- `kDefaultNewEventDuration` is removed.
+- `ResizeHandleDetails.continuesBefore`, `continuesAfter`, `showStart` and `showEnd` are getters, and their `location` parameter is removed.
+- The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of `MultiDayOverlayPortal` are removed.
+- `MultiDayOverlayPortalBuilder` no longer passes `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder`.
+- `ViewConfiguration.createViewController` is abstract.
+- `MultiDayViewController`, `MonthViewController`, `ContinuousScheduleViewController` and `PaginatedScheduleViewController` take `initial`, a `ViewSnapshot`, in place of `initialDate`, `initialTimeOfDayOverride` and `initialHeightPerMinute`.
+- `ViewController.location` is final.
+- `ViewController` and the four view controllers no longer take `floatingVisibleRange` and `visibleEvents`. Each creates its own, and `KalenderController` forwards those of the attached one.
+- `ViewController.visibleEvents` is a field instead of an abstract getter.
+- `ViewController.dispose` disposes the visible range and visible events, and an override calls `super.dispose()`.
+- `KalenderController.floatingVisibleRange` and `visibleEvents` are `ValueListenable`s.
+- `KalenderController` takes `viewConfiguration` and `location`, and `KalenderView` no longer does.
+- `KalenderController.attach`, `detach`, `isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
+- `KalenderView.header` and `body` are replaced by `views`, which defaults to `KalenderView.defaultViews`: a `MultiDayViewParts`, a `MonthViewParts` and a `ScheduleViewParts`.
+- `KalenderBody`, `KalenderHeader` and `ScheduleHeader` are removed.
+- `MonthBody.configuration` is a `MonthBodyConfiguration` and `MultiDayHeader.configuration` a `MultiDayHeaderConfiguration`.
+
+### Behavior Changes
+
+- An event tile merges the widgets inside it into one semantics node. `TileComponents.mergeSemantics` turns this off.
+- A `KalenderView` built again on the same `KalenderController` opens on the date, scroll and zoom the previous one showed.
+
+### Deprecations
+
+- `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are deprecated and are removed in 0.34.0. Use `ViewController.snapshot`.
+
+### Features
+
+- `ViewController.snapshot` returns the date, time of day and zoom a view shows.
+- `ViewTransitionContext.location` is the location the new view controller is created in.
+- Setting `KalenderController.viewConfiguration` or `location` switches the view.
+- `ViewTransitionContext.target` is where the new view opens, over the transition settings and resolvers.
+- `KalenderController` navigation works before a `KalenderView` is mounted and sets the date the view opens on.
+- `ViewParts` pairs a header and a body with a kind of `ViewConfiguration`.
+- `MultiDayBody`, `MultiDayHeader`, `MonthBody` and `ScheduleBody` take `callbacks`, `interaction` and `tileComponents`, `MonthHeader` takes `callbacks`, and `MultiDayBody` takes `snapping`.
+- `KalenderView.interaction` sets the interaction for every view, and each view's widgets can override it.
+
+### Fixes
+
+- A subclass of `MultiDayViewConfiguration`, `MonthViewConfiguration` or `ScheduleViewConfiguration` no longer throws when the calendar builds.
+- `MultiDayViewController` disposes `heightPerMinute` and `pageOffset`, and `PaginatedScheduleViewController` its `PageController`.
+- `KalenderController.dispose` disposes its view controllers, `visibleDateTimeRange` and `selectedEvent`, and a view controller is disposed once no `KalenderView` shows it.
+- Two `KalenderView`s mounted on one `KalenderController`, for example during a route transition, each keep the view controller they show.
+- Mounting a `KalenderView` no longer notifies the listeners of its `KalenderController` during the build.
+- The next and previous page of a continuous schedule no longer skip a month from the 29th to the 31st.
+- A multi-day view opens scrolled inside its `timeOfDayRange` when the requested time of day is outside it.
+- A continuous schedule that has not shown its list reports the date it opens on in `ViewController.snapshot`.
+- A view controller that is not attached no longer writes to `KalenderController.visibleEvents` and `floatingVisibleRange`.
+
+### Examples
+
+- The web demo's header editor sets the interaction of the multi-day header.
+
 ## 0.32.1
 
 ### Fixes

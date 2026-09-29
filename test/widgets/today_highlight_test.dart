@@ -15,11 +15,9 @@ import '../utilities.dart';
 /// Today highlighting in a full [KalenderView] (#248, #251, #254).
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   Finder todayNumber(Key todayKey, int day) => find.descendant(of: find.byKey(todayKey), matching: find.text('$day'));
@@ -36,18 +34,19 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          kalenderController: kalenderController,
-          location: location,
-          components: components,
-          viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: KalenderDateTimeRange(
-              start: DateTime(month.year, month.month - 1),
-              end: DateTime(month.year, month.month + 2),
+          kalenderController: KalenderController(
+            viewConfiguration: MonthViewConfiguration.singleMonth(
+              displayRange: KalenderDateTimeRange(
+                start: DateTime(month.year, month.month - 1),
+                end: DateTime(month.year, month.month + 2),
+              ),
+              initialDateTime: month,
+              nowCallback: nowCallback,
             ),
-            initialDateTime: month,
-            nowCallback: nowCallback,
+            location: location,
           ),
-          body: const KalenderBody(),
+          components: components,
+          views: bodyOnlyViews,
         ),
       );
 
@@ -122,14 +121,13 @@ void main() {
         tester,
         KalenderView(
           eventsController: eventsController,
-          kalenderController: kalenderController,
-          viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: weekRange,
-            initialDateTime: monday,
-            nowCallback: nowCallback,
+          kalenderController: KalenderController(
+            viewConfiguration: MultiDayViewConfiguration.week(
+              displayRange: weekRange,
+              initialDateTime: monday,
+              nowCallback: nowCallback,
+            ),
           ),
-          header: const KalenderHeader(),
-          body: const KalenderBody(),
         ),
       );
 

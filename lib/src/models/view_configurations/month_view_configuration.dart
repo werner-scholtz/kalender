@@ -71,6 +71,15 @@ class MonthViewConfiguration extends ViewConfiguration {
   }
 
   @override
+  MonthViewController createViewController(KalenderController controller, ViewTransitionContext? transition) {
+    return MonthViewController(
+      viewConfiguration: this,
+      initial: ViewSnapshot(date: resolveDate(controller.location, transition)),
+      location: controller.location,
+    );
+  }
+
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 

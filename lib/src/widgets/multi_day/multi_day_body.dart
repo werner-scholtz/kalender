@@ -12,6 +12,7 @@ import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
+import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
 // TODO: I want to simplify this widget by removing the split between the content and header, essentially removing the duplicate page views,
@@ -28,7 +29,26 @@ class MultiDayBody extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
 
-  const MultiDayBody({super.key, this.configuration});
+  /// See [KalenderView.callbacks].
+  final KalenderCallbacks? callbacks;
+
+  /// See [KalenderView.interaction].
+  final KalenderInteraction? interaction;
+
+  /// The snapping of dragged and resized events. Defaults to [KalenderSnapping].
+  final KalenderSnapping? snapping;
+
+  /// The tile components. Defaults to [TileComponents.defaultComponents].
+  final TileComponents? tileComponents;
+
+  const MultiDayBody({
+    super.key,
+    this.configuration,
+    this.callbacks,
+    this.interaction,
+    this.snapping,
+    this.tileComponents,
+  });
 
   /// The key used to identify the [SingleChildScrollView] of the [MultiDayBody].
   static const singleChildScrollViewKey = ValueKey('singleChildScrollViewKey');
@@ -38,14 +58,37 @@ class MultiDayBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(
+      context.viewController is MultiDayViewController,
+      'The view controller needs to be a $MultiDayViewController',
+    );
+    return ViewProviders(
+      callbacks: callbacks,
+      interaction: interaction,
+      snapping: snapping,
+      installSnapping: true,
+      tileComponents: tileComponents ?? TileComponents.defaultComponents(),
+      heightPerMinute: (context.viewController as MultiDayViewController).heightPerMinute,
+      child: _MultiDayBody(configuration: configuration),
+    );
+  }
+}
+
+class _MultiDayBody extends StatelessWidget {
+  final MultiDayBodyConfiguration? configuration;
+
+  const _MultiDayBody({this.configuration});
+
+  @override
+  Widget build(BuildContext context) {
     final controller = context.kalenderController;
 
     assert(
-      controller.viewController is MultiDayViewController,
+      context.viewController is MultiDayViewController,
       'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
     );
 
-    final viewController = controller.viewController as MultiDayViewController;
+    final viewController = context.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
 
@@ -61,7 +104,7 @@ class MultiDayBody extends StatelessWidget {
         Scrollbar(
           controller: viewController.scrollController,
           child: SingleChildScrollView(
-            key: singleChildScrollViewKey,
+            key: MultiDayBody.singleChildScrollViewKey,
             controller: viewController.scrollController,
             physics: configuration.scrollPhysics,
             child: SizedBox(
@@ -71,7 +114,7 @@ class MultiDayBody extends StatelessWidget {
                   // The timeline is always on the left side of the page, but should not scroll with the pageview.
                   // Its width is fixed to the shared timeline width so it aligns with the header and drag overlay.
                   SizedBox(
-                    key: timelineKey,
+                    key: MultiDayBody.timelineKey,
                     width: timelineWidth,
                     height: pageHeight,
                     child: bodyComponents.buildTimeline(
@@ -246,12 +289,9 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 end: visibleRange.start.add(Duration(days: widget.viewController.viewConfiguration.numberOfDays)),
               )
             : visibleRange;
-        final controller = context.kalenderController;
-        controller.floatingVisibleRange.value = range;
+        widget.viewController.floatingVisibleRange.value = range;
         _updateVisibleEvents(index, context.location);
-
-        final callbacks = context.callbacks;
-        callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
+        context.callbacks?.onPageChanged?.call(range.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {
         final visibleRange = _pageNavigation.rangeFromIndex(index, context.location);

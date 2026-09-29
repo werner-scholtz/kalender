@@ -11,18 +11,10 @@ import 'package:linked_pageview/linked_pageview.dart';
 
 /// {@category Controllers and callbacks}
 class MultiDayViewController extends ViewController {
-  MultiDayViewController({
-    required this.viewConfiguration,
-    required super.floatingVisibleRange,
-    required this.visibleEvents,
-    FloatingDateTime? initialDate,
-    KalenderTime? initialTimeOfDayOverride,
-    double? initialHeightPerMinute,
-    super.location,
-  }) {
+  MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location}) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
     final now = FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
-    initialPage = pageIndexCalculator.indexFromDate(initialDate ?? now, location);
+    initialPage = pageIndexCalculator.indexFromDate(initial.date, location);
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
@@ -30,7 +22,7 @@ class MultiDayViewController extends ViewController {
     headerController = _controllerGroup.create(viewportFraction: viewPortFraction, initialPage: initialPage);
 
     numberOfPages = pageIndexCalculator.numberOfPages(location);
-    heightPerMinute = ValueNotifier<double>(initialHeightPerMinute ?? viewConfiguration.initialHeightPerMinute);
+    heightPerMinute = ValueNotifier<double>(initial.heightPerMinute ?? viewConfiguration.initialHeightPerMinute);
 
     final range = pageIndexCalculator.rangeFromIndex(initialPage, location);
 
@@ -43,15 +35,17 @@ class MultiDayViewController extends ViewController {
       floatingVisibleRange.value = range;
     }
 
-    final topOfDay = (initialTimeOfDayOverride ?? viewConfiguration.initialTimeOfDay).toFloatingDateTime(now);
+    final topOfDay = (initial.timeOfDay ?? viewConfiguration.initialTimeOfDay).toFloatingDateTime(now);
     final dayStart = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(now);
-    final scrollOffset = topOfDay.difference(dayStart).inMinutes * heightPerMinute.value;
+    final minutes = topOfDay
+        .difference(dayStart)
+        .inMinutes
+        .clamp(0, viewConfiguration.timeOfDayRange.duration.inMinutes);
+    final scrollOffset = minutes * heightPerMinute.value;
     scrollController = ScrollController(initialScrollOffset: scrollOffset);
     // Seed the visible time-of-day from the initial offset, since a ScrollController
     // does not necessarily notify its listeners when it first attaches.
     visibleTimeOfDay.value = _timeOfDayFromOffset(scrollOffset);
-
-    visibleEvents.value = {};
 
     pageController.addListener(_offsetListener);
     scrollController.addListener(_updateVisibleTimeOfDay);
@@ -94,9 +88,6 @@ class MultiDayViewController extends ViewController {
   /// Updates as the view is scrolled vertically or zoomed. It is `null` until the
   /// [scrollController] has been attached to a scroll view.
   final ValueNotifier<KalenderTime?> visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
-
-  @override
-  final ValueNotifier<Set<KalenderEvent>> visibleEvents;
 
   void _offsetListener() =>
       pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
@@ -206,6 +197,14 @@ class MultiDayViewController extends ViewController {
   @override
   void jumpToPage(int page) => pageController.jumpToPage(page);
 
+  /// Adds the time of day at the top of the viewport and the zoom.
+  @override
+  ViewSnapshot snapshot() => ViewSnapshot(
+    date: floatingVisibleRange.value!.start,
+    timeOfDay: visibleTimeOfDay.value,
+    heightPerMinute: heightPerMinute.value,
+  );
+
   @override
   String toString() {
     return '${runtimeType.toString()} (${viewConfiguration.runtimeType})';
@@ -213,13 +212,16 @@ class MultiDayViewController extends ViewController {
 
   @override
   void dispose() {
+    pageController.removeListener(_offsetListener);
+    scrollController.removeListener(_updateVisibleTimeOfDay);
+    heightPerMinute.removeListener(_updateVisibleTimeOfDay);
     pageController.dispose();
     headerController.dispose();
-    pageController.removeListener(_offsetListener);
     _controllerGroup.dispose();
-    scrollController.removeListener(_updateVisibleTimeOfDay);
     scrollController.dispose();
-    heightPerMinute.removeListener(_updateVisibleTimeOfDay);
+    heightPerMinute.dispose();
+    pageOffset.dispose();
     visibleTimeOfDay.dispose();
+    super.dispose();
   }
 }

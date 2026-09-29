@@ -13,26 +13,39 @@ import 'package:kalender/src/widgets/internal_components/month_week_number_gutte
 ///
 /// {@category Views}
 class MonthHeader extends StatelessWidget {
-  const MonthHeader({super.key});
+  /// See [KalenderView.callbacks].
+  final KalenderCallbacks? callbacks;
+
+  const MonthHeader({super.key, this.callbacks});
 
   @override
   Widget build(BuildContext context) {
-    final kalenderController = context.kalenderController;
+    final callbacks = this.callbacks;
+    if (callbacks == null) return const _MonthHeader();
+    return Callbacks(callbacks: callbacks, child: const _MonthHeader());
+  }
+}
 
+class _MonthHeader extends StatelessWidget {
+  const _MonthHeader();
+
+  @override
+  Widget build(BuildContext context) {
     assert(
-      kalenderController.viewController is MonthViewController,
+      context.viewController is MonthViewController,
       'The KalenderController\'s $ViewController needs to be a $MonthViewController',
     );
 
-    final viewController = kalenderController.viewController as MonthViewController;
+    final viewController = context.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
     final components = calendarComponents.monthComponents.headerComponents;
 
     return ValueListenableBuilder(
-      valueListenable: kalenderController.visibleDateTimeRange,
-      builder: (context, visibleDateTimeRange, child) {
-        if (visibleDateTimeRange == null) return const SizedBox.shrink();
+      valueListenable: viewController.floatingVisibleRange,
+      builder: (context, visibleRange, child) {
+        if (visibleRange == null) return const SizedBox.shrink();
+        final visibleDateTimeRange = visibleRange.forLocation(location: context.location);
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
 
         return Row(

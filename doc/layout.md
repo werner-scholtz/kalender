@@ -101,8 +101,8 @@ class MyLayoutStrategy extends EventLayoutStrategy {
 
 <!-- snippet: continues -->
 ```dart
-final body = KalenderBody(
-  multiDayBodyConfiguration: const MultiDayBodyConfiguration(
+final body = MultiDayBody(
+  configuration: const MultiDayBodyConfiguration(
     eventLayoutStrategy: MyLayoutStrategy(),
   ),
 );
@@ -151,8 +151,8 @@ class FrameSortedByEnd extends MultiDayLayoutStrategy {
 
 <!-- snippet: continues -->
 ```dart
-final monthBody = KalenderBody(
-  monthBodyConfiguration: MonthBodyConfiguration(
+final monthBody = MonthBody(
+  configuration: MonthBodyConfiguration(
     multiDayLayoutStrategy: const FrameSortedByEnd(),
   ),
 );

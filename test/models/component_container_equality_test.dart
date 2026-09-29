@@ -106,9 +106,8 @@ void main() {
               rebuild = setState;
               return KalenderView(
                 eventsController: DefaultEventsController(),
-                kalenderController: KalenderController(),
-                viewConfiguration: MultiDayViewConfiguration.week(),
-                body: const _Dependent(),
+                kalenderController: KalenderController(viewConfiguration: MultiDayViewConfiguration.week()),
+                views: const [MultiDayViewParts(header: SizedBox.shrink(), body: _Dependent())],
               );
             },
           ),
