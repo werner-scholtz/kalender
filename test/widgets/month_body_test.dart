@@ -259,6 +259,22 @@ void main() {
       expect(button.numberOfHiddenRows, greaterThan(0));
     });
 
+    for (final c in [
+      (name: 'a row shorter than its day header', height: 180.0, withEvent: false),
+      (name: 'a row too short for the overflow button', height: 260.0, withEvent: true),
+    ]) {
+      testWidgets('${c.name} does not overflow', (tester) async {
+        tester.setViewSize(Size(800, c.height));
+        if (c.withEvent) {
+          eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 15, 9), end: DateTime(2025, 1, 15, 10)));
+        }
+
+        await pumpMonthView(tester, DateTime(2025, 1));
+
+        expect(tester.takeException(), isNull);
+      });
+    }
+
     // #235: a custom strategy wired through MonthBodyConfiguration in a full month view.
     group('custom multiDayLayoutStrategy (#235)', () {
       late _RecordingStrategy strategy;

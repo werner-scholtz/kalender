@@ -179,36 +179,48 @@ class MonthWeek extends StatelessWidget {
           ),
         ),
         Positioned.fill(
-          child: Column(
-            children: [
-              WeekDayHeaders(
-                dates: floatingRange.dates(),
-                dayHeaderBuilder: (context, date) => context.components.monthComponents.bodyComponents
-                    .buildMonthDayHeader(context, date.forLocation(location: context.location)),
-              ),
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    // Subtract 1 to account for the extra widget at the bottom.
-                    // Clamp to 0 so a very small row height never produces a negative value,
-                    // which would cause spurious overflow buttons.
-                    final maxNumberOfVerticalEvents = max(
-                      0,
-                      (constraints.maxHeight / configuration.tileHeight).floor() - 1,
-                    );
-
-                    return MultiDayEventWidget(
-                      eventsController: context.eventsController,
-                      floatingRange: floatingRange,
-                      configuration: configuration,
-                      maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-                      viewController: viewController,
-                      overlayBuilders: monthComponents.bodyComponents.overlayBuilders ?? components.overlayBuilders,
-                    );
-                  },
+          child: LayoutBuilder(
+            builder: (context, constraints) => Column(
+              children: [
+                // A row shorter than its day header shrinks the header.
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                  child: WeekDayHeaders(
+                    dates: floatingRange.dates(),
+                    dayHeaderBuilder: (context, date) => context.components.monthComponents.bodyComponents
+                        .buildMonthDayHeader(context, date.forLocation(location: context.location)),
+                  ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      // Subtract 1 to account for the extra widget at the bottom.
+                      // Clamp to 0 so a very small row height never produces a negative value,
+                      // which would cause spurious overflow buttons.
+                      final maxNumberOfVerticalEvents = max(
+                        0,
+                        (constraints.maxHeight / configuration.tileHeight).floor() - 1,
+                      );
+
+                      // A row too short for the overflow button clips it.
+                      return UnconstrainedBox(
+                        constrainedAxis: Axis.horizontal,
+                        alignment: Alignment.topCenter,
+                        clipBehavior: Clip.hardEdge,
+                        child: MultiDayEventWidget(
+                          eventsController: context.eventsController,
+                          floatingRange: floatingRange,
+                          configuration: configuration,
+                          maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+                          viewController: viewController,
+                          overlayBuilders: monthComponents.bodyComponents.overlayBuilders ?? components.overlayBuilders,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         Positioned.fill(
