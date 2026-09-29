@@ -27,17 +27,18 @@ permissions:
   contents: write
   pull-requests: write
 
-# One run at a time per ref, and a newer one replaces an older one. Merging a
-# stack of pull requests pushes to main once per merge, so without this every
-# intermediate commit is profiled for 17 minutes and publishes a data point that
-# the next merge immediately supersedes. Cancelling also keeps two runs from
-# pushing to refs/benchmarks/data at once.
-concurrency:
-  group: benchmarks-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   benchmark:
+    # One run at a time per branch, and a newer one replaces an older one. Merging
+    # a stack of pull requests pushes to main once per merge, so without this every
+    # intermediate commit is profiled for 17 minutes and publishes a data point that
+    # the next merge immediately supersedes. Cancelling also keeps two runs from
+    # pushing to refs/benchmarks/data at once. On the job, so a pull request run
+    # whose job is skipped never replaces a run on main, and keyed by the pull
+    # request's branch, since its ref can resolve to main once it has merged.
+    concurrency:
+      group: benchmarks-${{ github.head_ref || github.ref }}
+      cancel-in-progress: true
     if: >-
       github.event_name != 'pull_request' ||
       contains(github.event.pull_request.labels.*.name, 'profile')
