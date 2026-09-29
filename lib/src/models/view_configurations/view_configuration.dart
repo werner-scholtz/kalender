@@ -15,6 +15,7 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 import 'package:kalender/src/models/view_transition.dart';
+import 'package:kalender/src/view_parts.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/schedule_date.dart';
@@ -43,7 +44,11 @@ abstract class ViewConfiguration {
     this.multiDayRule = kDefaultMultiDayRule,
   });
 
-  /// The name of the [ViewConfiguration].
+  /// Identifies the configuration. [ViewParts.name] matches it, and the controller keeps the date, scroll and zoom a
+  /// view was left on under it for [DateTransition.restorePerView], [ScrollTransition.restorePerView] and
+  /// [ZoomTransition.restorePerView].
+  ///
+  /// Must be unique among the configurations an app switches between. Configurations with one name share that history.
   final String name;
 
   /// Decides which events belong in the multi-day header rather than the day

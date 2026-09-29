@@ -23,7 +23,7 @@ All configurations accept:
 - `displayRange`: the total date range the calendar can navigate within (e.g. Jan 2024 to Dec 2025). Defaults to 1 January two years back through 1 January two years ahead.
 - `initialDateTime`: the date the controller's view opens on. Defaults to today in the controller's location.
 - `multiDayRule`: which events go in the multi-day header, see [Multi-day and all-day events](events.md#multi-day-and-all-day-events).
-- `name`: what `DateTransition.restorePerView` matches on. Each named constructor sets one.
+- `name`: identifies the configuration. `ViewParts.name` and the `restorePerView` transitions match on it, so it must be unique among the configurations an app switches between. Each named constructor sets one.
 - `nowCallback`: overrides how the calendar resolves "now", see [Now Callback](timezones-and-locales.md#now-callback).
 
 <!-- snippet: expression -->
