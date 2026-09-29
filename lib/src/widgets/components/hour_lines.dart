@@ -12,11 +12,11 @@ import 'package:kalender/kalender.dart';
 
 /// The hour lines builder.
 ///
-/// The [heightPerMinute] is the height of each minute.
-/// The [timeOfDayRange] is the range of time that the hour lines will be displayed for.
+/// The [heightPerMinute] is the height of each minute. The [timeOfDayRange] is the range of time that the hour lines
+/// will be displayed for.
 ///
-/// Resolve the line style with [KalenderTheme]. The number of lines follows the
-/// timeline's label size, which [KalenderTheme] resolves.
+/// Resolve the line style with [KalenderTheme]. The number of lines follows the timeline's label size, which
+/// [KalenderTheme] resolves.
 ///
 /// {@category Appearance}
 typedef HourLinesBuilder =

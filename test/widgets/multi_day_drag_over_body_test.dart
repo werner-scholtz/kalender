@@ -10,8 +10,8 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show
 
 import '../utilities.dart';
 
-/// A multi-day event is laid out in the header, but a drag can wander down over
-/// the body. The header's drop target should keep following the cursor's day.
+/// A multi-day event is laid out in the header, but a drag can wander down over the body. The header's drop target
+/// should keep following the cursor's day.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;

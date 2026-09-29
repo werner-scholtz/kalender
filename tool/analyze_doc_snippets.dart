@@ -32,13 +32,11 @@ import 'dart:io';
 /// Where the generated package lives, relative to the repository root.
 const snippetPackage = 'examples/doc_snippets';
 
-/// The imports every snippet may assume, because every file using this package
-/// already has them.
+/// The imports every snippet may assume, because every file using this package already has them.
 ///
-/// Deliberately short. Anything else has to appear in the snippet itself, so a
-/// snippet that presents as a file a reader can copy really is one. A wider
-/// header would have hidden the missing `gestures.dart` and `services.dart` in
-/// the zoom example, which is the failure this tool exists to catch.
+/// Deliberately short. Anything else has to appear in the snippet itself, so a snippet that presents as a file a reader
+/// can copy really is one. A wider header would have hidden the missing `gestures.dart` and `services.dart` in the zoom
+/// example, which is the failure this tool exists to catch.
 const impliedImports = <String>[
   "import 'package:flutter/material.dart';",
   "import 'package:kalender/kalender.dart';",
@@ -88,8 +86,8 @@ class Snippet {
     return lines.join('\n').trimRight();
   }
 
-  /// How many lines [body] dropped from the front of [code], so a diagnostic can
-  /// be reported against the line the reader sees.
+  /// How many lines [body] dropped from the front of [code], so a diagnostic can be reported against the line the
+  /// reader sees.
   int get bodyOffset {
     final lines = code.split('\n');
     var offset = 0;
@@ -195,8 +193,8 @@ List<List<Snippet>> groupSnippets(List<Snippet> snippets) {
   return units;
 }
 
-/// The Dart source compiled for [unit], recording where every line came from so
-/// a diagnostic points at the markdown a reader sees.
+/// The Dart source compiled for [unit], recording where every line came from so a diagnostic points at the markdown a
+/// reader sees.
 GeneratedUnit generateUnit(List<Snippet> unit, int index) {
   final base = unit.first;
   final imports = <String>{...impliedImports, for (final s in unit) ...s.imports}.toList()..sort();
@@ -306,8 +304,7 @@ void main(List<String> args) async {
 /// A generated-file location in an analyzer diagnostic.
 final diagnosticLocation = RegExp(r'lib[/\\]generated[/\\](snippet_\d+\.dart):(\d+):(\d+)');
 
-/// Rewrites analyzer diagnostics so they point at the markdown line a reader
-/// sees rather than at the generated file.
+/// Rewrites analyzer diagnostics so they point at the markdown line a reader sees rather than at the generated file.
 List<String> mapDiagnostics(String output, Map<String, GeneratedUnit> byFile) {
   final mapped = <String>[];
 

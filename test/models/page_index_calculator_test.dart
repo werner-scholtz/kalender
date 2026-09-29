@@ -65,8 +65,8 @@ void main() {
         expect(floatingRange, FloatingDateTimeRange.fromDateTimeRange(range));
       });
 
-      // An empty range (start == end) has 0 pages; indexFromDate must not throw
-      // on the negative clamp bound, and should fall back to index 0.
+      // An empty range (start == end) has 0 pages; indexFromDate must not throw on the negative clamp bound, and should
+      // fall back to index 0.
       test('indexFromDate for an empty range', () {
         final emptyRange = KalenderDateTimeRange(start: TZDateTime(location, 2020), end: TZDateTime(location, 2020));
         final emptyCalculator = DayIndexCalculator(start: emptyRange.start, end: emptyRange.end);
@@ -154,8 +154,8 @@ void main() {
       });
 
       test('the day the page drops is still reachable', () {
-        // Sunday 5 January 2020 is not displayed, but asking for it must land on
-        // the page that starts the week it belongs to.
+        // Sunday 5 January 2020 is not displayed, but asking for it must land on the page that starts the week it
+        // belongs to.
         expect(calculator.indexFromDate(TZDateTime(location, 2020, 1, 5), location), 0);
       });
     });

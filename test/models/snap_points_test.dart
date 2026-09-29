@@ -11,8 +11,8 @@ import 'package:kalender/src/models/mixins/snap_points.dart';
 class MockSnapPoint with SnapPoints {}
 
 void main() {
-  // Three consecutive 1-hour events: 10–11, 11–12, 12–13.
-  // Adding them as snap points produces 6 entries (start + end per event):
+  // Three consecutive 1-hour events: 10–11, 11–12, 12–13. Adding them as snap points produces 6 entries (start + end
+  // per event):
   //   10:00, 11:00, 11:00, 12:00, 12:00, 13:00
   final testEvents = [
     KalenderEvent(start: DateTime(2024, 1, 1, 10), end: DateTime(2024, 1, 1, 11)),

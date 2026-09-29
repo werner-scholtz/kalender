@@ -221,8 +221,8 @@ void main() {
     }
 
     testWidgets('month → week opens on a week of the month when the first days of the week differ', (tester) async {
-      // September 2026 starts on a Tuesday, so a grid starting on Sunday begins on 30 August, which falls in the
-      // Monday week of 24 August.
+      // September 2026 starts on a Tuesday, so a grid starting on Sunday begins on 30 August, which falls in the Monday
+      // week of 24 August.
       await pumpCalendarView(
         tester,
         config: MonthViewConfiguration.singleMonth(

@@ -57,12 +57,10 @@ class MonthComponents {
 ///
 /// {@category Appearance}
 class MonthBodyComponents {
-  /// A function that builds the month grid widget.
-  /// Null uses [MonthGrid].
+  /// A function that builds the month grid widget. Null uses [MonthGrid].
   final MonthGridBuilder? monthGridBuilder;
 
-  /// A function that builds the month day header widget.
-  /// Null uses [MonthDayHeader].
+  /// A function that builds the month day header widget. Null uses [MonthDayHeader].
   final MonthDayHeaderBuilder? monthDayHeaderBuilder;
 
   /// Builds the day number displayed by the month day header.
@@ -82,9 +80,8 @@ class MonthBodyComponents {
 
   /// A function that returns the width of the week number column.
   ///
-  /// Null uses [defaultWeekNumberWidth]. The month body and the month header
-  /// both read the one value this returns, so a custom [weekNumberBuilder] wider
-  /// than the default needs this set too.
+  /// Null uses [defaultWeekNumberWidth]. The month body and the month header both read the one value this returns, so a
+  /// custom [weekNumberBuilder] wider than the default needs this set too.
   final WeekNumberWidthBuilder? weekNumberWidth;
 
   /// A function that builds the left trigger widget.
@@ -200,8 +197,7 @@ class MonthBodyComponents {
 ///
 /// {@category Appearance}
 class MonthHeaderComponents {
-  /// A function that builds the week day header widget.
-  /// Null uses [WeekDayHeader].
+  /// A function that builds the week day header widget. Null uses [WeekDayHeader].
   final WeekDayHeaderBuilder? weekDayHeaderBuilder;
 
   /// Builds the day name displayed by the week day header.

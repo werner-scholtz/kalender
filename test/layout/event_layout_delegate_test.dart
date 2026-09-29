@@ -14,8 +14,8 @@ void main() {
   final date = DateTime(2025);
   final floatingDate = FloatingDateTime.fromDateTime(date);
 
-  // Events 0 and 1 share the boundary minute 01:30 and events 2 and 3 are back-to-back hours. None of them overlap,
-  // so every strategy renders each tile at full width.
+  // Events 0 and 1 share the boundary minute 01:30 and events 2 and 3 are back-to-back hours. None of them overlap, so
+  // every strategy renders each tile at full width.
   final events = [
     KalenderEvent(start: date.copyWith(hour: 1, minute: 29), end: date.copyWith(hour: 1, minute: 30)),
     KalenderEvent(

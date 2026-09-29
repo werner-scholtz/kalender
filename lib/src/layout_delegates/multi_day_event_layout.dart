@@ -11,9 +11,8 @@ import 'package:kalender/kalender.dart';
 
 /// Assigns each event in the multi-day lane a row and a span of columns.
 ///
-/// Columns are the visible dates and rows are the stacking order within the
-/// lane. Neither refers to a widget: both are concepts [MultiDayLayout] uses to
-/// position events.
+/// Columns are the visible dates and rows are the stacking order within the lane. Neither refers to a widget: both are
+/// concepts [MultiDayLayout] uses to position events.
 ///
 /// Set it on the header or month body configuration:
 ///
@@ -72,12 +71,12 @@ class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
 
 /// The row assignment behind [MultiDayLayoutStrategy.byDuration].
 ///
-/// Exposed so a custom [MultiDayLayoutStrategy] can reuse it and pass its own
-/// [eventComparator], which the strategy itself does not take.
+/// Exposed so a custom [MultiDayLayoutStrategy] can reuse it and pass its own [eventComparator], which the strategy
+/// itself does not take.
 ///
-/// Sorts the events by duration, longest first, then by start time, or by [eventComparator] when one is given.
-/// Each event takes the first row whose columns it does not overlap. The frame holds the sorted events, their row
-/// and column assignments, the total number of rows and the number of rows per column.
+/// Sorts the events by duration, longest first, then by start time, or by [eventComparator] when one is given. Each
+/// event takes the first row whose columns it does not overlap. The frame holds the sorted events, their row and column
+/// assignments, the total number of rows and the number of rows per column.
 ///
 /// {@category Layout}
 MultiDayLayoutFrame defaultMultiDayFrameGenerator({
@@ -100,8 +99,8 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   final entries = <_FrameEntry>[];
   for (final event in events) {
     final range = event.floatingRange(location: location);
-    // Round the end to the end of the day unless it already sits on a day
-    // boundary, so the final day of the event is included.
+    // Round the end to the end of the day unless it already sits on a day boundary, so the final day of the event is
+    // included.
     final roundedEnd = range.end == range.end.startOfDay ? range.end : range.end.endOfDay;
     entries.add(
       _FrameEntry(
@@ -120,8 +119,8 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
       final comparison = b.durationMicroseconds.compareTo(a.durationMicroseconds);
       if (comparison != 0) return comparison;
 
-      // Sort by start time (ascending) if durations are equal. Compares the
-      // start of a against the rounded end of b, preserving the previous order.
+      // Sort by start time (ascending) if durations are equal. Compares the start of a against the rounded end of b,
+      // preserving the previous order.
       return a.start.compareTo(b.roundedEnd);
     });
   }
@@ -130,9 +129,8 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 
   final layoutInfo = <EventLayoutInformation>[];
 
-  // The columns occupied by each row, indexed by row. A column is added once an
-  // event is placed on that row so later events can find the first row whose
-  // columns do not clash with them.
+  // The columns occupied by each row, indexed by row. A column is added once an event is placed on that row so later
+  // events can find the first row whose columns do not clash with them.
   final rowColumns = <Set<int>>[];
 
   // The maximum number of rows needed to layout all the events.
@@ -163,8 +161,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     // An event with no visible columns cannot be laid out.
     if (columns.isEmpty) continue;
 
-    // The event spans a contiguous range of columns, so overlap only depends on
-    // its first and last column.
+    // The event spans a contiguous range of columns, so overlap only depends on its first and last column.
     final start = min(columns.first, columns.last);
     final end = max(columns.first, columns.last);
 
@@ -211,8 +208,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     events: sortedEvents,
     totalNumberOfRows: sortedEvents.isEmpty ? 0 : maxRow + 1,
     columnRowMap: columnRowMap,
-    // The columns above were ordered by this, so the frame has to read them
-    // back the same way.
+    // The columns above were ordered by this, so the frame has to read them back the same way.
     textDirection: textDirection,
   );
 
@@ -290,8 +286,8 @@ class MultiDayLayoutFrame {
 
   /// The direction the columns run in.
   ///
-  /// Columns are laid out left to right, so in [TextDirection.rtl] column 0 is
-  /// the last date of [range] rather than the first.
+  /// Columns are laid out left to right, so in [TextDirection.rtl] column 0 is the last date of [range] rather than the
+  /// first.
   final TextDirection textDirection;
 
   const MultiDayLayoutFrame({
@@ -305,8 +301,7 @@ class MultiDayLayoutFrame {
 
   /// Returns the date for the given column index.
   ///
-  /// Reads from the end of the range in [TextDirection.rtl], mirroring the
-  /// column order the frame was laid out with.
+  /// Reads from the end of the range in [TextDirection.rtl], mirroring the column order the frame was laid out with.
   FloatingDateTime dateFromColumn(int column) {
     final days = textDirection == TextDirection.ltr ? column : range.dates().length - 1 - column;
     return FloatingDateTime.fromDateTime(range.start.add(Duration(days: days)));
@@ -368,9 +363,8 @@ class EventLayoutInformation {
 
   /// Checks if this event overlaps with another [EventLayoutInformation].
   ///
-  /// Two events are considered overlapping if their column ranges intersect.
-  /// This method compares the start and end columns of both events to determine
-  /// if there is any overlap.
+  /// Two events are considered overlapping if their column ranges intersect. This method compares the start and end
+  /// columns of both events to determine if there is any overlap.
   ///
   /// ## Returns:
   /// - `true` if the events overlap, `false` otherwise.
@@ -386,12 +380,11 @@ class EventLayoutInformation {
 
 /// A custom layout delegate for arranging multi-day events in a calendar view.
 ///
-/// The [MultiDayLayout] is responsible for positioning and sizing event tiles
-/// within a multi-day calendar view. It calculates the layout based on the
-/// provided date range, event layout information, number of rows, and tile height.
+/// The [MultiDayLayout] is responsible for positioning and sizing event tiles within a multi-day calendar view. It
+/// calculates the layout based on the provided date range, event layout information, number of rows, and tile height.
 ///
-/// This layout ensures that events spanning multiple days are displayed correctly
-/// across the corresponding date columns and rows.
+/// This layout ensures that events spanning multiple days are displayed correctly across the corresponding date columns
+/// and rows.
 ///
 /// {@category Layout}
 class MultiDayLayout extends MultiChildLayoutDelegate {

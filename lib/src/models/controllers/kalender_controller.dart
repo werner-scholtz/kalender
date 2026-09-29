@@ -23,8 +23,8 @@ import 'package:kalender/src/models/view_transition.dart';
 ///
 /// Setting [viewConfiguration] switches the view. Setting [location] recreates it in the new location.
 ///
-/// Navigation while no [KalenderView] is mounted replaces [viewController] with one that opens on the target, and
-/// the next view opens there. A time of day from [animateToDateTime] or [animateToEvent] opens the view scrolled to it.
+/// Navigation while no [KalenderView] is mounted replaces [viewController] with one that opens on the target, and the
+/// next view opens there. A time of day from [animateToDateTime] or [animateToEvent] opens the view scrolled to it.
 ///
 /// {@category Controllers and callbacks}
 class KalenderController extends ChangeNotifier with KalenderNavigationFunctions, NewEvent {
@@ -43,8 +43,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   static int _nextId = 0;
 
-  /// Unique to this instance. The drag targets compare it to decide whether a
-  /// create gesture belongs to their calendar.
+  /// Unique to this instance. The drag targets compare it to decide whether a create gesture belongs to their calendar.
   final int id;
 
   /// The configuration of the view.
@@ -167,9 +166,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// Makes [view] the active view and returns the view controller it shows.
   ///
-  /// A view that does not hold the current view controller gets a new one when a view has held it before, because
-  /// its page and scroll controllers keep the position they were created with. The new one opens where the current
-  /// one is.
+  /// A view that does not hold the current view controller gets a new one when a view has held it before, because its
+  /// page and scroll controllers keep the position they were created with. The new one opens where the current one is.
   @internal
   ViewController attachView(Object view) {
     _views
@@ -211,8 +209,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   bool get _hasView => _views.isNotEmpty;
 
-  /// Runs [withView] once the view has built [viewController]. Without an attached view, replaces [viewController]
-  /// with one that opens on the snapshot [withoutView] returns, when it returns one.
+  /// Runs [withView] once the view has built [viewController]. Without an attached view, replaces [viewController] with
+  /// one that opens on the snapshot [withoutView] returns, when it returns one.
   Future<void> _navigate(
     FutureOr<void> Function(ViewController viewController) withView,
     ViewSnapshot? Function() withoutView,

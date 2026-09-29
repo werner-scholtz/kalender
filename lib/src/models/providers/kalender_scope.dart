@@ -10,9 +10,9 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// Reads the state of the [KalenderView] a widget is built inside.
 ///
-/// Each accessor depends on one value, so a widget reading the locale does not rebuild when the location changes.
-/// Every accessor returns the nearest value. [interactionOf], [callbacksOf] and [tileComponentsOf] can differ between
-/// the header and the body.
+/// Each accessor depends on one value, so a widget reading the locale does not rebuild when the location changes. Every
+/// accessor returns the nearest value. [interactionOf], [callbacksOf] and [tileComponentsOf] can differ between the
+/// header and the body.
 ///
 /// The `of` form throws where there is no [KalenderView] above the context. The `maybeOf` form returns null there
 /// instead.
@@ -37,8 +37,8 @@ abstract final class KalenderScope {
 
   /// The [ViewController] the surrounding [KalenderView] shows.
   ///
-  /// [KalenderController.viewController] is the active view's. It differs while two views share one controller, such
-  /// as during a route transition.
+  /// [KalenderController.viewController] is the active view's. It differs while two views share one controller, such as
+  /// during a route transition.
   static ViewController viewControllerOf(BuildContext context) => ViewControllerProvider.of(context);
 
   /// The [ViewController] the surrounding [KalenderView] shows, or null outside a [KalenderView].

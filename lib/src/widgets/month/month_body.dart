@@ -115,9 +115,8 @@ class _MonthBody extends StatelessWidget {
           ],
         );
 
-        // Only build the per-day background when a custom cell builder is set, so
-        // the default month view does no extra per-cell work. It is painted below
-        // the grid (see the layout delegate) so cell backgrounds do not cover the
+        // Only build the per-day background when a custom cell builder is set, so the default month view does no extra
+        // per-cell work. It is painted below the grid (see the layout delegate) so cell backgrounds do not cover the
         // grid lines.
         final hasCellBuilder = monthComponents.bodyComponents.monthDayCellBuilder != null;
         final background = hasCellBuilder
@@ -196,8 +195,8 @@ class MonthWeek extends StatelessWidget {
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      // Subtract 1 to account for the extra widget at the bottom.
-                      // Clamped to 0, since a negative value shows overflow buttons on days without events.
+                      // Subtract 1 to account for the extra widget at the bottom. Clamped to 0, since a negative value
+                      // shows overflow buttons on days without events.
                       final maxNumberOfVerticalEvents = max(
                         0,
                         (constraints.maxHeight / configuration.tileHeight).floor() - 1,
@@ -239,8 +238,8 @@ class MonthWeek extends StatelessWidget {
 
 /// A non-interactive background layer that renders one [MonthDayCell] per day.
 ///
-/// Built only when a custom [MonthBodyComponents.monthDayCellBuilder] is set, and
-/// painted below the grid and the day content so cell styling sits behind them.
+/// Built only when a custom [MonthBodyComponents.monthDayCellBuilder] is set, and painted below the grid and the day
+/// content so cell styling sits behind them.
 class _MonthDayCellBackground extends StatelessWidget {
   final List<FloatingDateTimeRange> weekRanges;
   final FloatingDateTime focusMonthStart;

@@ -71,8 +71,8 @@ void main() {
   });
 
   testWidgets('renders without blowing up on a multi-year display range', (tester) async {
-    // A large range would make a whole-range strip millions of pixels wide, so
-    // the band must window the days it renders.
+    // A large range would make a whole-range strip millions of pixels wide, so the band must window the days it
+    // renders.
     final bigRange = KalenderDateTimeRange(start: DateTime(2018), end: DateTime(2036));
     final id = eventsController.addEvent(KalenderEvent(start: DateTime(2026, 7, 6), end: DateTime(2026, 7, 9)));
 

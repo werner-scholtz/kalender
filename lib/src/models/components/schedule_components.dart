@@ -16,8 +16,7 @@ import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detec
 ///
 /// {@category Appearance}
 class ScheduleComponents {
-  /// A function that builds the day header widget.
-  /// Null uses [ScheduleDate].
+  /// A function that builds the day header widget. Null uses [ScheduleDate].
   final ScheduleDateBuilder? leadingDateBuilder;
 
   /// Builds the day name displayed above the day number.
@@ -25,8 +24,7 @@ class ScheduleComponents {
   /// Defaults to the short day name in the calendar's locale.
   final DateStringBuilder? leadingDateStringBuilder;
 
-  /// A function that builds the highlight tile widget.
-  /// Null uses [ScheduleTileHighlight].
+  /// A function that builds the highlight tile widget. Null uses [ScheduleTileHighlight].
   final ScheduleTileHighlightBuilder? scheduleTileHighlightBuilder;
 
   /// A function that builds the row for a day without events.

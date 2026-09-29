@@ -32,8 +32,8 @@ class KalenderView extends StatefulWidget {
   /// - [MonthComponents]
   /// - [ScheduleComponents]
   ///
-  /// Styles live on [KalenderThemeData] rather than here. Register one on
-  /// `ThemeData.extensions`, or wrap a calendar in a [KalenderTheme] to scope it.
+  /// Styles live on [KalenderThemeData] rather than here. Register one on `ThemeData.extensions`, or wrap a calendar in
+  /// a [KalenderTheme] to scope it.
   final KalenderComponents? components;
 
   /// The header and body shown for each kind of view configuration. See [ViewParts].

@@ -10,8 +10,7 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// The multi-day header and month builders take a [BuildContext] and resolve
-/// their own styles from it.
+/// The multi-day header and month builders take a [BuildContext] and resolve their own styles from it.
 void main() {
   late DefaultEventsController eventsController;
 

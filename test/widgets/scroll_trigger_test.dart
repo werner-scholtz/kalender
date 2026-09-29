@@ -26,8 +26,7 @@ void main() {
     tileBuilder: (context, event, tileRange) => Container(key: ValueKey('inner-${event.id}'), color: Colors.red),
   );
 
-  // Align the top of the viewport with [hour] so each test starts with room to
-  // scroll in the direction it drags.
+  // Align the top of the viewport with [hour] so each test starts with room to scroll in the direction it drags.
   Future<void> pumpWeek(WidgetTester tester, int hour) {
     kalenderController = KalenderController(
       viewConfiguration: MultiDayViewConfiguration.week(

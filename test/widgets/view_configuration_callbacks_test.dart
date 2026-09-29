@@ -9,8 +9,7 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// Two resolvers landing in different months, so the visible range names which
-/// one ran.
+/// Two resolvers landing in different months, so the visible range names which one ran.
 FloatingDateTime resolveToMarch(ViewTransitionContext transition) => FloatingDateTime(2025, 3, 10);
 FloatingDateTime resolveToAugust(ViewTransitionContext transition) => FloatingDateTime(2025, 8, 20);
 
@@ -53,9 +52,8 @@ void main() {
     return MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange, dateResolver: dateResolver);
   }
 
-  /// Whether the visible range covers [date]. The month grid starts on the
-  /// trailing days of the previous month, so the range's own start does not
-  /// name the month on screen.
+  /// Whether the visible range covers [date]. The month grid starts on the trailing days of the previous month, so the
+  /// range's own start does not name the month on screen.
   bool visibleRangeCovers(DateTime date) {
     final range = kalenderController!.visibleDateTimeRange.value;
     return !date.isBefore(range.start) && date.isBefore(range.end);

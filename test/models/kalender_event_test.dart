@@ -84,8 +84,8 @@ void main() {
     });
 
     test('compares the two after normalising to UTC', () {
-      // 09:30+01:00 is 08:30Z, so the pair reads forwards as wall clock values
-      // and backwards as instants. The check runs on the instants.
+      // 09:30+01:00 is 08:30Z, so the pair reads forwards as wall clock values and backwards as instants. The check
+      // runs on the instants.
       expect(
         () => KalenderEvent(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.parse('2024-01-15T09:30:00+01:00')),
         throwsAssertionError,
@@ -220,9 +220,8 @@ void main() {
     });
 
     test('a short event crossing midnight is not multi-day', () {
-      // 2h long, so under the duration rule it stays in the day timeline even
-      // though it occupies two calendar days. Use MultiDayRule.calendarDays()
-      // to classify it the other way.
+      // 2h long, so under the duration rule it stays in the day timeline even though it occupies two calendar days. Use
+      // MultiDayRule.calendarDays() to classify it the other way.
       final event = eventUtc(DateTime.utc(2024, 1, 15, 23), DateTime.utc(2024, 1, 16, 1));
       expect(event.datesSpanned(location: utcLocation), hasLength(2));
       expect(event.spansMultipleDays(location: utcLocation, defaultRule: kDefaultMultiDayRule), isFalse);

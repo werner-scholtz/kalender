@@ -310,8 +310,7 @@ extension ProviderContext on BuildContext {
   /// Retrieve the [Location] of the calendar.
   Location? get location => LocationProvider.of(this);
 
-  /// Whether [date] is today, honouring the view's `nowCallback` when set and
-  /// otherwise the calendar's [location].
+  /// Whether [date] is today, honouring the view's `nowCallback` when set and otherwise the calendar's [location].
   bool isToday(FloatingDateTime date) {
     final now = ViewControllerProvider.maybeOf(this)?.viewConfiguration.nowCallback?.call();
     return now != null ? date.isToday(now: now) : date.isToday(location: location);

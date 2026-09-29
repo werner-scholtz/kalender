@@ -10,8 +10,8 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// Covers the regression where [TileComponents.overlayTileBuilder] was ignored,
-/// and overlay tiles rendered with [TileComponents.tileBuilder] instead.
+/// Covers the regression where [TileComponents.overlayTileBuilder] was ignored, and overlay tiles rendered with
+/// [TileComponents.tileBuilder] instead.
 void main() {
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 

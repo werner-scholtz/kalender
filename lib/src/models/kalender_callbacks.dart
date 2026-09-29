@@ -16,8 +16,8 @@ import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 class KalenderCallbacks {
   /// The callback for when an event is tapped.
   ///
-  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail], the [GestureDetector] is not enabled,
-  /// and a gesture detector inside your own tile receives the gesture instead. See [DayEventTileUtils] and
+  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail], the [GestureDetector] is not enabled, and a
+  /// gesture detector inside your own tile receives the gesture instead. See [DayEventTileUtils] and
   /// [MultiDayEventTileUtils] for tiles that resolve the tapped position themselves.
   final OnEventTapped? onEventTapped;
 
@@ -52,8 +52,8 @@ class KalenderCallbacks {
 
   /// The callback for when the vertical scroll position of a multi-day view changes.
   ///
-  /// The provided [KalenderTime] is the time currently aligned with the top of the
-  /// visible viewport. Only fires for views with vertical scroll (day/week/etc).
+  /// The provided [KalenderTime] is the time currently aligned with the top of the visible viewport. Only fires for
+  /// views with vertical scroll (day/week/etc).
   final OnScrollPositionChanged? onScrollPositionChanged;
 
   /// The callback for when a user taps on the calendar.
@@ -192,8 +192,7 @@ class KalenderCallbacks {
 
 /// The callback for when an event is tapped.
 ///
-/// Use [OnEventTappedWithDetail] to also receive the tapped date and the
-/// [RenderBox] of the event tile.
+/// Use [OnEventTappedWithDetail] to also receive the tapped date and the [RenderBox] of the event tile.
 ///
 /// {@category Controllers and callbacks}
 typedef OnEventTapped = void Function(KalenderEvent event);
@@ -267,8 +266,7 @@ typedef OnLongPressedWithDetail = void Function(TapDetail detail);
 
 /// The callback for when a drag target is evaluating whether to accept a draggable.
 ///
-/// [details] contains the details of the drag operation.
-/// [controller] is the controller of the calendar.
+/// [details] contains the details of the drag operation. [controller] is the controller of the calendar.
 /// [configuration] is the configuration of the vertical view.
 ///
 /// See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
@@ -283,8 +281,7 @@ typedef OnWillAcceptWithDetailsVertical =
 
 /// The callback for when a drag target is evaluating whether to accept a draggable.
 ///
-/// [details] contains the details of the drag operation.
-/// [controller] is the controller of the calendar.
+/// [details] contains the details of the drag operation. [controller] is the controller of the calendar.
 /// [configuration] is the configuration of the horizontal view.
 ///
 /// By default the calendar will only accept draggables that are of type [Create], [Resize], or [Reschedule].

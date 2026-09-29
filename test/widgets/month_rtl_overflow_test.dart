@@ -56,8 +56,7 @@ void main() {
   });
 
   group('Month view overflow button dates', () {
-    /// Opens a month view with eight events on [day] and returns the
-    /// dates the "+N more" buttons were keyed to.
+    /// Opens a month view with eight events on [day] and returns the dates the "+N more" buttons were keyed to.
     Future<Set<DateTime>> buttonDates(
       WidgetTester tester, {
       required DateTime day,

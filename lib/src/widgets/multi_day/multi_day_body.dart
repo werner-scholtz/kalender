@@ -103,8 +103,8 @@ class _MultiDayBody extends StatelessWidget {
               height: pageHeight,
               child: Row(
                 children: [
-                  // The timeline is always on the left side of the page, but should not scroll with the pageview.
-                  // Its width is fixed to the shared timeline width so it aligns with the header and drag overlay.
+                  // The timeline is always on the left side of the page, but should not scroll with the pageview. Its
+                  // width is fixed to the shared timeline width so it aligns with the header and drag overlay.
                   SizedBox(
                     key: MultiDayBody.timelineKey,
                     width: timelineWidth,
@@ -320,16 +320,16 @@ class _MultiDayPageState extends State<MultiDayPage> {
           ],
         );
 
-        // Optionally keep the page alive so navigating back to it reuses its
-        // built content instead of rebuilding every tile.
+        // Optionally keep the page alive so navigating back to it reuses its built content instead of rebuilding every
+        // tile.
         return widget.configuration.keepPagesAlive ? _KeepAlivePage(child: page) : page;
       },
     );
   }
 }
 
-/// Keeps its [child] alive within a lazily-built page view, so a page that
-/// scrolls out of view is not disposed and rebuilt when it comes back.
+/// Keeps its [child] alive within a lazily-built page view, so a page that scrolls out of view is not disposed and
+/// rebuilt when it comes back.
 class _KeepAlivePage extends StatefulWidget {
   const _KeepAlivePage({required this.child});
 

@@ -14,8 +14,7 @@ import 'package:kalender/kalender.dart';
 ///   * `copyWith()` with no arguments returns an equal instance.
 ///   * Setting each field on an empty instance breaks equality and changes `hashCode`.
 void main() {
-  /// Asserts [full] survives a no-argument copy, and that each mutation in
-  /// [mutations] changes [empty].
+  /// Asserts [full] survives a no-argument copy, and that each mutation in [mutations] changes [empty].
   void checkClass<T extends Object>(
     String name, {
     required T full,
@@ -238,8 +237,8 @@ void main() {
   );
 }
 
-// One named function per builder shape. A tear-off of the same function compares
-// equal, which is what lets the "no arguments" copy be checked with `==`.
+// One named function per builder shape. A tear-off of the same function compares equal, which is what lets the "no
+// arguments" copy be checked with `==`.
 
 Widget _overlay(
   BuildContext context, {

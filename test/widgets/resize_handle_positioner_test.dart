@@ -11,9 +11,8 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 
 import '../utilities.dart';
 
-/// A custom [ResizeHandlePositioner] returns a plain [Widget] and receives a
-/// [ResizeHandleDetails], which carries the tile's geometry and resolves the
-/// handle widgets from the context.
+/// A custom [ResizeHandlePositioner] returns a plain [Widget] and receives a [ResizeHandleDetails], which carries the
+/// tile's geometry and resolves the handle widgets from the context.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;

@@ -139,9 +139,8 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
 
 /// A widget that lays out events spanning multiple days in a calendar view.
 ///
-/// The [MultiDayEventLayoutWidget] is responsible for arranging and displaying
-/// events that occur over multiple days in a visually organized manner. It ensures
-/// that overlapping or adjacent events are properly aligned and do not overlap
+/// The [MultiDayEventLayoutWidget] is responsible for arranging and displaying events that occur over multiple days in
+/// a visually organized manner. It ensures that overlapping or adjacent events are properly aligned and do not overlap
 /// visually.
 ///
 /// This widget is used by month views and in day view headers, for displaying multi-day activities.
@@ -319,12 +318,10 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       if (oldWidget.floatingRange != widget.floatingRange) _syncOverlayAfterFrame();
 
       if (shouldUpdateCache) {
-        // The events, configuration, and text direction apply to every range,
-        // not just the current one, so a change invalidates every cached frame.
-        // The paged headers rebuild each range in its own widget, but the
-        // free-scroll band is a single widget whose range moves as it scrolls.
-        // Dropping only the current range would leave stale frames for the
-        // windows it scrolls back to, so clear the whole cache.
+        // The events, configuration, and text direction apply to every range, not just the current one, so a change
+        // invalidates every cached frame. The paged headers rebuild each range in its own widget, but the free-scroll
+        // band is a single widget whose range moves as it scrolls. Dropping only the current range would leave stale
+        // frames for the windows it scrolls back to, so clear the whole cache.
         widget.multiDayCache?.clearAll();
       }
 

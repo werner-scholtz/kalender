@@ -51,11 +51,9 @@ abstract class ViewConfiguration {
   /// Must be unique among the configurations an app switches between. Configurations with one name share that history.
   final String name;
 
-  /// Decides which events belong in the multi-day header rather than the day
-  /// timeline.
+  /// Decides which events belong in the multi-day header rather than the day timeline.
   ///
-  /// Applies to every event this view shows. An individual event can opt out
-  /// with [KalenderEvent.multiDayRule].
+  /// Applies to every event this view shows. An individual event can opt out with [KalenderEvent.multiDayRule].
   final MultiDayRule multiDayRule;
 
   /// The date the view opens on when this configuration is passed to the [KalenderController] constructor.
@@ -65,23 +63,22 @@ abstract class ViewConfiguration {
   /// date after a switch.
   final DateTime? initialDateTime;
 
-  /// How the visible date is chosen when switching to this view from another, or when the calendar's location
-  /// changes.
+  /// How the visible date is chosen when switching to this view from another, or when the calendar's location changes.
   ///
   /// Defaults to [DateTransition.carryFocus]. Overridden by [dateResolver] when that is provided.
   final DateTransition dateTransition;
 
   /// An optional resolver for the visible date on a view switch or a change of location.
   ///
-  /// When non-null it overrides [dateTransition], allowing arbitrary logic (e.g.
-  /// "snap to the next business day"). See [kCarryFocusDate] to reuse the default.
+  /// When non-null it overrides [dateTransition], allowing arbitrary logic (e.g. "snap to the next business day"). See
+  /// [kCarryFocusDate] to reuse the default.
   final DateResolver? dateResolver;
 
   /// An optional callback that overrides how the calendar resolves "now".
   ///
-  /// The wall-clock components of the returned [DateTime] decide where the time indicator sits, which day
-  /// [DayHeader], [MonthDayHeader] and [ScheduleDate] highlight as today, and whether
-  /// [EmptyDayBehavior.showOnlyToday] keeps an empty day.
+  /// The wall-clock components of the returned [DateTime] decide where the time indicator sits, which day [DayHeader],
+  /// [MonthDayHeader] and [ScheduleDate] highlight as today, and whether [EmptyDayBehavior.showOnlyToday] keeps an
+  /// empty day.
   ///
   /// Included in `==`, unlike [dateResolver]. Null, the default, uses the calendar's [Location].
   final NowCallback? nowCallback;
@@ -127,8 +124,7 @@ abstract class ViewConfiguration {
 abstract class VerticalConfiguration {
   /// Whether to show multi-day events in the body.
   ///
-  /// Which events count is decided by [ViewConfiguration.multiDayRule],
-  /// 24 hours or longer by default.
+  /// Which events count is decided by [ViewConfiguration.multiDayRule], 24 hours or longer by default.
   final bool showMultiDayEvents;
 
   /// The horizontal padding between events and the edge of the day column.
@@ -223,8 +219,7 @@ abstract class HorizontalConfiguration {
 
   /// Whether to display single-day events in this horizontal lane.
   ///
-  /// Which events count is decided by [ViewConfiguration.multiDayRule],
-  /// shorter than 24 hours by default.
+  /// Which events count is decided by [ViewConfiguration.multiDayRule], shorter than 24 hours by default.
   final bool allowSingleDayEvents;
 
   /// The configuration for the page navigation triggers.

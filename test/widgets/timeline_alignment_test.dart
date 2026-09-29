@@ -89,9 +89,8 @@ void main() {
   });
 
   testWidgets('measures every label, so the widest hour fits even when it is not 23:59', (tester) async {
-    // A string builder whose widest output is at noon, not at 23:59. Sampling
-    // only 23:59 (which here returns the short 'x') would under-size the gutter
-    // and clip the noon label. Measuring all labels must accommodate it.
+    // A string builder whose widest output is at noon, not at 23:59. Sampling only 23:59 (which here returns the short
+    // 'x') would under-size the gutter and clip the noon label. Measuring all labels must accommodate it.
     const wide = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'; // 40 chars
     String labels(BuildContext context, KalenderTime time) => time.hour == 12 ? wide : 'x';
 
@@ -136,8 +135,8 @@ void main() {
     expectAligned(tester);
   });
 
-  // The calendar's own locale, which is not necessarily the app's, was not
-  // reachable from a custom label before it was handed a BuildContext.
+  // The calendar's own locale, which is not necessarily the app's, was not reachable from a custom label before it was
+  // handed a BuildContext.
   testWidgets('the string builder receives a context it can read the calendar locale from', (tester) async {
     await initializeDateFormatting('de_DE');
     await pumpWeek(

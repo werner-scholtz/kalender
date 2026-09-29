@@ -122,8 +122,8 @@ void main() {
       return (card: tester.getRect(card), view: tester.getRect(find.byType(KalenderView)));
     }
 
-    // January 2025 lays out as 5 rows (Mon 30 Dec - Sun 2 Feb), so the 29th
-    // sits in the last row, closest to the bottom edge.
+    // January 2025 lays out as 5 rows (Mon 30 Dec - Sun 2 Feb), so the 29th sits in the last row, closest to the bottom
+    // edge.
     final lastRowDay = DateTime.utc(2025, 1, 29);
     final firstRowDay = DateTime.utc(2025, 1, 2);
 

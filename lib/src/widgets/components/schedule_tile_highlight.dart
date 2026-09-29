@@ -11,9 +11,8 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The schedule tile highlight builder.
 ///
-/// The [date] is the date that the highlight will be applied to.
-/// The [range] is the range of dates that the highlight will be applied to.
-/// The [child] is the widget that will be displayed inside the highlight.
+/// The [date] is the date that the highlight will be applied to. The [range] is the range of dates that the highlight
+/// will be applied to. The [child] is the widget that will be displayed inside the highlight.
 ///
 /// Resolve the style with [KalenderTheme].
 ///

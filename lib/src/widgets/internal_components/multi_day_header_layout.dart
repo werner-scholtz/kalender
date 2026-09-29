@@ -11,9 +11,8 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
 /// The widget used for the MultiDayHeader.
 ///
-/// It offsets the [content] by the timeline gutter width (resolved via
-/// [MultiDayBodyComponents.timelineWidth]) and sizes the [leading] to that width,
-/// so the header's day columns align with the body's day columns.
+/// It offsets the [content] by the timeline gutter width (resolved via [MultiDayBodyComponents.timelineWidth]) and
+/// sizes the [leading] to that width, so the header's day columns align with the body's day columns.
 class MultiDayHeaderWidget extends StatelessWidget {
   final Widget content;
 

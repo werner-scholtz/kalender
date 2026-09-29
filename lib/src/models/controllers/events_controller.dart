@@ -12,8 +12,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 
 /// The [EventsController] is used to manage [KalenderEvent]s.
 ///
-/// This class can be extended to create custom [EventsController]s.
-/// e.g. [DefaultEventsController]
+/// This class can be extended to create custom [EventsController]s. e.g. [DefaultEventsController]
 ///
 /// {@category Events}
 abstract class EventsController with ChangeNotifier {
@@ -66,11 +65,10 @@ abstract class EventsController with ChangeNotifier {
 
   /// Finds the [KalenderEvent]s that occur during the [range].
   ///
-  /// The [location] is the calendar's timezone, used to place day boundaries when evaluating [multiDayRule].
-  /// Pass the same one the calendar renders with.
-  /// [multiDayRule] decides which events count as multi-day. Pass the current
-  /// view's [ViewConfiguration.multiDayRule]. An event overriding it with
-  /// [KalenderEvent.multiDayRule] takes precedence.
+  /// The [location] is the calendar's timezone, used to place day boundaries when evaluating [multiDayRule]. Pass the
+  /// same one the calendar renders with. [multiDayRule] decides which events count as multi-day. Pass the current
+  /// view's [ViewConfiguration.multiDayRule]. An event overriding it with [KalenderEvent.multiDayRule] takes
+  /// precedence.
   Iterable<KalenderEvent> eventsInRange(
     FloatingDateTimeRange range, {
     required MultiDayRule multiDayRule,

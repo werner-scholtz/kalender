@@ -44,9 +44,8 @@ class TileComponents {
 
   /// The dragAnchorStrategy used by the resize handles.
   ///
-  /// Defaults to a pointer anchor for vertical resizing. Setting
-  /// `childDragAnchorStrategy` makes a vertical resize flip to the neighboring
-  /// day on the smallest sideways move.
+  /// Defaults to a pointer anchor for vertical resizing. Setting `childDragAnchorStrategy` makes a vertical resize flip
+  /// to the neighboring day on the smallest sideways move.
   final DragAnchorStrategy? resizeDragAnchorStrategy;
 
   /// The widget that positions and sizes the resize handles.
@@ -164,8 +163,8 @@ class ScheduleTileComponents extends TileComponents {
 
 /// The default builder for the event tiles.
 ///
-/// [tileRange] is the wall-clock [KalenderDateTimeRange] of the view the tile will be displayed in.
-/// The values are local [DateTime]s (or `TZDateTime`s when a timezone location is set).
+/// [tileRange] is the wall-clock [KalenderDateTimeRange] of the view the tile will be displayed in. The values are
+/// local [DateTime]s (or `TZDateTime`s when a timezone location is set).
 ///
 /// {@category Appearance}
 typedef TileBuilder = Widget Function(BuildContext context, KalenderEvent event, KalenderDateTimeRange tileRange);

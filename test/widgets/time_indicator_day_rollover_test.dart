@@ -48,9 +48,8 @@ void main() {
   });
 
   testWidgets('a rebuild every 30 seconds does not stop the day being noticed', (tester) async {
-    // The day check runs on a periodic timer that is rebuilt whenever the
-    // widget updates. A calendar rebuilding faster than the timer's period
-    // would restart the countdown every time and never reach it.
+    // The day check runs on a periodic timer that is rebuilt whenever the widget updates. A calendar rebuilding faster
+    // than the timer's period would restart the countdown every time and never reach it.
     var now = DateTime(2026, 3, 4, 12, 0);
     final indicatorKey = UniqueKey();
     late StateSetter rebuild;
@@ -80,9 +79,8 @@ void main() {
   });
 
   testWidgets('a full day passing moves the indicator off a page it no longer belongs to', (tester) async {
-    // Sunday is the last column, so the rollover puts today on the next page
-    // while the view stays where it is. The indicator belongs to the new page,
-    // not this one, so it has to leave rather than stay on the last column.
+    // Sunday is the last column, so the rollover puts today on the next page while the view stays where it is. The
+    // indicator belongs to the new page, not this one, so it has to leave rather than stay on the last column.
     var now = DateTime(2026, 3, 8, 12, 0);
     final finder = await pumpWeek(tester, () => now);
 
@@ -95,8 +93,8 @@ void main() {
   });
 
   testWidgets('resuming the app corrects the indicator after time passed', (tester) async {
-    // Stands in for the operating system suspending timers while the app is in
-    // the background: no timer fires, and the resume is the only signal.
+    // Stands in for the operating system suspending timers while the app is in the background: no timer fires, and the
+    // resume is the only signal.
     var now = DateTime(2026, 3, 4, 12, 0);
     final finder = await pumpWeek(tester, () => now);
 

@@ -11,8 +11,8 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEv
 
 import '../utilities.dart';
 
-/// Pointer moves arrive faster than the display refreshes, so [DragTargetUtilities.onMove]
-/// keeps only the newest and processes it once per frame.
+/// Pointer moves arrive faster than the display refreshes, so [DragTargetUtilities.onMove] keeps only the newest and
+/// processes it once per frame.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -61,8 +61,7 @@ void main() {
     );
   }
 
-  /// Starts a reschedule drag and returns the gesture, past the point where the
-  /// draggable has been picked up.
+  /// Starts a reschedule drag and returns the gesture, past the point where the draggable has been picked up.
   Future<TestGesture> beginDrag(WidgetTester tester) async {
     final tile = find.byKey(DayEventTile.tileKey(eventId));
     final gesture = await tester.startGesture(tester.getCenter(tile));
@@ -104,8 +103,7 @@ void main() {
     final coalesced = kalenderController.selectedEvent.value!.start;
     final movedBy = coalesced.difference(afterFirstMove);
 
-    // 60 logical pixels at 1 minute per pixel. Had the first move won, this
-    // would be half as much.
+    // 60 logical pixels at 1 minute per pixel. Had the first move won, this would be half as much.
     expect(movedBy.inMinutes, greaterThan(45), reason: 'the last move should win, not the first');
 
     await gesture.up();

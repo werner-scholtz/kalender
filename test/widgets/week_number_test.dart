@@ -12,9 +12,8 @@ import 'package:timezone/timezone.dart';
 
 import '../utilities.dart';
 
-/// The week number label reads `32 - 33` when the visible range crosses a week
-/// boundary. Its gutter is sized by the timeline rather than by the label, so
-/// that string wraps, and the wrapped lines have to stay centred.
+/// The week number label reads `32 - 33` when the visible range crosses a week boundary. Its gutter is sized by the
+/// timeline rather than by the label, so that string wraps, and the wrapped lines have to stay centred.
 void main() {
   group('WeekNumber label', () {
     late KalenderController kalenderController;
@@ -27,8 +26,8 @@ void main() {
       eventsController = DefaultEventsController();
     });
 
-    // Pinned to UTC so the dates below land in the week they read as, whichever
-    // of the six timezones CI is running under.
+    // Pinned to UTC so the dates below land in the week they read as, whichever of the six timezones CI is running
+    // under.
     Future<void> pumpWeekNumber(WidgetTester tester, KalenderDateTimeRange range) {
       return pumpAndSettleWithMaterialApp(
         tester,

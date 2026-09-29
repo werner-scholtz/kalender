@@ -13,9 +13,8 @@ import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 
 import '../utilities.dart';
 
-/// Jan 6, 2025 is a Monday, so a week-view initialized here shows
-/// Monday Jan 6 → Sunday Jan 12 in `visibleDates`, giving deterministic
-/// date assertions in all cursor-position tests.
+/// Jan 6, 2025 is a Monday, so a week-view initialized here shows Monday Jan 6 → Sunday Jan 12 in `visibleDates`,
+/// giving deterministic date assertions in all cursor-position tests.
 final _weekInitialDate = DateTime(2025, 1, 6);
 
 KalenderController _weekController({KalenderTimeRange? timeOfDayRange}) {
@@ -152,8 +151,8 @@ void main() {
     }
 
     testWidgets('Reschedule event whose duration exceeds restricted timeOfDayRange → false', (tester) async {
-      // Time range 09:00–17:00 has duration = 8h 1min.
-      // An event from 08:00–18:00 (10 h) exceeds that, so it should be rejected.
+      // Time range 09:00–17:00 has duration = 8h 1min. An event from 08:00–18:00 (10 h) exceeds that, so it should be
+      // rejected.
       final controller = _weekController(
         timeOfDayRange: KalenderTimeRange(
           start: const KalenderTime(hour: 9, minute: 0),

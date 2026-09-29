@@ -10,9 +10,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
 
-/// This file must never call `initializeDateFormatting`. Locale data is global
-/// to the isolate, so loading it here would make every assertion below pass for
-/// the wrong reason.
+/// This file must never call `initializeDateFormatting`. Locale data is global to the isolate, so loading it here would
+/// make every assertion below pass for the wrong reason.
 void main() {
   final date = DateTime(2026, 7, 29);
 

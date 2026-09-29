@@ -11,8 +11,8 @@ import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
-/// Reports a tap on [event] to [KalenderCallbacks.onEventTapped] and [KalenderCallbacks.onEventTappedWithDetail], or
-/// to their secondary counterparts when [secondary] is true.
+/// Reports a tap on [event] to [KalenderCallbacks.onEventTapped] and [KalenderCallbacks.onEventTappedWithDetail], or to
+/// their secondary counterparts when [secondary] is true.
 EventTileOnTapUp reportEventTap(
   KalenderEvent event,
   TapDetail Function(Offset localPosition, BuildContext context, RenderBox renderBox) detail, {

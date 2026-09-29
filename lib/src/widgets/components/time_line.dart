@@ -13,9 +13,8 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// The label for [time].
 ///
-/// `MaterialLocalizations` decides the format where the app installs them, which
-/// keeps a Material app's timeline byte for byte what it was. An app on the
-/// standalone `material_ui` package installs its own, not these, so there the
+/// `MaterialLocalizations` decides the format where the app installs them, which keeps a Material app's timeline byte
+/// for byte what it was. An app on the standalone `material_ui` package installs its own, not these, so there the
 /// format comes from intl and the calendar's locale.
 String _formatTime(BuildContext context, KalenderTime time) {
   final use24HourFormat = MediaQuery.alwaysUse24HourFormatOf(context);
@@ -33,12 +32,10 @@ String _formatTime(BuildContext context, KalenderTime time) {
 
 /// The time line builder.
 ///
-/// The [heightPerMinute] is the height of each minute.
-/// The [timeOfDayRange] is the range of time that the time line will be displayed for.
-/// The [eventBeingDragged] is the event currently being dragged or resized, which
-/// the default timeline labels with its start and end time.
-/// The [visibleDateTimeRange] is the range the calendar is showing, which those
-/// labels are only drawn for.
+/// The [heightPerMinute] is the height of each minute. The [timeOfDayRange] is the range of time that the time line
+/// will be displayed for. The [eventBeingDragged] is the event currently being dragged or resized, which the default
+/// timeline labels with its start and end time. The [visibleDateTimeRange] is the range the calendar is showing, which
+/// those labels are only drawn for.
 ///
 /// Resolve the style with `KalenderTheme.of`.
 ///
@@ -62,12 +59,11 @@ typedef TimelineWidthBuilder = double Function(BuildContext context, KalenderTim
 
 /// The default [TimelineWidthBuilder].
 ///
-/// Returns [TimelineStyle.width] when set. Otherwise it measures every label the
-/// timeline can show across the day and uses the widest, plus the horizontal
-/// text padding. Measuring all labels (rather than a single sample) keeps the
-/// gutter correct regardless of the locale's time format, the hour's digit
-/// count, and any custom [MultiDayBodyComponents.timelineStringBuilder]. Honors
-/// the ambient [MediaQueryData.textScaler] so it reserves enough room for scaled text.
+/// Returns [TimelineStyle.width] when set. Otherwise it measures every label the timeline can show across the day and
+/// uses the widest, plus the horizontal text padding. Measuring all labels (rather than a single sample) keeps the
+/// gutter correct regardless of the locale's time format, the hour's digit count, and any custom
+/// [MultiDayBodyComponents.timelineStringBuilder]. Honors the ambient [MediaQueryData.textScaler] so it reserves enough
+/// room for scaled text.
 ///
 /// {@category Appearance}
 double defaultTimelineWidth(BuildContext context, KalenderTimeRange timeOfDayRange) {
@@ -85,10 +81,9 @@ double defaultTimelineWidth(BuildContext context, KalenderTimeRange timeOfDayRan
 
   final stringBuilder = context.components.multiDayComponents.bodyComponents.timelineStringBuilder;
 
-  // With the default label the minute slot is always two digits, so one minute
-  // value per hour is representative. A custom string builder can vary per
-  // minute, so sample every 5-minute mark the timeline can show (its finest
-  // segment is 5 minutes).
+  // With the default label the minute slot is always two digits, so one minute value per hour is representative. A
+  // custom string builder can vary per minute, so sample every 5-minute mark the timeline can show (its finest segment
+  // is 5 minutes).
   const defaultMinutes = [59];
   const customMinutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
   final hasCustomLabels = stringBuilder != null;
@@ -130,8 +125,8 @@ class TimelineStyle with Diagnosticable {
 
   /// An explicit width for the timeline gutter.
   ///
-  /// When set, the gutter uses this width directly. When null, the width is
-  /// measured from the widest label plus [textPadding].
+  /// When set, the gutter uses this width directly. When null, the width is measured from the widest label plus
+  /// [textPadding].
   final double? width;
 
   /// The decoration for the event start time.
@@ -266,8 +261,7 @@ mixin TimeLineUtils {
 
   /// The [TextStyle] that will be used for the text.
   ///
-  /// Never null: [effectiveStyle] resolves through [KalenderTheme], and
-  /// [KalenderThemeData.defaults] always sets it.
+  /// Never null: [effectiveStyle] resolves through [KalenderTheme], and [KalenderThemeData.defaults] always sets it.
   TextStyle textStyle(BuildContext context) => effectiveStyle(context).textStyle!;
 
   /// The [TextDirection] that will be used for the text.
@@ -350,9 +344,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     final textXOffset = itemSize.height / 2;
     final segmentDuration = this.segmentDuration(timeOfDayRange, heightPerMinute, itemSize.height);
     final segments = timeOfDayRange.splitIntoSegments(segmentDuration);
-    // The last segment is shorter than the rest whenever the range does not
-    // divide evenly, so each label is placed after the segments before it rather
-    // than at a multiple of its own height.
+    // The last segment is shorter than the rest whenever the range does not divide evenly, so each label is placed
+    // after the segments before it rather than at a multiple of its own height.
     var offset = 0.0;
     final positionedTimes = segments.indexed.map((e) {
       final (index, range) = e;

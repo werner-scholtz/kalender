@@ -17,9 +17,8 @@ import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.
 
 /// A class holding the widget builders used by the [KalenderView].
 ///
-/// Provide your own widgets with [multiDayComponents], [monthComponents] and
-/// [scheduleComponents]. Styling goes through [KalenderThemeData] for the whole
-/// app, or a [KalenderTheme] to scope one calendar.
+/// Provide your own widgets with [multiDayComponents], [monthComponents] and [scheduleComponents]. Styling goes through
+/// [KalenderThemeData] for the whole app, or a [KalenderTheme] to scope one calendar.
 ///
 /// {@category Appearance}
 class KalenderComponents {
@@ -89,8 +88,8 @@ class OverlayBuilders {
 
   /// Builds the label of the multi day overlay portal button.
   ///
-  /// Defaults to a plus sign followed by the number of hidden events, with the
-  /// number formatted for the calendar's locale.
+  /// Defaults to a plus sign followed by the number of hidden events, with the number formatted for the calendar's
+  /// locale.
   final HiddenEventCountStringBuilder? multiDayPortalOverlayButtonStringBuilder;
 
   const OverlayBuilders({

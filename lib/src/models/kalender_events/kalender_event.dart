@@ -14,8 +14,8 @@ import 'package:meta/meta.dart';
 
 /// Base class for events displayed in the calendar.
 ///
-/// Stores a UTC date range, a unique [id], and an [interaction] config.
-/// Extend this class to attach custom data (title, color, etc.).
+/// Stores a UTC date range, a unique [id], and an [interaction] config. Extend this class to attach custom data (title,
+/// color, etc.).
 ///
 /// ```dart
 /// class Event extends KalenderEvent {
@@ -43,9 +43,8 @@ import 'package:meta/meta.dart';
 /// }
 /// ```
 ///
-/// [copyWithData] rebuilds only what the subclass adds. [id], [interaction],
-/// [multiDayRule] and [isAllDay] are reapplied by [carryOver] afterwards, so a
-/// field added to this class later reaches every subclass without any of them
+/// [copyWithData] rebuilds only what the subclass adds. [id], [interaction], [multiDayRule] and [isAllDay] are
+/// reapplied by [carryOver] afterwards, so a field added to this class later reaches every subclass without any of them
 /// changing.
 ///
 /// {@category Events}
@@ -65,21 +64,19 @@ class KalenderEvent {
 
   /// Overrides the calendar's rule for this event alone.
   ///
-  /// Null, the default, uses [ViewConfiguration.multiDayRule]. Set it only for
-  /// an event that should be classified differently from the rest. For an event
-  /// that is all-day by nature rather than by duration, set [isAllDay] instead.
+  /// Null, the default, uses [ViewConfiguration.multiDayRule]. Set it only for an event that should be classified
+  /// differently from the rest. For an event that is all-day by nature rather than by duration, set [isAllDay] instead.
   MultiDayRule? get multiDayRule => _multiDayRule;
   MultiDayRule? _multiDayRule;
 
   /// Whether this event occupies whole days rather than a span of time.
   ///
-  /// True places the event in the multi-day header lane whatever its duration,
-  /// and no [MultiDayRule] is consulted. False, the default, leaves the
-  /// decision to [multiDayRule] or to the calendar's rule, so an event spanning
-  /// several days still reaches the header without this being set.
+  /// True places the event in the multi-day header lane whatever its duration, and no [MultiDayRule] is consulted.
+  /// False, the default, leaves the decision to [multiDayRule] or to the calendar's rule, so an event spanning several
+  /// days still reaches the header without this being set.
   ///
-  /// The date range is untouched. An all-day event keeps whatever start and end
-  /// it was given, so an app that wants midnight to midnight supplies it.
+  /// The date range is untouched. An all-day event keeps whatever start and end it was given, so an app that wants
+  /// midnight to midnight supplies it.
   bool get isAllDay => _isAllDay;
   bool _isAllDay;
 
@@ -144,15 +141,14 @@ class KalenderEvent {
   /// Total duration (UTC-based).
   Duration get duration => end.difference(start);
 
-  /// Whether this event belongs in the multi-day header lane rather than the
-  /// day timeline, with calendar days measured in [location].
+  /// Whether this event belongs in the multi-day header lane rather than the day timeline, with calendar days measured
+  /// in [location].
   ///
-  /// True whenever [isAllDay] is set. Otherwise applies [multiDayRule] when set,
-  /// and [defaultRule] when not, which the calendar supplies from
-  /// [ViewConfiguration.multiDayRule].
+  /// True whenever [isAllDay] is set. Otherwise applies [multiDayRule] when set, and [defaultRule] when not, which the
+  /// calendar supplies from [ViewConfiguration.multiDayRule].
   ///
-  /// Override for a rule no [MultiDayRule] expresses. An override decides on its
-  /// own, so honour [isAllDay] or call `super` for it.
+  /// Override for a rule no [MultiDayRule] expresses. An override decides on its own, so honour [isAllDay] or call
+  /// `super` for it.
   bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) {
     if (isAllDay) return true;
     return (multiDayRule ?? defaultRule).isMultiDay(this, location: location);
@@ -210,11 +206,9 @@ class KalenderEvent {
   @override
   int get hashCode => Object.hash(id, start, end, interaction, multiDayRule, isAllDay);
 
-  /// Compares layout-affecting properties ([id], [start], [end], [interaction],
-  /// [multiDayRule], [isAllDay]).
+  /// Compares layout-affecting properties ([id], [start], [end], [interaction], [multiDayRule], [isAllDay]).
   ///
-  /// The last two count because they decide whether the event renders in the
-  /// header or the day timeline.
+  /// The last two count because they decide whether the event renders in the header or the day timeline.
   ///
   /// Override in subclasses that add properties affecting rendering.
   bool layoutEquals(KalenderEvent other) {

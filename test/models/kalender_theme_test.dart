@@ -197,8 +197,8 @@ void main() {
       expect(sampled?.hourLinesStyle?.thickness, 1);
 
       await tester.pumpWidget(app(endStyle));
-      // MaterialApp animates theme changes, so halfway through the transition
-      // the extension is a lerped intermediate value.
+      // MaterialApp animates theme changes, so halfway through the transition the extension is a lerped intermediate
+      // value.
       await tester.pump(kThemeAnimationDuration ~/ 2);
       final midThickness = sampled?.hourLinesStyle?.thickness;
       expect(midThickness, greaterThan(1));

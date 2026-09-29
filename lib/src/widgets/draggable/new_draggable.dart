@@ -14,14 +14,12 @@ mixin NewDraggableWidget {
 
   /// Calculate the initial floatingRange of a new event.
   ///
-  /// [date] is the date the draggable is located at.
-  /// [localPosition] is the last known position of the cursor.
+  /// [date] is the date the draggable is located at. [localPosition] is the last known position of the cursor.
   FloatingDateTimeRange calculateFloatingRange(FloatingDateTime date, Offset localPosition);
 
   /// Create a TapDetail for the new event.
   ///
-  /// [range] is the floatingRange of the new event.
-  /// [localPosition] is the last known position of the cursor.
+  /// [range] is the floatingRange of the new event. [localPosition] is the last known position of the cursor.
   TapDetail createTapDetail(BuildContext context, FloatingDateTimeRange range, Offset localPosition);
 
   /// Create the new event and select it where needed.

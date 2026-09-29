@@ -32,9 +32,8 @@ void main() {
     eventsController.dispose();
   });
 
-  /// The same calendar, same controllers and same configuration, rendered in
-  /// [textDirection]. Nothing here recreates the view controller, so its layout
-  /// frame cache carries over between directions.
+  /// The same calendar, same controllers and same configuration, rendered in [textDirection]. Nothing here recreates
+  /// the view controller, so its layout frame cache carries over between directions.
   Widget build(TextDirection textDirection) {
     return Directionality(
       textDirection: textDirection,

@@ -10,9 +10,9 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-/// Every overlay builder takes a [BuildContext] and resolves its own styles.
-/// The overlay itself is built into an [Overlay] rather than below the calendar,
-/// so its builder's context has to reach a [KalenderTheme] across that boundary.
+/// Every overlay builder takes a [BuildContext] and resolves its own styles. The overlay itself is built into an
+/// [Overlay] rather than below the calendar, so its builder's context has to reach a [KalenderTheme] across that
+/// boundary.
 void main() {
   final day = DateTime.utc(2025, 1, 15);
 

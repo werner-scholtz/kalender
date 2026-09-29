@@ -16,8 +16,8 @@ abstract final class DeviceTimeZone {
   @visibleForTesting
   static String Function() readZone = _current;
 
-  /// Changes whenever [check] finds a different device timezone. A conversion cached for no location is valid
-  /// while this is unchanged.
+  /// Changes whenever [check] finds a different device timezone. A conversion cached for no location is valid while
+  /// this is unchanged.
   static int get generation => _generation.value;
 
   /// Notifies when [generation] changes.

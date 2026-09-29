@@ -43,10 +43,9 @@ final class FloatingDateTime extends DateTime {
 
   /// Converts a [DateTime] or [TZDateTime] into an [FloatingDateTime].
   ///
-  /// Returns [dateTime] unchanged if it is already an [FloatingDateTime].
-  /// Otherwise converts to UTC first, then resolves to the target timezone
-  /// ([location] if provided, or the system's local timezone) before
-  /// storing the resulting components.
+  /// Returns [dateTime] unchanged if it is already an [FloatingDateTime]. Otherwise converts to UTC first, then
+  /// resolves to the target timezone ([location] if provided, or the system's local timezone) before storing the
+  /// resulting components.
   static FloatingDateTime fromExternal(DateTime dateTime, {Location? location}) {
     if (dateTime is FloatingDateTime) return dateTime;
     final utc = dateTime.toUtc();
@@ -90,8 +89,7 @@ final class FloatingDateTime extends DateTime {
 
   /// Returns midnight of the first day of this date's week.
   ///
-  /// The [firstDayOfWeek] parameter controls which day starts the week
-  /// (defaults to [DateTime.monday] per ISO 8601).
+  /// The [firstDayOfWeek] parameter controls which day starts the week (defaults to [DateTime.monday] per ISO 8601).
   FloatingDateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final daysToSubtract = (weekday - firstDayOfWeek) % 7;
     return FloatingDateTime(year, month, day - daysToSubtract);
@@ -122,8 +120,8 @@ final class FloatingDateTime extends DateTime {
 
   /// Whether this date is the current day in [location].
   ///
-  /// Both this date and the current time are taken in [location], or in the system's local timezone when it is null.
-  /// A given [now] replaces the clock and is compared by its wall-clock components, and [location] is then ignored.
+  /// Both this date and the current time are taken in [location], or in the system's local timezone when it is null. A
+  /// given [now] replaces the clock and is compared by its wall-clock components, and [location] is then ignored.
   bool isToday({Location? location, DateTime? now}) {
     if (now != null) {
       return isSameDay(FloatingDateTime.fromDateTime(now));
@@ -144,8 +142,8 @@ final class FloatingDateTime extends DateTime {
 
   /// Checks if this [FloatingDateTime] occurs during the given [FloatingDateTimeRange].
   ///
-  /// By default, the start time is included in the range, but the end time is not.
-  /// This behavior can be changed by setting the `includeStart` and `includeEnd` parameters.
+  /// By default, the start time is included in the range, but the end time is not. This behavior can be changed by
+  /// setting the `includeStart` and `includeEnd` parameters.
   bool isWithin(FloatingDateTimeRange range, {bool includeStart = true, bool includeEnd = false}) {
     final isWithin = isAfter(range.start) && isBefore(range.end);
     late final isAtStart = isAtSameMomentAs(range.start);
@@ -155,8 +153,8 @@ final class FloatingDateTime extends DateTime {
 
   /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
   int get weekNumber {
-    // Add 3 to always compare with January 4th, which is always in week 1
-    // Add 7 to index weeks starting with 1 instead of 0
+    // Add 3 to always compare with January 4th, which is always in week 1 Add 7 to index weeks starting with 1 instead
+    // of 0
     final woy = ((ordinalDate - weekday + 10) ~/ 7);
 
     // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.

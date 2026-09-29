@@ -12,9 +12,8 @@ import '../utilities.dart';
 
 /// A week view shortened with [MultiDayViewConfiguration.week]'s `numberOfDays`.
 ///
-/// The body divides its width by `numberOfDays` while the header renders the
-/// dates of the page, so the two only line up if the page is that many days
-/// long. Covers issue #444.
+/// The body divides its width by `numberOfDays` while the header renders the dates of the page, so the two only line up
+/// if the page is that many days long. Covers issue #444.
 void main() {
   final displayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 

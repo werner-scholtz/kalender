@@ -265,8 +265,7 @@ void main() {
       });
 
       test('returns the earlier month when days are equal (stable reduce)', () {
-        // Jan 29 to Feb 4 → 3 days in Jan (29-31), 3 days in Feb (1-3)
-        // reduce keeps 'a' when equal, so Jan wins
+        // Jan 29 to Feb 4 → 3 days in Jan (29-31), 3 days in Feb (1-3) reduce keeps 'a' when equal, so Jan wins
         final range = FloatingDateTimeRange(start: FloatingDateTime(2024, 1, 29), end: FloatingDateTime(2024, 2, 4));
 
         final result = range.dominantMonthDate;

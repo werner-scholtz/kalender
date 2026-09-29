@@ -19,8 +19,7 @@ import 'package:kalender/src/widgets/event_tiles/tile_interaction.dart';
 
 /// The builder that positions the resize handles of an event tile.
 ///
-/// [details] carries the event, the tile geometry and the helpers that decide
-/// which handles to show and build them.
+/// [details] carries the event, the tile geometry and the helpers that decide which handles to show and build them.
 ///
 /// {@category Interaction}
 typedef ResizeHandlePositioner = Widget Function(BuildContext context, ResizeHandleDetails details);
@@ -46,8 +45,8 @@ class ResizeHandleDetails {
 
   /// Whether the current input is imprecise (e.g. touch/finger).
   ///
-  /// When `true`, resize handles are positioned at corners for easier targeting.
-  /// When `false`, resize handles span the full width/height of the event tile.
+  /// When `true`, resize handles are positioned at corners for easier targeting. When `false`, resize handles span the
+  /// full width/height of the event tile.
   final bool isImprecise;
 
   /// The location of the calendar, or null for the device timezone.
@@ -114,9 +113,8 @@ class ResizeHandleDetails {
 
 /// The style of the resize handles laid out by [DefaultResizeHandles].
 ///
-/// The handle widgets themselves come from [TileComponents.verticalResizeHandle]
-/// and [TileComponents.horizontalResizeHandle]. This sizes the area each one is
-/// given.
+/// The handle widgets themselves come from [TileComponents.verticalResizeHandle] and
+/// [TileComponents.horizontalResizeHandle]. This sizes the area each one is given.
 ///
 /// {@category Appearance}
 class ResizeHandleStyle with Diagnosticable {

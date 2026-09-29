@@ -8,8 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 
-/// Dart's list sort is insertion sort up to 32 elements and quicksort above, so
-/// the order has to hold on both sides of that size.
+/// Dart's list sort is insertion sort up to 32 elements and quicksort above, so the order has to hold on both sides of
+/// that size.
 void main() {
   OverlapLayoutDelegate delegateFor(List<KalenderEvent> events) {
     return OverlapLayoutDelegate(

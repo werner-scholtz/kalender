@@ -80,8 +80,7 @@ void main() {
     });
 
     test('Purges a multi-day event from the index on every spanned date', () {
-      // Spans Jan 10, 11, 12; removal must clear the id from all three date
-      // buckets, not just the start day.
+      // Spans Jan 10, 11, 12; removal must clear the id from all three date buckets, not just the start day.
       final event = KalenderEvent(start: DateTime.utc(2024, 1, 10, 9), end: DateTime.utc(2024, 1, 12, 17));
       controller.addEvent(event);
       controller.removeEvent(event);

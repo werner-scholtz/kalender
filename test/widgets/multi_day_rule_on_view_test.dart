@@ -11,8 +11,8 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show
 
 import '../utilities.dart';
 
-/// The rule lives on the view configuration, so switching it has to move events
-/// between the header and the body without the events themselves changing.
+/// The rule lives on the view configuration, so switching it has to move events between the header and the body without
+/// the events themselves changing.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
@@ -28,8 +28,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    // 23:00 to 01:00. Two calendar days, two hours long, so the two rules
-    // disagree about it and nothing else does.
+    // 23:00 to 01:00. Two calendar days, two hours long, so the two rules disagree about it and nothing else does.
     eventId = eventsController.addEvent(
       KalenderEvent(
         start: start.add(const Duration(days: 1, hours: 23)),

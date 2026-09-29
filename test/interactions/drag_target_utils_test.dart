@@ -17,10 +17,9 @@ class _HarnessWidget extends StatefulWidget {
   State<_HarnessWidget> createState() => _DragUtilsHarness();
 }
 
-/// A minimal [DragTargetUtilities] host used to exercise the mixin's pure
-/// range-math helpers. It is never pumped, so [State.context] throws and
-/// [State.mounted] is false. Only the helpers that touch neither may be called
-/// against this harness.
+/// A minimal [DragTargetUtilities] host used to exercise the mixin's pure range-math helpers. It is never pumped, so
+/// [State.context] throws and [State.mounted] is false. Only the helpers that touch neither may be called against this
+/// harness.
 class _DragUtilsHarness extends State<_HarnessWidget> with DragTargetUtilities<_HarnessWidget> {
   @override
   final KalenderController controller = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());

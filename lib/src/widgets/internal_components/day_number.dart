@@ -140,9 +140,9 @@ class DayNumberStyle with Diagnosticable {
 /// Shared by every widget that shows a day number, so the highlights look the same everywhere: the day header, the
 /// month day header, the schedule date, and the multi-day overlay.
 ///
-/// It is never interactive. It is a label that happens to be drawn like a button, so `onPressed` is always null and
-/// the highlight has to set the disabled colors. Without a [KalenderCallbacks.dateLabel] callback it ignores pointers,
-/// so a tap reaches the cell behind it.
+/// It is never interactive. It is a label that happens to be drawn like a button, so `onPressed` is always null and the
+/// highlight has to set the disabled colors. Without a [KalenderCallbacks.dateLabel] callback it ignores pointers, so a
+/// tap reaches the cell behind it.
 class DayNumber extends StatefulWidget {
   const DayNumber({
     super.key,
@@ -166,8 +166,8 @@ class DayNumber extends StatefulWidget {
   /// Whether [date] is today, and so should be highlighted.
   final bool isToday;
 
-  /// The key applied when [isToday]. Each component passes its own, so tests
-  /// and consumers can find that component's highlight.
+  /// The key applied when [isToday]. Each component passes its own, so tests and consumers can find that component's
+  /// highlight.
   final Key todayKey;
 
   /// The size of the button. When null it keeps its natural size.
