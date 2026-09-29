@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:kalender/kalender.dart';
+import 'package:meta/meta.dart' show internal;
 
 /// A date and time with no timezone, used for calendar layout.
 ///
@@ -67,6 +68,10 @@ final class FloatingDateTime extends DateTime {
 
   /// Returns the first day of the **next** month at midnight (exclusive upper bound).
   FloatingDateTime get endOfMonth => FloatingDateTime(year, month + 1, 1);
+
+  /// Returns the first day of the month [months] after this date's month at midnight.
+  @internal
+  FloatingDateTime startOfMonthIn(int months) => FloatingDateTime(year, month + months, 1);
 
   /// Returns a half-open `[start, end)` range covering this entire month.
   FloatingDateTimeRange get monthRange => FloatingDateTimeRange(start: startOfMonth, end: endOfMonth);

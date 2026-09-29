@@ -96,26 +96,57 @@ Future<void> pumpKalender(
   WidgetTester tester, {
   required EventsController eventsController,
   required KalenderController kalenderController,
-  required ViewConfiguration viewConfiguration,
+  List<ViewParts>? views,
   KalenderCallbacks? callbacks,
+  KalenderInteraction? interaction,
   KalenderComponents? components,
-  Widget? header,
-  Widget? body,
-  Location? location,
 }) {
   return pumpAndSettleWithMaterialApp(
     tester,
     KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: viewConfiguration,
+      views: views ?? KalenderView.defaultViews,
       callbacks: callbacks,
+      interaction: interaction,
       components: components,
-      header: header,
-      body: body,
-      location: location,
     ),
   );
+}
+
+/// Runs [body] and returns what [debugPrint] printed meanwhile.
+Future<List<String>> collectPrints(Future<void> Function() body) async {
+  final printed = <String>[];
+  final original = debugPrint;
+  debugPrint = (message, {wrapWidth}) => printed.add(message ?? '');
+  try {
+    await body();
+  } finally {
+    debugPrint = original;
+  }
+  return printed;
+}
+
+/// The built-in parts without a header, for a test that shows only the body.
+const bodyOnlyViews = <ViewParts>[
+  MultiDayViewParts(header: SizedBox.shrink()),
+  MonthViewParts(header: SizedBox.shrink()),
+  ScheduleViewParts(),
+];
+
+/// Shows [configuration] in a calendar with a header and body, and returns its controller.
+///
+/// Creates the controller when [kalenderController] is null, else switches it to [configuration].
+Future<KalenderController> pumpConfiguration(
+  WidgetTester tester, {
+  required EventsController eventsController,
+  required ViewConfiguration configuration,
+  KalenderController? kalenderController,
+}) async {
+  final controller = kalenderController ?? KalenderController(viewConfiguration: configuration);
+  controller.viewConfiguration = configuration;
+  await pumpKalender(tester, eventsController: eventsController, kalenderController: controller);
+  return controller;
 }
 
 /// Returns an events controller with [count] all-day events on [day], by default enough to overflow its cell.
@@ -142,19 +173,20 @@ Future<void> pumpOverflowingMonth(
 
   final eventsController = controllerWithOverflowOn(day, count: eventCount);
   addTearDown(eventsController.dispose);
-  final kalenderController = KalenderController();
-  addTearDown(kalenderController.dispose);
-
-  Widget view = KalenderView(
-    eventsController: eventsController,
-    kalenderController: kalenderController,
+  final kalenderController = KalenderController(
     viewConfiguration: MonthViewConfiguration.singleMonth(
       displayRange: year2025DisplayRange,
       initialDateTime: DateTime(2025, 1, 15),
       nowCallback: nowCallback,
     ),
+  );
+  addTearDown(kalenderController.dispose);
+
+  Widget view = KalenderView(
+    eventsController: eventsController,
+    kalenderController: kalenderController,
     components: components,
-    body: const KalenderBody(),
+    views: bodyOnlyViews,
   );
   if (scoped != null) view = KalenderTheme(data: scoped, child: view);
   if (textDirection != null) view = Directionality(textDirection: textDirection, child: view);
@@ -183,13 +215,25 @@ Set<String> overflowButtonLabels(WidgetTester tester) => overflowButtonTexts(tes
 
 final _colouredTiles = TileComponents(tileBuilder: (context, event, tileRange) => Container(color: Colors.red));
 
-/// Builds a free-scroll [KalenderView] with coloured tiles in its header and body.
-KalenderView freeScrollView({
-  required EventsController eventsController,
-  required KalenderController kalenderController,
+/// A [KalenderController] on a free-scroll view of [numberOfDays] days.
+KalenderController freeScrollController({
   required KalenderDateTimeRange displayRange,
   DateTime? initialDateTime,
   int numberOfDays = 7,
+}) {
+  return KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.freeScroll(
+      numberOfDays: numberOfDays,
+      displayRange: displayRange,
+      initialDateTime: initialDateTime,
+    ),
+  );
+}
+
+/// Builds a free-scroll [KalenderView] with coloured tiles in its header and body, for a [freeScrollController].
+KalenderView freeScrollView({
+  required EventsController eventsController,
+  required KalenderController kalenderController,
   KalenderCallbacks? callbacks,
   KalenderInteraction? interaction,
   MultiDayHeaderConfiguration? headerConfiguration,
@@ -197,18 +241,14 @@ KalenderView freeScrollView({
   return KalenderView(
     eventsController: eventsController,
     kalenderController: kalenderController,
-    viewConfiguration: MultiDayViewConfiguration.freeScroll(
-      numberOfDays: numberOfDays,
-      displayRange: displayRange,
-      initialDateTime: initialDateTime,
-    ),
     callbacks: callbacks,
-    header: KalenderHeader(
-      multiDayTileComponents: _colouredTiles,
-      multiDayHeaderConfiguration: headerConfiguration,
-      interaction: interaction,
-    ),
-    body: KalenderBody(multiDayTileComponents: _colouredTiles, interaction: interaction),
+    interaction: interaction,
+    views: [
+      MultiDayViewParts(
+        header: MultiDayHeader(tileComponents: _colouredTiles, configuration: headerConfiguration),
+        body: MultiDayBody(tileComponents: _colouredTiles),
+      ),
+    ],
   );
 }
 
@@ -219,10 +259,13 @@ Finder resizeHandleFor(String eventId, ResizeDirection direction) {
   );
 }
 
-/// Builds a 700 by 100 [TimeIndicatorPositioner] showing [visibleRange], with its indicator keyed [indicatorKey].
+/// A [ViewSnapshot] on today in [location].
+ViewSnapshot todaySnapshot([Location? location]) =>
+    ViewSnapshot(date: FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location)));
+
+/// Builds a 700 by 100 [TimeIndicatorPositioner] for page 0, with its indicator keyed [indicatorKey].
 Widget timeIndicatorPositioner({
   required MultiDayViewConfiguration viewConfiguration,
-  required FloatingDateTimeRange visibleRange,
   required Key indicatorKey,
   FloatingDateTime? initialDate,
   DateTime? dateOverride,
@@ -235,9 +278,7 @@ Widget timeIndicatorPositioner({
         TimeIndicatorPositioner(
           viewController: MultiDayViewController(
             viewConfiguration: viewConfiguration,
-            floatingVisibleRange: ValueNotifier(visibleRange),
-            visibleEvents: ValueNotifier(<KalenderEvent>{}),
-            initialDate: initialDate,
+            initial: initialDate == null ? todaySnapshot() : ViewSnapshot(date: initialDate),
           ),
           initialPage: 0,
           dateOverride: dateOverride,
@@ -251,6 +292,9 @@ Widget timeIndicatorPositioner({
 class TestProvider extends StatelessWidget {
   final Widget child;
   final KalenderController kalenderController;
+
+  /// Defaults to the view controller of [kalenderController].
+  final ViewController? viewController;
   final EventsController eventsController;
   final KalenderCallbacks? callbacks;
   final TileComponents tileComponents;
@@ -262,6 +306,7 @@ class TestProvider extends StatelessWidget {
     super.key,
     required this.child,
     required this.kalenderController,
+    this.viewController,
     required this.eventsController,
     required this.tileComponents,
     this.callbacks,
@@ -278,21 +323,24 @@ class TestProvider extends StatelessWidget {
         notifier: kalenderController,
         child: SelectionScope(
           controller: kalenderController,
-          child: Components(
-            components: const KalenderComponents(),
-            child: Interaction(
-              notifier: ValueNotifier(KalenderInteraction()),
-              child: Snapping(
-                notifier: ValueNotifier(const KalenderSnapping()),
-                child: HeightPerMinute(
-                  notifier: heightPerMinute ?? ValueNotifier(0.7),
-                  child: Callbacks(
-                    callbacks: callbacks ?? const KalenderCallbacks(),
-                    child: TileComponentProvider(
-                      tileComponents: tileComponents,
-                      child: LocaleProvider(
-                        locale: locale,
-                        child: LocationProvider(notifier: ValueNotifier(location), child: child),
+          child: ViewControllerProvider(
+            viewController: viewController ?? kalenderController.viewController,
+            child: Components(
+              components: const KalenderComponents(),
+              child: Interaction(
+                notifier: ValueNotifier(KalenderInteraction()),
+                child: Snapping(
+                  notifier: ValueNotifier(const KalenderSnapping()),
+                  child: HeightPerMinute(
+                    notifier: heightPerMinute ?? ValueNotifier(0.7),
+                    child: Callbacks(
+                      callbacks: callbacks ?? const KalenderCallbacks(),
+                      child: TileComponentProvider(
+                        tileComponents: tileComponents,
+                        child: LocaleProvider(
+                          locale: locale,
+                          child: LocationProvider(location: location, child: child),
+                        ),
                       ),
                     ),
                   ),

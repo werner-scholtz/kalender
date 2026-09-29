@@ -20,7 +20,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = freeScrollController(displayRange: displayRange, initialDateTime: start);
   });
 
   Future<void> pump(WidgetTester tester, TextDirection direction) {
@@ -28,12 +28,7 @@ void main() {
       tester,
       Directionality(
         textDirection: direction,
-        child: freeScrollView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          displayRange: displayRange,
-          initialDateTime: start,
-        ),
+        child: freeScrollView(eventsController: eventsController, kalenderController: kalenderController),
       ),
     );
   }
@@ -57,7 +52,7 @@ void main() {
     final ltrCenter = tester.getCenter(find.byKey(MultiDayEventTile.tileKey(id)));
 
     eventsController = DefaultEventsController()..addEvent(event);
-    kalenderController = KalenderController();
+    kalenderController = freeScrollController(displayRange: displayRange, initialDateTime: start);
     await pump(tester, TextDirection.rtl);
     final rtlCenter = tester.getCenter(find.byKey(MultiDayEventTile.tileKey(id)));
 

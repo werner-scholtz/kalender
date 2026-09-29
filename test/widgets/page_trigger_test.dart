@@ -22,7 +22,13 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: displayRange,
+        initialDateTime: start,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+      ),
+    );
   });
 
   final components = TileComponents(
@@ -41,13 +47,13 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.week(
-          displayRange: displayRange,
-          initialDateTime: start,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        ),
-        header: KalenderHeader(multiDayTileComponents: components, interaction: precise),
-        body: KalenderBody(multiDayTileComponents: components, interaction: precise),
+        interaction: precise,
+        views: [
+          MultiDayViewParts(
+            header: MultiDayHeader(tileComponents: components),
+            body: MultiDayBody(tileComponents: components),
+          ),
+        ],
       ),
     );
   }
@@ -62,7 +68,7 @@ void main() {
     final pageBefore = kalenderController.multiDayViewController.pageController.page ?? 0;
 
     final tile = find.byKey(MultiDayEventTile.tileKey(id));
-    final headerRect = tester.getRect(find.byType(KalenderHeader));
+    final headerRect = tester.getRect(find.byType(MultiDayHeader));
     final gesture = await tester.holdDragAt(tile, Offset(headerRect.right - 4, tester.getCenter(tile).dy));
     await gesture.up();
     await tester.pumpAndSettle();
@@ -82,7 +88,7 @@ void main() {
     final pageBefore = kalenderController.multiDayViewController.pageController.page ?? 0;
 
     final tile = find.byKey(DayEventTile.tileKey(id));
-    final bodyRect = tester.getRect(find.byType(KalenderBody));
+    final bodyRect = tester.getRect(find.byType(MultiDayBody));
     final gesture = await tester.holdDragAt(tile, Offset(bodyRect.right - 4, tester.getCenter(tile).dy));
     await gesture.up();
     await tester.pumpAndSettle();

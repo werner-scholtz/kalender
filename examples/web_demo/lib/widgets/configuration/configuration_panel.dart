@@ -30,8 +30,9 @@ class ConfigurationPanel extends StatelessWidget {
         border: Border.all(color: colorScheme.outlineVariant.withAlpha(80)),
       ),
       child: ListenableBuilder(
-        listenable: configuration,
+        listenable: Listenable.merge([configuration, context.controller]),
         builder: (context, child) {
+          final viewConfiguration = context.controller.viewConfiguration;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -82,13 +83,13 @@ class ConfigurationPanel extends StatelessWidget {
                     ),
                   ),
                 ),
-                ViewConfigurationEditor(viewConfiguration: configuration.viewConfiguration),
-                if (configuration.viewConfiguration is MultiDayViewConfiguration) ...[
+                ViewConfigurationEditor(viewConfiguration: viewConfiguration),
+                if (viewConfiguration is MultiDayViewConfiguration) ...[
                   MultiDayHeaderEditor(demoConfiguration: configuration),
                   MultiDayBodyEditor(demoConfiguration: configuration),
-                ] else if (configuration.viewConfiguration is MonthViewConfiguration) ...[
+                ] else if (viewConfiguration is MonthViewConfiguration) ...[
                   MonthBodyEditor(demoConfiguration: configuration),
-                ] else if (configuration.viewConfiguration is ScheduleViewConfiguration) ...[
+                ] else if (viewConfiguration is ScheduleViewConfiguration) ...[
                   ScheduleBodyEditor(demoConfiguration: configuration),
                 ] else
                   const SizedBox.shrink(),

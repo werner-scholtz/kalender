@@ -34,18 +34,18 @@ flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
 ### State ownership
 
 - `lib/providers.dart` defines lightweight `InheritedWidget` providers for app settings and the shared `EventsController`.
-- Each `Calendar` widget creates its own `CalendarScope`, which means each visible calendar instance gets its own `KalenderController`, `DemoConfiguration`, and timezone `Location` notifier.
+- Each `Calendar` widget creates its own `CalendarScope`, which means each visible calendar instance gets its own `KalenderController` and `DemoConfiguration`. The controller holds the timezone `Location`.
 - In desktop split view, both calendars share the same event store but do not share view/controller state unless you explicitly refactor them to do so.
 
 ### Demo configuration
 
 - `lib/models/demo_configuration.dart` is the source of truth for selectable `ViewConfiguration`s, interaction settings, snapping, and visibility toggles.
 - Prefer extending `DemoConfiguration` when exposing new demo knobs instead of hard-coding behavior directly inside widgets.
-- `viewConfigurationNotifier` drives the active calendar mode; keep new view options aligned with the navigation/configuration UI.
+- The controller's `viewConfiguration` holds the active calendar mode. Keep new view options aligned with the navigation and configuration UI.
 
 ### UI composition
 
-- `lib/widgets/calendar/calendar.dart` is the main composition point for `KalenderView`, `KalenderHeader`, `KalenderBody`, overlay behavior, tile components, and the configuration panel.
+- `lib/widgets/calendar/calendar.dart` is the main composition point for `KalenderView`, the header and body of each view (`views`), overlay behavior, tile components, and the configuration panel.
 - `lib/widgets/toolbar/` contains app-level controls such as theme, locale, text direction, warnings, and view type selection.
 - `lib/widgets/configuration/` contains the editors for runtime calendar customization.
 - `lib/widgets/calendar/` contains demo-specific calendar chrome and tile rendering; keep package internals in `kalender` and demo presentation concerns here.

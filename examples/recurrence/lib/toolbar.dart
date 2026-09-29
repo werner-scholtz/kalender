@@ -31,7 +31,7 @@ class CalendarToolBar extends StatelessWidget {
               final String month;
               final int year;
 
-              if (kalenderController.viewController?.viewConfiguration is MonthViewConfiguration) {
+              if (kalenderController.viewConfiguration is MonthViewConfiguration) {
                 final dominantMonthDate = FloatingDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
                 year = dominantMonthDate.year;
                 month = dominantMonthDate.monthNameLocalized();

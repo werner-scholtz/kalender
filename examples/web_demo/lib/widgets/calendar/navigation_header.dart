@@ -173,13 +173,13 @@ class ViewMenu extends StatelessWidget {
         tooltip: context.l10n.viewType,
         icon: Icons.view_week_outlined,
         label: viewConfiguration.name,
-        onSelected: (value) => context.configuration.viewConfiguration = value,
+        onSelected: (value) => context.controller.viewConfiguration = value,
         itemBuilder: items,
       );
     }
     return PopupMenuButton<ViewConfiguration>(
       tooltip: context.l10n.viewType,
-      onSelected: (value) => context.configuration.viewConfiguration = value,
+      onSelected: (value) => context.controller.viewConfiguration = value,
       icon: Icon(Icons.view_week_outlined, color: context.colorScheme.primary),
       itemBuilder: items,
     );
@@ -192,14 +192,14 @@ class LocationMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selected = context.location.value;
+    final selected = context.controller.location;
     final isSystemTime = selected == null;
 
     List<PopupMenuEntry<Location?>> items(BuildContext _) => [
           // Use onTap for the system-time item because PopupMenuButton treats
           // a null value as "dismissed" and never calls onSelected for it.
           PopupMenuItem<Location?>(
-            onTap: () => context.location.value = null,
+            onTap: () => context.controller.location = null,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -234,13 +234,13 @@ class LocationMenu extends StatelessWidget {
         tooltip: context.l10n.timezone,
         icon: Icons.public,
         label: selected?.name.split('/').last ?? DateTime.now().timeZoneName,
-        onSelected: (value) => context.location.value = value,
+        onSelected: (value) => context.controller.location = value,
         itemBuilder: items,
       );
     }
     return PopupMenuButton<Location?>(
       tooltip: context.l10n.timezone,
-      onSelected: (value) => context.location.value = value,
+      onSelected: (value) => context.controller.location = value,
       icon: Icon(Icons.public, color: context.colorScheme.primary),
       itemBuilder: items,
     );
@@ -301,8 +301,7 @@ class HeaderDateButton extends StatelessWidget {
 
         final button = FilledButton.tonal(
           onPressed: () async {
-            final displayRange = controller.viewController?.viewConfiguration.dateTimeRange;
-            if (displayRange == null) return;
+            final displayRange = controller.viewConfiguration.dateTimeRange;
             final selectedDate = await showDatePicker(
               context: context,
               firstDate: displayRange.start,

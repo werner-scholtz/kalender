@@ -26,7 +26,14 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialHeightPerMinute: 1,
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+    );
     eventId = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)));
     otherId = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 10), end: DateTime(2025, 1, 1, 14)));
   });
@@ -42,19 +49,18 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(
-          displayRange: year2025DisplayRange,
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialHeightPerMinute: 1,
-          initialDateTime: DateTime(2025, 1, 1),
-        ),
-        body: KalenderBody(
-          interaction: interaction,
-          multiDayTileComponents: TileComponents(
-            tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
-            verticalResizeHandle: const SizedBox.expand(),
+        interaction: interaction,
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              tileComponents: TileComponents(
+                tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
+                verticalResizeHandle: const SizedBox.expand(),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
     await tester.hoverOn(find.byKey(DayEventTile.tileKey(eventId)), await tester.createMouseGesture());

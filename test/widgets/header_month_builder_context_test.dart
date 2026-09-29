@@ -14,12 +14,8 @@ import '../utilities.dart';
 /// their own styles from it.
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController kalenderController;
 
-  setUp(() {
-    eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
-  });
+  setUp(() => eventsController = DefaultEventsController());
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
 
@@ -31,11 +27,15 @@ void main() {
   }) async {
     final view = KalenderView(
       eventsController: eventsController,
-      kalenderController: kalenderController,
-      viewConfiguration: viewConfiguration,
+      kalenderController: KalenderController(viewConfiguration: viewConfiguration),
       components: components,
-      header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderBody(multiDayTileComponents: tiles),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(tileComponents: tiles),
+          body: MultiDayBody(tileComponents: tiles),
+        ),
+        const MonthViewParts(),
+      ],
     );
     await pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
   }
