@@ -7,7 +7,6 @@
 
 version: 1
 transforms:
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/490
   - title: "Rename to 'KalenderView'"
     date: 2026-08-31
     element:
@@ -17,7 +16,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderView'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/490
   - title: "Rename to 'KalenderViewState'"
     date: 2026-08-31
     element:

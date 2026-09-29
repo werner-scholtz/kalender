@@ -7,7 +7,6 @@
 
 version: 1
 transforms:
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'DayIndexCalculator'"
     date: 2026-09-03
     element:
@@ -38,7 +37,6 @@ transforms:
       - kind: 'removeParameter'
         name: 'dateTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'WeekIndexCalculator'"
     date: 2026-09-03
     element:
@@ -69,7 +67,6 @@ transforms:
       - kind: 'removeParameter'
         name: 'dateTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'WeekIndexCalculator.week'"
     date: 2026-09-03
     element:
@@ -100,7 +97,6 @@ transforms:
       - kind: 'removeParameter'
         name: 'dateTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'WeekIndexCalculator.workWeek'"
     date: 2026-09-03
     element:
@@ -131,7 +127,6 @@ transforms:
       - kind: 'removeParameter'
         name: 'dateTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'CustomIndexCalculator'"
     date: 2026-09-03
     element:
@@ -162,7 +157,6 @@ transforms:
       - kind: 'removeParameter'
         name: 'dateTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'MonthIndexCalculator'"
     date: 2026-09-03
     element:
@@ -193,7 +187,6 @@ transforms:
       - kind: 'removeParameter'
         name: 'dateTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'ContinuousScheduleIndexCalculator'"
     date: 2026-09-03
     element:
@@ -224,7 +217,6 @@ transforms:
       - kind: 'removeParameter'
         name: 'dateTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/505
   - title: "Replace 'dateTimeRange' with 'start' and 'end' in 'PaginatedScheduleIndexCalculator'"
     date: 2026-09-03
     element:

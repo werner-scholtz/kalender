@@ -7,7 +7,6 @@
 
 version: 1
 transforms:
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/506
   - title: "Rename to 'KalenderTimeRange'"
     date: 2026-09-03
     element:
@@ -17,7 +16,6 @@ transforms:
       - kind: 'rename'
         newName: 'KalenderTimeRange'
 
-  # Changes made in https://github.com/werner-scholtz/kalender/pull/510
   - title: "Rename to 'KalenderTimeStringBuilder'"
     date: 2026-09-07
     element:

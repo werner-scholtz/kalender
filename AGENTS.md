@@ -150,7 +150,7 @@ What a fix reaches, measured against a subclass overriding a `@mustBeOverridden`
 
 - A `renameParameter` reaches only the element it names. Give each function and method an app calls or overrides its own transform.
 - A `renameParameter` on a constructor does not reach a subclass's `super.` parameter.
-- `date` is the day the pull request merged. Name the pull request in a comment above the transform.
+- `date` is the day the pull request merged.
 - Every fix has a fixture pair in `test_fixes/<name>.dart` and `<name>.dart.expect`, checked by `dart fix --compare-to-golden test_fixes`.
 
 Say in the migration guide which edits the fixes leave to the reader.
