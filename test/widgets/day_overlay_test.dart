@@ -128,7 +128,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      expect(floating(DateTime(2025, 3, 10)).isWithin(kalenderController.floatingVisibleRange.value!), isTrue);
+      expect(floating(DateTime(2025, 3, 10)).isWithin(kalenderController.floatingVisibleRange.value), isTrue);
       expect(card(DateTime(2025, 3, 10)), findsOneWidget);
     });
 

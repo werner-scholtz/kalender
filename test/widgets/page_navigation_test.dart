@@ -31,7 +31,7 @@ void main() {
     }
 
     bool visibleRangeContains(DateTime date) {
-      final range = kalenderController.floatingVisibleRange.value!;
+      final range = kalenderController.floatingVisibleRange.value;
       return range.dates().any((d) => d.year == date.year && d.month == date.month && d.day == date.day);
     }
 
@@ -62,7 +62,7 @@ void main() {
       );
       kalenderController.jumpToDate(target);
       await tester.pumpAndSettle();
-      final range = kalenderController.floatingVisibleRange.value!;
+      final range = kalenderController.floatingVisibleRange.value;
       expect(range.dominantMonthDate.year, target.year);
       expect(range.dominantMonthDate.month, target.month);
     });

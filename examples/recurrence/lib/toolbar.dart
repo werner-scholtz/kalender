@@ -25,7 +25,6 @@ class CalendarToolBar extends StatelessWidget {
           ValueListenableBuilder(
             valueListenable: kalenderController.floatingVisibleRange,
             builder: (context, value, child) {
-              if (value == null) return const SizedBox.shrink();
               final localRange = value.forLocation();
 
               final String month;

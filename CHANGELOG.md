@@ -12,7 +12,8 @@
 - `ViewConfiguration` has an abstract `createViewController`, which a class that extends it directly implements.
 - `MultiDayViewController`, `MonthViewController`, `ScheduleViewController`, `ContinuousScheduleViewController` and `PaginatedScheduleViewController` take `initial`, a `ViewSnapshot`, in place of `initialDate`, `initialTimeOfDayOverride` and `initialHeightPerMinute`.
 - `ViewController.location` is final.
-- `ViewController` no longer takes `floatingVisibleRange`, and the view controllers no longer take it or `visibleEvents`. Each creates its own, and `KalenderController` forwards those of the attached one.
+- `ViewController` takes `initialVisibleRange` in place of `floatingVisibleRange`, and the view controllers no longer take `floatingVisibleRange` or `visibleEvents`. Each creates its own, and `KalenderController` forwards those of the attached one.
+- `ViewController.floatingVisibleRange`, `KalenderController.floatingVisibleRange` and `visibleDateTimeRange`, and the visible range a `TimeLineBuilder` receives are never null.
 - `ViewController.visibleEvents` is a field instead of an abstract getter.
 - `ViewController.dispose` disposes the visible range and visible events, and an override calls `super.dispose()`.
 - `KalenderController.floatingVisibleRange`, `visibleDateTimeRange`, `visibleTimeOfDay` and `visibleEvents` are `ValueListenable`s.

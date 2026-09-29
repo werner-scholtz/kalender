@@ -277,7 +277,7 @@ Widget _timeline(
   double heightPerMinute,
   KalenderTimeRange range,
   ValueNotifier<KalenderEvent?> eventBeingDragged,
-  ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange,
+  ValueListenable<KalenderDateTimeRange> visibleDateTimeRange,
 ) => const SizedBox();
 
 String _timeString(BuildContext context, KalenderTime time) => '';

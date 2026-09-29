@@ -10,12 +10,12 @@ import 'package:kalender/src/models/controllers/view_controllers/animation_defau
 
 /// {@category Controllers and callbacks}
 class MonthViewController extends ViewController {
-  MonthViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location}) {
+  MonthViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location})
+    : super(initialVisibleRange: viewConfiguration.pageIndexCalculator.rangeFromDate(initial.date, location)) {
     final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
     initialPage = pageNavigationFunctions.indexFromDate(initial.date, location);
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages(location);
-    floatingVisibleRange.value = pageNavigationFunctions.rangeFromIndex(initialPage, location);
   }
 
   @override
@@ -33,7 +33,7 @@ class MonthViewController extends ViewController {
   /// Returns the first day of the month with the most visible days.
   @override
   ViewSnapshot snapshot() =>
-      ViewSnapshot(date: FloatingDateTime.fromDateTime(floatingVisibleRange.value!.dominantMonthDate));
+      ViewSnapshot(date: FloatingDateTime.fromDateTime(floatingVisibleRange.value.dominantMonthDate));
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {

@@ -219,7 +219,7 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(tester, schedule(EmptyDayBehavior.show));
 
-      expect(kalenderController!.floatingVisibleRange.value!.start, FloatingDateTime(2025, 6, 17));
+      expect(kalenderController!.floatingVisibleRange.value.start, FloatingDateTime(2025, 6, 17));
     });
   });
 }

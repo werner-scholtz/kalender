@@ -26,7 +26,7 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 
 | Notifier               | Type                                | Description                                            |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
-| `visibleDateTimeRange` | `ValueListenable<KalenderDateTimeRange?>`   | The currently visible date range                       |
+| `visibleDateTimeRange` | `ValueListenable<KalenderDateTimeRange>`    | The currently visible date range                       |
 | `visibleTimeOfDay`     | `ValueListenable<KalenderTime?>`       | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
 | `visibleEvents`        | `ValueListenable<Set<KalenderEvent>>` | Events on the page on screen                         |
 | `selectedEvent`        | `ValueNotifier<KalenderEvent?>`     | The focused event (shows drop target / resize handles) |
@@ -101,8 +101,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           children: [
             ValueListenableBuilder(
               valueListenable: kalenderController.visibleDateTimeRange,
-              builder: (context, range, child) =>
-                  Text(range == null ? '' : '${range.start.monthNameLocalized()} ${range.start.year}'),
+              builder: (context, range, child) => Text('${range.start.monthNameLocalized()} ${range.start.year}'),
             ),
             IconButton(onPressed: kalenderController.animateToPreviousPage, icon: const Icon(Icons.chevron_left)),
             IconButton(onPressed: kalenderController.animateToNextPage, icon: const Icon(Icons.chevron_right)),

@@ -43,7 +43,6 @@ class _MonthHeader extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: viewController.floatingVisibleRange,
       builder: (context, visibleRange, child) {
-        if (visibleRange == null) return const SizedBox.shrink();
         final visibleDateTimeRange = visibleRange.forLocation(location: context.location);
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
 

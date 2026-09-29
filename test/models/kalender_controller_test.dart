@@ -144,7 +144,7 @@ void main() {
     test('the constructor creates the view controller and supplies its range', () {
       expect(
         (controller.viewController.runtimeType, controller.visibleDateTimeRange.value),
-        (MultiDayViewController, controller.viewController.floatingVisibleRange.value!.forLocation()),
+        (MultiDayViewController, controller.viewController.floatingVisibleRange.value.forLocation()),
       );
     });
 
@@ -175,7 +175,7 @@ void main() {
       );
       expect(
         controller.visibleDateTimeRange.value,
-        controller.viewController.floatingVisibleRange.value!.forLocation(location: tokyo),
+        controller.viewController.floatingVisibleRange.value.forLocation(location: tokyo),
       );
     });
 

@@ -67,7 +67,42 @@ void main() {
   group('the first build', () {
     test('opens on initialDateTime', () {
       final day = MultiDayViewConfiguration.singleDay(displayRange: range, initialDateTime: DateTime(2025, 3, 5, 12));
-      expect(create(day).floatingVisibleRange.value!.start, FloatingDateTime(2025, 3, 5));
+      expect(create(day).floatingVisibleRange.value.start, FloatingDateTime(2025, 3, 5));
+    });
+
+    group('opens with the visible range of the page of initialDateTime', () {
+      final date = DateTime(2025, 3, 5, 12);
+      for (final (configuration, start, end) in [
+        (
+          MultiDayViewConfiguration.week(displayRange: range, initialDateTime: date),
+          FloatingDateTime(2025, 3, 3),
+          FloatingDateTime(2025, 3, 10),
+        ),
+        (
+          MultiDayViewConfiguration.freeScroll(displayRange: range, initialDateTime: date, numberOfDays: 3),
+          FloatingDateTime(2025, 3, 5),
+          FloatingDateTime(2025, 3, 8),
+        ),
+        (
+          MonthViewConfiguration.singleMonth(displayRange: range, initialDateTime: date),
+          FloatingDateTime(2025, 2, 24),
+          FloatingDateTime(2025, 4, 7),
+        ),
+        (
+          ScheduleViewConfiguration.continuous(displayRange: range, initialDateTime: date),
+          FloatingDateTime(2025),
+          FloatingDateTime(2026),
+        ),
+        (
+          ScheduleViewConfiguration.paginated(displayRange: range, initialDateTime: date),
+          FloatingDateTime(2025, 3),
+          FloatingDateTime(2025, 4),
+        ),
+      ]) {
+        test(configuration.name, () {
+          expect(create(configuration).floatingVisibleRange.value, FloatingDateTimeRange(start: start, end: end));
+        });
+      }
     });
 
     test('opens on today in the location without initialDateTime', () {
@@ -75,7 +110,7 @@ void main() {
       controller.location = kiritimati;
       FloatingDateTime today() => FloatingDateTime.fromDateTime(TZDateTime.now(kiritimati)).startOfDay;
       final before = today();
-      final start = create(MultiDayViewConfiguration.singleDay()).floatingVisibleRange.value!.start;
+      final start = create(MultiDayViewConfiguration.singleDay()).floatingVisibleRange.value.start;
       expect(start, anyOf(before, today()));
     });
 

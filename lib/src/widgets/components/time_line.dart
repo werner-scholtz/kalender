@@ -49,7 +49,7 @@ typedef TimeLineBuilder =
       double heightPerMinute,
       KalenderTimeRange timeOfDayRange,
       ValueNotifier<KalenderEvent?> eventBeingDragged,
-      ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange,
+      ValueListenable<KalenderDateTimeRange> visibleDateTimeRange,
     );
 
 /// Resolves the width of the timeline gutter.
@@ -322,7 +322,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   /// The [ValueNotifier] that contains the event being dragged.
   final ValueNotifier<KalenderEvent?> eventBeingDragged;
 
-  final ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange;
+  final ValueListenable<KalenderDateTimeRange> visibleDateTimeRange;
 
   /// Creates a new [TimeLine] widget.
   const TimeLine({
@@ -384,7 +384,6 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     final eventBeingDraggedTimes = ValueListenableBuilder(
       valueListenable: visibleDateTimeRange,
       builder: (context, visibleRange, child) {
-        if (visibleRange == null) return const SizedBox();
         return ValueListenableBuilder(
           valueListenable: eventBeingDragged,
           builder: (context, eventBeingDragged, child) {

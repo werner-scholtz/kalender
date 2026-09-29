@@ -286,7 +286,6 @@ class HeaderDateButton extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: controller.visibleDateTimeRange,
       builder: (context, value, child) {
-        if (value == null) return const SizedBox.shrink();
         final String month;
         final int year;
 

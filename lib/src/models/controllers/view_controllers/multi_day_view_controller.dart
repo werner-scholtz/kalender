@@ -11,7 +11,8 @@ import 'package:linked_pageview/linked_pageview.dart';
 
 /// {@category Controllers and callbacks}
 class MultiDayViewController extends ViewController {
-  MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location}) {
+  MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location})
+    : super(initialVisibleRange: _initialVisibleRange(viewConfiguration, initial.date, location)) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
     final now = FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
     initialPage = pageIndexCalculator.indexFromDate(initial.date, location);
@@ -23,17 +24,6 @@ class MultiDayViewController extends ViewController {
 
     numberOfPages = pageIndexCalculator.numberOfPages(location);
     heightPerMinute = ValueNotifier<double>(initial.heightPerMinute ?? viewConfiguration.initialHeightPerMinute);
-
-    final range = pageIndexCalculator.rangeFromIndex(initialPage, location);
-
-    if (type == MultiDayViewType.freeScroll) {
-      floatingVisibleRange.value = FloatingDateTimeRange(
-        start: range.start,
-        end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
-      );
-    } else {
-      floatingVisibleRange.value = range;
-    }
 
     final topOfDay = (initial.timeOfDay ?? viewConfiguration.initialTimeOfDay).toFloatingDateTime(now);
     final dayStart = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(now);
@@ -50,6 +40,19 @@ class MultiDayViewController extends ViewController {
     pageController.addListener(_offsetListener);
     scrollController.addListener(_updateVisibleTimeOfDay);
     heightPerMinute.addListener(_updateVisibleTimeOfDay);
+  }
+
+  static FloatingDateTimeRange _initialVisibleRange(
+    MultiDayViewConfiguration viewConfiguration,
+    FloatingDateTime date,
+    Location? location,
+  ) {
+    final range = viewConfiguration.pageIndexCalculator.rangeFromDate(date, location);
+    if (viewConfiguration.type != MultiDayViewType.freeScroll) return range;
+    return FloatingDateTimeRange(
+      start: range.start,
+      end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
+    );
   }
 
   @override
@@ -200,7 +203,7 @@ class MultiDayViewController extends ViewController {
   /// Adds the time of day at the top of the viewport and the zoom.
   @override
   ViewSnapshot snapshot() => ViewSnapshot(
-    date: floatingVisibleRange.value!.start,
+    date: floatingVisibleRange.value.start,
     timeOfDay: visibleTimeOfDay.value,
     heightPerMinute: heightPerMinute.value,
   );

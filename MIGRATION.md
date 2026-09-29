@@ -45,7 +45,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range, time of day and events are read-only on the controller, and an event tile is one semantics node. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range, time of day and events are read-only on the controller, the visible range is never null, and an event tile is one semantics node. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -217,8 +217,9 @@ A class that extends `ViewConfiguration` directly implements
 `createViewController`, building the view controller from `resolveDate` and the
 controller's location. The view controllers take one `initial` snapshot in place
 of three parameters, and create their own visible range and visible events. A
-class that extends `ViewController` no longer passes `floatingVisibleRange` to
-`super` or overrides `visibleEvents`. Its `dispose` override calls
+class that extends `ViewController` passes its first visible range to `super` as
+`initialVisibleRange` in place of a `floatingVisibleRange` notifier, and no
+longer overrides `visibleEvents`. Its `dispose` override calls
 `super.dispose()`.
 
 ```dart
@@ -237,6 +238,22 @@ MultiDayViewController(
   viewConfiguration: configuration,
   initial: ViewSnapshot(date: date, timeOfDay: time, heightPerMinute: zoom),
 );
+```
+
+```dart
+// Before
+class MyViewController extends ViewController {
+  MyViewController({required super.floatingVisibleRange, super.location});
+}
+
+MyViewController(floatingVisibleRange: ValueNotifier(range));
+
+// After
+class MyViewController extends ViewController {
+  MyViewController({required super.initialVisibleRange, super.location});
+}
+
+MyViewController(initialVisibleRange: range);
 ```
 
 Replace a call to `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` or
@@ -279,8 +296,31 @@ Widget timeline(
   double heightPerMinute,
   KalenderTimeRange timeOfDayRange,
   ValueNotifier<KalenderEvent?> eventBeingDragged,
-  ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange,
+  ValueListenable<KalenderDateTimeRange> visibleDateTimeRange,
 ) => MyTimeline(visibleDateTimeRange: visibleDateTimeRange);
+```
+
+### The visible range is never null
+
+`ViewController.floatingVisibleRange`, `KalenderController.floatingVisibleRange`
+and `visibleDateTimeRange` always hold a range, from the moment the controller is
+created. Remove the null checks, `!` and `?.` on their values.
+
+```dart
+// Before
+ValueListenableBuilder(
+  valueListenable: kalenderController.visibleDateTimeRange,
+  builder: (context, range, child) {
+    if (range == null) return const SizedBox.shrink();
+    return Text('${range.start}');
+  },
+);
+
+// After
+ValueListenableBuilder(
+  valueListenable: kalenderController.visibleDateTimeRange,
+  builder: (context, range, child) => Text('${range.start}'),
+);
 ```
 
 ### A view controller's location is final

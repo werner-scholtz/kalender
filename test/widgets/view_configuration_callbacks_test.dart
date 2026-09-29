@@ -57,7 +57,7 @@ void main() {
   /// trailing days of the previous month, so the range's own start does not
   /// name the month on screen.
   bool visibleRangeCovers(DateTime date) {
-    final range = kalenderController!.visibleDateTimeRange.value!;
+    final range = kalenderController!.visibleDateTimeRange.value;
     return !date.isBefore(range.start) && date.isBefore(range.end);
   }
 

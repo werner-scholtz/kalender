@@ -426,18 +426,14 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
   }
 }
 
-/// A [ValueListenableBuilder] on the [ViewController.floatingVisibleRange] of [viewController] that builds nothing
-/// while it is null.
+/// A [ValueListenableBuilder] on the [ViewController.floatingVisibleRange] of [viewController].
 Widget _visibleRangeBuilder(
   ViewController viewController,
   Widget Function(BuildContext context, FloatingDateTimeRange range) builder,
 ) {
   return ValueListenableBuilder(
     valueListenable: viewController.floatingVisibleRange,
-    builder: (context, value, child) {
-      if (value == null) return const SizedBox.shrink();
-      return builder(context, value);
-    },
+    builder: (context, value, child) => builder(context, value),
   );
 }
 

@@ -233,7 +233,7 @@ class MultiDayBodyComponents {
     double heightPerMinute,
     KalenderTimeRange timeOfDayRange,
     ValueNotifier<KalenderEvent?> eventBeingDragged,
-    ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange,
+    ValueListenable<KalenderDateTimeRange> visibleDateTimeRange,
   ) {
     return timeline?.call(context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) ??
         TimeLine(

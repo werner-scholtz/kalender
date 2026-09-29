@@ -99,7 +99,7 @@ void main() {
           ),
           ValueListenableBuilder(
             valueListenable: kalenderController.visibleDateTimeRange,
-            builder: (context, range, _) => Text('${range?.start}'),
+            builder: (context, range, _) => Text('${range.start}'),
           ),
           ValueListenableBuilder(
             valueListenable: kalenderController.visibleTimeOfDay,
@@ -139,7 +139,7 @@ void main() {
         children: [
           ValueListenableBuilder(
             valueListenable: kalenderController.visibleDateTimeRange,
-            builder: (context, range, _) => Text('${range?.start}'),
+            builder: (context, range, _) => Text('${range.start}'),
           ),
           Expanded(child: view()),
           Expanded(

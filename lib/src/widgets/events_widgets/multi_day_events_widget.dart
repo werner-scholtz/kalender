@@ -114,8 +114,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
       if (mounted) {
         final viewController = widget.viewController;
         // A page built during an animation or next to the one on screen is not visible.
-        final visibleRange = viewController.floatingVisibleRange.value;
-        if (visibleRange != null && !widget.floatingRange.overlaps(visibleRange)) return;
+        if (!widget.floatingRange.overlaps(viewController.floatingVisibleRange.value)) return;
         final visibleEvents = viewController.visibleEvents;
         // A new set notifies listeners even when its contents match, so assign only when something is added.
         final current = visibleEvents.value;

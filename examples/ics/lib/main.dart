@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onVisibleRangeChanged() {
     final visible = kalenderController.visibleDateTimeRange.value;
-    if (visible == null || _sources.isEmpty) return;
+    if (_sources.isEmpty) return;
     final covered = _covered;
     if (covered != null && !visible.start.isBefore(covered.start) && !visible.end.isAfter(covered.end)) {
       return; // still inside the materialized window

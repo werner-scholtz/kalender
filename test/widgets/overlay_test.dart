@@ -64,7 +64,7 @@ void main() {
         expect(find.byType(MultiDayOverlayPortal), findsNWidgets(2));
         expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(2));
 
-        final visibleDates = kalenderController.floatingVisibleRange.value!.dates();
+        final visibleDates = kalenderController.floatingVisibleRange.value.dates();
         for (final date in visibleDates.take(2)) {
           await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
           await tester.pumpAndSettle();
@@ -90,7 +90,7 @@ void main() {
       await pumpWeek(tester);
 
       final overlay = find.byType(MultiDayOverlay);
-      final date = kalenderController.floatingVisibleRange.value!.dates().first;
+      final date = kalenderController.floatingVisibleRange.value.dates().first;
       await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(date)));
       await tester.pumpAndSettle();
       expect(overlay, findsOne);

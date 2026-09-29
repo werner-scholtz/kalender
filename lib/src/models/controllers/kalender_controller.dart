@@ -32,8 +32,12 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     : id = _nextId++,
       _viewConfiguration = viewConfiguration,
       _location = location {
+    final viewController = viewConfiguration.createViewController(this, null);
+    final range = viewController.floatingVisibleRange.value;
+    _floatingVisibleRange = ValueNotifier(range);
+    _visibleDateTimeRange = ValueNotifier(range.forLocation(location: location));
     _floatingVisibleRange.addListener(_updateVisibleDateTimeRange);
-    _adopt(viewConfiguration.createViewController(this, null));
+    _adopt(viewController);
     DeviceTimeZone.changes.addListener(_onDeviceTimeZoneChanged);
   }
 
@@ -245,15 +249,15 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   );
 
   /// The [ViewController.floatingVisibleRange] of [viewController].
-  late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
-  ValueListenable<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
+  late final ValueNotifier<FloatingDateTimeRange> _floatingVisibleRange;
+  ValueListenable<FloatingDateTimeRange> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
-    _visibleDateTimeRange.value = _floatingVisibleRange.value?.forLocation(location: _location);
+    _visibleDateTimeRange.value = _floatingVisibleRange.value.forLocation(location: _location);
   }
 
   /// The [floatingVisibleRange] in [location].
-  ValueListenable<KalenderDateTimeRange?> get visibleDateTimeRange => _visibleDateTimeRange;
-  final _visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
+  ValueListenable<KalenderDateTimeRange> get visibleDateTimeRange => _visibleDateTimeRange;
+  late final ValueNotifier<KalenderDateTimeRange> _visibleDateTimeRange;
 
   /// The [ViewController.visibleEvents] of [viewController].
   ValueListenable<Set<KalenderEvent>> get visibleEvents => _visibleEvents;
@@ -416,10 +420,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   bool _isVisible(FloatingDateTime day) => _hasView && _inVisibleRange(day);
 
   /// Whether [day] is in the visible range of [viewController], shown or not.
-  bool _inVisibleRange(FloatingDateTime day) {
-    final visible = _floatingVisibleRange.value;
-    return visible != null && day.isWithin(visible);
-  }
+  bool _inVisibleRange(FloatingDateTime day) => day.isWithin(_floatingVisibleRange.value);
 
   /// Closes the open day overlay.
   void hideDayOverlay() {

@@ -111,7 +111,7 @@ void main() {
             ],
           );
 
-          final firstDay = kalenderController.floatingVisibleRange.value!.dates().first;
+          final firstDay = kalenderController.floatingVisibleRange.value.dates().first;
           await tester.tap(find.byKey(MultiDayPortalOverlayButton.getKey(firstDay)));
           await tester.pumpAndSettle();
 

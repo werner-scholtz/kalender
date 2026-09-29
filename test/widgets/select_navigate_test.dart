@@ -32,7 +32,7 @@ void main() {
     );
   }
 
-  FloatingDateTimeRange visible() => kalenderController.floatingVisibleRange.value!;
+  FloatingDateTimeRange visible() => kalenderController.floatingVisibleRange.value;
 
   group('navigate', () {
     testWidgets('moves to a day that is not visible', (tester) async {

@@ -177,7 +177,7 @@ extension on WidgetTester {
       reason: 'Event ${event.id} should be in the visible events after animating to it',
     );
     expect(
-      event.floatingStart().isWithin(controller.floatingVisibleRange.value!, includeEnd: true),
+      event.floatingStart().isWithin(controller.floatingVisibleRange.value, includeEnd: true),
       isTrue,
       reason: 'Event start ${event.start} should be within the visible range after animating to it',
     );
@@ -195,7 +195,7 @@ extension on WidgetTester {
     function(dateTime);
     await pumpAndSettle();
 
-    final visibleRange = controller.floatingVisibleRange.value!;
+    final visibleRange = controller.floatingVisibleRange.value;
     if (exact) {
       expect(
         visibleRange.start,

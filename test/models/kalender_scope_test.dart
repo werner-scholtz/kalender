@@ -159,7 +159,7 @@ class _ShownRange extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: KalenderScope.viewControllerOf(context).floatingVisibleRange,
-      builder: (context, range, _) => Text('$label ${range?.start}'),
+      builder: (context, range, _) => Text('$label ${range.start}'),
     );
   }
 }
