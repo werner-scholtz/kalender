@@ -206,7 +206,23 @@ void main() {
     });
 
     final january31 = DateTime(2025, 1, 31);
+    final october = MonthViewConfiguration.singleMonth(
+      displayRange: year2025DisplayRange,
+      initialDateTime: DateTime(2025, 10, 15),
+    );
     for (final c in [
+      (
+        name: 'the next page of a month view is the next month',
+        configuration: october,
+        navigate: (KalenderController controller) => controller.animateToNextPage(),
+        expected: (FloatingDateTime(2025, 11), null),
+      ),
+      (
+        name: 'jumpToPage in a month view opens that month',
+        configuration: october,
+        navigate: (KalenderController controller) => controller.jumpToPage(5),
+        expected: (FloatingDateTime(2025, 6), null),
+      ),
       (
         name: 'the next page of a continuous schedule is the next month',
         configuration: ScheduleViewConfiguration.continuous(

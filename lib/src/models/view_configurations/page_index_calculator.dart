@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
@@ -98,6 +98,10 @@ abstract class PageIndexCalculator {
 
   /// Calculates the VisibleDateRange from the [index].
   FloatingDateTimeRange rangeFromIndex(int index, Location? location);
+
+  /// A date on the page at [index], which [indexFromDate] maps back to [index].
+  @internal
+  FloatingDateTime dateFromIndex(int index, Location? location) => rangeFromIndex(index, location).start;
 
   /// Calculates the page index of the [date].
   ///
@@ -322,6 +326,9 @@ class MonthIndexCalculator extends PageIndexCalculator with _MonthPages {
     final floatingStart = floatingRange(location).start;
     return FloatingDateTime.fromDateTime(floatingStart.copyWith(month: floatingStart.month + index));
   }
+
+  @override
+  FloatingDateTime dateFromIndex(int index, Location? location) => monthStartFromIndex(index, location);
 
   @override
   FloatingDateTimeRange rangeFromIndex(int index, Location? location) {

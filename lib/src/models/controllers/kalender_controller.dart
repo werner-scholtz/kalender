@@ -226,7 +226,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     final pages = calculator.numberOfPages(_location);
     if (pages == 0) return date;
     final index = (calculator.indexFromDate(date, _location) + delta).clamp(0, pages - 1);
-    return calculator.rangeFromIndex(index, _location).start;
+    return calculator.dateFromIndex(index, _location);
   }
 
   ViewSnapshot _snapshotAt(FloatingDateTime date) => ViewSnapshot(
@@ -415,7 +415,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
       (viewController) => viewController.jumpToPage(page),
       () => _isContinuousSchedule
           ? null
-          : ViewSnapshot(date: _viewConfiguration.pageIndexCalculator.rangeFromIndex(page, _location).start),
+          : ViewSnapshot(date: _viewConfiguration.pageIndexCalculator.dateFromIndex(page, _location)),
     ),
   );
 
