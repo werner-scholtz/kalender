@@ -24,6 +24,7 @@
 
 ### Behavior Changes
 
+- An event tile merges the widgets inside it into one semantics node. `TileComponents.mergeSemantics` turns this off.
 - A `KalenderView` built again on the same `KalenderController` opens on the date, scroll and zoom the previous one showed.
 
 ### Deprecations

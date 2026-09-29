@@ -251,6 +251,20 @@ kalenderController.visibleEvents.value = events;
 kalenderController.viewController!.visibleEvents.value = events;
 ```
 
+### An event tile is one semantics node
+
+A tile merges the widgets inside it into one semantics node. A button or other
+control inside a custom tile then has no node of its own. Keep those apart with
+`mergeSemantics: false`.
+
+```dart
+// Before
+TileComponents(tileBuilder: buildTileWithButtons)
+
+// After
+TileComponents(tileBuilder: buildTileWithButtons, mergeSemantics: false)
+```
+
 ## v0.30.x → v0.31.0
 
 ### The two layout date types are renamed
