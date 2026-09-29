@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
+import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
@@ -80,6 +81,7 @@ class KalenderViewState extends State<KalenderView> {
   @override
   void initState() {
     super.initState();
+    DeviceTimeZone.observe();
     _viewController = _controller.attachView(this);
     _controller.addListener(_onControllerChanged);
   }
