@@ -29,20 +29,29 @@ void main() {
     await pumpKalender(
       tester,
       eventsController: eventsController,
-      kalenderController: KalenderController(),
-      viewConfiguration: MultiDayViewConfiguration.week(
-        initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
-        initialHeightPerMinute: 1,
-        displayRange: KalenderDateTimeRange(start: monday, end: DateTime(2025, 3, 31)),
-        initialDateTime: monday,
-      ),
-      body: KalenderBody(
-        interaction: KalenderInteraction(inputMode: InputMode.precise, modifyEventGesture: EventInteractionGesture.tap),
-        multiDayTileComponents: TileComponents(
-          tileBuilder: (context, event, tileRange) =>
-              CustomPaint(painter: _CountingPainter(() => paints.update(event.id, (n) => n + 1, ifAbsent: () => 1))),
+      kalenderController: KalenderController(
+        viewConfiguration: MultiDayViewConfiguration.week(
+          initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
+          initialHeightPerMinute: 1,
+          displayRange: KalenderDateTimeRange(start: monday, end: DateTime(2025, 3, 31)),
+          initialDateTime: monday,
         ),
       ),
+      views: [
+        MultiDayViewParts(
+          body: MultiDayBody(
+            interaction: KalenderInteraction(
+              inputMode: InputMode.precise,
+              modifyEventGesture: EventInteractionGesture.tap,
+            ),
+            tileComponents: TileComponents(
+              tileBuilder: (context, event, tileRange) => CustomPaint(
+                painter: _CountingPainter(() => paints.update(event.id, (n) => n + 1, ifAbsent: () => 1)),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
 
     final gesture = await tester.startGesture(tester.getCenter(find.byKey(DayEventTile.tileKey(dragged))));
