@@ -10,6 +10,7 @@ on:
     paths:
       - 'lib/**'
       - 'benchmark/**'
+      - '!benchmark/dashboard/**'
       - 'examples/testing/**'
       - 'pubspec.yaml'
       - '.fvmrc'
@@ -117,19 +118,21 @@ jobs:
           git show FETCH_HEAD:data.json > build/benchmarks/data.json
           echo "BENCHMARK_DATA_PARENT=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_ENV"
 
-      # A run is only cancelled while main moves under it if the cancellation
-      # arrives in time. This covers the rest: results for a commit that is no
-      # longer the tip are measured but not stored, so the dashboard carries one
-      # point per stack rather than one per merge.
-      - name: Check this commit is still the tip of main
+      # A run is only cancelled by a newer one if the cancellation arrives in
+      # time. This covers the rest: results for a commit that a newer run of this
+      # workflow on main replaces are measured but not stored, so the dashboard
+      # carries one point per stack rather than one per merge. A later commit that
+      # does not run this workflow leaves the results stored.
+      - name: Check no newer run replaces this one
         id: tip
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          tip=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
-          if [ "$tip" != "${{ github.sha }}" ]; then
-            echo "main is now $tip, so results for ${{ github.sha }} are not stored."
+          newer=$(gh api "repos/${{ github.repository }}/actions/workflows/performance_profiling.yml/runs?branch=main&event=push&per_page=20" \
+            --jq '[.workflow_runs[] | select(.id > ${{ github.run_id }})] | length')
+          if [ "$newer" != "0" ]; then
+            echo "A newer run on main replaces this one, so results for ${{ github.sha }} are not stored."
             echo "superseded=true" >> "$GITHUB_OUTPUT"
           else
             echo "superseded=false" >> "$GITHUB_OUTPUT"
