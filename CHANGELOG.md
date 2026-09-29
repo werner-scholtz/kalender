@@ -68,6 +68,7 @@
 - After a switch between two views of one kind or a change of location, the new view opens at the date and time of day it reports and fills `KalenderController.visibleEvents`.
 - Switching to a multi-day view or mounting one no longer notifies the listeners of `KalenderController.visibleEvents` during the build.
 - A tile selected by touch shows `tileWhenDraggingBuilder` and hides its resize handles while it is dragged.
+- After the app resumes in another device timezone, a calendar without a location and `DefaultEventsController` use the dates of the new timezone.
 
 ### Examples
 

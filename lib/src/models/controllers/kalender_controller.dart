@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/kalender_view.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
@@ -33,6 +34,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
       _location = location {
     _floatingVisibleRange.addListener(_updateVisibleDateTimeRange);
     _adopt(viewConfiguration.createViewController(this, null));
+    DeviceTimeZone.changes.addListener(_onDeviceTimeZoneChanged);
   }
 
   static int _nextId = 0;
@@ -54,7 +56,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// The location of the calendar. Null uses the device's local time.
   ///
-  /// Setting a different location recreates the view controller in it.
+  /// Setting a different location recreates the view controller in it. With a null location, so does a change of the
+  /// device timezone found when the app resumes.
   Location? get location => _location;
   Location? _location;
   set location(Location? value) {
@@ -90,6 +93,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// Whether [viewController] was created since the last frame while a view was attached, so no widget uses it yet.
   bool _awaitingBuild = false;
+
+  void _onDeviceTimeZoneChanged() {
+    if (_location == null) _switchTo(_viewConfiguration, locationChanged: true);
+  }
 
   /// Replaces the view controller with one [configuration] creates.
   ///
@@ -496,6 +503,7 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   @override
   void dispose() {
+    DeviceTimeZone.changes.removeListener(_onDeviceTimeZoneChanged);
     _floatingVisibleRange.removeListener(_updateVisibleDateTimeRange);
     _removeForwarders();
     // A view controller a view still shows is disposed when the view releases it.

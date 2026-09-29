@@ -6,6 +6,7 @@
 
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/controllers/events_controller/event_store.dart';
+import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:timezone/timezone.dart';
 
@@ -41,6 +42,18 @@ class DefaultEventStore extends EventStore {
 
   /// The default location string.
   static const defaultLocation = 'default';
+
+  /// The device timezone generation the index of [defaultLocation] was built in.
+  int _defaultGeneration = DeviceTimeZone.generation;
+
+  /// Builds the index of [defaultLocation] again when the device timezone changed since it was built.
+  void _followDeviceTimeZone() {
+    final generation = DeviceTimeZone.generation;
+    if (generation == _defaultGeneration) return;
+    _defaultGeneration = generation;
+    locationDateIdMap[defaultLocation] = DateToEventIds();
+    populateLocation(null);
+  }
 
   /// Convert a [FloatingDateTime] to a key string.
   String toKey(FloatingDateTime date) => '${date.year}-${date.month}-${date.day}';
@@ -83,6 +96,7 @@ class DefaultEventStore extends EventStore {
 
   @override
   void removeEvent(KalenderEvent event) {
+    _followDeviceTimeZone();
     final id = event.id;
     assert(idEvent[id] != null, 'The event: $event cannot be removed as it does not exist in the map.');
     idEvent.remove(id);
@@ -119,6 +133,7 @@ class DefaultEventStore extends EventStore {
 
   @override
   Set<String> eventIdsInRange(FloatingDateTimeRange range, Location? location) {
+    _followDeviceTimeZone();
     final locationString = location?.name ?? defaultLocation;
     final hasLocation = hasDateToEventIds(locationString);
 
@@ -139,6 +154,7 @@ class DefaultEventStore extends EventStore {
 
   /// Add an [event] to the map.
   void addEvent(KalenderEvent event) {
+    _followDeviceTimeZone();
     final id = event.id;
     idEvent[id] = event;
 

@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 
 /// The device timezone, for conversions cached without a location.
 abstract final class DeviceTimeZone {
-  static int _generation = 0;
+  static final _generation = ValueNotifier(0);
   static String? _zone;
   static _ResumeObserver? _observer;
 
@@ -18,7 +18,10 @@ abstract final class DeviceTimeZone {
 
   /// Changes whenever [check] finds a different device timezone. A conversion cached for no location is valid
   /// while this is unchanged.
-  static int get generation => _generation;
+  static int get generation => _generation.value;
+
+  /// Notifies when [generation] changes.
+  static Listenable get changes => _generation;
 
   /// Records the device timezone and checks it again every time the app resumes. Calling it again does nothing.
   static void observe() {
@@ -32,11 +35,11 @@ abstract final class DeviceTimeZone {
     final zone = readZone();
     if (zone == _zone) return;
     _zone = zone;
-    _generation++;
+    _generation.value++;
   }
 
   @visibleForTesting
-  static void debugChange() => _generation++;
+  static void debugChange() => _generation.value++;
 
   static String _current() {
     final now = DateTime.now();
