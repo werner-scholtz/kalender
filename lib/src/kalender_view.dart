@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
+import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// {@category Views}
@@ -72,9 +73,6 @@ class KalenderViewState extends State<KalenderView> {
   KalenderController get _controller => widget.kalenderController;
 
   late final _interaction = ValueNotifier(widget.interaction ?? KalenderInteraction());
-
-  /// Keeps the header and body in place when the parts change the widgets that wrap them.
-  final _layoutKey = GlobalKey();
 
   /// The configuration types and names already reported as matching several parts.
   final _reportedDuplicates = <(Type, String)>{};
@@ -189,15 +187,18 @@ class KalenderViewState extends State<KalenderView> {
                       viewController: _viewController,
                       child: Builder(
                         builder: (context) {
-                          final layout = CustomMultiChildLayout(
-                            key: _layoutKey,
-                            delegate: KalenderLayoutDelegate(headerId, bodyId),
-                            children: [
-                              if (bodyId != null) LayoutId(id: bodyId, child: body!),
-                              if (headerId != null) LayoutId(id: headerId, child: header!),
-                            ],
+                          final widths = parts?.gutterWidths(context);
+                          return GutterWidths(
+                            weekNumber: widths?.weekNumber,
+                            timeline: widths?.timeline,
+                            child: CustomMultiChildLayout(
+                              delegate: KalenderLayoutDelegate(headerId, bodyId),
+                              children: [
+                                if (bodyId != null) LayoutId(id: bodyId, child: body!),
+                                if (headerId != null) LayoutId(id: headerId, child: header!),
+                              ],
+                            ),
                           );
-                          return parts?.wrap(context, layout) ?? layout;
                         },
                       ),
                     ),

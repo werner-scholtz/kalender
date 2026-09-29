@@ -6,7 +6,6 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 /// The header and body [KalenderView] shows for a kind of [ViewConfiguration].
@@ -37,8 +36,9 @@ abstract class ViewParts<C extends ViewConfiguration> {
   /// Whether these parts show [configuration].
   bool accepts(ViewConfiguration configuration) => configuration is C && (name == null || name == configuration.name);
 
-  /// Wraps the header and body together, below the providers of the [KalenderView].
-  Widget wrap(BuildContext context, Widget child) => child;
+  /// The widths of the week number column and the timeline, measured once below the providers of the [KalenderView]
+  /// so the header and body share them. Null for a column the view does not draw.
+  ({double? weekNumber, double? timeline}) gutterWidths(BuildContext context) => (weekNumber: null, timeline: null);
 }
 
 /// The parts of a [MultiDayViewConfiguration]: a [MultiDayHeader] and a [MultiDayBody] by default.
@@ -53,16 +53,11 @@ class MultiDayViewParts extends ViewParts<MultiDayViewConfiguration> {
   @override
   Widget? get builtInBody => const MultiDayBody();
 
-  /// Measures the timeline once, so the header and body share its width.
   @override
-  Widget wrap(BuildContext context, Widget child) {
+  ({double? weekNumber, double? timeline}) gutterWidths(BuildContext context) {
     final configuration = context.viewController.viewConfiguration as MultiDayViewConfiguration;
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    return GutterWidths(
-      weekNumber: null,
-      timeline: bodyComponents.buildTimelineWidth(context, configuration.timeOfDayRange),
-      child: child,
-    );
+    return (weekNumber: null, timeline: bodyComponents.buildTimelineWidth(context, configuration.timeOfDayRange));
   }
 }
 
@@ -78,16 +73,13 @@ class MonthViewParts extends ViewParts<MonthViewConfiguration> {
   @override
   Widget? get builtInBody => const MonthBody();
 
-  /// Measures the week number column once when the configuration shows week numbers, so the header and body share
-  /// its width.
   @override
-  Widget wrap(BuildContext context, Widget child) {
+  ({double? weekNumber, double? timeline}) gutterWidths(BuildContext context) {
     final configuration = context.viewController.viewConfiguration as MonthViewConfiguration;
-    if (!configuration.showWeekNumbers) return child;
-    return GutterWidths(
+    if (!configuration.showWeekNumbers) return (weekNumber: null, timeline: null);
+    return (
       weekNumber: context.components.monthComponents.bodyComponents.buildWeekNumberWidth(context),
       timeline: null,
-      child: child,
     );
   }
 }

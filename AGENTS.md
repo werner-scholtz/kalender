@@ -71,11 +71,11 @@ Name a member for what it is, not for its type. Say `range` rather than `dateTim
 
 ### Views
 
-Each view has a `ViewController` (`models/controllers/view_controllers/`), a `ViewConfiguration` (`models/view_configurations/`), a body and a header widget (`widgets/<view>/`), and a `ViewParts` subclass (`lib/src/view_parts.dart`). `KalenderView` shows the header and body of the first entry in its `views` that accepts the controller's configuration, a named one before an unnamed one. `ViewParts.wrap` adds what the header and body share, such as `GutterWidths`. The `interaction` and `callbacks` a header or body takes override the ones on `KalenderView`. `VerticalConfiguration` and `HorizontalConfiguration` are the configuration mixins for the two axes.
+Each view has a `ViewController` (`models/controllers/view_controllers/`), a `ViewConfiguration` (`models/view_configurations/`), a body and a header widget (`widgets/<view>/`), and a `ViewParts` subclass (`lib/src/view_parts.dart`). `KalenderView` shows the header and body of the first entry in its `views` that accepts the controller's configuration, a named one before an unnamed one. `ViewParts.gutterWidths` measures the week number and timeline columns the header and body share. The `interaction` and `callbacks` a header or body takes override the ones on `KalenderView`. `VerticalConfiguration` and `HorizontalConfiguration` are the configuration mixins for the two axes.
 
 ### State
 
-State reaches widgets through the `InheritedWidget` providers in `lib/src/models/providers/kalender_provider.dart`, one per value, plus `GutterWidths`, which `ViewParts.wrap` fills with the measured week number and timeline widths. The providers are not exported. `KalenderScope` in `kalender_scope.dart` is the public accessor, one static per value in the shape of `MediaQuery`. Add an accessor there when a provider gains something an app should reach.
+State reaches widgets through the `InheritedWidget` providers in `lib/src/models/providers/kalender_provider.dart`, one per value, plus `GutterWidths`, which `KalenderView` fills from `ViewParts.gutterWidths`. The providers are not exported. `KalenderScope` in `kalender_scope.dart` is the public accessor, one static per value in the shape of `MediaQuery`. Add an accessor there when a provider gains something an app should reach.
 
 ### Events
 
