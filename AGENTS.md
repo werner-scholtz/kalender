@@ -15,7 +15,7 @@ Kalender is a Flutter calendar package with three views, multi-day (day and week
 | `lib/src/models/` | Controllers, events, view configurations, components, providers, mixins |
 | `lib/src/widgets/` | One folder per view (`month/`, `multi_day/`, `schedule/`), plus `components/` (the replaceable defaults), `internal_components/`, `event_tiles/`, `events_widgets/`, `draggable/` and `drag_targets/` |
 | `lib/src/layout_delegates/` | `EventLayoutStrategy` and `MultiDayLayoutStrategy` with their caches |
-| `test/` | Mirrors `lib/src/`. `test/utilities.dart` holds the shared helpers and `test/tool/` tests the scripts |
+| `test/` | Grouped by area. `test/utilities.dart` holds the shared helpers and `test/tool/` tests the scripts |
 | `test_fixes/` | Golden fixtures for the `dart fix` data |
 | `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page |
 | `examples/` | Runnable apps, indexed by `examples/README.md`. `example/` is the pub.dev Example tab and only links there |
@@ -62,7 +62,7 @@ Name a member for what it is, not for its type. Say `range` rather than `dateTim
 
 ## Tests
 
-- `test/` mirrors `lib/src/`.
+- `test/` is grouped by area.
 - Build widgets with the helpers in `test/utilities.dart`: `pumpKalender`, `pumpOverflowingMonth`, `freeScrollView`, `wrapWithMaterialApp`, `pumpAndSettleWithMaterialApp` and `TestProvider`. `resizeHandleFor`, `WidgetTesterUtils` and `KalenderControllerUtils` drive interactions.
 - Timezone-sensitive tests use `testWithTimeZones` with the shared `datesToTest` and `locationsToTest`.
 - A `static Key` factory on an unexported class is a test helper. Do not add one to reach a widget from an app. Give the widget identifying fields and use `find.byType` with a predicate.
@@ -71,7 +71,7 @@ Name a member for what it is, not for its type. Say `range` rather than `dateTim
 
 ### Views
 
-Each view has a `ViewController` (`models/controllers/view_controllers/`), a `ViewConfiguration` (`models/view_configurations/`), a body and a header widget (`widgets/<view>/`), and a `ViewParts` subclass (`lib/src/view_parts.dart`). `KalenderView` shows the header and body of the first entry in its `views` that accepts the controller's configuration, a named one before an unnamed one. `ViewParts.gutterWidths` measures the week number and timeline columns the header and body share. The `interaction` and `callbacks` a header or body takes override the ones on `KalenderView`. `VerticalConfiguration` and `HorizontalConfiguration` are the configuration mixins for the two axes.
+Each view has a `ViewController` (`models/controllers/view_controllers/`), a `ViewConfiguration` (`models/view_configurations/`), a body widget and, for multi-day and month, a header widget (`widgets/<view>/`), and a `ViewParts` subclass (`lib/src/view_parts.dart`). `KalenderView` shows the header and body of the first entry in its `views` that accepts the controller's configuration, a named one before an unnamed one. `ViewParts.gutterWidths` measures the week number and timeline columns the header and body share. The `interaction` and `callbacks` a header or body takes override the ones on `KalenderView`. `VerticalConfiguration` and `HorizontalConfiguration` are the abstract bases of the body and header configurations for the two axes.
 
 ### State
 
@@ -168,7 +168,7 @@ Audit before tagging it:
 Publishing is triggered by a tag. Bump `version` in `pubspec.yaml` and add the `## <version>` changelog heading, merge to main, then tag the merge commit:
 
 ```bash
-git tag -s v0.32.0 -m v0.32.0 && git push origin v0.32.0
+git tag -s v<version> -m v<version> && git push origin v<version>
 ```
 
 `publish.yml` refuses a tag that is not on main, does not match `pubspec.yaml` or has no changelog heading. It then analyzes, tests, runs `tool/pin_release_links.dart <tag>` and publishes. The pinning rewrites the links in `README.md`, `example/README.md`, `CHANGELOG.md` and `doc/*.md` to the tag, inside the runner only, so the pub.dev pages link to the documentation they shipped with and the repository keeps its relative links. Preview it locally by running the script with any tag and restore with `git checkout -- README.md example/README.md CHANGELOG.md doc/`.

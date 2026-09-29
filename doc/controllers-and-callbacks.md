@@ -20,7 +20,7 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 
 ### KalenderController
 
-[`KalenderController`](https://pub.dev/documentation/kalender/latest/kalender/KalenderController-class.html) drives a single `KalenderView` widget.
+[`KalenderController`](https://pub.dev/documentation/kalender/latest/kalender/KalenderController-class.html) drives a single `KalenderView` widget. It holds the `viewConfiguration` and `location`. Setting either switches the view, see [Switching between views](views.md#switching-between-views) and [Location](timezones-and-locales.md#location).
 
 **State notifiers:**
 
@@ -28,7 +28,7 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
 | `visibleDateTimeRange` | `ValueNotifier<KalenderDateTimeRange?>`     | The currently visible date range                       |
 | `visibleTimeOfDay`     | `ValueNotifier<KalenderTime?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
-| `visibleEvents`        | `ValueNotifier<Set<KalenderEvent>>` | Events visible on screen                               |
+| `visibleEvents`        | `ValueListenable<Set<KalenderEvent>>` | Events on the page on screen                         |
 | `selectedEvent`        | `ValueNotifier<KalenderEvent?>`     | The focused event (shows drop target / resize handles) |
 | `selectedRange`        | `ValueNotifier<FloatingDateTimeRange?>` | The selected days, ending at midnight after the last one |
 | `openDayOverlay`       | `ValueNotifier<FloatingDateTime?>`  | The day whose overlay is open (month view and multi-day header, `null` otherwise) |

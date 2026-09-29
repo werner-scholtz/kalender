@@ -36,8 +36,8 @@ abstract class ViewParts<C extends ViewConfiguration> {
   /// Whether these parts show [configuration].
   bool accepts(ViewConfiguration configuration) => configuration is C && (name == null || name == configuration.name);
 
-  /// The widths of the week number column and the timeline, measured once below the providers of the [KalenderView]
-  /// so the header and body share them. Null for a column the view does not draw.
+  /// The widths of the week number column and the timeline that the header and body share. Null for a column the
+  /// view does not draw.
   ({double? weekNumber, double? timeline}) gutterWidths(BuildContext context) => (weekNumber: null, timeline: null);
 }
 

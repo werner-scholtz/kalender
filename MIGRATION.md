@@ -45,7 +45,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, and a configuration creates its view controller. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range and events are read-only on the controller, and an event tile is one semantics node. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -102,8 +102,9 @@ controller.viewConfiguration = MultiDayViewConfiguration.singleDay();
 
 Set a configuration computed from `MediaQuery` or layout constraints in
 `didChangeDependencies` or an event handler. Set in the `build` of a widget
-below the calendar, the controller's notification throws. `attach`, `detach`,
-`isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
+below the calendar, the controller's notification throws. Delete calls to
+`attach`, `detach`, `isAttached` and `isAttachedTo`, which are removed.
+`viewController` is never null, so drop `?.` and `!` on it.
 
 ### Views are `ViewParts` on `KalenderView`
 
@@ -173,9 +174,9 @@ KalenderView(
 A null `header` or `body` shows the built-in widget, and `SizedBox.shrink()`
 shows none. An app that passed a body and no header passes `header: const
 SizedBox.shrink()`. A header that wrapped `KalenderHeader`, such as a toolbar
-above it, now wraps the built-in header in each parts that shows it. Two views
-of one kind that need different widgets each get parts with the `name` of their
-configuration.
+above it, now wraps the built-in header in the parts of each view that shows it.
+Two views of one kind that need different widgets each get parts with the `name`
+of their configuration.
 
 A `KalenderBody(interaction:)` moved to `KalenderView` now also applies to the
 multi-day header, which `KalenderHeader` did not take from the body.
@@ -238,8 +239,8 @@ MultiDayViewController(
 );
 ```
 
-`kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and
-`kDefaultToSchedule` all return `old.snapshot().date`.
+Replace a call to `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` or
+`kDefaultToSchedule` with `old.snapshot().date`.
 
 ### The controller's visible range and events are read-only
 
@@ -252,7 +253,34 @@ before. A write goes to the view controller's own notifier.
 kalenderController.visibleEvents.value = events;
 
 // After
-kalenderController.viewController!.visibleEvents.value = events;
+kalenderController.viewController.visibleEvents.value = events;
+```
+
+### A view controller's location is final
+
+Set the location on the controller. `ViewController.location` is final, and a
+change on `KalenderController` creates a view controller in the new location.
+
+```dart
+// Before
+kalenderController.viewController!.location = location;
+
+// After
+kalenderController.location = location;
+```
+
+### The month body and multi-day header take their own configuration
+
+`MonthBody.configuration` takes a `MonthBodyConfiguration` and
+`MultiDayHeader.configuration` a `MultiDayHeaderConfiguration`. Pass the class
+that matches the widget.
+
+```dart
+// Before
+MonthBody(configuration: MultiDayHeaderConfiguration(tileHeight: 20))
+
+// After
+MonthBody(configuration: MonthBodyConfiguration(tileHeight: 20))
 ```
 
 ### An event tile is one semantics node

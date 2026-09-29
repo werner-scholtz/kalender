@@ -94,7 +94,7 @@ Only override `layoutEquals` when a custom property changes the *size or positio
 
 ### Accessing custom fields in tile builders
 
-Cast the event to your subclass. A convenience getter keeps the cast to one place:
+Cast the event to your subclass:
 
 <!-- snippet: expression -->
 ```dart
@@ -139,7 +139,7 @@ An event that is all-day by nature rather than by duration says so directly, and
 KalenderEvent(start: range.start, end: range.end, isAllDay: true)
 ```
 
-This puts it in the header lane whatever its duration. The date range is left alone, so an app wanting midnight to midnight supplies it. `isAllDay` defaults to false, where the rules below apply as before.
+This puts it in the header lane whatever its duration. The date range is left alone, so an app wanting midnight to midnight supplies it. `isAllDay` defaults to false, where the rules below apply.
 
 A single event can override the calendar's rule:
 
