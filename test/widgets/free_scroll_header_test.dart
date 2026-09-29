@@ -18,7 +18,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
     callbacks = KalenderCallbacks(
       onEventCreated: eventsController.addEvent,
       onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
@@ -36,14 +35,14 @@ void main() {
     ]);
   }
 
-  Widget buildView({DateTime? initialDate}) => freeScrollView(
-    eventsController: eventsController,
-    kalenderController: kalenderController,
+  KalenderController controllerOn(DateTime initialDate) => freeScrollController(
     displayRange: KalenderDateTimeRange(start: base, end: base.add(const Duration(days: 21))),
     initialDateTime: initialDate,
     numberOfDays: 3,
-    callbacks: callbacks,
   );
+
+  Widget buildView() =>
+      freeScrollView(eventsController: eventsController, kalenderController: kalenderController, callbacks: callbacks);
 
   group('FreeScroll header', () {
     // #282
@@ -51,31 +50,29 @@ void main() {
       addTwoRowDay();
       final rebuild = ValueNotifier(0);
       addTearDown(rebuild.dispose);
+      kalenderController = controllerOn(base.add(const Duration(days: 2)));
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        ValueListenableBuilder(
-          valueListenable: rebuild,
-          builder: (context, _, __) => buildView(initialDate: base.add(const Duration(days: 2))),
-        ),
+        ValueListenableBuilder(valueListenable: rebuild, builder: (context, _, __) => buildView()),
       );
 
-      final heightBefore = tester.getSize(find.byType(KalenderHeader)).height;
+      final heightBefore = tester.getSize(find.byType(MultiDayHeader)).height;
 
       rebuild.value++;
       await tester.pumpAndSettle();
 
-      final heightAfter = tester.getSize(find.byType(KalenderHeader)).height;
+      final heightAfter = tester.getSize(find.byType(MultiDayHeader)).height;
       expect(heightAfter, closeTo(heightBefore, 0.5), reason: 'the header must not wobble on rebuild');
     });
 
     Future<double> pumpAndMeasureHeader(WidgetTester tester, DateTime initialDate) async {
       await tester.pumpWidget(const SizedBox());
       eventsController = DefaultEventsController();
-      kalenderController = KalenderController();
+      kalenderController = controllerOn(initialDate);
       addTwoRowDay();
-      await pumpAndSettleWithMaterialApp(tester, buildView(initialDate: initialDate));
-      return tester.getSize(find.byType(KalenderHeader)).height;
+      await pumpAndSettleWithMaterialApp(tester, buildView());
+      return tester.getSize(find.byType(MultiDayHeader)).height;
     }
 
     // #283

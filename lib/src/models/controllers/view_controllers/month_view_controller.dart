@@ -10,19 +10,12 @@ import 'package:kalender/src/models/controllers/view_controllers/animation_defau
 
 /// {@category Controllers and callbacks}
 class MonthViewController extends ViewController {
-  MonthViewController({
-    required this.viewConfiguration,
-    required super.floatingVisibleRange,
-    required this.visibleEvents,
-    FloatingDateTime? initialDate,
-    super.location,
-  }) {
+  MonthViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location}) {
     final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.timestamp(), location);
+    initialPage = pageNavigationFunctions.indexFromDate(initial.date, location);
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages(location);
     floatingVisibleRange.value = pageNavigationFunctions.rangeFromIndex(initialPage, location);
-    visibleEvents.value = {};
   }
 
   @override
@@ -37,8 +30,10 @@ class MonthViewController extends ViewController {
   /// The page controller used by the view.
   late final PageController pageController;
 
+  /// Returns the first day of the month with the most visible days.
   @override
-  late final ValueNotifier<Set<KalenderEvent>> visibleEvents;
+  ViewSnapshot snapshot() =>
+      ViewSnapshot(date: FloatingDateTime.fromDateTime(floatingVisibleRange.value!.dominantMonthDate));
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
@@ -113,5 +108,6 @@ class MonthViewController extends ViewController {
   @override
   void dispose() {
     pageController.dispose();
+    super.dispose();
   }
 }

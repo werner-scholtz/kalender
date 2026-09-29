@@ -20,7 +20,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   // Adds one event on [day], starting at [hour] for [durationHours]. The view
@@ -37,20 +36,27 @@ void main() {
 
   Future<void> pumpSingleDay(WidgetTester tester, {EventLayoutStrategy? strategy}) {
     final components = TileComponents(tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id)));
-    return pumpKalender(
-      tester,
-      eventsController: eventsController,
-      kalenderController: kalenderController,
+    kalenderController = KalenderController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(
         initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
         initialHeightPerMinute: 1,
         displayRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 1))),
         initialDateTime: day,
       ),
-      body: KalenderBody(
-        multiDayTileComponents: components,
-        multiDayBodyConfiguration: strategy == null ? null : MultiDayBodyConfiguration(eventLayoutStrategy: strategy),
-      ),
+    );
+    return pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(
+            tileComponents: components,
+            configuration: strategy == null ? null : MultiDayBodyConfiguration(eventLayoutStrategy: strategy),
+          ),
+        ),
+      ],
     );
   }
 

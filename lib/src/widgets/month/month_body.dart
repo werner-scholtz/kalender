@@ -14,6 +14,7 @@ import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
+import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
 /// This widget is used to display a month body.
@@ -25,24 +26,40 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// {@category Views}
 class MonthBody extends StatelessWidget {
   /// The configuration of the body, a [MonthBodyConfiguration] by default.
-  final HorizontalConfiguration? configuration;
+  final MonthBodyConfiguration? configuration;
 
-  const MonthBody({super.key, this.configuration});
+  /// See [KalenderView.callbacks].
+  final KalenderCallbacks? callbacks;
+
+  /// See [KalenderView.interaction].
+  final KalenderInteraction? interaction;
+
+  /// The tile components. Defaults to [TileComponents.defaultComponents].
+  final TileComponents? tileComponents;
+
+  const MonthBody({super.key, this.configuration, this.callbacks, this.interaction, this.tileComponents});
 
   @override
   Widget build(BuildContext context) {
-    final kalenderController = context.kalenderController;
-
-    assert(
-      kalenderController.viewController is MonthViewController,
-      'The KalenderController\'s $ViewController needs to be a $MonthViewController',
+    return ViewProviders(
+      callbacks: callbacks,
+      interaction: interaction,
+      tileComponents: tileComponents ?? TileComponents.defaultComponents(),
+      child: _MonthBody(configuration: configuration),
     );
+  }
+}
 
-    if (this.configuration != null && this.configuration is! MonthBodyConfiguration) {
-      debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
-    }
+class _MonthBody extends StatelessWidget {
+  final MonthBodyConfiguration? configuration;
 
-    final viewController = kalenderController.viewController as MonthViewController;
+  const _MonthBody({this.configuration});
+
+  @override
+  Widget build(BuildContext context) {
+    assert(context.viewController is MonthViewController, 'The view controller needs to be a $MonthViewController');
+
+    final viewController = context.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final showWeekNumbers = viewConfiguration.showWeekNumbers;
     final configuration = this.configuration ?? const MonthBodyConfiguration();
@@ -61,9 +78,8 @@ class MonthBody extends StatelessWidget {
       itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
         final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
-        final controller = context.kalenderController;
-        controller.floatingVisibleRange.value = visibleRange;
-        context.callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
+        viewController.floatingVisibleRange.value = visibleRange;
+        context.callbacks?.onPageChanged?.call(visibleRange.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
@@ -176,7 +192,7 @@ class MonthWeek extends StatelessWidget {
                       floatingRange: floatingRange,
                       configuration: configuration,
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-                      multiDayCache: viewController.multiDayCache,
+                      viewController: viewController,
                       overlayBuilders: monthComponents.bodyComponents.overlayBuilders ?? components.overlayBuilders,
                     );
                   },

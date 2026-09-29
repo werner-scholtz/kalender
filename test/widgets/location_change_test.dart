@@ -12,7 +12,7 @@ import 'package:timezone/timezone.dart';
 
 import '../utilities.dart';
 
-/// Changing [KalenderView.location] keeps the page on screen. `initialDateTime` only applies when the calendar is
+/// Changing [KalenderController.location] keeps the page on screen. `initialDateTime` only applies when the calendar is
 /// first built.
 void main() {
   tz.initializeTimeZones();
@@ -27,20 +27,28 @@ void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
 
-  setUp(() {
-    eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
-  });
+  setUp(() => eventsController = DefaultEventsController());
 
-  Future<void> pumpView(WidgetTester tester, ViewConfiguration config, Location location) {
+  Future<void> pumpView(
+    WidgetTester tester,
+    ViewConfiguration config,
+    Location location, {
+    KalenderComponents? components,
+    List<ViewParts> views = bodyOnlyViews,
+  }) {
+    kalenderController = KalenderController(viewConfiguration: config, location: location);
     return pumpKalender(
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      location: location,
-      viewConfiguration: config,
-      body: const KalenderBody(),
+      components: components,
+      views: views,
     );
+  }
+
+  Future<void> switchLocation(WidgetTester tester, Location location) {
+    kalenderController.location = location;
+    return tester.pumpAndSettle();
   }
 
   FloatingDateTime visibleStart() => kalenderController.floatingVisibleRange.value!.start;
@@ -53,7 +61,7 @@ void main() {
           await pumpView(tester, config, tokyo);
           final beforeSwitch = visibleStart();
 
-          await pumpView(tester, config, newYork);
+          await switchLocation(tester, newYork);
 
           expect(visibleStart(), beforeSwitch);
         });
@@ -77,26 +85,27 @@ void main() {
             await tester.pumpAndSettle();
             final beforeSwitch = visibleStart();
 
-            await pumpView(tester, c.config, tokyo);
+            await switchLocation(tester, tokyo);
 
             expect(visibleStart(), beforeSwitch);
           });
         }
 
-        testWidgets('tells a dateResolver whether the location changed', (tester) async {
-          final locationChanged = <bool>[];
+        testWidgets('tells a dateResolver whether the location changed and the new location', (tester) async {
+          final seen = <(bool, Location?)>[];
           FloatingDateTime record(ViewTransitionContext transition) {
-            locationChanged.add(transition.locationChanged);
+            seen.add((transition.locationChanged, transition.location));
             return kCarryFocusDate(transition);
           }
 
           final week = MultiDayViewConfiguration.week(displayRange: displayRange, dateResolver: record);
           final day = MultiDayViewConfiguration.singleDay(displayRange: displayRange, dateResolver: record);
           await pumpView(tester, week, newYork);
-          await pumpView(tester, week, tokyo);
-          await pumpView(tester, day, tokyo);
+          await switchLocation(tester, tokyo);
+          kalenderController.viewConfiguration = day;
+          await tester.pumpAndSettle();
 
-          expect(locationChanged, [true, false]);
+          expect(seen, [(true, tokyo), (false, tokyo)]);
         });
 
         testWidgets('the schedule files each event under its day in the new location', (tester) async {
@@ -119,24 +128,22 @@ void main() {
             ),
           );
 
-          Future<void> pumpSchedule(Location location) {
-            return pumpKalender(
-              tester,
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              location: location,
-              components: components,
-              viewConfiguration: config,
-              body: KalenderBody(scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
-            );
-          }
-
-          await pumpSchedule(newYork);
+          await pumpView(
+            tester,
+            config,
+            newYork,
+            components: components,
+            views: [
+              ScheduleViewParts(
+                body: ScheduleBody(configuration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show)),
+              ),
+            ],
+          );
           expect(emptyDays, isNot(contains(14)));
           expect(emptyDays, contains(15));
 
           emptyDays.clear();
-          await pumpSchedule(tokyo);
+          await switchLocation(tester, tokyo);
           expect(emptyDays, isNot(contains(15)));
           expect(emptyDays, contains(14));
         });

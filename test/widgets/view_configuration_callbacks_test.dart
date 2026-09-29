@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
@@ -20,25 +19,25 @@ DateTime nowTuesday() => DateTime(2025, 1, 14, 14, 30);
 
 void main() {
   late DefaultEventsController eventsController;
-  late KalenderController kalenderController;
+  KalenderController? kalenderController;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   tearDown(() {
-    kalenderController.dispose();
+    kalenderController?.dispose();
+    kalenderController = null;
     eventsController.dispose();
   });
 
-  Widget build(ViewConfiguration configuration) {
-    return KalenderView(
+  /// Pumps a calendar on [configuration], switching the controller to it after the first pump.
+  Future<void> show(WidgetTester tester, ViewConfiguration configuration) async {
+    kalenderController = await pumpConfiguration(
+      tester,
       eventsController: eventsController,
+      configuration: configuration,
       kalenderController: kalenderController,
-      viewConfiguration: configuration,
-      header: const KalenderHeader(),
-      body: const KalenderBody(),
     );
   }
 
@@ -58,19 +57,19 @@ void main() {
   /// trailing days of the previous month, so the range's own start does not
   /// name the month on screen.
   bool visibleRangeCovers(DateTime date) {
-    final range = kalenderController.visibleDateTimeRange.value!;
+    final range = kalenderController!.visibleDateTimeRange.value!;
     return !date.isBefore(range.start) && date.isBefore(range.end);
   }
 
   group('dateResolver', () {
     testWidgets('a resolver swapped between switches uses the newest one', (tester) async {
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
+      await show(tester, week());
 
-      await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToMarch)));
+      await show(tester, month(dateResolver: resolveToMarch));
       expect(visibleRangeCovers(DateTime(2025, 3, 10)), isTrue);
 
-      await pumpAndSettleWithMaterialApp(tester, build(week()));
-      await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToAugust)));
+      await show(tester, week());
+      await show(tester, month(dateResolver: resolveToAugust));
 
       expect(
         visibleRangeCovers(DateTime(2025, 8, 20)),
@@ -80,12 +79,12 @@ void main() {
     });
 
     testWidgets('changing only the resolver, with no view switch, does nothing', (tester) async {
-      await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToMarch)));
-      final before = kalenderController.visibleDateTimeRange.value;
+      await show(tester, month(dateResolver: resolveToMarch));
+      final before = kalenderController!.visibleDateTimeRange.value;
 
-      await pumpAndSettleWithMaterialApp(tester, build(month(dateResolver: resolveToAugust)));
+      await show(tester, month(dateResolver: resolveToAugust));
 
-      expect(kalenderController.visibleDateTimeRange.value, equals(before));
+      expect(kalenderController!.visibleDateTimeRange.value, equals(before));
     });
   });
 
@@ -99,15 +98,15 @@ void main() {
     }
 
     testWidgets('the initial nowCallback decides the highlighted day', (tester) async {
-      await pumpAndSettleWithMaterialApp(tester, build(week(nowCallback: nowMonday)));
+      await show(tester, week(nowCallback: nowMonday));
       expect(highlightedDate(tester).day, equals(13));
     });
 
     testWidgets('changing only nowCallback moves the highlight', (tester) async {
-      await pumpAndSettleWithMaterialApp(tester, build(week(nowCallback: nowMonday)));
+      await show(tester, week(nowCallback: nowMonday));
       expect(highlightedDate(tester).day, equals(13));
 
-      await pumpAndSettleWithMaterialApp(tester, build(week(nowCallback: nowTuesday)));
+      await show(tester, week(nowCallback: nowTuesday));
 
       expect(highlightedDate(tester).day, equals(14), reason: 'the highlight should follow the current nowCallback');
     });
