@@ -188,7 +188,7 @@ A pre-release takes a `-dev.N` suffix, as in `v0.33.0-dev.1`. A patch for an old
 - Every other run reuses the last demo build from the Actions cache. It builds the latest release instead when the cache has expired or was made before that release.
 - The dashboard is `benchmark/dashboard/index.html`, published from main.
 
-`performance_profiling.yml` runs the micro-benchmarks in `benchmark/` and the frame profiling in `examples/testing/`. It runs on pushes to main that touch the package or the benchmarks, and on pull requests labelled `profile`. Each run is compared with the stored results, and the comparison is posted on the pull request. On main the run, with the Flutter version from `.fvmrc`, is added to `data.json` on `refs/benchmarks/data`.
+`performance_profiling.yml` runs the micro-benchmarks in `benchmark/` and the frame profiling in `examples/testing/`. It runs on pushes to main that touch the package or the benchmarks, and on pull requests labelled `profile`. Each run is compared with the stored results, and the comparison is posted on the pull request. On main the run, with the Flutter version from `.fvmrc` and the runner's CPU model, is added to `data.json` on `refs/benchmarks/data`.
 
 `refs/benchmarks/data` is outside `refs/heads`, so a clone does not download it:
 
