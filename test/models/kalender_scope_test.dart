@@ -17,7 +17,9 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
+    );
   });
 
   tearDown(() {
@@ -34,14 +36,17 @@ void main() {
         eventsController: eventsController,
         kalenderController: kalenderController,
         locale: const Locale('de'),
-        viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(dayHeaderStringBuilder: (context, date) => read(context)),
           ),
         ),
-        header: KalenderHeader(multiDayTileComponents: tiles),
-        body: KalenderBody(multiDayTileComponents: tiles),
+        views: [
+          MultiDayViewParts(
+            header: MultiDayHeader(tileComponents: tiles),
+            body: MultiDayBody(tileComponents: tiles),
+          ),
+        ],
       ),
     );
   }
@@ -67,7 +72,6 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: year2025DisplayRange),
         components: KalenderComponents(
           multiDayComponents: MultiDayComponents(
             headerComponents: MultiDayHeaderComponents(
@@ -75,8 +79,12 @@ void main() {
             ),
           ),
         ),
-        header: KalenderHeader(multiDayTileComponents: tiles, interaction: KalenderInteraction(allowResizing: false)),
-        body: KalenderBody(multiDayTileComponents: tiles, interaction: KalenderInteraction(allowResizing: true)),
+        views: [
+          MultiDayViewParts(
+            header: MultiDayHeader(tileComponents: tiles, interaction: KalenderInteraction(allowResizing: false)),
+            body: MultiDayBody(tileComponents: tiles, interaction: KalenderInteraction(allowResizing: true)),
+          ),
+        ],
       ),
     );
 

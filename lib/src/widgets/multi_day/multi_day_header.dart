@@ -14,6 +14,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
+import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
 /// The multi-day header decides which header to display the:
@@ -24,19 +25,43 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// {@category Views}
 class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
-  final HorizontalConfiguration? configuration;
+  final MultiDayHeaderConfiguration? configuration;
 
-  const MultiDayHeader({super.key, this.configuration});
+  /// See [KalenderView.callbacks].
+  final KalenderCallbacks? callbacks;
+
+  /// See [KalenderView.interaction].
+  final KalenderInteraction? interaction;
+
+  /// The tile components. Defaults to [TileComponents.defaultComponents].
+  final TileComponents? tileComponents;
+
+  const MultiDayHeader({super.key, this.configuration, this.callbacks, this.interaction, this.tileComponents});
 
   @override
   Widget build(BuildContext context) {
-    final kalenderController = context.kalenderController;
+    return ViewProviders(
+      callbacks: callbacks,
+      interaction: interaction,
+      tileComponents: tileComponents ?? TileComponents.defaultComponents(),
+      child: _MultiDayHeaderSwitch(configuration: configuration),
+    );
+  }
+}
+
+class _MultiDayHeaderSwitch extends StatelessWidget {
+  final MultiDayHeaderConfiguration? configuration;
+
+  const _MultiDayHeaderSwitch({this.configuration});
+
+  @override
+  Widget build(BuildContext context) {
     assert(
-      kalenderController.viewController is MultiDayViewController,
+      context.viewController is MultiDayViewController,
       'The KalenderController\'s $ViewController needs to be a $MultiDayViewController',
     );
 
-    final viewController = kalenderController.viewController as MultiDayViewController;
+    final viewController = context.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = configuration ?? const MultiDayHeaderConfiguration();
     final components = context.components;
@@ -86,7 +111,7 @@ class _SingleDayHeader extends StatelessWidget {
 
     final headerComponents = components.multiDayComponents.headerComponents;
     final dayHeaderWidget = _visibleRangeBuilder(
-      context,
+      viewController,
       (context, range) => headerComponents.buildDayHeader(context, range.start.forLocation(location: context.location)),
     );
 
@@ -145,7 +170,7 @@ class _MultiDayHeader extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = _visibleRangeBuilder(
-      context,
+      viewController,
       (context, range) => headerComponents.buildWeekNumber(context, range.forLocation(location: context.location)),
     );
 
@@ -205,7 +230,7 @@ class _FreeScrollHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final headerComponents = components.multiDayComponents.headerComponents;
     final weekNumberWidget = _visibleRangeBuilder(
-      context,
+      viewController,
       (context, range) => headerComponents.buildWeekNumber(context, range.forLocation(location: context.location)),
     );
 
@@ -402,13 +427,14 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
   }
 }
 
-/// A [ValueListenableBuilder] on [KalenderController.floatingVisibleRange] that builds nothing while it is null.
+/// A [ValueListenableBuilder] on the [ViewController.floatingVisibleRange] of [viewController] that builds nothing
+/// while it is null.
 Widget _visibleRangeBuilder(
-  BuildContext context,
+  ViewController viewController,
   Widget Function(BuildContext context, FloatingDateTimeRange range) builder,
 ) {
   return ValueListenableBuilder(
-    valueListenable: context.kalenderController.floatingVisibleRange,
+    valueListenable: viewController.floatingVisibleRange,
     builder: (context, value, child) {
       if (value == null) return const SizedBox.shrink();
       return builder(context, value);
@@ -436,7 +462,7 @@ Widget _multiDayTiles(
           eventsController: context.eventsController,
           floatingRange: range,
           configuration: configuration,
-          multiDayCache: viewController.multiDayCache,
+          viewController: viewController,
           maxNumberOfVerticalEvents: null,
           overlayBuilders: components.multiDayComponents.headerComponents.overlayBuilders ?? components.overlayBuilders,
         ),

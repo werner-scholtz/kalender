@@ -60,12 +60,16 @@ void main() {
       final day = DateTime.utc(2025, 1, 15);
       final view = KalenderView(
         eventsController: controllerWithOverflowOn(day),
-        kalenderController: KalenderController(),
-        viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
-        components: components,
-        header: const KalenderHeader(
-          multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
+        kalenderController: KalenderController(
+          viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: day),
         ),
+        components: components,
+        views: const [
+          MultiDayViewParts(
+            header: MultiDayHeader(configuration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1)),
+            body: SizedBox.shrink(),
+          ),
+        ],
       );
 
       return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));

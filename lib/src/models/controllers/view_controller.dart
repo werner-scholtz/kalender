@@ -19,22 +19,22 @@ export 'view_controllers/schedule_view_controller.dart';
 /// {@category Controllers and callbacks}
 abstract class ViewController with KalenderNavigationFunctions {
   /// The location of the current view.
-  Location? location;
+  final Location? location;
 
   /// The range currently visible.
   ///
   /// This is the unzoned counterpart of [KalenderController.visibleDateTimeRange],
   /// which carries the same range as a [KalenderDateTimeRange] for an app to read.
   /// Call [FloatingDateTimeRange.forLocation] to cross between them.
-  final ValueNotifier<FloatingDateTimeRange?> floatingVisibleRange;
+  final floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
 
-  ViewController({this.location, required this.floatingVisibleRange});
+  ViewController({this.location});
 
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 
   /// The [KalenderEvent]s that are currently visible.
-  ValueNotifier<Set<KalenderEvent>> get visibleEvents;
+  final visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
 
   /// The cache used by the event layout delegate.
   final EventLayoutDelegateCache cache = EventLayoutDelegateCache();
@@ -42,8 +42,17 @@ abstract class ViewController with KalenderNavigationFunctions {
   /// The cache used for the multi-day event layout.
   final MultiDayLayoutFrameCache multiDayCache = MultiDayLayoutFrameCache();
 
+  /// What this view shows, for the view created on the next switch.
+  ///
+  /// The base returns the start of [floatingVisibleRange].
+  ViewSnapshot snapshot() => ViewSnapshot(date: floatingVisibleRange.value!.start);
+
   @override
   FutureOr<void> jumpToDate(DateTime date);
 
-  void dispose();
+  @mustCallSuper
+  void dispose() {
+    floatingVisibleRange.dispose();
+    visibleEvents.dispose();
+  }
 }

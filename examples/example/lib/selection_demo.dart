@@ -68,7 +68,6 @@ class SelectionDemo extends StatefulWidget {
 
 class _SelectionDemoState extends State<SelectionDemo> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
 
   final now = DateTime.now();
   late final today = DateTime(now.year, now.month, now.day);
@@ -97,7 +96,7 @@ class _SelectionDemoState extends State<SelectionDemo> {
     ),
     ScheduleViewConfiguration.continuous(displayRange: displayRange, initialDateTime: now, nowCallback: () => now),
   ];
-  late ViewConfiguration viewConfiguration = viewConfigurations.first;
+  late final kalenderController = KalenderController(viewConfiguration: viewConfigurations.first);
 
   var tapMode = TapMode.day;
   var navigate = false;
@@ -198,7 +197,6 @@ class _SelectionDemoState extends State<SelectionDemo> {
               child: KalenderView(
                 eventsController: eventsController,
                 kalenderController: kalenderController,
-                viewConfiguration: viewConfiguration,
                 callbacks: KalenderCallbacks(
                   onTapped: onTapped,
                   dateLabel: GestureCallbacks(
@@ -208,22 +206,23 @@ class _SelectionDemoState extends State<SelectionDemo> {
                   onEventChanged: (event, updatedEvent) =>
                       eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
                 ),
-                header: Material(
-                  color: scheme.surface,
-                  elevation: 2,
-                  child: Column(
-                    children: [
-                      _toolbar(),
-                      const KalenderHeader(multiDayTileComponents: tileComponents),
-                    ],
+                views: [
+                  MultiDayViewParts(
+                    header: _header(scheme, const MultiDayHeader(tileComponents: tileComponents)),
+                    body: const MultiDayBody(tileComponents: tileComponents),
                   ),
-                ),
-                body: KalenderBody(
-                  multiDayTileComponents: tileComponents,
-                  monthTileComponents: tileComponents,
-                  scheduleTileComponents: scheduleTileComponents,
-                  scheduleBodyConfiguration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
-                ),
+                  MonthViewParts(
+                    header: _header(scheme, const MonthHeader()),
+                    body: const MonthBody(tileComponents: tileComponents),
+                  ),
+                  ScheduleViewParts(
+                    header: _header(scheme),
+                    body: ScheduleBody(
+                      tileComponents: scheduleTileComponents,
+                      configuration: ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.show),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -231,6 +230,15 @@ class _SelectionDemoState extends State<SelectionDemo> {
           SizedBox(width: 360, child: _panel(context)),
         ],
       ),
+    );
+  }
+
+  /// The toolbar above [child].
+  Widget _header(ColorScheme scheme, [Widget? child]) {
+    return Material(
+      color: scheme.surface,
+      elevation: 2,
+      child: Column(children: [_toolbar(), if (child != null) child]),
     );
   }
 
@@ -256,9 +264,9 @@ class _SelectionDemoState extends State<SelectionDemo> {
           IconButton(onPressed: () => kalenderController.animateToNextPage(), icon: const Icon(Icons.chevron_right)),
           DropdownMenu(
             dropdownMenuEntries: [for (final c in viewConfigurations) DropdownMenuEntry(value: c, label: c.name)],
-            initialSelection: viewConfiguration,
+            initialSelection: kalenderController.viewConfiguration,
             onSelected: (value) {
-              if (value != null) setState(() => viewConfiguration = value);
+              if (value != null) kalenderController.viewConfiguration = value;
             },
           ),
         ],
