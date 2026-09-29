@@ -248,11 +248,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   ValueListenable<Set<KalenderEvent>> get visibleEvents => _visibleEvents;
   final _visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
 
-  /// The [KalenderTime] currently aligned with the top of the visible viewport.
-  ///
-  /// This reflects the vertical scroll position of a multi-day view (day/week/etc)
-  /// and updates as the user scrolls or zooms. It is `null` when the view
-  /// has no vertical scroll (e.g. month or schedule views).
+  /// The [KalenderTime] aligned with the top of the viewport of a multi-day view. It follows scrolling and zooming, and
+  /// is null in the month and schedule views.
   final visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
   /// The listeners that copy the notifiers of [viewController] into this controller's.

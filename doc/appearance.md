@@ -43,6 +43,10 @@ the package's own behavior: `overlayTileBuilder`, `tileWhenDraggingBuilder`,
 `resizeDragAnchorStrategy`, `resizeHandlePositioner`, `verticalResizeHandle` and
 `horizontalResizeHandle`.
 
+`mergeSemantics`, true by default, merges a tile's widgets into one semantics
+node, the unit a screen reader announces. Set it to false when a tile holds its
+own buttons or other controls.
+
 `resizeHandlePositioner` places the resize handles. `details` carries the tile's
 geometry and builds the detectors:
 
@@ -64,7 +68,7 @@ TileComponents(
 
 ### ScheduleTileComponents
 
-Schedule tiles take `tileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder` and `dragAnchorStrategy`. The drop target is a row highlight, see [`ScheduleComponents`](#appearance--custom-components).
+Schedule tiles take `tileBuilder`, `tileWhenDraggingBuilder`, `feedbackTileBuilder`, `dragAnchorStrategy` and `mergeSemantics`. The drop target is a row highlight, see [`ScheduleComponents`](#custom-components).
 
 ### Advanced tiles with event-tile utilities
 
@@ -186,13 +190,13 @@ A `KalenderTheme` also reaches the tile that follows a drag.
 Four layers, most specific first. Each one fills in the fields the layer above
 it leaves null.
 
-1. A style passed directly to a widget, which is how a custom builder styles the widget it returns (see [Appearance](#appearance--custom-components)).
+1. A style passed directly to a widget, which is how a custom builder styles the widget it returns (see [Custom Components](#custom-components)).
 2. The nearest `KalenderTheme` above the calendar.
 3. The `KalenderThemeData` registered on `ThemeData.extensions`.
 4. The Material 3 defaults.
 
 > [!NOTE]
-> Gutter widths are not styles. Set them with `MonthBodyComponents.weekNumberWidth` or `MultiDayBodyComponents.timelineWidth`.
+> The widths of the week number column and the timeline are not styles. Set them with `MonthBodyComponents.weekNumberWidth` or `MultiDayBodyComponents.timelineWidth`.
 
 Switching themes transitions the calendar's colors along with the rest of the app. A `KalenderTheme` scope does not animate.
 
@@ -218,7 +222,7 @@ KalenderThemeData(
 
 `closeButtonStyle` merges over the defaults of a filled tonal icon button, so set only the fields you change.
 
-## Appearance / Custom Components
+## Custom Components
 
 Pass a `KalenderComponents` object to `KalenderView` to override the default widget builders.
 
@@ -248,7 +252,7 @@ Pass a `KalenderComponents` object to `KalenderView` to override the default wid
         hourLines: (context, heightPerMinute, timeOfDayRange) => CustomWidget(),
         timeline: (context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) =>
             CustomWidget(),
-        // Sizes the timeline gutter, for example to fit a custom timeline's labels.
+        // Sizes the timeline column, for example to fit a custom timeline's labels.
         timelineWidth: (context, timeOfDayRange) => 48,
         daySeparator: (context) => CustomWidget(),
         timeIndicator: (context, timeOfDayRange, heightPerMinute, location) => CustomWidget(),

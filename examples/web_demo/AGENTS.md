@@ -1,6 +1,6 @@
 # web_demo – Local Guidelines
 
-This file applies to work under `examples/web_demo/`. It supplements the repository-level `AGENTS.md` at the root; follow both, with this file taking precedence for demo-specific details.
+This file applies to work under `examples/web_demo/`. It supplements the repository-level `AGENTS.md` at the root. Follow both, and this file wins for demo-specific details.
 
 ## Overview
 
@@ -34,21 +34,21 @@ flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
 ### State ownership
 
 - `lib/providers.dart` defines lightweight `InheritedWidget` providers for app settings and the shared `EventsController`.
-- Each `Calendar` widget creates its own `CalendarScope`, which means each visible calendar instance gets its own `KalenderController` and `DemoConfiguration`. The controller holds the timezone `Location`.
+- Each `Calendar` widget creates its own `DemoScope`, which means each visible calendar instance gets its own `KalenderController` and `DemoConfiguration`. The controller holds the timezone `Location`.
 - In desktop split view, both calendars share the same event store but do not share view/controller state unless you explicitly refactor them to do so.
 
 ### Demo configuration
 
 - `lib/models/demo_configuration.dart` is the source of truth for selectable `ViewConfiguration`s, interaction settings, snapping, and visibility toggles.
-- Prefer extending `DemoConfiguration` when exposing new demo knobs instead of hard-coding behavior directly inside widgets.
+- Prefer extending `DemoConfiguration` when exposing new demo options instead of hard-coding behavior directly inside widgets.
 - The controller's `viewConfiguration` holds the active calendar mode. Keep new view options aligned with the navigation and configuration UI.
 
 ### UI composition
 
 - `lib/widgets/calendar/calendar.dart` is the main composition point for `KalenderView`, the header and body of each view (`views`), overlay behavior, tile components, and the configuration panel.
-- `lib/widgets/toolbar/` contains app-level controls such as theme, locale, text direction, warnings, and view type selection.
+- `lib/widgets/toolbar/` contains app-level controls such as theme, locale, text direction and view type selection.
 - `lib/widgets/configuration/` contains the editors for runtime calendar customization.
-- `lib/widgets/calendar/` contains demo-specific calendar chrome and tile rendering; keep package internals in `kalender` and demo presentation concerns here.
+- `lib/widgets/calendar/` contains demo-specific calendar chrome and tile rendering. Package internals stay in `kalender` and demo presentation stays here.
 
 ### Models and demo data
 
@@ -64,19 +64,18 @@ flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
 ## Change Guidance
 
 - Prefer `package:web_demo/...` imports within this app.
-- Preserve the current separation between app-wide state (`AppSettingsProvider`, `EventsControllerProvider`) and per-calendar state (`CalendarScope`).
+- Preserve the current separation between app-wide state (`AppSettingsProvider`, `EventsControllerProvider`) and per-calendar state (`DemoScope`).
 - When changing interaction behavior, verify both pointer-first desktop flows and touch flows. `isTouch` affects toolbar sizing, gestures, and event interactions.
 - When changing split-view behavior, remember that the two desktop calendars intentionally render independent configurations over the same underlying events.
-- Keep demo-only visual customization in `web_demo`; push reusable widget or API improvements down into the main `kalender` package instead of duplicating logic here.
+- Keep demo-only visual customization in `web_demo`. Push reusable widget or API improvements down into the main `kalender` package instead of duplicating logic here.
 
 ## Testing Expectations
 
 - Run at least `flutter analyze` in `examples/web_demo` after changes.
 - Run `flutter test` when touching startup, localization, toolbar behavior, or widget composition.
-- The existing `test/widget.dart` file is boilerplate and does not reflect the current app. If your change affects app behavior, replace or update that test with assertions against real demo UI rather than preserving the counter example.
 
 ## Common Pitfalls
 
-- Do not add strings only to `app_en.arb`; update all locale files or leave a deliberate TODO if the change is explicitly partial.
-- Do not accidentally couple the two desktop calendars by reusing a single `CalendarScope` unless shared navigation/configuration is the intended product change.
+- Do not add strings only to `app_en.arb`. Update all locale files or leave a deliberate TODO if the change is explicitly partial.
+- Do not accidentally couple the two desktop calendars by reusing a single `DemoScope` unless shared navigation/configuration is the intended product change.
 - Do not move demo-specific tile builders or overlays into the package unless the API is meant to become part of `kalender` itself.

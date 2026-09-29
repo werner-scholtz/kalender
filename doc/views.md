@@ -15,13 +15,13 @@ Switch between views by setting a different `ViewConfiguration` on `KalenderCont
 
 For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. Each overrides the matching enum, and a null from `scrollResolver` or `zoomResolver` falls back to it. `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
 
-`initialDateTime` is only used when the calendar is first built. To show a fixed date on a switch, return it from a `dateResolver`. The resolvers also run when the location changes, which `transition.locationChanged` reports.
+`initialDateTime` is only read when the controller is created. To show a fixed date on a switch, return it from a `dateResolver`. The resolvers also run when the location changes, which `transition.locationChanged` reports.
 
 ## Shared options
 
 All configurations accept:
 - `displayRange`: the total date range the calendar can navigate within (e.g. Jan 2024 to Dec 2025). Defaults to 1 January two years back through 1 January two years ahead.
-- `initialDateTime`: the date to show on first render. Defaults to `DateTime.now()`.
+- `initialDateTime`: the date the controller's view opens on. Defaults to today in the controller's location.
 - `multiDayRule`: which events go in the multi-day header, see [Multi-day and all-day events](events.md#multi-day-and-all-day-events).
 - `name`: what `DateTransition.restorePerView` matches on. Each named constructor sets one.
 - `nowCallback`: overrides how the calendar resolves "now", see [Now Callback](timezones-and-locales.md#now-callback).
@@ -88,7 +88,7 @@ MonthViewConfiguration.singleMonth(
 )
 ```
 
-When `showWeekNumbers` is enabled, the month body adds a leading gutter with one week number per visible row while keeping the day grid at 7 columns.
+When `showWeekNumbers` is enabled, the month body adds a column on the leading side with one week number per visible row while keeping the day grid at 7 columns.
 
 ## Schedule View
 Presents events in a chronological scrollable list.
@@ -140,7 +140,7 @@ The built-in header and body widgets accept view-specific configuration objects:
 | Month    | None                          | `MonthBodyConfiguration`    |
 | Schedule | None                          | `ScheduleBodyConfiguration` |
 
-They also accept `callbacks` and `interaction`, which override the ones on `KalenderView`, and `tileComponents`, see [Appearance](appearance.md). `MultiDayBody` additionally accepts `snapping`. Interaction and snapping are covered in [Interaction](interaction.md).
+`MultiDayHeader` and the bodies also accept `callbacks`, `interaction` and `tileComponents` (see [Appearance](appearance.md)), and `MonthHeader` accepts `callbacks`. See [Interaction](interaction.md) for `interaction` and `snapping`.
 
 Every option below is shown at its default.
 

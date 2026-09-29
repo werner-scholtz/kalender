@@ -47,9 +47,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// The initial heightPerMinute (zoom level).
   final double initialHeightPerMinute;
 
-  /// How the vertical scroll position (time-of-day) is chosen when switching to
-  /// this view from another. Defaults to [ScrollTransition.preserve]. Applies
-  /// when [scrollResolver] is null or returns null.
+  /// How the vertical scroll position (time of day) is chosen when switching to this view from another. Defaults to
+  /// [ScrollTransition.preserve]. Applies when [scrollResolver] is null or returns null.
   final ScrollTransition scrollTransition;
 
   /// Decides the time of day on a view switch before [scrollTransition].
@@ -57,9 +56,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// See [ScrollResolver].
   final ScrollResolver? scrollResolver;
 
-  /// How the zoom (`heightPerMinute`) is chosen when switching to this view from
-  /// another. Defaults to [ZoomTransition.preserve]. Applies when [zoomResolver]
-  /// is null or returns null.
+  /// How the zoom (`heightPerMinute`) is chosen when switching to this view from another. Defaults to
+  /// [ZoomTransition.preserve]. Applies when [zoomResolver] is null or returns null.
   final ZoomTransition zoomTransition;
 
   /// Decides the zoom on a view switch before [zoomTransition].
