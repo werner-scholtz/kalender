@@ -40,32 +40,29 @@ void main() {
       end: TZDateTime(pagoPago, 2025, 1, 1, 23, 30),
     );
 
-    test('uses its location when given none', () {
-      expect(details(early, location: kiritimati).continuesBefore(), isFalse);
-      expect(details(early, location: kiritimati).showStart(), isTrue);
-      expect(details(late, location: pagoPago).continuesAfter(), isFalse);
-      expect(details(late, location: pagoPago).showEnd(), isTrue);
-    });
-
-    test('prefers the location passed to the method', () {
-      // ignore_for_file: deprecated_member_use_from_same_package
-      final before = details(early, location: pagoPago);
-      expect(before.continuesBefore(location: kiritimati), isFalse);
-      expect(before.showStart(location: kiritimati), isTrue);
-      final after = details(late, location: kiritimati);
-      expect(after.continuesAfter(location: pagoPago), isFalse);
-      expect(after.showEnd(location: pagoPago), isTrue);
+    test('uses its location', () {
+      expect(details(early, location: kiritimati).continuesBefore, isFalse);
+      expect(details(early, location: kiritimati).showStart, isTrue);
+      expect(details(late, location: pagoPago).continuesAfter, isFalse);
+      expect(details(late, location: pagoPago).showEnd, isTrue);
     });
 
     test('uses the device timezone without a location', () {
-      expect(details(early).continuesBefore(), FloatingDateTime.fromExternal(early.start).isBefore(day.start));
-      expect(details(late).continuesAfter(), FloatingDateTime.fromExternal(late.end).isAfter(day.end));
+      expect(details(early).continuesBefore, FloatingDateTime.fromExternal(early.start).isBefore(day.start));
+      expect(details(late).continuesAfter, FloatingDateTime.fromExternal(late.end).isAfter(day.end));
     });
   });
 
   testWidgets('a resize handle positioner receives the calendar location', (tester) async {
     final eventsController = DefaultEventsController();
-    final kalenderController = KalenderController();
+    final kalenderController = KalenderController(
+      location: kiritimati,
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: KalenderDateTimeRange(start: DateTime.utc(2024, 12), end: DateTime.utc(2025, 2)),
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialDateTime: TZDateTime(kiritimati, 2025, 1, 1),
+      ),
+    );
     addTearDown(eventsController.dispose);
     addTearDown(kalenderController.dispose);
 
@@ -81,21 +78,20 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        location: kiritimati,
-        viewConfiguration: MultiDayViewConfiguration.singleDay(
-          displayRange: KalenderDateTimeRange(start: DateTime.utc(2024, 12), end: DateTime.utc(2025, 2)),
-          initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-          initialDateTime: TZDateTime(kiritimati, 2025, 1, 1),
-        ),
-        body: KalenderBody(
-          multiDayTileComponents: TileComponents(
-            tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
-            resizeHandlePositioner: (context, details) {
-              received = details.location;
-              return DefaultResizeHandles(details: details);
-            },
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              tileComponents: TileComponents(
+                tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
+                resizeHandlePositioner: (context, details) {
+                  received = details.location;
+                  return DefaultResizeHandles(details: details);
+                },
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
     kalenderController.selectEvent(event);

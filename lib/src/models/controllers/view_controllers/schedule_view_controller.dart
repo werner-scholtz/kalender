@@ -24,19 +24,11 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   @override
   final ScheduleViewConfiguration viewConfiguration;
 
-  @override
-  late final ValueNotifier<Set<KalenderEvent>> visibleEvents;
-
   /// The initial date to display in the schedule view.
   final FloatingDateTime initialDate;
 
-  ScheduleViewController({
-    super.location,
-    required this.viewConfiguration,
-    required super.floatingVisibleRange,
-    required this.visibleEvents,
-    required this.initialDate,
-  }) {
+  ScheduleViewController({super.location, required this.viewConfiguration, required ViewSnapshot initial})
+    : initialDate = initial.date {
     currentPage = viewConfiguration.pageIndexCalculator.indexFromDate(initialDate, location);
     final numberOfPages = viewConfiguration.pageIndexCalculator.numberOfPages(location);
     populateMaps(numberOfPages);
@@ -91,12 +83,6 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
     itemPositionsListener = list?.positionsListener;
   }
 
-  @Deprecated('Not used by the calendar. Use itemCountForPage. Will be removed in 0.33.0.')
-  int get itemCount => itemCountForPage(currentPage);
-
-  @Deprecated('Not used by the calendar. Use indexItem. Will be removed in 0.33.0.')
-  ListItem? item(int index) => indexItem(currentPage)[index];
-
   /// Get the [DateTime] for the given index of the current page.
   FloatingDateTime? dateTimeFromIndex(int index) => dateTimeFromIndexForPage(currentPage, index);
 
@@ -105,20 +91,6 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
 
   /// Get the index closest to the given [DateTime] of the current page.
   int closestIndex(DateTime date) => closestIndexForPage(currentPage, date);
-
-  @Deprecated('Not used by the calendar. Use addItemForPage. Will be removed in 0.33.0.')
-  void addItem({required ListItem item, required FloatingDateTime date, bool isFirst = false}) {
-    return addItemForPage(item: item, date: date, pageIndex: currentPage, isFirst: isFirst);
-  }
-
-  @Deprecated('Not used by the calendar. Use clearPage. Will be removed in 0.33.0.')
-  void clear() => clearPage(currentPage);
-
-  @Deprecated('Not used by the calendar. Use closestIndex. Will be removed in 0.33.0.')
-  int initialScrollIndex(DateTime date) {
-    final normalized = FloatingDateTime.fromExternal(date, location: location).startOfDay;
-    return dateTimeItemIndex(currentPage)[normalized] ?? closestIndex(normalized);
-  }
 
   FutureOr<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) {
     if (!hasInitialized) return null;
@@ -130,7 +102,10 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   }
 
   @override
-  void dispose() => highlightedRange.dispose();
+  void dispose() {
+    highlightedRange.dispose();
+    super.dispose();
+  }
 
   /// Check if the controller has been initialized with the necessary components.
   bool get hasInitialized => itemScrollController != null && itemPositionsListener != null;
@@ -138,16 +113,22 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
 
 /// {@category Controllers and callbacks}
 class ContinuousScheduleViewController extends ScheduleViewController {
-  ContinuousScheduleViewController({
-    super.location,
-    required super.viewConfiguration,
-    required super.floatingVisibleRange,
-    required super.visibleEvents,
-    required super.initialDate,
-  }) {
+  ContinuousScheduleViewController({super.location, required super.viewConfiguration, required super.initial}) {
     floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
-    visibleEvents.value = {};
+    floatingVisibleRange.addListener(_markListShown);
   }
+
+  /// Whether the list has reported the range it shows. Until then the range is the whole display range.
+  bool _listShown = false;
+
+  void _markListShown() {
+    _listShown = true;
+    floatingVisibleRange.removeListener(_markListShown);
+  }
+
+  /// Returns [initialDate] until the list has shown a range.
+  @override
+  ViewSnapshot snapshot() => _listShown ? super.snapshot() : ViewSnapshot(date: initialDate);
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
@@ -185,7 +166,7 @@ class ContinuousScheduleViewController extends ScheduleViewController {
 
     final date = dateTimeFromIndex(currentIndex);
     if (date == null) return;
-    final month = FloatingDateTime.fromDateTime(date.copyWith(month: date.month + delta)).startOfMonth;
+    final month = FloatingDateTime.fromDateTime(date).startOfMonthIn(delta);
 
     final index = monthIndexFromDateTime(currentPage, month) ?? closestIndex(month);
     return _animateToIndex(index);
@@ -212,15 +193,8 @@ class ContinuousScheduleViewController extends ScheduleViewController {
 
 /// {@category Controllers and callbacks}
 class PaginatedScheduleViewController extends ScheduleViewController {
-  PaginatedScheduleViewController({
-    super.location,
-    required super.viewConfiguration,
-    required super.floatingVisibleRange,
-    required super.visibleEvents,
-    required super.initialDate,
-  }) {
+  PaginatedScheduleViewController({super.location, required super.viewConfiguration, required super.initial}) {
     floatingVisibleRange.value = viewConfiguration.pageIndexCalculator.rangeFromIndex(currentPage, location);
-    visibleEvents.value = {};
     pageController = PageController(initialPage: currentPage);
   }
 
@@ -311,5 +285,11 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   void jumpToPage(int page) {
     if (!pageController.hasClients) return;
     pageController.jumpToPage(page);
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 }

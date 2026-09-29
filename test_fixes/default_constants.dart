@@ -9,7 +9,6 @@
 import 'package:kalender/kalender.dart';
 
 double tileHeight = defaultTileHeight;
-Duration newEventDuration = defaultNewEventDuration;
 bool showMultiDayEvents = defaultShowMultiDayEvents;
 EventLayoutStrategy eventLayoutStrategy = defaultEventLayoutStrategy;
 MultiDayLayoutStrategy multiDayLayoutStrategy = defaultMultiDayLayoutStrategy;
