@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   kalender:
     path: ../../../kalender/
   # Pinned. The package documents its API as still changing.

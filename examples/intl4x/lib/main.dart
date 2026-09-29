@@ -5,15 +5,13 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl4x/datetime_format.dart' as intl4x;
 import 'package:intl4x/number_format.dart' as intl4x show NumberFormat;
 import 'package:kalender/kalender.dart';
 
-/// Renders a calendar whose every localized string comes from intl4x.
-///
-/// Kalender formats day names, month names and the overflow count with intl.
-/// Each of those has a builder, so supplying all six replaces intl at runtime
-/// without the package knowing. See [intl4xComponents].
+/// Renders a calendar whose day and month names and overflow count come from
+/// intl4x. See [intl4xComponents] and [intl4xTheme].
 void main() => runApp(const IntlFourXApp());
 
 /// The locales offered by the picker.
@@ -42,7 +40,8 @@ String _month(BuildContext context, DateTime date) {
   ).format(date);
 }
 
-/// Every builder kalender would otherwise answer with intl.
+/// The builders of [KalenderComponents] that kalender would otherwise answer
+/// with intl.
 KalenderComponents intl4xComponents() {
   return KalenderComponents(
     overlayBuilders: OverlayBuilders(
@@ -63,6 +62,13 @@ KalenderComponents intl4xComponents() {
   );
 }
 
+/// The day names of the multi-day overlay, which the theme holds.
+KalenderThemeData intl4xTheme(BuildContext context) {
+  return KalenderThemeData(
+    multiDayOverlayStyle: MultiDayOverlayStyle(dayNameBuilder: (date) => _weekday(context, date)),
+  );
+}
+
 class IntlFourXApp extends StatefulWidget {
   const IntlFourXApp({super.key});
 
@@ -71,15 +77,17 @@ class IntlFourXApp extends StatefulWidget {
 }
 
 class _IntlFourXAppState extends State<IntlFourXApp> {
-  final _eventsController = DefaultEventsController();
-  final _calendarController = KalenderController(
-    viewConfiguration: MultiDayViewConfiguration.week(
-      displayRange: KalenderDateTimeRange(
-        start: DateTime.now().subtract(const Duration(days: 180)),
-        end: DateTime.now().add(const Duration(days: 180)),
-      ),
-    ),
+  static final _displayRange = KalenderDateTimeRange(
+    start: DateTime.now().subtract(const Duration(days: 180)),
+    end: DateTime.now().add(const Duration(days: 180)),
   );
+  final _viewConfigurations = [
+    MultiDayViewConfiguration.week(displayRange: _displayRange),
+    MonthViewConfiguration.singleMonth(displayRange: _displayRange),
+    ScheduleViewConfiguration.continuous(displayRange: _displayRange),
+  ];
+  final _eventsController = DefaultEventsController();
+  late final _calendarController = KalenderController(viewConfiguration: _viewConfigurations.first);
   var _locale = _locales.first;
 
   @override
@@ -110,16 +118,34 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
         child: const SizedBox.expand(),
       ),
     );
+    final scheduleTiles = ScheduleTileComponents(
+      tileBuilder: (context, event, tileRange) => Card(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        child: const SizedBox(height: 24),
+      ),
+    );
 
     return MaterialApp(
       title: 'kalender with intl4x',
       locale: _locale,
       supportedLocales: _locales,
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Localized by intl4x'),
           actions: [
+            ListenableBuilder(
+              listenable: _calendarController,
+              builder: (context, _) => DropdownButton<ViewConfiguration>(
+                value: _calendarController.viewConfiguration,
+                onChanged: (value) => _calendarController.viewConfiguration = value!,
+                items: [
+                  for (final view in _viewConfigurations) DropdownMenuItem(value: view, child: Text(view.name)),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
             DropdownButton<Locale>(
               value: _locale,
               onChanged: (value) => setState(() => _locale = value!),
@@ -130,17 +156,24 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
             const SizedBox(width: 16),
           ],
         ),
-        body: KalenderView(
-          eventsController: _eventsController,
-          kalenderController: _calendarController,
-          locale: _locale,
-          components: intl4xComponents(),
-          views: [
-            MultiDayViewParts(
-              header: MultiDayHeader(tileComponents: tiles),
-              body: MultiDayBody(tileComponents: tiles),
+        body: Builder(
+          builder: (context) => KalenderTheme(
+            data: intl4xTheme(context),
+            child: KalenderView(
+              eventsController: _eventsController,
+              kalenderController: _calendarController,
+              locale: _locale,
+              components: intl4xComponents(),
+              views: [
+                MultiDayViewParts(
+                  header: MultiDayHeader(tileComponents: tiles),
+                  body: MultiDayBody(tileComponents: tiles),
+                ),
+                MonthViewParts(header: const MonthHeader(), body: MonthBody(tileComponents: tiles)),
+                ScheduleViewParts(body: ScheduleBody(tileComponents: scheduleTiles)),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

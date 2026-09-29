@@ -85,6 +85,7 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 - The web demo's event card shows and edits times in the location picked after the calendar opened.
 - The web demo's minimum tile height and unlimited header rows settings keep the other settings.
 - The web demo's configuration labels and options are translated.
+- The intl4x example renders in every locale it offers and switches between the week, month and schedule views.
 
 ## 0.32.0
 
