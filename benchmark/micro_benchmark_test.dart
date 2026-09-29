@@ -113,30 +113,20 @@ class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
   }
 }
 
-/// `SideBySideLayoutDelegate.findLongestChain`, the overlap depth that sizes side-by-side tiles.
-class _LongestChainBenchmark extends _KalenderBenchmark {
-  _LongestChainBenchmark(this.count) : super('Overlap depth · $count events');
+/// `SideBySideLayoutDelegate.arrange`, which places side-by-side tiles in columns.
+class _SideBySideBenchmark extends _KalenderBenchmark {
+  _SideBySideBenchmark(this.count) : super('Side-by-side columns · $count events');
   final int count;
-  late SideBySideLayoutDelegate delegate;
   late List<VerticalLayoutData> data;
 
   @override
   void setup() {
-    delegate = SideBySideLayoutDelegate(
-      events: const [],
-      heightPerMinute: 1.0,
-      date: FloatingDateTime(2024, 1, 1),
-      location: null,
-      timeOfDayRange: KalenderTimeRange.allDay(),
-      minimumTileHeight: null,
-      layoutCache: EventLayoutDelegateCache(),
-    );
-    // Each event overlaps the next few, so the chain depth stays bounded.
+    // Each event overlaps the next few, so the groups stay bounded.
     data = [for (var i = 0; i < count; i++) VerticalLayoutData(id: i, top: i * 10.0, bottom: i * 10.0 + 35.0)];
   }
 
   @override
-  void run() => _sink ^= delegate.findLongestChain(data);
+  void run() => _sink ^= SideBySideLayoutDelegate.arrange(data).length;
 }
 
 /// `DefaultEventsController.eventsInRange` over [queryDays] days of a year with 10 events per day.
@@ -171,7 +161,7 @@ void main() {
       _MultiDayFrameBenchmark(300, 30),
       _MultiDayFrameDenseBenchmark(50, 7), // week at 50 events/day
       _MultiDayFrameDenseBenchmark(50, 35), // month at 50 events/day
-      _LongestChainBenchmark(60),
+      _SideBySideBenchmark(60),
       _EventQueryBenchmark(1),
       _EventQueryBenchmark(7),
       _EventQueryBenchmark(30),

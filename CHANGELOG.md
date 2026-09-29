@@ -26,10 +26,12 @@
 
 - An event tile merges the widgets inside it into one semantics node. `TileComponents.mergeSemantics` turns this off.
 - A `KalenderView` built again on the same `KalenderController` opens on the date, scroll and zoom the previous one showed.
+- `EventLayoutStrategy.sideBySide()` gives a group of tiles as many columns as it has events running at once and puts each tile in the first free column, so tiles no longer cover each other.
 
 ### Deprecations
 
 - `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are deprecated and are removed in 0.34.0. Use `ViewController.snapshot`.
+- `EventLayoutDelegate.findLongestChain` is deprecated and is removed in 0.34.0. Nothing reads it.
 
 ### Features
 
@@ -41,6 +43,7 @@
 - `ViewParts` pairs a header and a body with a kind of `ViewConfiguration`.
 - `MultiDayBody`, `MultiDayHeader`, `MonthBody` and `ScheduleBody` take `callbacks`, `interaction` and `tileComponents`, `MonthHeader` takes `callbacks`, and `MultiDayBody` takes `snapping`.
 - `KalenderView.interaction` sets the interaction for every view, and each view's widgets can override it.
+- `SideBySideLayoutDelegate.arrange` returns the column of each tile as a `SideBySidePlacement`, for a custom layout delegate to reuse.
 
 ### Fixes
 
@@ -60,6 +63,7 @@
 - Dragging an event in the multi-day body repaints only the day columns the drag changes.
 - An event keeps its start and end converted for a location, and converts them again when the app resumes in another device timezone.
 - After a page change, `KalenderController.visibleEvents` holds only the events of the page on screen.
+- A side-by-side tile no longer gets a negative width when `minimumTileHeight` stretches tiles at a low zoom.
 
 ### Examples
 
