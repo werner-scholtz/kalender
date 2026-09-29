@@ -22,7 +22,7 @@ void main() {
     await pumpAndSettleWithMaterialApp(
       tester,
       TestProvider(
-        kalenderController: KalenderController(),
+        kalenderController: KalenderController(viewConfiguration: ScheduleViewConfiguration.continuous()),
         eventsController: DefaultEventsController(),
         tileComponents: TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox()),
         locale: locale,

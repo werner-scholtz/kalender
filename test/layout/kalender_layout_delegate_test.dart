@@ -23,7 +23,7 @@ void main() {
   for (final configuration in configurations) {
     testWidgets('a view shorter than its header lays out without errors, ${configuration.name}', (tester) async {
       final eventsController = DefaultEventsController();
-      final kalenderController = KalenderController();
+      final kalenderController = KalenderController(viewConfiguration: configuration);
       addTearDown(eventsController.dispose);
       addTearDown(kalenderController.dispose);
 
@@ -33,13 +33,7 @@ void main() {
           alignment: Alignment.topLeft,
           child: SizedBox(
             height: 1,
-            child: KalenderView(
-              eventsController: eventsController,
-              kalenderController: kalenderController,
-              viewConfiguration: configuration,
-              header: const KalenderHeader(),
-              body: const KalenderBody(),
-            ),
+            child: KalenderView(eventsController: eventsController, kalenderController: kalenderController),
           ),
         ),
       );

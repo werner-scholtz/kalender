@@ -20,7 +20,6 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   final components = TileComponents(
@@ -30,16 +29,24 @@ void main() {
   // Align the top of the viewport with [hour] so each test starts with room to
   // scroll in the direction it drags.
   Future<void> pumpWeek(WidgetTester tester, int hour) {
-    return pumpKalender(
-      tester,
-      eventsController: eventsController,
-      kalenderController: kalenderController,
+    kalenderController = KalenderController(
       viewConfiguration: MultiDayViewConfiguration.week(
         displayRange: KalenderDateTimeRange(start: start, end: start.add(const Duration(days: 7))),
         initialDateTime: start,
         initialTimeOfDay: KalenderTime(hour: hour, minute: 0),
       ),
-      body: KalenderBody(multiDayTileComponents: components, interaction: kPreciseInteraction),
+    );
+    return pumpKalender(
+      tester,
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      interaction: kPreciseInteraction,
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(tileComponents: components),
+        ),
+      ],
     );
   }
 
@@ -73,7 +80,7 @@ void main() {
       final offsetBefore = kalenderController.multiDayViewController.scrollController.offset;
 
       final tile = find.byKey(DayEventTile.tileKey(id));
-      final bodyRect = tester.getRect(find.byType(KalenderBody));
+      final bodyRect = tester.getRect(find.byType(MultiDayBody));
       final gesture = await tester.holdDragAt(tile, Offset(tester.getCenter(tile).dx, c.targetY(bodyRect)));
       await gesture.up();
       await tester.pumpAndSettle();

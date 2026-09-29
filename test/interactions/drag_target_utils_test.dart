@@ -23,7 +23,7 @@ class _HarnessWidget extends StatefulWidget {
 /// against this harness.
 class _DragUtilsHarness extends State<_HarnessWidget> with DragTargetUtilities<_HarnessWidget> {
   @override
-  final KalenderController controller = KalenderController();
+  final KalenderController controller = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
 
   @override
   EventsController get eventsController => throw UnimplementedError();

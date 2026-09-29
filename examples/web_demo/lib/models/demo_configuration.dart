@@ -8,15 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:kalender/kalender.dart';
 
 class DemoConfiguration extends ChangeNotifier {
-  /// The view configuration of the calendar.
-  late final viewConfigurationNotifier = ValueNotifier(isMobile ? viewConfigurations[3] : viewConfigurations[1]);
-  ViewConfiguration get viewConfiguration => viewConfigurationNotifier.value;
-  set viewConfiguration(ViewConfiguration value) {
-    if (viewConfigurationNotifier.value == value) return;
-    viewConfigurationNotifier.value = value;
-    notifyListeners();
-  }
-
   /// The display range of the calendar.
   final _displayRange = KalenderDateTimeRange(
     start: DateTime(2018),
@@ -45,6 +36,9 @@ class DemoConfiguration extends ChangeNotifier {
     ScheduleViewConfiguration.paginated(name: "Paginated Schedule", displayRange: _displayRange),
     MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll", displayRange: _displayRange),
   ];
+
+  /// The view configuration the calendar opens with.
+  late final initialViewConfiguration = isMobile ? viewConfigurations[3] : viewConfigurations[1];
 
   /// The body configuration of the calendar.
   final multiDayBodyConfigurationNotifier = ValueNotifier(const MultiDayBodyConfiguration());
@@ -129,8 +123,7 @@ class DemoConfiguration extends ChangeNotifier {
   operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! DemoConfiguration) return false;
-    return viewConfiguration == other.viewConfiguration &&
-        multiDayBodyConfiguration == other.multiDayBodyConfiguration &&
+    return multiDayBodyConfiguration == other.multiDayBodyConfiguration &&
         multiDayHeaderConfiguration == other.multiDayHeaderConfiguration &&
         monthBodyConfiguration == other.monthBodyConfiguration &&
         interactionHeader == other.interactionHeader &&
@@ -141,7 +134,6 @@ class DemoConfiguration extends ChangeNotifier {
 
   @override
   int get hashCode => Object.hash(
-        viewConfiguration,
         multiDayBodyConfiguration,
         multiDayHeaderConfiguration,
         monthBodyConfiguration,

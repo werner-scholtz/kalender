@@ -27,15 +27,8 @@ void main() {
     required MultiDayViewConfiguration viewConfiguration,
     Location? location,
   }) {
-    final kalenderController = KalenderController();
+    final kalenderController = KalenderController(viewConfiguration: viewConfiguration, location: location);
     final eventsController = DefaultEventsController();
-    final viewController = MultiDayViewController(
-      viewConfiguration: viewConfiguration,
-      floatingVisibleRange: ValueNotifier(FloatingDateTimeRange(start: monday, end: monday.endOfWeek())),
-      visibleEvents: ValueNotifier(<KalenderEvent>{}),
-      location: location,
-    );
-    kalenderController.attach(viewController);
 
     return pumpAndSettleWithMaterialApp(
       tester,

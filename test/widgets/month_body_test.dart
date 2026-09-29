@@ -19,13 +19,11 @@ void _expectMonthRows(WidgetTester tester, int rows) {
 void main() {
   group('MonthBody Tests', () {
     late DefaultEventsController eventsController;
-    late KalenderController kalenderController;
 
     final defaultDisplayRange = KalenderDateTimeRange(start: DateTime(2023), end: DateTime(2026));
 
     setUp(() {
       eventsController = DefaultEventsController();
-      kalenderController = KalenderController();
     });
 
     Future<void> pumpMonthView(
@@ -37,16 +35,23 @@ void main() {
       MonthBodyConfiguration? bodyConfiguration,
       KalenderThemeData? theme,
     }) {
-      final view = KalenderView(
-        eventsController: eventsController,
-        kalenderController: kalenderController,
+      final kalenderController = KalenderController(
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: displayRange ?? defaultDisplayRange,
           initialDateTime: initialDateTime,
           showWeekNumbers: showWeekNumbers,
         ),
+      );
+      final view = KalenderView(
+        eventsController: eventsController,
+        kalenderController: kalenderController,
         components: components,
-        body: KalenderBody(monthBodyConfiguration: bodyConfiguration),
+        views: [
+          MonthViewParts(
+            header: const SizedBox.shrink(),
+            body: MonthBody(configuration: bodyConfiguration),
+          ),
+        ],
       );
 
       return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));

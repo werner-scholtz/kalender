@@ -25,8 +25,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// The shared calendar controller.
-final calendarControllerProvider = Provider<KalenderController>((ref) => KalenderController());
+/// The shared calendar controller. It holds the selected view configuration.
+final calendarControllerProvider = Provider<KalenderController>(
+  (ref) => KalenderController(viewConfiguration: ref.read(viewConfigurationsProvider).first),
+);
 
 /// The shared events controller.
 final eventsProvider = Provider<EventsController>((ref) => DefaultEventsController());
@@ -45,32 +47,19 @@ final viewConfigurationsProvider = Provider<List<ViewConfiguration>>((ref) {
   ];
 });
 
-/// The currently selected view configuration. Watchers rebuild when [select] runs.
-class SelectedView extends Notifier<ViewConfiguration> {
-  @override
-  ViewConfiguration build() => ref.watch(viewConfigurationsProvider).first;
-
-  void select(ViewConfiguration config) => state = config;
-}
-
-final selectedViewProvider = NotifierProvider<SelectedView, ViewConfiguration>(SelectedView.new);
-
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The controllers never change, so read them; watch only the selected view
-    // configuration, which the calendar needs to rebuild.
+    // The controllers never change, so read them.
     final eventsController = ref.read(eventsProvider);
     final kalenderController = ref.read(calendarControllerProvider);
-    final selected = ref.watch(selectedViewProvider);
 
     return Scaffold(
       body: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: selected,
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreate: (event) => event,
@@ -80,46 +69,52 @@ class HomeScreen extends ConsumerWidget {
             updatedEvent: updatedEvent,
           ),
         ),
-        header: Material(
-          color: Theme.of(context).colorScheme.surface,
-          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-          elevation: 2,
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Row(children: [ViewSwitcher()]),
-              ),
-              KalenderHeader(),
-            ],
+        views: [
+          MultiDayViewParts(
+            header: _header(context, const MultiDayHeader()),
+            body: const MultiDayBody(configuration: MultiDayBodyConfiguration(showMultiDayEvents: false)),
           ),
-        ),
-        body: KalenderBody(
-          multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
-          monthBodyConfiguration: MonthBodyConfiguration(),
-        ),
+          MonthViewParts(header: _header(context, const MonthHeader())),
+        ],
+      ),
+    );
+  }
+
+  /// The view switcher above [child].
+  Widget _header(BuildContext context, Widget child) {
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+      elevation: 2,
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(8),
+            child: Row(children: [ViewSwitcher()]),
+          ),
+          child,
+        ],
       ),
     );
   }
 }
 
-/// Dropdown that switches the calendar's view configuration. Rebuilds on its own
-/// when the selection changes.
+/// Dropdown that switches the calendar's view configuration.
 class ViewSwitcher extends ConsumerWidget {
   const ViewSwitcher({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final configurations = ref.read(viewConfigurationsProvider);
-    final selected = ref.watch(selectedViewProvider);
+    final kalenderController = ref.read(calendarControllerProvider);
 
     return DropdownMenu<ViewConfiguration>(
-      initialSelection: selected,
+      initialSelection: kalenderController.viewConfiguration,
       dropdownMenuEntries: [
         for (final config in configurations) DropdownMenuEntry(value: config, label: config.name),
       ],
       onSelected: (value) {
-        if (value != null) ref.read(selectedViewProvider.notifier).select(value);
+        if (value != null) kalenderController.viewConfiguration = value;
       },
     );
   }
