@@ -18,7 +18,8 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 
 /// Displays the multi-day events from the [EventsController] and rebuilds when they change.
 ///
-/// Adds the events it shows to [ViewController.visibleEvents] without clearing it.
+/// Adds the events it shows to [ViewController.visibleEvents] without clearing it, while its range overlaps
+/// [ViewController.floatingVisibleRange].
 class MultiDayEventWidget extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;
@@ -111,7 +112,11 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final visibleEvents = widget.viewController.visibleEvents;
+        final viewController = widget.viewController;
+        // A page built during an animation or next to the one on screen is not visible.
+        final visibleRange = viewController.floatingVisibleRange.value;
+        if (visibleRange != null && !widget.floatingRange.overlaps(visibleRange)) return;
+        final visibleEvents = viewController.visibleEvents;
         // A new set notifies listeners even when its contents match, so assign only when something is added.
         final current = visibleEvents.value;
         if (_events.any((event) => !current.contains(event))) {
