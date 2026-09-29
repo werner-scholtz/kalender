@@ -375,7 +375,7 @@ class EventLayoutInformation {
   /// if there is any overlap.
   ///
   /// ## Returns:
-  /// - `true` if the events overlap; otherwise, `false`.
+  /// - `true` if the events overlap, `false` otherwise.
   bool overlaps(EventLayoutInformation other) {
     return !(end < other.start || start > other.end);
   }

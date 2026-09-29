@@ -316,8 +316,8 @@ class MonthIndexCalculator extends PageIndexCalculator with _MonthPages {
 
   /// The first day of the focused month shown on the page at [index].
   ///
-  /// This is the month the page represents; the grid also renders leading and
-  /// trailing days from the adjacent months around it.
+  /// This is the month the page represents. The grid also renders leading and trailing days from the adjacent months
+  /// around it.
   FloatingDateTime monthStartFromIndex(int index, Location? location) {
     final floatingStart = floatingRange(location).start;
     return FloatingDateTime.fromDateTime(floatingStart.copyWith(month: floatingStart.month + index));

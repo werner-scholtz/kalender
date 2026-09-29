@@ -233,8 +233,8 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     if (!controller.hasClients || controller.positions.length != 1) return _bands.keys.toSet();
 
     final position = controller.position;
-    // The viewport/pixels are not available until the scroll view has been laid
-    // out. Until then build everything; the post-frame callback re-culls.
+    // The viewport and pixels are not available until the scroll view has been laid out. Until then everything is built,
+    // and the post-frame callback culls again.
     if (!position.hasViewportDimension || !position.hasPixels) return _bands.keys.toSet();
     final overscan = position.viewportDimension * 0.5;
     final windowTop = position.pixels - overscan;
