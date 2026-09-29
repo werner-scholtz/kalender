@@ -114,7 +114,8 @@ abstract class EventTile extends StatelessWidget {
         showResizeHandles &&
         (event.canResizeStart(interaction, floatingRange, location: location) ||
             event.canResizeEnd(interaction, floatingRange, location: location));
-    if (event.canReschedule(interaction) || canResize) return tile;
-    return TranslucentPointer(child: tile);
+    final semantics = tileComponents.mergeSemantics ? MergeSemantics(child: tile) : tile;
+    if (event.canReschedule(interaction) || canResize) return semantics;
+    return TranslucentPointer(child: semantics);
   }
 }

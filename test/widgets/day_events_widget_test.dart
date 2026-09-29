@@ -39,15 +39,8 @@ void main() {
     ];
 
     eventsController = DefaultEventsController()..addEvents(events);
-    kalenderController = KalenderController();
-    viewController = MultiDayViewController(
-      viewConfiguration: MultiDayViewConfiguration.singleDay(),
-      floatingVisibleRange: ValueNotifier(
-        FloatingDateTimeRange(start: floatingStart.startOfDay, end: floatingStart.endOfDay),
-      ),
-      visibleEvents: ValueNotifier({}),
-    );
-    kalenderController.attach(viewController);
+    kalenderController = KalenderController(viewConfiguration: MultiDayViewConfiguration.singleDay());
+    viewController = kalenderController.viewController as MultiDayViewController;
   });
 
   Future<void> pumpEventsRow(WidgetTester tester) async {

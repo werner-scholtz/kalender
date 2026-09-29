@@ -49,10 +49,7 @@ abstract final class KalenderScope {
   /// The callbacks the calendar reports to, or null when it has none.
   static KalenderCallbacks? callbacksOf(BuildContext context) => Callbacks.of(context);
 
-  /// What the calendar allows at this point in the tree.
-  ///
-  /// [KalenderHeader] and [KalenderBody] each take their own, so this is the
-  /// nearest one rather than the calendar's.
+  /// What the calendar allows at this point in the tree, the nearest one. See [KalenderView.interaction].
   static KalenderInteraction interactionOf(BuildContext context) => Interaction.of(context);
 
   /// How a dragged event snaps at this point in the tree.

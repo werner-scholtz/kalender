@@ -12,13 +12,13 @@ void main() {
   testWidgets('the calendar renders without the bridge', (tester) async {
     await tester.pumpWidget(_app(bridge: false));
     expect(tester.takeException(), isNull);
-    expect(find.byType(KalenderBody), findsOneWidget);
+    expect(find.byType(MultiDayBody), findsOneWidget);
   });
 
   testWidgets('with the bridge the calendar renders', (tester) async {
     await tester.pumpWidget(_app(bridge: true));
     expect(tester.takeException(), isNull);
-    expect(find.byType(KalenderBody), findsOneWidget);
+    expect(find.byType(MultiDayBody), findsOneWidget);
   });
 }
 
@@ -40,7 +40,14 @@ class _Calendar extends StatefulWidget {
 
 class _CalendarState extends State<_Calendar> {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController();
+  final kalenderController = KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(
+      displayRange: KalenderDateTimeRange(
+        start: DateTime.now().subtract(const Duration(days: 7)),
+        end: DateTime.now().add(const Duration(days: 7)),
+      ),
+    ),
+  );
 
   @override
   void dispose() {
@@ -51,17 +58,10 @@ class _CalendarState extends State<_Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
     return KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: KalenderDateTimeRange(
-          start: now.subtract(const Duration(days: 7)),
-          end: now.add(const Duration(days: 7)),
-        ),
-      ),
-      body: const KalenderBody(),
+      views: const [MultiDayViewParts(header: SizedBox.shrink())],
     );
   }
 }

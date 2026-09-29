@@ -28,7 +28,7 @@ class Calendar extends StatelessWidget {
     return DemoScope(
       child: Builder(
         builder: (context) => EventDetailOverlay(
-          location: context.location.value,
+          location: context.controller.location,
           child: CalendarContent(initialShowConfig: initialShowConfig),
         ),
       ),
@@ -52,6 +52,7 @@ class _CalendarContentState extends State<CalendarContent> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final canShowCustomize = constraints.maxWidth > 500;
+        final onToggleConfig = canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null;
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -60,92 +61,58 @@ class _CalendarContentState extends State<CalendarContent> {
                 controller: context.controller,
                 child: ListenableBuilder(
                   listenable: Listenable.merge([
-                    context.configuration.viewConfigurationNotifier,
+                    context.controller,
                     context.configuration.shadeAdjacentMonthNotifier,
                     context.configuration.scopedThemeNotifier,
-                    context.location,
+                    context.configuration.interactionBody,
                   ]),
                   builder: (context, _) => _scope(
                     context,
                     KalenderView(
-                      location: context.location.value,
                       locale: Localizations.localeOf(context),
                       kalenderController: context.controller,
                       eventsController: context.eventsController,
-                      viewConfiguration: context.configuration.viewConfiguration,
                       components: _components(context),
                       callbacks: _callbacks,
-                      header: Column(
-                        spacing: 4,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surface,
-                              border: !context.configuration.showHeader
-                                  ? Border(
-                                      bottom: BorderSide(
-                                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                              child: NavigationHeader(
-                                controller: context.controller,
-                                viewConfigurations: context.configuration.viewConfigurations,
-                                viewConfiguration: context.configuration.viewConfiguration,
-                                onToggleConfig:
-                                    canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null,
-                                configVisible: _showConfig,
-                              ),
+                      interaction: context.configuration.interactionBody.value,
+                      views: [
+                        MultiDayViewParts(
+                          header: _header(
+                            context,
+                            onToggleConfig,
+                            (context) => MultiDayHeader(
+                              configuration: context.configuration.multiDayHeaderConfiguration,
+                              interaction: context.configuration.interactionHeader.value,
+                              tileComponents: _multiDayTileComponents,
                             ),
                           ),
-                          if (context.configuration.showHeader)
-                            ListenableBuilder(
-                              listenable: Listenable.merge([
-                                context.configuration.interactionHeader,
-                                context.configuration.multiDayHeaderConfigurationNotifier,
-                              ]),
-                              builder: (context, _) {
-                                return Container(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
-                                      ),
-                                    ),
-                                  ),
-                                  child: KalenderHeader(
-                                    multiDayTileComponents: _multiDayTileComponents,
-                                    multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
-                                    interaction: context.configuration.interactionBody.value,
-                                  ),
-                                );
-                              },
+                          body: ListenableBuilder(
+                            listenable: Listenable.merge([
+                              context.configuration.snapping,
+                              context.configuration.multiDayBodyConfigurationNotifier,
+                            ]),
+                            builder: (context, _) => MultiDayBody(
+                              configuration: context.configuration.multiDayBodyConfiguration,
+                              snapping: context.configuration.snapping.value,
+                              tileComponents: _tileComponents,
                             ),
-                        ],
-                      ),
-                      body: ListenableBuilder(
-                        listenable: Listenable.merge([
-                          context.configuration.interactionBody,
-                          context.configuration.snapping,
-                          context.configuration.multiDayBodyConfigurationNotifier,
-                          context.configuration.monthBodyConfigurationNotifier,
-                        ]),
-                        builder: (context, _) {
-                          return KalenderBody(
-                            multiDayTileComponents: _tileComponents,
-                            monthTileComponents: _multiDayTileComponents,
-                            multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
-                            monthBodyConfiguration: context.configuration.monthBodyConfiguration,
-                            scheduleTileComponents: _scheduleTileComponents,
-                            interaction: context.configuration.interactionBody.value,
-                            snapping: context.configuration.snapping.value,
-                          );
-                        },
-                      ),
+                          ),
+                        ),
+                        MonthViewParts(
+                          header: _header(context, onToggleConfig, (context) => const MonthHeader()),
+                          body: ListenableBuilder(
+                            listenable: context.configuration.monthBodyConfigurationNotifier,
+                            builder: (context, _) => MonthBody(
+                              configuration: context.configuration.monthBodyConfiguration,
+                              tileComponents: _multiDayTileComponents,
+                            ),
+                          ),
+                        ),
+                        ScheduleViewParts(
+                          header: _header(context, onToggleConfig, (context) => const SizedBox.shrink()),
+                          body: ScheduleBody(tileComponents: _scheduleTileComponents),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -170,6 +137,57 @@ class _CalendarContentState extends State<CalendarContent> {
           ],
         );
       },
+    );
+  }
+
+  /// The navigation header above the header [viewHeader] builds.
+  Widget _header(BuildContext context, VoidCallback? onToggleConfig, WidgetBuilder viewHeader) {
+    return Column(
+      spacing: 4,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            border: !context.configuration.showHeader
+                ? Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                    ),
+                  )
+                : null,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: NavigationHeader(
+              controller: context.controller,
+              viewConfigurations: context.configuration.viewConfigurations,
+              viewConfiguration: context.controller.viewConfiguration,
+              onToggleConfig: onToggleConfig,
+              configVisible: _showConfig,
+            ),
+          ),
+        ),
+        if (context.configuration.showHeader)
+          ListenableBuilder(
+            listenable: Listenable.merge([
+              context.configuration.interactionHeader,
+              context.configuration.multiDayHeaderConfigurationNotifier,
+            ]),
+            builder: (context, _) {
+              return Container(
+                padding: const EdgeInsets.only(top: 4),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                    ),
+                  ),
+                ),
+                child: viewHeader(context),
+              );
+            },
+          ),
+      ],
     );
   }
 
@@ -274,7 +292,7 @@ class _CalendarContentState extends State<CalendarContent> {
   /// Selects the week, or clears a selection of exactly that week.
   void _toggleWeek(MultiDayDetail detail) {
     final controller = context.controller;
-    final selected = controller.selectedRange.value?.forLocation(location: context.location.value);
+    final selected = controller.selectedRange.value?.forLocation(location: context.controller.location);
     if (selected == detail.dateTimeRange) {
       controller.deselectRange();
     } else {

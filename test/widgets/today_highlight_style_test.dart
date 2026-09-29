@@ -17,21 +17,22 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
   });
 
   final now = DateTime(2025, 3, 24, 12);
 
   Future<void> pumpMonth(WidgetTester tester, {KalenderThemeData? theme}) {
-    final view = KalenderView(
-      eventsController: eventsController,
-      kalenderController: kalenderController,
+    kalenderController = KalenderController(
       viewConfiguration: MonthViewConfiguration.singleMonth(
         displayRange: KalenderDateTimeRange(start: DateTime(2025, 2), end: DateTime(2025, 5)),
         initialDateTime: now,
         nowCallback: () => now,
       ),
-      body: const KalenderBody(),
+    );
+    final view = KalenderView(
+      eventsController: eventsController,
+      kalenderController: kalenderController,
+      views: bodyOnlyViews,
     );
     return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
   }

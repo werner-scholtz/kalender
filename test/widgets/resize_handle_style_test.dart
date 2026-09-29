@@ -22,7 +22,14 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
+        initialHeightPerMinute: 1,
+        initialDateTime: DateTime(2025, 1, 1),
+      ),
+    );
     eventId = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4)));
   });
 
@@ -35,19 +42,18 @@ void main() {
     final view = KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.singleDay(
-        displayRange: year2025DisplayRange,
-        initialTimeOfDay: const KalenderTime(hour: 0, minute: 0),
-        initialHeightPerMinute: 1,
-        initialDateTime: DateTime(2025, 1, 1),
-      ),
-      body: KalenderBody(
-        interaction: interactionFor(mode),
-        multiDayTileComponents: TileComponents(
-          tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
-          verticalResizeHandle: const SizedBox.expand(),
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(
+            interaction: interactionFor(mode),
+            tileComponents: TileComponents(
+              tileBuilder: (context, event, tileRange) => const SizedBox.expand(),
+              verticalResizeHandle: const SizedBox.expand(),
+            ),
+          ),
         ),
-      ),
+      ],
     );
 
     return pumpAndSettleWithMaterialApp(

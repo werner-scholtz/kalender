@@ -20,7 +20,11 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(
+        displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
+      ),
+    );
   });
 
   final tiles = TileComponents(tileBuilder: (context, event, tileRange) => const SizedBox());
@@ -35,13 +39,14 @@ void main() {
     final view = KalenderView(
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)),
-      ),
       components: components,
       locale: locale,
-      header: KalenderHeader(multiDayTileComponents: tiles),
-      body: KalenderBody(multiDayTileComponents: tiles),
+      views: [
+        MultiDayViewParts(
+          header: MultiDayHeader(tileComponents: tiles),
+          body: MultiDayBody(tileComponents: tiles),
+        ),
+      ],
     );
     await pumpAndSettleWithMaterialApp(
       tester,

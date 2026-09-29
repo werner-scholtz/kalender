@@ -15,7 +15,14 @@ void main() {
   testWidgets('a selection change rebuilds only the tiles of the events it involves', (tester) async {
     final monday = DateTime(2025, 3, 24);
     final eventsController = DefaultEventsController();
-    final kalenderController = KalenderController();
+    final kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(
+        initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
+        initialHeightPerMinute: 1,
+        displayRange: KalenderDateTimeRange(start: monday, end: DateTime(2025, 3, 31)),
+        initialDateTime: monday,
+      ),
+    );
     final events = [
       for (final hour in [6, 9, 12])
         KalenderEvent(
@@ -30,24 +37,22 @@ void main() {
       tester,
       eventsController: eventsController,
       kalenderController: kalenderController,
-      viewConfiguration: MultiDayViewConfiguration.week(
-        initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
-        initialHeightPerMinute: 1,
-        displayRange: KalenderDateTimeRange(start: monday, end: DateTime(2025, 3, 31)),
-        initialDateTime: monday,
-      ),
-      body: KalenderBody(
-        multiDayTileComponents: TileComponents(
-          tileBuilder: (context, event, tileRange) {
-            builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
-            return const SizedBox.expand();
-          },
-          tileWhenDraggingBuilder: (context, event) {
-            builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
-            return const SizedBox.expand();
-          },
+      views: [
+        MultiDayViewParts(
+          body: MultiDayBody(
+            tileComponents: TileComponents(
+              tileBuilder: (context, event, tileRange) {
+                builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
+                return const SizedBox.expand();
+              },
+              tileWhenDraggingBuilder: (context, event) {
+                builds.update(event.id, (n) => n + 1, ifAbsent: () => 1);
+                return const SizedBox.expand();
+              },
+            ),
+          ),
         ),
-      ),
+      ],
     );
 
     Future<Map<String, int>> rebuildsAfter(VoidCallback change) async {

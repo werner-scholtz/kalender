@@ -24,7 +24,9 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
+    );
   });
 
   tearDown(() {
@@ -46,8 +48,12 @@ void main() {
     eventsController: eventsController,
     kalenderController: kalenderController,
     locale: locale,
-    viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange),
-    body: KalenderBody(multiDayTileComponents: tiles),
+    views: [
+      MultiDayViewParts(
+        header: const SizedBox.shrink(),
+        body: MultiDayBody(tileComponents: tiles),
+      ),
+    ],
   );
 
   String labelAt(WidgetTester tester, int hour) {

@@ -15,13 +15,18 @@ void main() {
   final busyDay = DateTime(2025, 1, 15);
   final emptyDay = DateTime(2025, 1, 22);
 
+  final range = KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 6));
+  final month = MonthViewConfiguration.singleMonth(displayRange: range, initialDateTime: busyDay);
+  final week = MultiDayViewConfiguration.week(displayRange: range, initialDateTime: busyDay);
+  final schedule = ScheduleViewConfiguration.continuous(displayRange: range, initialDateTime: busyDay);
+
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;
   late List<String> printed;
 
   setUp(() {
     eventsController = controllerWithOverflowOn(busyDay);
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(viewConfiguration: month);
     printed = [];
   });
 
@@ -30,24 +35,15 @@ void main() {
     kalenderController.dispose();
   });
 
-  Future<void> capturePrints(Future<void> Function() body) async {
-    final original = debugPrint;
-    debugPrint = (message, {wrapWidth}) => printed.add(message ?? '');
-    try {
-      await body();
-    } finally {
-      debugPrint = original;
-    }
-  }
+  Future<void> capturePrints(Future<void> Function() body) async => printed.addAll(await collectPrints(body));
 
-  final range = KalenderDateTimeRange(start: DateTime(2024, 12), end: DateTime(2025, 6));
-  final month = MonthViewConfiguration.singleMonth(displayRange: range, initialDateTime: busyDay);
-  final week = MultiDayViewConfiguration.week(displayRange: range, initialDateTime: busyDay);
-  final schedule = ScheduleViewConfiguration.continuous(displayRange: range, initialDateTime: busyDay);
+  void startOn(ViewConfiguration configuration) {
+    kalenderController.dispose();
+    kalenderController = KalenderController(viewConfiguration: configuration);
+  }
 
   Future<void> pump(
     WidgetTester tester, {
-    ViewConfiguration? configuration,
     OverlayBuilders? overlayBuilders,
     KalenderCallbacks? callbacks,
     TextDirection textDirection = TextDirection.ltr,
@@ -61,11 +57,8 @@ void main() {
         child: KalenderView(
           eventsController: eventsController,
           kalenderController: kalenderController,
-          viewConfiguration: configuration ?? month,
           callbacks: callbacks,
           components: KalenderComponents(overlayBuilders: overlayBuilders),
-          header: const KalenderHeader(),
-          body: const KalenderBody(),
         ),
       ),
     );
@@ -156,12 +149,11 @@ void main() {
     testWidgets('opens nothing without a view', (tester) async {
       await pump(tester);
       await tester.pumpWidget(const SizedBox());
-      expect(kalenderController.isAttached, isFalse);
 
       await capturePrints(() => kalenderController.showDayOverlay(busyDay));
 
       expect(kalenderController.openDayOverlay.value, isNull);
-      expect(printed, [contains('is not visible')]);
+      expect(printed, [contains('no KalenderView is mounted')]);
     });
 
     testWidgets('a day that is open when the calendar builds shows its overlay', (tester) async {
@@ -172,7 +164,8 @@ void main() {
     });
 
     testWidgets('opens the overlay in the multi-day header', (tester) async {
-      await pump(tester, configuration: week);
+      startOn(week);
+      await pump(tester);
 
       kalenderController.showDayOverlay(DateTime(2025, 1, 16));
       await tester.pumpAndSettle();
@@ -181,7 +174,8 @@ void main() {
     });
 
     testWidgets('opens nothing in the schedule view, and says why', (tester) async {
-      await pump(tester, configuration: schedule);
+      startOn(schedule);
+      await pump(tester);
 
       await capturePrints(() async {
         kalenderController.showDayOverlay(busyDay);
@@ -245,10 +239,12 @@ void main() {
       kalenderController.showDayOverlay(emptyDay);
       await tester.pumpAndSettle();
 
-      await pump(tester, configuration: week);
+      kalenderController.viewConfiguration = week;
+      await tester.pumpAndSettle();
       expect(kalenderController.openDayOverlay.value, isNull);
 
-      await pump(tester);
+      kalenderController.viewConfiguration = month;
+      await tester.pumpAndSettle();
       kalenderController.showDayOverlay(emptyDay, navigate: true);
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
@@ -268,8 +264,6 @@ void main() {
                 required events,
                 required numberOfHiddenRows,
                 required tileHeight,
-                required getMultiDayEventLayoutRenderBox,
-                required overlayTileBuilder,
                 required overlayBuilders,
               }) => const Text('custom'),
         ),
@@ -293,8 +287,6 @@ void main() {
                 required events,
                 required numberOfHiddenRows,
                 required tileHeight,
-                required getMultiDayEventLayoutRenderBox,
-                required overlayTileBuilder,
                 required overlayBuilders,
               }) => MultiDayOverlayPortal(
                 date: FloatingDateTime.fromDateTime(date),
