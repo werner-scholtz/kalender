@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart' show MultiDayEventTile;
 
 import '../utilities.dart';
 
@@ -35,8 +36,13 @@ void main() {
     eventsController.dispose();
   });
 
-  Widget view({Key? key}) =>
-      KalenderView(key: key, eventsController: eventsController, kalenderController: kalenderController);
+  Widget view({Key? key, KalenderCallbacks? callbacks, KalenderInteraction? interaction}) => KalenderView(
+    key: key,
+    eventsController: eventsController,
+    kalenderController: kalenderController,
+    callbacks: callbacks,
+    interaction: interaction,
+  );
 
   (FloatingDateTime, KalenderTime?, double?) shown() {
     final snapshot = kalenderController.viewController.snapshot();
@@ -183,6 +189,69 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(kalenderController.visibleEvents.value, isEmpty);
+  });
+
+  testWidgets('a create drag in the view that is not active creates an event', (tester) async {
+    tester.setViewSize(const Size(800, 1200));
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      Column(
+        children: [
+          Expanded(
+            child: view(
+              callbacks: KalenderCallbacks(onEventCreated: eventsController.addEvent),
+              interaction: kPreciseInteraction,
+            ),
+          ),
+          Expanded(child: view()),
+        ],
+      ),
+    );
+    kalenderController.viewConfiguration = MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
+    await tester.pumpAndSettle();
+
+    await tester.dragFrom(tester.getCenter(find.byType(MultiDayBody)), const Offset(0, 60));
+    await tester.pumpAndSettle();
+
+    expect(eventsController.events, hasLength(1));
+  });
+
+  testWidgets('the header of the view that is not active uses its own multi-day rule', (tester) async {
+    tester.setViewSize(const Size(800, 1200));
+    kalenderController.viewConfiguration = MultiDayViewConfiguration.week(
+      displayRange: year2025DisplayRange,
+      initialDateTime: DateTime(2025, 3, 5),
+      multiDayRule: const MultiDayRule.calendarDays(),
+    );
+    final id = eventsController.addEvent(KalenderEvent(start: DateTime(2025, 3, 5, 22), end: DateTime(2025, 3, 6, 2)));
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      Column(
+        children: [
+          Expanded(
+            child: view(
+              callbacks: KalenderCallbacks(
+                onEventChanged: (event, updated) => eventsController.updateEvent(event: event, updatedEvent: updated),
+              ),
+              interaction: kPreciseInteraction,
+            ),
+          ),
+          Expanded(child: view()),
+        ],
+      ),
+    );
+    kalenderController.viewConfiguration = MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
+    await tester.pumpAndSettle();
+
+    // The first match is in the view that is not active.
+    final dayWidth = tester.getSize(find.byKey(MultiDayEventTile.tileKey(id)).first).width / 2;
+    await tester.drag(find.byKey(MultiDayEventTile.rescheduleDraggableKey(id)).first, Offset(dayWidth, 0));
+    await tester.pumpAndSettle();
+
+    expect(
+      eventsController.byId(id)!.dateTimeRange,
+      KalenderDateTimeRange(start: DateTime(2025, 3, 6, 22).toUtc(), end: DateTime(2025, 3, 7, 2).toUtc()),
+    );
   });
 
   group('navigation while no view is mounted moves where the next view opens', () {

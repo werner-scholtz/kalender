@@ -42,12 +42,20 @@ class VerticalDragTarget extends StatefulWidget {
 
   /// The default [KalenderCallbacks.onWillAcceptWithDetailsVertical]. Accepts [Create], [Resize] and
   /// [Reschedule] payloads.
+  ///
+  /// Checks them against [KalenderController.viewController], the active view. A drag target without this callback
+  /// set checks them against its own view.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
     KalenderController controller,
     VerticalConfiguration configuration,
+  ) => _accepts(details, controller, controller.viewController);
+
+  static bool _accepts(
+    DragTargetDetails<Object?> details,
+    KalenderController controller,
+    ViewController viewController,
   ) {
-    final viewController = controller.viewController;
     if (viewController is! MultiDayViewController) return false;
     final timeOfDayRange = viewController.viewConfiguration.timeOfDayRange;
 
@@ -60,8 +68,8 @@ class VerticalDragTarget extends StatefulWidget {
         // not constrain it. Accepted so that dropping here commits the date the
         // header has been previewing.
         final isMultiDay = event.spansMultipleDays(
-          location: controller.location,
-          defaultRule: controller.viewConfiguration.multiDayRule,
+          location: viewController.location,
+          defaultRule: viewController.viewConfiguration.multiDayRule,
         );
         if (isMultiDay) return true;
 
@@ -161,7 +169,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
         // First test if the details can be accepted at all.
         final accepted =
             callbacks?.onWillAcceptWithDetailsVertical?.call(details, controller, bodyConfiguration) ??
-            VerticalDragTarget.onWillAcceptWithDetails(details, controller, bodyConfiguration);
+            VerticalDragTarget._accepts(details, controller, viewController);
         if (!accepted) return accepted;
 
         DragTargetUtilities.handleDragDetails(

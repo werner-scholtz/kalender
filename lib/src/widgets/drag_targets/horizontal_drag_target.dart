@@ -38,10 +38,20 @@ class HorizontalDragTarget extends StatefulWidget {
 
   /// The default [KalenderCallbacks.onWillAcceptWithDetailsHorizontal]. Accepts [Create], [Resize] and
   /// [Reschedule] payloads.
+  ///
+  /// Checks them against [KalenderController.viewController], the active view. A drag target without this callback
+  /// set checks them against its own view.
   static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
     KalenderController controller,
     HorizontalConfiguration configuration,
+  ) => _accepts(details, controller, configuration, controller.viewController);
+
+  static bool _accepts(
+    DragTargetDetails<Object?> details,
+    KalenderController controller,
+    HorizontalConfiguration configuration,
+    ViewController viewController,
   ) {
     return DragTargetUtilities.handleDragDetails(
       details,
@@ -52,8 +62,8 @@ class HorizontalDragTarget extends StatefulWidget {
         // reject single-day events. They belong in the body, not the header.
         return configuration.allowSingleDayEvents ||
             event.spansMultipleDays(
-              location: controller.location,
-              defaultRule: controller.viewConfiguration.multiDayRule,
+              location: viewController.location,
+              defaultRule: viewController.viewConfiguration.multiDayRule,
             );
       },
       onOther: () => false,
@@ -93,7 +103,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
             // First test if the details can be accepted at all.
             final accepted =
                 callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
-                HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
+                HorizontalDragTarget._accepts(details, controller, widget.configuration, viewController);
             if (!accepted) return false;
 
             return onWillAcceptWithDetails(
