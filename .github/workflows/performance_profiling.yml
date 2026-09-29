@@ -56,6 +56,14 @@ jobs:
           cache: true
           flutter-version-file: .fvmrc
 
+      # GitHub runs this job on more than one CPU model, and the faster one moves
+      # every series. The model is stored with each run.
+      - name: Record the runner CPU
+        run: |
+          cpu=$(lscpu | sed -n 's/^Model name:[[:space:]]*//p' | head -n1)
+          echo "Runner CPU: $cpu"
+          echo "RUNNER_CPU=$cpu" >> "$GITHUB_ENV"
+
       - name: Install Linux dependencies
         run: |
           sudo apt-get update -y
@@ -168,14 +176,14 @@ jobs:
           alert-threshold: '150%'
           summary-always: true
 
-      # Adds the Flutter version to this run's entries and pushes data.json as a
-      # new commit on refs/benchmarks/data. site.yml publishes it after this
-      # workflow finishes.
+      # Adds the Flutter version and the CPU to this run's entries and pushes
+      # data.json as a new commit on refs/benchmarks/data. site.yml publishes it
+      # after this workflow finishes.
       - name: Save results
         if: steps.tip.outputs.superseded == 'false'
         run: |
-          jq --arg sha "$GITHUB_SHA" --arg flutter "$(jq -r .flutter .fvmrc)" \
-            '.entries |= map_values(map(if .commit.id == $sha then .flutter = $flutter else . end))' \
+          jq --arg sha "$GITHUB_SHA" --arg flutter "$(jq -r .flutter .fvmrc)" --arg cpu "$RUNNER_CPU" \
+            '.entries |= map_values(map(if .commit.id == $sha then .flutter = $flutter | .cpu = $cpu else . end))' \
             build/benchmarks/data.json > "$RUNNER_TEMP/data.json"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
