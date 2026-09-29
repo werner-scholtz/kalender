@@ -25,7 +25,7 @@ enum EmptyDayBehavior {
   /// Show every empty day in the schedule view.
   show,
 
-  /// Show only today when it has no events; all other empty days are hidden.
+  /// Show only today when it has no events. All other empty days are hidden.
   showOnlyToday,
 
   /// Hide every empty day in the schedule view.

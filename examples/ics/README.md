@@ -31,7 +31,7 @@ events.
 ## Notes
 
 - Times in the sample are floating (no time zone), handled as local wall-clock.
-  Real `.ics` files carry a `TZID`; mapping those correctly means building
+  Real `.ics` files carry a `TZID`. Mapping those correctly means building
   `TZDateTime`s with the `timezone` package before handing them to `kalender`.
 - Export writes the master events (with their rules), not the expanded instances,
   so the recurrence survives a round trip.

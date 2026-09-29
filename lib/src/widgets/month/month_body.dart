@@ -21,7 +21,8 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 ///
 /// The month body's content:
 ///   - Static content [MonthGrid].
-///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [HorizontalDragTarget], [MultiDayDraggable].
+///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [HorizontalDragTarget] and
+///     [MultiDayDraggable].
 ///
 /// {@category Views}
 class MonthBody extends StatelessWidget {

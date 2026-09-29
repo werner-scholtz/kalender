@@ -13,9 +13,10 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/drag_target_helpers.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
-/// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
+/// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize] or
+/// [Reschedule] object.
 ///
-/// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
+/// The [HorizontalDragTarget] accepts [Draggable] widgets in the multi-day header and the month body.
 class HorizontalDragTarget extends StatefulWidget {
   final FloatingDateTimeRange visibleRange;
 
