@@ -13,7 +13,7 @@ each answer one question.
 | [advanced_example](advanced_example) | A custom event layout with one lane per person. |
 | [recurrence](recurrence) | Recurring events generated in the app. |
 | [ics](ics) | Importing and exporting iCalendar files. |
-| [riverpod](riverpod) | Sharing the controllers and the selected view through providers. |
+| [riverpod](riverpod) | Sharing the controllers, which hold the selected view, through providers. |
 | [intl4x](intl4x) | The calendar's localized strings rendered with intl4x instead of intl. |
 | [web_demo](web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/). |
 | [material_ui](material_ui) | The calendar in an app built on the standalone `material_ui` package. |

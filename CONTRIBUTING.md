@@ -35,4 +35,4 @@ dart fix --compare-to-golden test_fixes
 
 ## Reporting issues
 
-If you find a bug or have a feature request, open an issue on [GitHub](https://github.com/werner-scholtz/kalender/issues). Include as much detail as you can, Flutter version, platform, a minimal reproduction if possible.
+If you find a bug or have a feature request, open an issue on [GitHub](https://github.com/werner-scholtz/kalender/issues). Include as much detail as you can: Flutter version, platform and a minimal reproduction if possible.

@@ -20,7 +20,7 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 
 ### KalenderController
 
-[`KalenderController`](https://pub.dev/documentation/kalender/latest/kalender/KalenderController-class.html) drives a single `KalenderView` widget. It holds the `viewConfiguration` and `location`. Setting either switches the view, see [Switching between views](views.md#switching-between-views) and [Location](timezones-and-locales.md#location).
+[`KalenderController`](https://pub.dev/documentation/kalender/latest/kalender/KalenderController-class.html) drives the `KalenderView` widgets built on it. It holds the `viewConfiguration` and `location`. Setting either switches the view, see [Switching between views](views.md#switching-between-views) and [Location](timezones-and-locales.md#location).
 
 **State notifiers:**
 
@@ -100,8 +100,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
         Row(
           children: [
             ValueListenableBuilder(
-              valueListenable: kalenderController.visibleDateTimeRange,
-              builder: (context, range, child) => Text('${range.start.monthNameLocalized()} ${range.start.year}'),
+              valueListenable: kalenderController.floatingVisibleRange,
+              builder: (context, range, child) {
+                final month = range.dominantMonthDate;
+                return Text('${month.monthNameLocalized()} ${month.year}');
+              },
             ),
             IconButton(onPressed: kalenderController.animateToPreviousPage, icon: const Icon(Icons.chevron_left)),
             IconButton(onPressed: kalenderController.animateToNextPage, icon: const Icon(Icons.chevron_right)),

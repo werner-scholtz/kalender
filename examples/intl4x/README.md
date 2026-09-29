@@ -5,7 +5,7 @@ intl.
 
 Kalender formats day names, month names and the overflow count with intl, and each of those has a
 builder. Supplying all of them replaces intl at runtime without the package knowing. `lib/main.dart`
-holds the six in `intl4xComponents`.
+holds the five in `intl4xComponents`.
 
 `test/intl4x_replaces_intl_test.dart` calls no `initializeDateFormatting`, so the default builders
 throw for `de` and the intl4x builders render it.

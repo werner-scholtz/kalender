@@ -9,7 +9,7 @@ own, so this example shows one way to add it in the app.
   keeps it deliberately small: `none`, `daily`, and `weekly`.
 - Each rule is expanded into concrete `RecurringCalendarEvent`s, which are added to
   the events controller. Every generated event shares a `groupId`, so editing or
-  deleting one can fan out to the whole group.
+  deleting one can apply to the whole group.
 - `RecurrenceController` (`lib/recurrence.dart`) holds the groups and keeps the
   events controller in sync when a recurrence is created, edited, or removed.
 
