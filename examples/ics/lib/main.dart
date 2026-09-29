@@ -96,6 +96,53 @@ class _HomePageState extends State<HomePage> {
     eventsController.replaceEvents(expandEvents(_sources, window));
   }
 
+  /// Expands [sources] over the window already covered and keeps them. Throws, keeping the current sources, when
+  /// they cannot be expanded.
+  void _setSources(List<IcsSource> sources) {
+    final window = _covered ?? _windowAround(KalenderDateTimeRange(start: now, end: now));
+    final events = expandEvents(sources, window);
+    _sources = sources;
+    _covered = window;
+    eventsController.replaceEvents(events);
+  }
+
+  /// An event created in the multi-day header or the month view is all-day.
+  KalenderEvent _onEventCreate(KalenderEvent event, TapDetail detail) {
+    final uid = '${DateTime.now().microsecondsSinceEpoch}@kalender.example';
+    return IcsEvent(
+      start: event.start,
+      end: event.end,
+      uid: uid,
+      title: 'New event',
+      color: colorFor(uid),
+      isAllDay: detail is MultiDayDetail,
+    );
+  }
+
+  void _onEventCreated(KalenderEvent event) {
+    if (event is IcsEvent) _setSources([..._sources, IcsSource.fromEvent(event)]);
+  }
+
+  void _onEventChanged(KalenderEvent event, KalenderEvent updatedEvent) {
+    if (updatedEvent is! IcsEvent) return;
+    _setSources([
+      for (final source in _sources)
+        source.uid == updatedEvent.uid && source.recurrence == null
+            ? source.copyWith(start: updatedEvent.start.toLocal(), end: updatedEvent.end.toLocal())
+            : source,
+    ]);
+  }
+
+  Future<void> _showImport() async {
+    final text = await showDialog<String>(context: context, builder: (context) => const ImportDialog());
+    if (text == null || !mounted) return;
+    try {
+      _setSources(importIcs(_sources, text));
+    } on Object catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not read the .ics text: $error')));
+    }
+  }
+
   Future<void> _showExport() async {
     final text = exportIcs(_sources);
     if (!mounted) return;
@@ -134,6 +181,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text('ICS example'),
         actions: [
           IconButton(onPressed: _loadSample, icon: const Icon(Icons.refresh), tooltip: 'Reload sample'),
+          IconButton(onPressed: _showImport, icon: const Icon(Icons.upload), tooltip: 'Import .ics'),
           IconButton(onPressed: _showExport, icon: const Icon(Icons.download), tooltip: 'Export .ics'),
           const SizedBox(width: 8),
         ],
@@ -141,7 +189,12 @@ class _HomePageState extends State<HomePage> {
       body: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        callbacks: KalenderCallbacks(onEventTapped: (event) => _onEventTapped(event)),
+        callbacks: KalenderCallbacks(
+          onEventTapped: _onEventTapped,
+          onEventCreateWithDetail: _onEventCreate,
+          onEventCreated: _onEventCreated,
+          onEventChanged: _onEventChanged,
+        ),
         views: [
           MultiDayViewParts(
             header: _header(MultiDayHeader(tileComponents: _tileComponents())),
@@ -215,6 +268,44 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(8), child: Text(ics.title, style: const TextStyle(color: Colors.white))),
         );
       },
+    );
+  }
+}
+
+/// Asks for `.ics` text and returns it, or null when cancelled.
+class ImportDialog extends StatefulWidget {
+  const ImportDialog({super.key});
+
+  @override
+  State<ImportDialog> createState() => _ImportDialogState();
+}
+
+class _ImportDialogState extends State<ImportDialog> {
+  final _text = TextEditingController();
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Import .ics'),
+      content: SizedBox(
+        width: 480,
+        child: TextField(
+          controller: _text,
+          maxLines: 12,
+          decoration:
+              const InputDecoration(hintText: 'Paste the contents of an .ics file', border: OutlineInputBorder()),
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.of(context).pop(_text.text), child: const Text('Import')),
+      ],
     );
   }
 }

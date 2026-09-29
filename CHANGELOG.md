@@ -57,6 +57,7 @@
 ### Examples
 
 - The web demo's header editor sets the interaction of the multi-day header.
+- The ics example creates, moves and resizes single events, and imports pasted `.ics` text.
 
 ## 0.32.1
 

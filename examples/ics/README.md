@@ -21,6 +21,12 @@ events.
   carrying the title, description, color, and source `uid`).
 - **Export.** The master events are serialized back to `.ics` text with
   `enough_icalendar`, recurrence rules included, and shown in a dialog.
+- **Import.** The upload button takes pasted `.ics` text. An imported event
+  replaces the one with the same `UID` and the rest are added.
+- **Edit.** A drag on an empty slot creates an event, and a single event can be
+  moved and resized. Both are written to the master events, so they survive
+  navigation and appear in the export. An occurrence of a recurring event is
+  locked, since changing one would need an exception in the rule.
 
 ## Notes
 
