@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:math';
+
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
@@ -98,7 +100,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
   void performLayout() {
     final content = firstChild!;
     final leading = childAfter(content)!;
-    final timelineWidth = this.timelineWidth;
+    final timelineWidth = min(this.timelineWidth, constraints.maxWidth);
 
     content.layout(BoxConstraints(maxWidth: constraints.maxWidth - timelineWidth), parentUsesSize: true);
     final contentHeight = content.size.height;

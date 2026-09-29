@@ -210,6 +210,9 @@ class MultiDayPage extends StatefulWidget {
 class _MultiDayPageState extends State<MultiDayPage> {
   PageIndexCalculator get _pageNavigation => widget.viewController.viewConfiguration.pageIndexCalculator;
 
+  /// Whether the first frame has built, after which the page listens to the events controller.
+  bool _ready = false;
+
   @override
   void initState() {
     super.initState();
@@ -217,6 +220,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
     // Listeners of the visible events may be outside the calendar, so they are not notified during the build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      _ready = true;
       _initialPage();
       widget.eventsController.addListener(_currentPage);
     });
@@ -232,12 +236,27 @@ class _MultiDayPageState extends State<MultiDayPage> {
     if (oldWidget.location != widget.location) {
       setState(() {});
     }
+    if (oldWidget.eventsController != widget.eventsController) {
+      oldWidget.eventsController.removeListener(_currentPage);
+      if (_ready) widget.eventsController.addListener(_currentPage);
+    }
+    if (oldWidget.viewController != widget.viewController) oldWidget.viewController.removeEventSource(this);
+    if (oldWidget.eventsController == widget.eventsController &&
+        oldWidget.viewController == widget.viewController &&
+        oldWidget.configuration == widget.configuration) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _ready) _currentPage();
+    });
   }
 
   @override
   void dispose() {
     widget.eventsController.removeListener(_currentPage);
-    widget.viewController.visibleTimeOfDay.removeListener(_onVisibleTimeOfDayChanged);
+    widget.viewController
+      ..visibleTimeOfDay.removeListener(_onVisibleTimeOfDayChanged)
+      ..removeEventSource(this);
     super.dispose();
   }
 
@@ -261,7 +280,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
       location: location,
     );
-    widget.viewController.visibleEvents.value = events.toSet();
+    widget.viewController.showEvents(this, events.toSet());
   }
 
   int get _numberOfDays => widget.viewController.viewConfiguration.numberOfDays;

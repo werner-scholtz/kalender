@@ -8,6 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 
+/// The controller of a month view. It opens on the month of the date of `initial`.
+///
 /// {@category Controllers and callbacks}
 class MonthViewController extends ViewController {
   MonthViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location})

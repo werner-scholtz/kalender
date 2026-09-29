@@ -109,6 +109,8 @@ class MonthViewConfiguration extends ViewConfiguration {
   }
 }
 
+/// The configuration of a [MonthBody].
+///
 /// {@category Views}
 class MonthBodyConfiguration extends HorizontalConfiguration {
   const MonthBodyConfiguration({

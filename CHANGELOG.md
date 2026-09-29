@@ -76,6 +76,15 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 - After the app resumes in another device timezone, a calendar without a location and `DefaultEventsController` use the dates of the new timezone.
 - A month view in a short calendar no longer overflows its week rows.
 - Changing `ScheduleBodyConfiguration.emptyDay` keeps the schedule on the date it shows.
+- `animateToDateTime` and `animateToEvent` scroll a mounted multi-day view to the time of day in the calendar's location.
+- A `KalenderView` given another `eventsController` shows its events in the multi-day and month views.
+- An event removed or moved off the page leaves `visibleEvents` in the month view.
+- An event in the multi-day header stays in `visibleEvents` when the events of the body change.
+- A change of `MultiDayBodyConfiguration.showMultiDayEvents` updates `visibleEvents`.
+- A tile shows an event that is changed and changed back.
+- A multi-day header narrower than its timeline lays out without throwing.
+- An event created by a touch drag starts where the pointer went down.
+- `visibleTimeOfDay` holds the time at the top of the viewport when a multi-day view opens on a time it cannot scroll to.
 
 ### Examples
 

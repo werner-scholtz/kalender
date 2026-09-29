@@ -102,8 +102,9 @@ controller.viewConfiguration = MultiDayViewConfiguration.singleDay();
 ```
 
 Set a configuration computed from `MediaQuery` or layout constraints in
-`didChangeDependencies` or an event handler. Set in the `build` of a widget
-below the calendar, the controller's notification throws. Delete calls to
+`didChangeDependencies` or an event handler. Set during a build, the
+controller's notification throws once a widget outside that build listens to the
+controller. Delete calls to
 `attach`, `detach`, `isAttached` and `isAttachedTo`, which are removed.
 `viewController` is never null, so drop `?.` and `!` on it.
 
@@ -176,6 +177,7 @@ A null `header` or `body` shows the built-in widget, and `SizedBox.shrink()`
 shows none. An app that passed a body and no header passes `header: const
 SizedBox.shrink()`. A header that wrapped `KalenderHeader`, such as a toolbar
 above it, now wraps the built-in header in the parts of each view that shows it.
+A widget that wrapped `KalenderBody` wraps the built-in body the same way.
 Two views of one kind that need different widgets each get parts with the `name`
 of their configuration.
 

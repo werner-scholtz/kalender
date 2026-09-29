@@ -53,6 +53,40 @@ void main() {
     expect(eventsController.hasListeners, isFalse);
   });
 
+  testWidgets('a tile shows an event that is changed and changed back', (tester) async {
+    final controller = KalenderController(viewConfiguration: week);
+    final eventsController = DefaultEventsController();
+    addTearDown(controller.dispose);
+    addTearDown(eventsController.dispose);
+    final original = KalenderEvent(start: DateTime.utc(2025, 1, 1, 9), end: DateTime.utc(2025, 1, 1, 10));
+    eventsController.addEvent(original);
+    final later = original.withDateTimeRange(
+      KalenderDateTimeRange(start: DateTime.utc(2025, 1, 1, 11), end: DateTime.utc(2025, 1, 1, 12)),
+    );
+    final components = TileComponents(tileBuilder: (context, event, range) => Text('${event.start.hour}'));
+
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      TestProvider(
+        kalenderController: controller,
+        eventsController: eventsController,
+        tileComponents: components,
+        child: Tile(
+          initialEvent: original,
+          tileBuilder: components.tileBuilder,
+          tileWhenDraggingBuilder: null,
+          floatingRange: range,
+        ),
+      ),
+    );
+    eventsController.updateEvent(event: original, updatedEvent: later);
+    await tester.pumpAndSettle();
+    eventsController.updateEvent(event: later, updatedEvent: original);
+    await tester.pumpAndSettle();
+
+    expect(find.text('9'), findsOneWidget);
+  });
+
   testWidgets('swapping the controllers moves the listeners', (tester) async {
     final first = KalenderController(viewConfiguration: week);
     final firstEvents = DefaultEventsController();

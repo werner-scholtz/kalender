@@ -27,6 +27,7 @@ Convert with `FloatingDateTimeRange.fromDateTimeRange(range)`.
 | Notifier               | Type                                | Description                                            |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
 | `visibleDateTimeRange` | `ValueListenable<KalenderDateTimeRange>`    | The currently visible date range                       |
+| `floatingVisibleRange` | `ValueListenable<FloatingDateTimeRange>`    | The same range without a timezone                      |
 | `visibleTimeOfDay`     | `ValueListenable<KalenderTime?>`       | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
 | `visibleEvents`        | `ValueListenable<Set<KalenderEvent>>` | Events on the page on screen                         |
 | `selectedEvent`        | `ValueNotifier<KalenderEvent?>`     | The focused event (shows drop target / resize handles) |

@@ -65,6 +65,8 @@ class KalenderView extends StatefulWidget {
   State<KalenderView> createState() => KalenderViewState();
 }
 
+/// The state of a [KalenderView]. It holds the [ViewController] the view shows.
+///
 /// {@category Views}
 class KalenderViewState extends State<KalenderView> {
   /// The [ViewController] this view shows.
@@ -157,7 +159,8 @@ class KalenderViewState extends State<KalenderView> {
     assert(
       candidates.isNotEmpty,
       'No ViewParts in KalenderView.views accepts the ${configuration.runtimeType} named "${configuration.name}". '
-      'The built-in parts are MultiDayViewParts, MonthViewParts and ScheduleViewParts.',
+      'The built-in parts are MultiDayViewParts, MonthViewParts and ScheduleViewParts. A configuration that extends '
+      'ViewConfiguration directly needs parts that extend ViewParts.',
     );
     if (candidates.length > 1 && _reportedDuplicates.add((configuration.runtimeType, configuration.name))) {
       final advice = named.isEmpty

@@ -18,8 +18,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 
 /// Displays the multi-day events from the [EventsController] and rebuilds when they change.
 ///
-/// Adds the events it shows to [ViewController.visibleEvents] without clearing it, while its range overlaps
-/// [ViewController.floatingVisibleRange].
+/// Shows its events in [ViewController.visibleEvents] while its range overlaps [ViewController.floatingVisibleRange].
 class MultiDayEventWidget extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;
@@ -67,11 +66,38 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     super.initState();
 
     widget.eventsController.addListener(_updateEvents);
+    widget.viewController.floatingVisibleRange.addListener(_showEvents);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _ready = true;
       _updateEvents();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant MultiDayEventWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final viewController = widget.viewController;
+    if (oldWidget.viewController != viewController) {
+      oldWidget.viewController
+        ..floatingVisibleRange.removeListener(_showEvents)
+        ..removeEventSource(this);
+      viewController.floatingVisibleRange.addListener(_showEvents);
+    }
+    final eventsController = widget.eventsController;
+    if (oldWidget.eventsController != eventsController) {
+      oldWidget.eventsController.removeListener(_updateEvents);
+      eventsController.addListener(_updateEvents);
+    }
+    if (oldWidget.viewController == viewController &&
+        oldWidget.eventsController == eventsController &&
+        oldWidget.configuration == widget.configuration &&
+        oldWidget.floatingRange == widget.floatingRange) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _ready) _updateEvents();
     });
   }
 
@@ -87,7 +113,17 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   @override
   void dispose() {
     widget.eventsController.removeListener(_updateEvents);
+    widget.viewController
+      ..floatingVisibleRange.removeListener(_showEvents)
+      ..removeEventSource(this);
     super.dispose();
+  }
+
+  /// A page built during an animation or next to the one on screen is not visible.
+  void _showEvents() {
+    final viewController = widget.viewController;
+    final visible = widget.floatingRange.overlaps(viewController.floatingVisibleRange.value);
+    viewController.showEvents(this, visible ? _events.toSet() : const {});
   }
 
   /// Updates the list of visible events if there are changes.
@@ -106,24 +142,11 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
       // Update the state with the new visible events.
       setState(() => _events = visibleEvents);
     }
+    _showEvents();
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        final viewController = widget.viewController;
-        // A page built during an animation or next to the one on screen is not visible.
-        if (!widget.floatingRange.overlaps(viewController.floatingVisibleRange.value)) return;
-        final visibleEvents = viewController.visibleEvents;
-        // A new set notifies listeners even when its contents match, so assign only when something is added.
-        final current = visibleEvents.value;
-        if (_events.any((event) => !current.contains(event))) {
-          visibleEvents.value = {...current, ..._events};
-        }
-      }
-    });
-
     return MultiDayEventLayoutWidget(
       events: _events,
       floatingRange: widget.floatingRange,

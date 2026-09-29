@@ -16,6 +16,8 @@ import 'package:meta/meta.dart' show internal;
 /// else the first unnamed ones. The order of [KalenderView.views] decides between parts that both accept it, so put
 /// more specific parts before general ones or give them a [name].
 ///
+/// A configuration that extends [ViewConfiguration] directly needs parts that extend this class.
+///
 /// {@category Views}
 abstract class ViewParts<C extends ViewConfiguration> {
   const ViewParts({this.name, this.header, this.body});

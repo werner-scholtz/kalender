@@ -23,6 +23,8 @@ import 'package:kalender/src/models/view_transition.dart';
 ///
 /// Setting [viewConfiguration] switches the view. Setting [location] recreates it in the new location.
 ///
+/// With several [KalenderView]s mounted on one controller, the one mounted last follows a switch and navigation.
+///
 /// Navigation while no [KalenderView] is mounted replaces [viewController] with one that opens on the target, and the
 /// next view opens there. A time of day from [animateToDateTime] or [animateToEvent] opens the view scrolled to it.
 ///
@@ -50,6 +52,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   ///
   /// Setting a configuration that is not `==` to the current one switches the view. The date, scroll and zoom the new
   /// view opens on follow the new configuration's transition settings.
+  ///
+  /// Setting it notifies the listeners, so set it in an event handler or `didChangeDependencies`, not during a build.
   ViewConfiguration get viewConfiguration => _viewConfiguration;
   ViewConfiguration _viewConfiguration;
   set viewConfiguration(ViewConfiguration value) {

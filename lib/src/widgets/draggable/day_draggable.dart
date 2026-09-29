@@ -38,9 +38,10 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
             child: Builder(
               builder: (context) {
                 var position = Offset.zero;
+                var pressed = Offset.zero;
 
                 return Listener(
-                  onPointerDown: (event) => position = event.localPosition,
+                  onPointerDown: (event) => position = pressed = event.localPosition,
                   onPointerSignal: (event) => position = event.localPosition,
                   onPointerMove: (event) => position = event.localPosition,
                   child: GestureDetector(
@@ -80,7 +81,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
                             EventInteractionGesture.longPress => LongPressDraggable<Create>.new,
                           }(
                             dragAnchorStrategy: pointerDragAnchorStrategy,
-                            onDragStarted: () => createNewEvent(context, date, position),
+                            onDragStarted: () => createNewEvent(context, date, pressed),
                             onDraggableCanceled: onDragFinished,
                             onDragEnd: onDragFinished,
                             data: Create(controllerId: controller.id),

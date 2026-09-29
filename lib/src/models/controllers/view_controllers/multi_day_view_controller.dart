@@ -9,6 +9,8 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
+/// The controller of a multi-day view. It opens on the date, time of day and zoom of `initial`.
+///
 /// {@category Controllers and callbacks}
 class MultiDayViewController extends ViewController {
   MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location})
@@ -32,7 +34,11 @@ class MultiDayViewController extends ViewController {
         .inMinutes
         .clamp(0, viewConfiguration.timeOfDayRange.duration.inMinutes);
     final scrollOffset = minutes * heightPerMinute.value;
-    scrollController = ScrollController(initialScrollOffset: scrollOffset);
+    // The viewport limits the offset once it is laid out.
+    scrollController = ScrollController(
+      initialScrollOffset: scrollOffset,
+      onAttach: (_) => WidgetsBinding.instance.addPostFrameCallback((_) => _updateVisibleTimeOfDay()),
+    );
     // Seed the visible time-of-day from the initial offset, since a ScrollController does not necessarily notify its
     // listeners when it first attaches.
     visibleTimeOfDay.value = _timeOfDayFromOffset(scrollOffset);
@@ -131,7 +137,7 @@ class MultiDayViewController extends ViewController {
   }) async {
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    final floatingDate = FloatingDateTime.fromExternal(date);
+    final floatingDate = FloatingDateTime.fromExternal(date, location: location);
     final startOfDay = viewConfiguration.timeOfDayRange.start.toFloatingDateTime(floatingDate);
     final timeDifference = floatingDate.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);

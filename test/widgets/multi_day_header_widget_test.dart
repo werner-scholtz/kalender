@@ -46,6 +46,25 @@ void main() {
       });
     }
 
+    testWidgets('a header narrower than the timeline lays out', (tester) async {
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        const Center(
+          child: SizedBox(
+            width: 30,
+            child: MultiDayHeaderWidget(
+              content: SizedBox(height: 48, key: ValueKey('content')),
+              leading: SizedBox(width: 48, height: 48, key: ValueKey('leading')),
+              timelineWidthOverride: 48,
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect([tester.getSize(_contentFinder).width, tester.getSize(_leadingFinder).width], [0, 30]);
+    });
+
     testWidgets('resizes dynamically when content height changes', (tester) async {
       final contentHeightNotifier = ValueNotifier(48.0);
 
