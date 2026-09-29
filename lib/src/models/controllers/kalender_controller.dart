@@ -248,14 +248,18 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     timeOfDay: KalenderTime(hour: date.hour, minute: date.minute),
   );
 
-  /// The [ViewController.floatingVisibleRange] of [viewController].
   late final ValueNotifier<FloatingDateTimeRange> _floatingVisibleRange;
+
+  /// The [ViewController.floatingVisibleRange] of [viewController].
   ValueListenable<FloatingDateTimeRange> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
     _visibleDateTimeRange.value = _floatingVisibleRange.value.forLocation(location: _location);
   }
 
   /// The [floatingVisibleRange] in [location].
+  ///
+  /// A month view's range covers whole weeks, so it can start in the previous month.
+  /// [FloatingDateTimeRange.dominantMonthDate] gives the month on screen.
   ValueListenable<KalenderDateTimeRange> get visibleDateTimeRange => _visibleDateTimeRange;
   late final ValueNotifier<KalenderDateTimeRange> _visibleDateTimeRange;
 

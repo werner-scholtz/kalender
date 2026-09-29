@@ -197,8 +197,7 @@ class MonthWeek extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       // Subtract 1 to account for the extra widget at the bottom.
-                      // Clamp to 0 so a very small row height never produces a negative value,
-                      // which would cause spurious overflow buttons.
+                      // Clamped to 0, since a negative value shows overflow buttons on days without events.
                       final maxNumberOfVerticalEvents = max(
                         0,
                         (constraints.maxHeight / configuration.tileHeight).floor() - 1,

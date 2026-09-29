@@ -15,7 +15,6 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/models/view_transition.dart';
-import 'package:kalender/src/widgets/month/month_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
@@ -438,7 +437,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
   int get hashCode => Object.hash(super.hashCode, keepPagesAlive);
 }
 
-/// The configuration used by the [MultiDayHeader] and [MonthBody].
+/// The configuration used by the [MultiDayHeader].
 ///
 /// {@category Views}
 class MultiDayHeaderConfiguration extends HorizontalConfiguration {

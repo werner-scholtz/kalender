@@ -58,9 +58,11 @@ abstract class ViewConfiguration {
   /// with [KalenderEvent.multiDayRule].
   final MultiDayRule multiDayRule;
 
-  /// The date the view opens on when the calendar is first built.
+  /// The date the view opens on when this configuration is passed to the [KalenderController] constructor.
   ///
-  /// Not read on a view switch or a change of location, where [dateResolver] or [dateTransition] decides the date.
+  /// Not read when this configuration is set on [KalenderController.viewConfiguration] later, or on a change of
+  /// location. There [dateResolver] or [dateTransition] decides the date. [KalenderController.jumpToDate] moves to a
+  /// date after a switch.
   final DateTime? initialDateTime;
 
   /// How the visible date is chosen when switching to this view from another, or when the calendar's location
@@ -87,14 +89,17 @@ abstract class ViewConfiguration {
   /// The functions for navigating the [PageView].
   PageIndexCalculator get pageIndexCalculator;
 
-  /// [transition] is null when the calendar is first built, and describes the view being replaced on a view switch or
-  /// a change of location.
+  /// Open the returned [ViewController] on [resolveDate], which follows [ViewTransitionContext.target] when the view is
+  /// reopened or navigated while no view is mounted.
+  ///
+  /// [transition] is null only when called from the [KalenderController] constructor, where
+  /// [KalenderController.viewController] is not set yet. Otherwise it describes the view being replaced.
   ViewController createViewController(KalenderController controller, ViewTransitionContext? transition);
 
   /// The date the view opens on.
   ///
-  /// On the first build [transition] is null and the date is [initialDateTime], or today in [location] without one. On
-  /// a transition the date of [ViewTransitionContext.target] wins, then [dateResolver], then [dateTransition].
+  /// Without a [transition] the date is [initialDateTime], or today in [location] without one. With one the date of
+  /// [ViewTransitionContext.target] wins, then [dateResolver], then [dateTransition].
   @protected
   FloatingDateTime resolveDate(Location? location, ViewTransitionContext? transition) {
     if (transition == null) {

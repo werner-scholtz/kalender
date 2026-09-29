@@ -17,14 +17,11 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
-/// The multi-day header decides which header to display the:
-/// - [_SingleDayHeader] this is used for a body that only displays a single day.
-/// - [_MultiDayHeader] this is used for a body that displays multiple days.
-/// - [_FreeScrollHeader] this is used for a body that scrolls freely.
+/// The day headers and multi-day events above a [MultiDayBody]. The default header of [MultiDayViewParts].
 ///
 /// {@category Views}
 class MultiDayHeader extends StatelessWidget {
-  /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
+  /// Null uses a default [MultiDayHeaderConfiguration].
   final MultiDayHeaderConfiguration? configuration;
 
   /// See [KalenderView.callbacks].

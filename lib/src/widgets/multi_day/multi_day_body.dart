@@ -18,14 +18,12 @@ import 'package:linked_pageview/linked_pageview.dart';
 // TODO: Remove the split between the content and the header, and with it the duplicate page views. The timeline then
 //  scrolls with the page view. A pinned timeline can be added back if it is requested.
 
-/// The scrollable body of a multi-day view.
-///
-/// Holds the [TimeLine], [HourLines], a [PageView] of day columns and a [VerticalDragTarget] that handles the
-/// rescheduling and resizing of events.
+/// The scrollable body of a multi-day view: a timeline and one column of events per day. The default body of
+/// [MultiDayViewParts].
 ///
 /// {@category Views}
 class MultiDayBody extends StatelessWidget {
-  /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
+  /// Null uses a default [MultiDayBodyConfiguration].
   final MultiDayBodyConfiguration? configuration;
 
   /// See [KalenderView.callbacks].

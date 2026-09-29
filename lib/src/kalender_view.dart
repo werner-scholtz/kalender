@@ -12,6 +12,8 @@ import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
+/// A calendar that shows the events of [eventsController] in the view [kalenderController] holds.
+///
 /// {@category Views}
 class KalenderView extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
@@ -34,10 +36,7 @@ class KalenderView extends StatefulWidget {
   /// `ThemeData.extensions`, or wrap a calendar in a [KalenderTheme] to scope it.
   final KalenderComponents? components;
 
-  /// The header and body shown for each kind of view configuration.
-  ///
-  /// The first parts that accept the controller's configuration are shown, a named one before an unnamed one. See
-  /// [ViewParts].
+  /// The header and body shown for each kind of view configuration. See [ViewParts].
   final List<ViewParts> views;
 
   /// The interaction of every view. A header or body given its own `interaction` uses that instead.

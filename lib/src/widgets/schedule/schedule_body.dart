@@ -17,15 +17,13 @@ import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detec
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-/// Displays events as a vertical list.
+/// Displays events as a vertical list. The default body of [ScheduleViewParts].
 ///
 /// One list for a [ContinuousScheduleViewController], one list per page for a [PaginatedScheduleViewController].
 ///
 /// {@category Views}
 class ScheduleBody extends StatelessWidget {
-  /// Configuration options for the schedule body behavior and appearance.
-  ///
-  /// If not provided, default [ScheduleBodyConfiguration] will be used.
+  /// Null uses a default [ScheduleBodyConfiguration].
   final ScheduleBodyConfiguration? configuration;
 
   /// See [KalenderView.callbacks].

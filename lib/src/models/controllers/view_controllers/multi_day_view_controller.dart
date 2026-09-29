@@ -88,8 +88,7 @@ class MultiDayViewController extends ViewController {
 
   /// The [KalenderTime] currently aligned with the top of the visible viewport.
   ///
-  /// Updates as the view is scrolled vertically or zoomed. It is `null` until the
-  /// [scrollController] has been attached to a scroll view.
+  /// Updates as the view is scrolled vertically or zoomed.
   final ValueNotifier<KalenderTime?> visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
   void _offsetListener() =>

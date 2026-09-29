@@ -6,9 +6,8 @@
 
 // Compiles every Dart snippet in the README and the doc/ guides.
 //
-// The snippets are the first code a reader copies, so a snippet that no longer
-// compiles is a broken promise. `flutter analyze` at the root cannot catch it,
-// because the code lives in markdown.
+// `flutter analyze` at the root does not check them, because the code lives in
+// markdown.
 //
 // Each fenced dart block must be preceded by a directive comment saying how to
 // compile it. A block without one is an error, so a new snippet cannot be added

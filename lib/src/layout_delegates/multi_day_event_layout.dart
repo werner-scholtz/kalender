@@ -141,10 +141,8 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   // Maps each visible date to its column index.
   final columnForDate = <FloatingDateTime, int>{for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i};
 
-  // A map that contains the number of rows for each of the columns.
-  // Initialised to -1 (sentinel: no event assigned to this column yet) so that
-  // columns without any events do not trigger spurious overflow buttons when
-  // maxNumberOfRows is 0.
+  // The number of rows in each column, -1 while no event is assigned to it. A column without events then shows no
+  // overflow button when maxNumberOfRows is 0.
   final columnRowMap = <int, int>{for (var i = 0; i < visibleDates.length; i++) i: -1};
 
   for (final entry in entries) {

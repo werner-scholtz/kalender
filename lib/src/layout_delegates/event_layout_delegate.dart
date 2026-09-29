@@ -322,7 +322,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   }
 }
 
-/// The [OverlapLayoutDelegate] lays out [KalenderEvent]'s, by stacking them on top of one another.
+/// The [OverlapLayoutDelegate] lays out [KalenderEvent]s, by stacking them on top of one another.
 ///
 /// {@category Layout}
 class OverlapLayoutDelegate extends EventLayoutDelegate {
@@ -395,7 +395,7 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
   List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) => layoutData;
 }
 
-/// The [SideBySideLayoutDelegate] lays out [KalenderEvent]'s next to one another.
+/// The [SideBySideLayoutDelegate] lays out [KalenderEvent]s next to one another.
 ///
 /// {@category Layout}
 class SideBySideLayoutDelegate extends EventLayoutDelegate {

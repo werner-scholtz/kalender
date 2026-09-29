@@ -69,7 +69,7 @@ abstract class EventsController with ChangeNotifier {
   /// The [location] is the calendar's timezone, used to place day boundaries when evaluating [multiDayRule].
   /// Pass the same one the calendar renders with.
   /// [multiDayRule] decides which events count as multi-day. Pass the current
-  /// view's [ViewConfiguration.multiDayRule]; an event overriding it with
+  /// view's [ViewConfiguration.multiDayRule]. An event overriding it with
   /// [KalenderEvent.multiDayRule] takes precedence.
   Iterable<KalenderEvent> eventsInRange(
     FloatingDateTimeRange range, {
