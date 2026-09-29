@@ -90,83 +90,27 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
       }
     }
 
-    // Group the vertical layout data into horizontal groups.
-    final horizontalGroups = <Person, List<HorizontalGroupData>>{};
-    for (var entry in verticalData.entries) {
-      final person = entry.key;
-      final data = entry.value;
-      final horizontalGroup = groupVerticalLayoutData(data);
-      horizontalGroups.putIfAbsent(person, () => horizontalGroup);
-    }
-
     // Calculate the space available for each person.
     final space = Size(size.width / people.length, size.height);
 
     for (final (i, person) in people.indexed) {
-      final group = horizontalGroups[person] ?? [];
-      final position = Offset(i * space.width, 0);
-      final rectForGroup = Rect.fromLTWH(position.dx, position.dy, space.width, space.height);
-      performGroupLayout(group, rectForGroup);
+      final rect = Rect.fromLTWH(i * space.width, 0, space.width, space.height);
+      performGroupLayout(verticalData[person] ?? [], rect);
     }
   }
 
-  /// Performs the layout for a group of events.
-  void performGroupLayout(List<HorizontalGroupData> horizontalGroups, Rect rect) {
-    for (var i = 0; i < horizontalGroups.length; i++) {
-      final group = horizontalGroups.elementAt(i);
-      final verticalLayoutData = group.verticalLayoutData
-        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : b.height.compareTo(a.height));
-
-      final numberOfEvents = verticalLayoutData.length;
-      final longest = findLongestChain(verticalLayoutData);
-      final childWidth = rect.width / longest;
-
-      final tiles = <int, Offset>{};
-      final tileWidths = <int, double>{};
-
-      for (var i = 0; i < numberOfEvents; i++) {
-        final data = verticalLayoutData.elementAt(i);
-        final id = data.id;
-
-        // Find the overlaps to the left of the tile.
-        final tilesToLeft = verticalLayoutData.getRange(0, i);
-        final overlapsLeft = tilesToLeft.where((e) => e.overlaps(data));
-        final lastOverlapLeft = overlapsLeft.lastOrNull;
-
-        // Calculate the x offset of the tile.
-        double tileXOffset;
-        if (lastOverlapLeft != null) {
-          tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
-        } else {
-          // Use the left edge of the rectangle as a base if there are no overlaps to the left.
-          tileXOffset = rect.left + (childWidth * overlapsLeft.length);
-        }
-
-        // Find the overlaps to the right of the tile.
-        final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
-        final overlapsRight = tilesToRight.where((e) => e.overlaps(data)).toList();
-
-        // Calculate the width of the tile.
-        var tileWidth = childWidth;
-        if (overlapsRight.isEmpty) {
-          // If there are no overlaps to the right, use the remaining width of the rectangle.
-          tileWidth = rect.width - (tileXOffset - rect.left);
-        }
-
-        // Layout the tile if it was built. The offset and width maths runs for
-        // every event, including culled ones, so an on-screen tile stays aligned
-        // with an off-screen partner it overlaps.
-        if (hasChild(id)) {
-          layoutChild(id, BoxConstraints.tightFor(width: tileWidth, height: data.height));
-        }
-
-        tiles[id] = Offset(tileXOffset, data.top);
-        tileWidths[id] = tileWidth;
-      }
-
-      for (final tile in tiles.entries) {
-        if (hasChild(tile.key)) positionChild(tile.key, tile.value);
-      }
+  /// Places one person's events side by side within [rect].
+  void performGroupLayout(List<VerticalLayoutData> verticalLayoutData, Rect rect) {
+    final byId = {for (final data in verticalLayoutData) data.id: data};
+    // Every event is placed, including culled ones, so an on-screen tile keeps its column when an overlapping
+    // partner is off-screen.
+    for (final placement in SideBySideLayoutDelegate.arrange(verticalLayoutData)) {
+      final id = placement.id;
+      if (!hasChild(id)) continue;
+      final data = byId[id]!;
+      final (:left, :width) = placement.horizontal(rect.width);
+      layoutChild(id, BoxConstraints.tightFor(width: width, height: data.height));
+      positionChild(id, Offset(rect.left + left, data.top));
     }
   }
 }

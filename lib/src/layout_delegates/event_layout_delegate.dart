@@ -281,6 +281,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// The length of the longest chain of overlapping entries in [verticalLayoutData].
   ///
   /// Uses a depth-first search, which is expensive for large inputs.
+  @Deprecated('Not used by the calendar. SideBySideLayoutDelegate.arrange places tiles. Will be removed in 0.34.0.')
   int findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
     if (verticalLayoutData.isEmpty) return 0;
 
@@ -421,59 +422,108 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
 
   @override
   void performLayout(Size size) {
-    final verticalLayoutData = calculateVerticalLayoutData(size);
-    final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
-
-    for (var i = 0; i < horizontalGroups.length; i++) {
-      final group = horizontalGroups.elementAt(i);
-      final verticalLayoutData = group.verticalLayoutData
-        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : b.height.compareTo(a.height));
-
-      final numberOfEvents = verticalLayoutData.length;
-      final longest = findLongestChain(verticalLayoutData);
-      final childWidth = size.width / longest;
-
-      final tiles = <int, Offset>{};
-      final tileWidths = <int, double>{};
-      for (var i = 0; i < numberOfEvents; i++) {
-        final data = verticalLayoutData.elementAt(i);
-        final id = data.id;
-
-        final tilesToLeft = verticalLayoutData.getRange(0, i);
-        final overlapsLeft = tilesToLeft.where((e) => e.overlaps(data));
-        final lastOverlapLeft = overlapsLeft.lastOrNull;
-
-        final double tileXOffset;
-        if (lastOverlapLeft != null) {
-          tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
-        } else {
-          tileXOffset = childWidth * overlapsLeft.length;
-        }
-
-        final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
-        final overlapsRight = tilesToRight.where((e) => e.overlaps(data)).toList();
-
-        var tileWidth = childWidth;
-        if (overlapsRight.isEmpty) {
-          tileWidth = size.width - tileXOffset;
-        }
-
-        // Layout the tile if it was built. The offset/width math still runs for
-        // every event (including culled ones) so on-screen tiles stay aligned
-        // with off-screen overlapping partners.
-        if (hasChild(id)) {
-          layoutChild(id, BoxConstraints.tightFor(width: tileWidth, height: data.height));
-        }
-
-        tiles[id] = Offset(tileXOffset, data.top);
-        tileWidths[id] = tileWidth;
-      }
-
-      for (final tile in tiles.entries) {
-        if (hasChild(tile.key)) positionChild(tile.key, tile.value);
-      }
+    final verticalLayoutData = {for (final data in calculateVerticalLayoutData(size)) data.id: data};
+    // Every event is placed, including culled ones, so an on-screen tile keeps its column when an overlapping
+    // partner is off-screen.
+    for (final placement in arrange(verticalLayoutData.values)) {
+      final id = placement.id;
+      if (!hasChild(id)) continue;
+      final data = verticalLayoutData[id]!;
+      final (:left, :width) = placement.horizontal(size.width);
+      layoutChild(id, BoxConstraints.tightFor(width: width, height: data.height));
+      positionChild(id, Offset(left, data.top));
     }
   }
+
+  /// Places [verticalLayoutData] in columns, so tiles that overlap never share horizontal space.
+  ///
+  /// Tiles are taken by top, then by bottom. A tile that starts at or after the bottom of every tile before it starts
+  /// a new group. Each tile goes into the first column free at its top and widens over the columns to its right that
+  /// stay free for its whole height. A group has as many columns as it has tiles running at once.
+  static List<SideBySidePlacement> arrange(Iterable<VerticalLayoutData> verticalLayoutData) {
+    final sorted = verticalLayoutData.toList()
+      ..sort((a, b) {
+        final byTop = a.top.compareTo(b.top);
+        if (byTop != 0) return byTop;
+        final byBottom = b.bottom.compareTo(a.bottom);
+        if (byBottom != 0) return byBottom;
+        return a.id.compareTo(b.id);
+      });
+
+    final placements = <SideBySidePlacement>[];
+    final group = <(VerticalLayoutData, int)>[];
+    final columnBottoms = <double>[];
+    var groupBottom = double.negativeInfinity;
+
+    void closeGroup() {
+      final columns = columnBottoms.length;
+      for (final (data, column) in group) {
+        var span = 1;
+        while (column + span < columns && !group.any((other) => other.$2 == column + span && other.$1.overlaps(data))) {
+          span++;
+        }
+        placements.add(SideBySidePlacement(id: data.id, column: column, span: span, columns: columns));
+      }
+      group.clear();
+      columnBottoms.clear();
+    }
+
+    for (final data in sorted) {
+      if (group.isNotEmpty && data.top >= groupBottom) closeGroup();
+      var column = columnBottoms.indexWhere((bottom) => bottom <= data.top);
+      if (column == -1) {
+        column = columnBottoms.length;
+        columnBottoms.add(data.bottom);
+      } else {
+        columnBottoms[column] = data.bottom;
+      }
+      group.add((data, column));
+      groupBottom = group.length == 1 ? data.bottom : max(groupBottom, data.bottom);
+    }
+    if (group.isNotEmpty) closeGroup();
+
+    return placements;
+  }
+}
+
+/// Where [SideBySideLayoutDelegate.arrange] places one tile: in [column] of a group with [columns] columns, widened
+/// over [span] columns.
+///
+/// {@category Layout}
+class SideBySidePlacement {
+  /// The id of the tile's [VerticalLayoutData].
+  final int id;
+
+  /// The first column the tile covers, from 0.
+  final int column;
+
+  /// The number of columns the tile covers.
+  final int span;
+
+  /// The number of columns in the tile's group.
+  final int columns;
+
+  const SideBySidePlacement({required this.id, required this.column, required this.span, required this.columns});
+
+  /// The left edge and width of the tile in a group [width] wide.
+  ({double left, double width}) horizontal(double width) {
+    return (left: width * column / columns, width: width * span / columns);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SideBySidePlacement &&
+        other.id == id &&
+        other.column == column &&
+        other.span == span &&
+        other.columns == columns;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, column, span, columns);
+
+  @override
+  String toString() => 'SideBySidePlacement(id: $id, column: $column, span: $span, columns: $columns)';
 }
 
 /// This stores the vertical layout data of a single [KalenderEvent].
