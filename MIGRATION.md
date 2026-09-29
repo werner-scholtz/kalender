@@ -36,6 +36,10 @@ What it does not do:
 - A `const` call of a renamed class. `CalendarSnapping(...)` is rewritten and
   `const CalendarSnapping(...)` is not, because the analyzer reports a different
   diagnostic for it. Search for the old names once the fixes have run.
+- A rename to a name a later version removed. `CalendarBody`, `CalendarHeader`,
+  `defaultNewEventDuration` and the `internalVisibleRange:` parameter of the view
+  controller constructors are left as they are. The section for the version that
+  removed the new name says what replaces it.
 
 The sections below cover what is left after the fixes have run.
 

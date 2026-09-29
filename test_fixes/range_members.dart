@@ -122,15 +122,3 @@ Widget overlayTile(KalenderEvent e, TileComponents c, FloatingDateTimeRange r) =
 Widget monthWeek(FloatingDateTimeRange r, HorizontalConfiguration c, ViewController v) =>
     MonthWeek(internalRange: r, configuration: c, viewController: v);
 FloatingDateTimeRange monthWeekRange(MonthWeek w) => w.internalRange;
-
-typedef Visible = ValueNotifier<FloatingDateTimeRange?>;
-typedef Events = ValueNotifier<Set<KalenderEvent>>;
-
-MonthViewController month(MonthViewConfiguration c, Visible r, Events e) =>
-    MonthViewController(viewConfiguration: c, internalVisibleRange: r, visibleEvents: e);
-MultiDayViewController multiDay(MultiDayViewConfiguration c, Visible r, Events e) =>
-    MultiDayViewController(viewConfiguration: c, internalVisibleRange: r, visibleEvents: e);
-ScheduleViewController continuous(ScheduleViewConfiguration c, Visible r, Events e, FloatingDateTime d) =>
-    ContinuousScheduleViewController(viewConfiguration: c, internalVisibleRange: r, visibleEvents: e, initialDate: d);
-ScheduleViewController paginated(ScheduleViewConfiguration c, Visible r, Events e, FloatingDateTime d) =>
-    PaginatedScheduleViewController(viewConfiguration: c, internalVisibleRange: r, visibleEvents: e, initialDate: d);
