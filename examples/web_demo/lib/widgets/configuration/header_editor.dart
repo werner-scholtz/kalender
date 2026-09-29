@@ -58,6 +58,10 @@ class MultiDayHeaderEditor extends StatelessWidget {
                 ? MultiDayHeaderConfiguration(
                     showTiles: configuration.showTiles,
                     tileHeight: configuration.tileHeight,
+                    multiDayLayoutStrategy: configuration.multiDayLayoutStrategy,
+                    eventPadding: configuration.eventPadding,
+                    pageTriggerConfiguration: configuration.pageTriggerConfiguration,
+                    allowSingleDayEvents: configuration.allowSingleDayEvents,
                   )
                 : configuration.copyWith(maximumNumberOfVerticalEvents: value);
           },

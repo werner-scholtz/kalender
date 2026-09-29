@@ -26,11 +26,8 @@ class Calendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DemoScope(
-      child: Builder(
-        builder: (context) => EventDetailOverlay(
-          location: context.controller.location,
-          child: CalendarContent(initialShowConfig: initialShowConfig),
-        ),
+      child: EventDetailOverlay(
+        child: CalendarContent(initialShowConfig: initialShowConfig),
       ),
     );
   }
@@ -61,7 +58,6 @@ class _CalendarContentState extends State<CalendarContent> {
                 controller: context.controller,
                 child: ListenableBuilder(
                   listenable: Listenable.merge([
-                    context.controller,
                     context.configuration.shadeAdjacentMonthNotifier,
                     context.configuration.scopedThemeNotifier,
                     context.configuration.interactionBody,
@@ -110,7 +106,13 @@ class _CalendarContentState extends State<CalendarContent> {
                         ),
                         ScheduleViewParts(
                           header: _header(context, onToggleConfig, (context) => const SizedBox.shrink()),
-                          body: ScheduleBody(tileComponents: _scheduleTileComponents),
+                          body: ListenableBuilder(
+                            listenable: context.configuration.scheduleBodyConfigurationNotifier,
+                            builder: (context, _) => ScheduleBody(
+                              configuration: context.configuration.scheduleBodyConfiguration,
+                              tileComponents: _scheduleTileComponents,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -142,60 +144,58 @@ class _CalendarContentState extends State<CalendarContent> {
 
   /// The navigation header above the header [viewHeader] builds.
   Widget _header(BuildContext context, VoidCallback? onToggleConfig, WidgetBuilder viewHeader) {
-    return Column(
-      spacing: 4,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            border: !context.configuration.showHeader
-                ? Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
-                    ),
-                  )
-                : null,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: NavigationHeader(
-              controller: context.controller,
-              viewConfigurations: context.configuration.viewConfigurations,
-              viewConfiguration: context.controller.viewConfiguration,
-              onToggleConfig: onToggleConfig,
-              configVisible: _showConfig,
+    return ValueListenableBuilder(
+      valueListenable: context.configuration.showHeaderNotifier,
+      builder: (context, showHeader, _) => Column(
+        spacing: 4,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              border: !showHeader
+                  ? Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                      ),
+                    )
+                  : null,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: NavigationHeader(
+                controller: context.controller,
+                viewConfigurations: context.configuration.viewConfigurations,
+                onToggleConfig: onToggleConfig,
+                configVisible: _showConfig,
+              ),
             ),
           ),
-        ),
-        if (context.configuration.showHeader)
-          ListenableBuilder(
-            listenable: Listenable.merge([
-              context.configuration.interactionHeader,
-              context.configuration.multiDayHeaderConfigurationNotifier,
-            ]),
-            builder: (context, _) {
-              return Container(
-                padding: const EdgeInsets.only(top: 4),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+          if (showHeader)
+            ListenableBuilder(
+              listenable: Listenable.merge([
+                context.configuration.interactionHeader,
+                context.configuration.multiDayHeaderConfigurationNotifier,
+              ]),
+              builder: (context, _) {
+                return Container(
+                  padding: const EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                      ),
                     ),
                   ),
-                ),
-                child: viewHeader(context),
-              );
-            },
-          ),
-      ],
+                  child: viewHeader(context),
+                );
+              },
+            ),
+        ],
+      ),
     );
   }
 
   /// Wraps the calendar in a [KalenderTheme] when the scoped theme is on.
-  ///
-  /// The app theme already registers a [KalenderThemeData] for every calendar.
-  /// This styles only what is below it, so it is what you would reach for with
-  /// two calendars in one app that need to look different.
   Widget _scope(BuildContext context, Widget child) {
     if (!context.configuration.scopedTheme) return child;
     return KalenderTheme(

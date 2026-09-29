@@ -60,5 +60,21 @@
   "tileLayout": "Disposition des tuiles",
   "locked": "Verrouillé",
   "lockedHint": "Glissez par-dessus pour créer un événement.",
-  "clearSelection": "Effacer la sélection"
+  "clearSelection": "Effacer la sélection",
+  "scopedTheme": "Thème local",
+  "scopedThemeHint": "Enveloppe ce calendrier dans un KalenderTheme",
+  "shadeAdjacentMonthDays": "Griser les jours des mois voisins",
+  "sideBySide": "Côte à côte",
+  "overlap": "Superposé",
+  "showWeekNumbers": "Afficher les numéros de semaine",
+  "dateOnViewChange": "Date au changement de vue",
+  "scrollOnViewChange": "Défilement au changement de vue",
+  "zoomOnViewChange": "Zoom au changement de vue",
+  "transitionCarryFocus": "Reprendre",
+  "transitionRestorePerView": "Restaurer par vue",
+  "transitionPreserve": "Conserver",
+  "transitionReset": "Réinitialiser",
+  "emptyDayShow": "Afficher",
+  "emptyDayShowOnlyToday": "Afficher seulement aujourd'hui",
+  "emptyDayHide": "Masquer"
 }

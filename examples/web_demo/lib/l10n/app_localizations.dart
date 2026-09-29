@@ -482,6 +482,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear selection'**
   String get clearSelection;
+
+  /// No description provided for @scopedTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Scoped theme'**
+  String get scopedTheme;
+
+  /// No description provided for @scopedThemeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Wraps this calendar in a KalenderTheme'**
+  String get scopedThemeHint;
+
+  /// No description provided for @shadeAdjacentMonthDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Shade adjacent-month days'**
+  String get shadeAdjacentMonthDays;
+
+  /// No description provided for @sideBySide.
+  ///
+  /// In en, this message translates to:
+  /// **'Side by side'**
+  String get sideBySide;
+
+  /// No description provided for @overlap.
+  ///
+  /// In en, this message translates to:
+  /// **'Overlap'**
+  String get overlap;
+
+  /// No description provided for @showWeekNumbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Show week numbers'**
+  String get showWeekNumbers;
+
+  /// No description provided for @dateOnViewChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date on view change'**
+  String get dateOnViewChange;
+
+  /// No description provided for @scrollOnViewChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll on view change'**
+  String get scrollOnViewChange;
+
+  /// No description provided for @zoomOnViewChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom on view change'**
+  String get zoomOnViewChange;
+
+  /// No description provided for @transitionCarryFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Carry over'**
+  String get transitionCarryFocus;
+
+  /// No description provided for @transitionRestorePerView.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore per view'**
+  String get transitionRestorePerView;
+
+  /// No description provided for @transitionPreserve.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get transitionPreserve;
+
+  /// No description provided for @transitionReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get transitionReset;
+
+  /// No description provided for @emptyDayShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get emptyDayShow;
+
+  /// No description provided for @emptyDayShowOnlyToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only today'**
+  String get emptyDayShowOnlyToday;
+
+  /// No description provided for @emptyDayHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get emptyDayHide;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

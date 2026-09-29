@@ -8,10 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/demo_configuration.dart';
 
-// ---------------------------------------------------------------------------
-// App-level settings (theme, text direction, locale)
-// ---------------------------------------------------------------------------
-
 class AppSettings {
   final ValueNotifier<ThemeMode> themeMode;
   final ValueNotifier<TextDirection> textDirection;
@@ -38,10 +34,6 @@ class AppSettingsProvider extends InheritedWidget {
   bool updateShouldNotify(covariant AppSettingsProvider oldWidget) => settings != oldWidget.settings;
 }
 
-// ---------------------------------------------------------------------------
-// Events controller
-// ---------------------------------------------------------------------------
-
 class EventsControllerProvider extends InheritedWidget {
   final EventsController eventsController;
   const EventsControllerProvider({required this.eventsController, required super.child, super.key});
@@ -58,21 +50,13 @@ class EventsControllerProvider extends InheritedWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Calendar-scoped state (controller, configuration)
-// ---------------------------------------------------------------------------
+/// Owns the [KalenderController] and [DemoConfiguration] of one calendar.
+class DemoScope extends StatefulWidget {
+  final Widget child;
+  const DemoScope({required this.child, super.key});
 
-class DemoScope extends InheritedWidget {
-  final KalenderController controller;
-  final DemoConfiguration configuration;
-
-  DemoScope({required Widget child, Key? key}) : this._(DemoConfiguration(), child: child, key: key);
-
-  DemoScope._(this.configuration, {required super.child, super.key})
-      : controller = KalenderController(viewConfiguration: configuration.initialViewConfiguration);
-
-  static DemoScope _of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<DemoScope>();
+  static _DemoScopeProvider _of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<_DemoScopeProvider>();
     assert(result != null, 'No DemoScope found.');
     return result!;
   }
@@ -81,7 +65,33 @@ class DemoScope extends InheritedWidget {
   static DemoConfiguration configurationOf(BuildContext context) => _of(context).configuration;
 
   @override
-  bool updateShouldNotify(covariant DemoScope oldWidget) {
+  State<DemoScope> createState() => _DemoScopeState();
+}
+
+class _DemoScopeState extends State<DemoScope> {
+  final _configuration = DemoConfiguration();
+  late final _controller = KalenderController(viewConfiguration: _configuration.initialViewConfiguration);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _configuration.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _DemoScopeProvider(controller: _controller, configuration: _configuration, child: widget.child);
+  }
+}
+
+class _DemoScopeProvider extends InheritedWidget {
+  final KalenderController controller;
+  final DemoConfiguration configuration;
+  const _DemoScopeProvider({required this.controller, required this.configuration, required super.child});
+
+  @override
+  bool updateShouldNotify(covariant _DemoScopeProvider oldWidget) {
     return controller != oldWidget.controller || configuration != oldWidget.configuration;
   }
 }

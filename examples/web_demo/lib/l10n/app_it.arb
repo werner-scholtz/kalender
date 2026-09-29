@@ -60,5 +60,21 @@
   "tileLayout": "Layout riquadri",
   "locked": "Bloccato",
   "lockedHint": "Trascina sopra per creare un evento.",
-  "clearSelection": "Cancella selezione"
+  "clearSelection": "Cancella selezione",
+  "scopedTheme": "Tema locale",
+  "scopedThemeHint": "Avvolge questo calendario in un KalenderTheme",
+  "shadeAdjacentMonthDays": "Ombreggia i giorni dei mesi adiacenti",
+  "sideBySide": "Affiancati",
+  "overlap": "Sovrapposti",
+  "showWeekNumbers": "Mostra numeri settimana",
+  "dateOnViewChange": "Data al cambio vista",
+  "scrollOnViewChange": "Scorrimento al cambio vista",
+  "zoomOnViewChange": "Zoom al cambio vista",
+  "transitionCarryFocus": "Riporta",
+  "transitionRestorePerView": "Ripristina per vista",
+  "transitionPreserve": "Mantieni",
+  "transitionReset": "Reimposta",
+  "emptyDayShow": "Mostra",
+  "emptyDayShowOnlyToday": "Mostra solo oggi",
+  "emptyDayHide": "Nascondi"
 }

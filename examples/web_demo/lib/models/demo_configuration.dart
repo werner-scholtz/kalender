@@ -120,26 +120,21 @@ class DemoConfiguration extends ChangeNotifier {
   bool get isMobile => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
 
   @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! DemoConfiguration) return false;
-    return multiDayBodyConfiguration == other.multiDayBodyConfiguration &&
-        multiDayHeaderConfiguration == other.multiDayHeaderConfiguration &&
-        monthBodyConfiguration == other.monthBodyConfiguration &&
-        interactionHeader == other.interactionHeader &&
-        interactionBody == other.interactionBody &&
-        snapping == other.snapping &&
-        showHeader == other.showHeader;
+  void dispose() {
+    for (final notifier in <ChangeNotifier>[
+      multiDayBodyConfigurationNotifier,
+      multiDayHeaderConfigurationNotifier,
+      monthBodyConfigurationNotifier,
+      scheduleBodyConfigurationNotifier,
+      interactionHeader,
+      interactionBody,
+      snapping,
+      showHeaderNotifier,
+      shadeAdjacentMonthNotifier,
+      scopedThemeNotifier,
+    ]) {
+      notifier.dispose();
+    }
+    super.dispose();
   }
-
-  @override
-  int get hashCode => Object.hash(
-        multiDayBodyConfiguration,
-        multiDayHeaderConfiguration,
-        monthBodyConfiguration,
-        interactionHeader,
-        interactionBody,
-        snapping,
-        showHeader,
-      );
 }

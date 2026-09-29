@@ -81,6 +81,10 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 
 - The web demo's header editor sets the interaction of the multi-day header.
 - The ics example creates, moves and resizes single events, and imports pasted `.ics` text.
+- The web demo's show header switch and schedule empty day setting take effect.
+- The web demo's event card shows and edits times in the location picked after the calendar opened.
+- The web demo's minimum tile height and unlimited header rows settings keep the other settings.
+- The web demo's configuration labels and options are translated.
 
 ## 0.32.0
 

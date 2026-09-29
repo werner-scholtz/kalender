@@ -206,4 +206,52 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get clearSelection => 'Cancella selezione';
+
+  @override
+  String get scopedTheme => 'Tema locale';
+
+  @override
+  String get scopedThemeHint => 'Avvolge questo calendario in un KalenderTheme';
+
+  @override
+  String get shadeAdjacentMonthDays => 'Ombreggia i giorni dei mesi adiacenti';
+
+  @override
+  String get sideBySide => 'Affiancati';
+
+  @override
+  String get overlap => 'Sovrapposti';
+
+  @override
+  String get showWeekNumbers => 'Mostra numeri settimana';
+
+  @override
+  String get dateOnViewChange => 'Data al cambio vista';
+
+  @override
+  String get scrollOnViewChange => 'Scorrimento al cambio vista';
+
+  @override
+  String get zoomOnViewChange => 'Zoom al cambio vista';
+
+  @override
+  String get transitionCarryFocus => 'Riporta';
+
+  @override
+  String get transitionRestorePerView => 'Ripristina per vista';
+
+  @override
+  String get transitionPreserve => 'Mantieni';
+
+  @override
+  String get transitionReset => 'Reimposta';
+
+  @override
+  String get emptyDayShow => 'Mostra';
+
+  @override
+  String get emptyDayShowOnlyToday => 'Mostra solo oggi';
+
+  @override
+  String get emptyDayHide => 'Nascondi';
 }

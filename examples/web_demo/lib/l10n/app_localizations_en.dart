@@ -206,4 +206,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clearSelection => 'Clear selection';
+
+  @override
+  String get scopedTheme => 'Scoped theme';
+
+  @override
+  String get scopedThemeHint => 'Wraps this calendar in a KalenderTheme';
+
+  @override
+  String get shadeAdjacentMonthDays => 'Shade adjacent-month days';
+
+  @override
+  String get sideBySide => 'Side by side';
+
+  @override
+  String get overlap => 'Overlap';
+
+  @override
+  String get showWeekNumbers => 'Show week numbers';
+
+  @override
+  String get dateOnViewChange => 'Date on view change';
+
+  @override
+  String get scrollOnViewChange => 'Scroll on view change';
+
+  @override
+  String get zoomOnViewChange => 'Zoom on view change';
+
+  @override
+  String get transitionCarryFocus => 'Carry over';
+
+  @override
+  String get transitionRestorePerView => 'Restore per view';
+
+  @override
+  String get transitionPreserve => 'Keep';
+
+  @override
+  String get transitionReset => 'Reset';
+
+  @override
+  String get emptyDayShow => 'Show';
+
+  @override
+  String get emptyDayShowOnlyToday => 'Show only today';
+
+  @override
+  String get emptyDayHide => 'Hide';
 }
