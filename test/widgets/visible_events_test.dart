@@ -83,6 +83,15 @@ void main() {
       expected: {january2},
     ),
     (
+      name: 'a switch from a week to a work week view',
+      initial: week,
+      showFirst: true,
+      change: (KalenderController controller, ValueNotifier<bool> show) {
+        controller.viewConfiguration = MultiDayViewConfiguration.workWeek(initialDateTime: DateTime(2025, 1, 15));
+      },
+      expected: {january},
+    ),
+    (
       name: 'a week view mounted by a rebuild',
       initial: week,
       showFirst: false,

@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
-/// Installs the providers a header or body of a view reads.
+/// Installs the providers a header or body of a view reads, and builds [child] anew for each view controller.
 ///
 /// [callbacks] and [interaction] override the ones of the enclosing [KalenderView] when set. [snapping] is installed
 /// only when [installSnapping] is true, and [heightPerMinute] only when it is set.
@@ -69,7 +69,7 @@ class _ViewProvidersState extends State<ViewProviders> {
 
   @override
   Widget build(BuildContext context) {
-    var child = widget.child;
+    Widget child = KeyedSubtree(key: ObjectKey(context.viewController), child: widget.child);
     if (widget.heightPerMinute case final heightPerMinute?) {
       child = HeightPerMinute(notifier: heightPerMinute, child: child);
     }

@@ -349,6 +349,64 @@ void main() {
     });
   });
 
+  group('A switch between two views of one kind', () {
+    testWidgets('week → day scrolls to the time of day the day view reports', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: calendarRange),
+        withBody: true,
+      );
+      MultiDayViewController multiDay() => kalenderController.viewController as MultiDayViewController;
+      multiDay().scrollController.jumpTo(600 * kDefaultHeightPerMinute);
+      await tester.pump();
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(
+          name: 'Day',
+          displayRange: calendarRange,
+          scrollTransition: ScrollTransition.reset,
+          initialTimeOfDay: const KalenderTime(hour: 2, minute: 0),
+        ),
+        withBody: true,
+      );
+
+      expect(
+        (kalenderController.visibleTimeOfDay.value, multiDay().scrollController.offset),
+        (const KalenderTime(hour: 2, minute: 0), 120 * kDefaultHeightPerMinute),
+      );
+    });
+
+    testWidgets('a continuous schedule → another continuous schedule shows the date the new one opens on', (
+      tester,
+    ) async {
+      for (var day = 1; day <= 28; day++) {
+        eventsController.addEvent(KalenderEvent(start: DateTime(2024, 6, day, 9), end: DateTime(2024, 6, day, 10)));
+      }
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.continuous(
+          name: 'Schedule',
+          displayRange: calendarRange,
+          initialDateTime: DateTime(2024, 6, 20),
+        ),
+        withBody: true,
+      );
+
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.continuous(
+          name: 'Other schedule',
+          displayRange: calendarRange,
+          dateResolver: (transition) => FloatingDateTime(2024, 6, 3),
+        ),
+        withBody: true,
+      );
+
+      expect(kalenderController.floatingVisibleRange.value!.start, FloatingDateTime(2024, 6, 3));
+    });
+  });
+
   group('View controller lifecycle', () {
     testWidgets('each config change creates a new view controller, also between objects of the same type', (
       tester,
