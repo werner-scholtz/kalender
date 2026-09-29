@@ -52,17 +52,10 @@ void main() {
     testWidgets('$name drops the events of the pages it left', (tester) async {
       final eventsController = DefaultEventsController()
         ..addEvents([january, february, march, allDay6, allDay13, allDay20]);
-      final kalenderController = KalenderController();
+      final kalenderController = KalenderController(viewConfiguration: configuration);
       addTearDown(eventsController.dispose);
       addTearDown(kalenderController.dispose);
-      await pumpKalender(
-        tester,
-        eventsController: eventsController,
-        kalenderController: kalenderController,
-        viewConfiguration: configuration,
-        header: const KalenderHeader(),
-        body: const KalenderBody(),
-      );
+      await pumpKalender(tester, eventsController: eventsController, kalenderController: kalenderController);
 
       if (animate) {
         kalenderController.animateToDate(target);

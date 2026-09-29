@@ -41,6 +41,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, and a configuration creates its view controller. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -55,6 +56,214 @@ The sections below cover what is left after the fixes have run.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.32.x → v0.33.0
+
+### The controller holds the view configuration and location
+
+`dart fix` does not apply. The compiler reports `viewConfiguration` and
+`location` as undefined on `KalenderView`, and a missing required argument on
+`KalenderController()`.
+
+```dart
+// Before
+final controller = KalenderController();
+
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  viewConfiguration: configuration,
+  location: location,
+);
+
+// After
+final controller = KalenderController(viewConfiguration: configuration, location: location);
+
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+);
+```
+
+Switch the view or the location through the controller instead of rebuilding the
+`KalenderView`:
+
+```dart
+// Before
+setState(() => configuration = MultiDayViewConfiguration.singleDay());
+
+// After
+controller.viewConfiguration = MultiDayViewConfiguration.singleDay();
+```
+
+Set a configuration computed from `MediaQuery` or layout constraints in
+`didChangeDependencies` or an event handler. Set in the `build` of a widget
+below the calendar, the controller's notification throws. `attach`, `detach`,
+`isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
+
+### Views are `ViewParts` on `KalenderView`
+
+`dart fix` does not apply. `KalenderBody`, `KalenderHeader` and `ScheduleHeader`
+are removed, and `KalenderView` takes `views` in place of `header` and `body`.
+An app that passed both without arguments deletes them.
+
+```dart
+// Before
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  header: const KalenderHeader(),
+  body: const KalenderBody(),
+);
+
+// After
+KalenderView(eventsController: eventsController, kalenderController: controller);
+```
+
+Otherwise each view's arguments move to the header or body of its parts. An
+`interaction` given to both halves moves to `KalenderView`.
+
+```dart
+// Before
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  header: KalenderHeader(multiDayTileComponents: tiles),
+  body: KalenderBody(
+    multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: true),
+    multiDayTileComponents: tiles,
+    monthTileComponents: tiles,
+    interaction: interaction,
+  ),
+);
+
+// After
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: controller,
+  interaction: interaction,
+  views: [
+    MultiDayViewParts(
+      header: MultiDayHeader(tileComponents: tiles),
+      body: MultiDayBody(
+        configuration: MultiDayBodyConfiguration(showMultiDayEvents: true),
+        tileComponents: tiles,
+      ),
+    ),
+    MonthViewParts(body: MonthBody(tileComponents: tiles)),
+    const ScheduleViewParts(),
+  ],
+);
+```
+
+| Before | After |
+| --- | --- |
+| `KalenderBody(multiDayBodyConfiguration:, multiDayTileComponents:, snapping:)` | `MultiDayViewParts(body: MultiDayBody(configuration:, tileComponents:, snapping:))` |
+| `KalenderBody(monthBodyConfiguration:, monthTileComponents:)` | `MonthViewParts(body: MonthBody(configuration:, tileComponents:))` |
+| `KalenderBody(scheduleBodyConfiguration:, scheduleTileComponents:)` | `ScheduleViewParts(body: ScheduleBody(configuration:, tileComponents:))` |
+| `KalenderHeader(multiDayHeaderConfiguration:, multiDayTileComponents:)` | `MultiDayViewParts(header: MultiDayHeader(configuration:, tileComponents:))` |
+| `KalenderBody(interaction:)` and `KalenderHeader(interaction:)` | `KalenderView(interaction:)`, or `interaction:` on one widget |
+| `KalenderBody(callbacks:)` and `KalenderHeader(callbacks:)` | `callbacks:` on the widget |
+| `ScheduleHeader()` | Nothing. The schedule has no header. |
+
+A null `header` or `body` shows the built-in widget, and `SizedBox.shrink()`
+shows none. An app that passed a body and no header passes `header: const
+SizedBox.shrink()`. A header that wrapped `KalenderHeader`, such as a toolbar
+above it, now wraps the built-in header in each parts that shows it. Two views
+of one kind that need different widgets each get parts with the `name` of their
+configuration.
+
+A `KalenderBody(interaction:)` moved to `KalenderView` now also applies to the
+multi-day header, which `KalenderHeader` did not take from the body.
+
+### The members deprecated in 0.32.0 are removed
+
+`dart fix` does not apply.
+
+| Removed | Use instead |
+| --- | --- |
+| `ScheduleViewController.itemCount` | `itemCountForPage(currentPage)` |
+| `ScheduleViewController.item(index)` | `indexItem(currentPage)[index]` |
+| `ScheduleViewController.addItem(...)` | `addItemForPage(..., pageIndex: currentPage)` |
+| `ScheduleViewController.clear()` | `clearPage(currentPage)` |
+| `ScheduleViewController.initialScrollIndex(date)` | `closestIndex(date)` |
+| `EventLayoutDelegate.calculateHeight` and `calculateDistanceFromStart` | `calculateVerticalLayoutData` |
+| `DefaultEventStore.dateIds` | Nothing. It was never populated. |
+| `kDefaultNewEventDuration` | Nothing. A created event is as long as the drag that created it. |
+| The `events`, `tileHeight`, `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` arguments of `MultiDayOverlayPortal` | Delete them. The calendar builds the overlay. |
+| The `getMultiDayEventLayoutRenderBox` and `overlayTileBuilder` parameters of a `MultiDayOverlayPortalBuilder` | Delete them from the builder's parameter list. |
+
+### The `ResizeHandleDetails` checks are getters
+
+`continuesBefore`, `continuesAfter`, `showStart` and `showEnd` are getters and
+read the location the details carry. `dart fix` does not apply.
+
+```dart
+// Before
+if (details.showStart()) ...
+
+// After
+if (details.showStart) ...
+```
+
+### A configuration creates its view controller
+
+A class that extends `ViewConfiguration` directly implements
+`createViewController`, building the view controller from `resolveDate` and the
+controller's location. The view controllers take one `initial` snapshot in place
+of three parameters, and create their own visible range and visible events. A
+class that extends `ViewController` no longer passes `floatingVisibleRange` to
+`super` or overrides `visibleEvents`. Its `dispose` override calls
+`super.dispose()`.
+
+```dart
+// Before
+MultiDayViewController(
+  viewConfiguration: configuration,
+  floatingVisibleRange: range,
+  visibleEvents: events,
+  initialDate: date,
+  initialTimeOfDayOverride: time,
+  initialHeightPerMinute: zoom,
+);
+
+// After
+MultiDayViewController(
+  viewConfiguration: configuration,
+  initial: ViewSnapshot(date: date, timeOfDay: time, heightPerMinute: zoom),
+);
+```
+
+`kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and
+`kDefaultToSchedule` all return `old.snapshot().date`.
+
+### The controller's visible range and events are read-only
+
+`KalenderController.floatingVisibleRange` and `visibleEvents` are
+`ValueListenable`s that follow the attached view controller. Read them as
+before. A write goes to the view controller's own notifier.
+
+```dart
+// Before
+kalenderController.visibleEvents.value = events;
+
+// After
+kalenderController.viewController!.visibleEvents.value = events;
+```
+
+### An event tile is one semantics node
+
+A tile merges the widgets inside it into one semantics node. A button or other
+control inside a custom tile then has no node of its own. Keep those apart with
+`mergeSemantics: false`.
+
+```dart
+// Before
+TileComponents(tileBuilder: buildTileWithButtons)
+
+// After
+TileComponents(tileBuilder: buildTileWithButtons, mergeSemantics: false)
+```
 
 ## v0.30.x → v0.31.0
 

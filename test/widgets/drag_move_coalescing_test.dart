@@ -28,7 +28,7 @@ void main() {
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
+    kalenderController = KalenderController(viewConfiguration: viewConfiguration);
     eventId = eventsController.addEvent(KalenderEvent(start: start.copyWith(hour: 6), end: start.copyWith(hour: 8)));
   });
 
@@ -38,21 +38,25 @@ void main() {
       KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: viewConfiguration,
         callbacks: KalenderCallbacks(
           onEventChanged: (event, updatedEvent) =>
               eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
-        body: KalenderBody(
-          interaction: KalenderInteraction(
-            inputMode: InputMode.precise,
-            createEventGesture: EventInteractionGesture.tap,
-            modifyEventGesture: EventInteractionGesture.tap,
+        views: [
+          MultiDayViewParts(
+            header: const SizedBox.shrink(),
+            body: MultiDayBody(
+              interaction: KalenderInteraction(
+                inputMode: InputMode.precise,
+                createEventGesture: EventInteractionGesture.tap,
+                modifyEventGesture: EventInteractionGesture.tap,
+              ),
+              tileComponents: TileComponents(
+                tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
+              ),
+            ),
           ),
-          multiDayTileComponents: TileComponents(
-            tileBuilder: (context, event, tileRange) => Container(key: ValueKey(event.id), color: Colors.red),
-          ),
-        ),
+        ],
       ),
     );
   }

@@ -18,8 +18,8 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 
 /// Displays the multi-day events from the [EventsController] and rebuilds when they change.
 ///
-/// Adds the events it shows to [KalenderController.visibleEvents] without clearing it, while its range overlaps
-/// [KalenderController.floatingVisibleRange].
+/// Adds the events it shows to [ViewController.visibleEvents] without clearing it, while its range overlaps
+/// [ViewController.floatingVisibleRange].
 class MultiDayEventWidget extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;
@@ -33,8 +33,8 @@ class MultiDayEventWidget extends StatefulWidget {
   /// The maximum number of vertical events that can be displayed.
   final int? maxNumberOfVerticalEvents;
 
-  /// The cache used to store layout frames for multi-day events.
-  final MultiDayLayoutFrameCache? multiDayCache;
+  /// The view controller whose layout cache and visible events this widget uses.
+  final ViewController viewController;
 
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders? overlayBuilders;
@@ -45,7 +45,7 @@ class MultiDayEventWidget extends StatefulWidget {
     required this.configuration,
     required this.floatingRange,
     required this.maxNumberOfVerticalEvents,
-    required this.multiDayCache,
+    required this.viewController,
     required this.overlayBuilders,
   });
 
@@ -54,7 +54,10 @@ class MultiDayEventWidget extends StatefulWidget {
 }
 
 class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
-  ValueNotifier<Location?>? _locationNotifier;
+  Location? _location;
+
+  /// Whether the first frame has built, after which [_events] follows the location.
+  bool _ready = false;
 
   /// The list of visible events.
   List<KalenderEvent> _events = [];
@@ -66,18 +69,24 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     widget.eventsController.addListener(_updateEvents);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _locationNotifier = context.locationNotifier;
-        _updateEvents();
-        _locationNotifier?.addListener(_updateEvents);
-      }
+      if (!mounted) return;
+      _ready = true;
+      _updateEvents();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final location = context.location;
+    if (location == _location) return;
+    _location = location;
+    if (_ready) _updateEvents();
   }
 
   @override
   void dispose() {
     widget.eventsController.removeListener(_updateEvents);
-    _locationNotifier?.removeListener(_updateEvents);
     super.dispose();
   }
 
@@ -89,7 +98,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
           multiDayRule: context.multiDayRule,
           includeDayEvents: widget.configuration.allowSingleDayEvents,
           includeMultiDayEvents: true,
-          location: _locationNotifier?.value,
+          location: _location,
         )
         .toList();
 
@@ -103,14 +112,15 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final controller = context.kalenderController;
+        final viewController = widget.viewController;
         // A page built during an animation or next to the one on screen is not visible.
-        final visibleRange = controller.floatingVisibleRange.value;
+        final visibleRange = viewController.floatingVisibleRange.value;
         if (visibleRange != null && !widget.floatingRange.overlaps(visibleRange)) return;
+        final visibleEvents = viewController.visibleEvents;
         // A new set notifies listeners even when its contents match, so assign only when something is added.
-        final current = controller.visibleEvents.value;
+        final current = visibleEvents.value;
         if (_events.any((event) => !current.contains(event))) {
-          controller.visibleEvents.value = {...current, ..._events};
+          visibleEvents.value = {...current, ..._events};
         }
       }
     });
@@ -121,7 +131,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
       textDirection: Directionality.of(context),
       configuration: widget.configuration,
       maxNumberOfVerticalEvents: widget.maxNumberOfVerticalEvents,
-      multiDayCache: widget.multiDayCache,
+      multiDayCache: widget.viewController.multiDayCache,
       multiDayOverlayBuilders: widget.overlayBuilders,
       location: context.location,
     );
@@ -471,8 +481,6 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           events: frame.eventsForColumn(column),
           numberOfHiddenRows: numberOfHiddenRows,
           tileHeight: widget.configuration.tileHeight,
-          getMultiDayEventLayoutRenderBox: getRenderBox,
-          overlayTileBuilder: _overlayEventTileBuilder,
           overlayBuilders: overlayBuilders,
         ) ??
         MultiDayOverlayPortal(

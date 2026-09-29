@@ -48,7 +48,6 @@ class _HomeState extends State<Home> {
       body: KalenderView(
         eventsController: config.eventsController,
         kalenderController: config.kalenderController,
-        viewConfiguration: config.viewConfiguration,
         components: KalenderComponents(),
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
@@ -57,12 +56,14 @@ class _HomeState extends State<Home> {
           onEventChanged: (event, updatedEvent) =>
               eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
-        header: KalenderHeader(multiDayTileComponents: _multiDayTileComponents),
-        body: KalenderBody(
-          multiDayTileComponents: _tileComponents,
-          monthTileComponents: _multiDayTileComponents,
-          scheduleTileComponents: _scheduleTileComponents,
-        ),
+        views: [
+          MultiDayViewParts(
+            header: MultiDayHeader(tileComponents: _multiDayTileComponents),
+            body: MultiDayBody(tileComponents: _tileComponents),
+          ),
+          MonthViewParts(body: MonthBody(tileComponents: _multiDayTileComponents)),
+          ScheduleViewParts(body: ScheduleBody(tileComponents: _scheduleTileComponents)),
+        ],
       ),
     );
   }

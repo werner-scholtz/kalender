@@ -72,7 +72,14 @@ class IntlFourXApp extends StatefulWidget {
 
 class _IntlFourXAppState extends State<IntlFourXApp> {
   final _eventsController = DefaultEventsController();
-  final _calendarController = KalenderController();
+  final _calendarController = KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(
+      displayRange: KalenderDateTimeRange(
+        start: DateTime.now().subtract(const Duration(days: 180)),
+        end: DateTime.now().add(const Duration(days: 180)),
+      ),
+    ),
+  );
   var _locale = _locales.first;
 
   @override
@@ -128,14 +135,12 @@ class _IntlFourXAppState extends State<IntlFourXApp> {
           kalenderController: _calendarController,
           locale: _locale,
           components: intl4xComponents(),
-          viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: KalenderDateTimeRange(
-              start: DateTime.now().subtract(const Duration(days: 180)),
-              end: DateTime.now().add(const Duration(days: 180)),
+          views: [
+            MultiDayViewParts(
+              header: MultiDayHeader(tileComponents: tiles),
+              body: MultiDayBody(tileComponents: tiles),
             ),
-          ),
-          header: KalenderHeader(multiDayTileComponents: tiles),
-          body: KalenderBody(multiDayTileComponents: tiles),
+          ],
         ),
       ),
     );
