@@ -62,6 +62,13 @@ class _MyHomePageState extends State<MyHomePage> {
   final controller = RecurrenceController();
 
   @override
+  void dispose() {
+    kalenderController.dispose();
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: KalenderView(
@@ -69,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
         kalenderController: kalenderController,
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => _onEventTapped(event),
-          onEventCreate: (event) => event,
           onEventCreated: (event) async {
             final result = await _showDialog(event);
             if (result is! RecurrenceDialogSave) return;
@@ -85,21 +91,13 @@ class _MyHomePageState extends State<MyHomePage> {
               tileComponents: tileComponents(context),
             ),
           ),
-          MonthViewParts(
-            header: _header(context, const MonthHeader()),
-            body: MonthBody(tileComponents: tileComponents(context, body: false)),
-          ),
-          ScheduleViewParts(
-            header: _header(context),
-            body: ScheduleBody(tileComponents: scheduleTileComponents(context)),
-          ),
         ],
       ),
     );
   }
 
   /// The toolbar above [child].
-  Widget _header(BuildContext context, [Widget? child]) {
+  Widget _header(BuildContext context, Widget child) {
     return Material(
       color: Theme.of(context).colorScheme.surface,
       surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
@@ -107,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         children: [
           CalendarToolBar(kalenderController: kalenderController),
-          if (child != null) child,
+          child,
         ],
       ),
     );
@@ -121,10 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result is RecurrenceDialogSave) {
       if (group != null) {
-        // Editing an existing group — replace all events.
         controller.replaceRecurrence(group.id, result.recurrence);
       } else {
-        // Non-recurring event tapped — create a new recurrence from it.
         controller.addEvent(event, result.recurrence);
       }
     } else if (result is RecurrenceDialogDelete && group != null) {

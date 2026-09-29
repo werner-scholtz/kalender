@@ -34,10 +34,10 @@ class RecurringCalendarEvent extends KalenderEvent {
 }
 
 class RecurrenceGroup {
-  /// Group id,
+  /// The id of this group.
   final String id;
 
-  /// Id's of events that are part of this group.
+  /// The ids of the events in this group.
   final List<String> eventIds;
 
   /// The recurrence of this group.

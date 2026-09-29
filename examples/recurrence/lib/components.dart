@@ -26,7 +26,7 @@ TileComponents tileComponents(BuildContext context, {bool body = true}) {
               if (isRecurring) const SizedBox(width: 4),
               Expanded(
                 child: Text(
-                  _formatTileRange(context, tileRange),
+                  _formatEventRange(context, event),
                   style: TextStyle(fontSize: 12, color: onColor),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -69,36 +69,10 @@ TileComponents tileComponents(BuildContext context, {bool body = true}) {
   );
 }
 
-ScheduleTileComponents scheduleTileComponents(BuildContext context) {
-  final color = Theme.of(context).colorScheme.primaryContainer;
-  final onColor = Theme.of(context).colorScheme.onPrimaryContainer;
-  return ScheduleTileComponents(
-    tileBuilder: (context, event, tileRange) {
-      final isRecurring = event is RecurringCalendarEvent;
-      return Card(
-        margin: const EdgeInsets.symmetric(vertical: 1),
-        color: color,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Row(
-            children: [
-              if (isRecurring) Icon(Icons.repeat, size: 14, color: onColor),
-              if (isRecurring) const SizedBox(width: 4),
-              Text(
-                _formatTileRange(context, tileRange),
-                style: TextStyle(fontSize: 12, color: onColor),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-String _formatTileRange(BuildContext context, KalenderDateTimeRange tileRange) {
+String _formatEventRange(BuildContext context, KalenderEvent event) {
   final localizations = MaterialLocalizations.of(context);
-  final start = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(tileRange.start));
-  final end = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(tileRange.end));
+  final location = KalenderScope.locationOf(context);
+  final start = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(event.floatingStart(location: location)));
+  final end = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(event.floatingEnd(location: location)));
   return '$start - $end';
 }

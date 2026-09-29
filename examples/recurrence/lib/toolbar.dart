@@ -25,19 +25,8 @@ class CalendarToolBar extends StatelessWidget {
           ValueListenableBuilder(
             valueListenable: kalenderController.floatingVisibleRange,
             builder: (context, value, child) {
-              final localRange = value.forLocation();
-
-              final String month;
-              final int year;
-
-              if (kalenderController.viewConfiguration is MonthViewConfiguration) {
-                final dominantMonthDate = FloatingDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
-                year = dominantMonthDate.year;
-                month = dominantMonthDate.monthNameLocalized();
-              } else {
-                year = localRange.start.year;
-                month = localRange.start.monthNameLocalized();
-              }
+              final month = value.start.monthNameLocalized();
+              final year = value.start.year;
 
               return FilledButton.tonal(
                 onPressed: () => kalenderController.animateToDate(DateTime.now()),
