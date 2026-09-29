@@ -65,6 +65,7 @@
 - An event keeps its start and end converted for a location, and converts them again when the app resumes in another device timezone.
 - After a page change, `KalenderController.visibleEvents` holds only the events of the page on screen.
 - A side-by-side tile no longer gets a negative width when `minimumTileHeight` stretches tiles at a low zoom.
+- Switching to a multi-day view or mounting one no longer notifies the listeners of `KalenderController.visibleEvents` during the build.
 
 ### Examples
 

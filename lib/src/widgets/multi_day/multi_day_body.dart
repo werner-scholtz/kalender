@@ -220,9 +220,11 @@ class _MultiDayPageState extends State<MultiDayPage> {
   @override
   void initState() {
     super.initState();
-    _initialPage();
     widget.viewController.visibleTimeOfDay.addListener(_onVisibleTimeOfDayChanged);
+    // Listeners of the visible events may be outside the calendar, so they are not notified during the build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _initialPage();
       widget.eventsController.addListener(_currentPage);
     });
   }
