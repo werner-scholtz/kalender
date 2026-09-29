@@ -253,6 +253,7 @@ void main() {
     expect(_resolved, {
       'eventsControllerOf': true,
       'kalenderControllerOf': true,
+      'viewControllerOf': true,
       'localeOf': true,
       'locationOf': true,
       'componentsOf': true,
@@ -282,6 +283,7 @@ double _readsCalendarState(BuildContext context, KalenderTimeRange range) {
   _widthBuilderCalls++;
   _record('eventsControllerOf', KalenderScope.eventsControllerOf, context);
   _record('kalenderControllerOf', KalenderScope.kalenderControllerOf, context);
+  _record('viewControllerOf', KalenderScope.viewControllerOf, context);
   _record('localeOf', KalenderScope.localeOf, context);
   _record('locationOf', KalenderScope.locationOf, context);
   _record('componentsOf', KalenderScope.componentsOf, context);

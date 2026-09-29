@@ -35,6 +35,15 @@ abstract final class KalenderScope {
     return context.dependOnInheritedWidgetOfExactType<KalenderControllerProvider>()?.notifier;
   }
 
+  /// The [ViewController] the surrounding [KalenderView] shows.
+  ///
+  /// [KalenderController.viewController] is the active view's. It differs while two views share one controller, such
+  /// as during a route transition.
+  static ViewController viewControllerOf(BuildContext context) => ViewControllerProvider.of(context);
+
+  /// The [ViewController] the surrounding [KalenderView] shows, or null outside a [KalenderView].
+  static ViewController? maybeViewControllerOf(BuildContext context) => ViewControllerProvider.maybeOf(context);
+
   /// The locale the calendar formats its own dates and times with.
   ///
   /// This is `KalenderView.locale`, which is not necessarily the app's locale.

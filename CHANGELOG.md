@@ -42,6 +42,7 @@
 - `ViewTransitionContext.target` is where the new view opens, and takes precedence over the transition settings and resolvers.
 - `KalenderController` navigation works before a `KalenderView` is mounted and sets the date the view opens on.
 - `ViewParts` pairs a header and a body with a kind of `ViewConfiguration`.
+- `KalenderScope.viewControllerOf` and `maybeViewControllerOf` return the view controller of the surrounding `KalenderView`.
 - `MultiDayBody`, `MultiDayHeader`, `MonthBody` and `ScheduleBody` take `callbacks`, `interaction` and `tileComponents`, `MonthHeader` takes `callbacks`, and `MultiDayBody` takes `snapping`.
 - `KalenderView.interaction` sets the interaction for every view, and each view's widgets can override it.
 - `SideBySideLayoutDelegate.arrange` returns the column of each tile as a `SideBySidePlacement`, for a custom layout delegate to reuse.
