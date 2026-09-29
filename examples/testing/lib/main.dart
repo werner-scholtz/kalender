@@ -30,15 +30,15 @@ class MyApp extends StatelessWidget {
 }
 
 class Home extends StatefulWidget {
-  final TestConfiguration? config;
-  const Home({super.key, this.config});
+  final TestConfiguration config;
+  const Home({super.key, required this.config});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  late final TestConfiguration config = widget.config ?? TestConfiguration.week();
+  TestConfiguration get config => widget.config;
   EventsController get eventsController => config.eventsController;
   KalenderController get kalenderController => config.kalenderController;
 
@@ -48,10 +48,8 @@ class _HomeState extends State<Home> {
       body: KalenderView(
         eventsController: config.eventsController,
         kalenderController: config.kalenderController,
-        components: KalenderComponents(),
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
-          onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) =>
               eventsController.updateEvent(event: event, updatedEvent: updatedEvent),

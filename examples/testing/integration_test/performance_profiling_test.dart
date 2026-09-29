@@ -30,6 +30,7 @@ void main() {
             config = TestConfiguration(viewConfiguration: view.viewConfiguration);
             config.eventsController.addEvents(TestConfiguration.generate(scenario.eventRanges));
           });
+          tearDown(() => config.dispose());
 
           // 1. Profile loading events.
           testWidgets('${scenario.name} Loading', (tester) async {
