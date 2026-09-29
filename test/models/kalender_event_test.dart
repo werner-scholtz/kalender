@@ -6,6 +6,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:timezone/data/latest_10y.dart';
 import 'package:timezone/timezone.dart';
 
@@ -18,6 +19,32 @@ void main() {
   KalenderEvent eventUtc(DateTime start, DateTime end, {String? id, EventInteraction? interaction}) {
     return KalenderEvent(id: id, start: start, end: end, interaction: interaction);
   }
+
+  group('floating conversion', () {
+    final event = KalenderEvent(start: DateTime.utc(2025, 1, 1, 9), end: DateTime.utc(2025, 1, 1, 10));
+
+    test('is reused while the location and device timezone stay the same', () {
+      expect(event.floatingStart(), same(event.floatingStart()));
+      expect(event.floatingEnd(location: utcLocation), same(event.floatingEnd(location: utcLocation)));
+    });
+
+    test('converts for the location asked for', () {
+      event.floatingStart();
+      expect(event.floatingStart(location: utcLocation), FloatingDateTime(2025, 1, 1, 9));
+    });
+
+    test('converts again without a location after the device timezone changes', () {
+      final withLocation = event.floatingStart(location: utcLocation);
+      DeviceTimeZone.debugChange();
+      expect(event.floatingStart(location: utcLocation), same(withLocation));
+
+      final before = event.floatingStart();
+      DeviceTimeZone.debugChange();
+      final after = event.floatingStart();
+      expect(after, isNot(same(before)));
+      expect(after, before);
+    });
+  });
 
   group('construction', () {
     test('start and end are stored in UTC', () {

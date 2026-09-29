@@ -7,6 +7,7 @@
 import 'dart:math';
 
 import 'package:kalender/kalender.dart' show EventInteraction;
+import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:meta/meta.dart';
@@ -114,10 +115,25 @@ class KalenderEvent {
   KalenderDateTimeRange get dateTimeRange => KalenderDateTimeRange(start: start, end: end);
 
   /// The start as an [FloatingDateTime], adjusted for [location].
-  FloatingDateTime floatingStart({Location? location}) => FloatingDateTime.fromExternal(start, location: location);
+  FloatingDateTime floatingStart({Location? location}) => _floatingFor(location).start;
 
   /// The end as an [FloatingDateTime], adjusted for [location].
-  FloatingDateTime floatingEnd({Location? location}) => FloatingDateTime.fromExternal(end, location: location);
+  FloatingDateTime floatingEnd({Location? location}) => _floatingFor(location).end;
+
+  /// The last conversion of [start] and [end].
+  _FloatingConversion? _floating;
+
+  _FloatingConversion _floatingFor(Location? location) {
+    final generation = location == null ? DeviceTimeZone.generation : 0;
+    final cached = _floating;
+    if (cached != null && cached.location == location && cached.generation == generation) return cached;
+    return _floating = (
+      location: location,
+      generation: generation,
+      start: FloatingDateTime.fromExternal(start, location: location),
+      end: FloatingDateTime.fromExternal(end, location: location),
+    );
+  }
 
   /// The full range as an [FloatingDateTimeRange], adjusted for [location].
   FloatingDateTimeRange floatingRange({Location? location}) => FloatingDateTimeRange(
@@ -210,3 +226,5 @@ class KalenderEvent {
         isAllDay == other.isAllDay;
   }
 }
+
+typedef _FloatingConversion = ({Location? location, int generation, FloatingDateTime start, FloatingDateTime end});
