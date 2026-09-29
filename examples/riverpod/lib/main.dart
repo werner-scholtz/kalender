@@ -26,12 +26,18 @@ class MyApp extends StatelessWidget {
 }
 
 /// The shared calendar controller. It holds the selected view configuration.
-final calendarControllerProvider = Provider<KalenderController>(
-  (ref) => KalenderController(viewConfiguration: ref.read(viewConfigurationsProvider).first),
-);
+final calendarControllerProvider = Provider<KalenderController>((ref) {
+  final controller = KalenderController(viewConfiguration: ref.read(viewConfigurationsProvider).first);
+  ref.onDispose(controller.dispose);
+  return controller;
+});
 
 /// The shared events controller.
-final eventsProvider = Provider<EventsController>((ref) => DefaultEventsController());
+final eventsProvider = Provider<EventsController>((ref) {
+  final controller = DefaultEventsController();
+  ref.onDispose(controller.dispose);
+  return controller;
+});
 
 /// The view configurations the user can pick from.
 final viewConfigurationsProvider = Provider<List<ViewConfiguration>>((ref) {
@@ -62,7 +68,6 @@ class HomeScreen extends ConsumerWidget {
         kalenderController: kalenderController,
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
-          onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
             event: event,
