@@ -93,8 +93,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// Replaces the view controller with one [configuration] creates.
   ///
-  /// A [reopen] recreates the current view where it is, seeds its visible events and does not notify. A [target] opens
-  /// the new view there.
+  /// A [reopen] recreates the current view where it is, seeds its visible range and events and does not notify. A
+  /// [target] opens the new view there.
   void _switchTo(
     ViewConfiguration configuration, {
     bool locationChanged = false,
@@ -117,7 +117,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     );
     final next = configuration.createViewController(this, transition);
     _viewConfiguration = configuration;
-    if (reopen) next.visibleEvents.value = old.visibleEvents.value;
+    if (reopen) {
+      next.floatingVisibleRange.value = old.floatingVisibleRange.value;
+      next.visibleEvents.value = old.visibleEvents.value;
+    }
 
     _removeForwarders();
     _adopt(next);

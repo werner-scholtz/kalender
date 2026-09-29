@@ -125,6 +125,40 @@ void main() {
     expect(find.byType(MultiDayBody), findsOneWidget);
   });
 
+  testWidgets('a second view mounted on a continuous schedule does not notify during a build', (tester) async {
+    kalenderController.viewConfiguration = ScheduleViewConfiguration.continuous(
+      displayRange: year2025DisplayRange,
+      initialDateTime: DateTime(2025, 3, 5),
+    );
+    eventsController.addEvent(KalenderEvent(start: DateTime(2025, 3, 5, 9), end: DateTime(2025, 3, 5, 10)));
+    final showSecond = ValueNotifier(false);
+    addTearDown(showSecond.dispose);
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      Column(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: kalenderController.visibleDateTimeRange,
+            builder: (context, range, _) => Text('${range?.start}'),
+          ),
+          Expanded(child: view()),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: showSecond,
+              builder: (context, show, _) => show ? view() : const SizedBox(),
+            ),
+          ),
+        ],
+      ),
+    );
+    final before = kalenderController.visibleDateTimeRange.value;
+
+    showSecond.value = true;
+    await tester.pumpAndSettle();
+
+    expect(kalenderController.visibleDateTimeRange.value, before);
+  });
+
   testWidgets('a replaced route keeps its view controller until it is gone', (tester) async {
     final navigator = GlobalKey<NavigatorState>();
     await tester.pumpWidget(
