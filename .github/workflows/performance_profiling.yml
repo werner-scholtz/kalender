@@ -10,6 +10,7 @@ on:
     paths:
       - 'lib/**'
       - 'benchmark/**'
+      - '!benchmark/dashboard/**'
       - 'examples/testing/**'
       - 'pubspec.yaml'
       - '.fvmrc'
@@ -55,6 +56,14 @@ jobs:
           cache: true
           flutter-version-file: .fvmrc
 
+      # GitHub runs this job on more than one CPU model, and the faster one moves
+      # every series. The model is stored with each run.
+      - name: Record the runner CPU
+        run: |
+          cpu=$(lscpu | sed -n 's/^Model name:[[:space:]]*//p' | head -n1)
+          echo "Runner CPU: $cpu"
+          echo "RUNNER_CPU=$cpu" >> "$GITHUB_ENV"
+
       - name: Install Linux dependencies
         run: |
           sudo apt-get update -y
@@ -64,14 +73,12 @@ jobs:
           sudo apt-get install -y libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev
           sudo apt-get install -y mesa-common-dev
 
-      # --- Micro-benchmarks (pure Dart, low noise, the primary signal) ---------
       - name: Get package dependencies
         run: flutter pub get
 
       - name: Run micro-benchmarks
         run: flutter test benchmark/micro_benchmark_test.dart
 
-      # --- Frame profiling (flutter drive, higher noise, supplementary) --------
       - name: Get example dependencies
         working-directory: ./examples/testing
         run: flutter pub get
@@ -101,7 +108,6 @@ jobs:
           path: examples/testing/build/*.timeline.json
           retention-days: 30
 
-      # --- Store results in refs/benchmarks/data ------------------------------
       # The history lives in data.json on refs/benchmarks/data, a ref outside
       # refs/heads so a plain clone does not download it. The fetch fails when the
       # ref is missing, so a run never starts an empty history.
@@ -112,19 +118,21 @@ jobs:
           git show FETCH_HEAD:data.json > build/benchmarks/data.json
           echo "BENCHMARK_DATA_PARENT=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_ENV"
 
-      # A run is only cancelled while main moves under it if the cancellation
-      # arrives in time. This covers the rest: results for a commit that is no
-      # longer the tip are measured but not stored, so the dashboard carries one
-      # point per stack rather than one per merge.
-      - name: Check this commit is still the tip of main
+      # A run is only cancelled by a newer one if the cancellation arrives in
+      # time. This covers the rest: results for a commit that a newer run of this
+      # workflow on main replaces are measured but not stored, so the dashboard
+      # carries one point per stack rather than one per merge. A later commit that
+      # does not run this workflow leaves the results stored.
+      - name: Check no newer run replaces this one
         id: tip
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          tip=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
-          if [ "$tip" != "${{ github.sha }}" ]; then
-            echo "main is now $tip, so results for ${{ github.sha }} are not stored."
+          newer=$(gh api "repos/${{ github.repository }}/actions/workflows/performance_profiling.yml/runs?branch=main&event=push&per_page=20" \
+            --jq '[.workflow_runs[] | select(.id > ${{ github.run_id }})] | length')
+          if [ "$newer" != "0" ]; then
+            echo "A newer run on main replaces this one, so results for ${{ github.sha }} are not stored."
             echo "superseded=true" >> "$GITHUB_OUTPUT"
           else
             echo "superseded=false" >> "$GITHUB_OUTPUT"
@@ -165,14 +173,14 @@ jobs:
           alert-threshold: '150%'
           summary-always: true
 
-      # Adds the Flutter version to this run's entries and pushes data.json as a
-      # new commit on refs/benchmarks/data. site.yml publishes it after this
-      # workflow finishes.
+      # Adds the Flutter version and the CPU to this run's entries and pushes
+      # data.json as a new commit on refs/benchmarks/data. site.yml publishes it
+      # after this workflow finishes.
       - name: Save results
         if: steps.tip.outputs.superseded == 'false'
         run: |
-          jq --arg sha "$GITHUB_SHA" --arg flutter "$(jq -r .flutter .fvmrc)" \
-            '.entries |= map_values(map(if .commit.id == $sha then .flutter = $flutter else . end))' \
+          jq --arg sha "$GITHUB_SHA" --arg flutter "$(jq -r .flutter .fvmrc)" --arg cpu "$RUNNER_CPU" \
+            '.entries |= map_values(map(if .commit.id == $sha then .flutter = $flutter | .cpu = $cpu else . end))' \
             build/benchmarks/data.json > "$RUNNER_TEMP/data.json"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

@@ -5,7 +5,8 @@ name: Site
 #
 # The demo is built from a release once publish.yml has published it, or from
 # the ref given to a manual run. Every other run reuses the last demo build from
-# the Actions cache, and builds the latest release when the cache has expired.
+# the Actions cache, and builds the latest release when the cache has expired or
+# predates it.
 # The dashboard page comes from main and its data from refs/benchmarks/data.
 
 on:
@@ -29,10 +30,6 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   publish:
     # A dev release keeps the current demo, and only benchmark runs on main
@@ -43,6 +40,10 @@ jobs:
         ((github.event.workflow_run.name == 'Publish to pub.dev' && !contains(github.event.workflow_run.head_branch, '-')) ||
          (github.event.workflow_run.name == 'Performance Benchmarks' && github.event.workflow_run.event == 'push')))
     runs-on: ubuntu-latest
+    # On the job, so a run whose job is skipped does not replace a waiting one.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -66,16 +67,20 @@ jobs:
           key: web-demo
           restore-keys: web-demo-
 
+      # demo/.release names the latest release when the build was made. A newer
+      # release means its own publish did not run, so it is built here.
       - name: Choose the demo build
         env:
           REF: ${{ steps.source.outputs.ref }}
           RESTORED: ${{ steps.cache.outputs.cache-matched-key }}
         run: |
-          if [ -z "$REF" ] && [ -z "$RESTORED" ]; then
-            REF=$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##' \
-              | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+          latest=$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##' \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+          if [ -z "$REF" ] && { [ -z "$RESTORED" ] || [ "$(cat demo/.release 2>/dev/null)" != "$latest" ]; }; then
+            REF=$latest
           fi
           echo "BUILD_REF=$REF" >> "$GITHUB_ENV"
+          echo "LATEST_RELEASE=$latest" >> "$GITHUB_ENV"
 
       # The examples depend on ../../../kalender/, so the checkout sits in a
       # folder named kalender.
@@ -98,6 +103,7 @@ jobs:
           flutter build web --release --wasm --no-web-resources-cdn --base-href /kalender/
           rm -rf "$GITHUB_WORKSPACE/demo"
           cp -r build/web "$GITHUB_WORKSPACE/demo"
+          echo "$LATEST_RELEASE" > "$GITHUB_WORKSPACE/demo/.release"
 
       - name: Save the demo build
         if: env.BUILD_REF != ''

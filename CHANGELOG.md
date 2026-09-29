@@ -57,6 +57,7 @@
 ### Examples
 
 - The web demo's header editor sets the interaction of the multi-day header.
+- The ics example creates, moves and resizes single events, and imports pasted `.ics` text.
 
 ## 0.32.1
 
@@ -66,6 +67,8 @@
 - The overlap layout converts each event's start once when it sorts a day's events.
 - The tiles of one day convert their shared range once.
 - Event tiles and resize handles read the selection through one listener per calendar instead of one each.
+- Dragging an event in the multi-day body repaints only the day columns the drag changes.
+- An event keeps its start and end converted for a location, and converts them again when the app resumes in another device timezone.
 - After a page change, `KalenderController.visibleEvents` holds only the events of the page on screen.
 
 ## 0.32.0

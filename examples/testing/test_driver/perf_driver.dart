@@ -16,8 +16,7 @@ enum Scenario {
   /// Realistic load.
   Ten_Events_Per_Day(10),
 
-  /// Heavy load, where regressions in kalender's own layout and build code surface
-  /// above the Flutter framework overhead.
+  /// Heavy load.
   Fifty_Events_Per_Day(50);
 
   const Scenario(this.numberOfEvents);
@@ -49,21 +48,12 @@ enum Views {
   final String title;
 }
 
-/// Number of repeats per workload. The summary uses the median across runs, so
-/// more runs tightens the estimate against the ~6% run-to-run noise floor
-/// measured on shared CI. Raised from 3 → 5.
-///
-/// Overridable via `KALENDER_PERF_RUNS` to trade precision for speed when
-/// running locally.
+/// Repeats per workload. The summary takes the median across them. `KALENDER_PERF_RUNS` overrides it.
 final numberOfRuns = int.tryParse(Platform.environment['KALENDER_PERF_RUNS'] ?? '') ?? 5;
 
-/// The metrics tracked, all of them build-frame (lower is better).
-///
-/// Rasterizer metrics are not tracked. The job renders under Xvfb with llvmpipe,
-/// so there is no GPU and the numbers describe a software rasterizer rather than
-/// a real device. Each metric is read from its own [driver.TimelineSummary]
-/// method rather than from `summaryJson`, which computes the rasterizer average
-/// as well and throws when a window captured no rasterizer frames.
+/// The tracked frame build metrics. Rasterizer metrics are left out, since Xvfb renders with llvmpipe, a software
+/// rasterizer. Each is read from its own [driver.TimelineSummary] method, since `summaryJson` throws when a window
+/// captured no rasterizer frames.
 const _buildMetric = 'average_frame_build_time_millis';
 const _p90Metric = '90th_percentile_frame_build_time_millis';
 const _p99Metric = '99th_percentile_frame_build_time_millis';
@@ -77,8 +67,7 @@ Future<void> main() {
         return;
       }
 
-      // Collect every metric value per series across all runs, so we can take a
-      // robust median rather than a weighted mean.
+      // Every metric value per series across all runs.
       final bySeries = <String, Map<String, List<num>>>{};
 
       for (var run = 1; run <= numberOfRuns; run++) {
@@ -110,9 +99,8 @@ Future<void> main() {
         }
       }
 
-      // Emit github-action-benchmark `customSmallerIsBetter` entries, one series
-      // per scenario, view and workload with the median average build time. The
-      // other metrics go in `extra`.
+      // github-action-benchmark `customSmallerIsBetter` entries: the median average build time per series, with the
+      // other metrics in `extra`.
       final results = <Map<String, dynamic>>[];
       for (final entry in bySeries.entries) {
         final name = entry.key;
