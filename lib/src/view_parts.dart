@@ -7,6 +7,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:meta/meta.dart' show internal;
 
 /// The header and body [KalenderView] shows for a kind of [ViewConfiguration].
 ///
@@ -39,6 +40,7 @@ abstract class ViewParts<C extends ViewConfiguration> {
 
   /// The widths of the week number column and the timeline that the header and body share. Null for a column the
   /// view does not draw.
+  @internal
   ({double? weekNumber, double? timeline}) gutterWidths(BuildContext context) => (weekNumber: null, timeline: null);
 }
 
@@ -55,6 +57,7 @@ class MultiDayViewParts extends ViewParts<MultiDayViewConfiguration> {
   Widget? get builtInBody => const MultiDayBody();
 
   @override
+  @internal
   ({double? weekNumber, double? timeline}) gutterWidths(BuildContext context) {
     final configuration = context.viewController.viewConfiguration as MultiDayViewConfiguration;
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
@@ -75,6 +78,7 @@ class MonthViewParts extends ViewParts<MonthViewConfiguration> {
   Widget? get builtInBody => const MonthBody();
 
   @override
+  @internal
   ({double? weekNumber, double? timeline}) gutterWidths(BuildContext context) {
     final configuration = context.viewController.viewConfiguration as MonthViewConfiguration;
     if (!configuration.showWeekNumbers) return (weekNumber: null, timeline: null);
