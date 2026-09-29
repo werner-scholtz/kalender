@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
@@ -232,7 +233,7 @@ class MultiDayBodyComponents {
     double heightPerMinute,
     KalenderTimeRange timeOfDayRange,
     ValueNotifier<KalenderEvent?> eventBeingDragged,
-    ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
+    ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange,
   ) {
     return timeline?.call(context, heightPerMinute, timeOfDayRange, eventBeingDragged, visibleDateTimeRange) ??
         TimeLine(

@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -276,7 +277,7 @@ Widget _timeline(
   double heightPerMinute,
   KalenderTimeRange range,
   ValueNotifier<KalenderEvent?> eventBeingDragged,
-  ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
+  ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange,
 ) => const SizedBox();
 
 String _timeString(BuildContext context, KalenderTime time) => '';

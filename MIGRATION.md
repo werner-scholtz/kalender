@@ -45,7 +45,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range and events are read-only on the controller, and an event tile is one semantics node. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range, time of day and events are read-only on the controller, and an event tile is one semantics node. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -242,18 +242,45 @@ MultiDayViewController(
 Replace a call to `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` or
 `kDefaultToSchedule` with `old.snapshot().date`.
 
-### The controller's visible range and events are read-only
+### The controller's visible range, time of day and events are read-only
 
-`KalenderController.floatingVisibleRange` and `visibleEvents` are
-`ValueListenable`s that follow the attached view controller. Read them as
-before. A write goes to the view controller's own notifier.
+`KalenderController.floatingVisibleRange`, `visibleDateTimeRange`,
+`visibleTimeOfDay` and `visibleEvents` are `ValueListenable`s that follow the
+attached view controller. Read them as before. A write to the visible events
+goes to the view controller's own notifier. The visible range and time of day
+move with navigation, such as `jumpToDate` and `animateToDateTime`.
 
 ```dart
 // Before
 kalenderController.visibleEvents.value = events;
+kalenderController.visibleDateTimeRange.value = range;
 
 // After
 kalenderController.viewController.visibleEvents.value = events;
+kalenderController.jumpToDate(range.start);
+```
+
+A `timeline` builder receives the visible range as a `ValueListenable`, and
+`TimeLine` takes one.
+
+```dart
+// Before
+Widget timeline(
+  BuildContext context,
+  double heightPerMinute,
+  KalenderTimeRange timeOfDayRange,
+  ValueNotifier<KalenderEvent?> eventBeingDragged,
+  ValueNotifier<KalenderDateTimeRange?> visibleDateTimeRange,
+) => MyTimeline(visibleDateTimeRange: visibleDateTimeRange);
+
+// After
+Widget timeline(
+  BuildContext context,
+  double heightPerMinute,
+  KalenderTimeRange timeOfDayRange,
+  ValueNotifier<KalenderEvent?> eventBeingDragged,
+  ValueListenable<KalenderDateTimeRange?> visibleDateTimeRange,
+) => MyTimeline(visibleDateTimeRange: visibleDateTimeRange);
 ```
 
 ### A view controller's location is final

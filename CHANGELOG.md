@@ -15,7 +15,8 @@
 - `ViewController` no longer takes `floatingVisibleRange`, and the view controllers no longer take it or `visibleEvents`. Each creates its own, and `KalenderController` forwards those of the attached one.
 - `ViewController.visibleEvents` is a field instead of an abstract getter.
 - `ViewController.dispose` disposes the visible range and visible events, and an override calls `super.dispose()`.
-- `KalenderController.floatingVisibleRange` and `visibleEvents` are `ValueListenable`s.
+- `KalenderController.floatingVisibleRange`, `visibleDateTimeRange`, `visibleTimeOfDay` and `visibleEvents` are `ValueListenable`s.
+- `TimeLineBuilder`, `MultiDayBodyComponents.buildTimeline` and `TimeLine` take the visible range as a `ValueListenable`.
 - `KalenderController` takes `viewConfiguration` and `location`, and `KalenderView` no longer does.
 - `KalenderController.attach`, `detach`, `isAttached` and `isAttachedTo` are removed, and `viewController` is never null.
 - `KalenderView.header` and `body` are replaced by `views`, which defaults to `KalenderView.defaultViews`: a `MultiDayViewParts`, a `MonthViewParts` and a `ScheduleViewParts`.

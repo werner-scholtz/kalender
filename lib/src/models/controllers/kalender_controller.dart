@@ -147,9 +147,9 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _forward(viewController.visibleEvents, _visibleEvents);
     // Views without vertical scroll (month and schedule) have no visible time of day.
     if (viewController is MultiDayViewController) {
-      _forward(viewController.visibleTimeOfDay, visibleTimeOfDay);
+      _forward(viewController.visibleTimeOfDay, _visibleTimeOfDay);
     } else {
-      visibleTimeOfDay.value = null;
+      _visibleTimeOfDay.value = null;
     }
     _updateVisibleDateTimeRange();
   }
@@ -248,11 +248,12 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   late final _floatingVisibleRange = ValueNotifier<FloatingDateTimeRange?>(null);
   ValueListenable<FloatingDateTimeRange?> get floatingVisibleRange => _floatingVisibleRange;
   void _updateVisibleDateTimeRange() {
-    visibleDateTimeRange.value = _floatingVisibleRange.value?.forLocation(location: _location);
+    _visibleDateTimeRange.value = _floatingVisibleRange.value?.forLocation(location: _location);
   }
 
   /// The [floatingVisibleRange] in [location].
-  final visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
+  ValueListenable<KalenderDateTimeRange?> get visibleDateTimeRange => _visibleDateTimeRange;
+  final _visibleDateTimeRange = ValueNotifier<KalenderDateTimeRange?>(null);
 
   /// The [ViewController.visibleEvents] of [viewController].
   ValueListenable<Set<KalenderEvent>> get visibleEvents => _visibleEvents;
@@ -260,7 +261,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
 
   /// The [KalenderTime] aligned with the top of the viewport of a multi-day view. It follows scrolling and zooming, and
   /// is null in the month and schedule views.
-  final visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
+  ValueListenable<KalenderTime?> get visibleTimeOfDay => _visibleTimeOfDay;
+  final _visibleTimeOfDay = ValueNotifier<KalenderTime?>(null);
 
   /// The listeners that copy the notifiers of [viewController] into this controller's.
   final _forwarders = <(Listenable, VoidCallback)>[];
@@ -512,8 +514,8 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     }
     _floatingVisibleRange.dispose();
     _visibleEvents.dispose();
-    visibleDateTimeRange.dispose();
-    visibleTimeOfDay.dispose();
+    _visibleDateTimeRange.dispose();
+    _visibleTimeOfDay.dispose();
     selectedEvent.dispose();
     selectedRange.dispose();
     openDayOverlay.dispose();
