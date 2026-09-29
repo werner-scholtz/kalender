@@ -53,16 +53,6 @@
 - A multi-day view opens scrolled inside its `timeOfDayRange` when the requested time of day is outside it.
 - A continuous schedule that has not shown its list reports the date it opens on in `ViewController.snapshot`.
 - A view controller that is not attached no longer writes to `KalenderController.visibleEvents` and `floatingVisibleRange`.
-
-### Examples
-
-- The web demo's header editor sets the interaction of the multi-day header.
-- The ics example creates, moves and resizes single events, and imports pasted `.ics` text.
-
-## 0.32.1
-
-### Fixes
-
 - An event tile builds its resize handles only while they show, so a change to the events builds each tile once instead of twice.
 - The overlap layout converts each event's start once when it sorts a day's events.
 - The tiles of one day convert their shared range once.
@@ -70,6 +60,11 @@
 - Dragging an event in the multi-day body repaints only the day columns the drag changes.
 - An event keeps its start and end converted for a location, and converts them again when the app resumes in another device timezone.
 - After a page change, `KalenderController.visibleEvents` holds only the events of the page on screen.
+
+### Examples
+
+- The web demo's header editor sets the interaction of the multi-day header.
+- The ics example creates, moves and resizes single events, and imports pasted `.ics` text.
 
 ## 0.32.0
 
