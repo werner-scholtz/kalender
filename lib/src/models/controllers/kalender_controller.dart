@@ -273,7 +273,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   }
 
   /// The event currently being focused on.
-  final selectedEvent = ValueNotifier<KalenderEvent?>(null);
+  ///
+  /// Also notifies when [internalFocus] changes.
+  ValueNotifier<KalenderEvent?> get selectedEvent => _selectedEvent;
+  final _selectedEvent = _SelectedEvent();
   String? _selectedEventId;
   String? get selectedEventId => _selectedEventId;
 
@@ -286,20 +289,25 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
   /// [internal] leave false if not called from within the package.
   void selectEvent(KalenderEvent event, {bool internal = false}) {
     _selectedEventId = event.id;
-    _internalFocus = internal;
-    selectedEvent.value = event;
+    _focus(event, internal: internal);
   }
 
-  void updateEvent(KalenderEvent event, {bool internal = false}) {
-    _internalFocus = internal;
-    selectedEvent.value = event;
-  }
+  void updateEvent(KalenderEvent event, {bool internal = false}) => _focus(event, internal: internal);
 
   /// Deselect the event.
   void deselectEvent() {
-    _internalFocus = false;
     _selectedEventId = null;
-    selectedEvent.value = null;
+    _focus(null, internal: false);
+  }
+
+  void _focus(KalenderEvent? event, {required bool internal}) {
+    final focusChanged = internal != _internalFocus;
+    _internalFocus = internal;
+    if (focusChanged && _selectedEvent.value == event) {
+      _selectedEvent.notify();
+    } else {
+      _selectedEvent.value = event;
+    }
   }
 
   /// The selected days, or null when nothing is selected.
@@ -504,4 +512,10 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     _isDisposed = true;
     super.dispose();
   }
+}
+
+class _SelectedEvent extends ValueNotifier<KalenderEvent?> {
+  _SelectedEvent() : super(null);
+
+  void notify() => notifyListeners();
 }
