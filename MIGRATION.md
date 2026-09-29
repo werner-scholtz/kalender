@@ -45,7 +45,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range, time of day and events are read-only on the controller, the visible range is never null, and an event tile is one semantics node. |
+| [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range, time of day and events are read-only on the controller, the visible range is never null, a view controller's location is final, the month body and multi-day header take their own configuration, and an event tile is one semantics node. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
 | [v0.29.x → v0.30.0](#v029x--v0300) | The `Kalender*` renames and the replacements for `DateTimeRange` and `TimeOfDay`. |
@@ -63,11 +63,12 @@ The sections below cover what is left after the fixes have run.
 
 ## v0.32.x → v0.33.0
 
+`dart fix` does not apply to this upgrade.
+
 ### The controller holds the view configuration and location
 
-`dart fix` does not apply. The compiler reports `viewConfiguration` and
-`location` as undefined on `KalenderView`, and a missing required argument on
-`KalenderController()`.
+The compiler reports `viewConfiguration` and `location` as undefined on
+`KalenderView`, and a missing required argument on `KalenderController()`.
 
 ```dart
 // Before
@@ -108,9 +109,9 @@ below the calendar, the controller's notification throws. Delete calls to
 
 ### Views are `ViewParts` on `KalenderView`
 
-`dart fix` does not apply. `KalenderBody`, `KalenderHeader` and `ScheduleHeader`
-are removed, and `KalenderView` takes `views` in place of `header` and `body`.
-An app that passed both without arguments deletes them.
+`KalenderBody`, `KalenderHeader` and `ScheduleHeader` are removed, and
+`KalenderView` takes `views` in place of `header` and `body`. An app that passed
+both without arguments deletes them.
 
 ```dart
 // Before
@@ -183,8 +184,6 @@ multi-day header, which `KalenderHeader` did not take from the body.
 
 ### The members deprecated in 0.32.0 are removed
 
-`dart fix` does not apply.
-
 | Removed | Use instead |
 | --- | --- |
 | `ScheduleViewController.itemCount` | `itemCountForPage(currentPage)` |
@@ -201,7 +200,7 @@ multi-day header, which `KalenderHeader` did not take from the body.
 ### The `ResizeHandleDetails` checks are getters
 
 `continuesBefore`, `continuesAfter`, `showStart` and `showEnd` are getters and
-read the location the details carry. `dart fix` does not apply.
+read the location the details carry.
 
 ```dart
 // Before
@@ -246,14 +245,35 @@ class MyViewController extends ViewController {
   MyViewController({required super.floatingVisibleRange, super.location});
 }
 
-MyViewController(floatingVisibleRange: ValueNotifier(range));
-
 // After
-class MyViewController extends ViewController {
-  MyViewController({required super.initialVisibleRange, super.location});
+class MyViewConfiguration extends ViewConfiguration {
+  // ...
+
+  @override
+  MyViewController createViewController(KalenderController controller, ViewTransitionContext? transition) {
+    final date = resolveDate(controller.location, transition);
+    return MyViewController(
+      viewConfiguration: this,
+      initialVisibleRange: pageIndexCalculator.rangeFromDate(date, controller.location),
+      location: controller.location,
+    );
+  }
 }
 
-MyViewController(initialVisibleRange: range);
+class MyViewController extends ViewController {
+  MyViewController({required this.viewConfiguration, required super.initialVisibleRange, super.location});
+
+  @override
+  final MyViewConfiguration viewConfiguration;
+
+  // ...
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+}
 ```
 
 Replace a call to `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` or
@@ -262,8 +282,8 @@ Replace a call to `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` or
 ### The controller's visible range, time of day and events are read-only
 
 `KalenderController.floatingVisibleRange`, `visibleDateTimeRange`,
-`visibleTimeOfDay` and `visibleEvents` are `ValueListenable`s that follow the
-attached view controller. Read them as before. A write to the visible events
+`visibleTimeOfDay` and `visibleEvents` are `ValueListenable`s that follow
+`viewController`. Read them as before. A write to the visible events
 goes to the view controller's own notifier. The visible range and time of day
 move with navigation, such as `jumpToDate` and `animateToDateTime`.
 
