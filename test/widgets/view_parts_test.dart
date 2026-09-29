@@ -67,7 +67,7 @@ void main() {
           MultiDayViewParts(name: 'Day', body: Text('day')),
         ],
         shown: 'day',
-        printed: 0,
+        printed: <String>[],
       ),
       (
         name: 'unnamed parts show a configuration no named parts accept',
@@ -76,7 +76,7 @@ void main() {
           MultiDayViewParts(body: Text('any')),
         ],
         shown: 'any',
-        printed: 0,
+        printed: <String>[],
       ),
       (
         name: 'of two unnamed parts the first shows and one message is printed',
@@ -85,7 +85,10 @@ void main() {
           MultiDayViewParts(body: Text('second')),
         ],
         shown: 'first',
-        printed: 1,
+        printed: [
+          'KalenderView: 2 ViewParts in views accept the MultiDayViewConfiguration named "Day", and the first of them '
+              "is shown. Put the parts meant for it before the others, or give them name: 'Day'.",
+        ],
       ),
       (
         name: 'of two parts with one name the first shows and one message is printed',
@@ -94,7 +97,10 @@ void main() {
           MultiDayViewParts(name: 'Day', body: Text('second')),
         ],
         shown: 'first',
-        printed: 1,
+        printed: [
+          'KalenderView: 2 ViewParts in views accept the MultiDayViewConfiguration named "Day", and the first of them '
+              'is shown. Put the parts meant for it before the others.',
+        ],
       ),
     ]) {
       testWidgets(c.name, (tester) async {
@@ -104,7 +110,8 @@ void main() {
           await tester.pump();
         });
 
-        expect((find.text(c.shown).evaluate().length, printed.length), (1, c.printed));
+        expect(find.text(c.shown), findsOneWidget);
+        expect(printed, c.printed);
       });
     }
   });

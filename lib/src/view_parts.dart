@@ -12,7 +12,8 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 ///
 /// The parts accept a configuration of type [C], and with a [name] only a configuration with that
 /// [ViewConfiguration.name]. [KalenderView] picks the first named parts that accept the controller's configuration,
-/// else the first unnamed ones.
+/// else the first unnamed ones. The order of [KalenderView.views] decides between parts that both accept it, so put
+/// more specific parts before general ones or give them a [name].
 ///
 /// {@category Views}
 abstract class ViewParts<C extends ViewConfiguration> {

@@ -161,10 +161,12 @@ class KalenderViewState extends State<KalenderView> {
       'The built-in parts are MultiDayViewParts, MonthViewParts and ScheduleViewParts.',
     );
     if (candidates.length > 1 && _reportedDuplicates.add((configuration.runtimeType, configuration.name))) {
+      final advice = named.isEmpty
+          ? "Put the parts meant for it before the others, or give them name: '${configuration.name}'."
+          : 'Put the parts meant for it before the others.';
       debugPrint(
-        'KalenderView: ${candidates.length} ViewParts accept the ${configuration.runtimeType} named '
-        '"${configuration.name}", so the first is shown. Give each parts a name matching its configuration\'s name '
-        'to pick one.',
+        'KalenderView: ${candidates.length} ViewParts in views accept the ${configuration.runtimeType} named '
+        '"${configuration.name}", and the first of them is shown. $advice',
       );
     }
     return candidates.firstOrNull;
