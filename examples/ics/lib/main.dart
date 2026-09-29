@@ -96,13 +96,18 @@ class _HomePageState extends State<HomePage> {
     eventsController.replaceEvents(expandEvents(_sources, window));
   }
 
-  /// Expands [sources] again over the window already covered.
+  /// Expands [sources] over the window already covered and keeps them. Throws, keeping the current sources, when
+  /// they cannot be expanded.
   void _setSources(List<IcsSource> sources) {
+    final window = _covered ?? _windowAround(KalenderDateTimeRange(start: now, end: now));
+    final events = expandEvents(sources, window);
     _sources = sources;
-    _regenerate(_covered ?? _windowAround(KalenderDateTimeRange(start: now, end: now)));
+    _covered = window;
+    eventsController.replaceEvents(events);
   }
 
-  KalenderEvent _onEventCreate(KalenderEvent event) {
+  /// An event created in the multi-day header or the month view is all-day.
+  KalenderEvent _onEventCreate(KalenderEvent event, TapDetail detail) {
     final uid = '${DateTime.now().microsecondsSinceEpoch}@kalender.example';
     return IcsEvent(
       start: event.start,
@@ -110,7 +115,7 @@ class _HomePageState extends State<HomePage> {
       uid: uid,
       title: 'New event',
       color: colorFor(uid),
-      isAllDay: event.isAllDay,
+      isAllDay: detail is MultiDayDetail,
     );
   }
 
@@ -186,7 +191,7 @@ class _HomePageState extends State<HomePage> {
         kalenderController: kalenderController,
         callbacks: KalenderCallbacks(
           onEventTapped: _onEventTapped,
-          onEventCreate: _onEventCreate,
+          onEventCreateWithDetail: _onEventCreate,
           onEventCreated: _onEventCreated,
           onEventChanged: _onEventChanged,
         ),

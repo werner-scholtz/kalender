@@ -226,6 +226,78 @@ END:VCALENDAR''';
     expect(find.textContaining('SUMMARY:New event'), findsOneWidget);
   });
 
+  test('of several events with one uid in an import the last is kept', () {
+    const imported = '''BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//kalender//test//EN
+BEGIN:VEVENT
+UID:d@example.com
+DTSTAMP:20250101T000000Z
+SUMMARY:First
+DTSTART:20250111T010000
+DTEND:20250111T020000
+END:VEVENT
+BEGIN:VEVENT
+UID:d@example.com
+DTSTAMP:20250101T000000Z
+SUMMARY:Second
+DTSTART:20250111T030000
+DTEND:20250111T040000
+END:VEVENT
+END:VCALENDAR''';
+
+    expect([for (final source in importIcs([], imported)) source.summary], ['Second']);
+  });
+
+  testWidgets('dragging in the header creates an all-day event', (tester) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+    // The Sunday column of the header's event area, which no event in the sample uses.
+    final start = tester.getBottomRight(find.byType(MultiDayHeader)) + const Offset(-40, -8);
+
+    final gesture = await tester.startGesture(start);
+    await tester.pump(kLongPressTimeout + const Duration(milliseconds: 100));
+    await gesture.moveBy(const Offset(-5, 0));
+    await tester.pump();
+    await gesture.up();
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Export .ics'));
+    await tester.pumpAndSettle();
+
+    final export = tester.widget<SelectableText>(find.byType(SelectableText)).data!;
+    expect(parseIcs(export).singleWhere((source) => source.summary == 'New event').isAllDay, isTrue);
+  });
+
+  testWidgets('an import that cannot be expanded changes nothing', (tester) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+    final now = DateTime.now();
+    final day = '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+
+    Future<void> import(String events) async {
+      await tester.tap(find.byTooltip('Import .ics'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.descendant(of: find.byType(ImportDialog), matching: find.byType(TextField)),
+        'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//kalender//test//EN\n${events}END:VCALENDAR',
+      );
+      await tester.tap(find.text('Import').last);
+      await tester.pumpAndSettle();
+    }
+
+    // The rrule package accepts only MO as the week start.
+    await import(
+      'BEGIN:VEVENT\nUID:bad@example.com\nDTSTAMP:20250101T000000Z\nSUMMARY:Bad\nDTSTART:${day}T100000\n'
+      'RRULE:FREQ=WEEKLY;WKST=SU\nEND:VEVENT\n',
+    );
+    expect(find.textContaining('Could not read'), findsOneWidget);
+
+    await import(
+      'BEGIN:VEVENT\nUID:good@example.com\nDTSTAMP:20250101T000000Z\nSUMMARY:Good\nDTSTART;VALUE=DATE:$day\nEND:VEVENT\n',
+    );
+    expect(find.text('Good'), findsOneWidget);
+  });
+
   testWidgets('renders the calendar', (tester) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();

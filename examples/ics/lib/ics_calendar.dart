@@ -81,11 +81,11 @@ List<IcsSource> parseIcs(String text) {
   return sources;
 }
 
-/// Adds the events parsed from [text] to [sources]. An imported event replaces the one with the same uid.
+/// Adds the events parsed from [text] to [sources]. An imported event replaces the one with the same uid, and of
+/// several with one uid in [text] the last is kept.
 List<IcsSource> importIcs(List<IcsSource> sources, String text) {
-  final imported = parseIcs(text);
-  final uids = {for (final source in imported) source.uid};
-  return [...sources.where((source) => !uids.contains(source.uid)), ...imported];
+  final imported = {for (final source in parseIcs(text)) source.uid: source};
+  return [...sources.where((source) => !imported.containsKey(source.uid)), ...imported.values];
 }
 
 /// Whether [name] carries `VALUE=DATE` rather than a date and time.
@@ -102,8 +102,7 @@ bool _isDateValued(VEvent event, String name) {
 ///
 /// Recurring events are expanded lazily with the rrule package: only instances
 /// inside the window are produced, so a "repeat forever" rule stays cheap. An
-/// instance of a recurring event cannot be moved or resized, since that would
-/// need an exception written into the rule.
+/// instance of a recurring event cannot be moved or resized.
 List<IcsEvent> expandEvents(List<IcsSource> sources, KalenderDateTimeRange window) {
   final events = <IcsEvent>[];
   for (final source in sources) {

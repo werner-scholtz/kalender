@@ -38,9 +38,6 @@ class IcsEvent extends KalenderEvent {
       title: title,
       description: description,
       color: color,
-      interaction: interaction,
-      multiDayRule: multiDayRule,
-      isAllDay: isAllDay,
     );
   }
 
