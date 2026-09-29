@@ -58,6 +58,10 @@ class TileComponents {
   /// The horizontal resize handle.
   final Widget? horizontalResizeHandle;
 
+  /// Whether a tile merges the widgets inside it into one semantics node. Set it to false when a tile holds its own
+  /// buttons or other controls, so a screen reader reaches each of them.
+  final bool mergeSemantics;
+
   const TileComponents({
     required this.tileBuilder,
     this.dropTargetTile,
@@ -69,6 +73,7 @@ class TileComponents {
     this.resizeHandlePositioner,
     this.verticalResizeHandle,
     this.horizontalResizeHandle,
+    this.mergeSemantics = true,
   });
 
   static TileComponents defaultComponents() {
@@ -101,7 +106,8 @@ class TileComponents {
         other.resizeDragAnchorStrategy == resizeDragAnchorStrategy &&
         other.resizeHandlePositioner == resizeHandlePositioner &&
         other.verticalResizeHandle == verticalResizeHandle &&
-        other.horizontalResizeHandle == horizontalResizeHandle;
+        other.horizontalResizeHandle == horizontalResizeHandle &&
+        other.mergeSemantics == mergeSemantics;
   }
 
   @override
@@ -117,6 +123,7 @@ class TileComponents {
     resizeHandlePositioner,
     verticalResizeHandle,
     horizontalResizeHandle,
+    mergeSemantics,
   );
 }
 
@@ -147,6 +154,7 @@ class ScheduleTileComponents extends TileComponents {
     super.tileWhenDraggingBuilder,
     super.feedbackTileBuilder,
     super.dragAnchorStrategy,
+    super.mergeSemantics,
   });
 
   static ScheduleTileComponents defaultComponents() {

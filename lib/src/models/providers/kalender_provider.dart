@@ -55,6 +55,63 @@ class KalenderControllerProvider extends InheritedNotifier<KalenderController> {
   }
 }
 
+/// Provides [SelectionModel] for [controller]'s selection.
+class SelectionScope extends StatelessWidget {
+  final KalenderController controller;
+  final Widget child;
+
+  const SelectionScope({super.key, required this.controller, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: controller.selectedEvent,
+      builder: (context, _, child) => SelectionModel(
+        selectedEventId: controller.selectedEventId,
+        internalFocus: controller.internalFocus,
+        child: child!,
+      ),
+      child: child,
+    );
+  }
+}
+
+/// The selected event's id and whether the calendar is moving it.
+///
+/// A widget depends on one event's id, so a change of selection rebuilds only the widgets of the events it involves.
+class SelectionModel extends InheritedModel<String> {
+  const SelectionModel({super.key, required this.selectedEventId, required this.internalFocus, required super.child});
+
+  /// The aspect of a widget that depends on [internalFocus] whichever event is selected.
+  static const anyFocus = '';
+
+  final String? selectedEventId;
+  final bool internalFocus;
+
+  /// Whether [eventId] is selected, and whether the calendar is moving it.
+  static ({bool selected, bool moving}) of(BuildContext context, String eventId) {
+    final model = InheritedModel.inheritFrom<SelectionModel>(context, aspect: eventId);
+    final selected = model != null && model.selectedEventId == eventId;
+    return (selected: selected, moving: selected && model.internalFocus);
+  }
+
+  /// Whether the calendar is moving any event.
+  static bool anyMoving(BuildContext context) {
+    return InheritedModel.inheritFrom<SelectionModel>(context, aspect: anyFocus)?.internalFocus ?? false;
+  }
+
+  @override
+  bool updateShouldNotify(SelectionModel oldWidget) {
+    return selectedEventId != oldWidget.selectedEventId || internalFocus != oldWidget.internalFocus;
+  }
+
+  @override
+  bool updateShouldNotifyDependent(SelectionModel oldWidget, Set<String> dependencies) {
+    if (dependencies.contains(anyFocus) && internalFocus != oldWidget.internalFocus) return true;
+    return dependencies.contains(selectedEventId) || dependencies.contains(oldWidget.selectedEventId);
+  }
+}
+
 /// The [LocaleProvider] is used to provide the locale for internationalization.
 class LocaleProvider extends InheritedWidget {
   /// The locale used for internationalization.
@@ -75,19 +132,40 @@ class LocaleProvider extends InheritedWidget {
 }
 
 /// The [LocationProvider] is used to provide the [Location] for the calendar.
-class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
-  const LocationProvider({super.key, required super.notifier, required super.child});
+class LocationProvider extends InheritedWidget {
+  final Location? location;
+
+  const LocationProvider({super.key, required this.location, required super.child});
 
   static Location? of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
     assert(result != null, 'No LocationProvider found.');
-    return result!.notifier!.value;
+    return result!.location;
   }
 
-  static ValueNotifier<Location?> ofNotifier(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
-    assert(result != null, 'No LocationProvider found.');
-    return result!.notifier!;
+  @override
+  bool updateShouldNotify(covariant LocationProvider oldWidget) => location != oldWidget.location;
+}
+
+/// Provides the [ViewController] a [KalenderView] shows to its descendants.
+class ViewControllerProvider extends InheritedWidget {
+  final ViewController viewController;
+
+  const ViewControllerProvider({super.key, required this.viewController, required super.child});
+
+  static ViewController of(BuildContext context) {
+    final result = maybeOf(context);
+    assert(result != null, 'No ViewControllerProvider found.');
+    return result!;
+  }
+
+  static ViewController? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ViewControllerProvider>()?.viewController;
+  }
+
+  @override
+  bool updateShouldNotify(covariant ViewControllerProvider oldWidget) {
+    return !identical(viewController, oldWidget.viewController);
   }
 }
 
@@ -181,6 +259,9 @@ extension ProviderContext on BuildContext {
   /// Retrieve the [KalenderController].
   KalenderController get kalenderController => KalenderControllerProvider.of(this);
 
+  /// The [ViewController] of the enclosing [KalenderView].
+  ViewController get viewController => ViewControllerProvider.of(this);
+
   /// Retrieve the [KalenderComponents].
   KalenderComponents get components => Components.of(this);
 
@@ -210,19 +291,17 @@ extension ProviderContext on BuildContext {
 
   /// The rule deciding which events belong in the multi-day header.
   ///
-  /// Comes from the current view's [ViewConfiguration.multiDayRule], falling
-  /// back to [kDefaultMultiDayRule] before a view is attached.
+  /// Comes from the view's [ViewConfiguration.multiDayRule], falling back to [kDefaultMultiDayRule] outside a view.
   MultiDayRule get multiDayRule =>
-      kalenderController.viewController?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
+      ViewControllerProvider.maybeOf(this)?.viewConfiguration.multiDayRule ?? kDefaultMultiDayRule;
 
   /// Retrieve the [Location] of the calendar.
   Location? get location => LocationProvider.of(this);
-  ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
 
   /// Whether [date] is today, honouring the view's `nowCallback` when set and
   /// otherwise the calendar's [location].
   bool isToday(FloatingDateTime date) {
-    final now = kalenderController.viewController?.viewConfiguration.nowCallback?.call();
+    final now = ViewControllerProvider.maybeOf(this)?.viewConfiguration.nowCallback?.call();
     return now != null ? date.isToday(now: now) : date.isToday(location: location);
   }
 }

@@ -10,35 +10,44 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
+const _emptyViews = <ViewParts>[
+  MultiDayViewParts(header: SizedBox.shrink(), body: SizedBox.shrink()),
+  MonthViewParts(header: SizedBox.shrink(), body: SizedBox.shrink()),
+  ScheduleViewParts(body: SizedBox.shrink()),
+];
+
 void main() {
   late EventsController eventsController;
   late KalenderController kalenderController;
+  var hasController = false;
   final calendarRange = KalenderDateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
-
-  /// Shared key so didUpdateWidget fires instead of full rebuild.
-  late GlobalKey calendarViewKey;
 
   setUp(() {
     eventsController = DefaultEventsController();
-    kalenderController = KalenderController();
-    calendarViewKey = GlobalKey();
+    hasController = false;
   });
 
+  /// Mounts a view on [config], or switches the mounted view to it.
   Future<void> pumpCalendarView(
     WidgetTester tester, {
     required ViewConfiguration config,
     bool withBody = false,
     KalenderCallbacks? callbacks,
   }) async {
+    if (!hasController) {
+      kalenderController = KalenderController(viewConfiguration: config);
+      addTearDown(kalenderController.dispose);
+      hasController = true;
+    } else {
+      kalenderController.viewConfiguration = config;
+    }
     await pumpAndSettleWithMaterialApp(
       tester,
       KalenderView(
-        key: calendarViewKey,
         eventsController: eventsController,
         kalenderController: kalenderController,
-        viewConfiguration: config,
         callbacks: callbacks,
-        body: withBody ? const KalenderBody() : null,
+        views: withBody ? bodyOnlyViews : _emptyViews,
       ),
     );
   }
@@ -47,8 +56,7 @@ void main() {
     testWidgets('ignores initialDateTime on a config change', (tester) async {
       Future<FloatingDateTime> switchToDay({DateTime? initialDateTime}) async {
         await tester.pumpWidget(const SizedBox());
-        kalenderController = KalenderController();
-        calendarViewKey = GlobalKey();
+        hasController = false;
         await pumpCalendarView(
           tester,
           config: MonthViewConfiguration.singleMonth(
@@ -342,23 +350,21 @@ void main() {
   });
 
   group('View controller lifecycle', () {
-    testWidgets('each config change attaches a new controller, also between objects of the same type', (tester) async {
+    testWidgets('each config change creates a new view controller, also between objects of the same type', (
+      tester,
+    ) async {
       await pumpCalendarView(
         tester,
         config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
       );
       final monthController = kalenderController.viewController;
-      expect(monthController, isNotNull);
-      expect(kalenderController.isAttached, isTrue);
 
       await pumpCalendarView(
         tester,
         config: MultiDayViewConfiguration.singleDay(name: 'Day 1', displayRange: calendarRange),
       );
       final dayController = kalenderController.viewController;
-      expect(dayController, isNotNull);
       expect(dayController, isNot(same(monthController)));
-      expect(kalenderController.isAttached, isTrue);
 
       await pumpCalendarView(
         tester,
@@ -433,8 +439,7 @@ void main() {
         await pumpCalendarView(tester, config: config);
       }
 
-      expect(kalenderController.viewController, isNotNull);
-      expect(kalenderController.isAttached, isTrue);
+      expect(kalenderController.viewController.viewConfiguration, same(configs.last));
     });
 
     testWidgets('round-trip transition preserves date context', (tester) async {
