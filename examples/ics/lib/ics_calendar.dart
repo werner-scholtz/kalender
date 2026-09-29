@@ -117,7 +117,7 @@ List<IcsEvent> expandEvents(List<IcsSource> sources, KalenderDateTimeRange windo
 
     // rrule works in wall-clock UTC and ignores the actual zone, so feed it the
     // start with the same date and time flagged UTC, and read instances back as
-    // local wall-clock. Real .ics files carry a TZID; see the README.
+    // local wall-clock. Real .ics files carry a TZID. See the README.
     final rule = rr.RecurrenceRule.fromString('RRULE:${source.recurrence}');
     final instances = rule
         .getInstances(start: _utcWall(source.start))
