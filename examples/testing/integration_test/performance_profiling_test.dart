@@ -14,6 +14,10 @@ import 'package:testing/test_configuration.dart';
 import '../test_driver/perf_driver.dart';
 import 'utils.dart';
 
+/// The timeline streams each trace records. The default, `all`, includes the VM's API stream, which fills the timeline
+/// buffer within seconds and drops the start of a trace.
+const _streams = ['Dart', 'Embedder', 'GC'];
+
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -44,7 +48,7 @@ void main() {
                 config.eventsController.addEvents(batch);
                 await tester.pumpAndSettle(Duration(milliseconds: 100));
               }
-            }, reportKey: scenario.getReportKey(view, ReportKeys.loadingEvents, run));
+            }, streams: _streams, reportKey: scenario.getReportKey(view, ReportKeys.loadingEvents, run));
             await tester.pumpAndSettle(Duration(milliseconds: 100));
           });
 
@@ -69,7 +73,7 @@ void main() {
               await tester.pumpAndSettle(Duration(milliseconds: 250));
               config.kalenderController.animateToDate(current);
               await tester.pumpAndSettle(Duration(milliseconds: 250));
-            }, reportKey: scenario.getReportKey(view, ReportKeys.navigation, run));
+            }, streams: _streams, reportKey: scenario.getReportKey(view, ReportKeys.navigation, run));
           });
 
           // 3. Profile scrolling.
@@ -94,7 +98,7 @@ void main() {
                 await tester.scrollUntilVisible(endFinder, -250.0, scrollable: scrollable);
                 await tester.pump(Duration(milliseconds: 10));
               }
-            }, reportKey: scenario.getReportKey(view, ReportKeys.scrolling, run));
+            }, streams: _streams, reportKey: scenario.getReportKey(view, ReportKeys.scrolling, run));
           });
 
           // 4. Profile rescheduling.
@@ -129,7 +133,7 @@ void main() {
               await tester.pumpAndSettle();
               await dragGesture.up();
               await tester.pumpAndSettle(Duration(milliseconds: 100));
-            }, reportKey: scenario.getReportKey(view, ReportKeys.rescheduling, run));
+            }, streams: _streams, reportKey: scenario.getReportKey(view, ReportKeys.rescheduling, run));
 
             drag.dispose();
             expect(drag.dragged, isTrue, reason: 'No drag started, so the trace measured idle frames.');
@@ -168,7 +172,7 @@ void main() {
 
               await gesture.up();
               await tester.pumpAndSettle(Duration(milliseconds: 100));
-            }, reportKey: scenario.getReportKey(view, ReportKeys.resizing, run));
+            }, streams: _streams, reportKey: scenario.getReportKey(view, ReportKeys.resizing, run));
 
             drag.dispose();
             expect(drag.dragged, isTrue, reason: 'No drag started, so the trace measured idle frames.');
