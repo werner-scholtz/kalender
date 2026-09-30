@@ -69,7 +69,7 @@ class _TileState extends State<Tile> {
   void _eventsControllerListener() {
     final updatedEvent = _eventsController?.byId(widget.initialEvent.id);
     if (updatedEvent == null) return;
-    if (updatedEvent == widget.initialEvent) return;
+    if (updatedEvent == _event) return;
     if (mounted) setState(() => _event = updatedEvent);
   }
 

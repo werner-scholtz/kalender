@@ -110,7 +110,7 @@ Presents events in a chronological scrollable list.
 | `MonthViewParts`    | `MonthHeader`    | `MonthBody`    |
 | `ScheduleViewParts` | None             | `ScheduleBody` |
 
-A null `header` or `body` shows the built-in widget, and `SizedBox.shrink()` shows nothing. Any widget can be a header, so a header can wrap the built-in one, for example to put a toolbar above it.
+A null `header` or `body` shows the built-in widget, and `SizedBox.shrink()` shows nothing. Any widget can be a header or a body, so either can wrap the built-in one, for example to put a toolbar above the header. The built-in widgets work only inside a `KalenderView`.
 
 The list needs parts for every kind of configuration the controller shows. Parts with a `name` show only the configuration with that `name`, and come before the unnamed parts of their kind. Use this when two configurations of one kind, such as a week and a day, need different parts:
 
@@ -140,7 +140,7 @@ The built-in header and body widgets accept view-specific configuration objects:
 | Month    | None                          | `MonthBodyConfiguration`    |
 | Schedule | None                          | `ScheduleBodyConfiguration` |
 
-`MultiDayHeader` and the bodies also accept `callbacks`, `interaction` and `tileComponents` (see [Appearance](appearance.md)), and `MonthHeader` accepts `callbacks`. See [Interaction](interaction.md) for `interaction` and `snapping`.
+`MultiDayHeader` and the bodies also accept `callbacks`, `interaction` and `tileComponents` (see [Appearance](appearance.md)), and `MonthHeader` accepts `callbacks`. See [Interaction](interaction.md) for `interaction` and `snapping`. An event dragged from the header into the body reports `onEventChange` to the header's callbacks and `onEventChanged` to the body's.
 
 Every option below is shown at its default.
 

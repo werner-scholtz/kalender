@@ -316,6 +316,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   /// The [ValueNotifier] that contains the event being dragged.
   final ValueNotifier<KalenderEvent?> eventBeingDragged;
 
+  /// The range the calendar shows. The times of [eventBeingDragged] are drawn while it is in this range.
   final ValueListenable<KalenderDateTimeRange> visibleDateTimeRange;
 
   /// Creates a new [TimeLine] widget.

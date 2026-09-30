@@ -17,12 +17,7 @@ import 'package:kalender/src/widgets/internal_components/month_week_number_gutte
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
-/// This widget is used to display a month body.
-///
-/// The month body's content:
-///   - Static content [MonthGrid].
-///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [HorizontalDragTarget] and
-///     [MultiDayDraggable].
+/// The weeks of a month view, one page per month. The default body of [MonthViewParts].
 ///
 /// {@category Views}
 class MonthBody extends StatelessWidget {
@@ -82,15 +77,6 @@ class _MonthBody extends StatelessWidget {
       onPageChanged: (index) {
         final visibleRange = pageNavigation.rangeFromIndex(index, context.location);
         viewController.floatingVisibleRange.value = visibleRange;
-        viewController.visibleEvents.value = context.eventsController
-            .eventsInRange(
-              visibleRange,
-              multiDayRule: viewConfiguration.multiDayRule,
-              includeDayEvents: configuration.allowSingleDayEvents,
-              includeMultiDayEvents: true,
-              location: context.location,
-            )
-            .toSet();
         context.callbacks?.onPageChanged?.call(visibleRange.forLocation(location: context.location));
       },
       itemBuilder: (context, index) {

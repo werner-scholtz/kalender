@@ -27,5 +27,5 @@ cd example
 flutter run
 ```
 
-Each app has its own README. `analyze_examples.yml` analyzes and tests the
+Each app except `doc_snippets` has its own README. `analyze_examples.yml` analyzes and tests the
 examples in CI.

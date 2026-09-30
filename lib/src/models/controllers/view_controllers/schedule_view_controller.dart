@@ -19,6 +19,8 @@ typedef _PageList = ({
   VoidCallback onCurrent,
 });
 
+/// The controller of a schedule view. It opens on the date of `initial`.
+///
 /// {@category Controllers and callbacks}
 abstract class ScheduleViewController extends ViewController with ScheduleMap {
   @override
@@ -112,6 +114,8 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   bool get hasInitialized => itemScrollController != null && itemPositionsListener != null;
 }
 
+/// The [ScheduleViewController] of [ScheduleViewConfiguration.continuous], one list over the display range.
+///
 /// {@category Controllers and callbacks}
 class ContinuousScheduleViewController extends ScheduleViewController {
   ContinuousScheduleViewController({super.location, required super.viewConfiguration, required super.initial}) {
@@ -191,6 +195,8 @@ class ContinuousScheduleViewController extends ScheduleViewController {
   }
 }
 
+/// The [ScheduleViewController] of [ScheduleViewConfiguration.paginated], one page per month.
+///
 /// {@category Controllers and callbacks}
 class PaginatedScheduleViewController extends ScheduleViewController {
   PaginatedScheduleViewController({super.location, required super.viewConfiguration, required super.initial}) {

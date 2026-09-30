@@ -6,9 +6,11 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/kalender_navigation_functions.dart';
+import 'package:meta/meta.dart' show internal;
 
 export 'view_controllers/month_view_controller.dart';
 export 'view_controllers/multi_day_view_controller.dart';
@@ -35,6 +37,21 @@ abstract class ViewController with KalenderNavigationFunctions {
 
   /// The [KalenderEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<Set<KalenderEvent>>({});
+
+  /// The events each widget of the view shows.
+  final _shownEvents = <Object, Set<KalenderEvent>>{};
+
+  /// Sets the events [source] shows, and [visibleEvents] to the events every source shows.
+  @internal
+  void showEvents(Object source, Set<KalenderEvent> events) {
+    _shownEvents[source] = events;
+    final all = {for (final shown in _shownEvents.values) ...shown};
+    if (!const SetEquality<KalenderEvent>().equals(all, visibleEvents.value)) visibleEvents.value = all;
+  }
+
+  /// Removes [source]. [visibleEvents] follows on the next [showEvents].
+  @internal
+  void removeEventSource(Object source) => _shownEvents.remove(source);
 
   /// The cache used by the event layout delegate.
   final EventLayoutDelegateCache cache = EventLayoutDelegateCache();

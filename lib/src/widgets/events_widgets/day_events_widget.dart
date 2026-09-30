@@ -157,11 +157,17 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
       widget.kalenderController.selectedEvent.addListener(_onViewportChanged);
     }
 
+    final didUpdateEventsController = oldWidget.eventsController != widget.eventsController;
+    if (didUpdateEventsController) {
+      oldWidget.eventsController.removeListener(_update);
+      widget.eventsController.addListener(_update);
+    }
+
     final didUpdateLocation = oldWidget.location != widget.location;
     final didUpdateHeightPerMinute = oldWidget.heightPerMinute != widget.heightPerMinute;
     final didUpdateConfiguration = oldWidget.configuration != widget.configuration;
 
-    if (didUpdateLocation || didUpdateHeightPerMinute || didUpdateConfiguration) {
+    if (didUpdateEventsController || didUpdateLocation || didUpdateHeightPerMinute || didUpdateConfiguration) {
       widget.cache.clearAll();
       setState(() => _setEvents(_sort(_queryEvents())));
     }
