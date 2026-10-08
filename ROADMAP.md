@@ -105,6 +105,17 @@ Theming was the first part of a larger idea: assembling a calendar from parts ra
 - **The calendar selecting on its own,** on tap or as a range dragged across days ([#89](https://github.com/werner-scholtz/kalender/issues/89)).
 - **A yearly view and a mobile month view,** [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264), possible as `ViewParts` and not built.
 
+### Accessibility
+
+Not designed yet. It adds public API, such as the text a screen reader speaks for a tile, actions on a tile and keyboard settings, so it belongs before 1.0.0. The design waits on talking to people who use a screen reader, switch access, voice control or screen magnification about how they use a calendar today.
+
+What is missing:
+
+- **Screen readers.** A tile reads only the text it shows. Its day and time come from where it sits, and nothing puts them into words. A day number reads as a disabled button with only the day of the month, and the overflow button reads "+" and a number. A page change is not announced.
+- **Editing without dragging.** Moving, resizing and creating an event are drag gestures with no other way to do them. [WCAG 2.2](https://www.w3.org/TR/WCAG22/#dragging-movements) requires one at level AA.
+- **Keyboard.** Days and events cannot take focus, and the calendar handles no keys. Moving between days and events, opening an event and changing the page need a pointer.
+- **Display settings.** The reduced motion setting is not read. Text size, contrast and target sizes have not been checked, apart from the timeline, which follows the text size.
+
 ### Features
 
 Most of the open issues should land before 1.0.0 rather than after it. Each one adds public API, and 1.0.0 is the point where adding it stops being cheap. They are grouped by what they are waiting on rather than by demand, because the grouping is what decides the order.
