@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -359,6 +360,17 @@ void main() {
         final internal = FloatingDateTime(now.year, now.month, now.day, 23, 59, 59);
 
         expect(internal.isToday(), true);
+      });
+    });
+
+    group('isToday with a fixed clock', () {
+      test('reads the clock in the location', () {
+        final location = getLocation('Pacific/Kiritimati');
+        final instant = DateTime.utc(2026, 1, 15, 12);
+        withClock(Clock.fixed(instant), () {
+          expect(FloatingDateTime(2026, 1, 16).isToday(location: location), true);
+          expect(FloatingDateTime(2026, 1, 15).isToday(location: location), false);
+        });
       });
     });
 

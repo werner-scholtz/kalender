@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:ui' show lerpDouble;
 
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
@@ -156,7 +157,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   Widget build(BuildContext context) {
     final now = widget.nowCallback != null
         ? FloatingDateTime.fromDateTime(widget.nowCallback!())
-        : FloatingDateTime.fromExternal(DateTime.timestamp(), location: widget.location);
+        : FloatingDateTime.fromExternal(clock.now().toUtc(), location: widget.location);
     final startTime = widget.timeOfDayRange.start.toFloatingDateTime(now);
     final endTime = widget.timeOfDayRange.end.toFloatingDateTime(now);
     final showIndicator = now.isAfter(startTime) && now.isBefore(endTime);

@@ -10,6 +10,7 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 ### Features
 
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
+- Read the current time from the `clock` package, so `withClock` and `fakeAsync` control it in a test.
 
 ## 0.33.1
 

@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/kalender_time.dart';
@@ -63,6 +64,12 @@ void main() {
 
       expect(now.isBefore(before), isFalse);
       expect(now.isAfter(after), isFalse);
+    });
+
+    test('now reads the clock', () {
+      withClock(Clock.fixed(DateTime(2024, 3, 5, 14, 45, 30)), () {
+        expect(KalenderTime.now(), const KalenderTime(hour: 14, minute: 45));
+      });
     });
 
     group('replacing', () {

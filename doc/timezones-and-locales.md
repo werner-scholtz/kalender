@@ -171,3 +171,5 @@ specific zone.
 `nowCallback` is included in `==`, so store a closure rather than writing it inline.
 
 When `nowCallback` is `null` (the default), the calendar falls back to its `Location`-based behavior.
+
+Without a `nowCallback`, the calendar reads the time from the [clock](https://pub.dev/packages/clock) package, so a test can fix "now" with `withClock(Clock.fixed(...), () { ... })` or `fakeAsync`.
