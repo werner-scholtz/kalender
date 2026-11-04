@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart' show WeekDayHeaders;
 
 import '../utilities.dart';
@@ -305,6 +306,62 @@ void main() {
         expect(strategy.invoked, isTrue);
       });
     });
+  });
+
+  // #642: the overflow button's row is reserved only when a day has more events than fit.
+  group('month overflow button row', () {
+    // Each of the 5 rows of an 800 by 600 January 2025 is 120 high, so a 24 high day header leaves 96 for events.
+    final components = KalenderComponents(
+      monthComponents: MonthComponents(
+        bodyComponents: MonthBodyComponents(monthDayHeaderBuilder: (context, date) => const SizedBox(height: 24)),
+      ),
+    );
+    final day = DateTime(2025, 1, 15);
+
+    final cases = <({String name, double tileHeight, int eventCount, int tiles, String labels})>[
+      (name: 'room for 1.5 tiles shows a single event', tileHeight: 64, eventCount: 1, tiles: 1, labels: ''),
+      (
+        name: 'room for 1.5 tiles shows a button for three events',
+        tileHeight: 64,
+        eventCount: 3,
+        tiles: 0,
+        labels: '+3',
+      ),
+      (name: 'room for 2 tiles shows two events', tileHeight: 48, eventCount: 2, tiles: 2, labels: ''),
+      (
+        name: 'room for 2 tiles shows a tile and a button for three events',
+        tileHeight: 48,
+        eventCount: 3,
+        tiles: 1,
+        labels: '+2',
+      ),
+    ];
+
+    for (final c in cases) {
+      testWidgets(c.name, (tester) async {
+        await pumpOverflowingMonth(
+          tester,
+          day: day,
+          eventCount: c.eventCount,
+          bodyConfiguration: MonthBodyConfiguration(tileHeight: c.tileHeight),
+          components: components,
+        );
+
+        final labels = tester.widgetList<Text>(find.byKey(MultiDayPortalOverlayButton.textKey)).map((t) => t.data);
+        expect(
+          (tiles: find.byType(MultiDayEventTile).evaluate().length, labels: labels.join(' ')),
+          (tiles: c.tiles, labels: c.labels),
+        );
+
+        for (final button in find.byType(MultiDayPortalOverlayButton).evaluate()) {
+          final buttonRect = tester.getRect(find.byWidget(button.widget));
+          final rowRect = tester.getRect(
+            find.ancestor(of: find.byWidget(button.widget), matching: find.byType(MonthWeek)),
+          );
+          expect(rowRect.intersect(buttonRect), buttonRect, reason: 'the button should not be clipped by its row');
+        }
+      });
+    }
   });
 }
 

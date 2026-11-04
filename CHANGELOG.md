@@ -1,3 +1,9 @@
+## 0.33.1
+
+### Fixes
+
+- A month row reserves space for the overflow button only when a day in its week has more events than fit.
+
 ## 0.33.0
 
 See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.

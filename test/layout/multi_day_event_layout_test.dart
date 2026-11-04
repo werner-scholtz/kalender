@@ -53,7 +53,7 @@ void main() {
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               configuration: configuration,
-              maxNumberOfVerticalEvents: null,
+              availableRows: null,
               multiDayCache: null,
               location: null,
             ),
