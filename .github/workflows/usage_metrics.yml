@@ -44,11 +44,17 @@ jobs:
           echo "USAGE_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
 
       # TRAFFIC_TOKEN is optional. Without it views and clones are not recorded.
+      # Exit 1 means nothing was read, so nothing is stored. Exit 2 means the
+      # file was written but the token was rejected, checked after the save.
       - name: Record usage
+        id: record
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
-        run: dart run tool/usage_metrics.dart build/benchmarks/usage.json
+        run: |
+          dart run tool/usage_metrics.dart build/benchmarks/usage.json && status=0 || status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          [ "$status" != 1 ]
 
       - name: Save usage
         uses: ./.github/actions/store-benchmark-data
@@ -57,3 +63,8 @@ jobs:
           file: build/benchmarks/usage.json
           name: usage.json
           message: Usage on ${{ env.USAGE_DATE }}
+
+      # GitHub keeps 14 days of traffic, so a token that stopped working has
+      # to be noticed before they run out.
+      - name: Check the traffic token
+        run: '[ "${{ steps.record.outputs.status }}" = 0 ]'

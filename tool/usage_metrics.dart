@@ -9,12 +9,15 @@
 // Usage: dart run tool/usage_metrics.dart <path to usage.json>
 //
 // Reads the pub.dev score, the GitHub repository and its open issue and pull request counts. With TRAFFIC_TOKEN set it
-// also reads the GitHub views and clones of the last 14 days, which need a token with push access. GITHUB_TOKEN, when
-// set, authenticates the other GitHub requests.
+// also reads the GitHub views and clones of the last 14 days, which need a token with read access to the repository's
+// Administration. GITHUB_TOKEN, when set, authenticates the other GitHub requests.
 //
 // A snapshot replaces the fields of one already recorded for the same day, and traffic is merged by day, the latest
-// read winning. The current day's traffic is still being counted and is left out. A source that cannot be read is left out and keeps what an earlier run that day recorded. The script
-// fails only when no source could be read. A missing or empty file starts an empty history.
+// read winning. The current day's traffic is still being counted and is left out. A source that cannot be read is left
+// out and keeps what an earlier run that day recorded. A missing or empty file starts an empty history.
+//
+// Exits with 1 when no source could be read and the file is unchanged, and with 2 when the file was written but
+// TRAFFIC_TOKEN is set and the views and clones could not be read.
 //
 // The file has this shape:
 //
@@ -140,10 +143,16 @@ Map<String, Object?> withSnapshot(Map<String, Object?> usage, Map<String, Object
   return {...usage, 'snapshots': snapshots};
 }
 
-/// [usage] with the [days] of a traffic [kind] merged in, a day in [days] replacing the stored one.
-Map<String, Object?> withTraffic(Map<String, Object?> usage, String kind, Map<String, Map<String, int>> days) {
+/// [usage] with the [days] of a traffic [kind] merged in, a day in [days] replacing the stored one and [today] left
+/// out.
+Map<String, Object?> withTraffic(
+  Map<String, Object?> usage,
+  String kind,
+  Map<String, Map<String, int>> days, {
+  String? today,
+}) {
   final traffic = Map<String, Object?>.of(usage['traffic']! as Map<String, Object?>);
-  final merged = {...?traffic[kind] as Map<String, Object?>?, ...days};
+  final merged = {...?traffic[kind] as Map<String, Object?>?, ...days}..remove(today);
   traffic[kind] = {for (final day in merged.keys.toList()..sort()) day: merged[day]};
   return {...usage, 'traffic': traffic};
 }
@@ -212,6 +221,7 @@ Future<void> main(List<String> args) async {
     openPullRequests: openPullRequests,
   );
   var read = today != null;
+  var trafficRead = false;
   if (today != null) usage = withSnapshot(usage, today);
 
   if (trafficToken == null) {
@@ -224,7 +234,8 @@ Future<void> main(List<String> args) async {
       );
       if (days == null) continue;
       read = true;
-      usage = withTraffic(usage, kind, days..remove(date));
+      trafficRead = true;
+      usage = withTraffic(usage, kind, days, today: date);
     }
   }
   client.close(force: true);
@@ -235,4 +246,8 @@ Future<void> main(List<String> args) async {
   }
   file.writeAsStringSync(encodeUsage(usage));
   stdout.writeln('Wrote ${file.path}.');
+  if (trafficToken != null && !trafficRead) {
+    stderr.writeln('TRAFFIC_TOKEN is set but the views and clones could not be read.');
+    exit(2);
+  }
 }

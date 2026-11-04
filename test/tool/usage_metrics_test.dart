@@ -155,6 +155,18 @@ void main() {
       });
     });
 
+    test('leaves today out', () {
+      final usage = withTraffic(parseUsage(''), 'views', {
+        '2026-11-03': {'count': 31, 'uniques': 25},
+        '2026-11-04': {'count': 2, 'uniques': 2},
+      }, today: '2026-11-04');
+      expect(usage['traffic'], {
+        'views': {
+          '2026-11-03': {'count': 31, 'uniques': 25},
+        },
+      });
+    });
+
     test('keeps the other kind', () {
       final views = {
         '2026-11-03': {'count': 31, 'uniques': 25},

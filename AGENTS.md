@@ -191,7 +191,7 @@ A pre-release takes a `-dev.N` suffix, as in `v<version>-dev.1`. A patch for an 
 
 `performance_profiling.yml` runs the micro-benchmarks in `benchmark/` and the frame profiling in `examples/testing/`. It runs on pushes to main that touch the package or the benchmarks, and on pull requests labelled `profile`. Each run is compared with the stored results, and the comparison is posted on the pull request. On main the run, with the Flutter version from `.fvmrc` and the runner's CPU model, is added to `data.json` on `refs/benchmarks/data`.
 
-`usage_metrics.yml` runs `tool/usage_metrics.dart` daily and adds the pub.dev likes, points and 30-day downloads and the GitHub stars, forks, watchers, open issues and open pull requests to `usage.json` on `refs/benchmarks/data`. With a `TRAFFIC_TOKEN` secret, a fine-grained token with read access to the repository's Administration, it also records the daily views and clones. The two workflows push from the same concurrency group, and each keeps the other's file.
+`usage_metrics.yml` runs `tool/usage_metrics.dart` daily and adds the pub.dev likes, points and 30-day downloads and the GitHub stars, forks, watchers, open issues and open pull requests to `usage.json` on `refs/benchmarks/data`. With a `TRAFFIC_TOKEN` secret, a fine-grained token with read access to the repository's Administration, it also records the daily views and clones, and the run fails after storing the file when the token is rejected. The two workflows push from the same concurrency group, and each keeps the other's file.
 
 `refs/benchmarks/data` is outside `refs/heads`, so a clone does not download it:
 
