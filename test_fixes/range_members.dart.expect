@@ -9,40 +9,55 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
-FloatingDateTimeRange? controllerRange(KalenderController c) => c.floatingVisibleRange.value;
-FloatingDateTimeRange? controllerRangeFromDevRelease(KalenderController c) => c.floatingVisibleRange.value;
+FloatingDateTimeRange? controllerRange(KalenderController c) =>
+    c.floatingVisibleRange.value;
+FloatingDateTimeRange? controllerRangeFromDevRelease(KalenderController c) =>
+    c.floatingVisibleRange.value;
 FloatingDateTime eventStart(KalenderEvent e) => e.floatingStart();
 FloatingDateTime eventEnd(KalenderEvent e) => e.floatingEnd();
 FloatingDateTimeRange eventRange(KalenderEvent e) => e.floatingRange();
-FloatingDateTimeRange? viewRange(ViewController c) => c.floatingVisibleRange.value;
-FloatingDateTimeRange? highlighted(ScheduleViewController c) => c.highlightedRange.value;
+FloatingDateTimeRange? viewRange(ViewController c) =>
+    c.floatingVisibleRange.value;
+FloatingDateTimeRange? highlighted(ScheduleViewController c) =>
+    c.highlightedRange.value;
 
-Iterable<KalenderEvent> events(EventsController c, FloatingDateTimeRange r, MultiDayRule rule) =>
-    c.eventsInRange(r, multiDayRule: rule);
-Set<String> ids(EventStore s, FloatingDateTimeRange r) => s.eventIdsInRange(r, null);
+Iterable<KalenderEvent> events(
+  EventsController c,
+  FloatingDateTimeRange r,
+  MultiDayRule rule,
+) => c.eventsInRange(r, multiDayRule: rule);
+Set<String> ids(EventStore s, FloatingDateTimeRange r) =>
+    s.eventIdsInRange(r, null);
 
-FloatingDateTimeRange fromIndex(PageIndexCalculator p) => p.rangeFromIndex(0, null);
-FloatingDateTimeRange fromDate(PageIndexCalculator p, FloatingDateTime d) => p.rangeFromDate(d, null);
+FloatingDateTimeRange fromIndex(PageIndexCalculator p) =>
+    p.rangeFromIndex(0, null);
+FloatingDateTimeRange fromDate(PageIndexCalculator p, FloatingDateTime d) =>
+    p.rangeFromDate(d, null);
 FloatingDateTimeRange whole(PageIndexCalculator p) => p.floatingRange(null);
 
-FloatingDateTimeRange? onDate(FloatingDateTimeRange r, FloatingDateTime d) => r.rangeOnDate(d);
+FloatingDateTimeRange? onDate(FloatingDateTimeRange r, FloatingDateTime d) =>
+    r.rangeOnDate(d);
 
 FloatingDateTimeRange handleRange(ResizeHandleDetails d) => d.range;
 FloatingDateTimeRange frameRange(MultiDayLayoutFrame f) => f.range;
 
 MultiDayLayoutFrame frame(FloatingDateTimeRange r) => MultiDayLayoutFrame(
-      range: r,
-      events: const [],
-      layoutInfo: const [],
-      totalNumberOfRows: 0,
-      columnRowMap: const {},
-      textDirection: TextDirection.ltr,
-    );
+  range: r,
+  events: const [],
+  layoutInfo: const [],
+  totalNumberOfRows: 0,
+  columnRowMap: const {},
+  textDirection: TextDirection.ltr,
+);
 
-Widget highlight(FloatingDateTime date, ValueNotifier<FloatingDateTimeRange?> r, Widget child) =>
-    ScheduleTileHighlight(date: date, range: r, child: child);
+Widget highlight(
+  FloatingDateTime date,
+  ValueNotifier<FloatingDateTimeRange?> r,
+  Widget child,
+) => ScheduleTileHighlight(date: date, range: r, child: child);
 
-MultiDayLayoutFrame generated(FloatingDateTimeRange r, Location? location) => defaultMultiDayFrameGenerator(
+MultiDayLayoutFrame generated(FloatingDateTimeRange r, Location? location) =>
+    defaultMultiDayFrameGenerator(
       visibleRange: r,
       events: const [],
       textDirection: TextDirection.ltr,
@@ -50,18 +65,21 @@ MultiDayLayoutFrame generated(FloatingDateTimeRange r, Location? location) => de
     );
 
 MultiDayLayout layout(FloatingDateTimeRange r) => MultiDayLayout(
-      range: r,
-      layoutInfo: const [],
-      numberOfRows: 1,
-      tileHeight: 24,
-    );
+  range: r,
+  layoutInfo: const [],
+  numberOfRows: 1,
+  tileHeight: 24,
+);
 
-Widget positionList(FloatingDateTimeRange r, ScheduleBodyConfiguration config) => SchedulePositionList(
-      configuration: config,
-      range: r,
-      currentPage: 0,
-      paginated: false,
-    );
+Widget positionList(
+  FloatingDateTimeRange r,
+  ScheduleBodyConfiguration config,
+) => SchedulePositionList(
+  configuration: config,
+  range: r,
+  currentPage: 0,
+  paginated: false,
+);
 
 class CustomStrategy extends MultiDayLayoutStrategy {
   const CustomStrategy();
@@ -84,41 +102,63 @@ class CustomStrategy extends MultiDayLayoutStrategy {
   }
 }
 
-MultiDayLayoutFrame throughBase(MultiDayLayoutStrategy strategy, FloatingDateTimeRange r) => strategy.generateFrame(
-      visibleRange: r,
-      events: const [],
-      textDirection: TextDirection.ltr,
-      location: null,
-      cache: null,
-    );
+MultiDayLayoutFrame throughBase(
+  MultiDayLayoutStrategy strategy,
+  FloatingDateTimeRange r,
+) => strategy.generateFrame(
+  visibleRange: r,
+  events: const [],
+  textDirection: TextDirection.ltr,
+  location: null,
+  cache: null,
+);
 
-FloatingDateTimeRange fromStart(DragTargetUtilities<StatefulWidget> u, FloatingDateTimeRange r, DateTime d) =>
-    u.calculateRangeFromStart(r, d);
-FloatingDateTimeRange fromEnd(DragTargetUtilities<StatefulWidget> u, FloatingDateTimeRange r, DateTime d) =>
-    u.calculateRangeFromEnd(r, d);
-FloatingDateTimeRange tileRange(EventTileUtils u, BuildContext context) => u.floatingTileRange(context);
+FloatingDateTimeRange fromStart(
+  DragTargetUtilities<StatefulWidget> u,
+  FloatingDateTimeRange r,
+  DateTime d,
+) => u.calculateRangeFromStart(r, d);
+FloatingDateTimeRange fromEnd(
+  DragTargetUtilities<StatefulWidget> u,
+  FloatingDateTimeRange r,
+  DateTime d,
+) => u.calculateRangeFromEnd(r, d);
+FloatingDateTimeRange tileRange(EventTileUtils u, BuildContext context) =>
+    u.floatingTileRange(context);
 
-ValueNotifier<FloatingDateTimeRange?> highlightRange(ScheduleTileHighlight h) => h.range;
+ValueNotifier<FloatingDateTimeRange?> highlightRange(ScheduleTileHighlight h) =>
+    h.range;
 FloatingDateTimeRange layoutRange(MultiDayLayout l) => l.range;
 FloatingDateTimeRange positionListRange(SchedulePositionList p) => p.range;
 
-ResizeHandleDetails handleDetails(KalenderEvent e, KalenderInteraction i, FloatingDateTimeRange r) => ResizeHandleDetails(
-      event: e,
-      interaction: i,
-      range: r,
-      size: Size.zero,
-      axis: Axis.vertical,
-      isImprecise: false,
-    );
+ResizeHandleDetails handleDetails(
+  KalenderEvent e,
+  KalenderInteraction i,
+  FloatingDateTimeRange r,
+) => ResizeHandleDetails(
+  event: e,
+  interaction: i,
+  range: r,
+  size: Size.zero,
+  axis: Axis.vertical,
+  isImprecise: false,
+);
 
-Widget overlayTile(KalenderEvent e, TileComponents c, FloatingDateTimeRange r) => MultiDayEventOverlayTile(
-      event: e,
-      tileComponents: c,
-      floatingRange: r,
-      resizeAxis: null,
-      dismissOverlay: null,
-    );
+Widget overlayTile(
+  KalenderEvent e,
+  TileComponents c,
+  FloatingDateTimeRange r,
+) => MultiDayEventOverlayTile(
+  event: e,
+  tileComponents: c,
+  floatingRange: r,
+  resizeAxis: null,
+  dismissOverlay: null,
+);
 
-Widget monthWeek(FloatingDateTimeRange r, HorizontalConfiguration c, ViewController v) =>
-    MonthWeek(floatingRange: r, configuration: c, viewController: v);
+Widget monthWeek(
+  FloatingDateTimeRange r,
+  HorizontalConfiguration c,
+  ViewController v,
+) => MonthWeek(floatingRange: r, configuration: c, viewController: v);
 FloatingDateTimeRange monthWeekRange(MonthWeek w) => w.floatingRange;
