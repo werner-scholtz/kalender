@@ -15,8 +15,8 @@ The owner merges the release pull request and pushes the tag. `publish.yml` does
 4. For a minor release: every `### Breaking Changes` entry has a section in `MIGRATION.md`, and every rename ships a fix in `lib/fix_data/` with its fixture pair. `grep -rn "@Deprecated" lib/` shows nothing past its removal version.
 5. Run `dart tool/check.dart --full`.
 6. Run `flutter pub publish --dry-run` and check the file list against `.pubignore`.
-7. Preview the pinned links: `dart run tool/pin_release_links.dart v<version>`, read the diff, then `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
-8. Commit `chore: release <version>`, push, open the pull request, and hand the owner the tag command for after the merge:
+7. Commit `chore: release <version>`. Preview the pinned links: `dart run tool/pin_release_links.dart v<version>`, read the diff, then `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
+8. Push, open the pull request with `gh pr create --head chore/release-<version>`, and hand the owner the tag command for after the merge:
 
 ```
 git checkout main && git pull && git tag -s v<version> -m v<version> && git push origin v<version>

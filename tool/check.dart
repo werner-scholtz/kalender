@@ -6,7 +6,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-// Runs the checks CI runs, selected by what changed.
+// Runs the checks CI runs with the Flutter version in .fvmrc, selected by what changed.
 //
 // Usage: dart tool/check.dart [--quick | --full] [--base <ref>] [--list]
 //
@@ -84,7 +84,11 @@ final steps = <Step>[
       'tool/analyze_doc_snippets.dart',
     ],
   ),
-  const Step('benchmarks', 'the micro-benchmarks run', paths: [..._package, 'benchmark/']),
+  const Step(
+    'benchmarks',
+    'the micro-benchmarks run',
+    paths: [..._package, 'benchmark/micro_benchmark_test.dart', 'benchmark/fixtures.dart'],
+  ),
   for (final name in examples)
     Step(
       'example:$name',
@@ -94,7 +98,7 @@ final steps = <Step>[
   const Step(
     'profile',
     'the frame profiling harness runs once on Linux desktop',
-    paths: [..._package, 'examples/testing/', 'benchmark/'],
+    paths: [..._package, 'examples/testing/'],
   ),
   const Step('web', 'the web demo builds for wasm', paths: ['examples/web_demo/', '.github/workflows/site.yml']),
 ];
@@ -340,13 +344,13 @@ void main(List<String> args) async {
   exit(failed ? 1 : 0);
 }
 
-/// The merge base with [ref], or with `origin/main` or `main` when there is none.
+/// The merge base with [ref], or with `origin/main` or `main` when no ref is given.
 String _mergeBase(String root, String? ref) {
-  for (final ref in [if (ref != null) ref, 'origin/main', 'main']) {
-    final result = Process.runSync('git', ['merge-base', 'HEAD', ref], workingDirectory: root);
+  for (final candidate in ref != null ? [ref] : const ['origin/main', 'main']) {
+    final result = Process.runSync('git', ['merge-base', 'HEAD', candidate], workingDirectory: root);
     if (result.exitCode == 0) return (result.stdout as String).trim();
   }
-  stderr.writeln('No ref to compare against. Pass --base <ref>.');
+  stderr.writeln(ref == null ? 'No main branch to compare against. Pass --base <ref>.' : 'No merge base with $ref.');
   exit(1);
 }
 

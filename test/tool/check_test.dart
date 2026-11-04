@@ -46,7 +46,8 @@ void main() {
       (name: 'one example', changed: ['examples/riverpod/lib/main.dart'], extra: ['example:riverpod']),
       (name: 'the web demo', changed: ['examples/web_demo/lib/main.dart'], extra: ['example:web_demo', 'web']),
       (name: 'the perf harness', changed: ['examples/testing/lib/main.dart'], extra: ['example:testing', 'profile']),
-      (name: 'the benchmarks', changed: ['benchmark/fixtures.dart'], extra: ['benchmarks', 'profile']),
+      (name: 'the benchmarks', changed: ['benchmark/fixtures.dart'], extra: ['benchmarks']),
+      (name: 'the dashboard', changed: ['benchmark/dashboard/index.html'], extra: []),
       (
         name: 'the examples workflow',
         changed: ['.github/workflows/analyze_examples.yml'],
@@ -94,7 +95,7 @@ void main() {
 
   test('the examples match the analyze_examples.yml matrix', () {
     final workflow = File('.github/workflows/analyze_examples.yml').readAsStringSync();
-    final matrix = RegExp(r'example:\n((?:\s+- \w+\n)+)').firstMatch(workflow)!.group(1)!;
+    final matrix = RegExp(r'example:\r?\n((?:\s+- \w+\r?\n)+)').firstMatch(workflow)!.group(1)!;
     final names = RegExp(r'- (\w+)').allMatches(matrix).map((m) => m.group(1)).toList();
     expect(examples, names);
   });
