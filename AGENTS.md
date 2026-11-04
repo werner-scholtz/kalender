@@ -19,8 +19,9 @@ Kalender is a Flutter calendar package with three views, multi-day (day and week
 | `test_fixes/` | Golden fixtures for the `dart fix` data |
 | `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page |
 | `examples/` | Runnable apps, indexed by `examples/README.md`. `example/` is the pub.dev Example tab and only links there |
-| `tool/` | `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart` and `pin_release_links.dart` |
-| `.github/workflows/` | `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `publish.yml` and `site.yml` |
+| `tool/` | `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart`, `pin_release_links.dart` and `usage_metrics.dart` |
+| `.github/workflows/` | `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `usage_metrics.yml`, `publish.yml` and `site.yml` |
+| `.github/actions/` | `store-benchmark-data`, which commits one file to `refs/benchmarks/data` |
 
 Every example depends on the package by path, `../../../kalender/` for most of them, so the checkout has to sit in a folder named `kalender`.
 
@@ -181,19 +182,22 @@ A pre-release takes a `-dev.N` suffix, as in `v<version>-dev.1`. A patch for an 
 
 ## Site and benchmarks
 
-`site.yml` publishes the [live demo](https://werner-scholtz.github.io/kalender/) and the [benchmarks dashboard](https://werner-scholtz.github.io/kalender/dev/bench/) to GitHub Pages. There is no `gh-pages` branch. It runs after a release is published, after a benchmark run on main, when `benchmark/dashboard/` or `site.yml` changes on main, and by hand.
+`site.yml` publishes the [live demo](https://werner-scholtz.github.io/kalender/) and the [benchmarks dashboard](https://werner-scholtz.github.io/kalender/dev/bench/) to GitHub Pages. There is no `gh-pages` branch. It runs after a release is published, after a benchmark run on main, after a usage run, when `benchmark/dashboard/` or `site.yml` changes on main, and by hand.
 
 - The demo is built from a release once `publish.yml` has published it. A dev release keeps the current demo.
 - To publish the demo from another ref, run the Site workflow from main with `demo_ref` set, for example to `main`. The next release replaces it.
 - Every other run reuses the last demo build from the Actions cache. It builds the latest release instead when the cache has expired or was made before that release.
-- The dashboard is `benchmark/dashboard/index.html`, published from main.
+- The dashboard is `benchmark/dashboard/index.html`, published from main. The release dates for its usage charts are read from pub.dev when the site is built.
 
 `performance_profiling.yml` runs the micro-benchmarks in `benchmark/` and the frame profiling in `examples/testing/`. It runs on pushes to main that touch the package or the benchmarks, and on pull requests labelled `profile`. Each run is compared with the stored results, and the comparison is posted on the pull request. On main the run, with the Flutter version from `.fvmrc` and the runner's CPU model, is added to `data.json` on `refs/benchmarks/data`.
+
+`usage_metrics.yml` runs `tool/usage_metrics.dart` daily and adds the pub.dev likes, points and 30-day downloads and the GitHub stars, forks, watchers, open issues and open pull requests to `usage.json` on `refs/benchmarks/data`. With a `TRAFFIC_TOKEN` secret, a fine-grained token with read access to the repository's Administration, it also records the daily views and clones. The two workflows push from the same concurrency group, and each keeps the other's file.
 
 `refs/benchmarks/data` is outside `refs/heads`, so a clone does not download it:
 
 ```bash
 git fetch origin refs/benchmarks/data && git show FETCH_HEAD:data.json
+git show FETCH_HEAD:usage.json
 ```
 
 Results are stored by series name. Renaming a benchmark starts a new series unless the names in `data.json` are changed to match.
