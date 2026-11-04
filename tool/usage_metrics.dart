@@ -13,7 +13,7 @@
 // set, authenticates the other GitHub requests.
 //
 // A snapshot replaces the fields of one already recorded for the same day, and traffic is merged by day, the latest
-// read winning. A source that cannot be read is left out and keeps what an earlier run that day recorded. The script
+// read winning. The current day's traffic is still being counted and is left out. A source that cannot be read is left out and keeps what an earlier run that day recorded. The script
 // fails only when no source could be read. A missing or empty file starts an empty history.
 //
 // The file has this shape:
@@ -203,8 +203,9 @@ Future<void> main(List<String> args) async {
   final openIssues = await _attempt('the open issues', () => openCount('issue'));
   final openPullRequests = await _attempt('the open pull requests', () => openCount('pr'));
 
+  final date = utcDate(DateTime.now());
   final today = snapshot(
-    utcDate(DateTime.now()),
+    date,
     pub: pub,
     repository: repository,
     openIssues: openIssues,
@@ -223,10 +224,10 @@ Future<void> main(List<String> args) async {
       );
       if (days == null) continue;
       read = true;
-      usage = withTraffic(usage, kind, days);
+      usage = withTraffic(usage, kind, days..remove(date));
     }
   }
-  client.close();
+  client.close(force: true);
 
   if (!read) {
     stderr.writeln('No source could be read, so ${file.path} is unchanged.');
