@@ -15,8 +15,7 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
-// TODO: Remove the split between the content and the header, and with it the duplicate page views. The timeline then
-//  scrolls with the page view. A pinned timeline can be added back if it is requested.
+// TODO: Remove the split between the content and the header, so one page view replaces the two linked ones.
 
 /// The scrollable body of a multi-day view: a timeline and one column of events per day. The default body of
 /// [MultiDayViewParts].
