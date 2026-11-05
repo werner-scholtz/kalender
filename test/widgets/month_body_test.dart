@@ -319,6 +319,7 @@ void main() {
     final day = DateTime(2025, 1, 15);
 
     final cases = <({String name, double tileHeight, int eventCount, int tiles, String labels})>[
+      (name: 'room for no tile shows a button for one event', tileHeight: 100, eventCount: 1, tiles: 0, labels: '+1'),
       (name: 'room for 1.5 tiles shows a single event', tileHeight: 64, eventCount: 1, tiles: 1, labels: ''),
       (
         name: 'room for 1.5 tiles shows a button for three events',

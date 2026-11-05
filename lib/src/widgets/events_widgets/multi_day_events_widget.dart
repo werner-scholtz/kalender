@@ -184,8 +184,8 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 
   /// The number of rows that fit, the row of the overflow buttons included.
   ///
-  /// The overflow buttons take the last row only when the events need more rows than fit. Null uses
-  /// [HorizontalConfiguration.maximumNumberOfVerticalEvents] instead.
+  /// The overflow buttons take the last row only when the events need more rows than fit. Null shows at most
+  /// [HorizontalConfiguration.maximumNumberOfVerticalEvents] rows of tiles, with the overflow buttons in a row below.
   final int? availableRows;
 
   /// The cache used to store layout frames for multi-day events.

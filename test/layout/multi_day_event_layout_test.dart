@@ -78,8 +78,8 @@ void main() {
       expect(find.byType(MultiDayPortalOverlayButton), findsNothing);
     });
 
-    // Regression: a negative maxNumberOfVerticalEvents miscounted hidden rows and showed buttons on empty days.
-    testWidgets('Overflow button count is correct when maxNumberOfVerticalEvents is 0', (tester) async {
+    // Regression: a negative row limit miscounted hidden rows and showed buttons on empty days.
+    testWidgets('Overflow button count is correct when maximumNumberOfVerticalEvents is 0', (tester) async {
       // The events end at midnight of the 26th, so they span 2 of the 7 columns.
       final events = [
         KalenderEvent(
