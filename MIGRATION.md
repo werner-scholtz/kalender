@@ -71,7 +71,7 @@ The sections below cover what is left after the fixes have run.
 | Removed | Use instead |
 | --- | --- |
 | `kDefaultToMonthly(old)`, `kDefaultToWeekly(old)`, `kDefaultToDaily(old)` and `kDefaultToSchedule(old)` | `old.snapshot().date` |
-| `EventLayoutDelegate.findLongestChain` | `SideBySideLayoutDelegate.arrange`, whose `SideBySidePlacement.columns` gives the column count of each group. |
+| `EventLayoutDelegate.findLongestChain` | No equivalent. `SideBySideLayoutDelegate.arrange` places the tiles, and its `SideBySidePlacement.columns` is the number of tiles running at once in a group, which is lower than the longest chain when tiles overlap one after another. |
 
 ## v0.32.x → v0.33.0
 
