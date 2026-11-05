@@ -1,3 +1,12 @@
+## 0.34.0
+
+See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
+
+### Breaking Changes
+
+- `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are removed.
+- `EventLayoutDelegate.findLongestChain` is removed.
+
 ## 0.33.0
 
 See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.

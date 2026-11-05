@@ -45,6 +45,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.33.x → v0.34.0](#v033x--v0340) | The members deprecated in 0.33.0 are removed. |
 | [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range, time of day and events are read-only on the controller, the visible range is never null, a view controller's location is final, the month body and multi-day header take their own configuration, and an event tile is one semantics node. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
@@ -60,6 +61,17 @@ The sections below cover what is left after the fixes have run.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.33.x → v0.34.0
+
+`dart fix` does not apply to this upgrade.
+
+### The members deprecated in 0.33.0 are removed
+
+| Removed | Use instead |
+| --- | --- |
+| `kDefaultToMonthly(old)`, `kDefaultToWeekly(old)`, `kDefaultToDaily(old)` and `kDefaultToSchedule(old)` | `old.snapshot().date` |
+| `EventLayoutDelegate.findLongestChain` | Nothing. The calendar did not call it. |
 
 ## v0.32.x → v0.33.0
 

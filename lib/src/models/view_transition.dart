@@ -130,27 +130,3 @@ class ViewTransitionContext {
 ///
 /// {@category Views}
 FloatingDateTime kCarryFocusDate(ViewTransitionContext transition) => transition.oldViewController.snapshot().date;
-
-/// The date [old] focused on.
-///
-/// {@category Views}
-@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
-FloatingDateTime kDefaultToMonthly(ViewController old) => old.snapshot().date;
-
-/// The date [old] focused on.
-///
-/// {@category Views}
-@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
-FloatingDateTime kDefaultToWeekly(ViewController old) => old.snapshot().date;
-
-/// The date [old] focused on.
-///
-/// {@category Views}
-@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
-FloatingDateTime kDefaultToDaily(ViewController old) => old.snapshot().date;
-
-/// The date [old] focused on.
-///
-/// {@category Views}
-@Deprecated('Use old.snapshot().date. Will be removed in 0.34.0.')
-FloatingDateTime kDefaultToSchedule(ViewController old) => old.snapshot().date;
