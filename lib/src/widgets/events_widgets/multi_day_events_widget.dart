@@ -433,14 +433,16 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         final layoutInfo = frame.layoutInfo.where((info) => info.id == event.id).toList();
         if (layoutInfo.isEmpty) return const SizedBox();
 
-        final maxNumberOfRows = this.maxNumberOfRows(frame);
-        if (layoutInfo.first.row >= maxNumberOfRows) return const SizedBox();
+        // In a row of fixed height the preview takes no more rows than the tiles, so the overflow buttons stay in place.
+        final rows = this.maxNumberOfRows(frame);
+        final previewRows = widget.availableRows == null ? rows : min(rows, maxNumberOfRows);
+        if (layoutInfo.first.row >= previewRows) return const SizedBox();
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
             range: widget.floatingRange,
             layoutInfo: layoutInfo,
-            numberOfRows: maxNumberOfRows,
+            numberOfRows: previewRows,
             tileHeight: widget.configuration.tileHeight,
           ),
           children: [

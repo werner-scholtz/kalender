@@ -318,6 +318,16 @@ void main() {
     );
     final day = DateTime(2025, 1, 15);
 
+    void expectButtonsInsideRows(WidgetTester tester) {
+      for (final button in find.byType(MultiDayPortalOverlayButton).evaluate()) {
+        final buttonRect = tester.getRect(find.byWidget(button.widget));
+        final rowRect = tester.getRect(
+          find.ancestor(of: find.byWidget(button.widget), matching: find.byType(MonthWeek)),
+        );
+        expect(rowRect.intersect(buttonRect), buttonRect, reason: 'the button should not be clipped by its row');
+      }
+    }
+
     final cases = <({String name, double tileHeight, int eventCount, int tiles, String labels})>[
       (name: 'room for no tile shows a button for one event', tileHeight: 100, eventCount: 1, tiles: 0, labels: '+1'),
       (name: 'room for 1.5 tiles shows a single event', tileHeight: 64, eventCount: 1, tiles: 1, labels: ''),
@@ -354,15 +364,27 @@ void main() {
           (tiles: c.tiles, labels: c.labels),
         );
 
-        for (final button in find.byType(MultiDayPortalOverlayButton).evaluate()) {
-          final buttonRect = tester.getRect(find.byWidget(button.widget));
-          final rowRect = tester.getRect(
-            find.ancestor(of: find.byWidget(button.widget), matching: find.byType(MonthWeek)),
-          );
-          expect(rowRect.intersect(buttonRect), buttonRect, reason: 'the button should not be clipped by its row');
-        }
+        expectButtonsInsideRows(tester);
       });
     }
+
+    testWidgets('a drag preview that needs fewer rows leaves the button in its row', (tester) async {
+      await pumpOverflowingMonth(
+        tester,
+        day: day,
+        eventCount: 3,
+        bodyConfiguration: const MonthBodyConfiguration(tileHeight: 48),
+        components: components,
+      );
+      final view = tester.widget<KalenderView>(find.byType(KalenderView));
+      final nextDay = KalenderDateTimeRange(start: DateTime(2025, 1, 16), end: DateTime(2025, 1, 17));
+
+      view.kalenderController.selectEvent(view.eventsController.events.first.withDateTimeRange(nextDay));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
+      expectButtonsInsideRows(tester);
+    });
   });
 }
 
