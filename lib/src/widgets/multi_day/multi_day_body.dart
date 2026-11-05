@@ -195,21 +195,12 @@ class _DayCellLayer extends StatefulWidget {
 }
 
 class _DayCellLayerState extends State<_DayCellLayer> {
-  late LinkedPageController _controller = widget.viewController.createLinkedPageController();
-
-  @override
-  void didUpdateWidget(covariant _DayCellLayer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.viewController == widget.viewController) return;
-    final replaced = _controller;
-    _controller = widget.viewController.createLinkedPageController();
-    // The page view of the replaced controller is still attached to it during this build.
-    WidgetsBinding.instance.addPostFrameCallback((_) => oldWidget.viewController.disposeLinkedPageController(replaced));
-  }
+  // A new view controller builds a new body, so the controller lasts as long as this state.
+  late final LinkedPageController _controller = widget.viewController.createLinkedPageController();
 
   @override
   void dispose() {
-    widget.viewController.disposeLinkedPageController(_controller);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -219,7 +210,6 @@ class _DayCellLayerState extends State<_DayCellLayer> {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     return LinkedPageView.builder(
-      key: ObjectKey(_controller),
       padEnds: false,
       controller: _controller,
       itemCount: widget.viewController.numberOfPages,

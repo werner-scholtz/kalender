@@ -86,15 +86,22 @@ void main() {
     for (final widget in tester.widgetList(cellFinder)) (widget.key! as ValueKey<DayCellDetails>).value,
   ];
 
-  DayCellDetails details(DateTime date) => DayCellDetails(
-    date: date,
-    isToday: date == DateTime(2025, 3, 26),
-    timeOfDayRange: KalenderTimeRange.allDay(),
-    heightPerMinute: kDefaultHeightPerMinute,
-  );
-
-  List<DayCellDetails> daysFrom(DateTime start, int count) => [
-    for (var day = 0; day < count; day++) details(DateTime(start.year, start.month, start.day + day)),
+  /// The details of [count] days from [start], in [location] when given, with 26 March 2025 as today.
+  List<DayCellDetails> daysFrom(
+    DateTime start,
+    int count, {
+    double heightPerMinute = kDefaultHeightPerMinute,
+    Location? location,
+  }) => [
+    for (var day = 0; day < count; day++)
+      DayCellDetails(
+        date: location == null
+            ? DateTime(start.year, start.month, start.day + day)
+            : TZDateTime(location, start.year, start.month, start.day + day),
+        isToday: start.month == 3 && start.day + day == 26,
+        timeOfDayRange: KalenderTimeRange.allDay(),
+        heightPerMinute: heightPerMinute,
+      ),
   ];
 
   /// The rectangle of every cell on screen, by date.
@@ -263,7 +270,7 @@ void main() {
     kalenderController.multiDayViewController.heightPerMinute.value = 1.5;
     await tester.pumpAndSettle();
 
-    expect(cells(tester).map((cell) => cell.heightPerMinute).toSet(), {1.5});
+    expect(cells(tester), daysFrom(monday, 7, heightPerMinute: 1.5));
   });
 
   testWidgets('a cell date is the start of the day in the location', (tester) async {
@@ -274,13 +281,12 @@ void main() {
       MultiDayViewConfiguration.week(
         displayRange: displayRange,
         initialDateTime: TZDateTime(location, 2025, 3, 24, 12),
+        nowCallback: now,
       ),
       components: components,
       location: location,
     );
 
-    expect(cells(tester).map((cell) => cell.date), [
-      for (var day = 24; day < 31; day++) TZDateTime(location, 2025, 3, day),
-    ]);
+    expect(cells(tester), daysFrom(monday, 7, location: location));
   });
 }

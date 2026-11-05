@@ -84,9 +84,8 @@ class MultiDayViewController extends ViewController {
   /// instead.
   late final LinkedPageController headerController;
 
-  /// Creates a page controller linked to [pageController], opening on the page it shows.
-  ///
-  /// Release it with [disposeLinkedPageController].
+  /// Creates a page controller linked to [pageController], opening on the page nearest to the one it shows. The caller
+  /// disposes it before this controller is disposed.
   @internal
   LinkedPageController createLinkedPageController() {
     final page = pageController.hasClients ? pageController.page?.round() : null;
@@ -96,15 +95,6 @@ class MultiDayViewController extends ViewController {
       keepPage: false,
     );
   }
-
-  /// Disposes a controller from [createLinkedPageController]. Does nothing once this controller is disposed, which
-  /// disposes every linked controller.
-  @internal
-  void disposeLinkedPageController(LinkedPageController controller) {
-    if (!_isDisposed) controller.dispose();
-  }
-
-  bool _isDisposed = false;
 
   /// The scroll controller used by the view.
   late ScrollController scrollController;
@@ -243,7 +233,6 @@ class MultiDayViewController extends ViewController {
 
   @override
   void dispose() {
-    _isDisposed = true;
     pageController.removeListener(_offsetListener);
     scrollController.removeListener(_updateVisibleTimeOfDay);
     heightPerMinute.removeListener(_updateVisibleTimeOfDay);
