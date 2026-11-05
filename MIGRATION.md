@@ -71,7 +71,7 @@ The sections below cover what is left after the fixes have run.
 | Removed | Use instead |
 | --- | --- |
 | `kDefaultToMonthly(old)`, `kDefaultToWeekly(old)`, `kDefaultToDaily(old)` and `kDefaultToSchedule(old)` | `old.snapshot().date` |
-| `EventLayoutDelegate.findLongestChain` | Nothing. The calendar did not call it. |
+| `EventLayoutDelegate.findLongestChain` | `SideBySideLayoutDelegate.arrange`, whose `SideBySidePlacement.columns` gives the column count of each group. |
 
 ## v0.32.x → v0.33.0
 
