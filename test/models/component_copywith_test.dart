@@ -80,6 +80,7 @@ void main() {
     timelineWidth: _timelineWidth,
     daySeparator: _daySeparator,
     timeIndicator: _timeIndicator,
+    dayCellBuilder: _multiDayCell,
     leftTriggerBuilder: _horizontalTrigger,
     rightTriggerBuilder: _horizontalTrigger,
     topTriggerBuilder: _verticalTrigger,
@@ -190,6 +191,7 @@ void main() {
       'timelineWidth': () => const MultiDayBodyComponents().copyWith(timelineWidth: _timelineWidth),
       'daySeparator': () => const MultiDayBodyComponents().copyWith(daySeparator: _daySeparator),
       'timeIndicator': () => const MultiDayBodyComponents().copyWith(timeIndicator: _timeIndicator),
+      'dayCellBuilder': () => const MultiDayBodyComponents().copyWith(dayCellBuilder: _multiDayCell),
       'leftTriggerBuilder': () => const MultiDayBodyComponents().copyWith(leftTriggerBuilder: _horizontalTrigger),
       'rightTriggerBuilder': () => const MultiDayBodyComponents().copyWith(rightTriggerBuilder: _horizontalTrigger),
       'topTriggerBuilder': () => const MultiDayBodyComponents().copyWith(topTriggerBuilder: _verticalTrigger),
@@ -282,6 +284,7 @@ Widget _timeline(
 String _timeString(BuildContext context, KalenderTime time) => '';
 double _timelineWidth(BuildContext context, KalenderTimeRange range) => 56;
 Widget _daySeparator(BuildContext context) => const SizedBox();
+Widget _multiDayCell(BuildContext context, DayCellDetails details) => const SizedBox();
 
 Widget _timeIndicator(BuildContext context, KalenderTimeRange range, double heightPerMinute, Location? location) =>
     const SizedBox();

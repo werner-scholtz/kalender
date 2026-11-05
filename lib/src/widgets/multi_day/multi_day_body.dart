@@ -120,6 +120,12 @@ class _MultiDayBody extends StatelessWidget {
                   Expanded(
                     child: Stack(
                       children: [
+                        // The key keeps the state of the children below when this one is added or removed.
+                        if (bodyComponents.dayCellBuilder != null)
+                          Positioned.fill(
+                            key: const ValueKey(_DayCellLayer),
+                            child: _DayCellLayer(viewController: viewController),
+                          ),
                         Positioned.fill(
                           child: bodyComponents.buildHourLines(context, context.heightPerMinute, timeOfDayRange),
                         ),
@@ -174,6 +180,69 @@ class _MultiDayBody extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The day cells of every page, in a page view that follows the one of [MultiDayPage].
+class _DayCellLayer extends StatefulWidget {
+  final MultiDayViewController viewController;
+
+  const _DayCellLayer({required this.viewController});
+
+  @override
+  State<_DayCellLayer> createState() => _DayCellLayerState();
+}
+
+class _DayCellLayerState extends State<_DayCellLayer> {
+  late LinkedPageController _controller = widget.viewController.createLinkedPageController();
+
+  @override
+  void didUpdateWidget(covariant _DayCellLayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.viewController == widget.viewController) return;
+    final replaced = _controller;
+    _controller = widget.viewController.createLinkedPageController();
+    // The page view of the replaced controller is still attached to it during this build.
+    WidgetsBinding.instance.addPostFrameCallback((_) => oldWidget.viewController.disposeLinkedPageController(replaced));
+  }
+
+  @override
+  void dispose() {
+    widget.viewController.disposeLinkedPageController(_controller);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final viewConfiguration = widget.viewController.viewConfiguration;
+    final pageNavigation = viewConfiguration.pageIndexCalculator;
+
+    return LinkedPageView.builder(
+      key: ObjectKey(_controller),
+      padEnds: false,
+      controller: _controller,
+      itemCount: widget.viewController.numberOfPages,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final date in pageNavigation.rangeFromIndex(index, context.location).dates())
+            Expanded(
+              child: Builder(
+                builder: (context) => context.components.multiDayComponents.bodyComponents.buildDayCell(
+                  context,
+                  DayCellDetails(
+                    date: date.forLocation(location: context.location),
+                    isToday: context.isToday(date),
+                    timeOfDayRange: viewConfiguration.timeOfDayRange,
+                    heightPerMinute: context.heightPerMinute,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

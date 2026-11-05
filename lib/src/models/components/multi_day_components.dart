@@ -11,6 +11,7 @@ import 'package:kalender/src/models/components/string_builders.dart';
 import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_time_range.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/widgets/components/day_cell.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
@@ -190,6 +191,9 @@ class MultiDayBodyComponents {
   /// A function that builds the time indicator widget. Null uses [TimeIndicator].
   final TimeIndicatorBuilder? timeIndicator;
 
+  /// A function that builds the background of each day column. Null builds no background.
+  final DayCellBuilder? dayCellBuilder;
+
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
 
@@ -209,6 +213,7 @@ class MultiDayBodyComponents {
     this.timelineWidth,
     this.daySeparator,
     this.timeIndicator,
+    this.dayCellBuilder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.topTriggerBuilder,
@@ -268,6 +273,11 @@ class MultiDayBodyComponents {
         );
   }
 
+  /// Builds a day cell, with [dayCellBuilder] when set.
+  Widget buildDayCell(BuildContext context, DayCellDetails details) {
+    return dayCellBuilder?.call(context, details) ?? const SizedBox.shrink();
+  }
+
   /// Creates a copy of this with the given fields replaced.
   MultiDayBodyComponents copyWith({
     HourLinesBuilder? hourLines,
@@ -276,6 +286,7 @@ class MultiDayBodyComponents {
     TimelineWidthBuilder? timelineWidth,
     DaySeparatorBuilder? daySeparator,
     TimeIndicatorBuilder? timeIndicator,
+    DayCellBuilder? dayCellBuilder,
     HorizontalTriggerWidgetBuilder? leftTriggerBuilder,
     HorizontalTriggerWidgetBuilder? rightTriggerBuilder,
     VerticalTriggerWidgetBuilder? topTriggerBuilder,
@@ -288,6 +299,7 @@ class MultiDayBodyComponents {
       timelineWidth: timelineWidth ?? this.timelineWidth,
       daySeparator: daySeparator ?? this.daySeparator,
       timeIndicator: timeIndicator ?? this.timeIndicator,
+      dayCellBuilder: dayCellBuilder ?? this.dayCellBuilder,
       leftTriggerBuilder: leftTriggerBuilder ?? this.leftTriggerBuilder,
       rightTriggerBuilder: rightTriggerBuilder ?? this.rightTriggerBuilder,
       topTriggerBuilder: topTriggerBuilder ?? this.topTriggerBuilder,
@@ -306,6 +318,7 @@ class MultiDayBodyComponents {
         other.timelineWidth == timelineWidth &&
         other.daySeparator == daySeparator &&
         other.timeIndicator == timeIndicator &&
+        other.dayCellBuilder == dayCellBuilder &&
         other.leftTriggerBuilder == leftTriggerBuilder &&
         other.rightTriggerBuilder == rightTriggerBuilder &&
         other.topTriggerBuilder == topTriggerBuilder &&
@@ -320,6 +333,7 @@ class MultiDayBodyComponents {
     timelineWidth,
     daySeparator,
     timeIndicator,
+    dayCellBuilder,
     leftTriggerBuilder,
     rightTriggerBuilder,
     topTriggerBuilder,
