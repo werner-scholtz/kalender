@@ -1,0 +1,35 @@
+name: Store benchmark data
+description: Commits one file to refs/benchmarks/data, keeping the other files in its tree, and pushes the commit.
+
+inputs:
+  parent:
+    description: The refs/benchmarks/data commit the stored file was read from.
+    required: true
+  file:
+    description: The local file to store.
+    required: true
+  name:
+    description: The file's name in the tree.
+    required: true
+  message:
+    description: The commit message.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        PARENT: ${{ inputs.parent }}
+        FILE: ${{ inputs.file }}
+        NAME: ${{ inputs.name }}
+        MESSAGE: ${{ inputs.message }}
+        GIT_INDEX_FILE: ${{ runner.temp }}/benchmarks-data.index
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git read-tree "$PARENT"
+        blob=$(git hash-object -w "$FILE")
+        git update-index --add --cacheinfo "100644,$blob,$NAME"
+        commit=$(git commit-tree "$(git write-tree)" -p "$PARENT" -m "$MESSAGE")
+        git push origin "$commit:refs/benchmarks/data"

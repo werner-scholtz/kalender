@@ -7,11 +7,12 @@ name: Site
 # the ref given to a manual run. Every other run reuses the last demo build from
 # the Actions cache, and builds the latest release when the cache has expired or
 # predates it.
-# The dashboard page comes from main and its data from refs/benchmarks/data.
+# The dashboard page comes from main, its data from refs/benchmarks/data and the
+# release dates from pub.dev.
 
 on:
   workflow_run:
-    workflows: [Publish to pub.dev, Performance Benchmarks]
+    workflows: [Publish to pub.dev, Performance Benchmarks, Usage Metrics]
     types: [completed]
   push:
     branches: [main]
@@ -32,13 +33,14 @@ permissions:
 
 jobs:
   publish:
-    # A dev release keeps the current demo, and only benchmark runs on main
-    # change the stored results.
+    # A dev release keeps the current demo, and only benchmark runs on main and
+    # usage runs change the stored results.
     if: >-
       github.event_name != 'workflow_run' ||
       (github.event.workflow_run.conclusion == 'success' &&
         ((github.event.workflow_run.name == 'Publish to pub.dev' && !contains(github.event.workflow_run.head_branch, '-')) ||
-         (github.event.workflow_run.name == 'Performance Benchmarks' && github.event.workflow_run.event == 'push')))
+         (github.event.workflow_run.name == 'Performance Benchmarks' && github.event.workflow_run.event == 'push') ||
+         github.event.workflow_run.name == 'Usage Metrics'))
     runs-on: ubuntu-latest
     # On the job, so a run whose job is skipped does not replace a waiting one.
     concurrency:
@@ -119,6 +121,19 @@ jobs:
           cp benchmark/dashboard/index.html benchmark/dashboard/chart.umd.js benchmark/dashboard/chart.js-LICENSE.md site/dev/bench/
           git fetch --depth=1 origin refs/benchmarks/data
           git show FETCH_HEAD:data.json > site/dev/bench/data.json
+          if git cat-file -e FETCH_HEAD:usage.json 2>/dev/null; then
+            git show FETCH_HEAD:usage.json > site/dev/bench/usage.json
+          else
+            echo '{"snapshots":[],"traffic":{}}' > site/dev/bench/usage.json
+          fi
+
+      # Read here so the dashboard loads nothing from pub.dev.
+      - name: Fetch the release dates
+        run: |
+          if ! curl -sSf --max-time 30 -o "$RUNNER_TEMP/package.json" https://pub.dev/api/packages/kalender ||
+            ! jq -c '[.versions[] | {version, published}]' "$RUNNER_TEMP/package.json" > site/dev/bench/releases.json; then
+            echo '[]' > site/dev/bench/releases.json
+          fi
 
       - uses: actions/upload-pages-artifact@v5
         with:
