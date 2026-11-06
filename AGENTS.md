@@ -30,7 +30,7 @@ Use the Flutter version in `.fvmrc`. Formatting output depends on it.
 
 ```bash
 flutter pub get
-dart format lib test tool benchmark
+dart format lib test tool benchmark test_fixes
 dart run tool/license_headers.dart           # --check in CI
 dart analyze && flutter analyze
 flutter test
@@ -38,7 +38,7 @@ TZ=America/New_York flutter test             # one timezone
 dart tool/test_timezones_linux.dart [file]   # the CI timezone matrix, Linux only
 dart run tool/analyze_doc_snippets.dart      # compiles the snippets in README.md and doc/
 dart fix --compare-to-golden test_fixes      # the dart fix data
-for d in examples/*/; do (cd "$d" && flutter analyze); done
+for d in examples/*/; do (cd "$d" && dart format . && flutter analyze); done
 ```
 
 CI runs all of these. The `test` job runs in six timezones (`America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`, `Africa/Johannesburg` and `UTC`). `minimum-flutter` runs the floor `pubspec.yaml` declares, and `latest-stable` runs the newest stable without failing the workflow.

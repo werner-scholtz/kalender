@@ -27,4 +27,5 @@ Object? invocation = KalenderSnapping();
 Object? constInvocation = const CalendarSnapping();
 
 Locale? localeOf(BuildContext context) => context.calendarLocale;
-Locale? namedExtension(BuildContext context) => KalenderLocale(context).kalenderLocale;
+Locale? namedExtension(BuildContext context) =>
+    KalenderLocale(context).kalenderLocale;

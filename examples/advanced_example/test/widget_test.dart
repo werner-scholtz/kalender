@@ -10,7 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
-  testWidgets('renders the calendar with the per-person header', (tester) async {
+  testWidgets('renders the calendar with the per-person header', (
+    tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
