@@ -277,39 +277,6 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     return horizontalGroups;
   }
 
-  /// The length of the longest chain of overlapping entries in [verticalLayoutData].
-  ///
-  /// Uses a depth-first search, which is expensive for large inputs.
-  @Deprecated('Not used by the calendar. SideBySideLayoutDelegate.arrange places tiles. Will be removed in 0.34.0.')
-  int findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
-    if (verticalLayoutData.isEmpty) return 0;
-
-    final dataList = verticalLayoutData.toList();
-    final memo = <int, int>{};
-
-    int depthFirstSearch(int currentIndex, Set<int> visited) {
-      if (memo.containsKey(currentIndex)) return memo[currentIndex]!;
-      var maxLength = 1;
-
-      for (var i = 0; i < dataList.length; i++) {
-        if (i != currentIndex && !visited.contains(i) && dataList[currentIndex].overlaps(dataList[i])) {
-          final newVisited = Set<int>.from(visited)..add(i);
-          maxLength = max(maxLength, 1 + depthFirstSearch(i, newVisited));
-        }
-      }
-
-      memo[currentIndex] = maxLength;
-      return maxLength;
-    }
-
-    var maxChain = 1;
-    for (var i = 0; i < dataList.length; i++) {
-      maxChain = max(maxChain, depthFirstSearch(i, {i}));
-    }
-
-    return maxChain;
-  }
-
   @override
   bool shouldRelayout(covariant EventLayoutDelegate oldDelegate) {
     return oldDelegate.events != events ||
