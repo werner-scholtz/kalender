@@ -33,9 +33,10 @@ jobs:
     # a stack of pull requests pushes to main once per merge, so without this every
     # intermediate commit is profiled for 17 minutes and publishes a data point that
     # the next merge immediately supersedes. Cancelling also keeps two runs from
-    # pushing to refs/benchmarks/data at once. On the job, so a pull request run
-    # whose job is skipped never replaces a run on main, and keyed by the pull
-    # request's branch, since its ref can resolve to main once it has merged.
+    # pushing to refs/benchmarks/data at once, and usage_metrics.yml pushes from
+    # the same group. On the job, so a pull request run whose job is skipped never
+    # replaces a run on main, and keyed by the pull request's branch, since its ref
+    # can resolve to main once it has merged.
     concurrency:
       group: benchmarks-${{ github.head_ref || github.ref }}
       cancel-in-progress: true
@@ -174,18 +175,21 @@ jobs:
           alert-threshold: '150%'
           summary-always: true
 
-      # Adds the Flutter version and the CPU to this run's entries and pushes
-      # data.json as a new commit on refs/benchmarks/data. site.yml publishes it
-      # after this workflow finishes.
-      - name: Save results
+      # Adds the Flutter version and the CPU to this run's entries.
+      - name: Record the Flutter version and CPU
         if: steps.tip.outputs.superseded == 'false'
         run: |
           jq --arg sha "$GITHUB_SHA" --arg flutter "$(jq -r .flutter .fvmrc)" --arg cpu "$RUNNER_CPU" \
             '.entries |= map_values(map(if .commit.id == $sha then .flutter = $flutter | .cpu = $cpu else . end))' \
             build/benchmarks/data.json > "$RUNNER_TEMP/data.json"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          blob=$(git hash-object -w "$RUNNER_TEMP/data.json")
-          tree=$(printf '100644 blob %s\tdata.json\n' "$blob" | git mktree)
-          commit=$(git commit-tree "$tree" -p "$BENCHMARK_DATA_PARENT" -m "Results for $GITHUB_SHA")
-          git push origin "$commit:refs/benchmarks/data"
+
+      # Pushes data.json as a new commit on refs/benchmarks/data. site.yml
+      # publishes it after this workflow finishes.
+      - name: Save results
+        if: steps.tip.outputs.superseded == 'false'
+        uses: ./.github/actions/store-benchmark-data
+        with:
+          parent: ${{ env.BENCHMARK_DATA_PARENT }}
+          file: ${{ runner.temp }}/data.json
+          name: data.json
+          message: Results for ${{ github.sha }}

@@ -11,8 +11,11 @@ import 'package:kalender/kalender.dart';
 FloatingDateTime? dateTime;
 FloatingDateTimeRange? range;
 
-FloatingDateTime fromDateTime(DateTime value) => FloatingDateTime.fromDateTime(value);
+FloatingDateTime fromDateTime(DateTime value) =>
+    FloatingDateTime.fromDateTime(value);
 
-FloatingDateTimeRange rangeOf(DateTime start, DateTime end) => FloatingDateTimeRange(start: start, end: end);
+FloatingDateTimeRange rangeOf(DateTime start, DateTime end) =>
+    FloatingDateTimeRange(start: start, end: end);
 
-FloatingDateTime startOfDay(KalenderTime time, FloatingDateTime date) => time.toFloatingDateTime(date);
+FloatingDateTime startOfDay(KalenderTime time, FloatingDateTime date) =>
+    time.toFloatingDateTime(date);

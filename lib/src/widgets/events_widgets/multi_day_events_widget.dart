@@ -29,8 +29,8 @@ class MultiDayEventWidget extends StatefulWidget {
   /// The range of dates that are visible.
   final FloatingDateTimeRange floatingRange;
 
-  /// The maximum number of vertical events that can be displayed.
-  final int? maxNumberOfVerticalEvents;
+  /// See [MultiDayEventLayoutWidget.availableRows].
+  final int? availableRows;
 
   /// The view controller whose layout cache and visible events this widget uses.
   final ViewController viewController;
@@ -43,7 +43,7 @@ class MultiDayEventWidget extends StatefulWidget {
     required this.eventsController,
     required this.configuration,
     required this.floatingRange,
-    required this.maxNumberOfVerticalEvents,
+    required this.availableRows,
     required this.viewController,
     required this.overlayBuilders,
   });
@@ -152,7 +152,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
       floatingRange: widget.floatingRange,
       textDirection: Directionality.of(context),
       configuration: widget.configuration,
-      maxNumberOfVerticalEvents: widget.maxNumberOfVerticalEvents,
+      availableRows: widget.availableRows,
       multiDayCache: widget.viewController.multiDayCache,
       multiDayOverlayBuilders: widget.overlayBuilders,
       location: context.location,
@@ -182,8 +182,11 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
   /// The directionality of the widget.
   final TextDirection textDirection;
 
-  /// The maximum number of vertical events that can be displayed.
-  final int? maxNumberOfVerticalEvents;
+  /// The number of rows that fit, the row of the overflow buttons included.
+  ///
+  /// The overflow buttons take the last row only when the events need more rows than fit. Null shows at most
+  /// [HorizontalConfiguration.maximumNumberOfVerticalEvents] rows of tiles, with the overflow buttons in a row below.
+  final int? availableRows;
 
   /// The cache used to store layout frames for multi-day events.
   final MultiDayLayoutFrameCache? multiDayCache;
@@ -198,7 +201,7 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
     required this.floatingRange,
     required this.configuration,
     required this.textDirection,
-    required this.maxNumberOfVerticalEvents,
+    required this.availableRows,
     required this.multiDayCache,
     required this.multiDayOverlayBuilders,
     required this.location,
@@ -227,10 +230,13 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// The strategy that generates the layout frame for the events.
   MultiDayLayoutStrategy get multiDayLayoutStrategy => widget.configuration.multiDayLayoutStrategy;
 
-  /// Returns the maximum number of vertical events that can be displayed.
+  /// Returns the number of rows of tiles to show.
   int maxNumberOfRows(MultiDayLayoutFrame frame) {
-    final max = widget.maxNumberOfVerticalEvents ?? widget.configuration.maximumNumberOfVerticalEvents;
-    return max == null ? frame.totalNumberOfRows : min(frame.totalNumberOfRows, max);
+    final total = frame.totalNumberOfRows;
+    final availableRows = widget.availableRows;
+    if (availableRows != null) return total <= availableRows ? total : max(0, availableRows - 1);
+    final limit = widget.configuration.maximumNumberOfVerticalEvents;
+    return limit == null ? total : min(total, limit);
   }
 
   @override
@@ -427,14 +433,16 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         final layoutInfo = frame.layoutInfo.where((info) => info.id == event.id).toList();
         if (layoutInfo.isEmpty) return const SizedBox();
 
-        final maxNumberOfRows = this.maxNumberOfRows(frame);
-        if (layoutInfo.first.row >= maxNumberOfRows) return const SizedBox();
+        // In a row of fixed height the preview takes no more rows than the tiles, so the overflow buttons stay in place.
+        final rows = this.maxNumberOfRows(frame);
+        final previewRows = widget.availableRows == null ? rows : min(rows, maxNumberOfRows);
+        if (layoutInfo.first.row >= previewRows) return const SizedBox();
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
             range: widget.floatingRange,
             layoutInfo: layoutInfo,
-            numberOfRows: maxNumberOfRows,
+            numberOfRows: previewRows,
             tileHeight: widget.configuration.tileHeight,
           ),
           children: [

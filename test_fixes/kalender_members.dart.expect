@@ -13,6 +13,9 @@ Widget build(BuildContext context, KalenderController c, EventsController e) =>
     KalenderView(kalenderController: c, eventsController: e);
 
 KalenderController field(KalenderView view) => view.kalenderController;
-KalenderController of(BuildContext context) => KalenderScope.kalenderControllerOf(context);
-KalenderController? maybe(BuildContext context) => KalenderScope.maybeKalenderControllerOf(context);
-FloatingDateTimeRange? visible(ViewController c) => c.floatingVisibleRange.value;
+KalenderController of(BuildContext context) =>
+    KalenderScope.kalenderControllerOf(context);
+KalenderController? maybe(BuildContext context) =>
+    KalenderScope.maybeKalenderControllerOf(context);
+FloatingDateTimeRange? visible(ViewController c) =>
+    c.floatingVisibleRange.value;

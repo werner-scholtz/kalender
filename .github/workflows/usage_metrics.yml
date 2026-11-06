@@ -1,0 +1,70 @@
+name: Usage Metrics
+
+# Adds a daily snapshot of the pub.dev and GitHub usage to usage.json on
+# refs/benchmarks/data, next to the benchmark results. site.yml publishes it
+# after this workflow finishes.
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+# Required to push to refs/benchmarks/data.
+permissions:
+  contents: write
+
+jobs:
+  record:
+    if: github.ref == 'refs/heads/main'
+    # The group performance_profiling.yml pushes to refs/benchmarks/data from,
+    # so the two never push at once.
+    concurrency:
+      group: benchmarks-refs/heads/main
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          flutter-version-file: .fvmrc
+
+      - name: Get package dependencies
+        run: flutter pub get
+
+      - name: Fetch stored usage
+        run: |
+          git fetch --depth=1 origin refs/benchmarks/data
+          mkdir -p build/benchmarks
+          if git cat-file -e FETCH_HEAD:usage.json 2>/dev/null; then
+            git show FETCH_HEAD:usage.json > build/benchmarks/usage.json
+          fi
+          echo "BENCHMARK_DATA_PARENT=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_ENV"
+          echo "USAGE_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+
+      # TRAFFIC_TOKEN is optional. Without it views and clones are not recorded.
+      # Exit 1 means nothing was read, so nothing is stored. Exit 2 means the
+      # file was written but the token was rejected, checked after the save.
+      - name: Record usage
+        id: record
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
+        run: |
+          dart run tool/usage_metrics.dart build/benchmarks/usage.json && status=0 || status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          [ "$status" != 1 ]
+
+      - name: Save usage
+        uses: ./.github/actions/store-benchmark-data
+        with:
+          parent: ${{ env.BENCHMARK_DATA_PARENT }}
+          file: build/benchmarks/usage.json
+          name: usage.json
+          message: Usage on ${{ env.USAGE_DATE }}
+
+      # GitHub keeps 14 days of traffic, so a token that stopped working has
+      # to be noticed before they run out.
+      - name: Check the traffic token
+        run: '[ "${{ steps.record.outputs.status }}" = 0 ]'
