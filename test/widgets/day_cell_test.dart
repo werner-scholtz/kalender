@@ -55,16 +55,20 @@ void main() {
     KalenderComponents? components,
     KalenderCallbacks? callbacks,
     TextDirection textDirection = TextDirection.ltr,
+    KalenderThemeData theme = const KalenderThemeData(),
   }) {
     return pumpAndSettleWithMaterialApp(
       tester,
       Directionality(
         textDirection: textDirection,
-        child: KalenderView(
-          eventsController: eventsController,
-          kalenderController: kalenderController,
-          components: components,
-          callbacks: callbacks,
+        child: KalenderTheme(
+          data: theme,
+          child: KalenderView(
+            eventsController: eventsController,
+            kalenderController: kalenderController,
+            components: components,
+            callbacks: callbacks,
+          ),
         ),
       ),
     );
@@ -77,21 +81,24 @@ void main() {
     KalenderCallbacks? callbacks,
     TextDirection textDirection = TextDirection.ltr,
     Location? location,
+    KalenderThemeData theme = const KalenderThemeData(),
   }) {
     kalenderController = KalenderController(viewConfiguration: configuration, location: location);
-    return pumpView(tester, components: components, callbacks: callbacks, textDirection: textDirection);
+    return pumpView(tester, components: components, callbacks: callbacks, textDirection: textDirection, theme: theme);
   }
 
   List<DayCellDetails> cells(WidgetTester tester) => [
     for (final widget in tester.widgetList(cellFinder)) (widget.key! as ValueKey<DayCellDetails>).value,
   ];
 
-  /// The details of [count] days from [start], in [location] when given, with 26 March 2025 as today.
+  /// The details of [count] days from [start], in [location] when given, with 26 March 2025 as today and the days of
+  /// the month in [selected] as selected.
   List<DayCellDetails> daysFrom(
     DateTime start,
     int count, {
     double heightPerMinute = kDefaultHeightPerMinute,
     Location? location,
+    Set<int> selected = const {},
   }) => [
     for (var day = 0; day < count; day++)
       DayCellDetails(
@@ -99,6 +106,7 @@ void main() {
             ? DateTime(start.year, start.month, start.day + day)
             : TZDateTime(location, start.year, start.month, start.day + day),
         isToday: start.month == 3 && start.day + day == 26,
+        isSelected: selected.contains(start.day + day),
         timeOfDayRange: KalenderTimeRange.allDay(),
         heightPerMinute: heightPerMinute,
       ),
@@ -229,11 +237,17 @@ void main() {
   });
 
   for (final c in [
-    (name: 'without', components: null, pageViews: 1),
-    (name: 'with', components: components, pageViews: 2),
+    (name: 'without a builder', components: null, theme: const KalenderThemeData(), pageViews: 1),
+    (name: 'with a builder', components: components, theme: const KalenderThemeData(), pageViews: 2),
+    (
+      name: 'with a selection color',
+      components: null,
+      theme: const KalenderThemeData(dayCellStyle: DayCellStyle(selectedColor: Color(0xFF123456))),
+      pageViews: 2,
+    ),
   ]) {
-    testWidgets('the body builds ${c.pageViews} page views ${c.name} a builder', (tester) async {
-      await pump(tester, week, components: c.components);
+    testWidgets('the body builds ${c.pageViews} page views ${c.name}', (tester) async {
+      await pump(tester, week, components: c.components, theme: c.theme);
 
       expect(
         find.descendant(of: find.byType(MultiDayBody), matching: find.byType(LinkedPageView)),
@@ -288,5 +302,67 @@ void main() {
     );
 
     expect(cells(tester), daysFrom(monday, 7, location: location));
+  });
+
+  testWidgets('a cell reports whether its day is selected', (tester) async {
+    await pump(tester, week, components: components);
+
+    kalenderController.selectRange(KalenderDateTimeRange(start: DateTime(2025, 3, 25), end: DateTime(2025, 3, 27)));
+    await tester.pumpAndSettle();
+    expect(cells(tester), daysFrom(monday, 7, selected: {25, 26}));
+
+    kalenderController.deselectRange();
+    await tester.pumpAndSettle();
+    expect(cells(tester), daysFrom(monday, 7));
+  });
+
+  testWidgets('a selection change rebuilds only the cells whose state changes', (tester) async {
+    final builds = <int, int>{};
+    await pump(
+      tester,
+      week,
+      components: KalenderComponents(
+        multiDayComponents: MultiDayComponents(
+          bodyComponents: MultiDayBodyComponents(
+            dayCellBuilder: (context, details) {
+              builds.update(details.date.day, (count) => count + 1, ifAbsent: () => 1);
+              return const SizedBox.expand();
+            },
+          ),
+        ),
+      ),
+    );
+    final before = Map.of(builds);
+
+    kalenderController.selectDate(DateTime(2025, 3, 25));
+    await tester.pumpAndSettle();
+
+    expect(builds, {...before, 25: before[25]! + 1});
+  });
+
+  group('with a selection color and no builder', () {
+    const color = Color(0xFF123456);
+    const theme = KalenderThemeData(dayCellStyle: DayCellStyle(selectedColor: color));
+    final tint = find.byWidgetPredicate((widget) => widget is ColoredBox && widget.color == color);
+
+    testWidgets('a selected day is drawn over its column', (tester) async {
+      await pump(tester, week, theme: theme);
+      expect(tint, findsNothing);
+
+      final day = DateTime(2025, 3, 25);
+      kalenderController.selectDate(day);
+      await tester.pumpAndSettle();
+
+      expect(tester.getRect(tint), columnRects(tester, [day])[day]);
+    });
+
+    testWidgets('a builder draws the selection itself', (tester) async {
+      await pump(tester, week, components: components, theme: theme);
+
+      kalenderController.selectDate(DateTime(2025, 3, 25));
+      await tester.pumpAndSettle();
+
+      expect(tint, findsNothing);
+    });
   });
 }

@@ -120,7 +120,7 @@ class MonthBodyComponents {
 
   /// Builds a day cell background, with [monthDayCellBuilder] when set.
   Widget buildMonthDayCell(BuildContext context, MonthDayCellDetails details) {
-    return monthDayCellBuilder?.call(context, details) ?? const MonthDayCell();
+    return monthDayCellBuilder?.call(context, details) ?? MonthDayCell(isSelected: details.isSelected);
   }
 
   /// Resolves the width of the week number column, with [weekNumberWidth] when set.

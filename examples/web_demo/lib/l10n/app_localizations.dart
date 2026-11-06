@@ -495,6 +495,12 @@ abstract class AppLocalizations {
   /// **'Wraps this calendar in a KalenderTheme'**
   String get scopedThemeHint;
 
+  /// No description provided for @tintSelectedDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Tint selected days'**
+  String get tintSelectedDays;
+
   /// No description provided for @shadeAdjacentMonthDays.
   ///
   /// In en, this message translates to:

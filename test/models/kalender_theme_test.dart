@@ -50,6 +50,7 @@ void main() {
           expect(theme.scheduleDateStyle?.numberTextStyle, textTheme.bodyMedium);
           expect(theme.timelineStyle?.textPadding, const EdgeInsets.symmetric(horizontal: 8, vertical: 36));
           expect(theme.monthGridStyle?.thickness, 0);
+          expect(theme.dayCellStyle, isNull);
           expect(theme.weekNumberStyle?.tooltip, 'Week Number');
           expect(theme.multiDayOverlayStyle?.eventPadding, const EdgeInsets.symmetric(vertical: 2));
           expect(theme.multiDayPortalOverlayButtonStyle?.textOverflow, TextOverflow.ellipsis);

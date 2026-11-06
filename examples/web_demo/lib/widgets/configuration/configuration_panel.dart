@@ -83,6 +83,17 @@ class ConfigurationPanel extends StatelessWidget {
                     ),
                   ),
                 ),
+                Material(
+                  type: MaterialType.transparency,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: configuration.tintSelectedDaysNotifier,
+                    builder: (context, value, _) => SwitchListTile.adaptive(
+                      title: Text(context.l10n.tintSelectedDays),
+                      value: value,
+                      onChanged: (value) => configuration.tintSelectedDays = value,
+                    ),
+                  ),
+                ),
                 ViewConfigurationEditor(viewConfiguration: viewConfiguration),
                 if (viewConfiguration is MultiDayViewConfiguration) ...[
                   MultiDayHeaderEditor(demoConfiguration: configuration),
