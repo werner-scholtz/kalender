@@ -7,6 +7,13 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 - `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are removed.
 - `EventLayoutDelegate.findLongestChain` is removed.
 
+## 0.33.1
+
+### Fixes
+
+- The month header shows each weekday once when the page starts on the day daylight saving time ends. [#645](https://github.com/werner-scholtz/kalender/issues/645)
+- A month row reserves space for the overflow button only when a day in its week has more events than fit. [#642](https://github.com/werner-scholtz/kalender/issues/642)
+
 ## 0.33.0
 
 See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
@@ -39,7 +46,7 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 
 - An event tile merges the widgets inside it into one semantics node. `TileComponents.mergeSemantics` turns this off.
 - A `KalenderView` built again on the same `KalenderController` opens on the date, scroll and zoom the previous one showed.
-- `EventLayoutStrategy.sideBySide()` gives a group of tiles as many columns as it has events running at once and puts each tile in the first free column.
+- `EventLayoutStrategy.sideBySide()` gives a group of tiles as many columns as it has events running at once and puts each tile in the first free column. [#623](https://github.com/werner-scholtz/kalender/issues/623)
 
 ### Deprecations
 
@@ -78,7 +85,7 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 - Dragging an event in the multi-day body repaints only the day columns the drag changes.
 - An event keeps its start and end converted for a location, and converts them again when the app resumes in another device timezone.
 - After a page change, `KalenderController.visibleEvents` holds only the events of the page on screen.
-- A side-by-side tile no longer gets a negative width when `minimumTileHeight` stretches tiles at a low zoom.
+- A side-by-side tile no longer gets a negative width when `minimumTileHeight` stretches tiles at a low zoom. [#623](https://github.com/werner-scholtz/kalender/issues/623)
 - After a switch between two views of one kind or a change of location, the new view opens at the date and time of day it reports and fills `KalenderController.visibleEvents`.
 - Switching to a multi-day view or mounting one no longer notifies the listeners of `KalenderController.visibleEvents` during the build.
 - A tile selected by touch shows `tileWhenDraggingBuilder` and hides its resize handles while it is dragged.
@@ -124,13 +131,13 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 - `DayNumberStyle.selectedBackgroundColor`, `selectedForegroundColor`, `selectedBorder` and `todayBorder` style a selected day number and today. A selected day gets a ring by default.
 - `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses on date labels and week numbers, through `GestureCallbacks`.
 - An empty day in the schedule view reports the `onTapped` callbacks.
-- `KalenderController.showDayOverlay` and `hideDayOverlay` open and close the overlay of any visible day in the month view and the multi-day header, and `openDayOverlay` holds the open day.
+- `KalenderController.showDayOverlay` and `hideDayOverlay` open and close the overlay of any visible day in the month view and the multi-day header, and `openDayOverlay` holds the open day. [#215](https://github.com/werner-scholtz/kalender/issues/215)
 - `ResizeHandleDetails.location` holds the calendar's location. `continuesBefore`, `continuesAfter`, `showStart` and `showEnd` compare the event in it.
 
 ### Fixes
 
 - Tapping the day number in a month cell reaches `onTapped`.
-- A press on an event that cannot be rescheduled or resized reaches the calendar behind it.
+- A press on an event that cannot be rescheduled or resized reaches the calendar behind it. [#259](https://github.com/werner-scholtz/kalender/issues/259)
 - The multi-day body picks the tiles to build from `calculateVerticalLayoutData`, the positions the tiles are drawn at.
 - A calendar shorter than its header lays out without errors.
 - `kDefaultToWeekly` and `kDefaultToSchedule` carry the first day of the month when switching from the month view.
@@ -141,7 +148,7 @@ See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.
 - An event tile keeps one listener per controller across dependency changes.
 - `OverlapLayoutDelegate.sortEvents` keeps the duration-then-start order for more than 32 events.
 - `MultiDayViewConfiguration.copyWith` keeps `initialHeightPerMinute` instead of resetting it to the default.
-- The paginated schedule view builds, scrolls and reports the page on screen after a cancelled swipe.
+- The paginated schedule view builds, scrolls and reports the page on screen after a cancelled swipe. [#591](https://github.com/werner-scholtz/kalender/issues/591)
 
 ### Examples
 
@@ -292,7 +299,7 @@ See [MIGRATION.md](MIGRATION.md#v029x--v0300) for what to change.
 
 ### Fixes
 
-- The timeline labels its hours with `intl` where the app installs no `MaterialLocalizations`, rather than throwing. ([#491](https://github.com/werner-scholtz/kalender/issues/491))
+- The timeline labels its hours with `intl` where the app installs no `MaterialLocalizations`, rather than throwing. [#491](https://github.com/werner-scholtz/kalender/issues/491)
 - `KalenderTimeRange.coversWholeDay` is false for a range that starts after midnight.
 
 ## 0.29.1
@@ -345,7 +352,7 @@ See [MIGRATION.md](MIGRATION.md#v027x--v0280) for what to change.
 
 ### Bug Fixes
 
-- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. A constrained range such as 09:00 to 18:00 drew 18:00 above 10:00. The all-day default was unaffected.
+- The timeline labels are positioned by the segments above them rather than by a multiple of their own height. A constrained range such as 09:00 to 18:00 drew 18:00 above 10:00. The all-day default was unaffected. [#472](https://github.com/werner-scholtz/kalender/issues/472)
 - The free scroll band no longer draws a day past the end of its display range. Any range ending at midnight gained a day, which includes the default.
 
 ### Behavior Changes
@@ -538,7 +545,7 @@ Nothing in this release stops existing code from compiling. See [MIGRATION.md](M
 Each of these changes what an unchanged calendar renders.
 
 - The overflow button is labelled `+3` instead of `3 more`, with the number formatted for the calendar's locale so locales with their own numerals read correctly. [#349](https://github.com/werner-scholtz/kalender/pull/349)
-- The schedule view abbreviates day names with `DateFormat.E` instead of cutting the full name at three characters, which was only correct in English. German reads `Mi` rather than `Mit`. [#354](https://github.com/werner-scholtz/kalender/pull/354)
+- The schedule view abbreviates day names with `DateFormat.E` instead of cutting the full name at three characters, which was only correct in English. German reads `Mi` rather than `Mit`. [#354](https://github.com/werner-scholtz/kalender/pull/354) [#351](https://github.com/werner-scholtz/kalender/issues/351)
 - `MonthDayHeaderStyle.stringBuilder` was declared but never called. Its replacement is wired up, so a calendar that set the old field will now see the day number change. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 - `MonthBodyComponents.overlayBuilders` defaults to null, so `CalendarComponents.overlayBuilders` applies in the month view instead of being shadowed by an empty default. The builder-side twin of the style-side fix in 0.22.0. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 
@@ -546,8 +553,8 @@ Each of these changes what an unchanged calendar renders.
 
 Both are removed in 0.24.0.
 
-- The seven string builders moved from the component style classes to the matching `*Components` classes and gained a `BuildContext` parameter, so a custom builder can read the calendar's locale. The old fields still apply when the new one is not set. [#349](https://github.com/werner-scholtz/kalender/pull/349)
-- `MonthDayHeaderStyle.textStyle` has never had any effect. `MonthDayHeader` renders only a day number, styled by `numberTextStyle`. [#354](https://github.com/werner-scholtz/kalender/pull/354)
+- The seven string builders moved from the component style classes to the matching `*Components` classes and gained a `BuildContext` parameter, so a custom builder can read the calendar's locale. The old fields still apply when the new one is not set. [#349](https://github.com/werner-scholtz/kalender/pull/349) [#318](https://github.com/werner-scholtz/kalender/issues/318)
+- `MonthDayHeaderStyle.textStyle` has never had any effect. `MonthDayHeader` renders only a day number, styled by `numberTextStyle`. [#354](https://github.com/werner-scholtz/kalender/pull/354) [#350](https://github.com/werner-scholtz/kalender/issues/350)
 
 ### Features
 
@@ -588,7 +595,7 @@ Both are removed in 0.24.0.
 
 ### Features
 
-- Multi-day and all-day events now render in the free-scroll view as a single tile spanning the day columns, instead of being split at each page boundary. They support the same interactions as the paged headers: create by dragging across the header, reschedule, resize, auto-scroll when a drag reaches the viewport edge, right-to-left layout, and the "+N more" overflow. [#78](https://github.com/werner-scholtz/kalender/issues/78) [#297](https://github.com/werner-scholtz/kalender/pull/297) [#298](https://github.com/werner-scholtz/kalender/pull/298) [#299](https://github.com/werner-scholtz/kalender/pull/299) [#300](https://github.com/werner-scholtz/kalender/pull/300) [#301](https://github.com/werner-scholtz/kalender/pull/301)
+- Multi-day and all-day events now render in the free-scroll view as a single tile spanning the day columns, instead of being split at each page boundary. They support the same interactions as the paged headers: create by dragging across the header, reschedule, resize, auto-scroll when a drag reaches the viewport edge, right-to-left layout, and the "+N more" overflow. [#297](https://github.com/werner-scholtz/kalender/pull/297) [#298](https://github.com/werner-scholtz/kalender/pull/298) [#299](https://github.com/werner-scholtz/kalender/pull/299) [#300](https://github.com/werner-scholtz/kalender/pull/300) [#301](https://github.com/werner-scholtz/kalender/pull/301) [#78](https://github.com/werner-scholtz/kalender/issues/78)
 
 ### Fixes
 
@@ -648,7 +655,7 @@ Both are removed in 0.24.0.
 - Fixed schedule view event tiles not lining up. Every row now shares a fixed-width leading column whether or not it shows a date. [#253](https://github.com/werner-scholtz/kalender/issues/253)
 - Fixed the continuous schedule view scrolling to the wrong position when today has no events. The initial scroll and `animateToDateTime` now target today, or the nearest day when it is hidden. [#253](https://github.com/werner-scholtz/kalender/issues/253)
 - Fixed the free-scroll multi-day header re-animating its height whenever a calendar item changed. Its paged content now keeps its state across rebuilds instead of being rebuilt from scratch. [#282](https://github.com/werner-scholtz/kalender/pull/282)
-- Fixed the free-scroll multi-day header clipping days that have more events than the leading day. The header now sizes to the tallest day currently in view. [#283](https://github.com/werner-scholtz/kalender/pull/283)
+- Fixed the free-scroll multi-day header clipping days that have more events than the leading day. The header now sizes to the tallest day currently in view. [#283](https://github.com/werner-scholtz/kalender/pull/283) [#214](https://github.com/werner-scholtz/kalender/issues/214)
 - Fixed the multi-day/week header drifting out of alignment with the body when the timeline used a custom `stringBuilder` or width. The gutter width now has a single source. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - The timeline gutter width now accounts for the text scale factor, so it no longer under-sizes when text is enlarged. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - The timeline gutter now measures every label across the day rather than a single sample, so a custom label format whose widest entry is not at 23:59 no longer clips. [#180](https://github.com/werner-scholtz/kalender/issues/180)
@@ -676,7 +683,7 @@ Both are removed in 0.24.0.
 
 ### Features
 
-- Added optional month-view week numbers via `MonthViewConfiguration.showWeekNumbers`, with customizable `MonthBodyComponents.weekNumberBuilder` and `MonthBodyComponentStyles.weekNumberStyle`.
+- Added optional month-view week numbers via `MonthViewConfiguration.showWeekNumbers`, with customizable `MonthBodyComponents.weekNumberBuilder` and `MonthBodyComponentStyles.weekNumberStyle`. [#245](https://github.com/werner-scholtz/kalender/issues/245)
 
 ### Fixes 
 
@@ -832,13 +839,13 @@ Both are removed in 0.24.0.
 - `PageNavigationFunctions` was renamed to `PageIndexCalculator` and updated to use internal date time classes.
 - Multiple default components where updated to use the new internal date time classes instead of date time classes.
 - ViewConfiguration renamed `selectedDate` to `initialDateTime`.
-- `CalendarHeader` and `CalendarBody` no longer take `ValueNotifiers` and will instead create and dispose ValueNotifiers created from values passed to them.
+- `CalendarHeader` and `CalendarBody` no longer take `ValueNotifiers` and will instead create and dispose ValueNotifiers created from values passed to them. [#241](https://github.com/werner-scholtz/kalender/issues/241)
 
 ## 0.14.3
 - feat: Made TextAlign and TextOverflow configurable for TimelineStyle. [PR #242](https://github.com/werner-scholtz/kalender/pull/242) Thanks to [quaaantumdev](https://github.com/quaaantumdev)
 - fix: Various issues while dragging events on multi-day view. [PR #240](https://github.com/werner-scholtz/kalender/pull/240) Thanks to [redninjacat](https://github.com/redninjacat).
-- fix: Drag and drop issues. [PR #238](https://github.com/werner-scholtz/kalender/pull/238) Thanks to [redninjacat](https://github.com/redninjacat).
-- fix: erroneous warning in month_body [PR #237](https://github.com/werner-scholtz/kalender/pull/237) Thanks to [redninjacat](https://github.com/redninjacat).
+- fix: Drag and drop issues. [PR #238](https://github.com/werner-scholtz/kalender/pull/238) Thanks to [redninjacat](https://github.com/redninjacat). [#239](https://github.com/werner-scholtz/kalender/issues/239)
+- fix: erroneous warning in month_body [PR #237](https://github.com/werner-scholtz/kalender/pull/237) Thanks to [redninjacat](https://github.com/redninjacat). [#236](https://github.com/werner-scholtz/kalender/issues/236)
 
 ## 0.14.2
 - fix: Tile and ResizeHandleWidget rebuild issues.
@@ -855,7 +862,7 @@ Both are removed in 0.24.0.
 - fix: MultiDayLayoutFrameCache using `toString()` to generate map key. [#225](https://github.com/werner-scholtz/kalender/issues/225)
 
 ## 0.13.0
-- feat: Improved TimeLine and HourLines widgets. [#216](https://github.com/werner-scholtz/kalender/issues/30?issue=werner-scholtz%7Ckalender%7C216)
+- feat: Improved TimeLine and HourLines widgets. [#216](https://github.com/werner-scholtz/kalender/issues/216)
 - feat: Improved DayHeader and DayHeaderStyle. [PR #218](https://github.com/werner-scholtz/kalender/pull/218)
 - feat: Improved CalendarCallbacks. [#133](https://github.com/werner-scholtz/kalender/issues/133) / [#30](https://github.com/werner-scholtz/kalender/issues/30)
         - Added `onTappedWithDetail`, `onLongPressed` and `onLongPressedWithDetail` callbacks.
@@ -904,18 +911,17 @@ Both are removed in 0.24.0.
 
 ### Features
 
-- Reimplemented schedule view. [discussion 122](https://github.com/werner-scholtz/kalender/discussions/122), [#130
-](https://github.com/werner-scholtz/kalender/issues/130)
+- Reimplemented schedule view. [discussion 122](https://github.com/werner-scholtz/kalender/discussions/122), [#130](https://github.com/werner-scholtz/kalender/issues/130)
 - The tile builder is no longer a required parameter, default tiles are now provided. (Highly recommended to override these.)
 
 ## 0.7.2
 
-- fix: Calendar event at 00:00 not visible (zero duration) [#159](https://github.com/werner-scholtz/kalender/issues/158)
+- fix: Calendar event at 00:00 not visible (zero duration) [#158](https://github.com/werner-scholtz/kalender/issues/158)
 - fix: Export the necessary classes to allow for custom a `GenerateMultiDayLayoutFrame`. [#162](https://github.com/werner-scholtz/kalender/issues/162)
 
 ## 0.7.1
 
-- fix: Calendar event at 00:00 not visible [#159](https://github.com/werner-scholtz/kalender/issues/158)
+- fix: Calendar event at 00:00 not visible [#158](https://github.com/werner-scholtz/kalender/issues/158) [#88](https://github.com/werner-scholtz/kalender/issues/88)
   * Note: This makes minor changes to the abstract class EventLayoutDelegate.
 - fix: Long event causes all following events to intend. [#142](https://github.com/werner-scholtz/kalender/issues/142)
 
@@ -927,7 +933,7 @@ Both are removed in 0.24.0.
         - Added `maximumNumberOfVerticalEvents`
         - Added `generateMultiDayLayoutFrame`
     - Added `overlayBuilders` to `MultiDayHeaderComponents` for customizing the overlay.
-- MonthBody limits the number of events displayed based on size constraints. [#141](https://github.com/werner-scholtz/kalender/pull/141) / [#147](https://github.com/werner-scholtz/kalender/issues/147)
+- MonthBody limits the number of events displayed based on size constraints. [#141](https://github.com/werner-scholtz/kalender/pull/141) / [#147](https://github.com/werner-scholtz/kalender/issues/147) / [#17](https://github.com/werner-scholtz/kalender/issues/17) / [#79](https://github.com/werner-scholtz/kalender/issues/79)
     - Added `overlayBuilders` to `MonthBodyComponents` for customizing the overlay.
 - Added a new callback `OnEventTappedWithDetail`. [#141](https://github.com/werner-scholtz/kalender/pull/141) / [#148](https://github.com/werner-scholtz/kalender/issues/148)
 
@@ -948,12 +954,12 @@ Both are removed in 0.24.0.
 
 ## 0.6.6
 
-- fix: MultiDayHeaderWidget layout regressions.
+- fix: MultiDayHeaderWidget layout regressions. [#138](https://github.com/werner-scholtz/kalender/issues/138)
 - Added widget tests for MultiDayHeaderWidget.
 
 ## 0.6.5
 
-- fix: SingleDayView RenderFlex overflow.
+- fix: SingleDayView RenderFlex overflow. [#134](https://github.com/werner-scholtz/kalender/issues/134)
 
 ## 0.6.4
 
@@ -984,15 +990,15 @@ Both are removed in 0.24.0.
     * This is now called when the user taps on an empty space a calendar (Multiday body).
 - There is a new callback `onMultiDayTapped` in `CalendarCallbacks`.
     * This is called when the user taps on an empty space in the calendar (Multiday Header / Month body).
-- MultiDayBodyConfiguration added `horizontalPadding` this padding is located between events and the edge of day.
+- MultiDayBodyConfiguration added `horizontalPadding` this padding is located between events and the edge of day. [#118](https://github.com/werner-scholtz/kalender/issues/118)
 - There is now a `CalendarInteraction` and `CalendarSnapping` class that can be passed to the `CalendarBody` / `CalendarHeader` as a ValueNotifier.
-    This allows the calendar view to change these behaviors without rebuilding the entire view.
+    This allows the calendar view to change these behaviors without rebuilding the entire view. [#123](https://github.com/werner-scholtz/kalender/issues/123)
 - `CalendarSnapping` now has a `eventSnapStrategy` that can be used to define custom snapping behavior when creating new events. [#119](https://github.com/werner-scholtz/kalender/issues/119)
 
 ### Fixes
-- Month day header export [PR #115](https://github.com/werner-scholtz/kalender/pull/115)
+- Month day header export [PR #115](https://github.com/werner-scholtz/kalender/pull/115) [#114](https://github.com/werner-scholtz/kalender/issues/114)
 - Month grid export [PR #112](https://github.com/werner-scholtz/kalender/pull/112)
-- Month not display all dates [PR #129](https://github.com/werner-scholtz/kalender/pull/129)
+- Month not display all dates [PR #129](https://github.com/werner-scholtz/kalender/pull/129) [#127](https://github.com/werner-scholtz/kalender/issues/127)
 
 ### Boring stuff
 - Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
@@ -1014,9 +1020,9 @@ Take a look at the [TileComponents](https://github.com/werner-scholtz/kalender/b
 
 ### What's new
 
-- Auto scroll/paging (https://github.com/werner-scholtz/kalender/issues/75 && https://github.com/werner-scholtz/kalender/issues/64)
-- Calender can now accept Draggable's (https://github.com/werner-scholtz/kalender/issues/48)
-- More information for the TileBuilder (https://github.com/werner-scholtz/kalender/issues/83)
+- Auto scroll/paging [#75](https://github.com/werner-scholtz/kalender/issues/75) [#64](https://github.com/werner-scholtz/kalender/issues/64)
+- Calender can now accept Draggable's [#48](https://github.com/werner-scholtz/kalender/issues/48)
+- More information for the TileBuilder [#83](https://github.com/werner-scholtz/kalender/issues/83)
 
 ## pre-0.5.0
 - https://github.com/werner-scholtz/kalender/blob/main-0.4.2/CHANGELOG.md

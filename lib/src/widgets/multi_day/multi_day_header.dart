@@ -446,7 +446,7 @@ Widget _multiDayTiles(
           floatingRange: range,
           configuration: configuration,
           viewController: viewController,
-          maxNumberOfVerticalEvents: null,
+          availableRows: null,
           overlayBuilders: components.multiDayComponents.headerComponents.overlayBuilders ?? components.overlayBuilders,
         ),
       ),

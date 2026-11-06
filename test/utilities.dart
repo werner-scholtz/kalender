@@ -163,6 +163,7 @@ Future<void> pumpOverflowingMonth(
   WidgetTester tester, {
   required DateTime day,
   int eventCount = 8,
+  MonthBodyConfiguration? bodyConfiguration,
   KalenderComponents? components,
   NowCallback? nowCallback,
   KalenderThemeData? scoped,
@@ -186,7 +187,12 @@ Future<void> pumpOverflowingMonth(
     eventsController: eventsController,
     kalenderController: kalenderController,
     components: components,
-    views: bodyOnlyViews,
+    views: [
+      MonthViewParts(
+        header: const SizedBox.shrink(),
+        body: MonthBody(configuration: bodyConfiguration),
+      ),
+    ],
   );
   if (scoped != null) view = KalenderTheme(data: scoped, child: view);
   if (textDirection != null) view = Directionality(textDirection: textDirection, child: view);

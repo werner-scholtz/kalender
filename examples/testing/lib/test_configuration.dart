@@ -13,10 +13,16 @@ class TestConfiguration {
   TestConfiguration({required this.viewConfiguration});
 
   TestConfiguration.week()
-    : viewConfiguration = MultiDayViewConfiguration.week(displayRange: testRange, initialDateTime: initialDateTime);
+    : viewConfiguration = MultiDayViewConfiguration.week(
+        displayRange: testRange,
+        initialDateTime: initialDateTime,
+      );
 
   TestConfiguration.month()
-    : viewConfiguration = MonthViewConfiguration.singleMonth(displayRange: testRange, initialDateTime: initialDateTime);
+    : viewConfiguration = MonthViewConfiguration.singleMonth(
+        displayRange: testRange,
+        initialDateTime: initialDateTime,
+      );
 
   TestConfiguration.schedule()
     : viewConfiguration = ScheduleViewConfiguration.continuous(
@@ -27,13 +33,16 @@ class TestConfiguration {
   static final initialDateTime = DateTime(2024, 6, 1);
   static final start = DateTime(2024, 1, 1);
   static final end = DateTime(2024, 12, 31);
-  static KalenderDateTimeRange get testRange => KalenderDateTimeRange(start: start, end: end);
+  static KalenderDateTimeRange get testRange =>
+      KalenderDateTimeRange(start: start, end: end);
 
   /// The events controller for the test.
   final eventsController = DefaultEventsController();
 
   /// The calendar controller for the test.
-  late final kalenderController = KalenderController(viewConfiguration: viewConfiguration);
+  late final kalenderController = KalenderController(
+    viewConfiguration: viewConfiguration,
+  );
 
   void dispose() {
     kalenderController.dispose();
@@ -44,13 +53,18 @@ class TestConfiguration {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
 
     final events = <KalenderEvent>[
-      for (var date = start; date.isBefore(end); date = DateTime(date.year, date.month, date.day + 1)) ...[
+      for (
+        var date = start;
+        date.isBefore(end);
+        date = DateTime(date.year, date.month, date.day + 1)
+      ) ...[
         for (var timeOfDayRange in timeOfDayRanges)
           Event(
             start: timeOfDayRange.start.toDateTime(date),
             end: timeOfDayRange.end.toDateTime(date),
             title: 'Event',
-            description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
+            description:
+                '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
             color: Colors.primaries[date.day % Colors.primaries.length],
           ),
       ],
@@ -84,31 +98,97 @@ class Event extends KalenderEvent {
 
   @override
   Event copyWithData({required DateTime start, required DateTime end}) {
-    return Event(start: start, end: end, title: title, description: description, color: color);
+    return Event(
+      start: start,
+      end: end,
+      title: title,
+      description: description,
+      color: color,
+    );
   }
 }
 
 final timeOfDayRanges = [
-  KalenderTimeRange(start: const KalenderTime(hour: 5, minute: 0), end: const KalenderTime(hour: 6, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 5, minute: 30), end: const KalenderTime(hour: 6, minute: 15)),
-  KalenderTimeRange(start: const KalenderTime(hour: 6, minute: 0), end: const KalenderTime(hour: 8, minute: 15)),
-  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 0), end: const KalenderTime(hour: 9, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 30), end: const KalenderTime(hour: 10, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 9, minute: 0), end: const KalenderTime(hour: 10, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 10, minute: 0), end: const KalenderTime(hour: 11, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 12, minute: 0), end: const KalenderTime(hour: 13, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 13, minute: 0), end: const KalenderTime(hour: 14, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 0), end: const KalenderTime(hour: 14, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 14, minute: 0), end: const KalenderTime(hour: 15, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 14, minute: 30), end: const KalenderTime(hour: 15, minute: 30)),
-  KalenderTimeRange(start: const KalenderTime(hour: 15, minute: 0), end: const KalenderTime(hour: 16, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 16, minute: 0), end: const KalenderTime(hour: 17, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 8, minute: 0), end: const KalenderTime(hour: 17, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 17, minute: 0), end: const KalenderTime(hour: 18, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 17, minute: 30), end: const KalenderTime(hour: 18, minute: 30)),
-  KalenderTimeRange(start: const KalenderTime(hour: 18, minute: 0), end: const KalenderTime(hour: 19, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 19, minute: 0), end: const KalenderTime(hour: 20, minute: 0)),
-  KalenderTimeRange(start: const KalenderTime(hour: 20, minute: 0), end: const KalenderTime(hour: 21, minute: 0)),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 5, minute: 0),
+    end: const KalenderTime(hour: 6, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 5, minute: 30),
+    end: const KalenderTime(hour: 6, minute: 15),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 6, minute: 0),
+    end: const KalenderTime(hour: 8, minute: 15),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 9, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 30),
+    end: const KalenderTime(hour: 10, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 9, minute: 0),
+    end: const KalenderTime(hour: 10, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 10, minute: 0),
+    end: const KalenderTime(hour: 11, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 12, minute: 0),
+    end: const KalenderTime(hour: 13, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 13, minute: 0),
+    end: const KalenderTime(hour: 14, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 14, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 14, minute: 0),
+    end: const KalenderTime(hour: 15, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 14, minute: 30),
+    end: const KalenderTime(hour: 15, minute: 30),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 15, minute: 0),
+    end: const KalenderTime(hour: 16, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 16, minute: 0),
+    end: const KalenderTime(hour: 17, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 8, minute: 0),
+    end: const KalenderTime(hour: 17, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 17, minute: 0),
+    end: const KalenderTime(hour: 18, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 17, minute: 30),
+    end: const KalenderTime(hour: 18, minute: 30),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 18, minute: 0),
+    end: const KalenderTime(hour: 19, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 19, minute: 0),
+    end: const KalenderTime(hour: 20, minute: 0),
+  ),
+  KalenderTimeRange(
+    start: const KalenderTime(hour: 20, minute: 0),
+    end: const KalenderTime(hour: 21, minute: 0),
+  ),
 
   // Ranges 20 to 49 for the 50 events per day scenario, overlapping across the day.
   ...List.generate(30, (i) {

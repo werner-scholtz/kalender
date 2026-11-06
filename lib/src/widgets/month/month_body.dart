@@ -4,8 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'dart:math';
-
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/month_week_number_layout_delegate.dart';
@@ -181,12 +179,7 @@ class MonthWeek extends StatelessWidget {
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      // Subtract 1 to account for the extra widget at the bottom. Clamped to 0, since a negative value
-                      // shows overflow buttons on days without events.
-                      final maxNumberOfVerticalEvents = max(
-                        0,
-                        (constraints.maxHeight / configuration.tileHeight).floor() - 1,
-                      );
+                      final availableRows = (constraints.maxHeight / configuration.tileHeight).floor();
 
                       // A row too short for the overflow button clips it.
                       return UnconstrainedBox(
@@ -197,7 +190,7 @@ class MonthWeek extends StatelessWidget {
                           eventsController: context.eventsController,
                           floatingRange: floatingRange,
                           configuration: configuration,
-                          maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+                          availableRows: availableRows,
                           viewController: viewController,
                           overlayBuilders: monthComponents.bodyComponents.overlayBuilders ?? components.overlayBuilders,
                         ),
