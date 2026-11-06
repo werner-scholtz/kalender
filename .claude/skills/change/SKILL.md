@@ -37,7 +37,7 @@ Left on purpose:
 - `<path>:<line>`: <finding>. <reason>.
 ```
 
-Leave the `Fixes` line out when the change has no issue. Write `Part of #<issue>` when it covers only part of one. The tiers are in `.claude/agents/reviewer.md`. The owner reads the `lib` diff only at tier 3.
+Leave the `Fixes` line out when the change has no issue, and write one line per issue when it has several. Write `Part of #<issue>` when it covers only part of one. In a stack GitHub reads the keyword only once the base is main. The tiers are in `.claude/agents/reviewer.md`. The owner reads the `lib` diff only at tier 3.
 
 ## Rules
 
