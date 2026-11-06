@@ -586,7 +586,7 @@ Both are removed in 0.24.0.
 
 ### Features
 
-- Multi-day and all-day events now render in the free-scroll view as a single tile spanning the day columns, instead of being split at each page boundary. They support the same interactions as the paged headers: create by dragging across the header, reschedule, resize, auto-scroll when a drag reaches the viewport edge, right-to-left layout, and the "+N more" overflow. [#78](https://github.com/werner-scholtz/kalender/issues/78) [#297](https://github.com/werner-scholtz/kalender/pull/297) [#298](https://github.com/werner-scholtz/kalender/pull/298) [#299](https://github.com/werner-scholtz/kalender/pull/299) [#300](https://github.com/werner-scholtz/kalender/pull/300) [#301](https://github.com/werner-scholtz/kalender/pull/301)
+- Multi-day and all-day events now render in the free-scroll view as a single tile spanning the day columns, instead of being split at each page boundary. They support the same interactions as the paged headers: create by dragging across the header, reschedule, resize, auto-scroll when a drag reaches the viewport edge, right-to-left layout, and the "+N more" overflow. [#78](https://github.com/werner-scholtz/kalender/issues/78) [#86](https://github.com/werner-scholtz/kalender/issues/86) [#297](https://github.com/werner-scholtz/kalender/pull/297) [#298](https://github.com/werner-scholtz/kalender/pull/298) [#299](https://github.com/werner-scholtz/kalender/pull/299) [#300](https://github.com/werner-scholtz/kalender/pull/300) [#301](https://github.com/werner-scholtz/kalender/pull/301)
 
 ### Fixes
 
@@ -835,8 +835,8 @@ Both are removed in 0.24.0.
 ## 0.14.3
 - feat: Made TextAlign and TextOverflow configurable for TimelineStyle. [PR #242](https://github.com/werner-scholtz/kalender/pull/242) Thanks to [quaaantumdev](https://github.com/quaaantumdev)
 - fix: Various issues while dragging events on multi-day view. [PR #240](https://github.com/werner-scholtz/kalender/pull/240) Thanks to [redninjacat](https://github.com/redninjacat).
-- fix: Drag and drop issues. [PR #238](https://github.com/werner-scholtz/kalender/pull/238) [#239](https://github.com/werner-scholtz/kalender/issues/239) Thanks to [redninjacat](https://github.com/redninjacat).
-- fix: erroneous warning in month_body [PR #237](https://github.com/werner-scholtz/kalender/pull/237) [#236](https://github.com/werner-scholtz/kalender/issues/236) Thanks to [redninjacat](https://github.com/redninjacat).
+- fix: Drag and drop issues. [PR #238](https://github.com/werner-scholtz/kalender/pull/238) Thanks to [redninjacat](https://github.com/redninjacat). [#239](https://github.com/werner-scholtz/kalender/issues/239)
+- fix: erroneous warning in month_body [PR #237](https://github.com/werner-scholtz/kalender/pull/237) Thanks to [redninjacat](https://github.com/redninjacat). [#236](https://github.com/werner-scholtz/kalender/issues/236)
 
 ## 0.14.2
 - fix: Tile and ResizeHandleWidget rebuild issues.
@@ -912,7 +912,7 @@ Both are removed in 0.24.0.
 
 ## 0.7.1
 
-- fix: Calendar event at 00:00 not visible [#158](https://github.com/werner-scholtz/kalender/issues/158)
+- fix: Calendar event at 00:00 not visible [#158](https://github.com/werner-scholtz/kalender/issues/158) [#88](https://github.com/werner-scholtz/kalender/issues/88)
   * Note: This makes minor changes to the abstract class EventLayoutDelegate.
 - fix: Long event causes all following events to intend. [#142](https://github.com/werner-scholtz/kalender/issues/142)
 
@@ -982,8 +982,8 @@ Both are removed in 0.24.0.
 - There is a new callback `onMultiDayTapped` in `CalendarCallbacks`.
     * This is called when the user taps on an empty space in the calendar (Multiday Header / Month body).
 - MultiDayBodyConfiguration added `horizontalPadding` this padding is located between events and the edge of day. [#118](https://github.com/werner-scholtz/kalender/issues/118)
-- There is now a `CalendarInteraction` and `CalendarSnapping` class that can be passed to the `CalendarBody` / `CalendarHeader` as a ValueNotifier. [#123](https://github.com/werner-scholtz/kalender/issues/123)
-    This allows the calendar view to change these behaviors without rebuilding the entire view.
+- There is now a `CalendarInteraction` and `CalendarSnapping` class that can be passed to the `CalendarBody` / `CalendarHeader` as a ValueNotifier.
+    This allows the calendar view to change these behaviors without rebuilding the entire view. [#123](https://github.com/werner-scholtz/kalender/issues/123)
 - `CalendarSnapping` now has a `eventSnapStrategy` that can be used to define custom snapping behavior when creating new events. [#119](https://github.com/werner-scholtz/kalender/issues/119)
 
 ### Fixes
@@ -1011,9 +1011,9 @@ Take a look at the [TileComponents](https://github.com/werner-scholtz/kalender/b
 
 ### What's new
 
-- Auto scroll/paging (https://github.com/werner-scholtz/kalender/issues/75 && https://github.com/werner-scholtz/kalender/issues/64)
-- Calender can now accept Draggable's (https://github.com/werner-scholtz/kalender/issues/48)
-- More information for the TileBuilder (https://github.com/werner-scholtz/kalender/issues/83)
+- Auto scroll/paging [#75](https://github.com/werner-scholtz/kalender/issues/75) [#64](https://github.com/werner-scholtz/kalender/issues/64)
+- Calender can now accept Draggable's [#48](https://github.com/werner-scholtz/kalender/issues/48)
+- More information for the TileBuilder [#83](https://github.com/werner-scholtz/kalender/issues/83)
 
 ## pre-0.5.0
 - https://github.com/werner-scholtz/kalender/blob/main-0.4.2/CHANGELOG.md

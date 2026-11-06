@@ -136,7 +136,7 @@ Some changes cannot be deprecated and go straight into a breaking batch with a m
 - A deprecation gets a `### Deprecations` changelog entry naming the removal version.
 - A breaking change gets a `### Breaking Changes` entry and a section in [MIGRATION.md](MIGRATION.md) with before and after code. `### Behavior Changes` is for code that still compiles and renders differently. Keep the two headings apart.
 - Changelog entries are one line each and say what changed. The reasoning goes in the pull request.
-- An entry for a change that resolves an issue ends with a link to the issue, after the full stop: `[#645](https://github.com/werner-scholtz/kalender/issues/645)`.
+- An entry for a change that resolves an issue ends with a link to the issue: `[#645](https://github.com/werner-scholtz/kalender/issues/645)`.
 - Until the version is tagged, amend the existing entries rather than appending.
 
 ### Automating a migration
