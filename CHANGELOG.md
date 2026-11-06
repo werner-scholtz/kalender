@@ -12,7 +12,7 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
 - `DayCellDetails.isSelected` and `MonthDayCellDetails.isSelected` say whether the day is in the selected range. [#262](https://github.com/werner-scholtz/kalender/issues/262)
 - `KalenderThemeData.dayCellStyle` sets `DayCellStyle.selectedColor`, the color of a selected day, drawn by `MonthDayCell`, which gets `isSelected`, and by the default cell of the multi-day body. [#262](https://github.com/werner-scholtz/kalender/issues/262)
-- `MonthDayCellDetails` compares by value.
+- `MonthDayCellDetails` compares by value. [#262](https://github.com/werner-scholtz/kalender/issues/262)
 
 ## 0.33.1
 
