@@ -11,8 +11,11 @@ import 'package:kalender/kalender.dart';
 InternalDateTime? dateTime;
 InternalDateTimeRange? range;
 
-InternalDateTime fromDateTime(DateTime value) => InternalDateTime.fromDateTime(value);
+InternalDateTime fromDateTime(DateTime value) =>
+    InternalDateTime.fromDateTime(value);
 
-InternalDateTimeRange rangeOf(DateTime start, DateTime end) => InternalDateTimeRange(start: start, end: end);
+InternalDateTimeRange rangeOf(DateTime start, DateTime end) =>
+    InternalDateTimeRange(start: start, end: end);
 
-InternalDateTime startOfDay(KalenderTime time, InternalDateTime date) => time.toInternalDateTime(date);
+InternalDateTime startOfDay(KalenderTime time, InternalDateTime date) =>
+    time.toInternalDateTime(date);

@@ -1,3 +1,9 @@
+## 0.33.1
+
+### Fixes
+
+- The month header shows each weekday once when the page starts on the day daylight saving time ends.
+
 ## 0.33.0
 
 See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.

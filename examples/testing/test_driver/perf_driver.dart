@@ -22,10 +22,12 @@ enum Scenario {
   const Scenario(this.numberOfEvents);
   final int numberOfEvents;
 
-  String getReportKey(Views view, ReportKeys key, int run) => '${name.toLowerCase()}-${view.name}-${key.name}-$run';
+  String getReportKey(Views view, ReportKeys key, int run) =>
+      '${name.toLowerCase()}-${view.name}-${key.name}-$run';
 
   /// The series name on the dashboard, such as `Week · navigation · 50 events/day`.
-  String seriesName(Views view, ReportKeys key) => '${view.title} · ${key.label} · $numberOfEvents events/day';
+  String seriesName(Views view, ReportKeys key) =>
+      '${view.title} · ${key.label} · $numberOfEvents events/day';
 }
 
 enum ReportKeys {
@@ -49,7 +51,8 @@ enum Views {
 }
 
 /// Repeats per workload. The summary takes the median across them. `KALENDER_PERF_RUNS` overrides it.
-final numberOfRuns = int.tryParse(Platform.environment['KALENDER_PERF_RUNS'] ?? '') ?? 5;
+final numberOfRuns =
+    int.tryParse(Platform.environment['KALENDER_PERF_RUNS'] ?? '') ?? 5;
 
 /// The tracked frame build metrics. Rasterizer metrics are left out, since Xvfb renders with llvmpipe, a software
 /// rasterizer. Each is read from its own [driver.TimelineSummary] method, since `summaryJson` throws when a window
@@ -78,19 +81,30 @@ Future<void> main() {
               final raw = data[reportKey];
               if (raw == null) continue;
 
-              final timeline = driver.Timeline.fromJson(raw as Map<String, dynamic>);
+              final timeline = driver.Timeline.fromJson(
+                raw as Map<String, dynamic>,
+              );
               final summary = driver.TimelineSummary.summarize(timeline);
 
               // Keep the raw timeline as a debugging artifact.
-              await summary.writeTimelineToFile(reportKey, pretty: true, includeSummary: false);
+              await summary.writeTimelineToFile(
+                reportKey,
+                pretty: true,
+                includeSummary: false,
+              );
 
               final values = _buildMetricsOf(summary);
               if (values == null) {
-                print('⚠️  $reportKey captured no build frames, dropped from the median');
+                print(
+                  '⚠️  $reportKey captured no build frames, dropped from the median',
+                );
                 continue;
               }
 
-              final metrics = bySeries.putIfAbsent(scenario.seriesName(view, key), () => {});
+              final metrics = bySeries.putIfAbsent(
+                scenario.seriesName(view, key),
+                () => {},
+              );
               for (final entry in values.entries) {
                 metrics.putIfAbsent(entry.key, () => <num>[]).add(entry.value);
               }
@@ -116,7 +130,9 @@ Future<void> main() {
           final values = metrics[metric];
           if (values == null || values.isEmpty) return 'n/a';
           final median = _median(values);
-          return suffix == 'ms' ? '${median.toStringAsFixed(fraction)}ms' : '${median.round()}';
+          return suffix == 'ms'
+              ? '${median.toStringAsFixed(fraction)}ms'
+              : '${median.round()}';
         }
 
         final extra =
@@ -133,12 +149,16 @@ Future<void> main() {
           'extra': extra,
         });
 
-        print('✅ $name  avg_build=${avgBuild.toStringAsFixed(2)}ms (±${iqr.toStringAsFixed(2)})  $extra');
+        print(
+          '✅ $name  avg_build=${avgBuild.toStringAsFixed(2)}ms (±${iqr.toStringAsFixed(2)})  $extra',
+        );
       }
 
       final output = File('build/frame_results.json');
       output.parent.createSync(recursive: true);
-      output.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(results));
+      output.writeAsStringSync(
+        const JsonEncoder.withIndent('  ').convert(results),
+      );
       print('\nWrote ${results.length} frame results to ${output.path}');
     },
   );

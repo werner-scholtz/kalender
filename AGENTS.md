@@ -19,7 +19,8 @@ Kalender is a Flutter calendar package with three views, multi-day (day and week
 | `test_fixes/` | Golden fixtures for the `dart fix` data |
 | `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page |
 | `examples/` | Runnable apps, indexed by `examples/README.md`. `example/` is the pub.dev Example tab and only links there |
-| `tool/` | `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart`, `pin_release_links.dart` and `usage_metrics.dart` |
+| `tool/` | `check.dart`, `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart`, `pin_release_links.dart` and `usage_metrics.dart` |
+| `.claude/` | The `reviewer` agent and the `change`, `pr-review` and `release` skills, see [Change process](#change-process) |
 | `.github/workflows/` | `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `usage_metrics.yml`, `publish.yml` and `site.yml` |
 | `.github/actions/` | `store-benchmark-data`, which commits one file to `refs/benchmarks/data` |
 
@@ -29,9 +30,11 @@ Every example depends on the package by path, `../../../kalender/` for most of t
 
 Use the Flutter version in `.fvmrc`. Formatting output depends on it.
 
+`dart tool/check.dart` runs the checks below, picked by the files changed since `main`, with the SDK from `.fvmrc` when fvm has it. `--quick` runs the ones every change needs, `--full` runs everything including the frame profiling harness and the web build, and `--list` shows the selection without running it. The timezone matrix and the harness run on Linux only, the harness also needs a display, and the script says what it skipped.
+
 ```bash
 flutter pub get
-dart format lib test tool benchmark
+dart format lib test tool benchmark test_fixes
 dart run tool/license_headers.dart           # --check in CI
 dart analyze && flutter analyze
 flutter test
@@ -39,7 +42,7 @@ TZ=America/New_York flutter test             # one timezone
 dart tool/test_timezones_linux.dart [file]   # the CI timezone matrix, Linux only
 dart run tool/analyze_doc_snippets.dart      # compiles the snippets in README.md and doc/
 dart fix --compare-to-golden test_fixes      # the dart fix data
-for d in examples/*/; do (cd "$d" && flutter analyze); done
+for d in examples/*/; do (cd "$d" && dart format . && flutter analyze); done
 ```
 
 CI runs all of these. The `test` job runs in six timezones (`America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`, `Africa/Johannesburg` and `UTC`). `minimum-flutter` runs the floor `pubspec.yaml` declares, and `latest-stable` runs the newest stable without failing the workflow.
@@ -166,7 +169,7 @@ Audit before tagging it:
 
 ## Releasing
 
-Publishing is triggered by a tag. Bump `version` in `pubspec.yaml` and add the `## <version>` changelog heading, merge to main, then tag the merge commit:
+Publishing is triggered by a tag. The first change of a release adds the `## <version>` changelog heading. The release pull request bumps `version` in `pubspec.yaml`. Merge it to main, then tag the merge commit:
 
 ```bash
 git tag -s v<version> -m v<version> && git push origin v<version>
@@ -212,9 +215,17 @@ Results are stored by series name. Renaming a benchmark starts a new series unle
 
 A guide links to a class through its pub.dev API page, not a `lib/src` URL. Every fenced Dart block in `README.md`, `example/README.md` and `doc/*.md` needs a directive comment, and `tool/analyze_doc_snippets.dart` documents them.
 
+## Change process
+
+A change moves through: branch, change with tests, `dart tool/check.dart --quick`, a review by the `reviewer` agent with no context from the author, fixes, `dart tool/check.dart`, a draft pull request, CI, a second review left as a pending GitHub review, fixes, ready for review, the owner's review, merge. The `change` skill runs it, `pr-review` runs the second review, and `release` prepares a release pull request.
+
+The reviewer names a tier, defined in [reviewer.md](.claude/agents/reviewer.md), that decides how much of the diff the owner reads: the summary at tier 1, the summary and the left-on-purpose list at tier 2, the `lib` diff at tier 3.
+
+Two review rounds at most. Findings the author does not fix are listed on the pull request under "Left on purpose" with a reason each, so the owner decides on those rather than rediscovering them.
+
 ## Commits and pull requests
 
 - Subject: `type: what changed`, lower case, no period. Types in use: `feat`, `fix`, `docs`, `refactor`, `test`, `chore` and `ci`. A breaking change takes `!`, as in `refactor!:`.
 - Body: one line per change, saying what was done. No reasoning and no test counts.
-- A pull request body says what changed and what it means for the package. Pull requests merge with a merge commit.
+- A pull request body says what changed and what it means for the package, followed by the Review block from the `change` skill: tier, checks run, public API changes, review rounds and the left-on-purpose list. Pull requests merge with a merge commit.
 - Dependent pull requests are grouped in a GitHub stack. Merging one retargets the ones above it.

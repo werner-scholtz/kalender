@@ -43,7 +43,6 @@ class _MonthHeader extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: viewController.floatingVisibleRange,
       builder: (context, visibleRange, child) {
-        final visibleDateTimeRange = visibleRange.forLocation(location: context.location);
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
 
         return Row(
@@ -52,7 +51,7 @@ class _MonthHeader extends StatelessWidget {
             Expanded(
               child: Row(
                 children: List<Widget>.generate(7, (index) {
-                  final date = visibleDateTimeRange.start.add(Duration(days: index));
+                  final date = visibleRange.start.add(Duration(days: index)).forLocation(location: context.location);
                   return Expanded(child: components.buildWeekDayHeader(context, date));
                 }),
               ),

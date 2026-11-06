@@ -34,10 +34,20 @@ class Event extends KalenderEvent {
 
   @override
   Event copyWithData({required DateTime start, required DateTime end}) {
-    return Event(start: start, end: end, title: title, description: description, color: color);
+    return Event(
+        start: start,
+        end: end,
+        title: title,
+        description: description,
+        color: color);
   }
 
-  Event copyWith({DateTime? start, DateTime? end, String? title, String? description, Color? color}) {
+  Event copyWith(
+      {DateTime? start,
+      DateTime? end,
+      String? title,
+      String? description,
+      Color? color}) {
     return carryOver(
       Event(
         start: start ?? this.start,
@@ -77,9 +87,11 @@ class MyApp extends StatelessWidget {
 
 final eventsController = DefaultEventsController();
 final viewConfiguration = MultiDayViewConfiguration.week();
-final kalenderController = KalenderController(viewConfiguration: viewConfiguration);
+final kalenderController =
+    KalenderController(viewConfiguration: viewConfiguration);
 
 final location = tz.getLocation('Etc/UTC');
-final range = KalenderDateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
+final range = KalenderDateTimeRange(
+    start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
 final event = KalenderEvent(start: range.start, end: range.end);
 const someId = 'an-event-id';

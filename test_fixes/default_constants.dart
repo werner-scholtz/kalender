@@ -20,5 +20,6 @@ EdgeInsets horizontalPadding = defaultHorizontalPadding;
 MultiDayRule multiDayRule = defaultMultiDayRule;
 EventSnapStrategy snapStrategy = defaultSnapStrategy;
 
-MultiDayViewConfiguration inArgument() =>
-    MultiDayViewConfiguration.week(initialHeightPerMinute: defaultHeightPerMinute);
+MultiDayViewConfiguration inArgument() => MultiDayViewConfiguration.week(
+  initialHeightPerMinute: defaultHeightPerMinute,
+);
