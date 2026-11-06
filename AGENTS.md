@@ -136,6 +136,7 @@ Some changes cannot be deprecated and go straight into a breaking batch with a m
 - A deprecation gets a `### Deprecations` changelog entry naming the removal version.
 - A breaking change gets a `### Breaking Changes` entry and a section in [MIGRATION.md](MIGRATION.md) with before and after code. `### Behavior Changes` is for code that still compiles and renders differently. Keep the two headings apart.
 - Changelog entries are one line each and say what changed. The reasoning goes in the pull request.
+- An entry for a change that resolves an issue ends with a link to the issue: `[#645](https://github.com/werner-scholtz/kalender/issues/645)`.
 - Until the version is tagged, amend the existing entries rather than appending.
 
 ### Automating a migration
@@ -211,7 +212,7 @@ Results are stored by series name. Renaming a benchmark starts a new series unle
 - [doc/README.md](doc/README.md): the guide index. A new public API rarely needs a new guide section.
 - [CHANGELOG.md](CHANGELOG.md): what changed, one line per entry.
 - [MIGRATION.md](MIGRATION.md): what to do about it, with before and after code.
-- [ROADMAP.md](ROADMAP.md): why it was decided that way.
+- [ROADMAP.md](ROADMAP.md): why it was decided that way. An item that has an issue links it.
 
 A guide links to a class through its pub.dev API page, not a `lib/src` URL. Every fenced Dart block in `README.md`, `example/README.md` and `doc/*.md` needs a directive comment, and `tool/analyze_doc_snippets.dart` documents them.
 

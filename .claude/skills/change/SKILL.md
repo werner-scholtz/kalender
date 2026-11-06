@@ -11,7 +11,7 @@ The owner reads a short review block on the pull request, not the whole diff, so
 
 1. Read `AGENTS.md` and the `<version>-progress.md` file for the release the change belongs to, when there is one.
 2. Branch from `main`, or from the branch below in a stack: `<type>/<short-name>` with the commit types from `AGENTS.md`.
-3. Make the change with its tests and the changelog line. The first change of a release adds the `## <version>` heading. A breaking change gets its migration section and data-driven fix.
+3. Make the change with its tests and the changelog line. The line ends with a link to the issue the change resolves, when there is one. The first change of a release adds the `## <version>` heading. A breaking change gets its migration section and data-driven fix.
 4. Run `dart tool/check.dart --quick` until it passes. Commit.
 5. Review round one. Start the `reviewer` agent with the base ref, the head ref and the summary you will put on the pull request. Do not pass your reasoning, the issue thread or this conversation. Fix every finding you agree with, commit, and answer the ones you do not in the left-on-purpose list with one line of reason each. Round two is the `/pr-review` in step 8. Whatever is open after it stays in the list.
 6. Run `dart tool/check.dart` with no flags. It picks the steps from the changed files, up to the full timezone matrix, every example, the frame profiling harness and the web build. All of it has to pass, and any step it skipped is named on the Checked line.

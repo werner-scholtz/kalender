@@ -11,7 +11,7 @@ The owner merges the release pull request and pushes the tag. `publish.yml` does
 
 1. Confirm every pull request in the `<version>-progress.md` table is merged and CI on `main` is green: `gh run list --branch main --limit 5`.
 2. Branch `chore/release-<version>` from `main`.
-3. Set `version` in `pubspec.yaml`. Confirm `CHANGELOG.md` has the `## <version>` heading with every change since the last tag: compare `git log v<previous>..main --oneline` against the entries, and add what is missing, one line each. The heading goes in when the first change of the release does, so it is usually already there.
+3. Set `version` in `pubspec.yaml`. Confirm `CHANGELOG.md` has the `## <version>` heading with every change since the last tag: compare `git log v<previous>..main --oneline` against the entries, and add what is missing, one line each. Each entry links the issue its change resolves, when there is one. The heading goes in when the first change of the release does, so it is usually already there.
 4. For a minor release: every `### Breaking Changes` entry has a section in `MIGRATION.md`, and every rename ships a fix in `lib/fix_data/` with its fixture pair. `grep -rn "@Deprecated" lib/` shows nothing past its removal version.
 5. Run `dart tool/check.dart --full`.
 6. Run `flutter pub publish --dry-run` and check the file list against `.pubignore`.
