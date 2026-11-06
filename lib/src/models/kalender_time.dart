@@ -23,7 +23,7 @@ final class KalenderTime implements Comparable<KalenderTime> {
   KalenderTime.fromDateTime(DateTime time) : hour = time.hour, minute = time.minute;
 
   /// Creates a [KalenderTime] from the current local time.
-  KalenderTime.now() : this.fromDateTime(clock.now());
+  KalenderTime.now() : this.fromDateTime(clock.now().toLocal());
 
   /// The number of hours in a day.
   static const int hoursPerDay = 24;

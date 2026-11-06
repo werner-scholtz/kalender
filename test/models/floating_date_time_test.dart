@@ -372,6 +372,14 @@ void main() {
           expect(FloatingDateTime(2026, 1, 15).isToday(location: location), false);
         });
       });
+
+      test('reads the clock in the local timezone without a location', () {
+        final instant = DateTime.utc(2026, 1, 15, 23);
+        final local = instant.toLocal();
+        withClock(Clock.fixed(instant), () {
+          expect(FloatingDateTime(local.year, local.month, local.day).isToday(), true);
+        });
+      });
     });
 
     group('isToday with explicit now', () {

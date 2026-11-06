@@ -72,6 +72,13 @@ void main() {
       });
     });
 
+    test('now reads a clock in UTC as local time', () {
+      final instant = DateTime.utc(2024, 3, 5, 23, 45);
+      withClock(Clock.fixed(instant), () {
+        expect(KalenderTime.now(), KalenderTime.fromDateTime(instant.toLocal()));
+      });
+    });
+
     group('replacing', () {
       const time = KalenderTime(hour: 9, minute: 30);
 

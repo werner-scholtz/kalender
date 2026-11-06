@@ -313,6 +313,6 @@ const kDefaultEmptyDayBehavior = EmptyDayBehavior.showOnlyToday;
 
 /// {@category Views}
 KalenderDateTimeRange kDefaultRange() {
-  final now = clock.now();
+  final now = clock.now().toLocal();
   return KalenderDateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));
 }

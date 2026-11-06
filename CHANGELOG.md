@@ -7,10 +7,14 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 - `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are removed.
 - `EventLayoutDelegate.findLongestChain` is removed.
 
+### Behavior Changes
+
+- In a widget test the calendar follows the test's clock, so `tester.pump` with a duration moves the time indicator and the today highlight.
+
 ### Features
 
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
-- Read the current time from the `clock` package, so `withClock` and `fakeAsync` control it in a test.
+- The calendar reads the current time from the `clock` package, so a test can set it with `withClock` or `fakeAsync`.
 
 ## 0.33.1
 

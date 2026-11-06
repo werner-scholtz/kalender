@@ -10,5 +10,5 @@ import 'package:kalender/kalender_extensions.dart';
 /// The current time from the package's [clock], in [location] or the system's local timezone when it is null.
 DateTime currentTime(Location? location) {
   final now = clock.now();
-  return location == null ? now : TZDateTime.from(now, location);
+  return location == null ? now.toLocal() : TZDateTime.from(now, location);
 }

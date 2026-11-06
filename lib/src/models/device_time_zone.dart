@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:clock/clock.dart';
 import 'package:flutter/widgets.dart';
 
 /// The device timezone, for conversions cached without a location.
@@ -43,7 +42,7 @@ abstract final class DeviceTimeZone {
   static void debugChange() => _generation.value++;
 
   static String _current() {
-    final now = clock.now();
+    final now = DateTime.now();
     return '${now.timeZoneName} ${now.timeZoneOffset}';
   }
 }

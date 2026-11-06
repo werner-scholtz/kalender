@@ -170,6 +170,4 @@ specific zone.
 
 `nowCallback` is included in `==`, so store a closure rather than writing it inline.
 
-When `nowCallback` is `null` (the default), the calendar falls back to its `Location`-based behavior.
-
-Without a `nowCallback`, the calendar reads the time from the [clock](https://pub.dev/packages/clock) package, so a test can fix "now" with `withClock(Clock.fixed(...), () { ... })` or `fakeAsync`.
+When `nowCallback` is `null` (the default), the calendar reads the current time from the [clock](https://pub.dev/packages/clock) package and converts it with its `Location`. A test can fix that time with `withClock(Clock.fixed(...), () { ... })`, or with `fakeAsync` in a plain `test`. In a widget test the pumps go inside the `withClock` callback as well, since a pump outside it reads the test's own clock. A `nowCallback` takes precedence over the clock.
