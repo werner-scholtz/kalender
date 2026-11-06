@@ -256,6 +256,7 @@ Pass a `KalenderComponents` object to `KalenderView` to override the default wid
         timelineWidth: (context, timeOfDayRange) => 48,
         daySeparator: (context) => CustomWidget(),
         timeIndicator: (context, timeOfDayRange, heightPerMinute, location) => CustomWidget(),
+        dayCellBuilder: (context, details) => CustomWidget(),
         leftTriggerBuilder: (context, pageWidth) => SizedBox(width: pageWidth / 20),
         rightTriggerBuilder: (context, pageWidth) => SizedBox(width: pageWidth / 20),
         topTriggerBuilder: (context, viewPortHeight) => SizedBox(height: viewPortHeight / 20),

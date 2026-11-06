@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
 import 'package:linked_pageview/linked_pageview.dart';
+import 'package:meta/meta.dart' show internal;
 
 /// The controller of a multi-day view. It opens on the date, time of day and zoom of `initial`.
 ///
@@ -70,7 +71,7 @@ class MultiDayViewController extends ViewController {
   /// The number of pages in the view.
   late final int numberOfPages;
 
-  /// The linked page controller group used to link the header and body controllers.
+  /// Links [pageController], [headerController] and the controllers from [createLinkedPageController].
   final _controllerGroup = LinkedPageControllerGroup();
 
   /// The page controller used by the view.
@@ -82,6 +83,18 @@ class MultiDayViewController extends ViewController {
   /// The free-scroll header does not use it. It renders one continuous band and derives its position from [pageOffset]
   /// instead.
   late final LinkedPageController headerController;
+
+  /// Creates a page controller linked to [pageController], opening on the page nearest to the one it shows. The caller
+  /// disposes it before this controller is disposed.
+  @internal
+  LinkedPageController createLinkedPageController() {
+    final page = pageController.hasClients ? pageController.page?.round() : null;
+    return _controllerGroup.create(
+      viewportFraction: pageController.viewportFraction,
+      initialPage: page ?? initialPage,
+      keepPage: false,
+    );
+  }
 
   /// The scroll controller used by the view.
   late ScrollController scrollController;

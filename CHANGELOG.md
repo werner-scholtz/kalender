@@ -7,6 +7,10 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 - `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are removed.
 - `EventLayoutDelegate.findLongestChain` is removed.
 
+### Features
+
+- `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
+
 ## 0.33.1
 
 ### Fixes
