@@ -1,3 +1,9 @@
+## 0.33.1
+
+### Features
+
+- Read the current time from the `clock` package, so `withClock` and `fakeAsync` control it in a test.
+
 ## 0.33.0
 
 See [MIGRATION.md](MIGRATION.md#v032x--v0330) for what to change.

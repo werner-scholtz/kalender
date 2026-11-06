@@ -7,6 +7,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controllers/animation_defaults.dart';
+import 'package:kalender/src/models/current_time.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
 /// The controller of a multi-day view. It opens on the date, time of day and zoom of `initial`.
@@ -16,7 +17,7 @@ class MultiDayViewController extends ViewController {
   MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location})
     : super(initialVisibleRange: _initialVisibleRange(viewConfiguration, initial.date, location)) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
-    final now = FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
+    final now = FloatingDateTime.fromDateTime(currentTime(location));
     initialPage = pageIndexCalculator.indexFromDate(initial.date, location);
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;

@@ -8,6 +8,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/current_time.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 
 extension MultiDayViewControllerPage on MultiDayViewController {
@@ -155,8 +156,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     final nowCallback = widget.viewController.viewConfiguration.nowCallback;
     final location = widget.viewController.location;
     final today = FloatingDateTime.fromDateTime(
-      widget.dateOverride ??
-          (nowCallback != null ? nowCallback() : (location == null ? DateTime.now() : TZDateTime.now(location))),
+      widget.dateOverride ?? (nowCallback != null ? nowCallback() : currentTime(location)),
     );
     final now = today.startOfDay;
     final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
