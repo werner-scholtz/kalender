@@ -24,6 +24,8 @@ The owner reads a short review block on the pull request, not the whole diff, so
 ```
 <What changed and what it means for the package, one paragraph.>
 
+Fixes #<issue>
+
 ## Review
 
 Tier: <1, 2 or 3>, <why>
@@ -35,7 +37,7 @@ Left on purpose:
 - `<path>:<line>`: <finding>. <reason>.
 ```
 
-The tiers are in `.claude/agents/reviewer.md`. The owner reads the `lib` diff only at tier 3.
+Leave the `Fixes` line out when the change has no issue. Write `Part of #<issue>` when it covers only part of one. The tiers are in `.claude/agents/reviewer.md`. The owner reads the `lib` diff only at tier 3.
 
 ## Rules
 

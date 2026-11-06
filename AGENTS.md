@@ -229,4 +229,5 @@ Two review rounds at most. Findings the author does not fix are listed on the pu
 - Subject: `type: what changed`, lower case, no period. Types in use: `feat`, `fix`, `docs`, `refactor`, `test`, `chore` and `ci`. A breaking change takes `!`, as in `refactor!:`.
 - Body: one line per change, saying what was done. No reasoning and no test counts.
 - A pull request body says what changed and what it means for the package, followed by the Review block from the `change` skill: tier, checks run, public API changes, review rounds and the left-on-purpose list. Pull requests merge with a merge commit.
+- A pull request that resolves an issue has `Fixes #<number>` on a line of its own in the body. GitHub then links the two and closes the issue on merge. One that covers part of an issue has `Part of #<number>`, which leaves the issue open.
 - Dependent pull requests are grouped in a GitHub stack. Merging one retargets the ones above it.
