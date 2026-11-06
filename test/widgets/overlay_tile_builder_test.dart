@@ -18,18 +18,13 @@ void main() {
   /// Builds a week view whose header overflows, then opens the overlay.
   Future<void> pumpAndOpenOverlay(WidgetTester tester, TileComponents tileComponents) async {
     final eventsController = DefaultEventsController();
-    final kalenderController = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
-
-    final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
-    final startOfWeek = DateTime(now.year, now.month, now.day);
-    final range = KalenderDateTimeRange(
-      start: startOfWeek,
-      end: startOfWeek.copyWith(day: startOfWeek.day + 2),
+    final monday = DateTime(2025, 1, 6);
+    final kalenderController = KalenderController(
+      viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: monday),
     );
-    eventsController.addEvents([
-      KalenderEvent(start: range.start, end: range.end),
-      KalenderEvent(start: range.start, end: range.end),
-    ]);
+
+    final end = monday.copyWith(day: monday.day + 2);
+    eventsController.addEvents([KalenderEvent(start: monday, end: end), KalenderEvent(start: monday, end: end)]);
 
     tester.setViewSize(const Size(800, 600));
 

@@ -40,9 +40,6 @@ class TimeIndicatorPositioner extends StatefulWidget {
   /// The initial page number to start from.
   final int initialPage;
 
-  /// An optional override for the current time.
-  final DateTime? dateOverride;
-
   /// An optional child widget to display within the positioned indicator.
   final Widget? childOverride;
 
@@ -50,7 +47,6 @@ class TimeIndicatorPositioner extends StatefulWidget {
     super.key,
     required this.viewController,
     required this.initialPage,
-    this.dateOverride,
     this.childOverride,
   });
 
@@ -155,9 +151,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   void _updatePageNumberAndIndex() {
     final nowCallback = widget.viewController.viewConfiguration.nowCallback;
     final location = widget.viewController.location;
-    final today = FloatingDateTime.fromDateTime(
-      widget.dateOverride ?? (nowCallback != null ? nowCallback() : currentTime(location)),
-    );
+    final today = FloatingDateTime.fromDateTime(nowCallback != null ? nowCallback() : currentTime(location));
     final now = today.startOfDay;
     final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
     todayPageNumber = pageNavigation.indexFromDate(today, widget.viewController.location);

@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:clock/clock.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
@@ -313,6 +312,6 @@ const kDefaultEmptyDayBehavior = EmptyDayBehavior.showOnlyToday;
 
 /// {@category Views}
 KalenderDateTimeRange kDefaultRange() {
-  final now = clock.now().toLocal();
+  final now = currentTime();
   return KalenderDateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));
 }

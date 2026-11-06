@@ -316,70 +316,53 @@ void main() {
       });
     });
 
-    group('isToday', () {
-      test('returns true for today without location', () {
-        final now = DateTime.now();
-        final internal = FloatingDateTime(now.year, now.month, now.day);
+    group('isToday reads the clock', () {
+      final local = DateTime(2026, 1, 15, 12);
+      final utc = DateTime.utc(2026, 1, 15, 12);
+      final utcAsLocal = utc.toLocal();
 
-        expect(internal.isToday(), true);
-      });
+      final cases = [
+        (name: 'today', clock: local, date: FloatingDateTime(2026, 1, 15), location: null, expected: true),
+        (name: 'yesterday', clock: local, date: FloatingDateTime(2026, 1, 14), location: null, expected: false),
+        (name: 'tomorrow', clock: local, date: FloatingDateTime(2026, 1, 16), location: null, expected: false),
+        (
+          name: 'the last second of today',
+          clock: local,
+          date: FloatingDateTime(2026, 1, 15, 23, 59, 59),
+          location: null,
+          expected: true,
+        ),
+        (
+          name: 'a clock in UTC, read as local time',
+          clock: utc,
+          date: FloatingDateTime(utcAsLocal.year, utcAsLocal.month, utcAsLocal.day),
+          location: null,
+          expected: true,
+        ),
+        (
+          name: 'today in the location',
+          clock: utc,
+          date: FloatingDateTime(2026, 1, 16),
+          location: 'Pacific/Kiritimati',
+          expected: true,
+        ),
+        (
+          name: 'yesterday in the location',
+          clock: utc,
+          date: FloatingDateTime(2026, 1, 15),
+          location: 'Pacific/Kiritimati',
+          expected: false,
+        ),
+      ];
 
-      test('returns false for yesterday without location', () {
-        final yesterday = DateTime.now().subtract(const Duration(days: 1));
-        final internal = FloatingDateTime(yesterday.year, yesterday.month, yesterday.day);
-
-        expect(internal.isToday(), false);
-      });
-
-      test('returns false for tomorrow without location', () {
-        final tomorrow = DateTime.now().add(const Duration(days: 1));
-        final internal = FloatingDateTime(tomorrow.year, tomorrow.month, tomorrow.day);
-
-        expect(internal.isToday(), false);
-      });
-
-      test('returns true for today with a specific location', () {
-        final location = getLocation('America/New_York');
-        final nowInNY = TZDateTime.now(location);
-        final internal = FloatingDateTime(nowInNY.year, nowInNY.month, nowInNY.day);
-
-        expect(internal.isToday(location: location), true);
-      });
-
-      test('returns false for yesterday with a specific location', () {
-        final location = getLocation('America/New_York');
-        final nowInNY = TZDateTime.now(location);
-        final yesterday = nowInNY.copyWith(day: nowInNY.day - 1);
-        final internal = FloatingDateTime(yesterday.year, yesterday.month, yesterday.day);
-
-        expect(internal.isToday(location: location), false);
-      });
-
-      test('returns true regardless of time component if same day', () {
-        final now = DateTime.now();
-        final internal = FloatingDateTime(now.year, now.month, now.day, 23, 59, 59);
-
-        expect(internal.isToday(), true);
-      });
-    });
-
-    group('isToday with a fixed clock', () {
-      test('reads the clock in the location', () {
-        final location = getLocation('Pacific/Kiritimati');
-        final instant = DateTime.utc(2026, 1, 15, 12);
-        withClock(Clock.fixed(instant), () {
-          expect(FloatingDateTime(2026, 1, 16).isToday(location: location), true);
-          expect(FloatingDateTime(2026, 1, 15).isToday(location: location), false);
+      for (final c in cases) {
+        test('returns ${c.expected} for ${c.name}', () {
+          final location = c.location == null ? null : getLocation(c.location!);
+          withClock(Clock.fixed(c.clock), () {
+            expect(c.date.isToday(location: location), c.expected);
+          });
         });
-      });
-
-      test('reads the clock in the local timezone without a location', () {
-        final instant = DateTime.utc(2026, 1, 15, 23);
-        final local = instant.toLocal();
-        withClock(Clock.fixed(instant), () {
-          expect(FloatingDateTime(local.year, local.month, local.day).isToday(), true);
-        });
-      });
+      }
     });
 
     group('isToday with explicit now', () {
@@ -435,8 +418,9 @@ void main() {
       });
 
       test('falls back to the clock when now is null', () {
-        final now = DateTime.now();
-        expect(FloatingDateTime(now.year, now.month, now.day).isToday(now: null), true);
+        withClock(Clock.fixed(DateTime(2026, 1, 15, 12)), () {
+          expect(FloatingDateTime(2026, 1, 15).isToday(now: null), true);
+        });
       });
     });
 

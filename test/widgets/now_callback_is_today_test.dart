@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -19,7 +20,6 @@ void main() {
   final wednesday = FloatingDateTime(2026, 4, 15);
 
   final withCallback = MultiDayViewConfiguration.week(nowCallback: () => DateTime(2026, 4, 13, 14, 30));
-  final withoutCallback = MultiDayViewConfiguration.week();
 
   Future<void> pump(
     WidgetTester tester, {
@@ -48,7 +48,6 @@ void main() {
       build: (FloatingDateTime date) => DayHeader(date: date),
       todayKey: DayHeader.todayKey,
       otherDay: tuesday,
-      daysAhead: 1,
       overridesLocation: true,
     ),
     (
@@ -56,7 +55,6 @@ void main() {
       build: (FloatingDateTime date) => MonthDayHeader(date: date),
       todayKey: MonthDayHeader.todayKey,
       otherDay: wednesday,
-      daysAhead: 2,
       overridesLocation: false,
     ),
     (
@@ -64,7 +62,6 @@ void main() {
       build: (FloatingDateTime date) => ScheduleDate(date: date),
       todayKey: ScheduleDate.todayKey,
       otherDay: tuesday,
-      daysAhead: 1,
       overridesLocation: true,
     ),
   ];
@@ -83,13 +80,16 @@ void main() {
         expect(find.byKey(w.todayKey), findsNothing);
       });
 
-      testWidgets('falls back to location-based isToday when callback is null', (tester) async {
-        final realToday = FloatingDateTime.fromDateTime(DateTime.now()).startOfDay;
-        final notToday = realToday.add(Duration(days: w.daysAhead));
+      testWidgets('reads the clock when the callback is null', (tester) async {
+        await withClock(Clock.fixed(DateTime(2026, 4, 13, 12)), () async {
+          final viewConfiguration = MultiDayViewConfiguration.week();
 
-        await pump(tester, viewConfiguration: withoutCallback, child: w.build(notToday));
+          await pump(tester, viewConfiguration: viewConfiguration, child: w.build(monday));
+          expect(find.byKey(w.todayKey), findsOneWidget);
 
-        expect(find.byKey(w.todayKey), findsNothing);
+          await pump(tester, viewConfiguration: viewConfiguration, child: w.build(w.otherDay));
+          expect(find.byKey(w.todayKey), findsNothing);
+        });
       });
 
       if (w.overridesLocation) {
