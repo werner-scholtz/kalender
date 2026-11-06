@@ -55,6 +55,12 @@ jobs:
         shell: bash
         working-directory: ./examples/${{ matrix.example }}
 
+      # Uses the width from the example's own analysis_options.yaml.
+      - name: Formatting check
+        run: dart format --output=none --set-exit-if-changed .
+        shell: bash
+        working-directory: ./examples/${{ matrix.example }}
+
       - name: Analyze
         run: flutter analyze
         shell: bash

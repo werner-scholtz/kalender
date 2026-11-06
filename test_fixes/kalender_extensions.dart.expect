@@ -9,4 +9,5 @@
 
 import 'package:kalender/kalender_extensions.dart';
 
-FloatingDateTimeRange? onDate(FloatingDateTimeRange r, FloatingDateTime d) => r.rangeOnDate(d);
+FloatingDateTimeRange? onDate(FloatingDateTimeRange r, FloatingDateTime d) =>
+    r.rangeOnDate(d);

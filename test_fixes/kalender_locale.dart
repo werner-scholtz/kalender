@@ -11,5 +11,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
-Locale? namedExtension(BuildContext context) => KalenderLocale(context).calendarLocale;
+Locale? namedExtension(BuildContext context) =>
+    KalenderLocale(context).calendarLocale;
 Locale? bareGetter(BuildContext context) => context.calendarLocale;

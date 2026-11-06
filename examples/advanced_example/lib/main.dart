@@ -51,7 +51,11 @@ class Event extends KalenderEvent {
   }
 
   @override
-  bool operator ==(Object other) => super == other && other is Event && other.title == title && other.person == person;
+  bool operator ==(Object other) =>
+      super == other &&
+      other is Event &&
+      other.title == title &&
+      other.person == person;
 
   @override
   int get hashCode => Object.hash(super.hashCode, title, person);
@@ -82,7 +86,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Advanced Example',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
       home: const MyHomePage(),
     );
   }
@@ -95,7 +101,10 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Person B", color: Colors.amber)];
+const people = [
+  Person(name: "Person A", color: Colors.blue),
+  Person(name: "Person B", color: Colors.amber),
+];
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
@@ -103,7 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 2),
     MultiDayViewConfiguration.week(initialHeightPerMinute: 2),
   ];
-  late final kalenderController = KalenderController(viewConfiguration: _viewConfigurations.first);
+  late final kalenderController = KalenderController(
+    viewConfiguration: _viewConfigurations.first,
+  );
 
   @override
   void dispose() {
@@ -122,8 +133,10 @@ class _MyHomePageState extends State<MyHomePage> {
           onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreateWithDetail: Event.fromDetail,
           onEventCreated: (event) => eventsController.addEvent(event),
-          onEventChanged: (event, updatedEvent) =>
-              eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
+          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
+            event: event,
+            updatedEvent: updatedEvent,
+          ),
         ),
         views: [
           MultiDayViewParts(
@@ -146,12 +159,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                const MultiDayHeader(configuration: MultiDayHeaderConfiguration(showTiles: false)),
+                const MultiDayHeader(
+                  configuration: MultiDayHeaderConfiguration(showTiles: false),
+                ),
                 const Divider(),
                 ListenableBuilder(
                   listenable: kalenderController,
                   builder: (context, _) => PeopleWidget(
-                    viewConfiguration: kalenderController.viewConfiguration as MultiDayViewConfiguration,
+                    viewConfiguration:
+                        kalenderController.viewConfiguration
+                            as MultiDayViewConfiguration,
                   ),
                 ),
                 const Divider(),
@@ -160,7 +177,9 @@ class _MyHomePageState extends State<MyHomePage> {
             body: ZoomDetector(
               controller: kalenderController,
               child: MultiDayBody(
-                configuration: MultiDayBodyConfiguration(eventLayoutStrategy: PeopleLayoutStrategy(people)),
+                configuration: MultiDayBodyConfiguration(
+                  eventLayoutStrategy: PeopleLayoutStrategy(people),
+                ),
                 tileComponents: tileComponents,
               ),
             ),
@@ -179,13 +198,19 @@ class PeopleWidget extends StatelessWidget {
     return Row(
       children: [
         // Matches the body's timeline gutter width.
-        SizedBox(width: defaultTimelineWidth(context, KalenderTimeRange.allDay())),
+        SizedBox(
+          width: defaultTimelineWidth(context, KalenderTimeRange.allDay()),
+        ),
         ...List.generate(
           viewConfiguration.numberOfDays,
           (index) => Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: people.map((person) => Expanded(child: PersonWidget(person: person))).toList(growable: false),
+              children: people
+                  .map(
+                    (person) => Expanded(child: PersonWidget(person: person)),
+                  )
+                  .toList(growable: false),
             ),
           ),
         ),

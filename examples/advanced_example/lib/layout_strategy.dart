@@ -42,7 +42,8 @@ class PeopleLayoutStrategy extends EventLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is PeopleLayoutStrategy && listEquals(other.people, people);
+  bool operator ==(Object other) =>
+      other is PeopleLayoutStrategy && listEquals(other.people, people);
 
   @override
   int get hashCode => Object.hashAll(people);
@@ -64,14 +65,19 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
   });
 
   @override
-  List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events) => events.toList();
+  List<KalenderEvent> sortEvents(Iterable<KalenderEvent> events) =>
+      events.toList();
 
   @override
-  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
+  List<VerticalLayoutData> sortVerticalLayoutData(
+    List<VerticalLayoutData> layoutData,
+  ) {
     // Sort the data from top to bottom.
     // If the top values are equal compare the bottom
     return layoutData..sort((a, b) {
-      return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
+      return a.top.compareTo(b.top) == 0
+          ? b.bottom.compareTo(a.bottom)
+          : a.top.compareTo(b.top);
     });
   }
 
@@ -100,16 +106,24 @@ class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
   }
 
   /// Places one person's events side by side within [rect].
-  void performGroupLayout(List<VerticalLayoutData> verticalLayoutData, Rect rect) {
+  void performGroupLayout(
+    List<VerticalLayoutData> verticalLayoutData,
+    Rect rect,
+  ) {
     final byId = {for (final data in verticalLayoutData) data.id: data};
     // Every event is placed, including culled ones, so an on-screen tile keeps its column when an overlapping
     // partner is off-screen.
-    for (final placement in SideBySideLayoutDelegate.arrange(verticalLayoutData)) {
+    for (final placement in SideBySideLayoutDelegate.arrange(
+      verticalLayoutData,
+    )) {
       final id = placement.id;
       if (!hasChild(id)) continue;
       final data = byId[id]!;
       final (:left, :width) = placement.horizontal(rect.width);
-      layoutChild(id, BoxConstraints.tightFor(width: width, height: data.height));
+      layoutChild(
+        id,
+        BoxConstraints.tightFor(width: width, height: data.height),
+      );
       positionChild(id, Offset(rect.left + left, data.top));
     }
   }

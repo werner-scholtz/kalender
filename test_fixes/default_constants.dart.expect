@@ -20,5 +20,6 @@ EdgeInsets horizontalPadding = kDefaultHorizontalPadding;
 MultiDayRule multiDayRule = kDefaultMultiDayRule;
 EventSnapStrategy snapStrategy = kDefaultSnapStrategy;
 
-MultiDayViewConfiguration inArgument() =>
-    MultiDayViewConfiguration.week(initialHeightPerMinute: kDefaultHeightPerMinute);
+MultiDayViewConfiguration inArgument() => MultiDayViewConfiguration.week(
+  initialHeightPerMinute: kDefaultHeightPerMinute,
+);

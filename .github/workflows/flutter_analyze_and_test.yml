@@ -36,9 +36,10 @@ jobs:
         shell: bash
         working-directory: ./
 
-      # Uses the width from analysis_options.yaml. The examples are not checked.
+      # Each folder uses the width from its nearest analysis_options.yaml. The
+      # examples are checked by analyze_examples.yml.
       - name: Formatting check
-        run: dart format --output=none --set-exit-if-changed lib test tool benchmark
+        run: dart format --output=none --set-exit-if-changed lib test tool benchmark test_fixes
         shell: bash
         working-directory: ./
 

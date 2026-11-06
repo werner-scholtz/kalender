@@ -8,4 +8,5 @@
 
 import 'package:kalender/kalender.dart';
 
-MonthViewConfiguration copied(MonthViewConfiguration c) => c.copyWith(selectedDate: DateTime(2025));
+MonthViewConfiguration copied(MonthViewConfiguration c) =>
+    c.copyWith(selectedDate: DateTime(2025));
