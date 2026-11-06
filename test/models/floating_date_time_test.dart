@@ -319,7 +319,6 @@ void main() {
     group('isToday reads the clock', () {
       final local = DateTime(2026, 1, 15, 12);
       final utc = DateTime.utc(2026, 1, 15, 12);
-      final utcAsLocal = utc.toLocal();
 
       final cases = [
         (name: 'today', clock: local, date: FloatingDateTime(2026, 1, 15), location: null, expected: true),
@@ -332,13 +331,14 @@ void main() {
           location: null,
           expected: true,
         ),
-        (
-          name: 'a clock in UTC, read as local time',
-          clock: utc,
-          date: FloatingDateTime(utcAsLocal.year, utcAsLocal.month, utcAsLocal.day),
-          location: null,
-          expected: true,
-        ),
+        for (final instant in [DateTime.utc(2026, 1, 15, 0, 30), DateTime.utc(2026, 1, 15, 23, 30)])
+          (
+            name: 'a clock in UTC at ${instant.hour}:30, read as local time',
+            clock: instant,
+            date: FloatingDateTime.fromDateTime(instant.toLocal()),
+            location: null,
+            expected: true,
+          ),
         (
           name: 'today in the location',
           clock: utc,
@@ -415,12 +415,6 @@ void main() {
       test('now takes precedence over location', () {
         final date = FloatingDateTime(2026, 1, 15);
         expect(date.isToday(now: DateTime(2026, 1, 15, 12), location: getLocation('America/New_York')), true);
-      });
-
-      test('falls back to the clock when now is null', () {
-        withClock(Clock.fixed(DateTime(2026, 1, 15, 12)), () {
-          expect(FloatingDateTime(2026, 1, 15).isToday(now: null), true);
-        });
       });
     });
 
