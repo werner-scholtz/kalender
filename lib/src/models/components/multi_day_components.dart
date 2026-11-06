@@ -192,7 +192,8 @@ class MultiDayBodyComponents {
   /// A function that builds the time indicator widget. Null uses [TimeIndicator].
   final TimeIndicatorBuilder? timeIndicator;
 
-  /// A function that builds the background of each day column. Null builds no background.
+  /// A function that builds the background of each day column. Null draws only [DayCellStyle.selectedColor] on a
+  /// selected day.
   final DayCellBuilder? dayCellBuilder;
 
   /// A function that builds the left trigger widget.

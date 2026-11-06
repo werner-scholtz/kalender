@@ -161,8 +161,31 @@ void main() {
       final shaded = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).where((box) => box.color == shade).length;
 
       expect(shaded, 4);
-      expect(find.byType(MonthDayCell), findsNWidgets(31));
     });
+
+    for (final (name, date) in [('a focused', DateTime(2025, 1, 10)), ('an adjacent-month', DateTime(2025, 2, 1))]) {
+      testWidgets('shadeAdjacentMonths draws the selection color on $name day', (tester) async {
+        const shade = Color(0xFF123456);
+        const color = Color(0xFF654321);
+        final controller = await pumpMonthView(
+          tester,
+          DateTime(2025, 1),
+          components: KalenderComponents(
+            monthComponents: MonthComponents(
+              bodyComponents: MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths(color: shade)),
+            ),
+          ),
+          theme: const KalenderThemeData(dayCellStyle: DayCellStyle(selectedColor: color)),
+        );
+
+        controller.selectDate(date);
+        await tester.pumpAndSettle();
+
+        final colors = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).map((box) => box.color);
+        expect(colors.where((c) => c == color), hasLength(1));
+        expect(colors.where((c) => c == shade), hasLength(4));
+      });
+    }
 
     testWidgets('shadeAdjacentMonths uses a custom color when given', (tester) async {
       const custom = Color(0xFF123456);

@@ -11,7 +11,7 @@ import 'package:kalender/src/widgets/internal_components/day_selection.dart';
 /// Builds the background of a single day cell in the month body.
 ///
 /// Called once per cell with [MonthDayCellDetails]. The widget is painted behind the grid, the day number and the
-/// events, and receives no pointer events. The default builds nothing.
+/// events, and receives no pointer events. The default is [MonthDayCell].
 ///
 /// {@category Appearance}
 typedef MonthDayCellBuilder = Widget Function(BuildContext context, MonthDayCellDetails details);
@@ -73,8 +73,8 @@ class MonthDayCell extends StatelessWidget {
 
   final bool isSelected;
 
-  /// A ready-made [MonthDayCellBuilder] that shades the leading and trailing adjacent-month days, leaving the focused
-  /// month's days unchanged.
+  /// A ready-made [MonthDayCellBuilder] that shades the leading and trailing adjacent-month days and builds a
+  /// [MonthDayCell] on every day.
   ///
   /// Pass [color] to set the shade. When omitted it defaults to a low-opacity [ColorScheme.onSurface] overlay (the
   /// Material 3 way to express a greyed-out or de-emphasized surface), read from the ambient theme, so it adapts to
@@ -84,8 +84,17 @@ class MonthDayCell extends StatelessWidget {
   /// MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths())
   /// ```
   static MonthDayCellBuilder shadeAdjacentMonths({Color? color}) {
-    return (context, details) =>
-        details.isInFocusedMonth ? MonthDayCell(isSelected: details.isSelected) : _AdjacentMonthShade(color: color);
+    return (context, details) {
+      final cell = MonthDayCell(isSelected: details.isSelected);
+      if (details.isInFocusedMonth) return cell;
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          _AdjacentMonthShade(color: color),
+          cell,
+        ],
+      );
+    };
   }
 
   @override

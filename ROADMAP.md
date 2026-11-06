@@ -67,7 +67,7 @@ If Flutter promotes a canonical range type ([#97496](https://github.com/flutter/
 
 ### Selection
 
-**Selection, held by the controller.** An app selects through `KalenderController`: `selectDate`, `selectRange` and `deselectRange`, with the selection in `selectedRange`. The controller holds it rather than a predicate the app passes in, since a predicate gives the day numbers nothing to listen to, and [#215](https://github.com/werner-scholtz/kalender/issues/215) and [#264](https://github.com/werner-scholtz/kalender/issues/264) need to read the selection rather than test one day at a time. On the controller it also survives a view switch. A selection is whole days, and its range ends at the start of the next day like every other range in the package, so a selection read back and passed in again is unchanged. The calendar draws it on the day number in the month view, the day header, the schedule and the overlay, with a ring by default, and a day number rebuilds only when its own state changes. This is the selection half of [#262](https://github.com/werner-scholtz/kalender/issues/262).
+**Selection, held by the controller.** An app selects through `KalenderController`: `selectDate`, `selectRange` and `deselectRange`, with the selection in `selectedRange`. The controller holds it rather than a predicate the app passes in, since a predicate gives the day numbers nothing to listen to, and [#215](https://github.com/werner-scholtz/kalender/issues/215) and [#264](https://github.com/werner-scholtz/kalender/issues/264) need to read the selection rather than test one day at a time. On the controller it also survives a view switch. A selection is whole days, and its range ends at the start of the next day like every other range in the package, so a selection read back and passed in again is unchanged. The calendar draws it on the day number in the month view, the day header, the schedule and the overlay, with a ring by default, and a day number rebuilds only when its own state changes. `DayCellStyle.selectedColor` tints the cell in the month and multi-day bodies, and both cell builders receive `isSelected`, which covers [#262](https://github.com/werner-scholtz/kalender/issues/262).
 
 **Taps on dates and week numbers.** `KalenderCallbacks.dateLabel` and `weekNumber` report taps, secondary taps and long presses, one `GestureCallbacks` group per part, so the callbacks do not grow by eight fields for every part that reports gestures. An empty day in the schedule reports the `onTapped` callbacks, the way an empty month cell does.
 
@@ -101,7 +101,6 @@ It reshapes public API, so the shape has to settle before 1.0.0.
 
 Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. The state layer, `KalenderScope`, was the second, and the view parts the third. What is left:
 
-- **The multi-day body has no cell or background slots.** It exposes nowhere to draw behind or inside a cell. The month body has `monthDayCellBuilder`. The slots are what [#89](https://github.com/werner-scholtz/kalender/issues/89), the multi-day half of [#262](https://github.com/werner-scholtz/kalender/issues/262) and a selection drawn behind a cell wait on.
 - **The calendar selecting on its own,** on tap or as a range dragged across days ([#89](https://github.com/werner-scholtz/kalender/issues/89)).
 - **A yearly view and a mobile month view,** [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264), possible as `ViewParts` and not built.
 
@@ -124,12 +123,11 @@ Most of the open issues should land before 1.0.0 rather than after it. Each one 
 
 | Issue | Needs |
 |---|---|
-| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | Cell slots in the multi-day body, plus selection for its range-drag half. The controller holds the selection. |
-| [#262](https://github.com/werner-scholtz/kalender/issues/262) select a cell | Selection as a concept the calendar knows about. The day number draws it. Drawing it on a multi-day body cell needs the slots. |
+| [#89](https://github.com/werner-scholtz/kalender/issues/89) customize each cell | The calendar selecting on its own, for its range-drag half. The controller holds the selection. |
 | [#40](https://github.com/werner-scholtz/kalender/issues/40) yearly view | Its own `ViewParts`, configuration and view controller. |
 | [#264](https://github.com/werner-scholtz/kalender/issues/264) mobile month view | Its own `ViewParts`, configuration and view controller. A grid of days over a list, not a configuration of the current month view. |
 
-Selection runs through [#89](https://github.com/werner-scholtz/kalender/issues/89), [#262](https://github.com/werner-scholtz/kalender/issues/262) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The controller holds it.
+Selection runs through [#89](https://github.com/werner-scholtz/kalender/issues/89) and [#264](https://github.com/werner-scholtz/kalender/issues/264). The controller holds it.
 
 **Independent.** These wait on nothing and can land in any release.
 
