@@ -9,7 +9,7 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 
 ### Behavior Changes
 
-- In a widget test the calendar follows the test's clock, so `tester.pump` with a duration moves the time indicator and the today highlight.
+- In a widget test the calendar follows the test's clock, so `tester.pump` with a duration moves the time indicator.
 
 ### Features
 
