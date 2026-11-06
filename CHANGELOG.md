@@ -3,6 +3,7 @@
 ### Fixes
 
 - The month header shows each weekday once when the page starts on the day daylight saving time ends.
+- A month row reserves space for the overflow button only when a day in its week has more events than fit.
 
 ## 0.33.0
 
