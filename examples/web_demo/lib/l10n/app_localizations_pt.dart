@@ -214,6 +214,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get scopedThemeHint => 'Envolve este calendário num KalenderTheme';
 
   @override
+  String get tintSelectedDays => 'Colorir os dias selecionados';
+
+  @override
   String get shadeAdjacentMonthDays => 'Sombrear os dias dos meses adjacentes';
 
   @override

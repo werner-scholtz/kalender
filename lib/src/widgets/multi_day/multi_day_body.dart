@@ -10,6 +10,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
+import 'package:kalender/src/widgets/internal_components/day_selection.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
@@ -120,7 +121,8 @@ class _MultiDayBody extends StatelessWidget {
                     child: Stack(
                       children: [
                         // The key keeps the state of the children below when this one is added or removed.
-                        if (bodyComponents.dayCellBuilder != null)
+                        if (bodyComponents.dayCellBuilder != null ||
+                            KalenderTheme.of(context).dayCellStyle?.selectedColor != null)
                           Positioned.fill(
                             key: const ValueKey(_DayCellLayer),
                             child: _DayCellLayer(viewController: viewController),
@@ -218,12 +220,14 @@ class _DayCellLayerState extends State<_DayCellLayer> {
         children: [
           for (final date in pageNavigation.rangeFromIndex(index, context.location).dates())
             Expanded(
-              child: Builder(
-                builder: (context) => context.components.multiDayComponents.bodyComponents.buildDayCell(
+              child: DaySelectionBuilder(
+                date: date,
+                builder: (context, isSelected) => context.components.multiDayComponents.bodyComponents.buildDayCell(
                   context,
                   DayCellDetails(
                     date: date.forLocation(location: context.location),
                     isToday: context.isToday(date),
+                    isSelected: isSelected,
                     timeOfDayRange: viewConfiguration.timeOfDayRange,
                     heightPerMinute: context.heightPerMinute,
                   ),

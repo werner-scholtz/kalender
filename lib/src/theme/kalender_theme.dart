@@ -67,6 +67,9 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   /// The style of the [MonthGrid].
   final MonthGridStyle? monthGridStyle;
 
+  /// The style of the day cells in the month body and the day columns in the multi-day body.
+  final DayCellStyle? dayCellStyle;
+
   /// The style of the [MonthDayHeader].
   final MonthDayHeaderStyle? monthDayHeaderStyle;
 
@@ -97,6 +100,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     this.weekNumberStyle,
     this.dayNumberStyle,
     this.monthGridStyle,
+    this.dayCellStyle,
     this.monthDayHeaderStyle,
     this.weekDayHeaderStyle,
     this.scheduleDateStyle,
@@ -113,6 +117,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   /// - [TimeIndicatorStyle.circleColor], which falls back to the line color.
   /// - text styles that inherit from [DefaultTextStyle].
   /// - [WeekNumberStyle.alignment], which each week number resolves on its own.
+  /// - [dayCellStyle], so a selected day is shown by its day number only.
   static KalenderThemeData defaults(BuildContext context) => _defaultsFor(Theme.of(context));
 
   static KalenderThemeData _defaultsFor(ThemeData theme) {
@@ -191,6 +196,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     WeekNumberStyle? weekNumberStyle,
     DayNumberStyle? dayNumberStyle,
     MonthGridStyle? monthGridStyle,
+    DayCellStyle? dayCellStyle,
     MonthDayHeaderStyle? monthDayHeaderStyle,
     WeekDayHeaderStyle? weekDayHeaderStyle,
     ScheduleDateStyle? scheduleDateStyle,
@@ -208,6 +214,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       weekNumberStyle: weekNumberStyle ?? this.weekNumberStyle,
       dayNumberStyle: dayNumberStyle ?? this.dayNumberStyle,
       monthGridStyle: monthGridStyle ?? this.monthGridStyle,
+      dayCellStyle: dayCellStyle ?? this.dayCellStyle,
       monthDayHeaderStyle: monthDayHeaderStyle ?? this.monthDayHeaderStyle,
       weekDayHeaderStyle: weekDayHeaderStyle ?? this.weekDayHeaderStyle,
       scheduleDateStyle: scheduleDateStyle ?? this.scheduleDateStyle,
@@ -232,6 +239,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       weekNumberStyle: weekNumberStyle?.merge(other.weekNumberStyle) ?? other.weekNumberStyle,
       dayNumberStyle: dayNumberStyle?.merge(other.dayNumberStyle) ?? other.dayNumberStyle,
       monthGridStyle: monthGridStyle?.merge(other.monthGridStyle) ?? other.monthGridStyle,
+      dayCellStyle: dayCellStyle?.merge(other.dayCellStyle) ?? other.dayCellStyle,
       monthDayHeaderStyle: monthDayHeaderStyle?.merge(other.monthDayHeaderStyle) ?? other.monthDayHeaderStyle,
       weekDayHeaderStyle: weekDayHeaderStyle?.merge(other.weekDayHeaderStyle) ?? other.weekDayHeaderStyle,
       scheduleDateStyle: scheduleDateStyle?.merge(other.scheduleDateStyle) ?? other.scheduleDateStyle,
@@ -257,6 +265,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
       weekNumberStyle: WeekNumberStyle.lerp(weekNumberStyle, other.weekNumberStyle, t),
       dayNumberStyle: DayNumberStyle.lerp(dayNumberStyle, other.dayNumberStyle, t),
       monthGridStyle: MonthGridStyle.lerp(monthGridStyle, other.monthGridStyle, t),
+      dayCellStyle: DayCellStyle.lerp(dayCellStyle, other.dayCellStyle, t),
       monthDayHeaderStyle: MonthDayHeaderStyle.lerp(monthDayHeaderStyle, other.monthDayHeaderStyle, t),
       weekDayHeaderStyle: WeekDayHeaderStyle.lerp(weekDayHeaderStyle, other.weekDayHeaderStyle, t),
       scheduleDateStyle: ScheduleDateStyle.lerp(scheduleDateStyle, other.scheduleDateStyle, t),
@@ -288,6 +297,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         other.weekNumberStyle == weekNumberStyle &&
         other.dayNumberStyle == dayNumberStyle &&
         other.monthGridStyle == monthGridStyle &&
+        other.dayCellStyle == dayCellStyle &&
         other.monthDayHeaderStyle == monthDayHeaderStyle &&
         other.weekDayHeaderStyle == weekDayHeaderStyle &&
         other.scheduleDateStyle == scheduleDateStyle &&
@@ -307,6 +317,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     weekNumberStyle,
     dayNumberStyle,
     monthGridStyle,
+    dayCellStyle,
     monthDayHeaderStyle,
     weekDayHeaderStyle,
     scheduleDateStyle,
@@ -329,6 +340,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
     properties.add(DiagnosticsProperty<WeekNumberStyle>('weekNumberStyle', weekNumberStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<DayNumberStyle>('dayNumberStyle', dayNumberStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<MonthGridStyle>('monthGridStyle', monthGridStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<DayCellStyle>('dayCellStyle', dayCellStyle, defaultValue: null));
     properties.add(
       DiagnosticsProperty<MonthDayHeaderStyle>('monthDayHeaderStyle', monthDayHeaderStyle, defaultValue: null),
     );

@@ -18,6 +18,7 @@ import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/components/week_number.dart';
+import 'package:kalender/src/widgets/internal_components/day_selection.dart';
 import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
@@ -191,7 +192,8 @@ class MultiDayBodyComponents {
   /// A function that builds the time indicator widget. Null uses [TimeIndicator].
   final TimeIndicatorBuilder? timeIndicator;
 
-  /// A function that builds the background of each day column. Null builds no background.
+  /// A function that builds the background of each day column. Null draws only [DayCellStyle.selectedColor] on a
+  /// selected day.
   final DayCellBuilder? dayCellBuilder;
 
   /// A function that builds the left trigger widget.
@@ -275,7 +277,7 @@ class MultiDayBodyComponents {
 
   /// Builds a day cell, with [dayCellBuilder] when set.
   Widget buildDayCell(BuildContext context, DayCellDetails details) {
-    return dayCellBuilder?.call(context, details) ?? const SizedBox.shrink();
+    return dayCellBuilder?.call(context, details) ?? DefaultDayCell(isSelected: details.isSelected);
   }
 
   /// Creates a copy of this with the given fields replaced.

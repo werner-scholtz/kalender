@@ -70,7 +70,7 @@ class MonthBodyComponents {
 
   /// A function that builds the background of each day cell.
   ///
-  /// Called once per cell, for example to gray out the days outside the focused month. Null leaves the cell empty.
+  /// Called once per cell, for example to gray out the days outside the focused month. Null uses [MonthDayCell].
   final MonthDayCellBuilder? monthDayCellBuilder;
 
   /// A function that builds the week number widget.
@@ -120,7 +120,7 @@ class MonthBodyComponents {
 
   /// Builds a day cell background, with [monthDayCellBuilder] when set.
   Widget buildMonthDayCell(BuildContext context, MonthDayCellDetails details) {
-    return monthDayCellBuilder?.call(context, details) ?? const MonthDayCell();
+    return monthDayCellBuilder?.call(context, details) ?? MonthDayCell(isSelected: details.isSelected);
   }
 
   /// Resolves the width of the week number column, with [weekNumberWidth] when set.

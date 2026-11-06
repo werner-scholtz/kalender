@@ -63,6 +63,7 @@
   "clearSelection": "Wis seleksie",
   "scopedTheme": "Plaaslike tema",
   "scopedThemeHint": "Omvou hierdie kalender in 'n KalenderTheme",
+  "tintSelectedDays": "Kleur geselekteerde dae",
   "shadeAdjacentMonthDays": "Skadu dae van aangrensende maande",
   "sideBySide": "Langs mekaar",
   "overlap": "Oorvleuel",

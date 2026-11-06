@@ -27,7 +27,8 @@ void main() {
       eventsController = DefaultEventsController();
     });
 
-    Future<void> pumpMonthView(
+    /// Pumps a month view and returns its controller.
+    Future<KalenderController> pumpMonthView(
       WidgetTester tester,
       DateTime initialDateTime, {
       KalenderDateTimeRange? displayRange,
@@ -35,7 +36,7 @@ void main() {
       KalenderComponents? components,
       MonthBodyConfiguration? bodyConfiguration,
       KalenderThemeData? theme,
-    }) {
+    }) async {
       final kalenderController = KalenderController(
         viewConfiguration: MonthViewConfiguration.singleMonth(
           displayRange: displayRange ?? defaultDisplayRange,
@@ -55,7 +56,8 @@ void main() {
         ],
       );
 
-      return pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
+      await pumpAndSettleWithMaterialApp(tester, theme == null ? view : KalenderTheme(data: theme, child: view));
+      return kalenderController;
     }
 
     // January 2025 starts on a Wednesday and fits in 5 rows. October 2023 starts on a Sunday and needs 6.
@@ -99,6 +101,51 @@ void main() {
       expect(find.byType(MonthDayCell), findsNothing);
     });
 
+    testWidgets('monthDayCellBuilder reports the selected days', (tester) async {
+      final byDate = <DateTime, MonthDayCellDetails>{};
+      final components = KalenderComponents(
+        monthComponents: MonthComponents(
+          bodyComponents: MonthBodyComponents(
+            monthDayCellBuilder: (context, details) {
+              byDate[details.date] = details;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+      final controller = await pumpMonthView(tester, DateTime(2025, 1), components: components);
+
+      controller.selectRange(KalenderDateTimeRange(start: DateTime(2025, 1, 10), end: DateTime(2025, 1, 12)));
+      await tester.pumpAndSettle();
+
+      expect(byDate.values.where((details) => details.isSelected), [
+        for (final day in [10, 11])
+          MonthDayCellDetails(date: DateTime(2025, 1, day), isToday: false, isInFocusedMonth: true, isSelected: true),
+      ]);
+    });
+
+    testWidgets('a selected day is drawn in the selection color when no builder is set', (tester) async {
+      const color = Color(0xFF654321);
+      final controller = await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        theme: const KalenderThemeData(dayCellStyle: DayCellStyle(selectedColor: color)),
+      );
+      final tint = find.byWidgetPredicate((widget) => widget is ColoredBox && widget.color == color);
+      expect(tint, findsNothing);
+
+      // A Friday in the second of five rows.
+      controller.selectDate(DateTime(2025, 1, 10));
+      await tester.pumpAndSettle();
+
+      final body = tester.getRect(find.byType(MonthBody));
+      final cell = Size(body.width / 7, body.height / 5);
+      expect(
+        tester.getRect(tint),
+        rectMoreOrLessEquals(body.topLeft + Offset(cell.width * 4, cell.height) & cell, epsilon: 1),
+      );
+    });
+
     testWidgets('shadeAdjacentMonths shades only adjacent-month days', (tester) async {
       final components = KalenderComponents(
         monthComponents: MonthComponents(
@@ -114,8 +161,31 @@ void main() {
       final shaded = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).where((box) => box.color == shade).length;
 
       expect(shaded, 4);
-      expect(find.byType(MonthDayCell), findsNWidgets(31));
     });
+
+    for (final (name, date) in [('a focused', DateTime(2025, 1, 10)), ('an adjacent-month', DateTime(2025, 2, 1))]) {
+      testWidgets('shadeAdjacentMonths draws the selection color on $name day', (tester) async {
+        const shade = Color(0xFF123456);
+        const color = Color(0xFF654321);
+        final controller = await pumpMonthView(
+          tester,
+          DateTime(2025, 1),
+          components: KalenderComponents(
+            monthComponents: MonthComponents(
+              bodyComponents: MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths(color: shade)),
+            ),
+          ),
+          theme: const KalenderThemeData(dayCellStyle: DayCellStyle(selectedColor: color)),
+        );
+
+        controller.selectDate(date);
+        await tester.pumpAndSettle();
+
+        final colors = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).map((box) => box.color);
+        expect(colors.where((c) => c == color), hasLength(1));
+        expect(colors.where((c) => c == shade), hasLength(4));
+      });
+    }
 
     testWidgets('shadeAdjacentMonths uses a custom color when given', (tester) async {
       const custom = Color(0xFF123456);
