@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/current_time.dart';
 import 'package:meta/meta.dart' show internal;
 
 /// A date and time with no timezone, used for calendar layout.
@@ -126,11 +127,9 @@ final class FloatingDateTime extends DateTime {
     if (now != null) {
       return isSameDay(FloatingDateTime.fromDateTime(now));
     }
-    final currentTime = location != null ? TZDateTime.now(location) : DateTime.now();
+    final current = currentTime(location);
     final localDate = forLocation(location: location);
-    return localDate.year == currentTime.year &&
-        localDate.month == currentTime.month &&
-        localDate.day == currentTime.day;
+    return localDate.year == current.year && localDate.month == current.month && localDate.day == current.day;
   }
 
   /// Checks if [date] falls on the same calendar day as this [FloatingDateTime].

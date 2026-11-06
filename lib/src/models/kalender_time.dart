@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/current_time.dart';
 
 /// A time of day, as an hour and a minute.
 ///
@@ -22,7 +23,7 @@ final class KalenderTime implements Comparable<KalenderTime> {
   KalenderTime.fromDateTime(DateTime time) : hour = time.hour, minute = time.minute;
 
   /// Creates a [KalenderTime] from the current local time.
-  KalenderTime.now() : this.fromDateTime(DateTime.now());
+  KalenderTime.now() : this.fromDateTime(currentTime());
 
   /// The number of hours in a day.
   static const int hoursPerDay = 24;

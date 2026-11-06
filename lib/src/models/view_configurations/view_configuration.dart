@@ -9,6 +9,7 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 import 'package:kalender/src/models/controllers/kalender_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/current_time.dart';
 import 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 import 'package:kalender/src/models/kalender_time.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
@@ -100,7 +101,7 @@ abstract class ViewConfiguration {
   @protected
   FloatingDateTime resolveDate(Location? location, ViewTransitionContext? transition) {
     if (transition == null) {
-      final now = location == null ? DateTime.now() : TZDateTime.now(location);
+      final now = currentTime(location);
       return FloatingDateTime.fromExternal(initialDateTime ?? now, location: location);
     }
     if (transition.target case final target?) return target.date;
@@ -311,6 +312,6 @@ const kDefaultEmptyDayBehavior = EmptyDayBehavior.showOnlyToday;
 
 /// {@category Views}
 KalenderDateTimeRange kDefaultRange() {
-  final now = DateTime.now();
+  final now = currentTime();
   return KalenderDateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));
 }

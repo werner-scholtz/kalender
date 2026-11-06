@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -12,35 +13,27 @@ import '../utilities.dart';
 
 void main() {
   final key = UniqueKey();
-  final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
-  final range = FloatingDateTimeRange(start: now, end: now.endOfWeek());
+  final monday = FloatingDateTime(2031, 3, 3);
+  final range = FloatingDateTimeRange(start: monday, end: monday.endOfWeek());
 
   Future<void> pumpPositioner(
     WidgetTester tester,
     MultiDayViewConfiguration viewConfiguration, {
-    DateTime? dateOverride,
     FloatingDateTime? initialDate,
   }) {
     return pumpAndSettleWithMaterialApp(
       tester,
-      timeIndicatorPositioner(
-        viewConfiguration: viewConfiguration,
-        indicatorKey: key,
-        initialDate: initialDate,
-        dateOverride: dateOverride,
-      ),
+      timeIndicatorPositioner(viewConfiguration: viewConfiguration, indicatorKey: key, initialDate: initialDate),
     );
   }
 
-  group('TimeIndicatorPositioner', () {
-    final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range.forLocation());
-
-    for (final (index, date) in range.dates().map(FloatingDateTime.fromDateTime).indexed) {
-      testWidgets('for date index: ($index)', (tester) async {
-        await pumpPositioner(tester, viewConfiguration, dateOverride: date);
-        final finder = find.byKey(key);
-        expect(finder, findsOneWidget);
-        expect(tester.getTopLeft(finder).dx, index * 100.0);
+  group('TimeIndicatorPositioner without a callback reads the clock', () {
+    for (var index = 0; index < 7; index++) {
+      testWidgets('day index $index', (tester) async {
+        await withClock(Clock.fixed(DateTime(2031, 3, 3 + index, 12)), () async {
+          await pumpPositioner(tester, MultiDayViewConfiguration.week(displayRange: range.forLocation()));
+          expect(tester.getTopLeft(find.byKey(key)).dx, index * 100.0);
+        });
       });
     }
   });
@@ -59,35 +52,7 @@ void main() {
         }
       });
 
-      testWidgets('dateOverride takes precedence over nowCallback', (tester) async {
-        final thursday = FloatingDateTime.fromDateTime(range.dates()[3]);
-        final monday = FloatingDateTime.fromDateTime(range.dates()[0]);
-
-        await pumpPositioner(
-          tester,
-          MultiDayViewConfiguration.week(displayRange: range.forLocation(), nowCallback: () => thursday),
-          dateOverride: monday,
-        );
-        expect(tester.getTopLeft(find.byKey(key)).dx, 0.0);
-      });
-
-      testWidgets('null callback preserves location-based behavior', (tester) async {
-        final today = FloatingDateTime.fromDateTime(DateTime.now());
-        final todayWeekStart = today.startOfWeek();
-        final todayRange = FloatingDateTimeRange(start: todayWeekStart, end: todayWeekStart.endOfWeek());
-        final todayIndex = todayRange
-            .dates()
-            .map(FloatingDateTime.fromDateTime)
-            .toList()
-            .indexWhere((d) => d.isSameDay(today.startOfDay));
-
-        await pumpPositioner(tester, MultiDayViewConfiguration.week(displayRange: todayRange.forLocation()));
-        expect(tester.getTopLeft(find.byKey(key)).dx, todayIndex * 100.0);
-      });
-
       testWidgets('singleDay config with callback', (tester) async {
-        final monday = FloatingDateTime.fromDateTime(range.dates()[0]);
-
         await pumpPositioner(
           tester,
           MultiDayViewConfiguration.singleDay(displayRange: range.forLocation(), nowCallback: () => monday),

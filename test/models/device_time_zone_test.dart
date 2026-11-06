@@ -66,7 +66,10 @@ void main() {
 
     test('the controller converts the visible range into the new timezone', () {
       final kalenderController = KalenderController(
-        viewConfiguration: MultiDayViewConfiguration.singleDay(initialDateTime: DateTime.utc(2025, 1, 2)),
+        viewConfiguration: MultiDayViewConfiguration.singleDay(
+          displayRange: year2025DisplayRange,
+          initialDateTime: DateTime.utc(2025, 1, 2),
+        ),
       );
       addTearDown(kalenderController.dispose);
 
@@ -79,7 +82,10 @@ void main() {
     testWidgets('a mounted view shows the events of its date in the new timezone', (tester) async {
       final eventsController = DefaultEventsController()..addEvent(event);
       final kalenderController = KalenderController(
-        viewConfiguration: MultiDayViewConfiguration.singleDay(initialDateTime: DateTime.utc(2025, 1, 2)),
+        viewConfiguration: MultiDayViewConfiguration.singleDay(
+          displayRange: year2025DisplayRange,
+          initialDateTime: DateTime.utc(2025, 1, 2),
+        ),
       );
       addTearDown(eventsController.dispose);
       addTearDown(kalenderController.dispose);
