@@ -4,10 +4,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timezone/data/latest_10y.dart';
 import 'package:timezone/timezone.dart';
 

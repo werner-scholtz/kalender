@@ -4,18 +4,17 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../utilities.dart';
 
-/// The timeline labels its hours with `MaterialLocalizations` where the app installs them, and with intl where it does
-/// not.
+/// The timeline labels its hours with `MaterialLocalizations` where the app installs them, as an app on `material_ui`
+/// does. Without them it labels them with intl and the calendar's locale.
 ///
-/// The second path is what an app on the standalone `material_ui` package hits, which used to throw `No
-/// MaterialLocalizations found`. See issue #491.
+/// The timeline used to throw `No MaterialLocalizations found` without them. See issue #491.
 void main() {
   late DefaultEventsController eventsController;
   late KalenderController kalenderController;

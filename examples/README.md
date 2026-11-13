@@ -16,7 +16,6 @@ each answer one question.
 | [riverpod](riverpod) | Sharing the controllers, which hold the selected view, through providers. |
 | [intl4x](intl4x) | The calendar's localized strings rendered with intl4x instead of intl. |
 | [web_demo](web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/). |
-| [material_ui](material_ui) | The calendar in an app built on the standalone `material_ui` package. |
 | [testing](testing) | A performance harness that feeds the [benchmarks dashboard](https://werner-scholtz.github.io/kalender/dev/bench/). |
 | [doc_snippets](doc_snippets) | Placeholders that `tool/analyze_doc_snippets.dart` compiles the documentation snippets against. |
 

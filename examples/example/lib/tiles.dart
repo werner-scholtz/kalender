@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:example/main.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 Color eventColor(BuildContext context, KalenderEvent event) =>
     (event is Event ? event.color : null) ?? Theme.of(context).colorScheme.primaryContainer;

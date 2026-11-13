@@ -8,23 +8,22 @@ import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/day_number.dart';
 import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
 ///
 /// {@category Appearance}
-typedef MultiDayOverlayEventTileBuilder =
-    MultiDayEventOverlayTile Function(
-      BuildContext context,
-      KalenderEvent event,
-      FloatingDateTimeRange floatingRange,
-      VoidCallback dismissOverlay,
-    );
+typedef MultiDayOverlayEventTileBuilder = MultiDayEventOverlayTile Function(
+  BuildContext context,
+  KalenderEvent event,
+  FloatingDateTimeRange floatingRange,
+  VoidCallback dismissOverlay,
+);
 
 /// A function that returns a [RenderBox] for the multi-day event layout.
 ///
@@ -36,17 +35,16 @@ typedef RenderBoxCallback = RenderBox Function();
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}
-typedef MultiDayOverlayBuilder =
-    Widget Function(
-      BuildContext context, {
-      required DateTime date,
-      required List<KalenderEvent> events,
-      required double tileHeight,
-      required OverlayPortalController portalController,
-      required RenderBoxCallback getMultiDayEventLayoutRenderBox,
-      required RenderBoxCallback getOverlayPortalRenderBox,
-      required MultiDayOverlayEventTileBuilder overlayTileBuilder,
-    });
+typedef MultiDayOverlayBuilder = Widget Function(
+  BuildContext context, {
+  required DateTime date,
+  required List<KalenderEvent> events,
+  required double tileHeight,
+  required OverlayPortalController portalController,
+  required RenderBoxCallback getMultiDayEventLayoutRenderBox,
+  required RenderBoxCallback getOverlayPortalRenderBox,
+  required MultiDayOverlayEventTileBuilder overlayTileBuilder,
+});
 
 /// {@category Appearance}
 class MultiDayOverlayStyle with Diagnosticable {

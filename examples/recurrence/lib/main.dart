@@ -4,11 +4,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:recurrence/components.dart';
 import 'package:recurrence/dialog.dart';
-
 import 'package:recurrence/recurrence.dart';
 import 'package:recurrence/recurring_event.dart';
 import 'package:recurrence/toolbar.dart';

@@ -6,9 +6,9 @@
 
 import 'package:example/main.dart';
 import 'package:example/working_hours_cell.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   testWidgets('renders the calendar and toolbar', (tester) async {

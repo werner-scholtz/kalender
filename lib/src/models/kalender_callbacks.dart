@@ -272,12 +272,11 @@ typedef OnLongPressedWithDetail = void Function(TapDetail detail);
 /// See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
 ///
 /// {@category Interaction}
-typedef OnWillAcceptWithDetailsVertical =
-    bool Function(
-      DragTargetDetails<Object?> details,
-      KalenderController controller,
-      VerticalConfiguration configuration,
-    );
+typedef OnWillAcceptWithDetailsVertical = bool Function(
+  DragTargetDetails<Object?> details,
+  KalenderController controller,
+  VerticalConfiguration configuration,
+);
 
 /// The callback for when a drag target is evaluating whether to accept a draggable.
 ///
@@ -289,12 +288,11 @@ typedef OnWillAcceptWithDetailsVertical =
 /// See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
 ///
 /// {@category Interaction}
-typedef OnWillAcceptWithDetailsHorizontal =
-    bool Function(
-      DragTargetDetails<Object?> details,
-      KalenderController controller,
-      HorizontalConfiguration configuration,
-    );
+typedef OnWillAcceptWithDetailsHorizontal = bool Function(
+  DragTargetDetails<Object?> details,
+  KalenderController controller,
+  HorizontalConfiguration configuration,
+);
 
 /// A callback for a gesture on one part of the calendar.
 ///

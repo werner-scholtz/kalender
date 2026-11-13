@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Resolves the width of the month's week number column.
 ///

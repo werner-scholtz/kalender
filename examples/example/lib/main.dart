@@ -7,8 +7,8 @@
 import 'package:example/tiles.dart';
 import 'package:example/working_hours_cell.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const MyApp());

@@ -4,11 +4,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl4x/datetime_format.dart' as intl4x;
 import 'package:intl4x/number_format.dart' as intl4x show NumberFormat;
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Renders a calendar whose day and month names and overflow count come from
 /// intl4x. See [intl4xComponents] and [intl4xTheme].

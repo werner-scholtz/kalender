@@ -4,21 +4,20 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:web_demo/l10n/app_localizations.dart';
 import 'package:web_demo/locales.dart';
 import 'package:web_demo/providers.dart';
-import 'package:web_demo/widgets/calendar/calendar.dart';
-import 'package:web_demo/utils.dart';
 import 'package:web_demo/theme.dart';
+import 'package:web_demo/utils.dart';
+import 'package:web_demo/widgets/calendar/calendar.dart';
+import 'package:web_demo/widgets/toolbar/about_button.dart';
 import 'package:web_demo/widgets/toolbar/locale_dropdown.dart';
 import 'package:web_demo/widgets/toolbar/text_direction_button.dart';
 import 'package:web_demo/widgets/toolbar/theme_button.dart';
 import 'package:web_demo/widgets/toolbar/view_type_picker.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:web_demo/widgets/toolbar/about_button.dart';
 
 import 'timezone/stub.dart'
     if (dart.library.js_interop) 'timezone/browser.dart'
@@ -90,12 +89,7 @@ class MyAppState extends State<MyApp> {
             darkTheme: _buildTheme(Brightness.dark),
             locale: _locale.value,
             supportedLocales: supportedLocales,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
+            localizationsDelegates: const [AppLocalizations.delegate, ...GlobalMaterialLocalizations.delegates],
             localeListResolutionCallback: (locales, supportedLocales) {
               return _resolveLocale(
                 locales?.isNotEmpty == true ? locales!.first : null,

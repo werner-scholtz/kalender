@@ -17,13 +17,12 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}
-typedef ScheduleTileHighlightBuilder =
-    Widget Function(
-      BuildContext context,
-      FloatingDateTime date,
-      ValueNotifier<FloatingDateTimeRange?> range,
-      Widget child,
-    );
+typedef ScheduleTileHighlightBuilder = Widget Function(
+  BuildContext context,
+  FloatingDateTime date,
+  ValueNotifier<FloatingDateTimeRange?> range,
+  Widget child,
+);
 
 /// {@category Appearance}
 class ScheduleTileHighlightStyle with Diagnosticable {

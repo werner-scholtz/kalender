@@ -6,8 +6,8 @@
 
 import 'package:example/main.dart' show Event;
 import 'package:example/tiles.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Date selection through [KalenderController]. Run with `flutter run -t lib/selection_demo.dart`.
 void main() => runApp(const SelectionDemoApp());

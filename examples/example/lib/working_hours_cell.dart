@@ -6,8 +6,8 @@
 
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The background of a day column: shades Saturday, Sunday and the hours outside 09:00 to 17:00, and tints today.
 class WorkingHoursCell extends StatelessWidget {

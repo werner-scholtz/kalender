@@ -6,8 +6,8 @@
 
 import 'package:advanced_example/main.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Groups the events of a day by person.
 ///

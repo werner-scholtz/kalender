@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The colors and text styles the default theme is built from.
 @immutable

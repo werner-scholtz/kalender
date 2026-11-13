@@ -11,16 +11,17 @@ topics:
   - drag-and-drop
 
 environment:
-  sdk: ">=3.10.0 <4.0.0"
-  flutter: ">=3.38.1"
+  sdk: ">=3.13.0 <4.0.0"
+  flutter: ">=3.47.0"
 
 dependencies:
   clock: ^1.1.2
   collection: ^1.19.1
   flutter:
     sdk: flutter
-  intl: '>=0.19.0 <0.23.0'
+  intl: ^0.20.3
   linked_pageview: ^1.1.0
+  material_ui: ^1.4.0
   meta: ^1.9.0
   scrollable_positioned_list: ^0.3.8
   timezone: '>=0.11.0 <0.12.0'
