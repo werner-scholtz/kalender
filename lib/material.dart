@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 /// Conversions between kalender's value types and the ones in
-/// `package:flutter/material.dart`.
+/// `package:material_ui/material_ui.dart`.
 ///
 /// Import this alongside `package:kalender/kalender.dart` where an app hands
 /// kalender values to a Material API, or the other way round:
@@ -19,8 +19,8 @@
 /// does not name a Material type.
 library;
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Converts a [KalenderDateTimeRange] to Material's [DateTimeRange].
 ///

@@ -45,7 +45,7 @@ The sections below cover what is left after the fixes have run.
 
 | Upgrade | What changes |
 | --- | --- |
-| [v0.33.x → v0.34.0](#v033x--v0340) | The members deprecated in 0.33.0 are removed. |
+| [v0.33.x → v0.34.0](#v033x--v0340) | Flutter 3.50 and `material_ui`, and the members deprecated in 0.33.0 are removed. |
 | [v0.32.x → v0.33.0](#v032x--v0330) | The controller holds the view configuration and location, views are `ViewParts`, the members deprecated in 0.32.0 are removed, the `ResizeHandleDetails` checks are getters, a configuration creates its view controller, the visible range, time of day and events are read-only on the controller, the visible range is never null, a view controller's location is final, the month body and multi-day header take their own configuration, and an event tile is one semantics node. |
 | v0.31.x → v0.32.0 | No changes needed. |
 | [v0.30.x → v0.31.0](#v030x--v0310) | The layout date types and their members are renamed to `Floating*`. |
@@ -64,7 +64,65 @@ The sections below cover what is left after the fixes have run.
 
 ## v0.33.x → v0.34.0
 
-`dart fix` does not apply to this upgrade.
+Kalender's own fixes do not apply to this upgrade.
+
+### Kalender is built on `material_ui`
+
+Kalender requires Flutter 3.50 and Dart 3.14, and uses the
+[`material_ui`](https://pub.dev/packages/material_ui) package in place of
+`package:flutter/material.dart`. The two define separate classes with the same
+names, so an app that still imports `package:flutter/material.dart` gets errors
+such as:
+
+```
+The element type 'KalenderThemeData' can't be assigned to the list type 'ThemeExtension<dynamic>'
+The argument type 'TimeOfDay' can't be assigned to the parameter type 'TimeOfDay'
+```
+
+Migrate the app to `material_ui` with Flutter's fix, after adding the package:
+
+```bash
+flutter pub add material_ui
+dart fix --apply --code=migrate_design_widgets
+```
+
+It rewrites the imports:
+
+```dart
+// Before
+import 'package:flutter/material.dart';
+
+// After
+import 'package:material_ui/material_ui.dart';
+```
+
+Take the localization delegates from `material_ui`, and drop the
+`flutter_localizations` import:
+
+```dart
+// Before
+MaterialApp(
+  localizationsDelegates: const [
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ],
+);
+
+// After
+MaterialApp(
+  localizationsDelegates: GlobalMaterialLocalizations.delegates,
+);
+```
+
+A `MaterialUiCompatibilityBridge` added for kalender can be removed.
+`KalenderThemeData` registers on the `material_ui` `ThemeData` as before:
+
+```dart
+ThemeData(
+  extensions: const [KalenderThemeData(timeIndicatorStyle: TimeIndicatorStyle(lineColor: Color(0xFFE91E63)))],
+);
+```
 
 ### The members deprecated in 0.33.0 are removed
 

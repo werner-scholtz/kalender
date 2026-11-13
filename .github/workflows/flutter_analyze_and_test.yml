@@ -72,7 +72,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
-          flutter-version: 3.38.1
+          flutter-version: 3.50.0
           channel: stable
 
       - name: Install dependencies

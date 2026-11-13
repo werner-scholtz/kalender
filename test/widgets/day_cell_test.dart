@@ -6,11 +6,11 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart' show MultiDayEventsRow;
 import 'package:linked_pageview/linked_pageview.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timezone/data/latest_10y.dart' as tz;
 import 'package:timezone/timezone.dart' show getLocation;
 

@@ -4,11 +4,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart' show WeekDayHeaders;
+import 'package:material_ui/material_ui.dart';
 
 import '../utilities.dart';
 
@@ -108,9 +108,8 @@ void main() {
 
       await pumpMonthView(tester, DateTime(2025, 1), components: components);
 
-      final shade = Theme.of(
-        tester.element(find.byType(MonthDayCell).first),
-      ).colorScheme.onSurface.withValues(alpha: 0.08);
+      final shade = Theme.of(tester.element(find.byType(MonthDayCell).first)).colorScheme.onSurface
+          .withValues(alpha: 0.08);
       final shaded = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).where((box) => box.color == shade).length;
 
       expect(shaded, 4);

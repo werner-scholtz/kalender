@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../utilities.dart';
 
@@ -257,15 +257,14 @@ void main() {
       await pump(
         tester,
         overlayBuilders: OverlayBuilders(
-          multiDayOverlayPortalBuilder:
-              (
-                context, {
-                required date,
-                required events,
-                required numberOfHiddenRows,
-                required tileHeight,
-                required overlayBuilders,
-              }) => const Text('custom'),
+          multiDayOverlayPortalBuilder: (
+            context, {
+            required date,
+            required events,
+            required numberOfHiddenRows,
+            required tileHeight,
+            required overlayBuilders,
+          }) => const Text('custom'),
         ),
       );
       expect(find.text('custom'), findsWidgets);

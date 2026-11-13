@@ -4,12 +4,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/kalender_events/draggable_event.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../utilities.dart';
 
@@ -355,9 +355,8 @@ void main() {
 
       expect(controller.selectedEventId, isNull, reason: 'onLeave must clear selectedEventId');
 
-      findDragTargetOf<VerticalDragTarget>(tester).onWillAcceptWithDetails!(
-        _dragDetails(Resize(event: liveEvent, direction: ResizeDirection.bottom)),
-      );
+      findDragTargetOf<VerticalDragTarget>(tester)
+          .onWillAcceptWithDetails!(_dragDetails(Resize(event: liveEvent, direction: ResizeDirection.bottom)));
 
       expect(controller.selectedEventId, equals(liveEvent.id), reason: 'selectedEventId must be restored on re-entry');
 
@@ -383,9 +382,8 @@ void main() {
 
       expect(controller.selectedEventId, isNull, reason: 'onLeave must clear selectedEventId');
 
-      findDragTargetOf<HorizontalDragTarget>(tester).onWillAcceptWithDetails!(
-        _dragDetails(Resize(event: liveEvent, direction: ResizeDirection.right)),
-      );
+      findDragTargetOf<HorizontalDragTarget>(tester)
+          .onWillAcceptWithDetails!(_dragDetails(Resize(event: liveEvent, direction: ResizeDirection.right)));
 
       expect(controller.selectedEventId, equals(liveEvent.id), reason: 'selectedEventId must be restored on re-entry');
 

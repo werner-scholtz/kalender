@@ -4,7 +4,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
@@ -14,6 +13,7 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:linked_pageview/linked_pageview.dart';
+import 'package:material_ui/material_ui.dart';
 
 // TODO: Remove the split between the content and the header, so one page view replaces the two linked ones.
 

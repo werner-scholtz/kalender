@@ -7,7 +7,6 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
@@ -15,6 +14,7 @@ import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 import 'package:kalender/src/widgets/internal_components/gesture_callbacks_detector.dart';
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 /// Displays events as a vertical list. The default body of [ScheduleViewParts].

@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.11.0
   cupertino_icons: ^1.0.8
   kalender:
     path: ../../../kalender/

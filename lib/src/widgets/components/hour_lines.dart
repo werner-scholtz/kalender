@@ -19,8 +19,11 @@ import 'package:kalender/kalender.dart';
 /// [KalenderTheme] resolves.
 ///
 /// {@category Appearance}
-typedef HourLinesBuilder =
-    Widget Function(BuildContext context, double heightPerMinute, KalenderTimeRange timeOfDayRange);
+typedef HourLinesBuilder = Widget Function(
+  BuildContext context,
+  double heightPerMinute,
+  KalenderTimeRange timeOfDayRange,
+);
 
 /// The style of the [HourLines] widget.
 ///

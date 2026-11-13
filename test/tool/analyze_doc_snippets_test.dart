@@ -116,7 +116,7 @@ void main() {
 
     test('every snippet may assume material and kalender, and nothing more', () {
       final unit = unitFor('<!-- snippet: file -->', 'class A {}');
-      expect(unit.source, contains("import 'package:flutter/material.dart';"));
+      expect(unit.source, contains("import 'package:material_ui/material_ui.dart';"));
       expect(unit.source, contains("import 'package:kalender/kalender.dart';"));
       expect(unit.source, isNot(contains("import 'package:flutter/gestures.dart';")));
       expect(unit.source, isNot(contains("import 'package:timezone/timezone.dart'")));

@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.11.0
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.6

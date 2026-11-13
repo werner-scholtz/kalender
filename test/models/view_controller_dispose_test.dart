@@ -56,7 +56,7 @@ void main() {
       viewController.dispose();
 
       for (final notifier in notifiers) {
-        expect(() => notifier.addListener(() {}), throwsFlutterError, reason: '$notifier');
+        expect(() => notifier.addListener(() {}), throwsStateError, reason: '$notifier');
       }
     });
   }

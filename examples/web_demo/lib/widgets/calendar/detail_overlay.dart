@@ -6,8 +6,8 @@
 
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/calendar/detail_card.dart';

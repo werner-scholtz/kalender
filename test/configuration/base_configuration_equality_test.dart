@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Exercises the `==` / `hashCode` defined on the abstract [VerticalConfiguration] and [HorizontalConfiguration] base
 /// classes, through the concrete subclasses that reach them ([MultiDayBodyConfiguration] /

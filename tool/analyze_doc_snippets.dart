@@ -38,7 +38,7 @@ const snippetPackage = 'examples/doc_snippets';
 /// can copy really is one. A wider header would have hidden the missing `gestures.dart` and `services.dart` in the zoom
 /// example, which is the failure this tool exists to catch.
 const impliedImports = <String>[
-  "import 'package:flutter/material.dart';",
+  "import 'package:material_ui/material_ui.dart';",
   "import 'package:kalender/kalender.dart';",
   "import 'package:doc_snippets/preamble.dart';",
 ];

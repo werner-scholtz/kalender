@@ -14,15 +14,14 @@ import 'package:kalender/src/widgets/internal_components/day_overlay.dart';
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}
-typedef MultiDayOverlayPortalBuilder =
-    Widget Function(
-      BuildContext context, {
-      required DateTime date,
-      required List<KalenderEvent> events,
-      required int numberOfHiddenRows,
-      required double tileHeight,
-      required OverlayBuilders? overlayBuilders,
-    });
+typedef MultiDayOverlayPortalBuilder = Widget Function(
+  BuildContext context, {
+  required DateTime date,
+  required List<KalenderEvent> events,
+  required int numberOfHiddenRows,
+  required double tileHeight,
+  required OverlayBuilders? overlayBuilders,
+});
 
 /// The "+N more" button of a day. It opens the day's overlay through [KalenderController.openDayOverlay].
 ///
