@@ -17,11 +17,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kalender on material_ui',
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
-      // The calendar renders without the bridge, but its own Theme.of lookup
-      // falls back to ThemeData.fallback(), so it would not pick up this theme.
-      // ignore: deprecated_member_use
-      builder: (context, child) => MaterialUiCompatibilityBridge(child: child!),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        extensions: const [KalenderThemeData(timeIndicatorStyle: TimeIndicatorStyle(lineColor: Color(0xFFE91E63)))],
+      ),
       home: const HomePage(),
     );
   }
@@ -75,12 +74,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Kalender on material_ui')),
-      // KalenderThemeData cannot be registered on a material_ui ThemeData, so
-      // app-wide styling goes through this widget instead.
-      body: KalenderTheme(
-        data: const KalenderThemeData(timeIndicatorStyle: TimeIndicatorStyle(lineColor: Color(0xFFE91E63))),
-        child: KalenderView(eventsController: eventsController, kalenderController: kalenderController),
-      ),
+      body: KalenderView(eventsController: eventsController, kalenderController: kalenderController),
     );
   }
 }

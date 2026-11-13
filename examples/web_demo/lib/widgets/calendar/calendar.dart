@@ -6,18 +6,18 @@
 
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
 import 'package:web_demo/theme.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/configuration/configuration_panel.dart';
 import 'package:web_demo/widgets/calendar/detail_overlay.dart';
 import 'package:web_demo/widgets/calendar/event_tiles.dart';
-import 'package:web_demo/widgets/calendar/resize_handle.dart';
 import 'package:web_demo/widgets/calendar/navigation_header.dart';
+import 'package:web_demo/widgets/calendar/resize_handle.dart';
 import 'package:web_demo/widgets/calendar/zoom.dart';
+import 'package:web_demo/widgets/configuration/configuration_panel.dart';
 
 class Calendar extends StatelessWidget {
   final bool initialShowConfig;

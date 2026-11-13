@@ -7,11 +7,11 @@
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
+import 'package:material_ui/material_ui.dart';
 
 final year2025DisplayRange = KalenderDateTimeRange(start: DateTime(2025), end: DateTime(2026));
 

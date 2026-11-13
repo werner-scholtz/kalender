@@ -10,8 +10,8 @@
 // This file is analyzed like any other, so the stubs stay honest: if a signature
 // in the package changes, the stub stops compiling here first.
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 /// The custom event subclass the guides build on, as defined in doc/events.md.

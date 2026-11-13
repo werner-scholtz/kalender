@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   Future<void> pumpWithTheme(
@@ -106,15 +106,13 @@ void main() {
         monthGridStyle: MonthGridStyle(thickness: 2),
       );
       expect(
-        const KalenderThemeData(
-          hourLinesStyle: HourLinesStyle(thickness: 1),
-        ).copyWith(monthGridStyle: const MonthGridStyle(thickness: 2)),
+        const KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 1))
+            .copyWith(monthGridStyle: const MonthGridStyle(thickness: 2)),
         expected,
       );
       expect(
-        const KalenderThemeData(
-          monthGridStyle: MonthGridStyle(thickness: 2),
-        ).copyWith(hourLinesStyle: const HourLinesStyle(thickness: 1)),
+        const KalenderThemeData(monthGridStyle: MonthGridStyle(thickness: 2))
+            .copyWith(hourLinesStyle: const HourLinesStyle(thickness: 1)),
         expected,
       );
     });

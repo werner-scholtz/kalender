@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/kalender_controller.dart';
@@ -15,6 +14,7 @@ import 'package:kalender/src/models/kalender_events/kalender_event.dart';
 import 'package:kalender/src/models/kalender_interaction.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/components/resize_handles.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {

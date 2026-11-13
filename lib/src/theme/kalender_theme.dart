@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/theme/kalender_palette.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The Material defaults for a [ThemeData], built once.
 ///

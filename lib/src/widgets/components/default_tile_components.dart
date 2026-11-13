@@ -4,8 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DefaultTileBase extends StatelessWidget {
   final String label;

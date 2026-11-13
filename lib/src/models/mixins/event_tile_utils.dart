@@ -186,9 +186,8 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
     // Clamp so a tap on the trailing edge (dx == width) or just outside the tile resolves to a day within the visible
     // range rather than one day past it.
     final dateClicked = (localPosition.dx ~/ (renderBox.size.width / numberOfDays)).clamp(0, numberOfDays - 1);
-    final date = FloatingDateTime.fromDateTime(
-      range.start.copyWith(day: range.start.day + dateClicked),
-    ).startOfDay.forLocation(location: context.location);
+    final date = FloatingDateTime.fromDateTime(range.start.copyWith(day: range.start.day + dateClicked)).startOfDay
+        .forLocation(location: context.location);
     return date;
   }
 }

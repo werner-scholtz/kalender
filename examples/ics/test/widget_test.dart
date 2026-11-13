@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:flutter/gestures.dart' show kLongPressTimeout;
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ics/ics_calendar.dart';
 import 'package:ics/ics_event.dart';
 import 'package:ics/main.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 const _sample = '''BEGIN:VCALENDAR
 VERSION:2.0

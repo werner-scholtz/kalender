@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:enough_icalendar/enough_icalendar.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:rrule/rrule.dart' as rr;
 
 import 'ics_event.dart';

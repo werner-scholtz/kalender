@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A chip-styled [PopupMenuButton] showing [icon] + [label] + dropdown arrow.
 class ChipDropdown<T> extends StatelessWidget {

@@ -4,10 +4,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The delegate caches layout data in a map keyed by event hash, and `CustomMultiChildLayout` asserts when a child is
 /// not laid out. So the returned list has to hold one entry per event even when two events share a key, otherwise a

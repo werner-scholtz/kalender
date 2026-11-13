@@ -4,6 +4,9 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 
 ### Breaking Changes
 
+- kalender requires Flutter 3.50 and Dart 3.14, and is built on [`material_ui`](https://pub.dev/packages/material_ui) in place of `package:flutter/material.dart`.
+- `KalenderThemeData` is a `material_ui` `ThemeExtension`, and the calendar reads the `material_ui` `Theme`.
+- The extensions in `package:kalender/material.dart` convert the `material_ui` `DateTimeRange` and `TimeOfDay`.
 - `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are removed.
 - `EventLayoutDelegate.findLongestChain` is removed.
 
