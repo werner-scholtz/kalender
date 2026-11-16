@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -207,16 +208,18 @@ void main() {
 
     for (final transition in startDateTransitions) {
       testWidgets('${transition.name} keeps the start date', (tester) async {
-        await pumpCalendarView(tester, config: transition.from, withBody: true);
-        expect(find.byType(transition.body), findsOneWidget);
+        await withClock(Clock.fixed(DateTime(2025, 6, 15, 12)), () async {
+          await pumpCalendarView(tester, config: transition.from, withBody: true);
+          expect(find.byType(transition.body), findsOneWidget);
 
-        kalenderController.jumpToDate(transition.date);
-        await tester.pumpAndSettle();
-        final before = kalenderController.floatingVisibleRange.value.start.startOfDay;
+          kalenderController.jumpToDate(transition.date);
+          await tester.pumpAndSettle();
+          final before = kalenderController.floatingVisibleRange.value.start.startOfDay;
 
-        await pumpCalendarView(tester, config: transition.to);
+          await pumpCalendarView(tester, config: transition.to);
 
-        expect(kalenderController.floatingVisibleRange.value.start.startOfDay, before);
+          expect(kalenderController.floatingVisibleRange.value.start.startOfDay, before);
+        });
       });
     }
 

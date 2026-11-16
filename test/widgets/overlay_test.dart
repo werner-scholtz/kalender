@@ -15,7 +15,10 @@ import '../utilities.dart';
 
 void main() {
   final eventsController = DefaultEventsController();
-  final kalenderController = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
+  final monday = DateTime(2025, 1, 6);
+  final kalenderController = KalenderController(
+    viewConfiguration: MultiDayViewConfiguration.week(displayRange: year2025DisplayRange, initialDateTime: monday),
+  );
   final preciseInteraction = KalenderInteraction(
     inputMode: InputMode.precise,
     createEventGesture: EventInteractionGesture.tap,
@@ -24,19 +27,8 @@ void main() {
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
   setUpAll(() {
-    final now = FloatingDateTime.fromDateTime(DateTime.now()).startOfWeek();
-    final startOfWeek = DateTime(now.year, now.month, now.day);
-
-    eventsController.addEvents([
-      KalenderEvent(
-        start: startOfWeek,
-        end: startOfWeek.copyWith(day: startOfWeek.day + 2),
-      ),
-      KalenderEvent(
-        start: startOfWeek,
-        end: startOfWeek.copyWith(day: startOfWeek.day + 2),
-      ),
-    ]);
+    final end = monday.copyWith(day: monday.day + 2);
+    eventsController.addEvents([KalenderEvent(start: monday, end: end), KalenderEvent(start: monday, end: end)]);
   });
 
   final sizesToTest = [const Size(300, 500), const Size(400, 600), const Size(800, 600), const Size(1200, 600)];

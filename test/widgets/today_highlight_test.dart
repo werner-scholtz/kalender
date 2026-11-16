@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -50,12 +51,13 @@ void main() {
         ),
       );
 
-      testWidgets('highlights exactly the real today (default location path)', (tester) async {
-        final now = DateTime.now();
-        await pumpMonth(tester, DateTime(now.year, now.month));
+      testWidgets('highlights the day of the clock (default location path)', (tester) async {
+        await withClock(Clock.fixed(DateTime(2025, 12, 24, 10)), () async {
+          await pumpMonth(tester, DateTime(2025, 12));
 
-        expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget);
-        expect(todayNumber(MonthDayHeader.todayKey, now.day), findsOneWidget);
+          expect(find.byKey(MonthDayHeader.todayKey), findsOneWidget);
+          expect(todayNumber(MonthDayHeader.todayKey, 24), findsOneWidget);
+        });
       });
 
       testWidgets('highlights the callback day, not its neighbour (#251)', (tester) async {
