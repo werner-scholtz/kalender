@@ -79,7 +79,7 @@ abstract class ViewConfiguration {
   ///
   /// The wall-clock components of the returned [DateTime] decide where the time indicator sits, which day [DayHeader],
   /// [MonthDayHeader] and [ScheduleDate] highlight as today, and whether [EmptyDayBehavior.showOnlyToday] keeps an
-  /// empty day.
+  /// empty day. `KalenderSnapping.snapToTimeIndicator` snaps to the same time.
   ///
   /// Included in `==`, unlike [dateResolver]. Null, the default, uses the calendar's [Location].
   final NowCallback? nowCallback;

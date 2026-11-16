@@ -164,10 +164,11 @@ The callback's return value is used for:
 - Positioning the time indicator on the calendar grid.
 - Determining which day is "today" for header highlighting (`DayHeader`, `MonthDayHeader`, `ScheduleDate`).
 - Evaluating `EmptyDayBehavior.showOnlyToday` in schedule views.
+- Snapping to the time indicator while dragging or resizing an event (`KalenderSnapping.snapToTimeIndicator`).
 
 Any `DateTime` subtype works, so the callback can return UTC or a `TZDateTime` in a
 specific zone.
 
 `nowCallback` is included in `==`, so store a closure rather than writing it inline.
 
-When `nowCallback` is `null` (the default), the calendar reads the current time from the [clock](https://pub.dev/packages/clock) package and converts it with its `Location`. A test can fix that time with `withClock(Clock.fixed(...), () { ... })`, or with `fakeAsync` in a plain `test`. In a widget test the view configuration, the `KalenderController` and the pumps all go inside the `withClock` callback, since each reads the clock and a read outside it gets the test's own clock. A `nowCallback` replaces the clock for the three uses listed above.
+When `nowCallback` is `null` (the default), the calendar reads the current time from the [clock](https://pub.dev/packages/clock) package and converts it with its `Location`. A test can fix that time with `withClock(Clock.fixed(...), () { ... })`, or with `fakeAsync` in a plain `test`. In a widget test the view configuration, the `KalenderController` and the pumps all go inside the `withClock` callback, since each reads the clock and a read outside it gets the test's own clock. A `nowCallback` replaces the clock for the uses listed above.
