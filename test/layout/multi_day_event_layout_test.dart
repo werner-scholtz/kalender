@@ -415,6 +415,10 @@ void main() {
       location: null,
     );
 
+    test('columnRowMap holds the highest row used in each column', () {
+      expect(frame.columnRowMap, {0: 2, 1: 2, 2: 1, 3: 0, 4: -1, 5: -1, 6: -1});
+    });
+
     for (final c in [
       (availableRows: 0, shown: <KalenderEvent>[]),
       (availableRows: 1, shown: <KalenderEvent>[]),

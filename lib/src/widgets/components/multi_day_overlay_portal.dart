@@ -11,6 +11,8 @@ import 'package:kalender/src/widgets/internal_components/day_overlay.dart';
 
 /// A function that returns a [MultiDayOverlayPortal].
 ///
+/// `numberOfHiddenRows` is [MultiDayOverlayPortal.numberOfHiddenRows].
+///
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}

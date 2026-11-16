@@ -280,7 +280,8 @@ class MultiDayLayoutFrame {
   /// The number of rows needed to layout all the events.
   final int totalNumberOfRows;
 
-  /// A map that contains the number of rows for each date.
+  /// The highest row used in each column, -1 for a column without events.
+  @Deprecated(_columnRowMapDeprecation)
   final Map<int, int> columnRowMap;
 
   /// The direction the columns run in.
@@ -294,9 +295,11 @@ class MultiDayLayoutFrame {
     required this.layoutInfo,
     required this.events,
     required this.totalNumberOfRows,
-    required this.columnRowMap,
+    @Deprecated(_columnRowMapDeprecation) this.columnRowMap = const {},
     this.textDirection = TextDirection.ltr,
   });
+
+  static const _columnRowMapDeprecation = 'Nothing reads it. Read the rows from layoutInfo. Will be removed in 0.35.0.';
 
   /// Returns the date for the given column index.
   ///

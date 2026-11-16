@@ -7,6 +7,10 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 - `kDefaultToMonthly`, `kDefaultToWeekly`, `kDefaultToDaily` and `kDefaultToSchedule` are removed.
 - `EventLayoutDelegate.findLongestChain` is removed.
 
+### Deprecations
+
+- `MultiDayLayoutFrame.columnRowMap` is deprecated and is removed in 0.35.0. Nothing reads it. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+
 ### Features
 
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
