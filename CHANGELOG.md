@@ -11,14 +11,14 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 
 - In a widget test the calendar follows the test's clock, so `tester.pump` with a duration moves the time indicator.
 
-### Fixes
-
-- Snapping to the time indicator while dragging or resizing an event uses `nowCallback` when it is set. [#663](https://github.com/werner-scholtz/kalender/issues/663)
-
 ### Features
 
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
 - The calendar reads the current time from the `clock` package, so a test can set it with `withClock` or `fakeAsync`.
+
+### Fixes
+
+- Snapping to the time indicator while dragging or resizing an event uses `nowCallback` when it is set. [#663](https://github.com/werner-scholtz/kalender/issues/663)
 
 ## 0.33.1
 

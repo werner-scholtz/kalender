@@ -20,9 +20,6 @@ void main() {
   final day = DateTime(2025, 3, 24);
   final clockTime = DateTime(2025, 3, 24, 9);
 
-  // Not on the 10-minute snap grid, so only the time indicator can produce it.
-  const indicator = (14, 7);
-
   late DefaultEventsController eventsController;
   late String eventId;
 
@@ -33,44 +30,35 @@ void main() {
     eventId = eventsController.addEvent(KalenderEvent(start: day.copyWith(hour: 6), end: day.copyWith(hour: 8)));
   });
 
-  Future<Rect> pumpDay(WidgetTester tester, NowCallback? nowCallback) async {
-    tester.view.physicalSize = const Size(800, 1400);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+  Future<void> pumpDay(WidgetTester tester, NowCallback? nowCallback) async {
+    tester.setViewSize(const Size(800, 1400));
 
-    await pumpAndSettleWithMaterialApp(
+    await pumpKalender(
       tester,
-      KalenderView(
-        eventsController: eventsController,
-        kalenderController: KalenderController(
-          viewConfiguration: MultiDayViewConfiguration.singleDay(
-            displayRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 7))),
-            initialDateTime: day,
-            initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
-            initialHeightPerMinute: 1,
-            nowCallback: nowCallback,
-          ),
+      eventsController: eventsController,
+      kalenderController: KalenderController(
+        viewConfiguration: MultiDayViewConfiguration.singleDay(
+          displayRange: KalenderDateTimeRange(start: day, end: day.add(const Duration(days: 7))),
+          initialDateTime: day,
+          initialTimeOfDay: const KalenderTime(hour: 5, minute: 0),
+          initialHeightPerMinute: 1,
+          nowCallback: nowCallback,
         ),
-        callbacks: KalenderCallbacks(
-          onEventChanged: (event, updated) => eventsController.updateEvent(event: event, updatedEvent: updated),
-        ),
-        views: [
-          MultiDayViewParts(
-            header: const SizedBox.shrink(),
-            body: MultiDayBody(
-              interaction: KalenderInteraction(
-                inputMode: InputMode.precise,
-                createEventGesture: EventInteractionGesture.tap,
-                modifyEventGesture: EventInteractionGesture.tap,
-              ),
-              snapping: const KalenderSnapping(snapToTimeIndicator: true, snapToOtherEvents: false),
-              tileComponents: TileComponents(tileBuilder: (context, event, range) => Container(color: Colors.red)),
-            ),
-          ),
-        ],
       ),
+      callbacks: KalenderCallbacks(
+        onEventChanged: (event, updated) => eventsController.updateEvent(event: event, updatedEvent: updated),
+      ),
+      interaction: kPreciseInteraction,
+      views: [
+        MultiDayViewParts(
+          header: const SizedBox.shrink(),
+          body: MultiDayBody(
+            snapping: const KalenderSnapping(snapToTimeIndicator: true, snapToOtherEvents: false),
+            tileComponents: TileComponents(tileBuilder: (context, event, range) => Container(color: Colors.red)),
+          ),
+        ),
+      ],
     );
-    return tester.getRect(find.byType(MultiDayBody));
   }
 
   Future<void> dragTo(WidgetTester tester, Offset from, Offset to) async {
@@ -83,8 +71,6 @@ void main() {
     await gesture.up();
     await tester.pumpAndSettle();
   }
-
-  (int, int) hourMinute(DateTime dateTime) => (dateTime.hour, dateTime.minute);
 
   // The wall-clock time decides, whatever the zone of the returned value.
   final callbacks = <String, NowCallback?>{
@@ -109,7 +95,13 @@ void main() {
           final from = tester.getCenter(tile);
           await dragTo(tester, from, from.translate(0, 485));
 
-          expect(hourMinute(eventsController.events.single.floatingStart()), indicator);
+          expect(
+            eventsController.events.single.floatingRange(),
+            FloatingDateTimeRange(
+              start: FloatingDateTime(2025, 3, 24, 14, 7),
+              end: FloatingDateTime(2025, 3, 24, 16, 7),
+            ),
+          );
         });
       });
 
@@ -119,13 +111,14 @@ void main() {
 
           final tile = find.byKey(DayEventTile.tileKey(eventId));
           await tester.hoverOn(tile, await tester.createMouseGesture());
-          final handle = tester.getCenter(
-            find.descendant(of: tile, matching: find.byKey(ResizeDetector.endResizeDraggableKey(eventId))),
-          );
+          final handle = tester.getCenter(resizeHandleFor(eventId, ResizeDirection.bottom));
           // The end is at 08:00, 14:05 is 365 minutes later.
           await dragTo(tester, handle, handle.translate(0, 365));
 
-          expect(hourMinute(eventsController.events.single.floatingEnd()), indicator);
+          expect(
+            eventsController.events.single.floatingRange(),
+            FloatingDateTimeRange(start: FloatingDateTime(2025, 3, 24, 6), end: FloatingDateTime(2025, 3, 24, 14, 7)),
+          );
         });
       });
     });
