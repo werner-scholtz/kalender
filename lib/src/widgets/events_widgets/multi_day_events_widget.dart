@@ -510,11 +510,10 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           Stack(
             children: [
               multiDayEventsWidget,
+              // Not positioned, so a button taller than a tile grows the stack and stays tappable.
               if (overflowButtons != null && buttonsInLastRow)
-                Positioned(
-                  top: (rows - 1) * widget.configuration.tileHeight,
-                  left: 0,
-                  right: 0,
+                Padding(
+                  padding: EdgeInsets.only(top: (rows - 1) * widget.configuration.tileHeight),
                   child: overflowButtons,
                 ),
               PassThroughPointer(child: dropTargetWidget),

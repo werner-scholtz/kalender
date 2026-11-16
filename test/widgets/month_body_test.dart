@@ -462,6 +462,25 @@ void main() {
       final button = find.byKey(MultiDayPortalOverlayButton.getKey(DateTime.utc(2025, 1, 13)));
       expect(tester.getTopLeft(button).dy, lastRowTop);
     });
+
+    testWidgets('an overflow button taller than a tile uses the room below the last row', (tester) async {
+      // 5 rows of 18 fit in 96, which leaves 24 for a label taller than 18 in the last row.
+      await pumpOverflowingMonth(
+        tester,
+        day: monday,
+        bodyConfiguration: const MonthBodyConfiguration(tileHeight: 18),
+        components: components,
+      );
+      final button = find.byKey(MultiDayPortalOverlayButton.getKey(DateTime.utc(2025, 1, 13)));
+      final rowTop = tester.getTopLeft(find.byType(MonthWeek).at(2)).dy;
+      expect(tester.getBottomLeft(button).dy, greaterThan(rowTop + 24 + 5 * 18));
+
+      await tester.tapAt(tester.getBottomLeft(button) + const Offset(4, -1));
+      await tester.pumpAndSettle();
+
+      final view = tester.widget<KalenderView>(find.byType(KalenderView));
+      expect(view.kalenderController.openDayOverlay.value, FloatingDateTime(2025, 1, 13));
+    });
   });
 }
 
