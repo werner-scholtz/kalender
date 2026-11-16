@@ -10,6 +10,12 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 ### Features
 
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
+- `MultiDayLayoutFrame.visibleEventsInRows` returns the events shown when the overflow buttons share the last row with the tiles. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+
+### Fixes
+
+- A tile in the last row of a month row is hidden only when a day it covers has more events than fit. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+- An overflow button counts the hidden events of its day, not the rows below the last one shown. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 
 ## 0.33.1
 

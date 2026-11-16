@@ -33,7 +33,7 @@ class MultiDayOverlayPortal extends StatelessWidget {
   /// The date for which the widget is created.
   final FloatingDateTime date;
 
-  /// The number of hidden rows.
+  /// The number of hidden events on [date].
   final int numberOfHiddenRows;
 
   /// The builders for the overlay.

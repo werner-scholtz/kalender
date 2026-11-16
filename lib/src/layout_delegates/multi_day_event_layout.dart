@@ -139,8 +139,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   // Maps each visible date to its column index.
   final columnForDate = <FloatingDateTime, int>{for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i};
 
-  // The number of rows in each column, -1 while no event is assigned to it. A column without events then shows no
-  // overflow button when maxNumberOfRows is 0.
+  // The highest row used in each column, -1 while no event is assigned to it.
   final columnRowMap = <int, int>{for (var i = 0; i < visibleDates.length; i++) i: -1};
 
   for (final entry in entries) {
@@ -311,14 +310,34 @@ class MultiDayLayoutFrame {
   ///
   /// If [maxNumberOfRows] is null, all events are returned.
   (List<KalenderEvent> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
-    if (maxNumberOfRows == null || totalNumberOfRows <= maxNumberOfRows) return (this.events, layoutInfo);
+    if (maxNumberOfRows == null || totalNumberOfRows <= maxNumberOfRows) return (events, layoutInfo);
 
     final info = layoutInfo.where((e) => e.row < maxNumberOfRows).toList();
-    final events = info.map((e) {
-      return this.events.firstWhere((event) => event.id == e.id);
-    }).toList();
+    return (_eventsFor(info), info);
+  }
 
-    return (events, info);
+  /// Returns the visible events and their layout information when [availableRows] rows fit and the overflow buttons
+  /// take the place of hidden tiles in the last of them.
+  ///
+  /// The rows above the last are shown. A tile in the last row is shown when none of its columns has a tile below the
+  /// last row.
+  (List<KalenderEvent> events, List<EventLayoutInformation> layoutInfo) visibleEventsInRows(int availableRows) {
+    assert(availableRows >= 0, 'availableRows cannot be negative');
+    if (totalNumberOfRows <= availableRows) return (events, layoutInfo);
+
+    final lastRow = availableRows - 1;
+    final overflowing = {
+      for (final info in layoutInfo)
+        if (info.row > lastRow) ...info.columns,
+    };
+    final info = layoutInfo.where((e) {
+      return e.row < lastRow || (e.row == lastRow && !e.columns.any(overflowing.contains));
+    }).toList();
+    return (_eventsFor(info), info);
+  }
+
+  List<KalenderEvent> _eventsFor(List<EventLayoutInformation> info) {
+    return info.map((e) => events.firstWhere((event) => event.id == e.id)).toList();
   }
 
   /// Returns the events that should be displayed in the given column.

@@ -184,7 +184,8 @@ class MultiDayEventLayoutWidget extends StatefulWidget {
 
   /// The number of rows that fit, the row of the overflow buttons included.
   ///
-  /// The overflow buttons take the last row only when the events need more rows than fit. Null shows at most
+  /// When the events need more rows than fit, the overflow buttons take the place of the hidden tiles in the last row,
+  /// as [MultiDayLayoutFrame.visibleEventsInRows] describes. Null shows at most
   /// [HorizontalConfiguration.maximumNumberOfVerticalEvents] rows of tiles, with the overflow buttons in a row below.
   final int? availableRows;
 
@@ -230,13 +231,33 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// The strategy that generates the layout frame for the events.
   MultiDayLayoutStrategy get multiDayLayoutStrategy => widget.configuration.multiDayLayoutStrategy;
 
-  /// Returns the number of rows of tiles to show.
-  int maxNumberOfRows(MultiDayLayoutFrame frame) {
+  /// The tiles of [frame] to show, and the number of rows they are laid out in.
+  ({List<KalenderEvent> events, List<EventLayoutInformation> layoutInfo, int rows}) _visibleTiles(
+    MultiDayLayoutFrame frame,
+  ) {
     final total = frame.totalNumberOfRows;
     final availableRows = widget.availableRows;
-    if (availableRows != null) return total <= availableRows ? total : max(0, availableRows - 1);
+    if (availableRows != null) {
+      final (events, layoutInfo) = frame.visibleEventsInRows(availableRows);
+      return (events: events, layoutInfo: layoutInfo, rows: min(total, availableRows));
+    }
     final limit = widget.configuration.maximumNumberOfVerticalEvents;
-    return limit == null ? total : min(total, limit);
+    final rows = limit == null ? total : min(total, limit);
+    final (events, layoutInfo) = frame.visibleEvents(rows);
+    return (events: events, layoutInfo: layoutInfo, rows: rows);
+  }
+
+  /// The number of events of [frame] in each column that [shown] leaves out.
+  List<int> _hiddenEventCounts(MultiDayLayoutFrame frame, List<EventLayoutInformation> shown) {
+    final shownIds = {for (final info in shown) info.id};
+    final counts = List.filled(frame.range.dates().length, 0);
+    for (final info in frame.layoutInfo) {
+      if (shownIds.contains(info.id)) continue;
+      for (final column in info.columns) {
+        counts[column]++;
+      }
+    }
+    return counts;
   }
 
   @override
@@ -371,14 +392,14 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     final frame = _frame;
     if (frame == null) return const SizedBox.shrink();
 
-    final maxNumberOfRows = this.maxNumberOfRows(frame);
-    final (events, layoutInfo) = frame.visibleEvents(maxNumberOfRows);
+    final (:events, :layoutInfo, :rows) = _visibleTiles(frame);
+    final hiddenEvents = _hiddenEventCounts(frame, layoutInfo);
 
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
         range: widget.floatingRange,
         layoutInfo: layoutInfo,
-        numberOfRows: maxNumberOfRows,
+        numberOfRows: rows,
         tileHeight: widget.configuration.tileHeight,
       ),
       children: [
@@ -430,19 +451,15 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           location: widget.location,
         );
 
-        final layoutInfo = frame.layoutInfo.where((info) => info.id == event.id).toList();
+        final preview = _visibleTiles(frame);
+        final layoutInfo = preview.layoutInfo.where((info) => info.id == event.id).toList();
         if (layoutInfo.isEmpty) return const SizedBox();
-
-        // In a row of fixed height the preview takes no more rows than the tiles, so the overflow buttons stay in place.
-        final rows = this.maxNumberOfRows(frame);
-        final previewRows = widget.availableRows == null ? rows : min(rows, maxNumberOfRows);
-        if (layoutInfo.first.row >= previewRows) return const SizedBox();
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
             range: widget.floatingRange,
             layoutInfo: layoutInfo,
-            numberOfRows: previewRows,
+            numberOfRows: preview.rows,
             tileHeight: widget.configuration.tileHeight,
           ),
           children: [
@@ -469,6 +486,21 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       children: [for (var column = 0; column < numberOfColumns; column++) const Expanded(child: SizedBox.shrink())],
     );
 
+    final overflowButtons = hiddenEvents.any((count) => count > 0)
+        ? Row(
+            textDirection: TextDirection.ltr,
+            children: [
+              for (final (column, count) in hiddenEvents.indexed)
+                Expanded(
+                  child: count == 0 ? const SizedBox.shrink() : _buildOverlayPortal(context, frame, column, count),
+                ),
+            ],
+          )
+        : null;
+
+    // In a month row the buttons take the place of the hidden tiles in the last row.
+    final buttonsInLastRow = widget.availableRows != null && rows > 0;
+
     return OverlayPortal(
       controller: _portalController,
       overlayChildBuilder: (context) => _buildOverlay(context, frame),
@@ -478,42 +510,38 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           Stack(
             children: [
               multiDayEventsWidget,
+              if (overflowButtons != null && buttonsInLastRow)
+                Positioned(
+                  top: (rows - 1) * widget.configuration.tileHeight,
+                  left: 0,
+                  right: 0,
+                  child: overflowButtons,
+                ),
               PassThroughPointer(child: dropTargetWidget),
             ],
           ),
           anchors,
-          if (frame.totalNumberOfRows > maxNumberOfRows)
-            Row(
-              textDirection: TextDirection.ltr,
-              children: [
-                for (final MapEntry(key: column, value: row) in frame.columnRowMap.entries)
-                  Expanded(
-                    child: row < maxNumberOfRows
-                        ? const SizedBox.shrink()
-                        : _buildOverlayPortal(context, frame, column, (row + 1) - maxNumberOfRows),
-                  ),
-              ],
-            ),
+          if (overflowButtons != null && !buttonsInLastRow) overflowButtons,
         ],
       ),
     );
   }
 
-  Widget _buildOverlayPortal(BuildContext context, MultiDayLayoutFrame frame, int column, int numberOfHiddenRows) {
+  Widget _buildOverlayPortal(BuildContext context, MultiDayLayoutFrame frame, int column, int hiddenEvents) {
     final overlayBuilders = widget.multiDayOverlayBuilders;
     final date = frame.dateFromColumn(column);
     return overlayBuilders?.multiDayOverlayPortalBuilder?.call(
           context,
           date: date,
           events: frame.eventsForColumn(column),
-          numberOfHiddenRows: numberOfHiddenRows,
+          numberOfHiddenRows: hiddenEvents,
           tileHeight: widget.configuration.tileHeight,
           overlayBuilders: overlayBuilders,
         ) ??
         MultiDayOverlayPortal(
           key: MultiDayOverlayPortal.getKey(date),
           date: date,
-          numberOfHiddenRows: numberOfHiddenRows,
+          numberOfHiddenRows: hiddenEvents,
           overlayBuilders: overlayBuilders,
         );
   }
