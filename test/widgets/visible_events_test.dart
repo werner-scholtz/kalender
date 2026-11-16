@@ -23,7 +23,10 @@ void main() {
     for (final day in [6, 13, 20]) allDay(DateTime(2025, 1, day)),
   ];
 
-  final month = MonthViewConfiguration.singleMonth(initialDateTime: DateTime(2025, 1, 15));
+  final month = MonthViewConfiguration.singleMonth(
+    displayRange: year2025DisplayRange,
+    initialDateTime: DateTime(2025, 1, 15),
+  );
   final cases = [
     (name: 'month, jump', configuration: month, target: DateTime(2025, 3, 12), animate: false, expected: {march}),
     (
@@ -35,14 +38,20 @@ void main() {
     ),
     (
       name: 'week, jump',
-      configuration: MultiDayViewConfiguration.week(initialDateTime: DateTime(2025, 1, 15)),
+      configuration: MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 15),
+      ),
       target: DateTime(2025, 3, 12),
       animate: false,
       expected: {march},
     ),
     (
       name: 'week, animate past a week',
-      configuration: MultiDayViewConfiguration.week(initialDateTime: DateTime(2025, 1, 6)),
+      configuration: MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 6),
+      ),
       target: DateTime(2025, 1, 20),
       animate: true,
       expected: {allDay20},
@@ -69,7 +78,10 @@ void main() {
     });
   }
 
-  final week = MultiDayViewConfiguration.week(initialDateTime: DateTime(2025, 1, 15));
+  final week = MultiDayViewConfiguration.week(
+    displayRange: year2025DisplayRange,
+    initialDateTime: DateTime(2025, 1, 15),
+  );
   final january2 = timed(DateTime(2025, 1, 2));
   for (final c in [
     (
@@ -87,7 +99,10 @@ void main() {
       initial: week,
       showFirst: true,
       change: (KalenderController controller, ValueNotifier<bool> show) {
-        controller.viewConfiguration = MultiDayViewConfiguration.workWeek(initialDateTime: DateTime(2025, 1, 15));
+        controller.viewConfiguration = MultiDayViewConfiguration.workWeek(
+          displayRange: year2025DisplayRange,
+          initialDateTime: DateTime(2025, 1, 15),
+        );
       },
       expected: {january},
     ),

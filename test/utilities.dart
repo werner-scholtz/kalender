@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/current_time.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 
@@ -18,7 +19,6 @@ final year2025DisplayRange = KalenderDateTimeRange(start: DateTime(2025), end: D
 const locationsToTest = ['Etc/UTC', 'Africa/Johannesburg', 'America/New_York', 'Europe/London', 'Australia/Sydney'];
 
 final datesToTest = [
-  DateTime.now(),
   // America/New_York
   DateTime(2020, 3, 8, 2), // 2020	Sunday, 8 March, 02:00	Sunday, 1 November, 02:00
   DateTime(2020, 11, 1, 2),
@@ -265,16 +265,14 @@ Finder resizeHandleFor(String eventId, ResizeDirection direction) {
   );
 }
 
-/// A [ViewSnapshot] on today in [location].
-ViewSnapshot todaySnapshot([Location? location]) =>
-    ViewSnapshot(date: FloatingDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location)));
+/// A [ViewSnapshot] on today.
+ViewSnapshot todaySnapshot() => ViewSnapshot(date: FloatingDateTime.fromDateTime(currentTime()));
 
 /// Builds a 700 by 100 [TimeIndicatorPositioner] for page 0, with its indicator keyed [indicatorKey].
 Widget timeIndicatorPositioner({
   required MultiDayViewConfiguration viewConfiguration,
   required Key indicatorKey,
   FloatingDateTime? initialDate,
-  DateTime? dateOverride,
 }) {
   return SizedBox(
     width: 700,
@@ -287,7 +285,6 @@ Widget timeIndicatorPositioner({
             initial: initialDate == null ? todaySnapshot() : ViewSnapshot(date: initialDate),
           ),
           initialPage: 0,
-          dateOverride: dateOverride,
           childOverride: SizedBox(key: indicatorKey),
         ),
       ],

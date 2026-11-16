@@ -158,8 +158,8 @@ void main() {
         initial: ViewSnapshot(date: initialDate),
       );
 
-      await expectLater(viewController.animateToDate(DateTime.now()), completes);
-      await expectLater(viewController.animateToDateTime(DateTime.now()), completes);
+      await expectLater(viewController.animateToDate(DateTime(2025)), completes);
+      await expectLater(viewController.animateToDateTime(DateTime(2025)), completes);
       await expectLater(viewController.animateToNextPage(), completes);
       await expectLater(viewController.animateToPreviousPage(), completes);
     });

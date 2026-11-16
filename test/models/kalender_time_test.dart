@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/kalender_time.dart';
@@ -56,13 +57,17 @@ void main() {
       });
     });
 
-    test('now is not outside the times taken either side of it', () {
-      final before = KalenderTime.fromDateTime(DateTime.now());
-      final now = KalenderTime.now();
-      final after = KalenderTime.fromDateTime(DateTime.now());
+    test('now reads the clock', () {
+      withClock(Clock.fixed(DateTime(2024, 3, 5, 14, 45, 30)), () {
+        expect(KalenderTime.now(), const KalenderTime(hour: 14, minute: 45));
+      });
+    });
 
-      expect(now.isBefore(before), isFalse);
-      expect(now.isAfter(after), isFalse);
+    test('now reads a clock in UTC as local time', () {
+      final instant = DateTime.utc(2024, 3, 5, 23, 45);
+      withClock(Clock.fixed(instant), () {
+        expect(KalenderTime.now(), KalenderTime.fromDateTime(instant.toLocal()));
+      });
     });
 
     group('replacing', () {
