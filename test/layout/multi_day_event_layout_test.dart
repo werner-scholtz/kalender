@@ -416,6 +416,7 @@ void main() {
     );
 
     test('columnRowMap holds the highest row used in each column', () {
+      // ignore: deprecated_member_use_from_same_package
       expect(frame.columnRowMap, {0: 2, 1: 2, 2: 1, 3: 0, 4: -1, 5: -1, 6: -1});
     });
 

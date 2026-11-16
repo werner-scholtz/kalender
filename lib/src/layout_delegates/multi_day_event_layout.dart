@@ -206,6 +206,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     layoutInfo: layoutInfo,
     events: sortedEvents,
     totalNumberOfRows: sortedEvents.isEmpty ? 0 : maxRow + 1,
+    // ignore: deprecated_member_use_from_same_package
     columnRowMap: columnRowMap,
     // The columns above were ordered by this, so the frame has to read them back the same way.
     textDirection: textDirection,
@@ -281,7 +282,7 @@ class MultiDayLayoutFrame {
   final int totalNumberOfRows;
 
   /// The highest row used in each column, -1 for a column without events.
-  @Deprecated(_columnRowMapDeprecation)
+  @Deprecated('Nothing reads it. Read the rows from layoutInfo. Will be removed in 0.35.0.')
   final Map<int, int> columnRowMap;
 
   /// The direction the columns run in.
@@ -295,11 +296,10 @@ class MultiDayLayoutFrame {
     required this.layoutInfo,
     required this.events,
     required this.totalNumberOfRows,
-    @Deprecated(_columnRowMapDeprecation) this.columnRowMap = const {},
+    @Deprecated('Nothing reads it. Read the rows from layoutInfo. Will be removed in 0.35.0.')
+    this.columnRowMap = const {},
     this.textDirection = TextDirection.ltr,
   });
-
-  static const _columnRowMapDeprecation = 'Nothing reads it. Read the rows from layoutInfo. Will be removed in 0.35.0.';
 
   /// Returns the date for the given column index.
   ///

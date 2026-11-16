@@ -217,8 +217,12 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// The layout frame that contains all the data needed to display the events.
   MultiDayLayoutFrame? _frame;
 
-  /// Get the render box of the widget.
-  RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
+  /// The box the overlay card is measured against. In a month row with the overflow buttons in the last row, it ends at
+  /// the bottom of the buttons, otherwise it is the whole widget.
+  RenderBox getRenderBox() => (_lastRowButtonsKey.currentContext ?? context).findRenderObject()! as RenderBox;
+
+  /// The overflow buttons in the last row of a month row, with the rows above them as padding.
+  final _lastRowButtonsKey = GlobalKey();
 
   /// The one overlay of this widget. It shows the open day while that day is in the widget's range.
   final _portalController = OverlayPortalController();
@@ -499,7 +503,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         : null;
 
     // In a month row the buttons take the place of the hidden tiles in the last row.
-    final buttonsInLastRow = widget.availableRows != null && rows > 0;
+    final buttonsInLastRow = overflowButtons != null && widget.availableRows != null && rows > 0;
 
     return OverlayPortal(
       controller: _portalController,
@@ -511,16 +515,16 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
             children: [
               multiDayEventsWidget,
               // Not positioned, so a button taller than a tile grows the stack and stays tappable.
-              if (overflowButtons != null && buttonsInLastRow)
+              if (buttonsInLastRow)
                 Padding(
+                  key: _lastRowButtonsKey,
                   padding: EdgeInsets.only(top: (rows - 1) * widget.configuration.tileHeight),
-                  child: overflowButtons,
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [anchors, overflowButtons]),
                 ),
               PassThroughPointer(child: dropTargetWidget),
             ],
           ),
-          anchors,
-          if (overflowButtons != null && !buttonsInLastRow) overflowButtons,
+          if (!buttonsInLastRow) ...[anchors, ?overflowButtons],
         ],
       ),
     );
