@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:timezone/data/latest_10y.dart';
@@ -106,12 +107,11 @@ void main() {
     });
 
     test('opens on today in the location without initialDateTime', () {
-      final kiritimati = getLocation('Pacific/Kiritimati');
-      controller.location = kiritimati;
-      FloatingDateTime today() => FloatingDateTime.fromDateTime(TZDateTime.now(kiritimati)).startOfDay;
-      final before = today();
-      final start = create(MultiDayViewConfiguration.singleDay()).floatingVisibleRange.value.start;
-      expect(start, anyOf(before, today()));
+      controller.location = getLocation('Pacific/Kiritimati');
+      withClock(Clock.fixed(DateTime.utc(2026, 1, 15, 12)), () {
+        final start = create(MultiDayViewConfiguration.singleDay()).floatingVisibleRange.value.start;
+        expect(start, FloatingDateTime(2026, 1, 16));
+      });
     });
 
     test('opens on the location of the controller', () {
