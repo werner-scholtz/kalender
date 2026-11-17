@@ -64,7 +64,7 @@ The sections below cover what is left after the fixes have run.
 
 ## v0.33.x → v0.34.0
 
-`dart fix` does not apply to this upgrade.
+`dart fix` does not cover the removals below.
 
 ### The members deprecated in 0.33.0 are removed
 

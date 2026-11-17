@@ -9,25 +9,26 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 
 ### Behavior Changes
 
-- In a widget test the calendar follows the test's clock, so `tester.pump` with a duration moves the time indicator.
-- The `numberOfHiddenRows` that `OverlayBuilders.multiDayOverlayPortalBuilder` and `multiDayPortalOverlayButtonBuilder` receive is the number of hidden events on the day. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+- In a widget test the calendar's current time advances with `tester.pump(duration)`, so the time indicator moves.
+- The overflow button of the month body and the multi-day header shows the number of hidden events on its day. `OverlayBuilders.multiDayOverlayPortalBuilder` and `multiDayPortalOverlayButtonBuilder` receive that number as `numberOfHiddenRows`. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 
 ### Deprecations
 
-- `MultiDayLayoutFrame.columnRowMap` is deprecated and is removed in 0.35.0. Nothing reads it. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+- `MultiDayLayoutFrame.columnRowMap` is deprecated and is removed in 0.35.0. The calendar counts the overflow buttons from `layoutInfo`, and the constructor no longer requires it. `dart fix` removes the argument. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 
 ### Features
 
-- `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
+- `MultiDayBodyComponents.dayCellBuilder` builds the background of each day column of the multi-day body from a `DayCellDetails`, behind the hour lines and the events.
 - The calendar reads the current time from the `clock` package, so a test can set it with `withClock` or `fakeAsync`.
-- `MultiDayLayoutFrame.visibleEventsInRows` returns the events shown when the overflow buttons share the last row with the tiles. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+- `MultiDayLayoutFrame.visibleEventsInRows` returns the events the month body shows in a given number of rows, with the overflow buttons in the last of them. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 - `DayCellDetails.isSelected` and `MonthDayCellDetails.isSelected` say whether the day is in the selected range. [#262](https://github.com/werner-scholtz/kalender/issues/262)
-- `KalenderThemeData.dayCellStyle` sets `DayCellStyle.selectedColor`, the color of a selected day, drawn by `MonthDayCell`, which gets `isSelected`, and by the default cell of the multi-day body. [#262](https://github.com/werner-scholtz/kalender/issues/262)
+- `KalenderThemeData.dayCellStyle` takes a `DayCellStyle`, whose `selectedColor` tints a selected day in the default cells of the month and multi-day bodies. [#262](https://github.com/werner-scholtz/kalender/issues/262)
+- `MonthDayCell` takes `isSelected` and draws `DayCellStyle.selectedColor` on a selected day. `MonthDayCell.shadeAdjacentMonths` does the same. [#262](https://github.com/werner-scholtz/kalender/issues/262)
 - `MonthDayCellDetails` compares by value. [#262](https://github.com/werner-scholtz/kalender/issues/262)
 
 ### Fixes
 
-- A tile in the last row of a month row is hidden only when a day it covers has a tile below the last row. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+- In the month body, a day with more events than fit hides the last-row tiles of that day only, not of every day in its week. A hidden tile that spans several days is hidden on all of them. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 - Snapping to the time indicator while dragging or resizing an event uses `nowCallback` when it is set. [#663](https://github.com/werner-scholtz/kalender/issues/663)
 
 ## 0.33.1
