@@ -149,9 +149,10 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
   }
 
   void _updatePageNumberAndIndex() {
-    final nowCallback = widget.viewController.viewConfiguration.nowCallback;
-    final location = widget.viewController.location;
-    final today = FloatingDateTime.fromDateTime(nowCallback != null ? nowCallback() : currentTime(location));
+    final today = floatingNow(
+      nowCallback: widget.viewController.viewConfiguration.nowCallback,
+      location: widget.viewController.location,
+    );
     final now = today.startOfDay;
     final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
     todayPageNumber = pageNavigation.indexFromDate(today, widget.viewController.location);

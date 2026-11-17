@@ -18,7 +18,7 @@ class MultiDayViewController extends ViewController {
   MultiDayViewController({required this.viewConfiguration, required ViewSnapshot initial, super.location})
     : super(initialVisibleRange: _initialVisibleRange(viewConfiguration, initial.date, location)) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
-    final now = FloatingDateTime.fromDateTime(currentTime(location));
+    final now = floatingNow(location: location);
     initialPage = pageIndexCalculator.indexFromDate(initial.date, location);
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;

@@ -26,6 +26,10 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 
 - A tile in the last row of a month row is hidden only when a day it covers has a tile below the last row. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 
+### Fixes
+
+- Snapping to the time indicator while dragging or resizing an event uses `nowCallback` when it is set. [#663](https://github.com/werner-scholtz/kalender/issues/663)
+
 ## 0.33.1
 
 ### Fixes

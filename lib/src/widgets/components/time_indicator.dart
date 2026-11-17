@@ -155,9 +155,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    final now = widget.nowCallback != null
-        ? FloatingDateTime.fromDateTime(widget.nowCallback!())
-        : FloatingDateTime.fromDateTime(currentTime(widget.location));
+    final now = floatingNow(nowCallback: widget.nowCallback, location: widget.location);
     final startTime = widget.timeOfDayRange.start.toFloatingDateTime(now);
     final endTime = widget.timeOfDayRange.end.toFloatingDateTime(now);
     final showIndicator = now.isAfter(startTime) && now.isBefore(endTime);
