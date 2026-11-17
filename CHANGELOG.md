@@ -9,7 +9,7 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 
 ### Behavior Changes
 
-- In a widget test the calendar follows the test's clock, so `tester.pump` with a duration moves the time indicator.
+- In a widget test the time indicator follows the test's `clock`, so `tester.pump` with a duration moves it.
 - The `numberOfHiddenRows` that `OverlayBuilders.multiDayOverlayPortalBuilder` and `multiDayPortalOverlayButtonBuilder` receive is the number of hidden events on the day. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 
 ### Deprecations
@@ -18,11 +18,12 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 
 ### Features
 
-- `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
+- `MultiDayBodyComponents.dayCellBuilder` builds the background of each day column of the multi-day body, behind the hour lines and the events.
 - The calendar reads the current time from the `clock` package, so a test can set it with `withClock` or `fakeAsync`.
 - `MultiDayLayoutFrame.visibleEventsInRows` returns the events shown when the overflow buttons share the last row with the tiles. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 - `DayCellDetails.isSelected` and `MonthDayCellDetails.isSelected` say whether the day is in the selected range. [#262](https://github.com/werner-scholtz/kalender/issues/262)
-- `KalenderThemeData.dayCellStyle` sets `DayCellStyle.selectedColor`, the color of a selected day, drawn by `MonthDayCell`, which gets `isSelected`, and by the default cell of the multi-day body. [#262](https://github.com/werner-scholtz/kalender/issues/262)
+- `KalenderThemeData.dayCellStyle` takes a `DayCellStyle`, whose `selectedColor` tints a selected day in the default cells of the month and multi-day bodies. [#262](https://github.com/werner-scholtz/kalender/issues/262)
+- `MonthDayCell` takes `isSelected`. [#262](https://github.com/werner-scholtz/kalender/issues/262)
 - `MonthDayCellDetails` compares by value. [#262](https://github.com/werner-scholtz/kalender/issues/262)
 
 ### Fixes
