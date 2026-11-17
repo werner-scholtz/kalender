@@ -10,11 +10,21 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 ### Behavior Changes
 
 - In a widget test the calendar follows the test's clock, so `tester.pump` with a duration moves the time indicator.
+- The `numberOfHiddenRows` that `OverlayBuilders.multiDayOverlayPortalBuilder` and `multiDayPortalOverlayButtonBuilder` receive is the number of hidden events on the day. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+
+### Deprecations
+
+- `MultiDayLayoutFrame.columnRowMap` is deprecated and is removed in 0.35.0. Nothing reads it. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 
 ### Features
 
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
 - The calendar reads the current time from the `clock` package, so a test can set it with `withClock` or `fakeAsync`.
+- `MultiDayLayoutFrame.visibleEventsInRows` returns the events shown when the overflow buttons share the last row with the tiles. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+
+### Fixes
+
+- A tile in the last row of a month row is hidden only when a day it covers has a tile below the last row. [#664](https://github.com/werner-scholtz/kalender/issues/664)
 
 ## 0.33.1
 

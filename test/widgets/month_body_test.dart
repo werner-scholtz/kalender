@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: MIT
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -384,6 +386,100 @@ void main() {
 
       expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
       expectButtonsInsideRows(tester);
+    });
+
+    // #664: a day gives up its last row only when its own events do not fit. 13 January 2025 is a Monday.
+    final monday = DateTime(2025, 1, 13);
+    KalenderEvent allDay(int day, {int days = 1}) {
+      return KalenderEvent(start: DateTime(2025, 1, day), end: DateTime(2025, 1, day + days));
+    }
+
+    /// The label of each overflow button in the week of [monday], as `day:label`.
+    String labelsByDay(WidgetTester tester) => [
+      for (var day = 13; day <= 19; day++)
+        for (final text in tester.widgetList<Text>(
+          find.descendant(
+            of: find.byKey(MultiDayPortalOverlayButton.getKey(DateTime.utc(2025, 1, day))),
+            matching: find.byKey(MultiDayPortalOverlayButton.textKey),
+          ),
+        ))
+          '$day:${text.data}',
+    ].join(' ');
+
+    final sharedRowCases = <({String name, int mondayEvents, List<KalenderEvent> events, int tiles, String labels})>[
+      (
+        name: 'a day that overflows hides only its own tile in the last row',
+        mondayEvents: 4,
+        events: [
+          for (var day = 14; day <= 19; day++)
+            for (var i = 0; i < 3; i++) allDay(day),
+        ],
+        tiles: 20,
+        labels: '13:+2',
+      ),
+      (
+        name: 'a hidden tile in the last row gives each day it covers a button',
+        mondayEvents: 1,
+        events: [allDay(13, days: 3), allDay(13, days: 3), allDay(13, days: 2)],
+        tiles: 2,
+        labels: '13:+2 14:+1',
+      ),
+    ];
+
+    for (final c in sharedRowCases) {
+      testWidgets(c.name, (tester) async {
+        await pumpOverflowingMonth(
+          tester,
+          day: monday,
+          eventCount: c.mondayEvents,
+          events: c.events,
+          bodyConfiguration: const MonthBodyConfiguration(tileHeight: 32),
+          components: components,
+        );
+
+        expect(
+          (tiles: find.byType(MultiDayEventTile).evaluate().length, labels: labelsByDay(tester)),
+          (tiles: c.tiles, labels: c.labels),
+        );
+        expectButtonsInsideRows(tester);
+      });
+    }
+
+    testWidgets('an overflow button sits in the last row', (tester) async {
+      final tuesday = [for (var i = 0; i < 3; i++) allDay(14)];
+      await pumpOverflowingMonth(
+        tester,
+        day: monday,
+        eventCount: 4,
+        events: tuesday,
+        bodyConfiguration: const MonthBodyConfiguration(tileHeight: 32),
+        components: components,
+      );
+      final lastRowTop = tuesday
+          .map((event) => tester.getTopLeft(find.byKey(MultiDayEventTile.tileKey(event.id))).dy)
+          .reduce(max);
+
+      final button = find.byKey(MultiDayPortalOverlayButton.getKey(DateTime.utc(2025, 1, 13)));
+      expect(tester.getTopLeft(button).dy, lastRowTop);
+    });
+
+    testWidgets('an overflow button taller than a tile uses the room below the last row', (tester) async {
+      // 5 rows of 18 fit in 96, which leaves 24 for a label taller than 18 in the last row.
+      await pumpOverflowingMonth(
+        tester,
+        day: monday,
+        bodyConfiguration: const MonthBodyConfiguration(tileHeight: 18),
+        components: components,
+      );
+      final button = find.byKey(MultiDayPortalOverlayButton.getKey(DateTime.utc(2025, 1, 13)));
+      final rowTop = tester.getTopLeft(find.byType(MonthWeek).at(2)).dy;
+      expect(tester.getBottomLeft(button).dy, greaterThan(rowTop + 24 + 5 * 18));
+
+      await tester.tapAt(tester.getBottomLeft(button) + const Offset(4, -1));
+      await tester.pumpAndSettle();
+
+      final view = tester.widget<KalenderView>(find.byType(KalenderView));
+      expect(view.kalenderController.openDayOverlay.value, FloatingDateTime(2025, 1, 13));
     });
   });
 }

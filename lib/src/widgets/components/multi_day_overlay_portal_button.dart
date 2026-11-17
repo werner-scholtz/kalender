@@ -14,8 +14,8 @@ import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The builder used to create the button for the [MultiDayPortalOverlayButton].
 ///
-/// [portalController] is the controller for the overlay portal. [numberOfHiddenRows] is the number of events that are
-/// not displayed because of constraints.
+/// [portalController] is the controller for the overlay portal. [numberOfHiddenRows] is
+/// [MultiDayPortalOverlayButton.numberOfHiddenRows].
 ///
 /// Resolve the style with [KalenderTheme].
 ///
@@ -102,6 +102,8 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
 
   final MultiDayPortalOverlayButtonStyle? style;
   final OverlayPortalController portalController;
+
+  /// The number of hidden events on the button's day.
   final int numberOfHiddenRows;
 
   /// Builds the button's label. Resolved from the [OverlayBuilders] that apply to this view, so it follows the same

@@ -1,0 +1,21 @@
+// This file is part of kalender.
+//
+// SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+//
+// SPDX-License-Identifier: MIT
+
+// The input for `fix_multi_day_layout_frame.yaml`. Run `dart fix --compare-to-golden test_fixes`.
+
+import 'package:kalender/kalender.dart';
+
+final range = FloatingDateTimeRange(
+  start: FloatingDateTime(2025, 3, 24),
+  end: FloatingDateTime(2025, 3, 31),
+);
+final frame = MultiDayLayoutFrame(
+  range: range,
+  layoutInfo: const [],
+  events: const [],
+  totalNumberOfRows: 0,
+  columnRowMap: const {},
+);

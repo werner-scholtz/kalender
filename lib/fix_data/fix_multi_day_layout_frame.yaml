@@ -1,0 +1,18 @@
+# For details regarding the Flutter Fix feature, see https://flutter.dev/to/flutter-fix
+#
+# Every fix must be tested. The fixtures live in `test_fixes/`, checked by
+# `dart fix --compare-to-golden test_fixes`, which CI runs.
+#
+# For documentation about this file format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+transforms:
+  - title: "Remove 'columnRowMap'"
+    date: 2026-11-16
+    element:
+      uris: [ 'package:kalender/kalender.dart' ]
+      constructor: ''
+      inClass: 'MultiDayLayoutFrame'
+    changes:
+      - kind: 'removeParameter'
+        name: 'columnRowMap'
