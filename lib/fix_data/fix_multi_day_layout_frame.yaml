@@ -8,7 +8,7 @@
 version: 1
 transforms:
   - title: "Remove 'columnRowMap'"
-    date: 2026-11-16
+    date: 2026-11-17
     element:
       uris: [ 'package:kalender/kalender.dart' ]
       constructor: ''

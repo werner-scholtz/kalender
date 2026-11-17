@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:example/tiles.dart';
+import 'package:example/working_hours_cell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
@@ -109,6 +110,12 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   late final kalenderController = KalenderController(viewConfiguration: viewConfigurations[0]);
 
+  static final components = KalenderComponents(
+    multiDayComponents: MultiDayComponents(
+      bodyComponents: MultiDayBodyComponents(dayCellBuilder: (context, details) => WorkingHoursCell(details)),
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -156,6 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: KalenderView(
         eventsController: eventsController,
         kalenderController: kalenderController,
+        components: components,
         callbacks: KalenderCallbacks(
           onEventTapped: (event) => kalenderController.selectEvent(event),
           onEventCreate: (event) {

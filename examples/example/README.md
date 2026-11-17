@@ -6,6 +6,7 @@ A single-screen calendar showing the common building blocks of `kalender`:
 - A toolbar with today / previous / next navigation and a month-year label.
 - Sample events, plus create, drag, and resize.
 - A custom `Event` subclass carrying a title and color, and custom tile components.
+- A day cell builder that shades weekends and the hours outside 09:00 to 17:00, and tints today.
 
 Run it from this directory:
 

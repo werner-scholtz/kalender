@@ -319,3 +319,26 @@ Pass a `KalenderComponents` object to `KalenderView` to override the default wid
   )
   ```
 </details>
+
+### Day cells
+
+Two builders draw the background of a day, behind its events:
+
+|             | Month                                               | Multi-day                                                            |
+| ----------- | --------------------------------------------------- | -------------------------------------------------------------------- |
+| Builder     | `MonthBodyComponents.monthDayCellBuilder`           | `MultiDayBodyComponents.dayCellBuilder`                              |
+| Details     | `MonthDayCellDetails`                               | `DayCellDetails`                                                     |
+| Fields      | `date`, `isToday`, `isSelected`, `isInFocusedMonth` | `date`, `isToday`, `isSelected`, `timeOfDayRange`, `heightPerMinute` |
+| Fills       | One cell of the grid                                | One day column, behind the hour lines                                |
+| Without one | `MonthDayCell`                                      | A tint on a selected day                                             |
+
+`DayCellStyle.selectedColor` tints a selected day in both bodies when no builder is set. It is null by default, so a selected day shows only on its day number. A builder draws the selection itself from `isSelected`. In the month body, `MonthDayCell(isSelected: details.isSelected)` draws the tint.
+
+<!-- snippet: expression -->
+```dart
+KalenderThemeData(
+  dayCellStyle: DayCellStyle(selectedColor: Colors.blue.withValues(alpha: 0.12)),
+)
+```
+
+`timeOfDayRange` and `heightPerMinute` place a widget at a time of day in the column. The [basic example](../examples/example/lib/working_hours_cell.dart) shades the hours outside 09:00 to 17:00 this way.
