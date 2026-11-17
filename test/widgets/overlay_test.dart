@@ -126,6 +126,13 @@ void main() {
       expect(rects.card.top, greaterThanOrEqualTo(rects.view.top));
     });
 
+    // #664: moving the overflow buttons into the last row of a month row does not move the card.
+    testWidgets('a card opened from an overflowing month row keeps its position', (tester) async {
+      final rects = await openOverlay(tester, day: DateTime.utc(2025, 1, 13), eventCount: 8);
+
+      expect(rects.card.top, 184.0);
+    });
+
     testWidgets('a day in the first week row stays inside the view', (tester) async {
       final rects = await openOverlay(tester, day: firstRowDay, eventCount: 8);
 

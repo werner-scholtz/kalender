@@ -258,7 +258,8 @@ class MultiDayBodyComponents {
   /// Builds the time indicator, with [timeIndicator] when set.
   ///
   /// [nowCallback] reaches the default [TimeIndicator] only. A custom [timeIndicator] decides for itself what the
-  /// current time is.
+  /// current time is, but its column and `KalenderSnapping.snapToTimeIndicator` follow [nowCallback], so a custom
+  /// indicator should read it from `KalenderScope.viewControllerOf(context).viewConfiguration.nowCallback`.
   Widget buildTimeIndicator(
     BuildContext context,
     KalenderTimeRange timeOfDayRange,

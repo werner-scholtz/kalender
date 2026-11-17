@@ -38,7 +38,12 @@ void main() {
       controller = KalenderController(viewConfiguration: MultiDayViewConfiguration.week());
     });
 
-    Widget buildLayoutWidget({required HorizontalConfiguration configuration, double? width, double? height}) {
+    Widget buildLayoutWidget({
+      required HorizontalConfiguration configuration,
+      double? width,
+      double? height,
+      int? availableRows,
+    }) {
       return wrapWithMaterialApp(
         TestProvider(
           kalenderController: controller,
@@ -53,7 +58,7 @@ void main() {
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               configuration: configuration,
-              availableRows: null,
+              availableRows: availableRows,
               multiDayCache: null,
               location: null,
             ),
@@ -343,8 +348,106 @@ void main() {
 
       expectNoOverlaps([for (final event in events.take(3)) tester.getRect(find.byKey(ValueKey(event.id)))]);
     });
+
+    // #664: a day whose only hidden tile sits below an empty row.
+    //   24   25   26   27
+    //   |S|  |------A-----|
+    //        |---B---|
+    //   |---W---|
+    for (final c in [
+      (
+        name: 'header',
+        configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 1),
+        availableRows: null,
+      ),
+      (name: 'month row', configuration: const MonthBodyConfiguration(tileHeight: 50.0), availableRows: 2),
+    ]) {
+      testWidgets('${c.name} overflow buttons count the hidden events of their day', (tester) async {
+        eventsController.addEvents(rowGapEvents());
+
+        await tester.pumpWidget(buildLayoutWidget(configuration: c.configuration, availableRows: c.availableRows));
+        await tester.pumpAndSettle();
+
+        expect(overflowButtonTexts(tester), ['+1', '+2', '+1']);
+      });
+    }
+
+    // #664: the drag preview in a month row follows the same rule as the tiles.
+    for (final c in [
+      (name: 'shows in a row the tiles do not use yet', singlesOn: null, shown: true),
+      (name: 'shows in the last row when its days fit', singlesOn: 28, shown: true),
+      (name: 'hides in the last row when one of its days overflows', singlesOn: 25, shown: false),
+    ]) {
+      testWidgets('A month row drag preview ${c.name}', (tester) async {
+        final dragged = KalenderEvent(start: DateTime(2025, 3, 29), end: DateTime(2025, 3, 31));
+        final singlesOn = c.singlesOn;
+        eventsController.addEvents([
+          KalenderEvent(start: DateTime(2025, 3, 24), end: DateTime(2025, 3, 27)),
+          dragged,
+          if (singlesOn != null)
+            for (var i = 0; i < 3; i++)
+              KalenderEvent(start: DateTime(2025, 3, singlesOn), end: DateTime(2025, 3, singlesOn + 1)),
+        ]);
+
+        await tester.pumpWidget(
+          buildLayoutWidget(configuration: const MonthBodyConfiguration(tileHeight: 50.0), availableRows: 2),
+        );
+        await tester.pumpAndSettle();
+
+        controller.selectEvent(
+          dragged.withDateTimeRange(KalenderDateTimeRange(start: DateTime(2025, 3, 25), end: DateTime(2025, 3, 27))),
+          internal: true,
+        );
+        await tester.pump();
+
+        expect(find.byKey(const ValueKey('drop-target')), c.shown ? findsOneWidget : findsNothing);
+      });
+    }
+  });
+
+  group('MultiDayLayoutFrame.visibleEventsInRows', () {
+    final events = rowGapEvents();
+    final [a, b, w, s] = events;
+    final frame = defaultMultiDayFrameGenerator(
+      visibleRange: FloatingDateTimeRange(start: FloatingDateTime(2025, 3, 24), end: FloatingDateTime(2025, 3, 31)),
+      events: events,
+      textDirection: TextDirection.ltr,
+      location: null,
+    );
+
+    test('columnRowMap holds the highest row used in each column', () {
+      // ignore: deprecated_member_use_from_same_package
+      expect(frame.columnRowMap, {0: 2, 1: 2, 2: 1, 3: 0, 4: -1, 5: -1, 6: -1});
+    });
+
+    for (final c in [
+      (availableRows: 0, shown: <KalenderEvent>[]),
+      (availableRows: 1, shown: <KalenderEvent>[]),
+      (availableRows: 2, shown: [a, s]),
+      (availableRows: 3, shown: [a, b, w, s]),
+    ]) {
+      test('${c.availableRows} rows show ${c.shown.length} events', () {
+        final (shownEvents, layoutInfo) = frame.visibleEventsInRows(c.availableRows);
+
+        expect(
+          [for (final (i, event) in shownEvents.indexed) (event, layoutInfo[i].id)],
+          [for (final event in c.shown) (event, event.id)],
+        );
+      });
+    }
   });
 }
+
+/// Events in the week of 24 March 2025 that leave Monday with an empty row between its tiles.
+///
+/// A takes row 0 from Tuesday to Thursday, B row 1 on Tuesday and Wednesday, W row 2 on Monday and Tuesday, and S row
+/// 0 on Monday.
+List<KalenderEvent> rowGapEvents() => [
+  KalenderEvent(start: DateTime(2025, 3, 25), end: DateTime(2025, 3, 28)),
+  KalenderEvent(start: DateTime(2025, 3, 25), end: DateTime(2025, 3, 27)),
+  KalenderEvent(start: DateTime(2025, 3, 24, 12), end: DateTime(2025, 3, 25, 12)),
+  KalenderEvent(start: DateTime(2025, 3, 24, 9), end: DateTime(2025, 3, 24, 10)),
+];
 
 /// Keeps the built-in row assignment but orders the events with [comparator], which [MultiDayLayoutStrategy] itself
 /// does not expose.

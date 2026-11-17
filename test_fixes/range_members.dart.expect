@@ -46,7 +46,6 @@ MultiDayLayoutFrame frame(FloatingDateTimeRange r) => MultiDayLayoutFrame(
   events: const [],
   layoutInfo: const [],
   totalNumberOfRows: 0,
-  columnRowMap: const {},
   textDirection: TextDirection.ltr,
 );
 

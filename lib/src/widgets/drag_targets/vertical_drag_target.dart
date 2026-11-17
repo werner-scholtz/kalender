@@ -302,7 +302,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final duration = event.duration;
     var end = start.add(duration);
 
-    late final now = FloatingDateTime.fromDateTime(currentTime(context.location));
+    late final now = floatingNow(nowCallback: viewController.viewConfiguration.nowCallback, location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final startSnapPoint = findSnapPoint(start, snapRange);
@@ -334,7 +334,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   KalenderEvent? resizeEvent(KalenderEvent event, ResizeDirection direction, FloatingDateTime cursorDateTime) {
     if (!direction.vertical) return null;
 
-    late final now = FloatingDateTime.fromDateTime(currentTime(context.location));
+    late final now = floatingNow(nowCallback: viewController.viewConfiguration.nowCallback, location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;

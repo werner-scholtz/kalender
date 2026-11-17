@@ -158,11 +158,12 @@ DefaultEventsController controllerWithOverflowOn(DateTime day, {int count = 8}) 
   return eventsController;
 }
 
-/// Pumps an 800 by 600 single-month view of January 2025 with [eventCount] all-day events on [day].
+/// Pumps an 800 by 600 single-month view of January 2025 with [eventCount] all-day events on [day], and [events].
 Future<void> pumpOverflowingMonth(
   WidgetTester tester, {
   required DateTime day,
   int eventCount = 8,
+  List<KalenderEvent> events = const [],
   MonthBodyConfiguration? bodyConfiguration,
   KalenderComponents? components,
   NowCallback? nowCallback,
@@ -172,7 +173,7 @@ Future<void> pumpOverflowingMonth(
 }) {
   tester.setViewSize(const Size(800, 600));
 
-  final eventsController = controllerWithOverflowOn(day, count: eventCount);
+  final eventsController = controllerWithOverflowOn(day, count: eventCount)..addEvents(events);
   addTearDown(eventsController.dispose);
   final kalenderController = KalenderController(
     viewConfiguration: MonthViewConfiguration.singleMonth(

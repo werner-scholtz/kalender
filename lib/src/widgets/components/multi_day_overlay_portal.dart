@@ -11,6 +11,8 @@ import 'package:kalender/src/widgets/internal_components/day_overlay.dart';
 
 /// A function that returns a [MultiDayOverlayPortal].
 ///
+/// `numberOfHiddenRows` is [MultiDayOverlayPortal.numberOfHiddenRows].
+///
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}
@@ -33,7 +35,7 @@ class MultiDayOverlayPortal extends StatelessWidget {
   /// The date for which the widget is created.
   final FloatingDateTime date;
 
-  /// The number of hidden rows.
+  /// The number of hidden events on [date].
   final int numberOfHiddenRows;
 
   /// The builders for the overlay.
