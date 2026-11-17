@@ -70,6 +70,8 @@ MultiDayViewConfiguration.week(
 )
 ```
 
+`MultiDayBodyComponents.dayCellBuilder` draws a background behind each day column, such as shading the hours outside working hours. See [Day cells](appearance.md#day-cells).
+
 ## Month View
 Shows a whole month, weeks as rows.
 

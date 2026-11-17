@@ -81,6 +81,8 @@ If Flutter promotes a canonical range type ([#97496](https://github.com/flutter/
 
 **Each `KalenderView` holds the view controller it shows.** Two views on one controller, during a route transition or with a calendar route pushed over another, do not share page controllers, and a view mounted again reopens where the last one was. An animated switch between views needs the same thing, an outgoing view that stays on screen, so [#280](https://github.com/werner-scholtz/kalender/issues/280) builds on it.
 
+**A calendar is assembled from parts rather than configured as one whole.** The parts are theming, the state layer `KalenderScope`, the view parts and the day cell builders of the month and multi-day bodies. A yearly view and a mobile month view are new `ViewParts` and are listed under [Features](#features).
+
 ## Before 1.0.0
 
 ### The next breaking window
@@ -94,15 +96,6 @@ A breaking change with no release attached waits for the next release that alrea
 ### Known defects
 
 The `TODO` comments in `lib/` mark possible defects, none confirmed. `grep -rn TODO lib/` lists them. Measure before changing one about rebuild cost.
-
-### Composability, still open
-
-It reshapes public API, so the shape has to settle before 1.0.0.
-
-Theming was the first part of a larger idea: assembling a calendar from parts rather than configuring one whole. The state layer, `KalenderScope`, was the second, and the view parts the third. What is left:
-
-- **The calendar selecting on its own,** on tap or as a range dragged across days ([#89](https://github.com/werner-scholtz/kalender/issues/89)).
-- **A yearly view and a mobile month view,** [#40](https://github.com/werner-scholtz/kalender/issues/40) and [#264](https://github.com/werner-scholtz/kalender/issues/264), possible as `ViewParts` and not built.
 
 ### Accessibility
 
