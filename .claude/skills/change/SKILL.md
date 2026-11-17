@@ -44,3 +44,5 @@ Leave the `Fixes` line out when the change has no issue. The rules for it and fo
 - Never force-push a branch someone else has reviewed. Rebase a stack only when the owner asks.
 - Never merge, tag or publish.
 - Never submit a review on GitHub. Round two leaves a pending review for the owner.
+- In a git worktree, the examples resolve the package through `../../../kalender`, so `dart tool/check.dart` with no flags fails unless the worktree folder is named `kalender`. Link it for the run, for example `ln -s <worktree> ../kalender` from the worktree, and remove the link afterwards.
+- Wait for a running check on its process id. A loop on `pgrep -f "tool/check.dart"` also matches its own shell and never ends.
