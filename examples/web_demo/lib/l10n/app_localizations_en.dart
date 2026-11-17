@@ -214,6 +214,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scopedThemeHint => 'Wraps this calendar in a KalenderTheme';
 
   @override
+  String get tintSelectedDays => 'Tint selected days';
+
+  @override
   String get shadeAdjacentMonthDays => 'Shade adjacent-month days';
 
   @override

@@ -60,6 +60,7 @@ class _CalendarContentState extends State<CalendarContent> {
                   listenable: Listenable.merge([
                     context.configuration.shadeAdjacentMonthNotifier,
                     context.configuration.scopedThemeNotifier,
+                    context.configuration.tintSelectedDaysNotifier,
                     context.configuration.interactionBody,
                   ]),
                   builder: (context, _) => _scope(
@@ -195,13 +196,17 @@ class _CalendarContentState extends State<CalendarContent> {
     );
   }
 
-  /// Wraps the calendar in a [KalenderTheme] when the scoped theme is on.
+  /// Wraps the calendar in a [KalenderTheme] when the scoped theme or the selected day color is on.
   Widget _scope(BuildContext context, Widget child) {
-    if (!context.configuration.scopedTheme) return child;
-    return KalenderTheme(
-      data: buildScopedCalendarTheme(Theme.of(context).colorScheme),
-      child: child,
-    );
+    final configuration = context.configuration;
+    if (!configuration.scopedTheme && !configuration.tintSelectedDays) return child;
+
+    final colorScheme = Theme.of(context).colorScheme;
+    var data = configuration.scopedTheme ? buildScopedCalendarTheme(colorScheme) : const KalenderThemeData();
+    if (configuration.tintSelectedDays) {
+      data = data.copyWith(dayCellStyle: DayCellStyle(selectedColor: colorScheme.primary.withValues(alpha: 0.12)));
+    }
+    return KalenderTheme(data: data, child: child);
   }
 
   // The colors and text styles live in the app theme as a KalenderThemeData

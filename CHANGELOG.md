@@ -21,13 +21,13 @@ See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
 - `MultiDayBodyComponents.dayCellBuilder` builds a background for each day column of the multi-day body, behind the hour lines.
 - The calendar reads the current time from the `clock` package, so a test can set it with `withClock` or `fakeAsync`.
 - `MultiDayLayoutFrame.visibleEventsInRows` returns the events shown when the overflow buttons share the last row with the tiles. [#664](https://github.com/werner-scholtz/kalender/issues/664)
+- `DayCellDetails.isSelected` and `MonthDayCellDetails.isSelected` say whether the day is in the selected range. [#262](https://github.com/werner-scholtz/kalender/issues/262)
+- `KalenderThemeData.dayCellStyle` sets `DayCellStyle.selectedColor`, the color of a selected day, drawn by `MonthDayCell`, which gets `isSelected`, and by the default cell of the multi-day body. [#262](https://github.com/werner-scholtz/kalender/issues/262)
+- `MonthDayCellDetails` compares by value. [#262](https://github.com/werner-scholtz/kalender/issues/262)
 
 ### Fixes
 
 - A tile in the last row of a month row is hidden only when a day it covers has a tile below the last row. [#664](https://github.com/werner-scholtz/kalender/issues/664)
-
-### Fixes
-
 - Snapping to the time indicator while dragging or resizing an event uses `nowCallback` when it is set. [#663](https://github.com/werner-scholtz/kalender/issues/663)
 
 ## 0.33.1

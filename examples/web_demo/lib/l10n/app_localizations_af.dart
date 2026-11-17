@@ -214,6 +214,9 @@ class AppLocalizationsAf extends AppLocalizations {
   String get scopedThemeHint => 'Omvou hierdie kalender in \'n KalenderTheme';
 
   @override
+  String get tintSelectedDays => 'Kleur geselekteerde dae';
+
+  @override
   String get shadeAdjacentMonthDays => 'Skadu dae van aangrensende maande';
 
   @override

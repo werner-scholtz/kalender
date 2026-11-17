@@ -63,6 +63,7 @@
   "clearSelection": "Cancella selezione",
   "scopedTheme": "Tema locale",
   "scopedThemeHint": "Avvolge questo calendario in un KalenderTheme",
+  "tintSelectedDays": "Colora i giorni selezionati",
   "shadeAdjacentMonthDays": "Ombreggia i giorni dei mesi adiacenti",
   "sideBySide": "Affiancati",
   "overlap": "Sovrapposti",

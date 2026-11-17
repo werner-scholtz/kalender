@@ -295,6 +295,36 @@ void main() {
     );
   });
 
+  group('DayCellStyle', () {
+    const a = DayCellStyle(selectedColor: Color(0xFF000000));
+    const b = DayCellStyle(selectedColor: Color(0xFFFFFFFF));
+
+    test('copyWith', () {
+      expect(a.copyWith(selectedColor: b.selectedColor), b);
+    });
+
+    test('merge', () {
+      expect(const DayCellStyle().merge(a), a);
+      expect(a.merge(const DayCellStyle()), a);
+    });
+
+    test('lerp', () {
+      expect(
+        DayCellStyle.lerp(a, b, 0.5),
+        DayCellStyle(selectedColor: Color.lerp(a.selectedColor, b.selectedColor, 0.5)),
+      );
+    });
+
+    _testStyleContract(
+      a: a,
+      // ignore: prefer_const_constructors
+      copyOfA: DayCellStyle(selectedColor: const Color(0xFF000000)),
+      b: b,
+      merge: (style, other) => style.merge(other),
+      lerp: DayCellStyle.lerp,
+    );
+  });
+
   group('MonthDayHeaderStyle', () {
     const a = MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20));
     const b = MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 20), buttonSize: Size(40, 40));
@@ -587,6 +617,7 @@ void main() {
         TimeIndicatorStyle(),
         WeekNumberStyle(),
         MonthGridStyle(),
+        DayCellStyle(),
         MonthDayHeaderStyle(),
         WeekDayHeaderStyle(),
         ScheduleDateStyle(),

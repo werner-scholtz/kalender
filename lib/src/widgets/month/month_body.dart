@@ -11,6 +11,7 @@ import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
+import 'package:kalender/src/widgets/internal_components/day_selection.dart';
 import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
@@ -99,11 +100,13 @@ class _MonthBody extends StatelessWidget {
           ],
         );
 
-        // Only build the per-day background when a custom cell builder is set, so the default month view does no extra
-        // per-cell work. It is painted below the grid (see the layout delegate) so cell backgrounds do not cover the
-        // grid lines.
-        final hasCellBuilder = monthComponents.bodyComponents.monthDayCellBuilder != null;
-        final background = hasCellBuilder
+        // Only build the per-day background when a cell builder or a selection color is set, so the default month view
+        // does no extra per-cell work. It is painted below the grid (see the layout delegate) so cell backgrounds do
+        // not cover the grid lines.
+        final hasCells =
+            monthComponents.bodyComponents.monthDayCellBuilder != null ||
+            KalenderTheme.of(context).dayCellStyle?.selectedColor != null;
+        final background = hasCells
             ? _MonthDayCellBackground(
                 weekRanges: weekRanges,
                 focusMonthStart: pageNavigation.monthStartFromIndex(index, context.location),
@@ -217,8 +220,8 @@ class MonthWeek extends StatelessWidget {
 
 /// A non-interactive background layer that renders one [MonthDayCell] per day.
 ///
-/// Built only when a custom [MonthBodyComponents.monthDayCellBuilder] is set, and painted below the grid and the day
-/// content so cell styling sits behind them.
+/// Built only when a [MonthBodyComponents.monthDayCellBuilder] or a [DayCellStyle.selectedColor] is set, and painted
+/// below the grid and the day content so cell styling sits behind them.
 class _MonthDayCellBackground extends StatelessWidget {
   final List<FloatingDateTimeRange> weekRanges;
   final FloatingDateTime focusMonthStart;
@@ -236,15 +239,19 @@ class _MonthDayCellBackground extends StatelessWidget {
               children: [
                 for (final date in weekRange.dates())
                   Expanded(
-                    child: Builder(
-                      builder: (context) => context.components.monthComponents.bodyComponents.buildMonthDayCell(
-                        context,
-                        MonthDayCellDetails(
-                          date: date.forLocation(location: context.location),
-                          isToday: context.isToday(date),
-                          isInFocusedMonth: date.month == focusMonthStart.month && date.year == focusMonthStart.year,
-                        ),
-                      ),
+                    child: DaySelectionBuilder(
+                      date: date,
+                      builder: (context, isSelected) =>
+                          context.components.monthComponents.bodyComponents.buildMonthDayCell(
+                            context,
+                            MonthDayCellDetails(
+                              date: date.forLocation(location: context.location),
+                              isToday: context.isToday(date),
+                              isInFocusedMonth:
+                                  date.month == focusMonthStart.month && date.year == focusMonthStart.year,
+                              isSelected: isSelected,
+                            ),
+                          ),
                     ),
                   ),
               ],

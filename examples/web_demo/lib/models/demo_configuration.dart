@@ -117,6 +117,15 @@ class DemoConfiguration extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether a selected day is drawn in a color, demonstrating `DayCellStyle.selectedColor`.
+  ValueNotifier<bool> tintSelectedDaysNotifier = ValueNotifier(false);
+  bool get tintSelectedDays => tintSelectedDaysNotifier.value;
+  set tintSelectedDays(bool value) {
+    if (tintSelectedDaysNotifier.value == value) return;
+    tintSelectedDaysNotifier.value = value;
+    notifyListeners();
+  }
+
   bool get isMobile => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
 
   @override
@@ -132,6 +141,7 @@ class DemoConfiguration extends ChangeNotifier {
       showHeaderNotifier,
       shadeAdjacentMonthNotifier,
       scopedThemeNotifier,
+      tintSelectedDaysNotifier,
     ]) {
       notifier.dispose();
     }

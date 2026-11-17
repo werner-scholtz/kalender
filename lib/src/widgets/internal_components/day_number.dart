@@ -6,11 +6,11 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/controllers/kalender_controller.dart';
 import 'package:kalender/src/models/floating_date_time.dart';
 import 'package:kalender/src/models/kalender_callbacks.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
+import 'package:kalender/src/widgets/internal_components/day_selection.dart';
 
 /// The style of the [DayNumber].
 ///
@@ -143,7 +143,7 @@ class DayNumberStyle with Diagnosticable {
 /// It is never interactive. It is a label that happens to be drawn like a button, so `onPressed` is always null and the
 /// highlight has to set the disabled colors. Without a [KalenderCallbacks.dateLabel] callback it ignores pointers, so a
 /// tap reaches the cell behind it.
-class DayNumber extends StatefulWidget {
+class DayNumber extends StatelessWidget {
   const DayNumber({
     super.key,
     required this.date,
@@ -174,72 +174,35 @@ class DayNumber extends StatefulWidget {
   final Size? size;
 
   @override
-  State<DayNumber> createState() => _DayNumberState();
-}
+  Widget build(BuildContext context) => DaySelectionBuilder(date: date, builder: _build);
 
-class _DayNumberState extends State<DayNumber> {
-  KalenderController? _controller;
-  var _isSelected = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final controller = context.kalenderController;
-    if (controller == _controller) return;
-    _controller?.selectedRange.removeListener(_onSelectionChanged);
-    _controller = controller..selectedRange.addListener(_onSelectionChanged);
-    _isSelected = _computeIsSelected();
-  }
-
-  @override
-  void didUpdateWidget(DayNumber oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.date != widget.date) _isSelected = _computeIsSelected();
-  }
-
-  @override
-  void dispose() {
-    _controller?.selectedRange.removeListener(_onSelectionChanged);
-    super.dispose();
-  }
-
-  bool _computeIsSelected() => _controller!.isDateSelected(widget.date);
-
-  // Rebuilds only when this day's state flips, not on every selection change.
-  void _onSelectionChanged() {
-    final isSelected = _computeIsSelected();
-    if (isSelected != _isSelected) setState(() => _isSelected = isSelected);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _build(BuildContext context, bool isSelected) {
     final hasDateLabel = Callbacks.maybeOf(context)?.dateLabel?.hasAny ?? false;
-    final isToday = widget.isToday;
-    var textStyle = widget.textStyle;
+    var textStyle = this.textStyle;
     ButtonStyle? buttonStyle;
 
-    if (isToday || _isSelected) {
+    if (isToday || isSelected) {
       final style = KalenderTheme.of(context).dayNumberStyle ?? const DayNumberStyle();
-      T? pick<T>(T? selected, T? today) => (_isSelected ? selected : null) ?? (isToday ? today : null);
+      T? pick<T>(T? selected, T? today) => (isSelected ? selected : null) ?? (isToday ? today : null);
       final foreground = pick(style.selectedForegroundColor, style.todayForegroundColor);
       textStyle = (textStyle ?? const TextStyle()).copyWith(color: foreground);
       // Without the disabled colors the button paints greyed out, which reads as "unavailable".
       buttonStyle = IconButton.styleFrom(
         disabledBackgroundColor: pick(style.selectedBackgroundColor, style.todayBackgroundColor),
         disabledForegroundColor: foreground,
-        side: (isToday ? style.todayBorder : null) ?? (_isSelected ? style.selectedBorder : null),
+        side: (isToday ? style.todayBorder : null) ?? (isSelected ? style.selectedBorder : null),
       );
     }
 
     return IgnorePointer(
       ignoring: !hasDateLabel,
       child: IconButton(
-        key: isToday ? widget.todayKey : null,
+        key: isToday ? todayKey : null,
         onPressed: null,
-        icon: Text(widget.text, style: textStyle),
+        icon: Text(text, style: textStyle),
         visualDensity: VisualDensity.compact,
-        padding: widget.size == null ? null : EdgeInsets.zero,
-        constraints: widget.size == null ? null : BoxConstraints.tight(widget.size!),
+        padding: size == null ? null : EdgeInsets.zero,
+        constraints: size == null ? null : BoxConstraints.tight(size!),
         style: buttonStyle,
       ),
     );
