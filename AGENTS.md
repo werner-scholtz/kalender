@@ -57,6 +57,7 @@ CI runs all of these. The `test` job runs in six timezones (`America/New_York`, 
 - Public top-level constants take a `k` prefix. Top-level functions and static constants do not.
 - Every public symbol carries a `{@category ...}` tag naming one of the seven categories in `dartdoc_options.yaml`. The category's page is the matching guide.
 - Comments say what the code does now, not how it got there. A `TODO` stays `//`, since a `///` one renders in the API reference.
+- A change that is not a fix and alters what an existing app draws is opt-in outside a breaking release. A configuration field keeps the old behaviour by default, and a test pins that default.
 
 ### Naming the two range spaces
 
@@ -103,7 +104,7 @@ Events hold instants as UTC `DateTime`. Layout and view coordinates are `Floatin
 
 `EventLayoutStrategy.createDelegate` returns an `EventLayoutDelegate`, and `MultiDayLayoutStrategy.generateFrame` returns a `MultiDayLayoutFrame`. The bases stay open so an app can extend them. A strategy compares on `runtimeType` rather than `other is X`, or a subclass compares equal to what it extends. `EventSnapStrategy` follows the same rule.
 
-A new field on a configuration or strategy is included in `==` and `hashCode`. A function field does not go on a class compared with `==`. Use a class with value equality instead.
+A new field on a configuration or strategy is included in `==` and `hashCode`. A new function field on a configuration or strategy waits for the decision in [ROADMAP.md](ROADMAP.md).
 
 ### Components
 
@@ -141,7 +142,6 @@ Some changes cannot be deprecated and go straight into a breaking batch with a m
 - Changelog entries are one line each and say what changed. The reasoning goes in the pull request.
 - An entry for a change that resolves an issue ends with a link to the issue: `[#645](https://github.com/werner-scholtz/kalender/issues/645)`.
 - Until the version is tagged, amend the existing entries rather than appending.
-- A change to rendering or to a default is opt-in. A configuration field keeps the old behaviour by default, and a test pins that default.
 
 ### Automating a migration
 
@@ -159,12 +159,10 @@ What a fix reaches, measured against a subclass overriding a `@mustBeOverridden`
 
 - A `renameParameter` reaches only the element it names. Give each function and method an app calls or overrides its own transform.
 - A `renameParameter` on a constructor does not reach a subclass's `super.` parameter.
-- A fix does not rewrite `const OldName()` once `OldName` is removed. A rename keeps the old name as a deprecated alias for one release, with the transform against the alias.
 - A renamed extension member is rewritten only where the extension is applied explicitly, not in `context.oldName`. Keep the old member deprecated so the analyzer finds the call sites.
 - `date` is the day the pull request merged.
 - Every fix has a fixture pair in `test_fixes/<name>.dart` and `<name>.dart.expect`, checked by `dart fix --compare-to-golden test_fixes`. `dart fix --apply test_fixes` rewrites the inputs, so restore them with `git checkout -- test_fixes/` after one.
 - A fixture for a fix that derives an argument from another passes an expression, not a variable, so the expected output shows the expression copied into each new argument.
-- A fix triggered by a deprecation is tested in `examples/example`. Inside the package the analyzer reports `deprecated_member_use_from_same_package`, which offers no fix.
 
 Say in the migration guide which edits the fixes leave to the reader.
 
