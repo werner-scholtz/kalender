@@ -130,7 +130,7 @@ Setting the controller's `location` at runtime recreates the view in the new loc
 
 ### Reading an event's time
 
-`start` and `end` on an event are UTC instants. To show them, read the time in the calendar's location:
+`start` and `end` on an event are UTC instants. To show them, read the time in the calendar's location. Inside the calendar's widgets, such as a tile builder, `KalenderScope.locationOf` gives it. Outside them, such as in a dialog, use `kalenderController.location`.
 
 <!-- snippet: file -->
 ```dart
