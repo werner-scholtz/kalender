@@ -11,11 +11,13 @@ Names from older versions that no longer exist:
 | Old | Now |
 | --- | --- |
 | `CalendarEvent<T>(data: ...)` | a subclass of `KalenderEvent` |
+| `CalendarEvent(dateTimeRange: ...)` | `KalenderEvent(start: ..., end: ...)` |
 | `copyWith` on the event | `copyWithData` in the subclass |
 | `CalendarView`, `CalendarController`, `CalendarCallbacks`, `CalendarComponents` | `KalenderView`, `KalenderController`, `KalenderCallbacks`, `KalenderComponents` |
 | `TimeOfDay`, `DateTimeRange` in the API | `KalenderTime`, `KalenderTimeRange`, `KalenderDateTimeRange` |
 | `InternalDateTime`, `InternalDateTimeRange` | `FloatingDateTime`, `FloatingDateTimeRange` |
 | `KalenderView(viewConfiguration:, header:, body:)` | `KalenderController(viewConfiguration:)` and `KalenderView(views: [...])` |
+| `CalendarHeader`, `CalendarBody`, `KalenderHeader`, `KalenderBody` | `MultiDayHeader`, `MultiDayBody`, `MonthHeader`, `MonthBody` and `ScheduleBody`, in the `ViewParts` of `views` |
 
 To upgrade the package in an app, follow [MIGRATION.md](../MIGRATION.md). Do not upgrade it as a side effect of another task.
 
