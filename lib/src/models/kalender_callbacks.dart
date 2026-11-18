@@ -38,13 +38,15 @@ class KalenderCallbacks {
   /// The callback for when an event is about to be created.
   final OnEventCreateWithDetail? onEventCreateWithDetail;
 
-  /// The callback for when an event is created.
+  /// Called when a create gesture ends. The calendar does not store the event, so add it to the [EventsController]
+  /// here.
   final OnEventCreated? onEventCreated;
 
   /// The callback for when an event is about to be changed.
   final OnEventChange? onEventChange;
 
-  /// The callback for when an event is changed.
+  /// Called when a reschedule or resize ends. The calendar does not store the change, so update the [EventsController]
+  /// here.
   final OnEventChanged? onEventChanged;
 
   /// The callback for when the calendar page is changed.

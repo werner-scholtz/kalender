@@ -114,6 +114,8 @@ class _MyCalendarState extends State<MyCalendar> {
       kalenderController: kalenderController,
       callbacks: KalenderCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),
+        onEventChanged: (event, updatedEvent) =>
+            eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
       ),
     );
   }
@@ -136,12 +138,13 @@ Runnable apps are in [`examples/`](examples/README.md). Start with
 The detailed guides live in [`doc/`](doc/README.md):
 
 - **[Views](doc/views.md).** The multi-day, month and schedule views, and switching between them.
-- **[Events](doc/events.md).** Custom event data, updates through the controller, and multi-day and all-day events.
+- **[Events](doc/events.md).** Custom event data, updates through the controller, multi-day and all-day events, and recurring events.
 - **[Interaction](doc/interaction.md).** Creating, rescheduling, resizing, snapping, locking and zoom.
 - **[Controllers & Callbacks](doc/controllers-and-callbacks.md).** Navigation, view switching, callbacks and a toolbar.
 - **[Appearance](doc/appearance.md).** The theme and the replaceable components.
 - **[Layout](doc/layout.md).** Tile placement and custom layout strategies.
-- **[Timezones & Locales](doc/timezones-and-locales.md).** Timezones, locales and custom strings.
+- **[Timezones & Locales](doc/timezones-and-locales.md).** Timezones, locales, custom strings and Material types.
+- **[Notes for coding agents](doc/for-agents.md).** What an AI coding agent should check before writing code with kalender.
 
 ---
 
