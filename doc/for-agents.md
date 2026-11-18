@@ -29,12 +29,12 @@ There is no `data` field. Subclass `KalenderEvent` and override `copyWithData`, 
 
 ## Event times are UTC
 
-`event.start` and `event.end` are UTC instants. Read the time to show with `event.floatingStart(location: KalenderScope.locationOf(context))`. A call that takes a `Location?` and gets none uses the device timezone, not the calendar's. See [Reading an event's time](timezones-and-locales.md#reading-an-events-time).
+`event.start` and `event.end` are UTC instants. Read the time to show with `event.floatingStart(location: kalenderController.location)`, or with `KalenderScope.locationOf(context)` inside the calendar's widgets. A call that takes a `Location?` and gets none uses the device timezone, not the calendar's. See [Reading an event's time](timezones-and-locales.md#reading-an-events-time).
 
 ## Where each option goes
 
 - `KalenderView`: `callbacks`, `interaction`, `components`, `locale` and `views`.
-- The header and body widgets inside `views`: `tileComponents`, the per-view `configuration`, and a `callbacks` or `interaction` that overrides the view's. `MonthHeader` takes only `callbacks`.
+- The header and body widgets inside `views`: `tileComponents`, the per-view `configuration`, and a `callbacks` or `interaction` that overrides the view's. `MonthHeader` takes only `callbacks`. `snapping` goes on `MultiDayBody`.
 - The schedule body takes `ScheduleTileComponents`, not `TileComponents`.
 
 See [Headers and bodies](views.md#headers-and-bodies).
