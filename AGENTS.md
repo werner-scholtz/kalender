@@ -17,7 +17,7 @@ Kalender is a Flutter calendar package with three views, multi-day (day and week
 | `lib/src/layout_delegates/` | `EventLayoutStrategy` and `MultiDayLayoutStrategy` with their caches |
 | `test/` | Grouped by area. `test/utilities.dart` holds the shared helpers and `test/tool/` tests the scripts |
 | `test_fixes/` | Golden fixtures for the `dart fix` data |
-| `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page |
+| `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page, except `for-agents.md` |
 | `examples/` | Runnable apps, indexed by `examples/README.md`. `example/` is the pub.dev Example tab and only links there |
 | `tool/` | `check.dart`, `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart`, `pin_release_links.dart` and `usage_metrics.dart` |
 | `.claude/` | The `reviewer` agent and the `change`, `pr-review` and `release` skills, see [Change process](#change-process) |

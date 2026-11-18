@@ -114,6 +114,8 @@ class _MyCalendarState extends State<MyCalendar> {
       kalenderController: kalenderController,
       callbacks: KalenderCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),
+        onEventChanged: (event, updatedEvent) =>
+            eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
       ),
     );
   }
@@ -142,6 +144,7 @@ The detailed guides live in [`doc/`](doc/README.md):
 - **[Appearance](doc/appearance.md).** The theme and the replaceable components.
 - **[Layout](doc/layout.md).** Tile placement and custom layout strategies.
 - **[Timezones & Locales](doc/timezones-and-locales.md).** Timezones, locales and custom strings.
+- **[Notes for coding agents](doc/for-agents.md).** What an AI coding agent should check before writing code with kalender.
 
 ---
 

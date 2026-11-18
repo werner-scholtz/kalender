@@ -128,6 +128,19 @@ See the [timezone package](https://pub.dev/packages/timezone) for setup instruct
 
 Setting the controller's `location` at runtime recreates the view in the new location. Location identifiers follow the [IANA Time Zone Database](https://www.iana.org/time-zones).
 
+### Reading an event's time
+
+`start` and `end` on an event are UTC instants. To show them, read the time in the calendar's location:
+
+<!-- snippet: file -->
+```dart
+FloatingDateTime startToShow(BuildContext context, KalenderEvent event) {
+  return event.floatingStart(location: KalenderScope.locationOf(context));
+}
+```
+
+`KalenderDateTimeRange` holds instants. `FloatingDateTimeRange` holds positions on the calendar and names no timezone. `FloatingDateTime.fromExternal(dateTime, location: location)` turns an instant into a position, and `forLocation(location: location)` turns it back. Step days with the `FloatingDateTime` members, not by adding a `Duration` to a local `DateTime`.
+
 ### Events from an external source
 
 When events come from an `.ics` file, a device calendar, or an API, map each source time to the exact instant it represents before building the `KalenderEvent`. The constructor stores the instant as UTC, so what matters is that the `DateTime` you pass points at the right moment.
@@ -172,3 +185,19 @@ specific zone.
 `nowCallback` is included in `==`, so store a closure rather than writing it inline.
 
 When `nowCallback` is `null` (the default), the calendar reads the current time from the [clock](https://pub.dev/packages/clock) package and converts it with its `Location`. A test can fix that time with `withClock(Clock.fixed(...), () { ... })`, or with `fakeAsync` in a plain `test`. In a widget test the view configuration, the `KalenderController` and the pumps all go inside the `withClock` callback, since each reads the clock and a read outside it gets the test's own clock. A `nowCallback` replaces the clock for the uses listed above.
+
+---
+
+## Material types
+
+kalender uses its own `KalenderTime` and `KalenderDateTimeRange`. `package:kalender/material.dart` converts to and from Material's `TimeOfDay` and `DateTimeRange`:
+
+<!-- snippet: file -->
+```dart
+import 'package:kalender/material.dart';
+
+Future<KalenderTime?> pickTime(BuildContext context, KalenderTime time) async {
+  final picked = await showTimePicker(context: context, initialTime: time.toTimeOfDay());
+  return picked?.toKalenderTime();
+}
+```

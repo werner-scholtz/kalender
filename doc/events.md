@@ -160,3 +160,9 @@ event.spansMultipleDays(location: location, defaultRule: viewConfiguration.multi
 ```
 
 The event's own `multiDayRule` takes precedence when set. Otherwise `defaultRule` applies. Pass the calendar's location so that rules measuring calendar days, such as `MultiDayRule.calendarDays`, place midnight in the right timezone.
+
+---
+
+## Recurring events
+
+kalender has no recurrence rules. Expand a series into events and add them to the controller. [`examples/recurrence`](../examples/recurrence) expands a whole series at once. [`examples/ics`](../examples/ics) expands an `RRULE` for the visible range with the `rrule` package.
