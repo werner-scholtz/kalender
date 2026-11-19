@@ -33,6 +33,10 @@ flutter test
 dart fix --compare-to-golden test_fixes
 ```
 
+## AI tools
+
+Using AI tools is fine. You may add a trailer such as `Assisted-by` to your commits, but none is required. You are responsible for the code you commit.
+
 ## Reporting issues
 
 If you find a bug or have a feature request, open an issue on [GitHub](https://github.com/werner-scholtz/kalender/issues). Include as much detail as you can: Flutter version, platform and a minimal reproduction if possible.
