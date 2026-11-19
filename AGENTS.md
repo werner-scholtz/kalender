@@ -20,7 +20,7 @@ Kalender is a Flutter calendar package with three views, multi-day (day and week
 | `doc/` | The guides, indexed by `doc/README.md`. Each is also a dartdoc category page |
 | `examples/` | Runnable apps, indexed by `examples/README.md`. `example/` is the pub.dev Example tab and only links there |
 | `tool/` | `check.dart`, `test_timezones_linux.dart`, `analyze_doc_snippets.dart`, `license_headers.dart`, `pin_release_links.dart` and `usage_metrics.dart` |
-| `.claude/` | The `reviewer` agent and the `change`, `pr-review` and `release` skills, see [Change process](#change-process) |
+| `.claude/` | The `reviewer` agent and the `change` skill, see [Change process](#change-process) |
 | `.github/workflows/` | `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `usage_metrics.yml`, `publish.yml` and `site.yml` |
 | `.github/actions/` | `store-benchmark-data`, which commits one file to `refs/benchmarks/data` |
 
@@ -57,6 +57,7 @@ CI runs all of these. The `test` job runs in six timezones (`America/New_York`, 
 - Public top-level constants take a `k` prefix. Top-level functions and static constants do not.
 - Every public symbol carries a `{@category ...}` tag naming one of the seven categories in `dartdoc_options.yaml`. The category's page is the matching guide.
 - Comments say what the code does now, not how it got there. A `TODO` stays `//`, since a `///` one renders in the API reference.
+- A change that is not a fix and alters what an existing app draws is opt-in outside a breaking release. A configuration field keeps the old behaviour by default, and a test pins that default.
 
 ### Naming the two range spaces
 
@@ -69,6 +70,7 @@ Name a member for what it is, not for its type. Say `range` rather than `dateTim
 - `test/` is grouped by area.
 - Build widgets with the helpers in `test/utilities.dart`: `pumpKalender`, `pumpOverflowingMonth`, `freeScrollView`, `wrapWithMaterialApp`, `pumpAndSettleWithMaterialApp` and `TestProvider`. `resizeHandleFor`, `WidgetTesterUtils` and `KalenderControllerUtils` drive interactions.
 - Timezone-sensitive tests use `testWithTimeZones` with the shared `datesToTest` and `locationsToTest`.
+- A test for a fix fails on the code before the fix. Check it by reverting the fix.
 - A `static Key` factory on an unexported class is a test helper. Do not add one to reach a widget from an app. Give the widget identifying fields and use `find.byType` with a predicate.
 
 ## Architecture
@@ -101,6 +103,8 @@ Events hold instants as UTC `DateTime`. Layout and view coordinates are `Floatin
 ### Strategies
 
 `EventLayoutStrategy.createDelegate` returns an `EventLayoutDelegate`, and `MultiDayLayoutStrategy.generateFrame` returns a `MultiDayLayoutFrame`. The bases stay open so an app can extend them. A strategy compares on `runtimeType` rather than `other is X`, or a subclass compares equal to what it extends. `EventSnapStrategy` follows the same rule.
+
+A new field on a configuration or strategy is included in `==` and `hashCode`. A new function field on a configuration or strategy waits for the decision in [ROADMAP.md](ROADMAP.md).
 
 ### Components
 
@@ -155,8 +159,10 @@ What a fix reaches, measured against a subclass overriding a `@mustBeOverridden`
 
 - A `renameParameter` reaches only the element it names. Give each function and method an app calls or overrides its own transform.
 - A `renameParameter` on a constructor does not reach a subclass's `super.` parameter.
+- A renamed extension member is rewritten only where the extension is applied explicitly, not in `context.oldName`. Keep the old member deprecated so the analyzer finds the call sites.
 - `date` is the day the pull request merged.
-- Every fix has a fixture pair in `test_fixes/<name>.dart` and `<name>.dart.expect`, checked by `dart fix --compare-to-golden test_fixes`.
+- Every fix has a fixture pair in `test_fixes/<name>.dart` and `<name>.dart.expect`, checked by `dart fix --compare-to-golden test_fixes`. `dart fix --apply test_fixes` rewrites the inputs, so restore them with `git checkout -- test_fixes/` after one.
+- A fixture for a fix that derives an argument from another passes an expression, not a variable, so the expected output shows the expression copied into each new argument.
 
 Say in the migration guide which edits the fixes leave to the reader.
 
@@ -218,11 +224,11 @@ A guide links to a class through its pub.dev API page, not a `lib/src` URL. Ever
 
 ## Change process
 
-A change moves through: branch, change with tests, `dart tool/check.dart --quick`, a review by the `reviewer` agent with no context from the author, fixes, `dart tool/check.dart`, a draft pull request, CI, a second review left as a pending GitHub review, fixes, ready for review, the owner's review, merge. The `change` skill runs it, `pr-review` runs the second review, and `release` prepares a release pull request.
+A change moves through: branch, change with tests, `dart tool/check.dart --quick`, a review by the `reviewer` agent with no context from the author, fixes, `dart tool/check.dart`, a draft pull request, CI, a second review by the owner, fixes, ready for review, merge. The `change` skill runs it.
 
-The reviewer names a tier, defined in [reviewer.md](.claude/agents/reviewer.md), that decides how much of the diff the owner reads: the summary at tier 1, the summary and the left-on-purpose list at tier 2, the `lib` diff at tier 3.
+The reviewer names a tier, defined in [reviewer.md](.claude/agents/reviewer.md).
 
-Two review rounds at most. Findings the author does not fix are listed on the pull request under "Left on purpose" with a reason each, so the owner decides on those rather than rediscovering them.
+Two review rounds at most. Findings the author does not fix are listed on the pull request under "Left on purpose" with a reason each.
 
 ## Commits and pull requests
 

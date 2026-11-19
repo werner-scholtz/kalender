@@ -15,13 +15,13 @@ Run tests when they help settle a question, with the SDK from `.fvmrc`: `~/.fvm/
 
 ## Tier
 
-Name the review tier first. It decides how much of the diff the owner reads.
+Name the review tier first.
 
-| Tier | What the change touches | The owner reads |
-| --- | --- | --- |
-| 1 | Docs, tests, examples, tools, workflows, formatting | The summary |
-| 2 | `lib/src` with no public API change | The summary and the left-on-purpose list |
-| 3 | A public signature, `lib/kalender.dart`, controllers, the event store, date arithmetic, layout delegates, anything with a `Location` or DST | The `lib` diff |
+| Tier | What the change touches |
+| --- | --- |
+| 1 | Docs, tests, examples, tools, workflows, formatting |
+| 2 | `lib/src` with no public API change |
+| 3 | A public signature, `lib/kalender.dart`, controllers, the event store, date arithmetic, layout delegates, anything with a `Location` or DST |
 
 A change is tier 3 when any part of it is.
 
