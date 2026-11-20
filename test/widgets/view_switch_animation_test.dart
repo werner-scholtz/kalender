@@ -16,7 +16,21 @@ import '../utilities.dart';
 /// [KalenderView.switchAnimation]: which views are on screen while a switch animates, and when the old one goes.
 void main() {
   tz.initializeTimeZones();
-  final week = MultiDayViewConfiguration.week(displayRange: year2025DisplayRange);
+  // The week of 10 March 2025 and the three days from 12 March share 12 to 14 March.
+  final week = MultiDayViewConfiguration.week(
+    displayRange: year2025DisplayRange,
+    initialDateTime: DateTime(2025, 3, 12),
+  );
+  final threeDays = MultiDayViewConfiguration.custom(
+    displayRange: year2025DisplayRange,
+    initialDateTime: DateTime(2025, 3, 12),
+    numberOfDays: 3,
+  );
+  final freeScroll = MultiDayViewConfiguration.freeScroll(
+    displayRange: year2025DisplayRange,
+    initialDateTime: DateTime(2025, 3, 12),
+    numberOfDays: 3,
+  );
   final month = MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
   final schedule = ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange);
   const fade = KalenderViewAnimation.fade(duration: Duration(milliseconds: 200));
@@ -183,10 +197,7 @@ void main() {
         scope.holder!.columns.value,
     ];
 
-    kalenderController.viewConfiguration = MultiDayViewConfiguration.custom(
-      displayRange: year2025DisplayRange,
-      numberOfDays: 3,
-    );
+    kalenderController.viewConfiguration = threeDays;
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     final during = columns();
@@ -203,10 +214,7 @@ void main() {
   ) async {
     await pumpView(tester, switchAnimation: zoom);
 
-    kalenderController.viewConfiguration = MultiDayViewConfiguration.custom(
-      displayRange: year2025DisplayRange,
-      numberOfDays: 3,
-    );
+    kalenderController.viewConfiguration = threeDays;
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
@@ -221,20 +229,106 @@ void main() {
     expect((find.byType(ViewSwitchColumns).evaluate().length, mismatches.join(', ')), (4, ''));
   });
 
+  /// The opacities of the fades inside the calendar above the widgets of [type].
+  List<double> opacitiesAbove(WidgetTester tester, Type type) => [
+    for (final element
+        in find
+            .ancestor(
+              of: find.byType(type),
+              matching: find.descendant(of: find.byType(KalenderView), matching: find.byType(FadeTransition)),
+            )
+            .evaluate())
+      (element.widget as FadeTransition).opacity.value,
+  ];
+
   testWidgets('a switch animates the incoming body and not its header', (tester) async {
     await pumpView(tester, switchAnimation: fade);
-    int fadesAbove(Type type) => find
-        .ancestor(
-          of: find.byType(type),
-          matching: find.descendant(of: find.byType(KalenderView), matching: find.byType(FadeTransition)),
-        )
-        .evaluate()
-        .length;
 
     kalenderController.viewConfiguration = month;
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
-    expect((fadesAbove(MonthHeader), fadesAbove(MonthBody)), (0, 1));
+    expect((opacitiesAbove(tester, MonthHeader).single, opacitiesAbove(tester, MonthBody).single < 1), (1.0, true));
+  });
+
+  /// The opacities of the fades inside the view of [viewController].
+  List<double> opacitiesIn(WidgetTester tester, ViewController viewController) => [
+    for (final element
+        in find.descendant(of: find.byKey(ObjectKey(viewController)), matching: find.byType(FadeTransition)).evaluate())
+      (element.widget as FadeTransition).opacity.value,
+  ];
+
+  testWidgets('a switch between multi-day views fades the outgoing header and body', (tester) async {
+    await pumpView(tester, switchAnimation: fade);
+    final outgoing = kalenderController.viewController;
+
+    kalenderController.viewConfiguration = threeDays;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(opacitiesIn(tester, outgoing).where((opacity) => opacity < 1).length, 2);
+  });
+
+  testWidgets('a curve that overshoots does not break the column layout', (tester) async {
+    for (final curve in [Curves.elasticIn, Curves.elasticOut]) {
+      kalenderController.viewConfiguration = week;
+      await pumpView(tester, switchAnimation: KalenderViewAnimation.fade(curve: curve));
+
+      kalenderController.viewConfiguration = MultiDayViewConfiguration.singleDay(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 3, 12),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    expect(tester.takeException(), isNull);
+  });
+
+  final noMorphCases = [
+    (name: 'to a free-scrolling view', to: freeScroll),
+    (
+      name: 'to pages that share no day',
+      to: MultiDayViewConfiguration.custom(
+        displayRange: year2025DisplayRange,
+        numberOfDays: 3,
+        dateResolver: (_) => FloatingDateTime(2025, 6, 2),
+      ),
+    ),
+  ];
+  for (final c in noMorphCases) {
+    testWidgets('a switch ${c.name} fades the bodies and moves no columns', (tester) async {
+      await pumpView(tester, switchAnimation: fade);
+      List<ColumnTransform> columns() => [
+        for (final scope in tester.widgetList<ViewSwitchAreaScope>(find.byType(ViewSwitchAreaScope)))
+          scope.holder!.columns.value,
+      ];
+
+      kalenderController.viewConfiguration = c.to;
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final bodies = opacitiesAbove(tester, MultiDayBody);
+      expect(
+        (columns().every((value) => value == ColumnTransform.identity), bodies.length, bodies.every((o) => o < 1)),
+        (true, 2, true),
+      );
+    });
+  }
+
+  testWidgets('a switch during a column movement resets the columns of the view that was coming in', (tester) async {
+    await pumpView(tester, switchAnimation: fade);
+
+    kalenderController.viewConfiguration = threeDays;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    final interrupted = kalenderController.viewController;
+    kalenderController.viewConfiguration = month;
+    await tester.pump();
+
+    final scope = tester.widget<ViewSwitchAreaScope>(
+      find.descendant(of: find.byKey(ObjectKey(interrupted)), matching: find.byType(ViewSwitchAreaScope)),
+    );
+    expect(scope.holder!.columns.value, ColumnTransform.identity);
   });
 
   testWidgets('a configuration with the same name does not animate', (tester) async {

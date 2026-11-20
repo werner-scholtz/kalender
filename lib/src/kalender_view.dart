@@ -111,10 +111,20 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
 
   AnimationController? _animation;
 
+  /// The column movement of the running animation, worked out when it starts. Null when it moves no columns.
+  ColumnMorph? _morph;
+
   void _startAnimation(KalenderViewAnimation switchAnimation) {
     final animation = _animation ??= AnimationController(vsync: this)
       ..addStatusListener(_onAnimationStatus)
       ..addListener(_updateColumns);
+    final outgoing = _outgoing!.$1;
+    _morph = ColumnMorph.between(
+      outgoing.viewConfiguration,
+      outgoing.floatingVisibleRange.value,
+      _viewController.viewConfiguration,
+      _viewController.floatingVisibleRange.value,
+    );
     animation
       ..duration = switchAnimation.duration
       ..value = 0;
@@ -127,15 +137,9 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
     final outgoing = _outgoing?.$1;
     final animation = _animation;
     final switchAnimation = widget.switchAnimation;
-    if (outgoing == null || animation == null || switchAnimation == null) return;
-    final morph = ColumnMorph.between(
-      outgoing.viewConfiguration,
-      outgoing.floatingVisibleRange.value,
-      _viewController.viewConfiguration,
-      _viewController.floatingVisibleRange.value,
-    );
-    if (morph == null) return;
-    final t = switchAnimation.curve.transform(animation.value);
+    final morph = _morph;
+    if (outgoing == null || animation == null || switchAnimation == null || morph == null) return;
+    final t = switchAnimation.curve.transform(animation.value).clamp(0.0, 1.0);
     (_areas[outgoing] ??= ViewSwitchAreaHolder()).columns.value = morph.outgoingAt(t);
     (_areas[_viewController] ??= ViewSwitchAreaHolder()).columns.value = morph.incomingAt(t);
   }
@@ -148,6 +152,7 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
     final outgoing = _outgoing;
     if (outgoing == null) return;
     _outgoing = null;
+    _morph = null;
     _areas[_viewController]?.columns.value = ColumnTransform.identity;
     _replaced.add(outgoing);
   }
@@ -165,6 +170,7 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
     _viewController = next;
     final switchAnimation = widget.switchAnimation;
     if (animate && switchAnimation != null && old.viewConfiguration.name != next.viewConfiguration.name) {
+      _areas[old]?.columns.value = ColumnTransform.identity;
       _endAnimation();
       _outgoing = (old, controller);
       _startAnimation(switchAnimation);
@@ -298,8 +304,9 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
   /// The views shown with [switchAnimation], the outgoing one while [animation] runs.
   ///
   /// The incoming view's header is shown at once and only the bodies animate. The outgoing view is moved onto and
-  /// clipped to the incoming view's body. Between two multi-day views, the incoming body is shown in full and only the
-  /// outgoing day columns fade out above it, while [_updateColumns] moves the columns of both.
+  /// clipped to the incoming view's body. When [_morph] moves the day columns, the incoming view is shown in full and
+  /// only the outgoing day columns of the header and body fade out above it, while [_updateColumns] moves the columns of
+  /// both.
   List<Widget> _animatedViews(
     KalenderViewAnimation switchAnimation,
     ViewController? outgoing,
@@ -310,10 +317,7 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
       return [_animatedView(switchAnimation, kAlwaysCompleteAnimation, _viewController, incoming: true)];
     }
     final outgoingArea = _areas[outgoing] ??= ViewSwitchAreaHolder();
-    final columnsOnly =
-        outgoing.viewConfiguration is MultiDayViewConfiguration &&
-        _viewController.viewConfiguration is MultiDayViewConfiguration;
-    if (!columnsOnly) {
+    if (_morph == null) {
       return [
         _animatedView(
           switchAnimation,
@@ -369,6 +373,12 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
               holder: _areas[viewController] ??= ViewSwitchAreaHolder(),
               child: _buildView(
                 viewController,
+                animateHeader: (header) => FadeTransition(
+                  opacity: incoming
+                      ? kAlwaysCompleteAnimation
+                      : ReverseAnimation(animation.drive(CurveTween(curve: switchAnimation.curve))),
+                  child: header,
+                ),
                 animateBody: (body) => ViewSwitchArea(
                   kind: ViewSwitchAreaKind.body,
                   child: switchAnimation.build(animation, body, incoming: incoming, zoom: zoom),
@@ -381,8 +391,12 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
     );
   }
 
-  /// The header and body of [viewController], with the body wrapped in [animateBody] when given.
-  Widget _buildView(ViewController viewController, {Widget Function(Widget body)? animateBody}) {
+  /// The header and body of [viewController], wrapped in [animateHeader] and [animateBody] when given.
+  Widget _buildView(
+    ViewController viewController, {
+    Widget Function(Widget header)? animateHeader,
+    Widget Function(Widget body)? animateBody,
+  }) {
     final parts = _partsFor(viewController.viewConfiguration);
     final header = parts?.header ?? parts?.builtInHeader;
     final body = parts?.body ?? parts?.builtInBody;
@@ -403,7 +417,7 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
                 delegate: KalenderLayoutDelegate(headerId, bodyId),
                 children: [
                   if (bodyId != null) LayoutId(id: bodyId, child: animateBody?.call(body!) ?? body!),
-                  if (headerId != null) LayoutId(id: headerId, child: header!),
+                  if (headerId != null) LayoutId(id: headerId, child: animateHeader?.call(header!) ?? header!),
                 ],
               ),
             );
