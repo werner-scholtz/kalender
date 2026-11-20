@@ -28,6 +28,7 @@ export 'package:kalender/src/models/kalender_events/multi_day_rule.dart';
 export 'package:kalender/src/models/kalender_interaction.dart';
 export 'package:kalender/src/models/controllers/view_controller.dart';
 export 'package:kalender/src/models/view_transition.dart';
+export 'package:kalender/src/models/kalender_view_animation.dart';
 export 'package:kalender/src/models/navigation_triggers.dart';
 export 'package:kalender/src/models/kalender_date_time_range.dart';
 export 'package:kalender/src/models/kalender_time.dart';

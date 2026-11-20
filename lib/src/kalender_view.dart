@@ -11,6 +11,7 @@ import 'package:kalender/src/layout_delegates/kalender_layout_delegate.dart';
 import 'package:kalender/src/models/device_time_zone.dart';
 import 'package:kalender/src/models/providers/gutter_widths.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:kalender/src/widgets/internal_components/view_switch_area.dart';
 
 /// A calendar that shows the events of [eventsController] in the view [kalenderController] holds.
 ///
@@ -47,6 +48,11 @@ class KalenderView extends StatefulWidget {
   /// If not provided, intl's default locale is used.
   final Locale? locale;
 
+  /// The animation of a switch to a view configuration with another `name`. Null switches without one.
+  ///
+  /// Changing it between null and a value builds the view again, which resets its scroll position and page.
+  final KalenderViewAnimation? switchAnimation;
+
   const KalenderView({
     super.key,
     required this.eventsController,
@@ -56,6 +62,7 @@ class KalenderView extends StatefulWidget {
     this.interaction,
     this.components,
     this.locale,
+    this.switchAnimation,
   });
 
   /// The built-in parts of every view.
@@ -68,7 +75,7 @@ class KalenderView extends StatefulWidget {
 /// The state of a [KalenderView]. It holds the [ViewController] the view shows.
 ///
 /// {@category Views}
-class KalenderViewState extends State<KalenderView> {
+class KalenderViewState extends State<KalenderView> with SingleTickerProviderStateMixin {
   /// The [ViewController] this view shows.
   late ViewController _viewController;
 
@@ -96,17 +103,79 @@ class KalenderViewState extends State<KalenderView> {
   @internal
   void becameActive() {
     final next = _controller.attachView(this);
-    setState(() => _show(next, _controller));
+    setState(() => _show(next, _controller, animate: true));
+  }
+
+  /// The view controller [_viewController] replaced, shown until [_animation] ends.
+  (ViewController, KalenderController)? _outgoing;
+
+  AnimationController? _animation;
+
+  /// The column movement of the running animation, worked out when it starts. Null when it moves no columns.
+  ColumnMorph? _morph;
+
+  void _startAnimation(KalenderViewAnimation switchAnimation) {
+    final animation = _animation ??= AnimationController(vsync: this)
+      ..addStatusListener(_onAnimationStatus)
+      ..addListener(_updateColumns);
+    final outgoing = _outgoing!.$1;
+    _morph = ColumnMorph.between(
+      outgoing.viewConfiguration,
+      outgoing.floatingVisibleRange.value,
+      _viewController.viewConfiguration,
+      _viewController.floatingVisibleRange.value,
+    );
+    animation
+      ..duration = switchAnimation.duration
+      ..value = 0;
+    _updateColumns();
+    animation.forward();
+  }
+
+  /// Moves the day columns of the outgoing and incoming multi-day views so a date sits in the same place in both.
+  void _updateColumns() {
+    final outgoing = _outgoing?.$1;
+    final animation = _animation;
+    final switchAnimation = widget.switchAnimation;
+    final morph = _morph;
+    if (outgoing == null || animation == null || switchAnimation == null || morph == null) return;
+    final t = switchAnimation.curve.transform(animation.value).clamp(0.0, 1.0);
+    (_areas[outgoing] ??= ViewSwitchAreaHolder()).columns.value = morph.outgoingAt(t);
+    (_areas[_viewController] ??= ViewSwitchAreaHolder()).columns.value = morph.incomingAt(t);
+  }
+
+  void _onAnimationStatus(AnimationStatus status) {
+    if (status.isCompleted) setState(_endAnimation);
+  }
+
+  void _endAnimation() {
+    final outgoing = _outgoing;
+    if (outgoing == null) return;
+    _outgoing = null;
+    _morph = null;
+    _areas[_viewController]?.columns.value = ColumnTransform.identity;
+    _replaced.add(outgoing);
   }
 
   /// The view controllers shown before [_viewController], with the controller of each, until a build replaces them.
   final _replaced = <(ViewController, KalenderController)>[];
 
   /// Shows [next] and releases the view controller shown before once a build has replaced its widgets.
-  void _show(ViewController next, KalenderController controller) {
+  ///
+  /// With [animate], a switch to a configuration with another name keeps the one shown before until [KalenderView.switchAnimation]
+  /// ends.
+  void _show(ViewController next, KalenderController controller, {bool animate = false}) {
     final old = _viewController;
     if (identical(next, old)) return;
     _viewController = next;
+    final switchAnimation = widget.switchAnimation;
+    if (animate && switchAnimation != null && old.viewConfiguration.name != next.viewConfiguration.name) {
+      _areas[old]?.columns.value = ColumnTransform.identity;
+      _endAnimation();
+      _outgoing = (old, controller);
+      _startAnimation(switchAnimation);
+      return;
+    }
     _replaced.add((old, controller));
   }
 
@@ -120,8 +189,10 @@ class KalenderViewState extends State<KalenderView> {
   void didUpdateWidget(covariant KalenderView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.interaction != oldWidget.interaction) _interaction.value = widget.interaction ?? KalenderInteraction();
+    if (widget.switchAnimation == null) _finishAnimation();
     final oldController = oldWidget.kalenderController;
     if (_controller == oldController) return;
+    _finishAnimation();
     oldController
       ..removeListener(_onControllerChanged)
       ..detachView(this);
@@ -141,8 +212,17 @@ class KalenderViewState extends State<KalenderView> {
     _show(_controller.attachView(this), _controller);
   }
 
+  /// Ends a running animation at once.
+  void _finishAnimation() {
+    if (_outgoing == null) return;
+    _animation?.stop();
+    _endAnimation();
+  }
+
   @override
   void dispose() {
+    _animation?.dispose();
+    _endAnimation();
     _release(_replaced);
     _controller
       ..removeListener(_onControllerChanged)
@@ -176,58 +256,172 @@ class KalenderViewState extends State<KalenderView> {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) _finishAnimation();
     if (_replaced.isNotEmpty) {
       final replaced = [..._replaced];
       _replaced.clear();
       WidgetsBinding.instance.addPostFrameCallback((_) => _release(replaced));
     }
-    final parts = _partsFor(_viewController.viewConfiguration);
-    final header = parts?.header ?? parts?.builtInHeader;
-    final body = parts?.body ?? parts?.builtInBody;
-    final headerId = header == null ? null : KalenderLayoutDelegate.header;
-    final bodyId = body == null ? null : KalenderLayoutDelegate.body;
     final components = widget.components ?? const KalenderComponents();
+    final switchAnimation = widget.switchAnimation;
+    final outgoing = _outgoing?.$1;
+    final animation = _animation;
 
-    return LocationProvider(
-      location: _viewController.location,
-      child: LocaleProvider(
-        locale: widget.locale,
-        child: Callbacks(
-          callbacks: widget.callbacks,
-          child: Interaction(
-            notifier: _interaction,
-            child: Components(
-              components: components,
-              child: EventsControllerProvider(
-                eventsController: widget.eventsController,
-                child: KalenderControllerProvider(
-                  notifier: widget.kalenderController,
-                  child: SelectionScope(
-                    controller: widget.kalenderController,
-                    child: ViewControllerProvider(
-                      viewController: _viewController,
-                      child: Builder(
-                        builder: (context) {
-                          final widths = parts?.gutterWidths(context);
-                          return GutterWidths(
-                            weekNumber: widths?.weekNumber,
-                            timeline: widths?.timeline,
-                            child: CustomMultiChildLayout(
-                              delegate: KalenderLayoutDelegate(headerId, bodyId),
-                              children: [
-                                if (bodyId != null) LayoutId(id: bodyId, child: body!),
-                                if (headerId != null) LayoutId(id: headerId, child: header!),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+    return LocaleProvider(
+      locale: widget.locale,
+      child: Callbacks(
+        callbacks: widget.callbacks,
+        child: Interaction(
+          notifier: _interaction,
+          child: Components(
+            components: components,
+            child: EventsControllerProvider(
+              eventsController: widget.eventsController,
+              child: KalenderControllerProvider(
+                notifier: widget.kalenderController,
+                child: SelectionScope(
+                  controller: widget.kalenderController,
+                  child: switchAnimation == null
+                      ? _buildView(_viewController)
+                      : ClipRect(
+                          child: Stack(
+                            fit: StackFit.passthrough,
+                            children: _animatedViews(switchAnimation, outgoing, animation),
+                          ),
+                        ),
                 ),
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// The area each view controller's view marks with a [ViewSwitchArea].
+  final _areas = Expando<ViewSwitchAreaHolder>();
+
+  /// The views shown with [switchAnimation], the outgoing one while [animation] runs.
+  ///
+  /// The incoming view's header is shown at once and only the bodies animate. The outgoing view is moved onto and
+  /// clipped to the incoming view's body. When [_morph] moves the day columns, the incoming view is shown in full and
+  /// only the outgoing day columns of the header and body fade out above it, while [_updateColumns] moves the columns of
+  /// both.
+  List<Widget> _animatedViews(
+    KalenderViewAnimation switchAnimation,
+    ViewController? outgoing,
+    Animation<double>? animation,
+  ) {
+    final incomingArea = _areas[_viewController] ??= ViewSwitchAreaHolder();
+    if (outgoing == null || animation == null) {
+      return [_animatedView(switchAnimation, kAlwaysCompleteAnimation, _viewController, incoming: true)];
+    }
+    final outgoingArea = _areas[outgoing] ??= ViewSwitchAreaHolder();
+    if (_morph == null) {
+      return [
+        _animatedView(
+          switchAnimation,
+          animation,
+          outgoing,
+          incoming: false,
+          clipTo: incomingArea,
+          alignArea: outgoingArea,
+          clipToBody: true,
+        ),
+        _animatedView(switchAnimation, animation, _viewController, incoming: true),
+      ];
+    }
+    return [
+      _animatedView(switchAnimation, kAlwaysCompleteAnimation, _viewController, incoming: true),
+      _animatedView(
+        switchAnimation,
+        animation,
+        outgoing,
+        incoming: false,
+        clipTo: incomingArea,
+        alignArea: outgoingArea,
+        zoom: false,
+      ),
+    ];
+  }
+
+  /// The view of [viewController] with its body in [switchAnimation]. The outgoing view takes no input and has no
+  /// semantics.
+  ///
+  /// Every view has the same widget shape, so a view keeps its state when it turns from incoming to outgoing.
+  Widget _animatedView(
+    KalenderViewAnimation switchAnimation,
+    Animation<double> animation,
+    ViewController viewController, {
+    required bool incoming,
+    ViewSwitchAreaHolder? clipTo,
+    ViewSwitchAreaHolder? alignArea,
+    bool clipToBody = false,
+    bool zoom = true,
+  }) {
+    return KeyedSubtree(
+      key: ObjectKey(viewController),
+      child: ClipToViewSwitchArea(
+        holder: clipTo,
+        align: alignArea,
+        body: clipToBody,
+        child: IgnorePointer(
+          ignoring: !incoming,
+          child: ExcludeSemantics(
+            excluding: !incoming,
+            child: ViewSwitchAreaScope(
+              holder: _areas[viewController] ??= ViewSwitchAreaHolder(),
+              child: _buildView(
+                viewController,
+                animateHeader: (header) => FadeTransition(
+                  opacity: incoming
+                      ? kAlwaysCompleteAnimation
+                      : ReverseAnimation(animation.drive(CurveTween(curve: switchAnimation.curve))),
+                  child: header,
+                ),
+                animateBody: (body) => ViewSwitchArea(
+                  kind: ViewSwitchAreaKind.body,
+                  child: switchAnimation.build(animation, body, incoming: incoming, zoom: zoom),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// The header and body of [viewController], wrapped in [animateHeader] and [animateBody] when given.
+  Widget _buildView(
+    ViewController viewController, {
+    Widget Function(Widget header)? animateHeader,
+    Widget Function(Widget body)? animateBody,
+  }) {
+    final parts = _partsFor(viewController.viewConfiguration);
+    final header = parts?.header ?? parts?.builtInHeader;
+    final body = parts?.body ?? parts?.builtInBody;
+    final headerId = header == null ? null : KalenderLayoutDelegate.header;
+    final bodyId = body == null ? null : KalenderLayoutDelegate.body;
+
+    return LocationProvider(
+      location: viewController.location,
+      child: ViewControllerProvider(
+        viewController: viewController,
+        child: Builder(
+          builder: (context) {
+            final widths = parts?.gutterWidths(context);
+            return GutterWidths(
+              weekNumber: widths?.weekNumber,
+              timeline: widths?.timeline,
+              child: CustomMultiChildLayout(
+                delegate: KalenderLayoutDelegate(headerId, bodyId),
+                children: [
+                  if (bodyId != null) LayoutId(id: bodyId, child: animateBody?.call(body!) ?? body!),
+                  if (headerId != null) LayoutId(id: headerId, child: animateHeader?.call(header!) ?? header!),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
