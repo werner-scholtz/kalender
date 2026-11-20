@@ -13,6 +13,7 @@ import 'package:kalender/src/widgets/internal_components/day_selection.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 import 'package:kalender/src/widgets/internal_components/view_providers.dart';
+import 'package:kalender/src/widgets/internal_components/view_switch_area.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -118,32 +119,34 @@ class _MultiDayBody extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Stack(
-                      children: [
-                        // The key keeps the state of the children below when this one is added or removed.
-                        if (bodyComponents.dayCellBuilder != null ||
-                            KalenderTheme.of(context).dayCellStyle?.selectedColor != null)
+                    child: ViewSwitchColumns(
+                      child: Stack(
+                        children: [
+                          // The key keeps the state of the children below when this one is added or removed.
+                          if (bodyComponents.dayCellBuilder != null ||
+                              KalenderTheme.of(context).dayCellStyle?.selectedColor != null)
+                            Positioned.fill(
+                              key: const ValueKey(_DayCellLayer),
+                              child: _DayCellLayer(viewController: viewController),
+                            ),
                           Positioned.fill(
-                            key: const ValueKey(_DayCellLayer),
-                            child: _DayCellLayer(viewController: viewController),
+                            child: bodyComponents.buildHourLines(context, context.heightPerMinute, timeOfDayRange),
                           ),
-                        Positioned.fill(
-                          child: bodyComponents.buildHourLines(context, context.heightPerMinute, timeOfDayRange),
-                        ),
-                        Positioned.fill(
-                          child: MultiDayPage(
-                            eventsController: context.eventsController,
+                          Positioned.fill(
+                            child: MultiDayPage(
+                              eventsController: context.eventsController,
+                              viewController: viewController,
+                              configuration: configuration,
+                              pageHeight: pageHeight,
+                              location: context.location,
+                            ),
+                          ),
+                          TimeIndicatorPositioner(
                             viewController: viewController,
-                            configuration: configuration,
-                            pageHeight: pageHeight,
-                            location: context.location,
+                            initialPage: viewController.initialPage,
                           ),
-                        ),
-                        TimeIndicatorPositioner(
-                          viewController: viewController,
-                          initialPage: viewController.initialPage,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -156,25 +159,28 @@ class _MultiDayBody extends StatelessWidget {
             children: [
               const TimelineSizer(child: SizedBox()),
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final pageHeight = constraints.maxHeight;
-                    final pageWidth = constraints.maxWidth;
-                    final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
+                child: ViewSwitchArea(
+                  kind: ViewSwitchAreaKind.bodyColumns,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final pageHeight = constraints.maxHeight;
+                      final pageWidth = constraints.maxWidth;
+                      final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
 
-                    return SizedBox(
-                      height: pageHeight,
-                      child: VerticalDragTarget(
-                        controller: controller,
-                        viewController: viewController,
-                        configuration: configuration,
-                        pageWidth: pageWidth,
-                        dayWidth: dayWidth,
-                        viewPortHeight: pageHeight,
-                        snapping: context.snappingNotifier,
-                      ),
-                    );
-                  },
+                      return SizedBox(
+                        height: pageHeight,
+                        child: VerticalDragTarget(
+                          controller: controller,
+                          viewController: viewController,
+                          configuration: configuration,
+                          pageWidth: pageWidth,
+                          dayWidth: dayWidth,
+                          viewPortHeight: pageHeight,
+                          snapping: context.snappingNotifier,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
