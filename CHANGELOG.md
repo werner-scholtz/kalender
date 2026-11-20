@@ -1,3 +1,9 @@
+## 0.35.0
+
+### Features
+
+- `KalenderView.switchAnimation` takes a `KalenderViewAnimation`, a fade or a zoom, that animates a switch to a view configuration with another `name`. The header switches at once, and between multi-day views the day columns move so each date stays in place. Off by default. [#280](https://github.com/werner-scholtz/kalender/issues/280)
+
 ## 0.34.0
 
 See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.

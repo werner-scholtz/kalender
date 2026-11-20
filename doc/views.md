@@ -17,6 +17,17 @@ For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. 
 
 `initialDateTime` is only read when the controller is created. To show a fixed date on a switch, return it from a `dateResolver`. The resolvers also run when the location changes, which `transition.locationChanged` reports.
 
+To animate the switch, give `KalenderView` a `switchAnimation`. It runs when the new configuration has another `name`, so changing a setting of the current view does not animate. The header switches at once and the body animates. Between two multi-day views, the day columns move so each date stays in place. Without one the view changes at once. The animation is skipped when the platform asks for reduced motion, and on a location change.
+
+<!-- snippet: expression -->
+```dart
+KalenderView(
+  eventsController: eventsController,
+  kalenderController: kalenderController,
+  switchAnimation: const KalenderViewAnimation.fade(),
+)
+```
+
 ## Shared options
 
 All configurations accept:
