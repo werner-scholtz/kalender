@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1794906007622,
+  "lastUpdate": 1795510114603,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -14982,6 +14982,92 @@
         ],
         "flutter": "3.47.4",
         "cpu": "AMD EPYC 7763 64-Core Processor"
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "626e13a47548ff1e0a96572a0974ba88db2017cb",
+          "message": "Merge pull request #662 from JoshStrobl/feat/material-ui\n\nrefactor!: build on material_ui and require flutter 3.47",
+          "timestamp": "2026-11-24T10:25:15+02:00",
+          "tree_id": "47d3761e35e0ed03bdf9b6387396b2f70032df3f",
+          "url": "https://github.com/werner-scholtz/kalender/commit/626e13a47548ff1e0a96572a0974ba88db2017cb"
+        },
+        "date": 1795510113427,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Date expansion · 7 days (x200)",
+            "value": 132.51420118343196,
+            "unit": "us"
+          },
+          {
+            "name": "Date expansion · 30 days (x200)",
+            "value": 536.78425,
+            "unit": "us"
+          },
+          {
+            "name": "Date expansion · 90 days (x200)",
+            "value": 1573,
+            "unit": "us"
+          },
+          {
+            "name": "Date expansion · 365 days (x200)",
+            "value": 6114.679640718563,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 100 events over 30 days",
+            "value": 132.42119962761006,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 300 events over 30 days",
+            "value": 449.8601571268238,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 50 events/day over 7 days",
+            "value": 428.7274896940768,
+            "unit": "us"
+          },
+          {
+            "name": "Multi-day layout · 50 events/day over 35 days",
+            "value": 2200.376,
+            "unit": "us"
+          },
+          {
+            "name": "Side-by-side columns · 60 events",
+            "value": 8.6676087464672,
+            "unit": "us"
+          },
+          {
+            "name": "Event query · 1 day",
+            "value": 1.9836657581671209,
+            "unit": "us"
+          },
+          {
+            "name": "Event query · 7 days",
+            "value": 14.75938143432996,
+            "unit": "us"
+          },
+          {
+            "name": "Event query · 30 days",
+            "value": 62.70025,
+            "unit": "us"
+          }
+        ],
+        "flutter": "3.47.9",
+        "cpu": "AMD EPYC 9V74 80-Core Processor"
       }
     ],
     "Kalender Frame Profiling": [
@@ -50612,6 +50698,200 @@
         ],
         "flutter": "3.47.4",
         "cpu": "AMD EPYC 7763 64-Core Processor"
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "626e13a47548ff1e0a96572a0974ba88db2017cb",
+          "message": "Merge pull request #662 from JoshStrobl/feat/material-ui\n\nrefactor!: build on material_ui and require flutter 3.47",
+          "timestamp": "2026-11-24T10:25:15+02:00",
+          "tree_id": "47d3761e35e0ed03bdf9b6387396b2f70032df3f",
+          "url": "https://github.com/werner-scholtz/kalender/commit/626e13a47548ff1e0a96572a0974ba88db2017cb"
+        },
+        "date": 1795510114593,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Week · loading · 10 events/day",
+            "value": 1.8612000000000002,
+            "range": "± 0.76",
+            "unit": "ms",
+            "extra": "p90_build=3.80ms p99_build=8.70ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · navigation · 10 events/day",
+            "value": 6.856208333333332,
+            "range": "± 1.28",
+            "unit": "ms",
+            "extra": "p90_build=23.81ms p99_build=28.92ms missed_build=3 (runs=5)"
+          },
+          {
+            "name": "Week · scrolling · 10 events/day",
+            "value": 1.4866666666666664,
+            "range": "± 0.05",
+            "unit": "ms",
+            "extra": "p90_build=1.88ms p99_build=2.15ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · rescheduling · 10 events/day",
+            "value": 1.0945783132530118,
+            "range": "± 0.24",
+            "unit": "ms",
+            "extra": "p90_build=1.87ms p99_build=3.70ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · resizing · 10 events/day",
+            "value": 1.0471,
+            "range": "± 0.23",
+            "unit": "ms",
+            "extra": "p90_build=1.84ms p99_build=2.73ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Month · loading · 10 events/day",
+            "value": 7.110249999999999,
+            "range": "± 1.05",
+            "unit": "ms",
+            "extra": "p90_build=15.28ms p99_build=25.52ms missed_build=2 (runs=5)"
+          },
+          {
+            "name": "Month · navigation · 10 events/day",
+            "value": 10.047333333333333,
+            "range": "± 0.97",
+            "unit": "ms",
+            "extra": "p90_build=27.83ms p99_build=36.55ms missed_build=4 (runs=5)"
+          },
+          {
+            "name": "Month · rescheduling · 10 events/day",
+            "value": 1.8587802197802201,
+            "range": "± 0.16",
+            "unit": "ms",
+            "extra": "p90_build=3.66ms p99_build=6.08ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Month · resizing · 10 events/day",
+            "value": 1.181894736842105,
+            "range": "± 0.14",
+            "unit": "ms",
+            "extra": "p90_build=3.21ms p99_build=4.78ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Schedule · loading · 10 events/day",
+            "value": 6.586366666666667,
+            "range": "± 1.03",
+            "unit": "ms",
+            "extra": "p90_build=17.70ms p99_build=32.38ms missed_build=5 (runs=5)"
+          },
+          {
+            "name": "Schedule · navigation · 10 events/day",
+            "value": 20.83392307692308,
+            "range": "± 3.3",
+            "unit": "ms",
+            "extra": "p90_build=34.26ms p99_build=42.88ms missed_build=20 (runs=5)"
+          },
+          {
+            "name": "Schedule · rescheduling · 10 events/day",
+            "value": 1.5601808510638302,
+            "range": "± 0.02",
+            "unit": "ms",
+            "extra": "p90_build=5.24ms p99_build=11.36ms missed_build=1 (runs=5)"
+          },
+          {
+            "name": "Week · loading · 50 events/day",
+            "value": 6.889759999999998,
+            "range": "± 0.7",
+            "unit": "ms",
+            "extra": "p90_build=18.94ms p99_build=30.66ms missed_build=15 (runs=5)"
+          },
+          {
+            "name": "Week · navigation · 50 events/day",
+            "value": 28.903875,
+            "range": "± 0.45",
+            "unit": "ms",
+            "extra": "p90_build=70.53ms p99_build=112.73ms missed_build=13 (runs=5)"
+          },
+          {
+            "name": "Week · scrolling · 50 events/day",
+            "value": 1.1356666666666666,
+            "range": "± 0.23",
+            "unit": "ms",
+            "extra": "p90_build=1.34ms p99_build=2.01ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Week · rescheduling · 50 events/day",
+            "value": 2.054592592592592,
+            "range": "± 0.27",
+            "unit": "ms",
+            "extra": "p90_build=3.28ms p99_build=14.86ms missed_build=1 (runs=5)"
+          },
+          {
+            "name": "Week · resizing · 50 events/day",
+            "value": 2.2245263157894737,
+            "range": "± 0.46",
+            "unit": "ms",
+            "extra": "p90_build=2.47ms p99_build=10.11ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Month · loading · 50 events/day",
+            "value": 6.8718200000000005,
+            "range": "± 0.89",
+            "unit": "ms",
+            "extra": "p90_build=16.09ms p99_build=24.84ms missed_build=11 (runs=5)"
+          },
+          {
+            "name": "Month · navigation · 50 events/day",
+            "value": 12.093583333333333,
+            "range": "± 1.17",
+            "unit": "ms",
+            "extra": "p90_build=30.03ms p99_build=58.15ms missed_build=4 (runs=5)"
+          },
+          {
+            "name": "Month · rescheduling · 50 events/day",
+            "value": 2.5886022727272735,
+            "range": "± 0.36",
+            "unit": "ms",
+            "extra": "p90_build=5.84ms p99_build=9.85ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Month · resizing · 50 events/day",
+            "value": 1.8857272727272731,
+            "range": "± 0.31",
+            "unit": "ms",
+            "extra": "p90_build=4.82ms p99_build=9.59ms missed_build=0 (runs=5)"
+          },
+          {
+            "name": "Schedule · loading · 50 events/day",
+            "value": 4.909138888888894,
+            "range": "± 0.19",
+            "unit": "ms",
+            "extra": "p90_build=14.43ms p99_build=25.68ms missed_build=10 (runs=5)"
+          },
+          {
+            "name": "Schedule · navigation · 50 events/day",
+            "value": 23.057999999999996,
+            "range": "± 6.77",
+            "unit": "ms",
+            "extra": "p90_build=35.68ms p99_build=43.67ms missed_build=20 (runs=5)"
+          },
+          {
+            "name": "Schedule · rescheduling · 50 events/day",
+            "value": 3.3216043956043952,
+            "range": "± 1.17",
+            "unit": "ms",
+            "extra": "p90_build=13.51ms p99_build=26.26ms missed_build=7 (runs=5)"
+          }
+        ],
+        "flutter": "3.47.9",
+        "cpu": "AMD EPYC 9V74 80-Core Processor"
       }
     ]
   }
