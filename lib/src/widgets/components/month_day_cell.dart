@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:kalender/src/widgets/components/day_cell.dart';
 import 'package:kalender/src/widgets/internal_components/day_selection.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Builds the background of a single day cell in the month body.
 ///

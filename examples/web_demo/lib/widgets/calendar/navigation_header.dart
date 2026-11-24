@@ -6,8 +6,8 @@
 
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timezone/timezone.dart';
 import 'package:web_demo/locations.dart';
 import 'package:web_demo/utils.dart';

@@ -56,7 +56,12 @@ void main() {
       viewController.dispose();
 
       for (final notifier in notifiers) {
-        expect(() => notifier.addListener(() {}), throwsFlutterError, reason: '$notifier');
+        // Flutter 3.47 throws a FlutterError here, and 3.50 a StateError.
+        expect(
+          () => notifier.addListener(() {}),
+          throwsA(anyOf(isA<FlutterError>(), isA<StateError>())),
+          reason: '$notifier',
+        );
       }
     });
   }

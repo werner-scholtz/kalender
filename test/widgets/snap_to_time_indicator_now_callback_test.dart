@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
+import 'package:material_ui/material_ui.dart';
 import 'package:timezone/data/latest_10y.dart' as tz;
 import 'package:timezone/timezone.dart' show getLocation;
 

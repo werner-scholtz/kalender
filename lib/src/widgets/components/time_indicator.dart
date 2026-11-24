@@ -20,8 +20,12 @@ import 'package:kalender/src/models/current_time.dart';
 /// Resolve the style with [KalenderTheme].
 ///
 /// {@category Appearance}
-typedef TimeIndicatorBuilder =
-    Widget Function(BuildContext context, KalenderTimeRange timeOfDayRange, double heightPerMinute, Location? location);
+typedef TimeIndicatorBuilder = Widget Function(
+  BuildContext context,
+  KalenderTimeRange timeOfDayRange,
+  double heightPerMinute,
+  Location? location,
+);
 
 /// The style of the [TimeIndicator] widget.
 ///

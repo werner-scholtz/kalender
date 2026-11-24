@@ -1,3 +1,19 @@
+## 0.35.0
+
+See [MIGRATION.md](MIGRATION.md#v034x--v0350) for what to change.
+
+### Breaking Changes
+
+- kalender requires Flutter 3.47 and Dart 3.13, and is built on [`material_ui`](https://pub.dev/packages/material_ui) in place of `package:flutter/material.dart`.
+- kalender requires `intl` 0.20.3 or later within 0.20.x, the versions `material_ui` resolves with.
+- `KalenderThemeData` is a `material_ui` `ThemeExtension`, and the calendar reads the `material_ui` `Theme`.
+- `MultiDayOverlayStyle.cardTheme` takes a `material_ui` `CardThemeData`, and `MultiDayOverlayStyle.closeButtonStyle` a `material_ui` `ButtonStyle`.
+- The extensions in `package:kalender/material.dart` convert the `material_ui` `DateTimeRange` and `TimeOfDay`.
+
+### Behavior Changes
+
+- In an app that was already on `material_ui`, the timeline's hour labels use the app's Material time format and locale. Before, they used intl and `KalenderView.locale`. An app that moves from `package:flutter/material.dart` in this release sees no change.
+
 ## 0.34.0
 
 See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.

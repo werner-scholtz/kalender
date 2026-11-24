@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Two builder typedefs return a package class rather than a [Widget], so the class has to be exported or the typedef
 /// cannot be implemented.

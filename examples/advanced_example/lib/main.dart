@@ -7,8 +7,8 @@
 import 'package:advanced_example/layout_strategy.dart';
 import 'package:advanced_example/tiles.dart';
 import 'package:advanced_example/zoom.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const MyApp());

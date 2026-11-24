@@ -44,6 +44,7 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 
 ```bash
 flutter pub add kalender
+flutter pub add material_ui
 ```
 
 If you plan to use [location/timezones](doc/timezones-and-locales.md#location) support, also add:
@@ -66,8 +67,8 @@ The minimal setup, using only the base `KalenderEvent` class with no custom fiel
 
 <!-- snippet: file -->
 ```dart
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const MyApp());

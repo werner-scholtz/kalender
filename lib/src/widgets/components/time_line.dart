@@ -7,15 +7,14 @@
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/kalender_provider.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The label for [time].
 ///
-/// `MaterialLocalizations` decides the format where the app installs them, which keeps a Material app's timeline byte
-/// for byte what it was. An app on the standalone `material_ui` package installs its own, not these, so there the
-/// format comes from intl and the calendar's locale.
+/// `MaterialLocalizations` decides the format where the app installs them, as an app on `material_ui` does. Without
+/// them the format comes from intl and the calendar's locale.
 String _formatTime(BuildContext context, KalenderTime time) {
   final use24HourFormat = MediaQuery.alwaysUse24HourFormatOf(context);
   final material = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations);
@@ -40,14 +39,13 @@ String _formatTime(BuildContext context, KalenderTime time) {
 /// Resolve the style with `KalenderTheme.of`.
 ///
 /// {@category Appearance}
-typedef TimeLineBuilder =
-    Widget Function(
-      BuildContext context,
-      double heightPerMinute,
-      KalenderTimeRange timeOfDayRange,
-      ValueNotifier<KalenderEvent?> eventBeingDragged,
-      ValueListenable<KalenderDateTimeRange> visibleDateTimeRange,
-    );
+typedef TimeLineBuilder = Widget Function(
+  BuildContext context,
+  double heightPerMinute,
+  KalenderTimeRange timeOfDayRange,
+  ValueNotifier<KalenderEvent?> eventBeingDragged,
+  ValueListenable<KalenderDateTimeRange> visibleDateTimeRange,
+);
 
 /// Resolves the width of the timeline gutter.
 ///

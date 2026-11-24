@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: MIT
 
 import 'package:advanced_example/main.dart';
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 TileComponents get tileComponents {
   return TileComponents(

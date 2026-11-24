@@ -86,14 +86,12 @@ class KalenderEvent {
     required DateTime start,
     required DateTime end,
     EventInteraction? interaction,
-    MultiDayRule? multiDayRule,
-    bool isAllDay = false,
+    this._multiDayRule,
+    this._isAllDay = false,
   }) : assert(!start.isAfter(end), 'start must not be after end'),
        id = id ?? _createUniqueId(),
        start = start.toUtc(),
        end = end.toUtc(),
-       _multiDayRule = multiDayRule,
-       _isAllDay = isAllDay,
        _interaction = interaction ?? EventInteraction();
 
   static String _createUniqueId() {

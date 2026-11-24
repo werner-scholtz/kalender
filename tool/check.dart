@@ -48,17 +48,7 @@ class Step {
 }
 
 /// The examples `analyze_examples.yml` checks. `doc_snippets` is covered by the snippets step.
-const examples = [
-  'example',
-  'advanced_example',
-  'recurrence',
-  'riverpod',
-  'ics',
-  'intl4x',
-  'material_ui',
-  'web_demo',
-  'testing',
-];
+const examples = ['example', 'advanced_example', 'recurrence', 'riverpod', 'ics', 'intl4x', 'web_demo', 'testing'];
 
 /// What every step that compiles the package depends on.
 const _package = ['lib/', 'pubspec.yaml', '.fvmrc'];

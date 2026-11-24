@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Covers value equality of the three strategies, which were functions until 0.26.0.
 void main() {

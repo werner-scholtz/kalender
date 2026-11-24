@@ -4,9 +4,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import 'package:flutter/material.dart' show Size;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:material_ui/material_ui.dart' show Size;
 
 // Tests that back-to-back events are not grouped as overlapping after their times are converted to pixels.
 void main() {
