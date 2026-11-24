@@ -38,5 +38,5 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
-    # gen-l10n output; Flutter 3.50 still emits the deprecated flutter_localizations delegates.
+    # gen-l10n output. From Flutter 3.50 it uses the deprecated flutter_localizations delegates.
     - lib/l10n/app_localizations*.dart
