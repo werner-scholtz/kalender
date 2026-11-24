@@ -50,7 +50,8 @@ class KalenderView extends StatefulWidget {
 
   /// The animation of a switch to a view configuration with another `name`. Null switches without one.
   ///
-  /// Changing it between null and a value builds the view again, which resets its scroll position and page.
+  /// Changing it between null and a value builds the view again on a new view controller that opens on the same page and
+  /// scroll position.
   final KalenderViewAnimation? switchAnimation;
 
   const KalenderView({
@@ -176,11 +177,14 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
       _startAnimation(switchAnimation);
       return;
     }
+    _finishAnimation();
     _replaced.add((old, controller));
   }
 
   void _release(List<(ViewController, KalenderController)> replaced) {
     for (final (viewController, controller) in replaced) {
+      _areas[viewController]?.columns.dispose();
+      _areas[viewController] = null;
       controller.releaseView(this, viewController);
     }
   }
@@ -191,7 +195,11 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
     if (widget.interaction != oldWidget.interaction) _interaction.value = widget.interaction ?? KalenderInteraction();
     if (widget.switchAnimation == null) _finishAnimation();
     final oldController = oldWidget.kalenderController;
-    if (_controller == oldController) return;
+    if (_controller == oldController) {
+      final rebuilds = (widget.switchAnimation == null) != (oldWidget.switchAnimation == null);
+      if (rebuilds && _controller.isActiveView(this)) _show(_controller.reopenView(this), _controller);
+      return;
+    }
     _finishAnimation();
     oldController
       ..removeListener(_onControllerChanged)
@@ -224,6 +232,7 @@ class KalenderViewState extends State<KalenderView> with SingleTickerProviderSta
     _animation?.dispose();
     _endAnimation();
     _release(_replaced);
+    _areas[_viewController]?.columns.dispose();
     _controller
       ..removeListener(_onControllerChanged)
       ..releaseView(this, _viewController);

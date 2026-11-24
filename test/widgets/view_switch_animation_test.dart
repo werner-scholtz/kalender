@@ -16,7 +16,7 @@ import '../utilities.dart';
 /// [KalenderView.switchAnimation]: which views are on screen while a switch animates, and when the old one goes.
 void main() {
   tz.initializeTimeZones();
-  // The week of 10 March 2025 and the three days from 12 March share 12 to 14 March.
+  // A switch from the week of 10 March 2025 to the three-day view shows 8 to 10 March, so the pages share 10 March.
   final week = MultiDayViewConfiguration.week(
     displayRange: year2025DisplayRange,
     initialDateTime: DateTime(2025, 3, 12),
@@ -93,6 +93,11 @@ void main() {
     find.byType(MonthBody).evaluate().length,
     find.byType(ScheduleBody).evaluate().length,
   );
+
+  List<ColumnTransform> columns(WidgetTester tester) => [
+    for (final scope in tester.widgetList<ViewSwitchAreaScope>(find.byType(ViewSwitchAreaScope)))
+      scope.holder!.columns.value,
+  ];
 
   final cases = [
     (name: 'without an animation', animation: null, disableAnimations: false, during: (0, 1, 0)),
@@ -192,19 +197,15 @@ void main() {
 
   testWidgets('a switch between multi-day views moves the day columns of both views until it ends', (tester) async {
     await pumpView(tester, switchAnimation: zoom);
-    List<ColumnTransform> columns() => [
-      for (final scope in tester.widgetList<ViewSwitchAreaScope>(find.byType(ViewSwitchAreaScope)))
-        scope.holder!.columns.value,
-    ];
 
     kalenderController.viewConfiguration = threeDays;
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
-    final during = columns();
+    final during = columns(tester);
     await tester.pumpAndSettle();
 
     expect(
-      (during.length, during.contains(ColumnTransform.identity), columns().single),
+      (during.length, during.contains(ColumnTransform.identity), columns(tester).single),
       (2, false, ColumnTransform.identity),
     );
   });
@@ -298,10 +299,6 @@ void main() {
   for (final c in noMorphCases) {
     testWidgets('a switch ${c.name} fades the bodies and moves no columns', (tester) async {
       await pumpView(tester, switchAnimation: fade);
-      List<ColumnTransform> columns() => [
-        for (final scope in tester.widgetList<ViewSwitchAreaScope>(find.byType(ViewSwitchAreaScope)))
-          scope.holder!.columns.value,
-      ];
 
       kalenderController.viewConfiguration = c.to;
       await tester.pump();
@@ -309,7 +306,11 @@ void main() {
 
       final bodies = opacitiesAbove(tester, MultiDayBody);
       expect(
-        (columns().every((value) => value == ColumnTransform.identity), bodies.length, bodies.every((o) => o < 1)),
+        (
+          columns(tester).every((value) => value == ColumnTransform.identity),
+          bodies.length,
+          bodies.every((o) => o < 1),
+        ),
         (true, 2, true),
       );
     });
@@ -359,6 +360,72 @@ void main() {
     expect(bodies(), (0, 1, 0));
   });
 
+  testWidgets('a configuration with the same name during a column movement ends the movement', (tester) async {
+    await pumpView(tester, switchAnimation: fade);
+
+    kalenderController.viewConfiguration = threeDays;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    kalenderController.viewConfiguration = threeDays.copyWith(numberOfDays: 5);
+    await tester.pump();
+
+    expect((bodies(), columns(tester).single), ((1, 0, 0), ColumnTransform.identity));
+  });
+
+  for (final textDirection in TextDirection.values) {
+    testWidgets('a column movement keeps a shared date in place, $textDirection', (tester) async {
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        Directionality(
+          textDirection: textDirection,
+          child: view(switchAnimation: fade),
+        ),
+      );
+      final shared = find.byWidgetPredicate(
+        (widget) => widget is DayHeader && (widget.date.month, widget.date.day) == (3, 10),
+      );
+      double left(Element element) => (element.renderObject! as RenderBox).localToGlobal(Offset.zero).dx;
+
+      kalenderController.viewConfiguration = threeDays;
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final positions = shared.evaluate().map(left).toList();
+      expect(positions, [positions.first, moreOrLessEquals(positions.first)]);
+    });
+  }
+
+  testWidgets('adding or removing the animation keeps the page and the scroll position', (tester) async {
+    await pumpView(tester);
+    kalenderController.jumpToDate(DateTime(2025, 6, 18));
+    await tester.pumpAndSettle();
+    final scrollable = tester.state<ScrollableState>(
+      find.byWidgetPredicate((widget) => widget is Scrollable && widget.axisDirection == AxisDirection.down).first,
+    );
+    scrollable.position.jumpTo(300);
+    await tester.pumpAndSettle();
+    (DateTime, DateTime, int) shown() {
+      final headers = tester.widgetList<DayHeader>(find.byType(DayHeader)).map((header) => header.date).toList();
+      final current = tester.state<ScrollableState>(
+        find.byWidgetPredicate((widget) => widget is Scrollable && widget.axisDirection == AxisDirection.down).first,
+      );
+      return (
+        headers.first,
+        kalenderController.visibleDateTimeRange.value.start.toLocal(),
+        current.position.pixels.round(),
+      );
+    }
+
+    final before = shown();
+    await tester.pumpWidget(wrapWithMaterialApp(view(switchAnimation: fade)));
+    await tester.pumpAndSettle();
+    final withAnimation = shown();
+    await tester.pumpWidget(wrapWithMaterialApp(view()));
+    await tester.pumpAndSettle();
+
+    expect((withAnimation, shown()), (before, before));
+  });
+
   test('== compares the kind, duration and curve', () {
     const pairs = [
       (KalenderViewAnimation.fade(), KalenderViewAnimation.fade(), true),
@@ -371,13 +438,4 @@ void main() {
       [for (final (_, _, equal) in pairs) (equal, equal)],
     );
   });
-}
-
-bool isDisposed(ViewController viewController) {
-  try {
-    viewController.floatingVisibleRange.addListener(() {});
-    return false;
-  } on FlutterError {
-    return true;
-  }
 }

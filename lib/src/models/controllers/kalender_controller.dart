@@ -185,6 +185,13 @@ class KalenderController extends ChangeNotifier with KalenderNavigationFunctions
     return viewController;
   }
 
+  /// Gives [view] a new view controller that opens where the current one is, for a view that builds its widgets again.
+  @internal
+  ViewController reopenView(Object view) {
+    _switchTo(_viewConfiguration, reopen: true);
+    return attachView(view);
+  }
+
   /// Removes [view] from the attached views. The next newest view becomes active after this frame.
   @internal
   void detachView(Object view) {

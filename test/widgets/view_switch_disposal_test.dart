@@ -17,15 +17,6 @@ void main() {
   final week = MultiDayViewConfiguration.week(displayRange: year2025DisplayRange);
   final month = MonthViewConfiguration.singleMonth(displayRange: year2025DisplayRange);
 
-  bool isDisposed(ViewController viewController) {
-    try {
-      viewController.floatingVisibleRange.addListener(() {});
-      return false;
-    } on FlutterError {
-      return true;
-    }
-  }
-
   testWidgets('a switch while a view shows the old view controller disposes it after the frame', (tester) async {
     final eventsController = DefaultEventsController();
     final kalenderController = KalenderController(viewConfiguration: week);

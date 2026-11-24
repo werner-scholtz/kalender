@@ -35,23 +35,20 @@ class KalenderViewAnimation {
 
   /// Wraps [child], the [incoming] or outgoing view, in the animation driven by [animation], which runs from 0 to 1.
   ///
-  /// Without [zoom], a zoom only fades. The widget shape stays the same either way.
+  /// Without [zoom], a zoom only fades. Every kind builds the same widget shape.
   @internal
   Widget build(Animation<double> animation, Widget child, {required bool incoming, bool zoom = true}) {
     final curved = animation.drive(CurveTween(curve: curve));
     final opacity = incoming ? curved : ReverseAnimation(curved);
-    return switch (_kind) {
-      _Kind.fade => FadeTransition(opacity: opacity, child: child),
-      _Kind.zoom => FadeTransition(
-        opacity: opacity,
-        child: ScaleTransition(
-          scale: zoom
-              ? curved.drive(incoming ? Tween(begin: 0.92, end: 1.0) : Tween(begin: 1.0, end: 1.08))
-              : kAlwaysCompleteAnimation,
-          child: child,
-        ),
+    return FadeTransition(
+      opacity: opacity,
+      child: ScaleTransition(
+        scale: _kind == _Kind.zoom && zoom
+            ? curved.drive(incoming ? Tween(begin: 0.92, end: 1.0) : Tween(begin: 1.0, end: 1.08))
+            : kAlwaysCompleteAnimation,
+        child: child,
       ),
-    };
+    );
   }
 
   @override

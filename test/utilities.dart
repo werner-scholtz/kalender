@@ -114,6 +114,15 @@ Future<void> pumpKalender(
   );
 }
 
+bool isDisposed(ViewController viewController) {
+  try {
+    viewController.floatingVisibleRange.addListener(() {});
+    return false;
+  } on FlutterError {
+    return true;
+  }
+}
+
 /// Runs [body] and returns what [debugPrint] printed meanwhile.
 Future<List<String>> collectPrints(Future<void> Function() body) async {
   final printed = <String>[];
