@@ -168,13 +168,15 @@ KalenderCallbacks(
   // onEventCreateWithDetail: (event, detail) {...} also receives the gesture
   // detail, and is used instead of onEventCreate when set.
 
-  // Called after a new event has been committed. Add it to your controller here.
+  // Called when a create gesture ends. The calendar does not store the event.
+  // Add it to your controller here.
   onEventCreated: (event) => eventsController.addEvent(event),
 
-  // Called just before a rescheduled / resized event is applied.
+  // Called when a reschedule or resize starts.
   onEventChange: (event) {},
 
-  // Called after a rescheduled / resized event is applied.
+  // Called when a reschedule or resize ends. The calendar does not store the
+  // change. Update your controller here, or the event goes back.
   onEventChanged: (original, updated) {
     eventsController.updateEvent(event: original, updatedEvent: updated);
   },
