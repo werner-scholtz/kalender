@@ -71,7 +71,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _ready = true;
-      _updateEvents();
+      _showEvents();
     });
   }
 
@@ -96,8 +96,12 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
         oldWidget.floatingRange == widget.floatingRange) {
       return;
     }
+    if (!_ready) {
+      _events = _eventsInRange();
+      return;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _ready) _updateEvents();
+      if (mounted) _updateEvents();
     });
   }
 

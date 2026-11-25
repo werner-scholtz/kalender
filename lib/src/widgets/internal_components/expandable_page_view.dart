@@ -23,7 +23,7 @@ class ExpandablePageView extends StatefulWidget {
   State<ExpandablePageView> createState() => _ExpandablePageViewState();
 }
 
-/// The height used until the first item has been measured.
+/// The height of the first layout, before any item has been laid out.
 const double _defaultItemHeight = 80;
 
 class _ExpandablePageViewState extends State<ExpandablePageView> {
@@ -246,6 +246,12 @@ class _RenderFirstLayoutHeight extends RenderProxyBox {
     _layoutHeight = value;
     markNeedsLayout();
   }
+
+  @override
+  double computeMinIntrinsicHeight(double width) => _height;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => _height;
 
   @override
   void performLayout() {
