@@ -36,6 +36,15 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   /// Whether the next height change applies without the animation.
   bool _skipAnimation = false;
 
+  /// The heights reported during layout before any item has been measured, by item index.
+  final _layoutHeights = <int, double>{};
+
+  /// The height of the tallest visible item in [_layoutHeights], null when none has been laid out.
+  double? _visibleLayoutHeight() {
+    final heights = [for (var i = _firstVisiblePage; i <= _lastVisiblePage; i++) _layoutHeights[i]].nonNulls;
+    return heights.isEmpty ? null : heights.reduce(math.max);
+  }
+
   /// The index of the first page currently within the viewport.
   int _firstVisiblePage = 0;
 
@@ -112,7 +121,11 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       curve: Curves.easeInOutCubic,
       tween: Tween<double>(begin: _visibleHeight, end: _visibleHeight),
       duration: duration,
-      builder: (context, value, child) => SizedBox(height: value, child: child),
+      builder: (context, value, child) => _FirstLayoutHeight(
+        height: value,
+        layoutHeight: _lastMeasuredHeight == null ? _visibleLayoutHeight : null,
+        child: child,
+      ),
       child: LinkedPageView.builder(
         key: ObjectKey(widget.controller),
         padEnds: false,
@@ -130,9 +143,13 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       maxHeight: double.infinity,
       alignment: Alignment.topCenter,
       child: _SizeReporter(
+        onLayout: (size) {
+          if (_lastMeasuredHeight == null) _layoutHeights[index] = size.height;
+        },
         onSizeChanged: (size) {
           final first = _lastMeasuredHeight == null;
           _lastMeasuredHeight = size.height;
+          _layoutHeights.clear();
           // Rebuild only when the height changed.
           if (_heights[index] == size.height) return;
           setState(() {
@@ -159,31 +176,85 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 class _SizeReporter extends SingleChildRenderObjectWidget {
   final ValueChanged<Size> onSizeChanged;
 
-  const _SizeReporter({required this.onSizeChanged, required super.child});
+  /// Called with the size during layout. It must not change widget state.
+  final ValueChanged<Size> onLayout;
+
+  const _SizeReporter({required this.onSizeChanged, required this.onLayout, required super.child});
 
   @override
-  RenderObject createRenderObject(BuildContext context) => _RenderSizeReporter(onSizeChanged);
+  RenderObject createRenderObject(BuildContext context) => _RenderSizeReporter(onSizeChanged, onLayout);
 
   @override
   void updateRenderObject(BuildContext context, _RenderSizeReporter renderObject) {
-    renderObject.onSizeChanged = onSizeChanged;
+    renderObject
+      ..onSizeChanged = onSizeChanged
+      ..onLayout = onLayout;
   }
 }
 
 class _RenderSizeReporter extends RenderProxyBox {
-  _RenderSizeReporter(this.onSizeChanged);
+  _RenderSizeReporter(this.onSizeChanged, this.onLayout);
 
   ValueChanged<Size> onSizeChanged;
+  ValueChanged<Size> onLayout;
   Size? _previousSize;
 
   @override
   void performLayout() {
     super.performLayout();
     final newSize = size;
+    onLayout(newSize);
     if (_previousSize != newSize) {
       _previousSize = newSize;
       // Defer the callback to avoid triggering setState during layout.
       WidgetsBinding.instance.addPostFrameCallback((_) => onSizeChanged(newSize));
     }
+  }
+}
+
+/// Gives its child [height], or the height [layoutHeight] returns after laying the child out once, when it returns one.
+class _FirstLayoutHeight extends SingleChildRenderObjectWidget {
+  final double height;
+  final double? Function()? layoutHeight;
+
+  const _FirstLayoutHeight({required this.height, required this.layoutHeight, required super.child});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) => _RenderFirstLayoutHeight(height, layoutHeight);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderFirstLayoutHeight renderObject) {
+    renderObject
+      ..height = height
+      ..layoutHeight = layoutHeight;
+  }
+}
+
+class _RenderFirstLayoutHeight extends RenderProxyBox {
+  _RenderFirstLayoutHeight(this._height, this._layoutHeight);
+
+  double _height;
+  set height(double value) {
+    if (value == _height) return;
+    _height = value;
+    markNeedsLayout();
+  }
+
+  double? Function()? _layoutHeight;
+  set layoutHeight(double? Function()? value) {
+    if (value == _layoutHeight) return;
+    _layoutHeight = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child!;
+    child.layout(constraints.tighten(height: _height), parentUsesSize: true);
+    final measured = _layoutHeight?.call();
+    if (measured != null && measured != child.size.height) {
+      child.layout(constraints.tighten(height: measured), parentUsesSize: true);
+    }
+    size = child.size;
   }
 }

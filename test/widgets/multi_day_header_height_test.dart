@@ -52,20 +52,26 @@ void main() {
   for (final frame in frames) {
     final frameName = '${frame.inMilliseconds} ms frames';
 
-    for (final (name, configuration) in [('week', week), ('day', day)]) {
-      testWidgets('$name view: the body stays in place after the first frame, $frameName', (tester) async {
+    for (final (name, configuration, showTiles) in [
+      ('week', week, false),
+      ('day', day, false),
+      ('week', week, true),
+      ('day', day, true),
+    ]) {
+      testWidgets('$name view, showTiles $showTiles: the body stays in place from the first frame, $frameName', (
+        tester,
+      ) async {
         tester.setViewSize(const Size(800, 600));
         final kalenderController = KalenderController(viewConfiguration: configuration);
         await tester.pumpWidget(
           wrapWithMaterialApp(
             KalenderView(
-              eventsController: DefaultEventsController(),
+              eventsController: eventsController(),
               kalenderController: kalenderController,
-              views: views(showTiles: false),
+              views: views(showTiles: showTiles),
             ),
           ),
         );
-        await tester.pump();
         final top = bodyTop(tester);
 
         expect(await recordTops(tester, count: 10, frame: frame), List.filled(10, top));

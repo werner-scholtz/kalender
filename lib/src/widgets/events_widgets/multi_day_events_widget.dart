@@ -55,7 +55,7 @@ class MultiDayEventWidget extends StatefulWidget {
 class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   Location? _location;
 
-  /// Whether the first frame has built, after which [_events] follows the location.
+  /// Whether the first frame has built, after which changes to [_events] are reported to the view controller.
   bool _ready = false;
 
   /// The list of visible events.
@@ -105,9 +105,14 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final location = context.location;
+    if (!_ready) {
+      _location = location;
+      _events = _eventsInRange();
+      return;
+    }
     if (location == _location) return;
     _location = location;
-    if (_ready) _updateEvents();
+    _updateEvents();
   }
 
   @override
@@ -126,18 +131,19 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     viewController.showEvents(this, visible ? _events.toSet() : const {});
   }
 
+  List<KalenderEvent> _eventsInRange() => widget.eventsController
+      .eventsInRange(
+        widget.floatingRange,
+        multiDayRule: context.multiDayRule,
+        includeDayEvents: widget.configuration.allowSingleDayEvents,
+        includeMultiDayEvents: true,
+        location: _location,
+      )
+      .toList();
+
   /// Updates the list of visible events if there are changes.
   void _updateEvents() {
-    final visibleEvents = widget.eventsController
-        .eventsInRange(
-          widget.floatingRange,
-          multiDayRule: context.multiDayRule,
-          includeDayEvents: widget.configuration.allowSingleDayEvents,
-          includeMultiDayEvents: true,
-          location: _location,
-        )
-        .toList();
-
+    final visibleEvents = _eventsInRange();
     if (eventLayoutChanged(visibleEvents, _events)) {
       // Update the state with the new visible events.
       setState(() => _events = visibleEvents);
