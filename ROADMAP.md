@@ -79,7 +79,7 @@ If Flutter promotes a canonical range type ([#97496](https://github.com/flutter/
 
 **The controller holds the view configuration and location, and the views are sets of widgets.** `KalenderController` takes `viewConfiguration` and `location` and creates the view controller, so a view switch is a setter call. `KalenderView` takes a list of `ViewParts`, each a header and a body with an `accepts` check against the active configuration, rather than a configuration of its own. The configuration still picks the active view, which keeps one place for it. An app adds a view with a `ViewParts`, a `ViewConfiguration` that implements `createViewController`, and a `ViewController`.
 
-**Each `KalenderView` holds the view controller it shows.** Two views on one controller, during a route transition or with a calendar route pushed over another, do not share page controllers, and a view mounted again reopens where the last one was. An animated switch between views needs the same thing, an outgoing view that stays on screen, so [#280](https://github.com/werner-scholtz/kalender/issues/280) builds on it.
+**Each `KalenderView` holds the view controller it shows.** Two views on one controller, during a route transition or with a calendar route pushed over another, do not share page controllers, and a view mounted again reopens where the last one was. `KalenderView.switchAnimation` builds on it: the outgoing view stays on screen with its own view controller until the animation ends.
 
 **A calendar is assembled from parts rather than configured as one whole.** The parts are theming, the state layer `KalenderScope`, the view parts and the day cell builders of the month and multi-day bodies. A yearly view and a mobile month view are new `ViewParts` and are listed under [Features](#features).
 
@@ -128,7 +128,6 @@ Selection runs through [#89](https://github.com/werner-scholtz/kalender/issues/8
 |---|---|
 | [#90](https://github.com/werner-scholtz/kalender/issues/90) hide and show weekends | A set of visible weekdays on the view configuration. Changes which dates a page carries, so it reaches the date arithmetic rather than only the layout. Scoped below. |
 | [#98](https://github.com/werner-scholtz/kalender/issues/98) named and uneditable time regions | A second thing the calendar draws besides events, that events sit on top of. The largest new model here. |
-| [#280](https://github.com/werner-scholtz/kalender/issues/280) animated transitions between views | Opt-in, default off, reduced-motion aware. `animateTo` and `animation` sit beside the `viewConfiguration` setter, and `KalenderView` keeps the outgoing view controller until the animation ends. |
 
 **Arbitrary visible weekdays, [#90](https://github.com/werner-scholtz/kalender/issues/90), needs the page to stop being one date range.** `numberOfDays` on `week` and `workWeek` covers the contiguous case, which is what the reporter of [#444](https://github.com/werner-scholtz/kalender/issues/444) asked for. Every contiguous span starting on `firstDayOfWeek` is expressible that way, so what a set of weekdays adds is the non-contiguous case, Monday, Wednesday and Friday, and a span that starts somewhere other than `firstDayOfWeek`.
 

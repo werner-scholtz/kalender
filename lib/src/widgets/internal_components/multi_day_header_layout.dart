@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
+import 'package:kalender/src/widgets/internal_components/view_switch_area.dart';
 
 /// The widget used for the MultiDayHeader.
 ///
@@ -32,7 +33,13 @@ class MultiDayHeaderWidget extends StatelessWidget {
     return _MultiDayHeaderWidget(
       timelineWidth: timelineWidth,
       leading: LayoutId(id: 1, child: leading),
-      content: LayoutId(id: 2, child: content),
+      content: LayoutId(
+        id: 2,
+        child: ViewSwitchArea(
+          kind: ViewSwitchAreaKind.headerColumns,
+          child: ViewSwitchColumns(child: content),
+        ),
+      ),
     );
   }
 }

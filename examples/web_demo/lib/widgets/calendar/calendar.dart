@@ -72,6 +72,7 @@ class _CalendarContentState extends State<CalendarContent> {
                       components: _components(context),
                       callbacks: _callbacks,
                       interaction: context.configuration.interactionBody.value,
+                      switchAnimation: const KalenderViewAnimation.zoom(),
                       views: [
                         MultiDayViewParts(
                           header: _header(
