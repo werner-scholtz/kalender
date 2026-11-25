@@ -23,12 +23,18 @@ class ExpandablePageView extends StatefulWidget {
   State<ExpandablePageView> createState() => _ExpandablePageViewState();
 }
 
-/// The height used for an item until its real height has been measured.
+/// The height used until the first item has been measured.
 const double _defaultItemHeight = 80;
 
 class _ExpandablePageViewState extends State<ExpandablePageView> {
-  /// The heights of the items in the page view.
-  late List<double> _heights;
+  /// The measured heights of the items in the page view, null for an item not measured yet.
+  late List<double?> _heights;
+
+  /// The height of the item measured last, null until one has been measured.
+  double? _lastMeasuredHeight;
+
+  /// Whether the next height change applies without the animation.
+  bool _skipAnimation = false;
 
   /// The index of the first page currently within the viewport.
   int _firstVisiblePage = 0;
@@ -36,12 +42,17 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   /// The index of the last page within the viewport, equal to [_firstVisiblePage] when one page fills it.
   int _lastVisiblePage = 0;
 
-  /// The height of the tallest page within the viewport, or [_defaultItemHeight] when there are no pages.
+  /// The height of the tallest measured page within the viewport.
+  ///
+  /// Falls back to [_lastMeasuredHeight] when no visible page has been measured, and to [_defaultItemHeight] before any
+  /// page has been measured.
   double get _visibleHeight {
-    if (_heights.isEmpty) return _defaultItemHeight;
+    final fallback = _lastMeasuredHeight ?? _defaultItemHeight;
+    if (_heights.isEmpty) return fallback;
     final lo = _firstVisiblePage.clamp(0, _heights.length - 1);
     final hi = _lastVisiblePage.clamp(0, _heights.length - 1);
-    return _heights.getRange(lo, hi + 1).reduce(math.max);
+    final measured = _heights.getRange(lo, hi + 1).nonNulls;
+    return measured.isEmpty ? fallback : measured.reduce(math.max);
   }
 
   /// Computes the inclusive range of page indices currently in the viewport.
@@ -69,7 +80,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   @override
   void initState() {
     super.initState();
-    _heights = List.filled(widget.itemCount, _defaultItemHeight, growable: true);
+    _heights = List.filled(widget.itemCount, null, growable: true);
     _updateVisibleRange();
     widget.controller.addListener(_onScroll);
   }
@@ -82,7 +93,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       widget.controller.addListener(_onScroll);
     }
     if (oldWidget.itemCount != widget.itemCount) {
-      _heights = List.filled(widget.itemCount, _defaultItemHeight, growable: true);
+      _heights = List.filled(widget.itemCount, null, growable: true);
     }
     _updateVisibleRange();
   }
@@ -95,10 +106,12 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 
   @override
   Widget build(BuildContext context) {
+    final duration = _skipAnimation ? Duration.zero : const Duration(milliseconds: 100);
+    _skipAnimation = false;
     return TweenAnimationBuilder<double>(
       curve: Curves.easeInOutCubic,
       tween: Tween<double>(begin: _visibleHeight, end: _visibleHeight),
-      duration: const Duration(milliseconds: 100),
+      duration: duration,
       builder: (context, value, child) => SizedBox(height: value, child: child),
       child: LinkedPageView.builder(
         key: ObjectKey(widget.controller),
@@ -119,9 +132,12 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       child: _SizeReporter(
         onSizeChanged: (size) {
           // Rebuild only when the height changed.
-          if (_heights[index] != size.height) {
-            setState(() => _heights[index] = size.height);
-          }
+          if (_heights[index] == size.height) return;
+          setState(() {
+            _skipAnimation = _lastMeasuredHeight == null;
+            _heights[index] = size.height;
+            _lastMeasuredHeight = size.height;
+          });
         },
         child: item,
       ),

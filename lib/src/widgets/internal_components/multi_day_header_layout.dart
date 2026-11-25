@@ -111,10 +111,13 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     final double height;
     if (contentHeight >= leadingHeight) {
       height = contentHeight;
-      leading.layout(BoxConstraints(maxHeight: height, maxWidth: timelineWidth));
+      leading.layout(BoxConstraints(maxHeight: height, maxWidth: timelineWidth), parentUsesSize: true);
     } else {
       height = leadingHeight;
-      content.layout(BoxConstraints(maxHeight: height, maxWidth: constraints.maxWidth - timelineWidth));
+      content.layout(
+        BoxConstraints(maxHeight: height, maxWidth: constraints.maxWidth - timelineWidth),
+        parentUsesSize: true,
+      );
     }
 
     final contentParentData = (content.parentData! as MultiChildLayoutParentData);

@@ -86,5 +86,33 @@ void main() {
         _expectHeader(tester, height);
       }
     });
+
+    for (final growContent in [true, false]) {
+      final name = growContent ? 'content' : 'leading';
+      testWidgets('resizes when the shorter $name grows past the other (#675)', (tester) async {
+        final height = ValueNotifier(24.0);
+        Widget growing(Key key) => ValueListenableBuilder(
+          valueListenable: height,
+          builder: (context, value, child) => SizedBox(width: 48, height: value, key: key),
+        );
+
+        await pumpAndSettleWithMaterialApp(
+          tester,
+          MultiDayHeaderWidget(
+            content: growContent
+                ? growing(const ValueKey('content'))
+                : const SizedBox(height: 48, key: ValueKey('content')),
+            leading: growContent
+                ? const SizedBox(width: 48, height: 48, key: ValueKey('leading'))
+                : growing(const ValueKey('leading')),
+            timelineWidthOverride: 48,
+          ),
+        );
+
+        height.value = 96;
+        await tester.pumpAndSettle();
+        _expectHeader(tester, 96);
+      });
+    }
   });
 }
