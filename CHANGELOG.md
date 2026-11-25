@@ -18,7 +18,7 @@ See [MIGRATION.md](MIGRATION.md#v034x--v0350) for what to change.
 
 ### Fixes
 
-- The multi-day body stays in place the first time a page is shown. [#675](https://github.com/werner-scholtz/kalender/issues/675)
+- The multi-day body no longer moves after the first frame when a page is shown for the first time. [#675](https://github.com/werner-scholtz/kalender/issues/675)
 - The multi-day header grows when its all-day row or its leading widget grows past the height of the other. [#675](https://github.com/werner-scholtz/kalender/issues/675)
 
 ## 0.34.0

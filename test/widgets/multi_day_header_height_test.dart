@@ -91,5 +91,33 @@ void main() {
         expect(await recordTops(tester, count: count, frame: frame), List.filled(count, top));
       });
     }
+
+    testWidgets('week view: the body stays in place on a new page after going back, $frameName', (tester) async {
+      tester.setViewSize(const Size(800, 600));
+      final kalenderController = KalenderController(viewConfiguration: week);
+      double height(DateTime date) =>
+          date.isAfter(DateTime(2025, 6, 8)) && date.isBefore(DateTime(2025, 6, 16)) ? 40 : 100;
+      await pumpKalender(
+        tester,
+        eventsController: DefaultEventsController(),
+        kalenderController: kalenderController,
+        views: views(showTiles: false),
+        components: KalenderComponents(
+          multiDayComponents: MultiDayComponents(
+            headerComponents: MultiDayHeaderComponents(
+              dayHeaderBuilder: (context, date) => SizedBox(height: height(date), width: 10),
+            ),
+          ),
+        ),
+      );
+      final top = bodyTop(tester);
+      unawaited(kalenderController.animateToNextPage());
+      await tester.pumpAndSettle();
+      unawaited(kalenderController.animateToPreviousPage());
+      await tester.pumpAndSettle();
+
+      kalenderController.jumpToDate(DateTime(2025, 7, 2));
+      expect(await recordTops(tester, count: 8, frame: frame), List.filled(8, top));
+    });
   }
 }

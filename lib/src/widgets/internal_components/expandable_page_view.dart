@@ -131,12 +131,13 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       alignment: Alignment.topCenter,
       child: _SizeReporter(
         onSizeChanged: (size) {
+          final first = _lastMeasuredHeight == null;
+          _lastMeasuredHeight = size.height;
           // Rebuild only when the height changed.
           if (_heights[index] == size.height) return;
           setState(() {
-            _skipAnimation = _lastMeasuredHeight == null;
+            _skipAnimation = _skipAnimation || first;
             _heights[index] = size.height;
-            _lastMeasuredHeight = size.height;
           });
         },
         child: item,
