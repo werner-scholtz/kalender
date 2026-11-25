@@ -14,6 +14,13 @@ See [MIGRATION.md](MIGRATION.md#v034x--v0350) for what to change.
 
 - In an app that was already on `material_ui`, the timeline's hour labels use the app's Material time format and locale. Before, they used intl and `KalenderView.locale`. An app that moves from `package:flutter/material.dart` in this release sees no change.
 
+## 0.34.1
+
+### Fixes
+
+- The multi-day body stays in place the first time a page is shown. [#675](https://github.com/werner-scholtz/kalender/issues/675)
+- The multi-day header grows when its all-day row or its leading widget grows past the height of the other. [#675](https://github.com/werner-scholtz/kalender/issues/675)
+
 ## 0.34.0
 
 See [MIGRATION.md](MIGRATION.md#v033x--v0340) for what to change.
